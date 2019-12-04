@@ -74,17 +74,18 @@ fn runtest(test: &Path) -> Result<()> {
         repo_root().display(),
         test.display(),
     );
+    let interface_types = contents.contains("// interface-types");
 
     fs::write(td.path().join("Cargo.toml"), manifest)?;
     let target_dir = target_dir();
-    exec(
-        Command::new("cargo")
-            .current_dir(td.path())
-            .arg("build")
-            .arg("--target")
-            .arg("wasm32-unknown-unknown")
-            .env("CARGO_TARGET_DIR", &target_dir),
-    )?;
+    let mut cargo = Command::new("cargo");
+    cargo
+        .current_dir(td.path())
+        .arg("build")
+        .arg("--target")
+        .arg("wasm32-unknown-unknown")
+        .env("CARGO_TARGET_DIR", &target_dir);
+    exec(&mut cargo)?;
 
     let wasm = target_dir
         .join("wasm32-unknown-unknown")
@@ -100,26 +101,33 @@ fn runtest(test: &Path) -> Result<()> {
     if contents.contains("// enable-anyref") {
         bindgen.env("WASM_BINDGEN_ANYREF", "1");
     }
+    if interface_types {
+        bindgen.env("WASM_INTERFACE_TYPES", "1");
+    }
     exec(&mut bindgen)?;
 
-    let js = fs::read_to_string(td.path().join("reference_test.js"))?;
-    let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
-
-    let js_assertion = test.with_extension("js");
-    let wat_assertion = test.with_extension("wat");
-
-    if env::var("BLESS").is_ok() {
-        fs::write(js_assertion, js)?;
-        fs::write(wat_assertion, wat)?;
-        return Ok(());
+    if interface_types {
+        let wasm = td.path().join("reference_test.wasm");
+        wit_validator::validate(&fs::read(&wasm)?)?;
+        let wit = sanitize_wasm(&wasm)?;
+        assert_same(&wit, &test.with_extension("wit"))?;
+    } else {
+        let js = fs::read_to_string(td.path().join("reference_test.js"))?;
+        assert_same(&js, &test.with_extension("js"))?;
+        let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
+        assert_same(&wat, &test.with_extension("wat"))?;
     }
 
-    let js_expected = fs::read_to_string(&js_assertion)?;
-    let wat_expected = fs::read_to_string(&wat_assertion)?;
+    Ok(())
+}
 
-    diff(&js_expected, &js)?;
-    diff(&wat_expected, &wat)?;
-
+fn assert_same(output: &str, expected: &Path) -> Result<()> {
+    if env::var("BLESS").is_ok() {
+        fs::write(expected, output)?;
+    } else {
+        let expected = fs::read_to_string(&expected)?;
+        diff(&expected, output)?;
+    }
     Ok(())
 }
 
@@ -127,7 +135,9 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     // Clean up the wasm module by removing all function
     // implementations/instructions, data sections, etc. This'll help us largely
     // only deal with exports/imports which is all we're really interested in.
-    let mut module = walrus::Module::from_file(wasm)?;
+    let mut module = walrus::ModuleConfig::new()
+        .on_parse(wit_walrus::on_parse)
+        .parse_file(wasm)?;
     for func in module.funcs.iter_mut() {
         let local = match &mut func.kind {
             walrus::FunctionKind::Local(l) => l,
@@ -155,7 +165,7 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
         module.exports.delete(id);
     }
     walrus::passes::gc::run(&mut module);
-    let mut wat = wasmprinter::print_bytes(&module.emit_wasm())?;
+    let mut wat = wit_printer::print_bytes(&module.emit_wasm())?;
     wat.push_str("\n");
     Ok(wat)
 }

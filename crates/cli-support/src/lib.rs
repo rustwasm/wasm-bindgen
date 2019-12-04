@@ -16,6 +16,7 @@ mod descriptors;
 mod intrinsic;
 mod js;
 mod multivalue;
+mod throw2unreachable;
 pub mod wasm2es6js;
 mod wit;
 
@@ -45,14 +46,22 @@ pub struct Bindgen {
 pub struct Output {
     module: walrus::Module,
     stem: String,
+    generated: Generated,
+}
+
+enum Generated {
+    InterfaceTypes,
+    Js(JsGenerated),
+}
+
+struct JsGenerated {
+    mode: OutputMode,
     js: String,
     ts: String,
-    mode: OutputMode,
-    typescript: bool,
     snippets: HashMap<String, Vec<String>>,
     local_modules: HashMap<String, String>,
     npm_dependencies: HashMap<String, (PathBuf, String)>,
-    wasm_interface_types: bool,
+    typescript: bool,
 }
 
 #[derive(Clone)]
@@ -354,54 +363,69 @@ impl Bindgen {
             }
         }
 
-        // We've done a whole bunch of transformations to the wasm module, many
-        // of which leave "garbage" lying around, so let's prune out all our
-        // unnecessary things here.
-        gc_module_and_adapters(&mut module);
-
-        let aux = module
-            .customs
-            .delete_typed::<wit::WasmBindgenAux>()
-            .expect("aux section should be present");
-        let mut adapters = module
-            .customs
-            .delete_typed::<wit::NonstandardWitSection>()
-            .unwrap();
-
-        // Now that our module is massaged and good to go, feed it into the JS
-        // shim generation which will actually generate JS for all this.
-        let (npm_dependencies, (js, ts)) = {
-            let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
-            cx.generate()?;
-            let npm_dependencies = cx.npm_dependencies.clone();
-            (npm_dependencies, cx.finalize(stem)?)
-        };
-
+        // If wasm interface types are enabled then the `__wbindgen_throw`
+        // intrinsic isn't available but it may be used by our runtime, so
+        // change all calls to this function to calls to `unreachable` instead.
+        // See more documentation in the pass documentation itself.
         if self.wasm_interface_types {
-            multivalue::run(&mut module, &mut adapters)
-                .context("failed to transform return pointers into multi-value Wasm")?;
-            wit::section::add(&mut module, &aux, &adapters)
-                .context("failed to generate a standard wasm bindings custom section")?;
-        } else {
-            if self.multi_value {
+            throw2unreachable::run(&mut module);
+        }
+
+        // Using all of our metadata convert our module to a multi-value using
+        // module if applicable.
+        if self.multi_value {
+            if !self.wasm_interface_types {
                 anyhow::bail!(
                     "Wasm multi-value is currently only available when \
                      Wasm interface types is also enabled"
                 );
             }
+            multivalue::run(&mut module)
+                .context("failed to transform return pointers into multi-value Wasm")?;
         }
+
+        // We've done a whole bunch of transformations to the wasm module, many
+        // of which leave "garbage" lying around, so let's prune out all our
+        // unnecessary things here.
+        gc_module_and_adapters(&mut module);
+
+        // We're ready for the final emission passes now. If we're in wasm
+        // interface types mode then we execute the various passes there and
+        // generate a valid interface typess section into the wasm module.
+        //
+        // Otherwise we execute the JS generation passes to actually emit
+        // JS/TypeScript/etc. The output here is unused in wasm interfac
+        let generated = if self.wasm_interface_types {
+            wit::section::add(&mut module)
+                .context("failed to generate a standard interface types section")?;
+            Generated::InterfaceTypes
+        } else {
+            let aux = module
+                .customs
+                .delete_typed::<wit::WasmBindgenAux>()
+                .expect("aux section should be present");
+            let adapters = module
+                .customs
+                .delete_typed::<wit::NonstandardWitSection>()
+                .unwrap();
+            let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
+            cx.generate()?;
+            let (js, ts) = cx.finalize(stem)?;
+            Generated::Js(JsGenerated {
+                snippets: aux.snippets.clone(),
+                local_modules: aux.local_modules.clone(),
+                mode: self.mode.clone(),
+                typescript: self.typescript,
+                npm_dependencies: cx.npm_dependencies.clone(),
+                js,
+                ts,
+            })
+        };
 
         Ok(Output {
             module,
             stem: stem.to_string(),
-            snippets: aux.snippets.clone(),
-            local_modules: aux.local_modules.clone(),
-            npm_dependencies,
-            js,
-            ts,
-            mode: self.mode.clone(),
-            typescript: self.typescript,
-            wasm_interface_types: self.wasm_interface_types,
+            generated,
         })
     }
 
@@ -554,8 +578,10 @@ fn unexported_unused_lld_things(module: &mut Module) {
 
 impl Output {
     pub fn js(&self) -> &str {
-        assert!(!self.wasm_interface_types);
-        &self.js
+        match &self.generated {
+            Generated::InterfaceTypes => panic!("no js with interface types output"),
+            Generated::Js(gen) => &gen.js,
+        }
     }
 
     pub fn wasm(&self) -> &walrus::Module {
@@ -571,10 +597,9 @@ impl Output {
     }
 
     fn _emit(&mut self, out_dir: &Path) -> Result<(), Error> {
-        let wasm_name = if self.wasm_interface_types {
-            self.stem.clone()
-        } else {
-            format!("{}_bg", self.stem)
+        let wasm_name = match &self.generated {
+            Generated::InterfaceTypes => self.stem.clone(),
+            Generated::Js(_) => format!("{}_bg", self.stem),
         };
         let wasm_path = out_dir.join(wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
@@ -582,13 +607,14 @@ impl Output {
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|| format!("failed to write `{}`", wasm_path.display()))?;
 
-        if self.wasm_interface_types {
-            return Ok(());
-        }
+        let gen = match &self.generated {
+            Generated::InterfaceTypes => return Ok(()),
+            Generated::Js(gen) => gen,
+        };
 
         // Write out all local JS snippets to the final destination now that
         // we've collected them from all the programs.
-        for (identifier, list) in self.snippets.iter() {
+        for (identifier, list) in gen.snippets.iter() {
             for (i, js) in list.iter().enumerate() {
                 let name = format!("inline{}.js", i);
                 let path = out_dir.join("snippets").join(identifier).join(name);
@@ -598,15 +624,15 @@ impl Output {
             }
         }
 
-        for (path, contents) in self.local_modules.iter() {
+        for (path, contents) in gen.local_modules.iter() {
             let path = out_dir.join("snippets").join(path);
             fs::create_dir_all(path.parent().unwrap())?;
             fs::write(&path, contents)
                 .with_context(|| format!("failed to write `{}`", path.display()))?;
         }
 
-        if self.npm_dependencies.len() > 0 {
-            let map = self
+        if gen.npm_dependencies.len() > 0 {
+            let map = gen
                 .npm_dependencies
                 .iter()
                 .map(|(k, v)| (k, &v.1))
@@ -617,29 +643,29 @@ impl Output {
 
         // And now that we've got all our JS and TypeScript, actually write it
         // out to the filesystem.
-        let extension = if self.mode.nodejs_experimental_modules() {
+        let extension = if gen.mode.nodejs_experimental_modules() {
             "mjs"
         } else {
             "js"
         };
         let js_path = out_dir.join(&self.stem).with_extension(extension);
-        fs::write(&js_path, reset_indentation(&self.js))
+        fs::write(&js_path, reset_indentation(&gen.js))
             .with_context(|| format!("failed to write `{}`", js_path.display()))?;
 
-        if self.typescript {
+        if gen.typescript {
             let ts_path = js_path.with_extension("d.ts");
-            fs::write(&ts_path, &self.ts)
+            fs::write(&ts_path, &gen.ts)
                 .with_context(|| format!("failed to write `{}`", ts_path.display()))?;
         }
 
-        if self.mode.nodejs() {
+        if gen.mode.nodejs() {
             let js_path = wasm_path.with_extension(extension);
-            let shim = self.generate_node_wasm_import(&self.module, &wasm_path);
+            let shim = gen.generate_node_wasm_import(&self.module, &wasm_path);
             fs::write(&js_path, shim)
                 .with_context(|| format!("failed to write `{}`", js_path.display()))?;
         }
 
-        if self.typescript {
+        if gen.typescript {
             let ts_path = wasm_path.with_extension("d.ts");
             let ts = wasm2es6js::typescript(&self.module)?;
             fs::write(&ts_path, ts)
@@ -648,7 +674,9 @@ impl Output {
 
         Ok(())
     }
+}
 
+impl JsGenerated {
     fn generate_node_wasm_import(&self, m: &Module, path: &Path) -> String {
         let mut imports = BTreeSet::new();
         for import in m.imports.iter() {
@@ -720,40 +748,52 @@ impl Output {
 }
 
 fn gc_module_and_adapters(module: &mut Module) {
-    // First up we execute walrus's own gc passes, and this may enable us to
-    // delete entries in the `implements` section of the nonstandard wasm
-    // interface types section. (if the import is GC'd, then the implements
-    // annotation is no longer needed).
-    //
-    // By deleting adapter functions that may enable us to further delete more
-    // functions, so we run this in a loop until we don't actually delete any
-    // adapter functions.
     loop {
+        // Fist up, cleanup the native wasm module. Note that roots can come
+        // from custom sections, namely our wasm interface types custom section
+        // as well as the aux section.
         walrus::passes::gc::run(module);
 
+        // ... and afterwards we can delete any `implements` directives for any
+        // imports that have been deleted.
         let imports_remaining = module
             .imports
             .iter()
             .map(|i| i.id())
             .collect::<HashSet<_>>();
-        let section = module
+        let mut section = module
             .customs
-            .get_typed_mut::<wit::NonstandardWitSection>()
+            .delete_typed::<wit::NonstandardWitSection>()
             .unwrap();
-        let mut deleted_implements = Vec::new();
-        section.implements.retain(|pair| {
-            if imports_remaining.contains(&pair.0) {
-                true
-            } else {
-                deleted_implements.push(pair.2);
-                false
-            }
-        });
-        if deleted_implements.len() == 0 {
+        section
+            .implements
+            .retain(|pair| imports_remaining.contains(&pair.0));
+
+        // ... and after we delete the `implements` directive we try to
+        // delete some adapters themselves. If nothing is deleted, then we're
+        // good to go. If something is deleted though then we may have free'd up
+        // some functions in the main module to get deleted, so go again to gc
+        // things.
+        let aux = module.customs.get_typed::<wit::WasmBindgenAux>().unwrap();
+        let any_removed = section.gc(aux);
+        module.customs.add(*section);
+        if !any_removed {
             break;
         }
-        for id in deleted_implements {
-            section.adapters.remove(&id);
-        }
     }
+}
+
+/// Returns a sorted iterator over a hash map, sorted based on key.
+///
+/// The intention of this API is to be used whenever the iteration order of a
+/// `HashMap` might affect the generated JS bindings. We want to ensure that the
+/// generated output is deterministic and we do so by ensuring that iteration of
+/// hash maps is consistently sorted.
+fn sorted_iter<K, V>(map: &HashMap<K, V>) -> impl Iterator<Item = (&K, &V)>
+where
+    K: Ord,
+{
+    let mut pairs = map.iter().collect::<Vec<_>>();
+    pairs.sort_by_key(|(k, _)| *k);
+    pairs.into_iter()
 }

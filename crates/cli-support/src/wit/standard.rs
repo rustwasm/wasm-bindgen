@@ -1,6 +1,7 @@
 use crate::descriptor::VectorKind;
+use crate::wit::{AuxImport, WasmBindgenAux};
 use std::borrow::Cow;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use walrus::{FunctionId, ImportId, TypedCustomSectionId};
 
 #[derive(Default, Debug)]
@@ -362,6 +363,52 @@ impl NonstandardWitSection {
             },
         );
         return id;
+    }
+
+    /// Removes any dead entries in `adapters` that are no longer necessary
+    /// and/or no longer referenced.
+    ///
+    /// Returns `true` if any adapters were deleted, or `false` if the adapters
+    /// did not change.
+    pub fn gc(&mut self, aux: &WasmBindgenAux) -> bool {
+        // Populate the live set with the exports, implements directives, and
+        // anything transitively referenced by those adapters.
+        let mut live = HashSet::new();
+        for (_, id) in self.exports.iter() {
+            self.add_live(*id, &mut live);
+        }
+        for (_, _, id) in self.implements.iter() {
+            self.add_live(*id, &mut live);
+        }
+        for import in aux.import_map.values() {
+            if let AuxImport::Closure { adapter, .. } = import {
+                self.add_live(*adapter, &mut live);
+            }
+        }
+
+        // And now that we have the live set we can filter out our list of
+        // adapter definitions.
+        let before = self.adapters.len();
+        self.adapters.retain(|id, _| live.contains(id));
+        before != self.adapters.len()
+    }
+
+    fn add_live(&self, id: AdapterId, live: &mut HashSet<AdapterId>) {
+        if !live.insert(id) {
+            return;
+        }
+        let instructions = match &self.adapters[&id].kind {
+            AdapterKind::Local { instructions } => instructions,
+            AdapterKind::Import { .. } => return,
+        };
+        for instr in instructions {
+            match instr.instr {
+                Instruction::StackClosure { adapter, .. } | Instruction::CallAdapter(adapter) => {
+                    self.add_live(adapter, live);
+                }
+                _ => {}
+            }
+        }
     }
 }
 

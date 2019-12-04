@@ -24,11 +24,12 @@ use anyhow::{anyhow, bail, Context, Error};
 use std::collections::HashMap;
 use walrus::Module;
 
-pub fn add(
-    module: &mut Module,
-    aux: &WasmBindgenAux,
-    nonstandard: &NonstandardWitSection,
-) -> Result<(), Error> {
+pub fn add(module: &mut Module) -> Result<(), Error> {
+    let nonstandard = module
+        .customs
+        .delete_typed::<NonstandardWitSection>()
+        .unwrap();
+    let aux = module.customs.delete_typed::<WasmBindgenAux>().unwrap();
     let mut section = wit_walrus::WasmInterfaceTypes::default();
     let WasmBindgenAux {
         extra_typescript: _, // ignore this even if it's specified
@@ -42,11 +43,14 @@ pub fn add(
         imports_with_assert_no_shim: _, // not relevant for this purpose
         enums,
         structs,
-        anyref_table: _,      // not relevant
-        anyref_alloc: _,      // not relevant
-        anyref_drop_slice: _, // not relevant
-        exn_store: _,         // not relevant
-    } = aux;
+
+        // irrelevant ids used to track various internal intrinsics and such
+        anyref_table: _,
+        anyref_alloc: _,
+        anyref_drop_slice: _,
+        exn_store: _,
+        shadow_stack_pointer: _,
+    } = *aux;
 
     let adapter_context = |id: AdapterId| {
         if let Some((name, _)) = nonstandard.exports.iter().find(|p| p.1 == id) {
@@ -59,11 +63,11 @@ pub fn add(
                 import.module, import.name
             );
         }
-        unreachable!()
+        format!("in adapter function")
     };
 
     let mut us2walrus = HashMap::new();
-    for (us, func) in nonstandard.adapters.iter() {
+    for (us, func) in crate::sorted_iter(&nonstandard.adapters) {
         if let Some(export) = export_map.get(us) {
             check_standard_export(export).context(adapter_context(*us))?;
         }
@@ -354,11 +358,7 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
         }
         AuxImport::Closure { .. } => format!("creating a `Closure` wrapper"),
     };
-    bail!(
-        "cannot generate a standalone WebAssembly module which \
-         contains an import of {} since it requires JS glue",
-        item
-    );
+    bail!("import of {} requires JS glue", item);
 }
 
 fn check_standard_export(export: &AuxExport) -> Result<(), Error> {

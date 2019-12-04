@@ -9,7 +9,7 @@
 #![deny(missing_docs, missing_debug_implementations)]
 
 use anyhow::{anyhow, bail, Error};
-use walrus::{GlobalId, GlobalKind, MemoryId, Module, ValType};
+use walrus::{GlobalId, GlobalKind, MemoryId, Module, ValType, InitExpr, ir::Value};
 
 /// Get a Wasm module's canonical linear memory.
 pub fn get_memory(module: &Module) -> Result<MemoryId, Error> {
@@ -39,21 +39,19 @@ pub fn get_shadow_stack_pointer(module: &Module) -> Result<GlobalId, Error> {
         .iter()
         .filter(|g| g.ty == ValType::I32)
         .filter(|g| g.mutable)
+        // The stack pointer is guaranteed to not be initialized to 0, and it's
+        // guaranteed to have an i32 initializer, so find globals which are
+        // locally defined, are an i32, and have a nonzero initializer
         .filter(|g| match g.kind {
-            GlobalKind::Local(_) => true,
-            GlobalKind::Import(_) => false,
+            GlobalKind::Local(InitExpr::Value(Value::I32(n))) => n != 0,
+            _ => false,
         })
         .collect::<Vec<_>>();
 
     let ssp = match candidates.len() {
         0 => bail!("could not find the shadow stack pointer for the module"),
-        // If we've got two mutable globals then we're in a pretty standard
-        // situation for threaded code where one is the stack pointer and one is the
-        // TLS base offset. We need to figure out which is which, and we basically
-        // assume LLVM's current codegen where the first is the stack pointer.
-        //
         // TODO: have an actual check here.
-        1 | 2 => candidates[0].id(),
+        1 => candidates[0].id(),
         _ => bail!("too many mutable globals to infer which is the shadow stack pointer"),
     };
 
