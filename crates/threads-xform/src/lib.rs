@@ -105,7 +105,8 @@ impl Config {
         }
 
         let memory = wasm_conventions::get_memory(module)?;
-        let stack_pointer = wasm_conventions::get_shadow_stack_pointer(module)?;
+        let stack_pointer = wasm_conventions::get_shadow_stack_pointer(module)
+            .ok_or_else(|| anyhow!("failed to find shadow stack pointer"))?;
         let addr = allocate_static_data(module, memory, 4, 4)?;
         let zero = InitExpr::Value(Value::I32(0));
         let globals = Globals {

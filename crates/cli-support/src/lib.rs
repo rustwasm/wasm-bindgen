@@ -264,8 +264,10 @@ impl Bindgen {
                 (mem::replace(m, blank_module), &name[..])
             }
             Input::Path(ref path) => {
-                let contents = fs::read(&path)
+                let wasm = wit_text::parse_file(&path)
                     .with_context(|| format!("failed to read `{}`", path.display()))?;
+                wit_validator::validate(&wasm)
+                    .with_context(|| format!("failed to validate `{}`", path.display()))?;
                 let module = walrus::ModuleConfig::new()
                     // Skip validation of the module as LLVM's output is
                     // generally already well-formed and so we won't gain much
@@ -278,7 +280,7 @@ impl Bindgen {
                     .generate_name_section(!self.remove_name_section)
                     .generate_producers_section(!self.remove_producers_section)
                     .on_parse(wit_walrus::on_parse)
-                    .parse(&contents)
+                    .parse(&wasm)
                     .context("failed to parse input file as wasm")?;
                 let stem = match &self.out_name {
                     Some(name) => &name,

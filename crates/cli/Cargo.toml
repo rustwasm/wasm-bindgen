@@ -36,11 +36,16 @@ rayon = "1.0"
 tempfile = "3.0"
 walrus = "0.14"
 wit-printer = "0.1"
+wit-text = "0.1"
 wit-validator = "0.1"
 wit-walrus = "0.1"
 
 [[test]]
 name = "reference"
+harness = false
+
+[[test]]
+name = "interface-types"
 harness = false
 
 [features]

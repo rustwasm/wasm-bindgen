@@ -33,7 +33,7 @@ pub fn get_memory(module: &Module) -> Result<MemoryId, Error> {
 ///
 /// It must have been previously added to the module's exports via
 /// `export_shadow_stack_pointer`.
-pub fn get_shadow_stack_pointer(module: &Module) -> Result<GlobalId, Error> {
+pub fn get_shadow_stack_pointer(module: &Module) -> Option<GlobalId> {
     let candidates = module
         .globals
         .iter()
@@ -48,12 +48,10 @@ pub fn get_shadow_stack_pointer(module: &Module) -> Result<GlobalId, Error> {
         })
         .collect::<Vec<_>>();
 
-    let ssp = match candidates.len() {
-        0 => bail!("could not find the shadow stack pointer for the module"),
+    match candidates.len() {
+        0 => None,
         // TODO: have an actual check here.
-        1 => candidates[0].id(),
-        _ => bail!("too many mutable globals to infer which is the shadow stack pointer"),
-    };
-
-    Ok(ssp)
+        1 => Some(candidates[0].id()),
+        _ => None,
+    }
 }
