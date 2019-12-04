@@ -36,6 +36,41 @@ exports.test_iterator = function(sym) {
   assert.deepEqual([...iterable1], [1, 2, 3]);
 };
 
+exports.test_async_iterator = async function(sym) {
+  const iterable1 = new Object();
+
+  iterable1[sym] = function () {
+    let done = false;
+
+    return {
+      next() {
+        if (done) {
+          return Promise.resolve({
+            done: true,
+            value: 1
+          });
+
+        } else {
+          done = true;
+
+          return Promise.resolve({
+            done: false,
+            value: 0
+          });
+        }
+      }
+    };
+  };
+
+  const values = [];
+
+  for await (let value of iterable1) {
+    values.push(value);
+  }
+
+  assert.deepEqual(values, [0]);
+};
+
 exports.test_match = function(sym) {
   const regexp1 = /foo/;
   assert.throws(() => '/foo/'.startsWith(regexp1));

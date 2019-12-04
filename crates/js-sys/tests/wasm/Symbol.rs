@@ -1,12 +1,14 @@
 use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen_futures::JsFuture;
 
 #[wasm_bindgen(module = "tests/wasm/Symbol.js")]
 extern "C" {
     fn test_has_instance(sym: &Symbol);
     fn test_is_concat_spreadable(sym: &Symbol);
     fn test_iterator(sym: &Symbol);
+    fn test_async_iterator(sym: &Symbol) -> Promise;
     fn test_match(sym: &Symbol);
     fn test_replace(sym: &Symbol);
     fn test_search(sym: &Symbol);
@@ -35,6 +37,11 @@ fn is_concat_spreadable() {
 #[wasm_bindgen_test]
 fn iterator() {
     test_iterator(&Symbol::iterator());
+}
+
+#[wasm_bindgen_test]
+async fn async_iterator() {
+    JsFuture::from(test_async_iterator(&Symbol::async_iterator())).await.unwrap_throw();
 }
 
 #[wasm_bindgen_test]
@@ -89,12 +96,14 @@ fn key_for() {
     let sym = Symbol::for_("foo");
     assert_eq!(Symbol::key_for(&sym), "foo");
     assert!(Symbol::key_for(&Symbol::iterator()).is_undefined());
+    assert!(Symbol::key_for(&Symbol::async_iterator()).is_undefined());
     assert!(Symbol::key_for(&gensym(JsValue::undefined())).is_undefined());
 }
 
 #[wasm_bindgen_test]
 fn to_string() {
     assert_eq!(Symbol::iterator().to_string(), "Symbol(Symbol.iterator)");
+    assert_eq!(Symbol::async_iterator().to_string(), "Symbol(Symbol.asyncIterator)");
     assert_eq!(Symbol::for_("foo").to_string(), "Symbol(foo)");
     assert_eq!(gensym("desc".into()).to_string(), "Symbol(desc)");
 }

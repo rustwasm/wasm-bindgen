@@ -31,7 +31,7 @@ error[E0277]: the trait bound `wasm_bindgen::JsValue: std::convert::From<BadType
              <wasm_bindgen::JsValue as std::convert::From<&'a std::string::String>>
              <wasm_bindgen::JsValue as std::convert::From<&'a str>>
              <wasm_bindgen::JsValue as std::convert::From<MyType>>
-           and 61 others
+           and 62 others
    = note: required because of the requirements on the impl of `std::convert::Into<wasm_bindgen::JsValue>` for `BadType`
    = note: required because of the requirements on the impl of `wasm_bindgen::__rt::IntoJsResult` for `BadType`
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
