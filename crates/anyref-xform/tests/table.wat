@@ -4,9 +4,9 @@
   (func $foo (param i32))
   (table (export "func") 0 funcref)
   (elem (i32.const 0) 0)
-  (func $alloc (export "__wbindgen_anyref_table_alloc") (result i32)
+  (func $alloc (export "__anyref_table_alloc") (result i32)
     i32.const 0)
-  (func $dealloc (export "__wbindgen_anyref_table_dealloc") (param i32))
+  (func $dealloc (export "__anyref_table_dealloc") (param i32))
 )
 
 (; CHECK-ALL:
@@ -25,11 +25,8 @@
   (func $alloc (type 0) (result i32)
     i32.const 0)
   (func $foo (type 1) (param i32))
-  (func $dealloc (type 1) (param i32))
   (table (;0;) 2 funcref)
   (table (;1;) 32 anyref)
   (export "func" (table 0))
-  (export "__wbindgen_anyref_table_alloc" (func $alloc))
-  (export "__wbindgen_anyref_table_dealloc" (func $dealloc))
   (elem (;0;) (i32.const 0) $foo $closure0 anyref shim))
 ;)
