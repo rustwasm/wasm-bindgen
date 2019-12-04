@@ -1,4 +1,5 @@
 use crate::descriptor::VectorKind;
+use crate::wit::{AuxImport, WasmBindgenAux};
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use walrus::{FunctionId, ImportId, TypedCustomSectionId};
@@ -369,7 +370,7 @@ impl NonstandardWitSection {
     ///
     /// Returns `true` if any adapters were deleted, or `false` if the adapters
     /// did not change.
-    pub fn gc(&mut self) -> bool {
+    pub fn gc(&mut self, aux: &WasmBindgenAux) -> bool {
         // Populate the live set with the exports, implements directives, and
         // anything transitively referenced by those adapters.
         let mut live = HashSet::new();
@@ -378,6 +379,11 @@ impl NonstandardWitSection {
         }
         for (_, _, id) in self.implements.iter() {
             self.add_live(*id, &mut live);
+        }
+        for import in aux.import_map.values() {
+            if let AuxImport::Closure { adapter, .. } = import {
+                self.add_live(*adapter, &mut live);
+            }
         }
 
         // And now that we have the live set we can filter out our list of
@@ -397,8 +403,8 @@ impl NonstandardWitSection {
         };
         for instr in instructions {
             match instr.instr {
-                Instruction::CallAdapter(a) => {
-                    self.add_live(a, live);
+                Instruction::StackClosure { adapter, .. } | Instruction::CallAdapter(adapter) => {
+                    self.add_live(adapter, live);
                 }
                 _ => {}
             }

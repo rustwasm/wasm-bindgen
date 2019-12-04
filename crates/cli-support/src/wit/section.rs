@@ -29,10 +29,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         .customs
         .delete_typed::<NonstandardWitSection>()
         .unwrap();
-    let aux = module
-        .customs
-        .delete_typed::<WasmBindgenAux>()
-        .unwrap();
+    let aux = module.customs.delete_typed::<WasmBindgenAux>().unwrap();
     let mut section = wit_walrus::WasmInterfaceTypes::default();
     let WasmBindgenAux {
         extra_typescript: _, // ignore this even if it's specified

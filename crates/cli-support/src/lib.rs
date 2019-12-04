@@ -16,9 +16,9 @@ mod descriptors;
 mod intrinsic;
 mod js;
 mod multivalue;
+mod throw2unreachable;
 pub mod wasm2es6js;
 mod wit;
-mod throw2unreachable;
 
 pub struct Bindgen {
     input: Input,
@@ -761,18 +761,23 @@ fn gc_module_and_adapters(module: &mut Module) {
             .iter()
             .map(|i| i.id())
             .collect::<HashSet<_>>();
-        let section = module
+        let mut section = module
             .customs
-            .get_typed_mut::<wit::NonstandardWitSection>()
+            .delete_typed::<wit::NonstandardWitSection>()
             .unwrap();
-        section.implements.retain(|pair| imports_remaining.contains(&pair.0));
+        section
+            .implements
+            .retain(|pair| imports_remaining.contains(&pair.0));
 
         // ... and after we delete the `implements` directive we try to
         // delete some adapters themselves. If nothing is deleted, then we're
         // good to go. If something is deleted though then we may have free'd up
         // some functions in the main module to get deleted, so go again to gc
         // things.
-        if !section.gc() {
+        let aux = module.customs.get_typed::<wit::WasmBindgenAux>().unwrap();
+        let any_removed = section.gc(aux);
+        module.customs.add(*section);
+        if !any_removed {
             break;
         }
     }
