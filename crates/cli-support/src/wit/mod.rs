@@ -92,8 +92,8 @@ pub fn process(
 
 impl<'a> Context<'a> {
     fn init(&mut self) -> Result<(), Error> {
-        let stack_pointer = wasm_bindgen_wasm_conventions::get_shadow_stack_pointer(self.module)?;
-        self.aux.shadow_stack_pointer = Some(stack_pointer);
+        self.aux.shadow_stack_pointer =
+            wasm_bindgen_wasm_conventions::get_shadow_stack_pointer(self.module);
 
         // Make a map from string name to ids of all exports
         for export in self.module.exports.iter() {
