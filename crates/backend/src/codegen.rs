@@ -447,17 +447,37 @@ impl TryToTokens for ast::Export {
         // since we're returning a promise to JS, and this will implicitly
         // require that the function returns a `Future<Output = Result<...>>`
         let (ret_ty, ret_expr) = if self.function.r#async {
+            if self.start {
+                (
+                    quote! { () },
+                    quote! {
+                        wasm_bindgen_futures::spawn_local(async move {
+                            <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret.await);
+                        })
+                    },
+                )
+
+            } else {
+                (
+                    quote! { wasm_bindgen::JsValue },
+                    quote! {
+                        wasm_bindgen_futures::future_to_promise(async move {
+                            <#syn_ret as wasm_bindgen::__rt::IntoJsResult>::into_js_result(#ret.await)
+                        }).into()
+                    },
+                )
+            }
+
+        } else if self.start {
             (
-                quote! { wasm_bindgen::JsValue },
-                quote! {
-                    wasm_bindgen_futures::future_to_promise(async {
-                        wasm_bindgen::__rt::IntoJsResult::into_js_result(#ret.await)
-                    }).into()
-                },
+                quote! { () },
+                quote! { <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret) },
             )
+
         } else {
             (quote! { #syn_ret }, quote! { #ret })
         };
+
         let projection = quote! { <#ret_ty as wasm_bindgen::convert::ReturnWasmAbi> };
         let convert_ret = quote! { #projection::return_abi(#ret_expr) };
         let describe_ret = quote! {

@@ -1116,6 +1116,27 @@ pub mod __rt {
             }
         }
     }
+
+
+    /// An internal helper trait for usage in `#[wasm_bindgen(start)]`
+    /// functions to throw the error (if it is `Err`).
+    pub trait Start {
+        fn start(self);
+    }
+
+    impl Start for () {
+        #[inline]
+        fn start(self) {}
+    }
+
+    impl<E: Into<JsValue>> Start for Result<(), E> {
+        #[inline]
+        fn start(self) {
+            if let Err(e) = self {
+                crate::throw_val(e.into());
+            }
+        }
+    }
 }
 
 /// A wrapper type around slices and vectors for binding the `Uint8ClampedArray`
