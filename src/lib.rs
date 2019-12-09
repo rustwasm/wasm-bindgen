@@ -1116,6 +1116,28 @@ pub mod __rt {
             }
         }
     }
+
+
+    /// An internal helper trait for usage in `#[wasm_bindgen(start)]`
+    /// functions to convert the return value of the function to
+    /// `Result<(), JsValue>` which is what we'll return to JS.
+    pub trait StartReturn {
+        fn into_null_result(self) -> Result<(), JsValue>;
+    }
+
+    impl StartReturn for () {
+        #[inline]
+        fn into_null_result(self) -> Result<(), JsValue> {
+            Ok(self)
+        }
+    }
+
+    impl<E: Into<JsValue>> StartReturn for Result<(), E> {
+        #[inline]
+        fn into_null_result(self) -> Result<(), JsValue> {
+            self.map_err(|e| e.into())
+        }
+    }
 }
 
 /// A wrapper type around slices and vectors for binding the `Uint8ClampedArray`

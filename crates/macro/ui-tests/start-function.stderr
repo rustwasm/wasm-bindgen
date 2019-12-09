@@ -9,3 +9,23 @@ error: the start function cannot have generics
    |
 10 | pub fn foo3<T>() {}
    |            ^^^
+
+error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, ()>: wasm_bindgen::__rt::StartReturn` is not satisfied
+  --> $DIR/start-function.rs:24:1
+   |
+24 | #[wasm_bindgen(start)]
+   | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::StartReturn` is not implemented for `std::result::Result<wasm_bindgen::JsValue, ()>`
+   |
+   = help: the following implementations were found:
+             <std::result::Result<(), E> as wasm_bindgen::__rt::StartReturn>
+   = note: required by `wasm_bindgen::__rt::StartReturn::into_null_result`
+
+error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>: wasm_bindgen::__rt::StartReturn` is not satisfied
+  --> $DIR/start-function.rs:27:1
+   |
+27 | #[wasm_bindgen(start)]
+   | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::StartReturn` is not implemented for `std::result::Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>`
+   |
+   = help: the following implementations were found:
+             <std::result::Result<(), E> as wasm_bindgen::__rt::StartReturn>
+   = note: required by `wasm_bindgen::__rt::StartReturn::into_null_result`
