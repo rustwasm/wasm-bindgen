@@ -1,6 +1,7 @@
-use js_sys::{Function, Object, Reflect, Uint8Array, WebAssembly};
+use js_sys::{Function, Object, Reflect, WebAssembly};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::{spawn_local, JsFuture};
 
 // lifted from the `console_log` example
 #[wasm_bindgen]
@@ -15,24 +16,12 @@ macro_rules! console_log {
 
 const WASM: &[u8] = include_bytes!("add.wasm");
 
-#[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
+async fn run_async() -> Result<(), JsValue> {
     console_log!("instantiating a new wasm module directly");
 
-    // Note that `Uint8Array::view` is somewhat dangerous (hence the
-    // `unsafe`!). This is creating a raw view into our module's
-    // `WebAssembly.Memory` buffer, but if we allocate more pages for ourself
-    // (aka do a memory allocation in Rust) it'll cause the buffer to change,
-    // causing the `Uint8Array` to be invalid.
-    //
-    // As a result, after `Uint8Array::view` we have to be very careful not to
-    // do any memory allocations before it's dropped.
-    let a = unsafe {
-        let array = Uint8Array::view(WASM);
-        WebAssembly::Module::new(array.as_ref())?
-    };
+    let a = JsFuture::from(WebAssembly::instantiate_buffer(WASM, &Object::new())).await?;
+    let b: WebAssembly::Instance = Reflect::get(&a, &"instance".into())?.dyn_into()?;
 
-    let b = WebAssembly::Instance::new(&a, &Object::new())?;
     let c = b.exports();
 
     let add = Reflect::get(c.as_ref(), &"add".into())?
@@ -50,4 +39,11 @@ pub fn run() -> Result<(), JsValue> {
     console_log!("now the module has {} pages of memory", mem.grow(0));
 
     Ok(())
+}
+
+#[wasm_bindgen(start)]
+pub fn run() {
+    spawn_local(async {
+        run_async().await.unwrap_throw();
+    });
 }
