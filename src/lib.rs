@@ -1119,23 +1119,22 @@ pub mod __rt {
 
 
     /// An internal helper trait for usage in `#[wasm_bindgen(start)]`
-    /// functions to convert the return value of the function to
-    /// `Result<(), JsValue>` which is what we'll return to JS.
-    pub trait StartReturn {
-        fn into_null_result(self) -> Result<(), JsValue>;
+    /// functions to throw the error (if it is `Err`).
+    pub trait Start {
+        fn start(self);
     }
 
-    impl StartReturn for () {
+    impl Start for () {
         #[inline]
-        fn into_null_result(self) -> Result<(), JsValue> {
-            Ok(self)
-        }
+        fn start(self) {}
     }
 
-    impl<E: Into<JsValue>> StartReturn for Result<(), E> {
+    impl<E: Into<JsValue>> Start for Result<(), E> {
         #[inline]
-        fn into_null_result(self) -> Result<(), JsValue> {
-            self.map_err(|e| e.into())
+        fn start(self) {
+            if let Err(e) = self {
+                crate::throw_val(e.into());
+            }
         }
     }
 }

@@ -452,11 +452,7 @@ impl TryToTokens for ast::Export {
                     quote! { () },
                     quote! {
                         wasm_bindgen_futures::spawn_local(async move {
-                            let val = <#syn_ret as wasm_bindgen::__rt::StartReturn>::into_null_result(#ret.await);
-
-                            if let std::result::Result::Err(val) = val {
-                                wasm_bindgen::throw_val(val);
-                            }
+                            <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret.await);
                         })
                     },
                 )
@@ -474,8 +470,8 @@ impl TryToTokens for ast::Export {
 
         } else if self.start {
             (
-                quote! { std::result::Result<(), wasm_bindgen::JsValue> },
-                quote! { <#syn_ret as wasm_bindgen::__rt::StartReturn>::into_null_result(#ret) },
+                quote! { () },
+                quote! { <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret) },
             )
 
         } else {
