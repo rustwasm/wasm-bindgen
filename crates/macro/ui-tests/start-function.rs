@@ -13,7 +13,10 @@ pub fn foo3<T>() {}
 pub fn foo4() -> Result<(), JsValue> { Ok(()) }
 
 #[wasm_bindgen(start)]
-pub fn foo5() -> Result<JsValue, JsValue> { Ok(JsValue::from(1u32)) }
+pub fn foo5() -> Result<JsValue, ()> { Err(()) }
+
+#[wasm_bindgen(start)]
+pub fn foo6() -> Result<JsValue, JsValue> { Ok(JsValue::from(1u32)) }
 
 #[wasm_bindgen(start)]
 pub async fn foo_async1() {}

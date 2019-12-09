@@ -11,9 +11,9 @@ error: the start function cannot have generics
    |            ^^^
 
 error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, ()>: wasm_bindgen::__rt::StartReturn` is not satisfied
-  --> $DIR/start-function.rs:24:1
+  --> $DIR/start-function.rs:27:1
    |
-24 | #[wasm_bindgen(start)]
+27 | #[wasm_bindgen(start)]
    | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::StartReturn` is not implemented for `std::result::Result<wasm_bindgen::JsValue, ()>`
    |
    = help: the following implementations were found:
@@ -21,9 +21,9 @@ error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, ()>: w
    = note: required by `wasm_bindgen::__rt::StartReturn::into_null_result`
 
 error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>: wasm_bindgen::__rt::StartReturn` is not satisfied
-  --> $DIR/start-function.rs:27:1
+  --> $DIR/start-function.rs:30:1
    |
-27 | #[wasm_bindgen(start)]
+30 | #[wasm_bindgen(start)]
    | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::StartReturn` is not implemented for `std::result::Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>`
    |
    = help: the following implementations were found:
