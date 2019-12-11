@@ -45,7 +45,7 @@ impl Config {
 }
 
 pub fn typescript(module: &Module) -> Result<String, Error> {
-    let mut exports = format!("/* tslint:disable */\n");
+    let mut exports = format!("/* tslint:disable */\n/* eslint-disable */\n");
 
     for entry in module.exports.iter() {
         let id = match entry.item {
