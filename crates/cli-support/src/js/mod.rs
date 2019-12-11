@@ -84,7 +84,7 @@ impl<'a> Context<'a> {
         Ok(Context {
             globals: String::new(),
             imports_post: String::new(),
-            typescript: "/* tslint:disable */\n".to_string(),
+            typescript: "/* tslint:disable */\n/* eslint-disable */\n".to_string(),
             exposed_globals: Some(Default::default()),
             imported_names: Default::default(),
             js_imports: Default::default(),
