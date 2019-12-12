@@ -12,7 +12,7 @@ fn main() -> Result<()> {
     let dir = env::current_dir()?.join("tests/interface-types");
     for entry in dir.read_dir()? {
         let path = entry?.path();
-        if path.extension().and_then(|s| s.to_str()) != Some("wit") {
+        if path.extension().and_then(|s| s.to_str()) != Some("wat") {
             continue;
         }
         if let Some(filter) = &filter {
