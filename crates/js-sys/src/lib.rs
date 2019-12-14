@@ -425,6 +425,76 @@ extern "C" {
     pub fn unshift(this: &Array, value: &JsValue) -> u32;
 }
 
+/// Iterator returned by `Array::iter`
+#[derive(Debug, Clone)]
+pub struct ArrayIter<'a> {
+    start: u32,
+    end: u32,
+    array: &'a Array,
+}
+
+impl<'a> std::iter::Iterator for ArrayIter<'a> {
+    type Item = JsValue;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.start == self.end {
+            None
+
+        } else {
+            let value = self.array.get(self.start);
+            self.start += 1;
+            Some(value)
+        }
+    }
+
+    #[inline]
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let diff = (self.end - self.start) as usize;
+        (diff, Some(diff))
+    }
+}
+
+impl<'a> std::iter::DoubleEndedIterator for ArrayIter<'a> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        if self.start == self.end {
+            None
+
+        } else {
+            let value = self.array.get(self.end - 1);
+            self.end -= 1;
+            Some(value)
+        }
+    }
+}
+
+impl<'a> std::iter::FusedIterator for ArrayIter<'a> {}
+
+impl<'a> std::iter::ExactSizeIterator for ArrayIter<'a> {}
+
+impl Array {
+    /// Returns an iterator over the values of the JS array.
+    pub fn iter(&self) -> ArrayIter<'_> {
+        ArrayIter {
+            start: 0,
+            end: self.length(),
+            array: self,
+        }
+    }
+
+    /// Converts the JS array into a new Vec.
+    pub fn to_vec(&self) -> Vec<JsValue> {
+        let len = self.length();
+
+        let mut output = Vec::with_capacity(len as usize);
+
+        for i in 0..len {
+            output.push(self.get(i));
+        }
+
+        output
+    }
+}
+
 // TODO pre-initialize the Array with the correct length using TrustedLen
 impl<A> std::iter::FromIterator<A> for Array
 where

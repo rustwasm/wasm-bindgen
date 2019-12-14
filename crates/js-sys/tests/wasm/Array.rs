@@ -82,6 +82,41 @@ fn from_iter() {
 }
 
 #[wasm_bindgen_test]
+fn to_vec() {
+    let array = vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]
+        .into_iter()
+        .collect::<js_sys::Array>();
+
+    assert_eq!(array.to_vec(), vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]);
+}
+
+#[wasm_bindgen_test]
+fn iter() {
+    let array = vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]
+        .into_iter()
+        .collect::<js_sys::Array>();
+
+    let mut iter = array.iter();
+
+    assert_eq!(iter.size_hint(), (3, Some(3)));
+    assert_eq!(iter.next(), Some(JsValue::from("a")));
+
+    assert_eq!(iter.size_hint(), (2, Some(2)));
+    assert_eq!(iter.next_back(), Some(JsValue::from("c")));
+
+    assert_eq!(iter.size_hint(), (1, Some(1)));
+    assert_eq!(iter.next_back(), Some(JsValue::from("b")));
+
+    assert_eq!(iter.size_hint(), (0, Some(0)));
+    assert_eq!(iter.next(), None);
+
+    assert_eq!(iter.size_hint(), (0, Some(0)));
+    assert_eq!(iter.next_back(), None);
+
+    assert_eq!(array.iter().collect::<Vec<JsValue>>(), vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]);
+}
+
+#[wasm_bindgen_test]
 fn new_with_length() {
     let array = Array::new_with_length(5);
     assert_eq!(array.length(), 5);
