@@ -14,7 +14,7 @@ mod idl_type;
 mod util;
 
 use crate::first_pass::{CallbackInterfaceData, OperationData};
-use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
+use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, Iterable, OperationId};
 use crate::idl_type::ToIdlType;
 use crate::util::{
     camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
@@ -36,7 +36,7 @@ use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident, wrap_import_fu
 use wasm_bindgen_backend::TryToTokens;
 use weedle::attribute::ExtendedAttributeList;
 use weedle::dictionary::DictionaryMember;
-use weedle::interface::InterfaceMember;
+use weedle::interface::{InterfaceMember, IterableInterfaceMember};
 
 struct Program {
     main: ast::Program,
@@ -222,6 +222,7 @@ fn immutable_slice_whitelist() -> BTreeSet<&'static str> {
         "clearBufferfv",
         "clearBufferiv",
         "clearBufferuiv",
+        // TODO websocket.send
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ])
 }
@@ -352,6 +353,7 @@ impl<'src> FirstPassRecord<'src> {
             ctor: true,
             doc_comment: Some(doc_comment),
             ctor_doc_comment: None,
+            iterable: None,
         };
         let mut ctor_doc_comment = Some(format!("Construct a new `{}`\n", def.identifier.0));
         self.append_required_features_doc(&dict, &mut ctor_doc_comment, &[&extra_feature]);
@@ -570,6 +572,7 @@ impl<'src> FirstPassRecord<'src> {
             },
             extends: Vec::new(),
             vendor_prefixes: Vec::new(),
+            iterable: data.iterable.as_ref().and_then(|iter| self.iterable(iter)),
         };
 
         // whitelist a few names that have known polyfills
@@ -811,6 +814,7 @@ impl<'src> FirstPassRecord<'src> {
         item: &CallbackInterfaceData<'src>,
     ) {
         let mut fields = Vec::new();
+        let mut iterable = None;
         for member in item.definition.members.body.iter() {
             match member {
                 InterfaceMember::Operation(op) => {
@@ -827,6 +831,12 @@ impl<'src> FirstPassRecord<'src> {
                         doc_comment: None,
                     });
                 }
+                InterfaceMember::Iterable(IterableInterfaceMember::Single(_)) => {
+                    iterable = Some(ast::Iterable::ArrayLike);
+                }
+                InterfaceMember::Iterable(IterableInterfaceMember::Double(_)) => {
+                    iterable = Some(ast::Iterable::MapLike);
+                }
                 _ => {
                     log::warn!(
                         "skipping callback interface member on {}",
@@ -842,6 +852,17 @@ impl<'src> FirstPassRecord<'src> {
             ctor: true,
             doc_comment: None,
             ctor_doc_comment: None,
+            iterable,
         });
+    }
+
+    /// Convert a `webidl::Iterable` into an `ast::Iterable`.
+    fn iterable(&self, iterable: &Iterable) -> Option<ast::Iterable> {
+        Some(match iterable {
+            // In the future this data could be used to generate types and glue code in the ast.
+            // For now we discard the type info and use `JsValue`s
+            Iterable::MapLike { .. } => ast::Iterable::MapLike,
+            Iterable::ArrayLike { .. } => ast::Iterable::ArrayLike,
+        })
     }
 }

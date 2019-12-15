@@ -65,20 +65,32 @@ pub enum MethodSelf {
     RefShared,
 }
 
+/// A js to rust interface.
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Import {
+    /// What kind of es6+ module this import comes from, if any.
     pub module: ImportModule,
+    /// Rust can import a js object at either 0 or 1 depth.
+    ///
+    /// At 0 depth this is none, at 1 depth this is the name of the namespace. An example use for
+    /// this is the `log` function which is accessed through `console.log`.
     pub js_namespace: Option<Ident>,
+    /// The type of js thing imported (with associated data).
     pub kind: ImportKind,
 }
 
+/// The scope that js code can reside in. It is either in the global scope, or a module.
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub enum ImportModule {
+    /// Global scope
     None,
+    /// A module named `.0`.
     Named(String, Span),
+    /// A module named `.0`, where paths are not resolved.
     RawNamed(String, Span),
+    /// TODO
     Inline(usize, Span),
 }
 
@@ -104,12 +116,17 @@ impl Hash for ImportModule {
     }
 }
 
+/// A sum type of the possible kinds of imports.
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub enum ImportKind {
+    /// A javascript function.
     Function(ImportFunction),
+    /// A global static variable.
     Static(ImportStatic),
+    /// A javascript object type.
     Type(ImportType),
+    /// A set of strings interpreted as a rust enum.
     Enum(ImportEnum),
 }
 
@@ -177,15 +194,20 @@ pub struct ImportStatic {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct ImportType {
+    /// The Rust type's visibility
     pub vis: syn::Visibility,
+    /// The Rust type's name
     pub rust_name: Ident,
+    /// The javascript name for the type
     pub js_name: String,
+    /// Attributes to apply to the Rust type
     pub attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
     pub is_type_of: Option<syn::Expr>,
     pub extends: Vec<syn::Path>,
     pub vendor_prefixes: Vec<Ident>,
+    pub iterable: Option<Iterable>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -298,6 +320,7 @@ pub struct Dictionary {
     pub ctor: bool,
     pub doc_comment: Option<String>,
     pub ctor_doc_comment: Option<String>,
+    pub iterable: Option<Iterable>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -308,6 +331,16 @@ pub struct DictionaryField {
     pub required: bool,
     pub ty: syn::Type,
     pub doc_comment: Option<String>,
+}
+
+/// Whether it is possible to call `Symbol.iterator` on a type.
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
+pub enum Iterable {
+    /// The iterator returns pairs of the form `[key, value]` (in webidl `iterable<Type, Type>`)
+    MapLike,
+    /// The iterator returns the given type (in webidl `iterable<Type>`)
+    ArrayLike,
 }
 
 impl Export {

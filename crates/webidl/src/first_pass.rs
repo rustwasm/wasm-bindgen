@@ -52,6 +52,7 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
     pub(crate) superclass: Option<&'src str>,
     pub(crate) definition_attributes: Option<&'src ExtendedAttributeList<'src>>,
+    pub(crate) iterable: Option<Iterable<'src>>,
 }
 
 /// We need to collect mixin data during the first pass, to be used later.
@@ -113,6 +114,17 @@ pub(crate) struct Arg<'src> {
     pub(crate) ty: &'src weedle::types::Type<'src>,
     pub(crate) optional: bool,
     pub(crate) variadic: bool,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum Iterable<'src> {
+    MapLike {
+        key: weedle::types::Type<'src>,
+        value: weedle::types::Type<'src>,
+    },
+    ArrayLike {
+        value: weedle::types::Type<'src>,
+    },
 }
 
 /// Implemented on an AST node to populate the `FirstPassRecord` struct.
@@ -422,8 +434,18 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'sr
                     .push(const_);
                 Ok(())
             }
-            InterfaceMember::Iterable(_iterable) => {
-                log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
+            InterfaceMember::Iterable(IterableInterfaceMember::Single(iter)) => {
+                record.interfaces.get_mut(self_name).unwrap().iterable =
+                    Some(Iterable::ArrayLike {
+                        value: iter.generics.body.type_.clone(),
+                    });
+                Ok(())
+            }
+            InterfaceMember::Iterable(IterableInterfaceMember::Double(iter)) => {
+                record.interfaces.get_mut(self_name).unwrap().iterable = Some(Iterable::MapLike {
+                    key: iter.generics.body.0.type_.clone(),
+                    value: iter.generics.body.2.type_.clone(),
+                });
                 Ok(())
             }
             // TODO
