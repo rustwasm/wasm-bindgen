@@ -428,8 +428,7 @@ extern "C" {
 /// Iterator returned by `Array::iter`
 #[derive(Debug, Clone)]
 pub struct ArrayIter<'a> {
-    start: u32,
-    end: u32,
+    range: std::ops::Range<u32>,
     array: &'a Array,
 }
 
@@ -437,33 +436,20 @@ impl<'a> std::iter::Iterator for ArrayIter<'a> {
     type Item = JsValue;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.start == self.end {
-            None
-
-        } else {
-            let value = self.array.get(self.start);
-            self.start += 1;
-            Some(value)
-        }
+        let index = self.range.next()?;
+        Some(self.array.get(index))
     }
 
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let diff = (self.end - self.start) as usize;
-        (diff, Some(diff))
+        self.range.size_hint()
     }
 }
 
 impl<'a> std::iter::DoubleEndedIterator for ArrayIter<'a> {
     fn next_back(&mut self) -> Option<Self::Item> {
-        if self.start == self.end {
-            None
-
-        } else {
-            let value = self.array.get(self.end - 1);
-            self.end -= 1;
-            Some(value)
-        }
+        let index = self.range.next_back()?;
+        Some(self.array.get(index))
     }
 }
 
@@ -475,8 +461,7 @@ impl Array {
     /// Returns an iterator over the values of the JS array.
     pub fn iter(&self) -> ArrayIter<'_> {
         ArrayIter {
-            start: 0,
-            end: self.length(),
+            range: 0..self.length(),
             array: self,
         }
     }

@@ -96,6 +96,8 @@ fn iter() {
         .into_iter()
         .collect::<js_sys::Array>();
 
+    assert_eq!(array.iter().collect::<Vec<JsValue>>(), vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]);
+
     let mut iter = array.iter();
 
     assert_eq!(iter.size_hint(), (3, Some(3)));
@@ -113,7 +115,33 @@ fn iter() {
     assert_eq!(iter.size_hint(), (0, Some(0)));
     assert_eq!(iter.next_back(), None);
 
-    assert_eq!(array.iter().collect::<Vec<JsValue>>(), vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]);
+    let mut iter = array.iter();
+
+    assert_eq!(iter.size_hint(), (3, Some(3)));
+    assert_eq!(iter.next(), Some(JsValue::from("a")));
+
+    assert_eq!(iter.size_hint(), (2, Some(2)));
+    assert_eq!(iter.next(), Some(JsValue::from("b")));
+
+    assert_eq!(iter.size_hint(), (1, Some(1)));
+    assert_eq!(iter.next(), Some(JsValue::from("c")));
+
+    assert_eq!(iter.size_hint(), (0, Some(0)));
+    assert_eq!(iter.next(), None);
+
+    let mut iter = array.iter();
+
+    assert_eq!(iter.size_hint(), (3, Some(3)));
+    assert_eq!(iter.next_back(), Some(JsValue::from("c")));
+
+    assert_eq!(iter.size_hint(), (2, Some(2)));
+    assert_eq!(iter.next_back(), Some(JsValue::from("b")));
+
+    assert_eq!(iter.size_hint(), (1, Some(1)));
+    assert_eq!(iter.next_back(), Some(JsValue::from("a")));
+
+    assert_eq!(iter.size_hint(), (0, Some(0)));
+    assert_eq!(iter.next_back(), None);
 }
 
 #[wasm_bindgen_test]
