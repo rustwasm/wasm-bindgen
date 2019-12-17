@@ -231,7 +231,7 @@ extern "C" {
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Array, callback: &mut dyn FnMut(JsValue, u32, Array));
 
-    /// The includes() method determines whether an array includes a certain
+    /// The `includes()` method determines whether an array includes a certain
     /// element, returning true or false as appropriate.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
