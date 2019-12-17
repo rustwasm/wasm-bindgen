@@ -2710,11 +2710,13 @@ pub mod Reflect {
         #[wasm_bindgen(js_namespace = Reflect, catch)]
         pub fn get(target: &JsValue, key: &JsValue) -> Result<JsValue, JsValue>;
 
-        /// The same as [`Reflect::get`](#method.get) except the key is an `f64`, which is slightly faster.
+        /// The same as [`get`](fn.get.html)
+        /// except the key is an `f64`, which is slightly faster.
         #[wasm_bindgen(js_namespace = Reflect, js_name = "get", catch)]
         pub fn get_f64(target: &JsValue, key: f64) -> Result<JsValue, JsValue>;
 
-        /// The same as [`Reflect::get`](#method.get) except the key is a `u32`, which is slightly faster.
+        /// The same as [`get`](fn.get.html)
+        /// except the key is a `u32`, which is slightly faster.
         #[wasm_bindgen(js_namespace = Reflect, js_name = "get", catch)]
         pub fn get_u32(target: &JsValue, key: u32) -> Result<JsValue, JsValue>;
 
@@ -2780,7 +2782,8 @@ pub mod Reflect {
             value: &JsValue,
         ) -> Result<bool, JsValue>;
 
-        /// The same as [`Reflect::set`](#method.set) except the key is an `f64`, which is slightly faster.
+        /// The same as [`set`](fn.set.html)
+        /// except the key is an `f64`, which is slightly faster.
         #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
         pub fn set_f64(
             target: &JsValue,
@@ -2788,7 +2791,8 @@ pub mod Reflect {
             value: &JsValue,
         ) -> Result<bool, JsValue>;
 
-        /// The same as [`Reflect::set`](#method.set) except the key is a `u32`, which is slightly faster.
+        /// The same as [`set`](fn.set.html)
+        /// except the key is a `u32`, which is slightly faster.
         #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
         pub fn set_u32(
             target: &JsValue,
