@@ -253,9 +253,9 @@ interface mixin CanvasImageData {
   [NewObject, Throws, NeedsSubjectPrincipal]
   ImageData getImageData(long sx, long sy, long sw, long sh);
   [Throws]
-  void putImageData(ImageData imagedata, double dx, double dy);
+  void putImageData(ImageData imagedata, long dx, long dy);
   [Throws]
-  void putImageData(ImageData imagedata, double dx, double dy, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight);
+  void putImageData(ImageData imagedata, long dx, long dy, long dirtyX, long dirtyY, long dirtyWidth, long dirtyHeight);
 };
 
 interface mixin CanvasPathDrawingStyles {
