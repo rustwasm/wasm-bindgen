@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.55"
+wasm-bindgen = "0.2.56"
 humantime = "1"
 
 [dependencies.web-sys]
