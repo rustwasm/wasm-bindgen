@@ -64,7 +64,7 @@ impl Interner {
     fn intern_str(&self, s: &str) -> &str {
         // NB: eventually this could be used to intern `s` to only allocate one
         // copy, but for now let's just "transmute" `s` to have the same
-        // lifetmie as this struct itself (which is our main goal here)
+        // lifetime as this struct itself (which is our main goal here)
         bumpalo::collections::String::from_str_in(s, &self.bump).into_bump_str()
     }
 
