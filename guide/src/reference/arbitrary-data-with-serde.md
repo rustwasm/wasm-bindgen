@@ -34,7 +34,7 @@ extern crate serde_derive;
 
 ## Derive the `Serialize` and `Deserialize` Traits
 
-Add `#![derive(Serialize, Deserialize)]` to your type. All of your type's
+Add `#[derive(Serialize, Deserialize)]` to your type. All of your type's
 members must also be supported by Serde, i.e. their types must also implement
 the `Serialize` and `Deserialize` traits.
 
