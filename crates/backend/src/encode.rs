@@ -65,7 +65,7 @@ impl Interner {
         // NB: eventually this could be used to intern `s` to only allocate one
         // copy, but for now let's just "transmute" `s` to have the same
         // lifetime as this struct itself (which is our main goal here)
-        bumpalo::collections::String::from_str_in(s, &self.bump).into_bump_str()
+        self.bump.alloc_str(s)
     }
 
     /// Given an import to a local module `id` this generates a unique module id
