@@ -158,7 +158,7 @@ impl From<Promise> for JsFuture {
             Closure::once(move |val| finish(&state, Err(val)))
         };
 
-        js.then2(&resolve, &reject);
+        let _ = js.then2(&resolve, &reject);
 
         state.borrow_mut().callbacks = Some((resolve, reject));
 
