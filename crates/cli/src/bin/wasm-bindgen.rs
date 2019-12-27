@@ -22,7 +22,7 @@ Options:
     --out-dir DIR                Output directory
     --out-name VAR               Set a custom output filename (Without extension. Defaults to crate name)
     --target TARGET              What type of output to generate, valid
-                                 values are [web, bundler, nodejs, no-modules],
+                                 values are [web, bundler, nodejs, no-modules, electron-renderer],
                                  and the default is [bundler]
     --no-modules-global VAR      Name of the global variable to initialize
     --browser                    Hint that JS should only be compatible with a browser
@@ -35,6 +35,7 @@ Options:
     --remove-producers-section   Remove the telemetry `producers` section
     --encode-into MODE           Whether or not to use TextEncoder#encodeInto,
                                  valid values are [test, always, never]
+    --electron-renderer          Deprecated, use `--target electron-renderer`
     --nodejs                     Deprecated, use `--target nodejs`
     --web                        Deprecated, use `--target web`
     --no-modules                 Deprecated, use `--target no-modules`
@@ -46,6 +47,7 @@ struct Args {
     flag_nodejs: bool,
     flag_browser: bool,
     flag_web: bool,
+    flag_electron_renderer: bool,
     flag_no_modules: bool,
     flag_typescript: bool,
     flag_no_typescript: bool,
@@ -96,12 +98,14 @@ fn rmain(args: &Args) -> Result<(), Error> {
             "web" => b.web(true)?,
             "no-modules" => b.no_modules(true)?,
             "nodejs" => b.nodejs(true)?,
+            "electron-renderer" => b.electron_renderer(true)?,
             s => bail!("invalid encode-into mode: `{}`", s),
         };
     }
     b.input_path(input)
         .nodejs(args.flag_nodejs)?
         .web(args.flag_web)?
+        .electron_renderer(args.flag_electron_renderer)?
         .browser(args.flag_browser)?
         .no_modules(args.flag_no_modules)?
         .debug(args.flag_debug)

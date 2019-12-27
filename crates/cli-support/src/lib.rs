@@ -58,6 +58,7 @@ struct JsGenerated {
     mode: OutputMode,
     js: String,
     ts: String,
+    preloads: Option<String>,
     snippets: HashMap<String, Vec<String>>,
     local_modules: HashMap<String, String>,
     npm_dependencies: HashMap<String, (PathBuf, String)>,
@@ -67,6 +68,7 @@ struct JsGenerated {
 #[derive(Clone)]
 enum OutputMode {
     Bundler { browser_only: bool },
+    ElectronRenderer,
     Web,
     NoModules { global: String },
     Node { experimental_modules: bool },
@@ -178,6 +180,13 @@ impl Bindgen {
     pub fn web(&mut self, web: bool) -> Result<&mut Bindgen, Error> {
         if web {
             self.switch_mode(OutputMode::Web, "--target web")?;
+        }
+        Ok(self)
+    }
+
+    pub fn electron_renderer(&mut self, web: bool) -> Result<&mut Bindgen, Error> {
+        if web {
+            self.switch_mode(OutputMode::ElectronRenderer, "--target electron-renderer")?;
         }
         Ok(self)
     }
@@ -412,7 +421,7 @@ impl Bindgen {
                 .unwrap();
             let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
             cx.generate()?;
-            let (js, ts) = cx.finalize(stem)?;
+            let (js, ts, preloads) = cx.finalize(stem)?;
             Generated::Js(JsGenerated {
                 snippets: aux.snippets.clone(),
                 local_modules: aux.local_modules.clone(),
@@ -421,6 +430,7 @@ impl Bindgen {
                 npm_dependencies: cx.npm_dependencies.clone(),
                 js,
                 ts,
+                preloads,
             })
         };
 
@@ -558,6 +568,13 @@ impl OutputMode {
             _ => false,
         }
     }
+
+    fn electron_renderer(&self) -> bool {
+        match self {
+            OutputMode::ElectronRenderer => true,
+            _ => false,
+        }
+    }
 }
 
 /// Remove a number of internal exports that are synthesized by Rust's linker,
@@ -672,6 +689,12 @@ impl Output {
             let ts = wasm2es6js::typescript(&self.module)?;
             fs::write(&ts_path, ts)
                 .with_context(|| format!("failed to write `{}`", ts_path.display()))?;
+        }
+
+        if gen.mode.electron_renderer() {
+            let preloads_path = out_dir.join("preloads").with_extension(extension);            
+            fs::write(&preloads_path, &gen.preloads.as_ref().unwrap())
+                .with_context(|| format!("failed to write `{}`", preloads_path.display()))?;
         }
 
         Ok(())

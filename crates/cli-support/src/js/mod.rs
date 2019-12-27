@@ -140,6 +140,7 @@ impl<'a> Context<'a> {
                 }
             }
             OutputMode::Bundler { .. }
+            | OutputMode::ElectronRenderer
             | OutputMode::Node {
                 experimental_modules: true,
             }
@@ -167,7 +168,10 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+    pub fn finalize(
+        &mut self,
+        module_name: &str,
+    ) -> Result<(String, String, Option<String>), Error> {
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
@@ -194,9 +198,10 @@ impl<'a> Context<'a> {
         &mut self,
         module_name: &str,
         needs_manual_start: bool,
-    ) -> Result<(String, String), Error> {
+    ) -> Result<(String, String, Option<String>), Error> {
         let mut ts = self.typescript.clone();
         let mut js = String::new();
+        let mut preloads = String::new();
         if self.config.mode.no_modules() {
             js.push_str("(function() {\n");
         }
@@ -205,7 +210,8 @@ impl<'a> Context<'a> {
         // import the wasm file in one way or another.
         let mut init = (String::new(), String::new());
         let mut footer = String::new();
-        let mut imports = self.js_import_header()?;
+        let mut imports = String::new();
+        self.js_import_header(&mut imports, &mut preloads)?;
         match &self.config.mode {
             // In `--target no-modules` mode we need to both expose a name on
             // the global object as well as generate our own custom start
@@ -272,7 +278,7 @@ impl<'a> Context<'a> {
             // browsers don't support natively importing wasm right now so we
             // expose the same initialization function as `--target no-modules`
             // as the default export of the module.
-            OutputMode::Web => {
+            OutputMode::ElectronRenderer | OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 footer.push_str("export default init;\n");
@@ -310,11 +316,31 @@ impl<'a> Context<'a> {
             js = js.replace("\n\n\n", "\n\n");
         }
 
-        Ok((js, ts))
+        let preloads = if self.config.mode.electron_renderer() {
+            preloads.push_str("\nprocess.once('loaded', () => {\n");
+            for (_module, items) in crate::sorted_iter(&self.js_imports) {
+                for (_i, (item, rename)) in items.iter().enumerate() {
+                    let mut name: &str = item;
+                    if let Some(other) = rename {
+                        name = other;
+                    }
+                    preloads.push_str("  global.");
+                    preloads.push_str(name);
+                    preloads.push_str(" = ");
+                    preloads.push_str(name);
+                    preloads.push_str(";\n");
+                }
+            }
+            preloads.push_str("});");
+            Some(preloads)
+        } else {
+            None
+        };
+
+        Ok((js, ts, preloads))
     }
 
-    fn js_import_header(&self) -> Result<String, Error> {
-        let mut imports = String::new();
+    fn js_import_header(&self, imports: &mut String, preloads: &mut String) -> Result<(), Error> {
         match &self.config.mode {
             OutputMode::NoModules { .. } => {
                 for (module, _items) in self.js_imports.iter() {
@@ -368,8 +394,26 @@ impl<'a> Context<'a> {
                     imports.push_str("';\n");
                 }
             }
+            OutputMode::ElectronRenderer => {
+                for (module, items) in crate::sorted_iter(&self.js_imports) {
+                    preloads.push_str("const { ");
+                    for (i, (item, rename)) in items.iter().enumerate() {
+                        if i > 0 {
+                            preloads.push_str(", ");
+                        }
+                        preloads.push_str(item);
+                        if let Some(other) = rename {
+                            preloads.push_str(": ");
+                            preloads.push_str(other)
+                        }
+                    }
+                    preloads.push_str(" } = require(String.raw`");
+                    preloads.push_str(module);
+                    preloads.push_str("`);\n");
+                }
+            }
         }
-        Ok(imports)
+        Ok(())
     }
 
     fn ts_for_init_fn(has_memory: bool, has_module_or_path_optional: bool) -> String {
