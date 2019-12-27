@@ -26,6 +26,7 @@ pub struct Bindgen {
     mode: OutputMode,
     debug: bool,
     typescript: bool,
+    omit_imports: bool,
     demangle: bool,
     keep_debug: bool,
     remove_name_section: bool,
@@ -97,6 +98,7 @@ impl Bindgen {
             },
             debug: false,
             typescript: false,
+            omit_imports: false,
             demangle: true,
             keep_debug: false,
             remove_name_section: false,
@@ -219,6 +221,11 @@ impl Bindgen {
 
     pub fn typescript(&mut self, typescript: bool) -> &mut Bindgen {
         self.typescript = typescript;
+        self
+    }
+
+    pub fn omit_imports(&mut self, omit_imports: bool) -> &mut Bindgen {
+        self.omit_imports = omit_imports;
         self
     }
 

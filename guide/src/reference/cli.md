@@ -48,6 +48,15 @@ is on by default.
 By default, a `*.d.ts` TypeScript declaration file is generated for the
 generated JavaScript bindings, but this flag will disable that.
 
+### `--omit-imports`
+
+When the `module` attribute is used with the `wasm-bindgen` macro, the code
+generator will emit corresponding `import` or `require` statements in the header
+section of the generated javascript. This flag causes those import statements to
+be omitted. This is necessary for some use cases, such as generating javascript
+which is intended to be used with Electron (with node integration disabled),
+where the imports are instead handled through a separate preload script.
+
 ### `--debug`
 
 Generates a bit more JS and wasm in "debug mode" to help catch programmer
