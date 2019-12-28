@@ -1,5 +1,5 @@
 export function name() {
-    return 'World';
+    return 'Rust';
 }
 
 export class MyClass {
