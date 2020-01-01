@@ -290,7 +290,7 @@ impl Bindgen {
             }
         };
 
-        // This isn't the hardest thing in the world too support but we
+        // This isn't the hardest thing in the world to support but we
         // basically don't know how to rationalize #[wasm_bindgen(start)] and
         // the actual `start` function if present. Figure this out later if it
         // comes up, but otherwise we should continue to be compatible with

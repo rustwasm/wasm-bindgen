@@ -309,6 +309,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 
     pub fn typescript_required(&mut self, ty: &str) {
+       self.typescript.pop();
         let name = self.arg_name();
         self.typescript.push(TypescriptArg {
             ty: ty.to_string(),
@@ -318,6 +319,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 
     pub fn typescript_optional(&mut self, ty: &str) {
+        self.typescript.pop();
         let name = self.arg_name();
         self.typescript.push(TypescriptArg {
             ty: ty.to_string(),
@@ -460,6 +462,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
     match instr {
         Instruction::Standard(wit_walrus::Instruction::ArgGet(n)) => {
+            js.typescript.push(TypescriptArg {
+                  ty: "number".to_string(),
+                  optional: false,
+                  name: js.arg_name(),
+            });
             let arg = js.arg(*n).to_string();
             js.push(arg);
         }
@@ -473,6 +480,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         | Instruction::CallAdapter(_)
         | Instruction::CallTableElement(_)
         | Instruction::Standard(wit_walrus::Instruction::DeferCallCore(_)) => {
+            js.typescript.push(TypescriptArg {
+               ty: "number".to_string(),
+               optional: false,
+               name: js.arg_name(),
+            });
             let invoc = Invocation::from(instr, js.cx.module)?;
             let (params, results) = invoc.params_results(js.cx);
 
@@ -875,7 +887,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::BoolFromI32 => {
-            js.typescript_required("bool");
+            js.typescript_required("boolean");
             let val = js.pop();
             js.push(format!("{} !== 0", val));
         }
