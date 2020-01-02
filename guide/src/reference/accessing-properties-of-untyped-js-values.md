@@ -78,5 +78,5 @@ if (property_key in target) {
 See [the `js_sys::Reflect` API documentation][js-sys-reflect] for the full
 listing of JavaScript value reflection and introspection capabilities.
 
-[js-sys-reflect]: https://rustwasm.github.io/wasm-bindgen/api/js_sys/struct.Reflect.html
+[js-sys-reflect]: https://docs.rs/js-sys/latest/js_sys/Reflect/index.html
 [mdn-reflect]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect
