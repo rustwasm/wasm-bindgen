@@ -71,5 +71,5 @@ checks for Node.js can be elided.
 
 ### `--no-auto-start`
 
-When generating web-compatible code, start executing start function on importing
+When generating web-compatible code, start executing the `start` function on importing
 the file.
