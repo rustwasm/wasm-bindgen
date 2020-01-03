@@ -41,6 +41,7 @@ pub struct Bindgen {
     multi_value: bool,
     wasm_interface_types: bool,
     encode_into: EncodeInto,
+    auto_start: bool,
 }
 
 pub struct Output {
@@ -108,6 +109,7 @@ impl Bindgen {
             multi_value: multi_value || wasm_interface_types,
             wasm_interface_types,
             encode_into: EncodeInto::Test,
+            auto_start: true,
         }
     }
 
@@ -249,6 +251,11 @@ impl Bindgen {
 
     pub fn encode_into(&mut self, mode: EncodeInto) -> &mut Bindgen {
         self.encode_into = mode;
+        self
+    }
+
+    pub fn auto_start(&mut self, auto_start: bool) -> &mut Bindgen {
+        self.auto_start = auto_start;
         self
     }
 
@@ -412,7 +419,7 @@ impl Bindgen {
                 .unwrap();
             let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
             cx.generate()?;
-            let (js, ts) = cx.finalize(stem)?;
+            let (js, ts) = cx.finalize(stem, self.auto_start)?;
             Generated::Js(JsGenerated {
                 snippets: aux.snippets.clone(),
                 local_modules: aux.local_modules.clone(),

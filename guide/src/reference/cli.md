@@ -68,3 +68,8 @@ sections.
 When generating bundler-compatible code (see the section on [deployment]) this
 indicates that the bundled code is always intended to go into a browser so a few
 checks for Node.js can be elided.
+
+### `--no-auto-start`
+
+When generating web-compatible code, start executing start function on importing
+the file.

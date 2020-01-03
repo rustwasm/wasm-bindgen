@@ -167,7 +167,11 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+    pub fn finalize(
+        &mut self,
+        module_name: &str,
+        auto_start: bool,
+    ) -> Result<(String, String), Error> {
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
@@ -184,7 +188,7 @@ impl<'a> Context<'a> {
         // we don't ask for items which we can no longer emit.
         drop(self.exposed_globals.take().unwrap());
 
-        self.finalize_js(module_name, needs_manual_start)
+        self.finalize_js(module_name, needs_manual_start, auto_start)
     }
 
     /// Performs the task of actually generating the final JS module, be it
@@ -194,6 +198,7 @@ impl<'a> Context<'a> {
         &mut self,
         module_name: &str,
         needs_manual_start: bool,
+        auto_start: bool,
     ) -> Result<(String, String), Error> {
         let mut ts = self.typescript.clone();
         let mut js = String::new();
@@ -218,6 +223,9 @@ impl<'a> Context<'a> {
                     "self.{} = Object.assign(init, __exports);\n",
                     global
                 ));
+                if needs_manual_start && auto_start {
+                    footer.push_str("self.wasm_bindgen();\n");
+                }
             }
 
             // With normal CommonJS node we need to defer requiring the wasm
@@ -275,6 +283,9 @@ impl<'a> Context<'a> {
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
+                if needs_manual_start && auto_start {
+                    footer.push_str("init();\n");
+                }
                 footer.push_str("export default init;\n");
             }
         }
