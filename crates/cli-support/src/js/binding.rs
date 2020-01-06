@@ -875,7 +875,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::BoolFromI32 => {
-            js.typescript_required("bool");
+            js.typescript_required("boolean");
             let val = js.pop();
             js.push(format!("{} !== 0", val));
         }
