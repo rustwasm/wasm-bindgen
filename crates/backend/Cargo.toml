@@ -16,7 +16,7 @@ spans = []
 extra-traits = ["syn/extra-traits"]
 
 [dependencies]
-bumpalo = "2.1"
+bumpalo = "3.0.0"
 lazy_static = "1.0.0"
 log = "0.4"
 proc-macro2 = "1.0"

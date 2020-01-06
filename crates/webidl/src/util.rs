@@ -424,7 +424,7 @@ impl<'src> FirstPassRecord<'src> {
         // signature where that and all remaining optional arguments are
         // undefined.
         let mut signatures = Vec::new();
-        'outer: for signature in data.signatures.iter() {
+        for signature in data.signatures.iter() {
             let mut idl_args = Vec::with_capacity(signature.args.len());
             for (i, arg) in signature.args.iter().enumerate() {
                 if arg.optional {
