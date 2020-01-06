@@ -56,7 +56,7 @@ impl Queue {
         // eventually we should probably use something like `queueMicrotask`:
         // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/queueMicrotask
         if !self.state.is_spinning.replace(true) {
-            self.promise.then(&self.closure);
+            let _ = self.promise.then(&self.closure);
         }
     }
 }

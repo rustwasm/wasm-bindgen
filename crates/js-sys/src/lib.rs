@@ -4567,6 +4567,7 @@ extern "C" {
     /// an asynchronous operation, and its resulting value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+    #[must_use]
     #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Promise;
