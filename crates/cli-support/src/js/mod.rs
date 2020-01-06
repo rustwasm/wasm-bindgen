@@ -437,6 +437,18 @@ impl<'a> Context<'a> {
                         module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
                     }"
             }
+            OutputMode::NoModules { .. } => {
+                "\
+                    if (typeof module === 'undefined') {
+                        let src;
+                        if (self.document === undefined) {
+                            src = self.location.href;
+                        } else {
+                            src = self.document.currentScript.src;
+                        }
+                        module = src.replace(/\\.js$/, '_bg.wasm');
+                    }"
+            }
             _ => "",
         };
 
