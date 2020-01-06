@@ -2,6 +2,49 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.57
+
+Released 2020-01-06.
+
+### Fixed
+
+* The `js_sys::Promise` type is now marked as `#[must_use]`
+  [#1927](https://github.com/rustwasm/wasm-bindgen/pull/1927)
+
+* Duplicate imports of the same name are now handled correctly again.
+  [#1942](https://github.com/rustwasm/wasm-bindgen/pull/1942)
+
+--------------------------------------------------------------------------------
+
+## 0.2.56
+
+Released 2019-12-20.
+
+### Added
+
+* Added a `#[wasm_bindgen(inspectable)]` attribute for exported objects to
+  generate `toJSON` and `toString` implementations.
+  [#1876](https://github.com/rustwasm/wasm-bindgen/pull/1876)
+
+* Support for the most recent interface types proposal has been implemented.
+  [#1882](https://github.com/rustwasm/wasm-bindgen/pull/1882)
+
+* Initial support for async iterators has been added.
+  [#1895](https://github.com/rustwasm/wasm-bindgen/pull/1895)
+
+* Support for an `async` start function was added.
+  [#1905](https://github.com/rustwasm/wasm-bindgen/pull/1905)
+
+* `Array::iter` and `Array::to_vec` methods were added to js-sys.
+  [#1909](https://github.com/rustwasm/wasm-bindgen/pull/1909)
+
+### Fixed
+
+* Another webkit-specific WebIDL construct was fixed in web-sys.
+  [#1865](https://github.com/rustwasm/wasm-bindgen/pull/1865)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.55
 
 Released 2019-11-19.
