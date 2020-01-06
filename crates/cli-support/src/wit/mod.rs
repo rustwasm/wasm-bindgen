@@ -3,7 +3,7 @@ use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
 use anyhow::{anyhow, bail, Error};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
@@ -107,21 +107,47 @@ impl<'a> Context<'a> {
         // placeholder module name which we'll want to be sure that we've got a
         // location listed of what to import there for each item.
         let mut intrinsics = Vec::new();
+        let mut duplicate_import_map = HashMap::new();
+        let mut imports_to_delete = HashSet::new();
         for import in self.module.imports.iter() {
             if import.module != PLACEHOLDER_MODULE {
                 continue;
             }
-            if let walrus::ImportKind::Function(f) = import.kind {
-                self.function_imports
-                    .insert(import.name.clone(), (import.id(), f));
-                if let Some(intrinsic) = Intrinsic::from_symbol(&import.name) {
-                    intrinsics.push((import.id(), intrinsic));
+            let f = match import.kind {
+                walrus::ImportKind::Function(f) => f,
+                _ => continue,
+            };
+
+            match self.function_imports.get(&import.name) {
+                // If this `import.name` already exists in our import map, then
+                // we need to delete `import`. We also need to replace any
+                // references to it with `prev_func`, so register that here to
+                // happen later.
+                Some((_, prev_func)) => {
+                    imports_to_delete.insert(import.id());
+                    duplicate_import_map.insert(f, *prev_func);
                 }
+
+                // Otherwise this is brand new, so insert it into the map.
+                None => {
+                    self.function_imports
+                        .insert(import.name.clone(), (import.id(), f));
+                }
+            }
+
+            // Test to see if this is an intrinsic symbol, in which case we'll
+            // process this later.
+            if let Some(intrinsic) = Intrinsic::from_symbol(&import.name) {
+                intrinsics.push((import.id(), intrinsic));
             }
         }
         for (id, intrinsic) in intrinsics {
             self.bind_intrinsic(id, intrinsic)?;
         }
+        for import in imports_to_delete {
+            self.module.imports.delete(import);
+        }
+        self.handle_duplicate_imports(&duplicate_import_map);
 
         self.inject_anyref_initialization()?;
 
@@ -180,6 +206,38 @@ impl<'a> Context<'a> {
         }
 
         Ok(())
+    }
+
+    /// The same name function from the same module may be imported at different
+    /// points in a program. The compiler may synthesize two `import`
+    /// statements, both with the same module/name, to match these two function
+    /// imports. This is handled here.
+    ///
+    /// Almost all of our handling of directives and such is string-based (eew)
+    /// instead of ID based due to the way the macro works right now. This means
+    /// that we don't work well with these duplicate imports. As a result when
+    /// we see these duplicate imports we fixup the module to ensure that only
+    /// one import is used, deleting all the other imports. This is what's
+    /// wanted anyway in terms of semantics.
+    ///
+    /// The map provided here is a map where the key is a function id to replace
+    /// and the value is what to replace it with.
+    fn handle_duplicate_imports(&mut self, map: &HashMap<FunctionId, FunctionId>) {
+        struct Replace<'a> {
+            map: &'a HashMap<FunctionId, FunctionId>,
+        }
+        impl walrus::ir::VisitorMut for Replace<'_> {
+            fn visit_function_id_mut(&mut self, function: &mut FunctionId) {
+                if let Some(replacement) = self.map.get(function) {
+                    *function = *replacement;
+                }
+            }
+        }
+        let mut replace = Replace { map };
+        for (_id, func) in self.module.funcs.iter_local_mut() {
+            let entry = func.entry_block();
+            walrus::ir::dfs_pre_order_mut(&mut replace, func, entry);
+        }
     }
 
     // Discover a function `main(i32, i32) -> i32` and, if it exists, make that function run at module start.
