@@ -17,9 +17,8 @@ set -ex
 #   work by default, which the wasm target uses. To work around that we find it
 #   and put it in PATH
 
-PATH=$PATH:$(dirname $(find $(rustc --print sysroot) -name 'rust-lld')) \
-  RUSTFLAGS='-C target-feature=+atomics,+bulk-memory' \
-  cargo build --target wasm32-unknown-unknown --release -Z build-std
+RUSTFLAGS='-C target-feature=+atomics,+bulk-memory' \
+  cargo build -v --target wasm32-unknown-unknown --release -Z build-std=std,panic_abort
 
 # Note the usage of `--no-modules` here which is used to create an output which
 # is usable from Web Workers. We notably can't use `--target bundler` since

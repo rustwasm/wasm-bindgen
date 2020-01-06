@@ -201,7 +201,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2019-10-04
+          toolchain: nightly-2020-01-06
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
       - script: rustup component add rust-src
