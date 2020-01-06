@@ -440,13 +440,13 @@ impl<'a> Context<'a> {
             OutputMode::NoModules { .. } => {
                 "\
                     if (typeof module === 'undefined') {
-                        let src
+                        let src;
                         if (self.document === undefined) {
-                            src = self.location.href
+                            src = self.location.href;
                         } else {
-                            src = self.document.currentScript.src
+                            src = self.document.currentScript.src;
                         }
-                        module = src.replace(/\\.js$/, '_bg.wasm')
+                        module = src.replace(/\\.js$/, '_bg.wasm');
                     }"
             }
             _ => "",
