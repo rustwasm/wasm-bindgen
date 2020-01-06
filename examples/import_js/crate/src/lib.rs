@@ -26,7 +26,7 @@ extern "C" {
 
 #[wasm_bindgen(start)]
 pub fn run() {
-    log(&format!("Hello, {}!", name()));
+    log(&format!("Hello from {}!", name())); // should output "Hello from Rust!"
 
     let x = MyClass::new();
     assert_eq!(x.number(), 42);
