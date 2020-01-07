@@ -64,7 +64,7 @@ pub enum AdapterJsImportKind {
     Normal,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum AdapterType {
     S8,
     S16,
@@ -82,6 +82,9 @@ pub enum AdapterType {
     I32,
     I64,
     Vector(VectorKind),
+    Option(Box<AdapterType>),
+    Struct(String),
+    Function,
 }
 
 #[derive(Debug, Clone)]
@@ -338,10 +341,19 @@ impl AdapterType {
             AdapterType::F64 => wit_walrus::ValType::F64,
             AdapterType::String => wit_walrus::ValType::String,
             AdapterType::Anyref => wit_walrus::ValType::Anyref,
+
             AdapterType::I32 => wit_walrus::ValType::I32,
             AdapterType::I64 => wit_walrus::ValType::I64,
-            AdapterType::Bool | AdapterType::Vector(_) => return None,
+            AdapterType::Option(_)
+            | AdapterType::Function
+            | AdapterType::Struct(_)
+            | AdapterType::Bool
+            | AdapterType::Vector(_) => return None,
         })
+    }
+
+    pub fn option(self) -> AdapterType {
+        AdapterType::Option(Box::new(self))
     }
 }
 

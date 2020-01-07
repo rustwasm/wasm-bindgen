@@ -1950,7 +1950,13 @@ impl<'a> Context<'a> {
         }
 
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
-        let js = builder
+        let binding::JsFunction {
+            ts_sig,
+            ts_arg_tys,
+            ts_ret_ty,
+            js_doc,
+            code,
+        } = builder
             .process(&adapter, instrs, arg_names)
             .with_context(|| match kind {
                 Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
@@ -1963,8 +1969,6 @@ impl<'a> Context<'a> {
                 }
                 Kind::Adapter => format!("failed to generates bindings for adapter"),
             })?;
-        let ts = builder.typescript_signature();
-        let js_doc = builder.js_doc_comments();
 
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
@@ -1973,11 +1977,11 @@ impl<'a> Context<'a> {
                 let docs = format_doc_comments(&export.comments, Some(js_doc));
                 match &export.kind {
                     AuxExportKind::Function(name) => {
-                        self.export(&name, &format!("function{}", js), Some(docs))?;
+                        self.export(&name, &format!("function{}", code), Some(docs))?;
                         self.globals.push_str("\n");
                         self.typescript.push_str("export function ");
                         self.typescript.push_str(&name);
-                        self.typescript.push_str(&ts);
+                        self.typescript.push_str(&ts_sig);
                         self.typescript.push_str(";\n");
                     }
                     AuxExportKind::Constructor(class) => {
@@ -1986,36 +1990,36 @@ impl<'a> Context<'a> {
                             bail!("found duplicate constructor for class `{}`", class);
                         }
                         exported.has_constructor = true;
-                        exported.push(&docs, "constructor", "", &js, &ts);
+                        exported.push(&docs, "constructor", "", &code, &ts_sig);
                     }
                     AuxExportKind::Getter { class, field } => {
-                        let ret_ty = builder.ts_ret.as_ref().unwrap().ty.clone();
+                        let ret_ty = ts_ret_ty.unwrap();
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_getter(&docs, field, &js, &ret_ty);
+                        exported.push_getter(&docs, field, &code, &ret_ty);
                     }
                     AuxExportKind::Setter { class, field } => {
-                        let arg_ty = builder.ts_args[0].ty.clone();
+                        let arg_ty = ts_arg_tys[0].clone();
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_setter(&docs, field, &js, &arg_ty);
+                        exported.push_setter(&docs, field, &code, &arg_ty);
                     }
                     AuxExportKind::StaticFunction { class, name } => {
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "static ", &js, &ts);
+                        exported.push(&docs, name, "static ", &code, &ts_sig);
                     }
                     AuxExportKind::Method { class, name, .. } => {
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "", &js, &ts);
+                        exported.push(&docs, name, "", &code, &ts_sig);
                     }
                 }
             }
             Kind::Import(core) => {
                 self.wasm_import_definitions
-                    .insert(core, format!("function{}", js));
+                    .insert(core, format!("function{}", code));
             }
             Kind::Adapter => {
                 self.globals.push_str("function ");
                 self.globals.push_str(&self.adapter_name(id));
-                self.globals.push_str(&js);
+                self.globals.push_str(&code);
                 self.globals.push_str("\n\n");
             }
         }

@@ -69,7 +69,7 @@ impl InstructionBuilder<'_, '_> {
             }
             Descriptor::RustStruct(class) => {
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Struct(class.clone())],
                     Instruction::I32FromAnyrefRustOwned {
                         class: class.clone(),
                     },
@@ -147,7 +147,7 @@ impl InstructionBuilder<'_, '_> {
         match arg {
             Descriptor::RustStruct(class) => {
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Struct(class.clone())],
                     Instruction::I32FromAnyrefRustBorrow {
                         class: class.clone(),
                     },
@@ -217,56 +217,56 @@ impl InstructionBuilder<'_, '_> {
         match arg {
             Descriptor::Anyref => {
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Anyref.option()],
                     Instruction::I32FromOptionAnyref {
                         table_and_alloc: None,
                     },
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::I8 => self.in_option_sentinel(),
-            Descriptor::U8 => self.in_option_sentinel(),
-            Descriptor::I16 => self.in_option_sentinel(),
-            Descriptor::U16 => self.in_option_sentinel(),
+            Descriptor::I8 => self.in_option_sentinel(AdapterType::S8),
+            Descriptor::U8 => self.in_option_sentinel(AdapterType::U8),
+            Descriptor::I16 => self.in_option_sentinel(AdapterType::S16),
+            Descriptor::U16 => self.in_option_sentinel(AdapterType::U16),
             Descriptor::I32 => self.in_option_native(ValType::I32),
             Descriptor::U32 => self.in_option_native(ValType::I32),
             Descriptor::F32 => self.in_option_native(ValType::F32),
             Descriptor::F64 => self.in_option_native(ValType::F64),
             Descriptor::I64 | Descriptor::U64 => {
-                let signed = match arg {
-                    Descriptor::I64 => true,
-                    _ => false,
+                let (signed, ty) = match arg {
+                    Descriptor::I64 => (true, AdapterType::S64.option()),
+                    _ => (false, AdapterType::U64.option()),
                 };
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[ty],
                     Instruction::I32SplitOption64 { signed },
-                    &[AdapterType::I32; 3],
+                    &[AdapterType::I32, AdapterType::I32, AdapterType::I32],
                 );
             }
             Descriptor::Boolean => {
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Bool.option()],
                     Instruction::I32FromOptionBool,
                     &[AdapterType::I32],
                 );
             }
             Descriptor::Char => {
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::String.option()],
                     Instruction::I32FromOptionChar,
                     &[AdapterType::I32],
                 );
             }
             Descriptor::Enum { hole } => {
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::U32.option()],
                     Instruction::I32FromOptionEnum { hole: *hole },
                     &[AdapterType::I32],
                 );
             }
             Descriptor::RustStruct(name) => {
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Struct(name.clone()).option()],
                     Instruction::I32FromOptionRust {
                         class: name.to_string(),
                     },
@@ -279,13 +279,13 @@ impl InstructionBuilder<'_, '_> {
                 let mem = self.cx.memory()?;
                 let realloc = self.cx.realloc();
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::String.option()],
                     Instruction::OptionString {
                         malloc,
                         mem,
                         realloc,
                     },
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                 );
             }
 
@@ -299,9 +299,9 @@ impl InstructionBuilder<'_, '_> {
                 let malloc = self.cx.malloc()?;
                 let mem = self.cx.memory()?;
                 self.instruction(
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Vector(kind).option()],
                     Instruction::OptionVector { kind, malloc, mem },
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                 );
             }
 
@@ -343,7 +343,7 @@ impl InstructionBuilder<'_, '_> {
         // fetch them from the parameters.
         if !self.return_position {
             for input in inputs {
-                self.get(*input);
+                self.get(input.clone());
             }
         } else {
             self.input.extend_from_slice(inputs);
@@ -385,16 +385,17 @@ impl InstructionBuilder<'_, '_> {
     }
 
     fn in_option_native(&mut self, wasm: ValType) {
+        let ty = AdapterType::from_wasm(wasm).unwrap();
         self.instruction(
-            &[AdapterType::Anyref],
+            &[ty.clone().option()],
             Instruction::FromOptionNative { ty: wasm },
-            &[AdapterType::I32, AdapterType::from_wasm(wasm).unwrap()],
+            &[AdapterType::I32, ty],
         );
     }
 
-    fn in_option_sentinel(&mut self) {
+    fn in_option_sentinel(&mut self, ty: AdapterType) {
         self.instruction(
-            &[AdapterType::Anyref],
+            &[ty.option()],
             Instruction::I32FromOptionU32Sentinel,
             &[AdapterType::I32],
         );
