@@ -15,10 +15,6 @@ use walrus::Module;
 pub struct Builder<'a, 'b> {
     /// Parent context used to expose helper functions and such.
     pub cx: &'a mut Context<'b>,
-    /// The TypeScript definition for each argument to this function.
-    pub ts_args: Vec<TypescriptArg>,
-    /// The TypeScript return value for this function.
-    pub ts_ret: Option<TypescriptArg>,
     /// Whether or not this is building a constructor for a Rust class, and if
     /// so what class it's constructing.
     constructor: Option<String>,
@@ -38,10 +34,6 @@ pub struct JsBuilder<'a, 'b> {
     /// General context for building JS, used to manage intrinsic names, exposed
     /// JS functions, etc.
     cx: &'a mut Context<'b>,
-
-    /// The list of typescript arguments that we're going to have to this
-    /// function.
-    typescript: Vec<TypescriptArg>,
 
     /// The "prelude" of the function, or largely just the JS function we've
     /// built so far.
@@ -66,10 +58,12 @@ pub struct JsBuilder<'a, 'b> {
     stack: Vec<String>,
 }
 
-pub struct TypescriptArg {
-    pub ty: String,
-    pub name: String,
-    pub optional: bool,
+pub struct JsFunction {
+    pub code: String,
+    pub ts_sig: String,
+    pub js_doc: String,
+    pub ts_arg_tys: Vec<String>,
+    pub ts_ret_ty: Option<String>,
 }
 
 impl<'a, 'b> Builder<'a, 'b> {
@@ -77,8 +71,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         Builder {
             log_error: false,
             cx,
-            ts_args: Vec::new(),
-            ts_ret: None,
             constructor: None,
             method: None,
             catch: false,
@@ -106,7 +98,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         adapter: &Adapter,
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
-    ) -> Result<String, Error> {
+    ) -> Result<JsFunction, Error> {
         if self
             .cx
             .aux
@@ -118,6 +110,7 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut params = adapter.params.iter();
         let mut function_args = Vec::new();
+        let mut arg_tys = Vec::new();
 
         // If this is a method then we're generating this as part of a class
         // method, so the leading parameter is the this pointer stored on
@@ -141,13 +134,14 @@ impl<'a, 'b> Builder<'a, 'b> {
             }
             None => {}
         }
-        for (i, _param) in params.enumerate() {
+        for (i, param) in params.enumerate() {
             let arg = match explicit_arg_names {
                 Some(list) => list[i].clone(),
                 None => format!("arg{}", i),
             };
             js.args.push(arg.clone());
             function_args.push(arg);
+            arg_tys.push(param);
         }
 
         // Translate all instructions, the fun loop!
@@ -170,7 +164,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         match js.stack.len() {
             0 => {}
             1 => {
-                self.ts_ret = js.typescript.pop();
                 let val = js.pop();
                 js.prelude(&format!("return {};", val));
             }
@@ -188,18 +181,17 @@ impl<'a, 'b> Builder<'a, 'b> {
             // }
         }
         assert!(js.stack.is_empty());
-        self.ts_args = js.typescript;
 
-        // Remove extraneous typescript args which were synthesized and aren't
-        // part of our function shim.
-        while self.ts_args.len() > function_args.len() {
-            self.ts_args.remove(0);
-        }
+        // // Remove extraneous typescript args which were synthesized and aren't
+        // // part of our function shim.
+        // while self.ts_args.len() > function_args.len() {
+        //     self.ts_args.remove(0);
+        // }
 
-        let mut ret = String::new();
-        ret.push_str("(");
-        ret.push_str(&function_args.join(", "));
-        ret.push_str(") {\n");
+        let mut code = String::new();
+        code.push_str("(");
+        code.push_str(&function_args.join(", "));
+        code.push_str(") {\n");
 
         let mut call = js.prelude;
         if js.finally.len() != 0 {
@@ -220,10 +212,20 @@ impl<'a, 'b> Builder<'a, 'b> {
             call = format!("try {{\n{}}} catch (e) {{\n logError(e)\n}}\n", call);
         }
 
-        ret.push_str(&call);
-        ret.push_str("}");
+        code.push_str(&call);
+        code.push_str("}");
 
-        return Ok(ret);
+        let (ts_sig, ts_arg_tys, ts_ret_ty) =
+            self.typescript_signature(&function_args, &arg_tys, &adapter.results);
+        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
+
+        Ok(JsFunction {
+            code,
+            ts_sig,
+            js_doc,
+            ts_arg_tys,
+            ts_ret_ty,
+        })
     }
 
     /// Returns the typescript signature of the binding that this has described.
@@ -231,61 +233,79 @@ impl<'a, 'b> Builder<'a, 'b> {
     ///
     /// Note that the TypeScript returned here is just the argument list and the
     /// return value, it doesn't include the function name in any way.
-    pub fn typescript_signature(&self) -> String {
+    fn typescript_signature(
+        &self,
+        arg_names: &[String],
+        arg_tys: &[&AdapterType],
+        result_tys: &[AdapterType],
+    ) -> (String, Vec<String>, Option<String>) {
         // Build up the typescript signature as well
         let mut omittable = true;
         let mut ts_args = Vec::new();
-        for arg in self.ts_args.iter().rev() {
+        let mut ts_arg_tys = Vec::new();
+        for (name, ty) in arg_names.iter().zip(arg_tys).rev() {
             // In TypeScript, we can mark optional parameters as omittable
             // using the `?` suffix, but only if they're not followed by
             // non-omittable parameters. Therefore iterate the parameter list
             // in reverse and stop using the `?` suffix for optional params as
             // soon as a non-optional parameter is encountered.
-            if arg.optional {
-                if omittable {
-                    ts_args.push(format!("{}?: {}", arg.name, arg.ty));
-                } else {
-                    ts_args.push(format!("{}: {} | undefined", arg.name, arg.ty));
+            let mut arg = name.to_string();
+            let mut ts = String::new();
+            match ty {
+                AdapterType::Option(ty) if omittable => {
+                    arg.push_str("?: ");
+                    adapter2ts(ty, &mut ts);
                 }
-            } else {
-                omittable = false;
-                ts_args.push(format!("{}: {}", arg.name, arg.ty));
+                ty => {
+                    omittable = false;
+                    arg.push_str(": ");
+                    adapter2ts(ty, &mut ts);
+                }
             }
+            arg.push_str(&ts);
+            ts_arg_tys.push(ts);
+            ts_args.push(arg);
         }
         ts_args.reverse();
+        ts_arg_tys.reverse();
         let mut ts = format!("({})", ts_args.join(", "));
 
         // Constructors have no listed return type in typescript
+        let mut ts_ret = None;
         if self.constructor.is_none() {
             ts.push_str(": ");
-            if let Some(ty) = &self.ts_ret {
-                ts.push_str(&ty.ty);
-                if ty.optional {
-                    ts.push_str(" | undefined");
-                }
-            } else {
-                ts.push_str("void");
+            let mut ret = String::new();
+            match result_tys.len() {
+                0 => ret.push_str("void"),
+                1 => adapter2ts(&result_tys[0], &mut ret),
+                _ => ret.push_str("[any]"),
             }
+            ts.push_str(&ret);
+            ts_ret = Some(ret);
         }
-        return ts;
+        return (ts, ts_arg_tys, ts_ret);
     }
 
     /// Returns a helpful JS doc comment which lists types for all parameters
     /// and the return value.
-    pub fn js_doc_comments(&self) -> String {
-        let mut ret: String = self
-            .ts_args
-            .iter()
-            .map(|a| {
-                if a.optional {
-                    format!("@param {{{} | undefined}} {}\n", a.ty, a.name)
-                } else {
-                    format!("@param {{{}}} {}\n", a.ty, a.name)
-                }
-            })
-            .collect();
-        if let Some(ts) = &self.ts_ret {
-            ret.push_str(&format!("@returns {{{}}}", ts.ty));
+    fn js_doc_comments(
+        &self,
+        arg_names: &[String],
+        arg_tys: &[&AdapterType],
+        ts_ret: &Option<String>,
+    ) -> String {
+        let mut ret = String::new();
+        for (name, ty) in arg_names.iter().zip(arg_tys) {
+            ret.push_str("@param {");
+            adapter2ts(ty, &mut ret);
+            ret.push_str("} ");
+            ret.push_str(name);
+            ret.push_str("\n");
+        }
+        if let Some(ts) = ts_ret {
+            if ts != "void" {
+                ret.push_str(&format!("@returns {{{}}}", ts));
+            }
         }
         ret
     }
@@ -299,38 +319,12 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             tmp: 0,
             finally: String::new(),
             prelude: String::new(),
-            typescript: Vec::new(),
             stack: Vec::new(),
         }
     }
 
     pub fn arg(&self, idx: u32) -> &str {
         &self.args[idx as usize]
-    }
-
-    pub fn typescript_required(&mut self, ty: &str) {
-        let name = self.arg_name();
-        self.typescript.push(TypescriptArg {
-            ty: ty.to_string(),
-            optional: false,
-            name,
-        });
-    }
-
-    pub fn typescript_optional(&mut self, ty: &str) {
-        let name = self.arg_name();
-        self.typescript.push(TypescriptArg {
-            ty: ty.to_string(),
-            optional: true,
-            name,
-        });
-    }
-
-    fn arg_name(&self) -> String {
-        self.args
-            .get(self.typescript.len())
-            .cloned()
-            .unwrap_or_else(|| format!("arg{}", self.typescript.len()))
     }
 
     pub fn prelude(&mut self, prelude: &str) {
@@ -426,7 +420,6 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         malloc: walrus::FunctionId,
         realloc: Option<walrus::FunctionId>,
     ) -> Result<(), Error> {
-        self.typescript_required("string");
         let pass = self.cx.expose_pass_string_to_wasm(mem)?;
         let val = self.pop();
         let malloc = self.cx.export_name_of(malloc);
@@ -510,7 +503,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::Standard(wit_walrus::Instruction::IntToWasm { trap: false, .. }) => {
-            js.typescript_required("number");
             let val = js.pop();
             js.assert_number(&val);
             js.push(val);
@@ -524,7 +516,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             output,
             ..
         }) => {
-            js.typescript_required("number");
             let val = js.pop();
             match output {
                 wit_walrus::ValType::U32 => js.push(format!("{} >>> 0", val)),
@@ -538,7 +529,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::Standard(wit_walrus::Instruction::MemoryToString(mem)) => {
-            js.typescript_required("string");
             let len = js.pop();
             let ptr = js.pop();
             let get = js.cx.expose_get_string_from_wasm(*mem)?;
@@ -596,7 +586,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromBool => {
-            js.typescript_required("boolean");
             let val = js.pop();
             js.assert_bool(&val);
             // JS will already coerce booleans into numbers for us
@@ -604,20 +593,17 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromStringFirstChar => {
-            js.typescript_required("string");
             let val = js.pop();
             js.push(format!("{}.codePointAt(0)", val));
         }
 
         Instruction::I32FromAnyrefOwned => {
-            js.typescript_required("any");
             js.cx.expose_add_heap_object();
             let val = js.pop();
             js.push(format!("addHeapObject({})", val));
         }
 
         Instruction::I32FromAnyrefBorrow => {
-            js.typescript_required("any");
             js.cx.expose_borrowed_objects();
             js.cx.expose_global_stack_pointer();
             let val = js.pop();
@@ -626,7 +612,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromAnyrefRustOwned { class } => {
-            js.typescript_required(class);
             let val = js.pop();
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
@@ -637,7 +622,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromAnyrefRustBorrow { class } => {
-            js.typescript_required(class);
             let val = js.pop();
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
@@ -645,7 +629,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromOptionRust { class } => {
-            js.typescript_optional(class);
             let val = js.pop();
             js.cx.expose_is_like_none();
             let i = js.tmp();
@@ -660,7 +643,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32Split64 { signed } => {
-            js.typescript_required("BigInt");
             let val = js.pop();
             let f = if *signed {
                 js.cx.expose_int64_cvt_shim()
@@ -683,7 +665,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32SplitOption64 { signed } => {
-            js.typescript_optional("BigInt");
             let val = js.pop();
             js.cx.expose_is_like_none();
             let f = if *signed {
@@ -708,7 +689,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromOptionAnyref { table_and_alloc } => {
-            js.typescript_optional("any");
             let val = js.pop();
             js.cx.expose_is_like_none();
             match table_and_alloc {
@@ -724,7 +704,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromOptionU32Sentinel => {
-            js.typescript_optional("number");
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
@@ -732,7 +711,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromOptionBool => {
-            js.typescript_optional("boolean");
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_bool(&val);
@@ -740,7 +718,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromOptionChar => {
-            js.typescript_optional("string");
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.push(format!(
@@ -750,7 +727,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I32FromOptionEnum { hole } => {
-            js.typescript_optional("number");
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
@@ -758,7 +734,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::FromOptionNative { .. } => {
-            js.typescript_optional("number");
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
@@ -767,7 +742,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::VectorToMemory { kind, malloc, mem } => {
-            js.typescript_required(kind.js_ty());
             let val = js.pop();
             let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
@@ -789,7 +763,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             malloc,
             realloc,
         } => {
-            js.typescript_optional("string");
             let func = js.cx.expose_pass_string_to_wasm(*mem)?;
             js.cx.expose_is_like_none();
             let i = js.tmp();
@@ -813,7 +786,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::OptionVector { kind, mem, malloc } => {
-            js.typescript_optional(kind.js_ty());
             let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
             js.cx.expose_is_like_none();
             let i = js.tmp();
@@ -837,7 +809,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             mem,
             free,
         } => {
-            js.typescript_required(kind.js_ty());
             // First up, pass the JS value into wasm, getting out a pointer and
             // a length. These two pointer/length values get pushed onto the
             // value stack.
@@ -875,26 +846,22 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::BoolFromI32 => {
-            js.typescript_required("boolean");
             let val = js.pop();
             js.push(format!("{} !== 0", val));
         }
 
         Instruction::AnyrefLoadOwned => {
-            js.typescript_required("any");
             js.cx.expose_take_object();
             let val = js.pop();
             js.push(format!("takeObject({})", val));
         }
 
         Instruction::StringFromChar => {
-            js.typescript_required("string");
             let val = js.pop();
             js.push(format!("String.fromCodePoint({})", val));
         }
 
         Instruction::I64FromLoHi { signed } => {
-            js.typescript_required("BigInt");
             let f = if *signed {
                 js.cx.expose_int64_cvt_shim()
             } else {
@@ -918,14 +885,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::RustFromI32 { class } => {
-            js.typescript_required(class);
             js.cx.require_class_wrap(class);
             let val = js.pop();
             js.push(format!("{}.__wrap({})", class, val));
         }
 
         Instruction::OptionRustFromI32 { class } => {
-            js.typescript_optional(class);
             js.cx.require_class_wrap(class);
             let val = js.pop();
             js.push(format!(
@@ -936,16 +901,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::CachedStringLoad {
             owned,
-            optional,
+            optional: _,
             mem,
             free,
         } => {
-            if *optional {
-                js.typescript_optional("string");
-            } else {
-                js.typescript_required("string");
-            }
-
             let len = js.pop();
             let ptr = js.pop();
             let tmp = js.tmp();
@@ -968,7 +927,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::TableGet => {
-            js.typescript_required("any");
             let val = js.pop();
             js.cx.expose_get_object();
             js.push(format!("getObject({})", val));
@@ -979,7 +937,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             nargs,
             mutable,
         } => {
-            js.typescript_optional("any");
             let i = js.tmp();
             let b = js.pop();
             let a = js.pop();
@@ -1025,7 +982,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::VectorLoad { kind, mem, free } => {
-            js.typescript_required(kind.js_ty());
             let len = js.pop();
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
@@ -1043,7 +999,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::OptionVectorLoad { kind, mem, free } => {
-            js.typescript_optional(kind.js_ty());
             let len = js.pop();
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
@@ -1064,7 +1019,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::View { kind, mem } => {
-            js.typescript_required(kind.js_ty());
             let len = js.pop();
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
@@ -1072,7 +1026,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::OptionView { kind, mem } => {
-            js.typescript_optional(kind.js_ty());
             let len = js.pop();
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
@@ -1085,13 +1038,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::OptionU32Sentinel => {
-            js.typescript_optional("number");
             let val = js.pop();
             js.push(format!("{0} === 0xFFFFFF ? undefined : {0}", val));
         }
 
         Instruction::ToOptionNative { ty: _, signed } => {
-            js.typescript_optional("number");
             let val = js.pop();
             let present = js.pop();
             js.push(format!(
@@ -1103,13 +1054,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::OptionBoolFromI32 => {
-            js.typescript_optional("boolean");
             let val = js.pop();
             js.push(format!("{0} === 0xFFFFFF ? undefined : {0} !== 0", val));
         }
 
         Instruction::OptionCharFromI32 => {
-            js.typescript_optional("string");
             let val = js.pop();
             js.push(format!(
                 "{0} === 0xFFFFFF ? undefined : String.fromCodePoint({0})",
@@ -1118,13 +1067,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::OptionEnumFromI32 { hole } => {
-            js.typescript_optional("number");
             let val = js.pop();
             js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
         }
 
         Instruction::Option64FromI32 { signed } => {
-            js.typescript_optional("BigInt");
             let f = if *signed {
                 js.cx.expose_int64_cvt_shim()
             } else {
@@ -1251,5 +1198,30 @@ impl Invocation {
             Invocation::Core { defer, .. } => *defer,
             _ => false,
         }
+    }
+}
+
+fn adapter2ts(ty: &AdapterType, dst: &mut String) {
+    match ty {
+        AdapterType::I32
+        | AdapterType::S8
+        | AdapterType::S16
+        | AdapterType::S32
+        | AdapterType::U8
+        | AdapterType::U16
+        | AdapterType::U32
+        | AdapterType::F32
+        | AdapterType::F64 => dst.push_str("number"),
+        AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("BigInt"),
+        AdapterType::String => dst.push_str("string"),
+        AdapterType::Anyref => dst.push_str("any"),
+        AdapterType::Bool => dst.push_str("boolean"),
+        AdapterType::Vector(kind) => dst.push_str(kind.js_ty()),
+        AdapterType::Option(ty) => {
+            adapter2ts(ty, dst);
+            dst.push_str(" | undefined");
+        }
+        AdapterType::Struct(name) => dst.push_str(name),
+        AdapterType::Function => dst.push_str("any"),
     }
 }

@@ -69,7 +69,7 @@ impl InstructionBuilder<'_, '_> {
                     _ => false,
                 };
                 self.instruction(
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                     Instruction::I64FromLoHi { signed },
                     &[if signed {
                         AdapterType::S64
@@ -85,7 +85,7 @@ impl InstructionBuilder<'_, '_> {
                     Instruction::RustFromI32 {
                         class: class.to_string(),
                     },
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Struct(class.clone())],
                 );
             }
             Descriptor::Ref(d) => self.outgoing_ref(false, d)?,
@@ -131,7 +131,7 @@ impl InstructionBuilder<'_, '_> {
                 let mem = self.cx.memory()?;
                 let free = self.cx.free()?;
                 self.instruction(
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                     Instruction::VectorLoad { kind, mem, free },
                     &[AdapterType::Vector(kind)],
                 );
@@ -167,7 +167,7 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::String => {
                 let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
                 self.instruction(
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                     Instruction::Standard(std),
                     &[AdapterType::String],
                 );
@@ -181,7 +181,7 @@ impl InstructionBuilder<'_, '_> {
                 })?;
                 let mem = self.cx.memory()?;
                 self.instruction(
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                     Instruction::View { kind, mem },
                     &[AdapterType::Vector(kind)],
                 );
@@ -198,13 +198,13 @@ impl InstructionBuilder<'_, '_> {
                     .cx
                     .table_element_adapter(descriptor.shim_idx, descriptor)?;
                 self.instruction(
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                     Instruction::StackClosure {
                         adapter,
                         nargs,
                         mutable,
                     },
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Function],
                 );
             }
 
@@ -224,47 +224,47 @@ impl InstructionBuilder<'_, '_> {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::AnyrefLoadOwned,
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Anyref.option()],
                 );
             }
-            Descriptor::I8 => self.out_option_sentinel(),
-            Descriptor::U8 => self.out_option_sentinel(),
-            Descriptor::I16 => self.out_option_sentinel(),
-            Descriptor::U16 => self.out_option_sentinel(),
+            Descriptor::I8 => self.out_option_sentinel(AdapterType::S8),
+            Descriptor::U8 => self.out_option_sentinel(AdapterType::U8),
+            Descriptor::I16 => self.out_option_sentinel(AdapterType::S16),
+            Descriptor::U16 => self.out_option_sentinel(AdapterType::U16),
             Descriptor::I32 => self.option_native(true, ValType::I32),
             Descriptor::U32 => self.option_native(false, ValType::I32),
             Descriptor::F32 => self.option_native(true, ValType::F32),
             Descriptor::F64 => self.option_native(true, ValType::F64),
             Descriptor::I64 | Descriptor::U64 => {
-                let signed = match arg {
-                    Descriptor::I64 => true,
-                    _ => false,
+                let (signed, ty) = match arg {
+                    Descriptor::I64 => (true, AdapterType::S64.option()),
+                    _ => (false, AdapterType::U64.option()),
                 };
                 self.instruction(
-                    &[AdapterType::I32; 3],
+                    &[AdapterType::I32, AdapterType::I32, AdapterType::I32],
                     Instruction::Option64FromI32 { signed },
-                    &[AdapterType::Anyref],
+                    &[ty],
                 );
             }
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::OptionBoolFromI32,
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Bool.option()],
                 );
             }
             Descriptor::Char => {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::OptionCharFromI32,
-                    &[AdapterType::Anyref],
+                    &[AdapterType::String.option()],
                 );
             }
             Descriptor::Enum { hole } => {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::OptionEnumFromI32 { hole: *hole },
-                    &[AdapterType::Anyref],
+                    &[AdapterType::U32.option()],
                 );
             }
             Descriptor::RustStruct(name) => {
@@ -273,7 +273,7 @@ impl InstructionBuilder<'_, '_> {
                     Instruction::OptionRustFromI32 {
                         class: name.to_string(),
                     },
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Struct(name.clone()).option()],
                 );
             }
             Descriptor::Ref(d) => self.outgoing_option_ref(false, d)?,
@@ -291,9 +291,9 @@ impl InstructionBuilder<'_, '_> {
                 let mem = self.cx.memory()?;
                 let free = self.cx.free()?;
                 self.instruction(
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                     Instruction::OptionVectorLoad { kind, mem, free },
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Vector(kind).option()],
                 );
             }
 
@@ -313,7 +313,7 @@ impl InstructionBuilder<'_, '_> {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::TableGet,
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Anyref.option()],
                 );
             }
             Descriptor::CachedString => self.cached_string(true, false)?,
@@ -326,9 +326,9 @@ impl InstructionBuilder<'_, '_> {
                 })?;
                 let mem = self.cx.memory()?;
                 self.instruction(
-                    &[AdapterType::I32; 2],
+                    &[AdapterType::I32, AdapterType::I32],
                     Instruction::OptionView { kind, mem },
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Vector(kind).option()],
                 );
             }
             _ => bail!(
@@ -352,7 +352,7 @@ impl InstructionBuilder<'_, '_> {
         let mem = self.cx.memory()?;
         let free = self.cx.free()?;
         self.instruction(
-            &[AdapterType::I32; 2],
+            &[AdapterType::I32, AdapterType::I32],
             Instruction::CachedStringLoad {
                 owned,
                 optional,
@@ -365,18 +365,19 @@ impl InstructionBuilder<'_, '_> {
     }
 
     fn option_native(&mut self, signed: bool, ty: ValType) {
+        let adapter_ty = AdapterType::from_wasm(ty).unwrap();
         self.instruction(
-            &[AdapterType::I32, AdapterType::from_wasm(ty).unwrap()],
+            &[AdapterType::I32, adapter_ty.clone()],
             Instruction::ToOptionNative { signed, ty },
-            &[AdapterType::Anyref],
+            &[adapter_ty.option()],
         );
     }
 
-    fn out_option_sentinel(&mut self) {
+    fn out_option_sentinel(&mut self, ty: AdapterType) {
         self.instruction(
             &[AdapterType::I32],
             Instruction::OptionU32Sentinel,
-            &[AdapterType::Anyref],
+            &[ty.option()],
         );
     }
 }

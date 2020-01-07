@@ -67,7 +67,7 @@ fn extract_xform<'a>(
     if let Some(Instruction::Retptr) = instructions.first().map(|e| &e.instr) {
         instructions.remove(0);
         let mut types = Vec::new();
-        instructions.retain(|instruction| match instruction.instr {
+        instructions.retain(|instruction| match &instruction.instr {
             Instruction::LoadRetptr { ty, .. } => {
                 types.push(ty.to_wasm().unwrap());
                 false
