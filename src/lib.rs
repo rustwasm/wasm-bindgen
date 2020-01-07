@@ -1117,7 +1117,6 @@ pub mod __rt {
         }
     }
 
-
     /// An internal helper trait for usage in `#[wasm_bindgen(start)]`
     /// functions to throw the error (if it is `Err`).
     pub trait Start {

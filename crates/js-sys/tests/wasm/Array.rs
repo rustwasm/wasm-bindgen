@@ -87,7 +87,10 @@ fn to_vec() {
         .into_iter()
         .collect::<js_sys::Array>();
 
-    assert_eq!(array.to_vec(), vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]);
+    assert_eq!(
+        array.to_vec(),
+        vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]
+    );
 }
 
 #[wasm_bindgen_test]
@@ -96,7 +99,10 @@ fn iter() {
         .into_iter()
         .collect::<js_sys::Array>();
 
-    assert_eq!(array.iter().collect::<Vec<JsValue>>(), vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]);
+    assert_eq!(
+        array.iter().collect::<Vec<JsValue>>(),
+        vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]
+    );
 
     let mut iter = array.iter();
 

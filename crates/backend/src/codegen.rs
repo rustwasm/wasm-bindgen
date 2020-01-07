@@ -456,7 +456,6 @@ impl TryToTokens for ast::Export {
                         })
                     },
                 )
-
             } else {
                 (
                     quote! { wasm_bindgen::JsValue },
@@ -467,13 +466,11 @@ impl TryToTokens for ast::Export {
                     },
                 )
             }
-
         } else if self.start {
             (
                 quote! { () },
                 quote! { <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret) },
             )
-
         } else {
             (quote! { #syn_ret }, quote! { #ret })
         };

@@ -1,7 +1,7 @@
 use js_sys::*;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
 use wasm_bindgen_futures::JsFuture;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/Symbol.js")]
 extern "C" {
@@ -41,7 +41,9 @@ fn iterator() {
 
 #[wasm_bindgen_test]
 async fn async_iterator() {
-    JsFuture::from(test_async_iterator(&Symbol::async_iterator())).await.unwrap_throw();
+    JsFuture::from(test_async_iterator(&Symbol::async_iterator()))
+        .await
+        .unwrap_throw();
 }
 
 #[wasm_bindgen_test]
@@ -103,7 +105,10 @@ fn key_for() {
 #[wasm_bindgen_test]
 fn to_string() {
     assert_eq!(Symbol::iterator().to_string(), "Symbol(Symbol.iterator)");
-    assert_eq!(Symbol::async_iterator().to_string(), "Symbol(Symbol.asyncIterator)");
+    assert_eq!(
+        Symbol::async_iterator().to_string(),
+        "Symbol(Symbol.asyncIterator)"
+    );
     assert_eq!(Symbol::for_("foo").to_string(), "Symbol(foo)");
     assert_eq!(gensym("desc".into()).to_string(), "Symbol(desc)");
 }

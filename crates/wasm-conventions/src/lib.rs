@@ -9,7 +9,7 @@
 #![deny(missing_docs, missing_debug_implementations)]
 
 use anyhow::{anyhow, bail, Error};
-use walrus::{GlobalId, GlobalKind, MemoryId, Module, ValType, InitExpr, ir::Value};
+use walrus::{ir::Value, GlobalId, GlobalKind, InitExpr, MemoryId, Module, ValType};
 
 /// Get a Wasm module's canonical linear memory.
 pub fn get_memory(module: &Module) -> Result<MemoryId, Error> {

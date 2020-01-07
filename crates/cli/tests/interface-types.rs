@@ -54,10 +54,13 @@ fn runtest(test: &Path) -> Result<()> {
         .arg("--no-typescript");
     exec(&mut bindgen)?;
 
-    exec(Command::new("node")
-        .arg("--experimental-wasm-anyref")
-        .arg("--experimental-wasm-mv")
-        .arg(&js).env("NODE_PATH", td.path()))?;
+    exec(
+        Command::new("node")
+            .arg("--experimental-wasm-anyref")
+            .arg("--experimental-wasm-mv")
+            .arg(&js)
+            .env("NODE_PATH", td.path()),
+    )?;
 
     Ok(())
 }

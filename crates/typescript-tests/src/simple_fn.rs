@@ -4,4 +4,6 @@ use wasm_bindgen::prelude::*;
 pub fn greet(_: &str) {}
 
 #[wasm_bindgen]
-pub fn take_and_return_bool(_: bool) -> bool { true }
+pub fn take_and_return_bool(_: bool) -> bool {
+    true
+}
