@@ -26,6 +26,7 @@ RUSTFLAGS='-C target-feature=+atomics,+bulk-memory' \
 cargo run --manifest-path ../../crates/cli/Cargo.toml \
   --bin wasm-bindgen -- \
   ../../target/wasm32-unknown-unknown/release/raytrace_parallel.wasm --out-dir . \
+  --no-auto-start \
   --no-modules
 
 python3 -m http.server

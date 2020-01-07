@@ -161,7 +161,6 @@ function executeBenchmark(name, bm) {
 // Load wasm files and when they're done (plus the DOM) then we initialize
 // everything
 const wasms = [];
-wasms.push(wbindgen_init('./pkg/wasm_bindgen_benchmark_bg.wasm'));
 wasms.push(fetch('./raw.wasm')
   .then(r => r.arrayBuffer())
   .then(m => WebAssembly.instantiate(m, { './globals.js': globals }))

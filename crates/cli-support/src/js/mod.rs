@@ -220,11 +220,16 @@ impl<'a> Context<'a> {
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
                 footer.push_str(&format!(
-                    "self.{} = Object.assign(init, __exports);\n",
-                    global
+                    "self.{} = Object.assign(init{}, __exports);\n",
+                    global,
+                    if needs_manual_start && auto_start {
+                        "()"
+                    } else {
+                        ""
+                    }
                 ));
                 if needs_manual_start && auto_start {
-                    footer.push_str("self.wasm_bindgen();\n");
+                    footer.push_str(&format!("self.{}.init = init;\n", global));
                 }
             }
 
@@ -284,9 +289,16 @@ impl<'a> Context<'a> {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 if needs_manual_start && auto_start {
-                    footer.push_str("init();\n");
+                    footer.push_str("export { init };\n");
                 }
-                footer.push_str("export default init;\n");
+                footer.push_str(&format!(
+                    "export default init{};\n",
+                    if needs_manual_start && auto_start {
+                        "()"
+                    } else {
+                        ""
+                    }
+                ));
             }
         }
 
