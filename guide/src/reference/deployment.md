@@ -26,7 +26,7 @@ should behave the same way in this respect. The values possible here are:
 **`--target bundler`**
 
 The default output of `wasm-bindgen`, or the `bundler` target, assumes a model
-where the wasm module itself is natively an ES module. This model, however, not
+where the wasm module itself is natively an ES module. This model, however, is not
 natively implemented in any JS implementation at this time. As a result, to
 consume the default output of `wasm-bindgen` you will need a bundler of some
 form.
