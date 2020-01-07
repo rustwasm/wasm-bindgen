@@ -1,6 +1,6 @@
 [package]
 name = "js-sys"
-version = "0.3.34"
+version = "0.3.35"
 authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
 categories = ["wasm"]
@@ -19,8 +19,8 @@ test = false
 doctest = false
 
 [dependencies]
-wasm-bindgen = { path = "../..", version = "0.2.57" }
+wasm-bindgen = { path = "../..", version = "0.2.58" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test', version = '=0.3.7' }
-wasm-bindgen-futures = { path = '../futures', version = '0.4.7' }
+wasm-bindgen-test = { path = '../test', version = '=0.3.8' }
+wasm-bindgen-futures = { path = '../futures', version = '0.4.8' }

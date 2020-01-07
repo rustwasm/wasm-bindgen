@@ -2,6 +2,23 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.58
+
+Released 2020-01-07.
+
+### Added
+
+* When using the `no-modules` output type the initialization path for the wasm
+  file is now optional if it can be inferred from the current JS script.
+  [#1938](https://github.com/rustwasm/wasm-bindgen/pull/1938)
+
+### Fixed
+
+* TypeScript for struct methods that have floats has been fixed.
+  [#1945](https://github.com/rustwasm/wasm-bindgen/pull/1945)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.57
 
 Released 2020-01-06.
