@@ -207,14 +207,6 @@ fn publish(krate: &Crate) {
     if !CRATES_TO_PUBLISH.iter().any(|s| *s == krate.name) {
         return;
     }
-    if krate.name == "wasm-bindgen" {
-        println!("ABOUT TO PUBLISH wasm-bindgen");
-        println!("for this to work you need to comment out the `dev-dependencies`");
-        println!("section in `Cargo.toml` and everything below");
-        println!("");
-        println!("hit enter when done");
-        drop(io::stdin().read_line(&mut String::new()));
-    }
     let status = Command::new("cargo")
         .arg("publish")
         .current_dir(krate.manifest.parent().unwrap())
@@ -224,12 +216,5 @@ fn publish(krate: &Crate) {
         .expect("failed to run cargo");
     if !status.success() {
         println!("FAIL: failed to publish `{}`: {}", krate.name, status);
-    }
-
-    if krate.name == "wasm-bindgen" {
-        println!("ok please now uncomment the section you just commented");
-        println!("");
-        println!("hit enter when done");
-        drop(io::stdin().read_line(&mut String::new()));
     }
 }
