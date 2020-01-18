@@ -18,6 +18,7 @@
 
 #![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
 
+use std::f64;
 use std::fmt;
 use std::mem;
 
@@ -1899,6 +1900,42 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf)
     #[wasm_bindgen(method, js_name = valueOf)]
     pub fn value_of(this: &Number) -> f64;
+}
+
+impl Number {
+    /// The smallest interval between two representable numbers.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON)
+    pub const EPSILON: f64 = f64::EPSILON;
+    /// The maximum safe integer in JavaScript (2^53 - 1).
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER)
+    pub const MAX_SAFE_INTEGER: f64 = 9007199254740991.0;
+    /// The largest positive representable number.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_VALUE)
+    pub const MAX_VALUE: f64 = f64::MAX;
+    /// The minimum safe integer in JavaScript (-(2^53 - 1)).
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_SAFE_INTEGER)
+    pub const MIN_SAFE_INTEGER: f64 = -9007199254740991.0;
+    /// The smallest positive representable number—that is, the positive number closest to zero
+    /// (without actually being zero).
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE)
+    pub const MIN_VALUE: f64 = f64::MIN_POSITIVE;
+    /// Special "Not a Number" value.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NaN)
+    pub const NAN: f64 = f64::NAN;
+    /// Special value representing negative infinity. Returned on overflow.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY)
+    pub const NEGATIVE_INFINITY: f64 = f64::NEG_INFINITY;
+    /// Special value representing infinity. Returned on overflow.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/POSITIVE_INFINITY)
+    pub const POSITIVE_INFINITY: f64 = f64::INFINITY;
 }
 
 macro_rules! number_from {
