@@ -1,638 +1,972 @@
-/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this file,
- * You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * The origin of this IDL file is
- * https://github.com/gpuweb/gpuweb/blob/master/design/sketch.webidl
- */
+// Copyright (C) [2020] World Wide Web Consortium,
+// (Massachusetts Institute of Technology, European Research Consortium for
+// Informatics and Mathematics, Keio University, Beihang).
+// All Rights Reserved.
+//
+// This work is distributed under the W3C (R) Software License [1] in the hope
+// that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//
+// [1] http://www.w3.org/Consortium/Legal/copyright-software
 
-typedef unsigned long u32;
-typedef unsigned long long u64;
+// **** This file is auto-generated. Do not edit. ****
 
-// ****************************************************************************
-// ERROR HANDLING
-// ****************************************************************************
-
-enum WebGPULogEntryType {
-    "device-lost",
-    "validation-error",
-    "recoverable-out-of-memory",
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPULogEntry {
-    readonly attribute WebGPULogEntryType type;
-    readonly attribute any obj;
-    readonly attribute DOMString? reason;
-};
-
-enum WebGPUObjectStatus {
-    "valid",
-    "out-of-memory",
-    "invalid",
-};
-
-typedef (WebGPUBuffer or WebGPUTexture) WebGPUStatusable;
-
-callback WebGPULogCallback = void (WebGPULogEntry error);
-
-// ****************************************************************************
-// SHADER RESOURCES (buffer, textures, texture views, samples)
-// ****************************************************************************
-
-// Buffer
-typedef u32 WebGPUBufferUsageFlags;
-[Pref="dom.webgpu.enable"]
-interface WebGPUBufferUsage {
-    const u32 NONE = 0;
-    const u32 MAP_READ = 1;
-    const u32 MAP_WRITE = 2;
-    const u32 TRANSFER_SRC = 4;
-    const u32 TRANSFER_DST = 8;
-    const u32 INDEX = 16;
-    const u32 VERTEX = 32;
-    const u32 UNIFORM = 64;
-    const u32 STORAGE = 128;
-};
-
-dictionary WebGPUBufferDescriptor {
-    u32 size;
-    WebGPUBufferUsageFlags usage;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUBuffer {
-    readonly attribute ArrayBuffer? mapping;
-    void unmap();
-};
-
-// Texture view
-dictionary WebGPUTextureViewDescriptor {
-    // TODO Investigate what goes in there.
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUTextureView {
-};
-
-// Texture
-typedef u32 WebGPUTextureDimensionEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUTextureDimension {
-    const u32 e1D = 0;
-    const u32 e2D = 1;
-    const u32 e3D = 2;
-    // TODO other dimensions (cube, arrays)
-};
-
-typedef u32 WebGPUTextureFormatEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUTextureFormat {
-    const u32 R8_G8_B8_A8_UNORM = 0;
-    const u32 R8_G8_B8_A8_UINT = 1;
-    const u32 B8_G8_R8_A8_UNORM = 2;
-    const u32 D32_FLOAT_S8_UINT = 3;
-    // TODO other formats
-};
-
-typedef u32 WebGPUTextureUsageFlags;
-[Pref="dom.webgpu.enable"]
-interface WebGPUTextureUsage {
-    const u32 NONE = 0;
-    const u32 TRANSFER_SRC = 1;
-    const u32 TRANSFER_DST = 2;
-    const u32 SAMPLED = 4;
-    const u32 STORAGE = 8;
-    const u32 OUTPUT_ATTACHMENT = 16;
-    const u32 PRESENT = 32;
-};
-
-dictionary WebGPUTextureDescriptor {
-    u32 width;
-    u32 height;
-    u32 depth;
-    u32 arraySize;
-    WebGPUTextureDimensionEnum dimension;
-    WebGPUTextureFormatEnum format;
-    WebGPUTextureUsageFlags usage;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUTexture {
-    WebGPUTextureView createTextureView(optional WebGPUTextureViewDescriptor desc);
-};
-
-// Sampler
-typedef u32 WebGPUFilterModeEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUFilterMode {
-    const u32 NEAREST = 0;
-    const u32 LINEAR = 1;
-};
-
-dictionary WebGPUSamplerDescriptor {
-    WebGPUFilterModeEnum magFilter;
-    WebGPUFilterModeEnum minFilter;
-    WebGPUFilterModeEnum mipmapFilter;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUSampler {
-};
-
-// ****************************************************************************
-// BINDING MODEL (bindgroup layout, bindgroup)
-// ****************************************************************************
-
-// BindGroupLayout
-typedef u32 WebGPUShaderStageFlags;
-[Pref="dom.webgpu.enable"]
-interface WebGPUShaderStageBit {
-    const u32 NONE = 0;
-    const u32 VERTEX = 1;
-    const u32 FRAGMENT = 2;
-    const u32 COMPUTE = 4;
-};
-
-typedef u32 WebGPUBindingTypeEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUBindingType {
-    const u32 UNIFORM_BUFFER = 0;
-    const u32 SAMPLER = 1;
-    const u32 SAMPLED_TEXTURE = 2;
-    const u32 STORAGE_BUFFER = 3;
-    // TODO other binding types (storage images, ...)
-};
-
-dictionary WebGPUBindGroupBinding {
-    WebGPUShaderStageFlags visibility;
-    WebGPUBindingTypeEnum type;
-    u32 start;
-    u32 count;
-};
-
-dictionary WebGPUBindGroupLayoutDescriptor {
-    sequence<WebGPUBindGroupBinding> bindingTypes;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUBindGroupLayout {
-};
-
-// PipelineLayout
-dictionary WebGPUPipelineLayoutDescriptor {
-    sequence<WebGPUBindGroupLayout> bindGroupLayouts;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUPipelineLayout {
-};
-
-// BindGroup
-/* Moved to WebGPUExtras.webidl for now.
-dictionary WebGPUBufferBinding {
-    WebGPUBuffer buffer;
-    u32 offset;
-    u32 size;
-};
-*/
-
-typedef (WebGPUSampler or WebGPUTextureView or WebGPUBufferBinding) WebGPUBindingResource;
-
-dictionary WebGPUBinding {
-    sequence<WebGPUBindingResource> resources;
-    u32 start;
-    u32 count;
-};
-
-dictionary WebGPUBindGroupDescriptor {
-    WebGPUBindGroupLayout layout;
-    sequence<WebGPUBinding> bindings;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUBindGroup {
-};
-
-// ****************************************************************************
-// PIPELINE CREATION (blend state, DS state, ..., pipelines)
-// ****************************************************************************
-
-// BlendState
-typedef u32 WebGPUBlendFactorEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUBlendFactor {
-    const u32 ZERO = 0;
-    const u32 ONE = 1;
-    const u32 SRC_COLOR = 2;
-    const u32 ONE_MINUS_SRC_COLOR = 3;
-    const u32 SRC_ALPHA = 4;
-    const u32 ONE_MINUS_SRC_ALPHA = 5;
-    const u32 DST_COLOR = 6;
-    const u32 ONE_MINUS_DST_COLOR = 7;
-    const u32 DST_ALPHA = 8;
-    const u32 ONE_MINUS_DST_ALPHA = 9;
-    const u32 SRC_ALPHA_SATURATED = 10;
-    const u32 BLEND_COLOR = 11;
-    const u32 ONE_MINUS_BLEND_COLOR = 12;
-};
-
-typedef u32 WebGPUBlendOperationEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUBlendOperation {
-    const u32 ADD = 0;
-    const u32 SUBTRACT = 1;
-    const u32 REVERSE_SUBTRACT = 2;
-    const u32 MIN = 3;
-    const u32 MAX = 4;
-};
-
-typedef u32 WebGPUColorWriteFlags;
-[Pref="dom.webgpu.enable"]
-interface WebGPUColorWriteBits {
-    const u32 NONE = 0;
-    const u32 RED = 1;
-    const u32 GREEN = 2;
-    const u32 BLUE = 4;
-    const u32 ALPHA = 8;
-    const u32 ALL = 15;
-};
-
-dictionary WebGPUBlendDescriptor {
-    WebGPUBlendFactorEnum srcFactor;
-    WebGPUBlendFactorEnum dstFactor;
-    WebGPUBlendOperationEnum operation;
-};
-
-dictionary WebGPUBlendStateDescriptor {
-    boolean blendEnabled;
-    WebGPUBlendDescriptor alpha;
-    WebGPUBlendDescriptor color;
-    WebGPUColorWriteFlags writeMask;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUBlendState {
-};
-
-// DepthStencilState
-typedef u32 WebGPUCompareFunctionEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUCompareFunction {
-    const u32 NEVER = 0;
-    const u32 LESS = 1;
-    const u32 LESS_EQUAL = 2;
-    const u32 GREATER = 3;
-    const u32 GREATER_EQUAL = 4;
-    const u32 EQUAL = 5;
-    const u32 NOT_EQUAL = 6;
-    const u32 ALWAYS = 7;
-};
-
-typedef u32 WebGPUStencilOperationEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUStencilOperation {
-    const u32 KEEP = 0;
-    const u32 ZERO = 1;
-    const u32 REPLACE = 2;
-    const u32 INVERT = 3;
-    const u32 INCREMENT_CLAMP = 4;
-    const u32 DECREMENT_CLAMP = 5;
-    const u32 INCREMENT_WRAP = 6;
-    const u32 DECREMENT_WRAP = 7;
+interface mixin GPUObjectBase {
+    attribute DOMString? label;
 };
 
-dictionary WebGPUStencilStateFaceDescriptor {
-    WebGPUCompareFunctionEnum compare;
-    WebGPUStencilOperationEnum stencilFailOp;
-    WebGPUStencilOperationEnum depthFailOp;
-    WebGPUStencilOperationEnum passOp;
-};
-
-dictionary WebGPUDepthStencilStateDescriptor {
-    boolean depthWriteEnabled;
-    WebGPUCompareFunctionEnum depthCompare;
-
-    WebGPUStencilStateFaceDescriptor front;
-    WebGPUStencilStateFaceDescriptor back;
-
-    u32 stencilReadMask;
-    u32 stencilWriteMask;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUDepthStencilState {
-};
-
-// InputState
-typedef u32 WebGPUIndexFormatEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUIndexFormat {
-    const u32 UINT16 = 0;
-    const u32 UINT32 = 1;
-};
-
-typedef u32 WebGPUVertexFormatEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUVertexFormat {
-    const u32 FLOAT_R32_G32_B32_A32 = 0;
-    const u32 FLOAT_R32_G32_B32 = 1;
-    const u32 FLOAT_R32_G32 = 2;
-    const u32 FLOAT_R32 = 3;
-    // TODO other vertex formats
-};
-
-typedef u32 WebGPUInputStepModeEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUInputStepMode {
-    const u32 VERTEX = 0;
-    const u32 INSTANCE = 1;
-};
-
-dictionary WebGPUVertexAttributeDescriptor {
-    u32 shaderLocation;
-    u32 inputSlot;
-    u32 offset;
-    WebGPUVertexFormatEnum format;
-};
-
-dictionary WebGPUVertexInputDescriptor {
-    u32 inputSlot;
-    u32 stride;
-    WebGPUInputStepModeEnum stepMode;
-};
-
-dictionary WebGPUInputStateDescriptor {
-    WebGPUIndexFormatEnum indexFormat;
-
-    sequence<WebGPUVertexAttributeDescriptor> attributes;
-    sequence<WebGPUVertexInputDescriptor> inputs;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUInputState {
-};
-
-// ShaderModule
-dictionary WebGPUShaderModuleDescriptor {
-    required ArrayBuffer code;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUShaderModule {
-};
-
-// AttachmentState
-dictionary WebGPUAttachmentStateDescriptor {
-    sequence<WebGPUTextureFormatEnum> formats;
-    // TODO other stuff like sample count etc.
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUAttachmentState {
-};
-
-// Common stuff for ComputePipeline and RenderPipeline
-typedef u32 WebGPUShaderStageEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUShaderStage {
-    const u32 VERTEX = 0;
-    const u32 FRAGMENT = 1;
-    const u32 COMPUTE = 2;
-};
-
-dictionary WebGPUPipelineStageDescriptor {
-    required WebGPUShaderModule shaderModule;
-    required WebGPUShaderStageEnum stage;
-    required DOMString entryPoint;
-    // TODO other stuff like specialization constants?
-};
-
-dictionary WebGPUPipelineDescriptorBase {
-    required WebGPUPipelineLayout layout;
-    sequence<WebGPUPipelineStageDescriptor> stages;
-};
-
-// ComputePipeline
-dictionary WebGPUComputePipelineDescriptor : WebGPUPipelineDescriptorBase {
-};
 
-[Pref="dom.webgpu.enable"]
-interface WebGPUComputePipeline {
+dictionary GPUObjectDescriptorBase {
+    DOMString label;
 };
 
-// WebGPURenderPipeline
-typedef u32 WebGPUPrimitiveTopologyEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUPrimitiveTopology {
-    const u32 POINT_LIST = 0;
-    const u32 LINE_LIST = 1;
-    const u32 LINE_STRIP = 2;
-    const u32 TRIANGLE_LIST = 3;
-    const u32 TRIANGLE_STRIP = 4;
-};
-
-dictionary WebGPURenderPipelineDescriptor : WebGPUPipelineDescriptorBase {
-    WebGPUPrimitiveTopologyEnum primitiveTopology;
-    sequence<WebGPUBlendState> blendState;
-    WebGPUDepthStencilState depthStencilState;
-    WebGPUInputState inputState;
-    WebGPUAttachmentState attachmentState;
-    // TODO other properties
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPURenderPipeline {
-};
-// ****************************************************************************
-// COMMAND RECORDING (Command buffer and all relevant structures)
-// ****************************************************************************
-
-typedef u32 WebGPULoadOpEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPULoadOp {
-    const u32 CLEAR = 0;
-    const u32 LOAD = 1;
-};
-
-typedef u32 WebGPUStoreOpEnum;
-[Pref="dom.webgpu.enable"]
-interface WebGPUStoreOp {
-    const u32 STORE = 0;
-};
-
-dictionary WebGPURenderPassAttachmentDescriptor {
-    WebGPUTextureView attachment;
-    WebGPULoadOpEnum loadOp;
-    WebGPUStoreOpEnum storeOp;
-};
-
-dictionary WebGPURenderPassDescriptor {
-    sequence<WebGPURenderPassAttachmentDescriptor> colorAttachments;
-    WebGPURenderPassAttachmentDescriptor depthStencilAttachment;
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUCommandBuffer {
-};
-
-dictionary WebGPUCommandEncoderDescriptor {
-};
-
-[Pref="dom.webgpu.enable"]
-interface WebGPUCommandEncoder {
-    WebGPUCommandBuffer finishEncoding();
-
-    // Commands allowed outside of "passes"
-    void copyBufferToBuffer(WebGPUBuffer src,
-                            u32 srcOffset,
-                            WebGPUBuffer dst,
-                            u32 dstOffset,
-                            u32 size);
-    // TODO figure out all the arguments required for these
-    void copyBufferToTexture();
-    void copyTextureToBuffer();
-    void copyTextureToTexture();
-    void blit();
 
-    void transitionBuffer(WebGPUBuffer b, WebGPUBufferUsageFlags f);
-
-    // Allowed in both compute and render passes
-    void setPushConstants(WebGPUShaderStageFlags stage,
-                          u32 offset,
-                          u32 count,
-                          ArrayBuffer data);
-    void setBindGroup(u32 index, WebGPUBindGroup bindGroup);
-    void setPipeline((WebGPUComputePipeline or WebGPURenderPipeline) pipeline);
-
-    // Compute pass commands
-    void beginComputePass();
-    void endComputePass();
-
-    void dispatch(u32 x, u32 y, u32 z);
-
-    // Render pass commands
-    void beginRenderPass(optional WebGPURenderPassDescriptor descriptor);
-    void endRenderPass();
-
-    void setBlendColor(float r, float g, float b, float a);
-    void setIndexBuffer(WebGPUBuffer buffer, u32 offset);
-    void setVertexBuffers(u32 startSlot, sequence<WebGPUBuffer> buffers, sequence<u32> offsets);
-
-    void draw(u32 vertexCount, u32 instanceCount, u32 firstVertex, u32 firstInstance);
-    void drawIndexed(u32 indexCount, u32 instanceCount, u32 firstIndex, u32 firstInstance, u32 firstVertex);
-
-    // TODO add missing commands
+[Exposed=Window]
+partial interface Navigator {
+    [SameObject] readonly attribute GPU gpu;
 };
 
-// ****************************************************************************
-// OTHER (Fence, Queue SwapChain, Device)
-// ****************************************************************************
-
-// Fence
-[Pref="dom.webgpu.enable"]
-interface WebGPUFence {
-    boolean wait(double milliseconds);
-    readonly attribute Promise<void> promise;
-};
 
-// Queue
-[Pref="dom.webgpu.enable"]
-interface WebGPUQueue {
-    void submit(sequence<WebGPUCommandBuffer> buffers);
-    WebGPUFence insertFence();
+[Exposed=DedicatedWorker]
+partial interface WorkerNavigator {
+    [SameObject] readonly attribute GPU gpu;
 };
 
-// SwapChain / RenderingContext
-dictionary WebGPUSwapChainDescriptor {
-    WebGPUTextureUsageFlags usage;
-    WebGPUTextureFormatEnum format;
-    u32 width;
-    u32 height;
-};
 
-[Pref="dom.webgpu.enable"]
-interface WebGPUSwapChain {
-    void configure(optional WebGPUSwapChainDescriptor descriptor);
-    WebGPUTexture getNextTexture();
-    void present();
+[Exposed=(Window, DedicatedWorker)]
+interface GPU {
+    Promise<GPUAdapter> requestAdapter(optional GPURequestAdapterOptions options = {});
 };
-
-//[Pref="dom.webgpu.enable"]
-//interface WebGPURenderingContext : WebGPUSwapChain {
-//};
 
-// WebGPU "namespace" used for device creation
-dictionary WebGPUExtensions {
-    boolean anisotropicFiltering;
-    boolean logicOp; // Previously a "Feature".
-};
 
-dictionary WebGPULimits {
-    u32 maxBindGroups;
+dictionary GPURequestAdapterOptions {
+    GPUPowerPreference powerPreference;
 };
-
-// Device
-[Pref="dom.webgpu.enable"]
-interface WebGPUDevice {
-    readonly attribute WebGPUAdapter adapter;
-    WebGPUExtensions extensions();
-    WebGPULimits limits();
-
-    WebGPUBuffer createBuffer(optional WebGPUBufferDescriptor descriptor);
-    WebGPUTexture createTexture(optional WebGPUTextureDescriptor descriptor);
-    WebGPUSampler createSampler(optional WebGPUSamplerDescriptor descriptor);
 
-    WebGPUBindGroupLayout createBindGroupLayout(optional WebGPUBindGroupLayoutDescriptor descriptor);
-    WebGPUPipelineLayout createPipelineLayout(optional WebGPUPipelineLayoutDescriptor descriptor);
-    WebGPUBindGroup createBindGroup(optional WebGPUBindGroupDescriptor descriptor);
 
-    WebGPUBlendState createBlendState(optional WebGPUBlendStateDescriptor descriptor);
-    WebGPUDepthStencilState createDepthStencilState(optional WebGPUDepthStencilStateDescriptor descriptor);
-    WebGPUInputState createInputState(optional WebGPUInputStateDescriptor descriptor);
-    WebGPUShaderModule createShaderModule(WebGPUShaderModuleDescriptor descriptor);
-    WebGPUAttachmentState createAttachmentState(optional WebGPUAttachmentStateDescriptor descriptor);
-    WebGPUComputePipeline createComputePipeline(WebGPUComputePipelineDescriptor descriptor);
-    WebGPURenderPipeline createRenderPipeline(WebGPURenderPipelineDescriptor descriptor);
-
-    WebGPUCommandEncoder createCommandEncoder(optional WebGPUCommandEncoderDescriptor descriptor);
-
-    WebGPUQueue getQueue();
-
-    attribute WebGPULogCallback onLog;
-    Promise<WebGPUObjectStatus> getObjectStatus(WebGPUStatusable obj);
+enum GPUPowerPreference {
+    "low-power",
+    "high-performance"
 };
 
-dictionary WebGPUDeviceDescriptor {
-    WebGPUExtensions extensions;
-    //WebGPULimits limits; Don't expose higher limits for now.
-
-    // TODO are other things configurable like queues?
-};
 
-[Pref="dom.webgpu.enable"]
-interface WebGPUAdapter {
+interface GPUAdapter {
     readonly attribute DOMString name;
-    WebGPUExtensions extensions();
-    //WebGPULimits limits(); Don't expose higher limits for now.
+    readonly attribute sequence<GPUExtensionName> extensions;
+    //readonly attribute GPULimits limits; Don't expose higher limits for now.
 
-    WebGPUDevice createDevice(optional WebGPUDeviceDescriptor descriptor);
+    Promise<GPUDevice> requestDevice(optional GPUDeviceDescriptor descriptor = {});
 };
 
-enum WebGPUPowerPreference { "default", "low-power", "high-performance" };
 
-dictionary WebGPUAdapterDescriptor {
-    WebGPUPowerPreference powerPreference;
+dictionary GPUDeviceDescriptor : GPUObjectDescriptorBase {
+    sequence<GPUExtensionName> extensions = [];
+    GPULimits limits = {};
+
+    // TODO: are other things configurable like queues?
 };
 
-[Pref="dom.webgpu.enable"]
-interface WebGPU {
-    WebGPUAdapter getAdapter(optional WebGPUAdapterDescriptor desc);
+
+enum GPUExtensionName {
+    "anisotropic-filtering"
 };
 
-// Add a "webgpu" member to Window that contains the global instance of a "WebGPU"
-interface mixin WebGPUProvider {
-    [SameObject, Replaceable, Pref="dom.webgpu.enable"] readonly attribute WebGPU webgpu;
+
+dictionary GPULimits {
+    unsigned long maxBindGroups = 4;
+    unsigned long maxDynamicUniformBuffersPerPipelineLayout = 8;
+    unsigned long maxDynamicStorageBuffersPerPipelineLayout = 4;
+    unsigned long maxSampledTexturesPerShaderStage = 16;
+    unsigned long maxSamplersPerShaderStage = 16;
+    unsigned long maxStorageBuffersPerShaderStage = 4;
+    unsigned long maxStorageTexturesPerShaderStage = 4;
+    unsigned long maxUniformBuffersPerShaderStage = 12;
 };
-//Window includes WebGPUProvider;
+
+
+[Exposed=(Window, DedicatedWorker), Serializable]
+interface GPUDevice : EventTarget {
+    [SameObject] readonly attribute GPUAdapter adapter;
+    readonly attribute sequence<GPUExtensionName> extensions;
+    readonly attribute object limits;
+
+    [SameObject] readonly attribute GPUQueue defaultQueue;
+
+    GPUBuffer createBuffer(GPUBufferDescriptor descriptor);
+    GPUMappedBuffer createBufferMapped(GPUBufferDescriptor descriptor);
+    GPUTexture createTexture(GPUTextureDescriptor descriptor);
+    GPUSampler createSampler(optional GPUSamplerDescriptor descriptor = {});
+
+    GPUBindGroupLayout createBindGroupLayout(GPUBindGroupLayoutDescriptor descriptor);
+    GPUPipelineLayout createPipelineLayout(GPUPipelineLayoutDescriptor descriptor);
+    GPUBindGroup createBindGroup(GPUBindGroupDescriptor descriptor);
+
+    GPUShaderModule createShaderModule(GPUShaderModuleDescriptor descriptor);
+    GPUComputePipeline createComputePipeline(GPUComputePipelineDescriptor descriptor);
+    GPURenderPipeline createRenderPipeline(GPURenderPipelineDescriptor descriptor);
+
+    GPUCommandEncoder createCommandEncoder(optional GPUCommandEncoderDescriptor descriptor = {});
+    GPURenderBundleEncoder createRenderBundleEncoder(GPURenderBundleEncoderDescriptor descriptor);
+};
+GPUDevice includes GPUObjectBase;
+
+
+[Serializable]
+interface GPUBuffer {
+    Promise<ArrayBuffer> mapReadAsync();
+    Promise<ArrayBuffer> mapWriteAsync();
+    void unmap();
+
+    void destroy();
+};
+GPUBuffer includes GPUObjectBase;
+
+
+dictionary GPUBufferDescriptor : GPUObjectDescriptorBase {
+    required GPUBufferSize size;
+    required GPUBufferUsageFlags usage;
+};
+
+
+typedef unsigned long GPUBufferUsageFlags;
+interface GPUBufferUsage {
+    const GPUBufferUsageFlags MAP_READ  = 0x0001;
+    const GPUBufferUsageFlags MAP_WRITE = 0x0002;
+    const GPUBufferUsageFlags COPY_SRC  = 0x0004;
+    const GPUBufferUsageFlags COPY_DST  = 0x0008;
+    const GPUBufferUsageFlags INDEX     = 0x0010;
+    const GPUBufferUsageFlags VERTEX    = 0x0020;
+    const GPUBufferUsageFlags UNIFORM   = 0x0040;
+    const GPUBufferUsageFlags STORAGE   = 0x0080;
+    const GPUBufferUsageFlags INDIRECT  = 0x0100;
+};
+
+
+[Serializable]
+interface GPUTexture {
+    GPUTextureView createView(optional GPUTextureViewDescriptor descriptor = {});
+
+    void destroy();
+};
+GPUTexture includes GPUObjectBase;
+
+
+dictionary GPUTextureDescriptor : GPUObjectDescriptorBase {
+    required GPUExtent3D size;
+    unsigned long arrayLayerCount = 1;
+    unsigned long mipLevelCount = 1;
+    unsigned long sampleCount = 1;
+    GPUTextureDimension dimension = "2d";
+    required GPUTextureFormat format;
+    required GPUTextureUsageFlags usage;
+};
+
+
+enum GPUTextureDimension {
+    "1d",
+    "2d",
+    "3d"
+};
+
+
+typedef unsigned long GPUTextureUsageFlags;
+interface GPUTextureUsage {
+    const GPUTextureUsageFlags COPY_SRC          = 0x01;
+    const GPUTextureUsageFlags COPY_DST          = 0x02;
+    const GPUTextureUsageFlags SAMPLED           = 0x04;
+    const GPUTextureUsageFlags STORAGE           = 0x08;
+    const GPUTextureUsageFlags OUTPUT_ATTACHMENT = 0x10;
+};
+
+
+interface GPUTextureView {
+};
+GPUTextureView includes GPUObjectBase;
+
+
+dictionary GPUTextureViewDescriptor : GPUObjectDescriptorBase {
+    GPUTextureFormat format;
+    GPUTextureViewDimension dimension;
+    GPUTextureAspect aspect = "all";
+    unsigned long baseMipLevel = 0;
+    unsigned long mipLevelCount = 0;
+    unsigned long baseArrayLayer = 0;
+    unsigned long arrayLayerCount = 0;
+};
+
+
+enum GPUTextureViewDimension {
+    "1d",
+    "2d",
+    "2d-array",
+    "cube",
+    "cube-array",
+    "3d"
+};
+
+
+enum GPUTextureAspect {
+    "all",
+    "stencil-only",
+    "depth-only"
+};
+
+
+enum GPUTextureFormat {
+    // 8-bit formats
+    "r8unorm",
+    "r8snorm",
+    "r8uint",
+    "r8sint",
+
+    // 16-bit formats
+    "r16uint",
+    "r16sint",
+    "r16float",
+    "rg8unorm",
+    "rg8snorm",
+    "rg8uint",
+    "rg8sint",
+
+    // 32-bit formats
+    "r32uint",
+    "r32sint",
+    "r32float",
+    "rg16uint",
+    "rg16sint",
+    "rg16float",
+    "rgba8unorm",
+    "rgba8unorm-srgb",
+    "rgba8snorm",
+    "rgba8uint",
+    "rgba8sint",
+    "bgra8unorm",
+    "bgra8unorm-srgb",
+    // Packed 32-bit formats
+    "rgb10a2unorm",
+    "rg11b10float",
+
+    // 64-bit formats
+    "rg32uint",
+    "rg32sint",
+    "rg32float",
+    "rgba16uint",
+    "rgba16sint",
+    "rgba16float",
+
+    // 128-bit formats
+    "rgba32uint",
+    "rgba32sint",
+    "rgba32float",
+
+    // Depth and stencil formats
+    "depth32float",
+    "depth24plus",
+    "depth24plus-stencil8"
+};
+
+
+enum GPUTextureComponentType {
+    "float",
+    "sint",
+    "uint"
+};
+
+
+interface GPUSampler {
+};
+GPUSampler includes GPUObjectBase;
+
+
+dictionary GPUSamplerDescriptor : GPUObjectDescriptorBase {
+    GPUAddressMode addressModeU = "clamp-to-edge";
+    GPUAddressMode addressModeV = "clamp-to-edge";
+    GPUAddressMode addressModeW = "clamp-to-edge";
+    GPUFilterMode magFilter = "nearest";
+    GPUFilterMode minFilter = "nearest";
+    GPUFilterMode mipmapFilter = "nearest";
+    float lodMinClamp = 0;
+    float lodMaxClamp = 0xffffffff; // TODO: What should this be? Was Number.MAX_VALUE.
+    GPUCompareFunction compare = "never";
+};
+
+
+enum GPUAddressMode {
+    "clamp-to-edge",
+    "repeat",
+    "mirror-repeat"
+};
+
+
+enum GPUFilterMode {
+    "nearest",
+    "linear"
+};
+
+
+enum GPUCompareFunction {
+    "never",
+    "less",
+    "equal",
+    "less-equal",
+    "greater",
+    "not-equal",
+    "greater-equal",
+    "always"
+};
+
+
+[Serializable]
+interface GPUBindGroupLayout {
+};
+GPUBindGroupLayout includes GPUObjectBase;
+
+
+dictionary GPUBindGroupLayoutDescriptor : GPUObjectDescriptorBase {
+    required sequence<GPUBindGroupLayoutBinding> bindings;
+};
+
+
+dictionary GPUBindGroupLayoutBinding {
+    required unsigned long binding;
+    required GPUShaderStageFlags visibility;
+    required GPUBindingType type;
+    GPUTextureViewDimension textureDimension = "2d";
+    GPUTextureComponentType textureComponentType = "float";
+    boolean multisampled = false;
+    boolean hasDynamicOffset = false;
+};
+
+
+typedef unsigned long GPUShaderStageFlags;
+interface GPUShaderStage {
+    const GPUShaderStageFlags VERTEX   = 0x1;
+    const GPUShaderStageFlags FRAGMENT = 0x2;
+    const GPUShaderStageFlags COMPUTE  = 0x4;
+};
+
+
+enum GPUBindingType {
+    "uniform-buffer",
+    "storage-buffer",
+    "readonly-storage-buffer",
+    "sampler",
+    "sampled-texture",
+    "storage-texture"
+    // TODO: other binding types
+};
+
+
+interface GPUBindGroup {
+};
+GPUBindGroup includes GPUObjectBase;
+
+
+dictionary GPUBindGroupDescriptor : GPUObjectDescriptorBase {
+    required GPUBindGroupLayout layout;
+    required sequence<GPUBindGroupBinding> bindings;
+};
+
+
+typedef (GPUSampler or GPUTextureView or GPUBufferBinding) GPUBindingResource;
+
+dictionary GPUBindGroupBinding {
+    required unsigned long binding;
+    required GPUBindingResource resource;
+};
+
+
+dictionary GPUBufferBinding {
+    required GPUBuffer buffer;
+    GPUBufferSize offset = 0;
+    GPUBufferSize size;
+};
+
+
+interface GPUPipelineLayout {
+};
+GPUPipelineLayout includes GPUObjectBase;
+
+
+dictionary GPUPipelineLayoutDescriptor : GPUObjectDescriptorBase {
+    required sequence<GPUBindGroupLayout> bindGroupLayouts;
+};
+
+
+[Serializable]
+interface GPUShaderModule {
+};
+GPUShaderModule includes GPUObjectBase;
+
+
+typedef (Uint32Array or DOMString) GPUShaderCode;
+
+dictionary GPUShaderModuleDescriptor : GPUObjectDescriptorBase {
+    required GPUShaderCode code;
+};
+
+
+dictionary GPUPipelineDescriptorBase : GPUObjectDescriptorBase {
+    required GPUPipelineLayout layout;
+};
+
+
+dictionary GPUProgrammableStageDescriptor {
+    required GPUShaderModule module;
+    required DOMString entryPoint;
+    // TODO: other stuff like specialization constants?
+};
+
+
+[Serializable]
+interface GPUComputePipeline {
+};
+GPUComputePipeline includes GPUObjectBase;
+
+
+dictionary GPUComputePipelineDescriptor : GPUPipelineDescriptorBase {
+    required GPUProgrammableStageDescriptor computeStage;
+};
+
+
+[Serializable]
+interface GPURenderPipeline {
+};
+GPURenderPipeline includes GPUObjectBase;
+
+
+dictionary GPURenderPipelineDescriptor : GPUPipelineDescriptorBase {
+    required GPUProgrammableStageDescriptor vertexStage;
+    GPUProgrammableStageDescriptor fragmentStage;
+
+    required GPUPrimitiveTopology primitiveTopology;
+    GPURasterizationStateDescriptor rasterizationState = {};
+    required sequence<GPUColorStateDescriptor> colorStates;
+    GPUDepthStencilStateDescriptor depthStencilState;
+    GPUVertexStateDescriptor vertexState = {};
+
+    unsigned long sampleCount = 1;
+    unsigned long sampleMask = 0xFFFFFFFF;
+    boolean alphaToCoverageEnabled = false;
+    // TODO: other properties
+};
+
+
+enum GPUPrimitiveTopology {
+    "point-list",
+    "line-list",
+    "line-strip",
+    "triangle-list",
+    "triangle-strip"
+};
+
+
+dictionary GPURasterizationStateDescriptor {
+    GPUFrontFace frontFace = "ccw";
+    GPUCullMode cullMode = "none";
+
+    long depthBias = 0;
+    float depthBiasSlopeScale = 0;
+    float depthBiasClamp = 0;
+};
+
+
+enum GPUFrontFace {
+    "ccw",
+    "cw"
+};
+
+
+enum GPUCullMode {
+    "none",
+    "front",
+    "back"
+};
+
+
+dictionary GPUColorStateDescriptor {
+    required GPUTextureFormat format;
+
+    GPUBlendDescriptor alphaBlend = {};
+    GPUBlendDescriptor colorBlend = {};
+    GPUColorWriteFlags writeMask = 0xF;  // GPUColorWrite.ALL
+};
+
+
+typedef unsigned long GPUColorWriteFlags;
+interface GPUColorWrite {
+    const GPUColorWriteFlags RED   = 0x1;
+    const GPUColorWriteFlags GREEN = 0x2;
+    const GPUColorWriteFlags BLUE  = 0x4;
+    const GPUColorWriteFlags ALPHA = 0x8;
+    const GPUColorWriteFlags ALL   = 0xF;
+};
+
+
+dictionary GPUBlendDescriptor {
+    GPUBlendFactor srcFactor = "one";
+    GPUBlendFactor dstFactor = "zero";
+    GPUBlendOperation operation = "add";
+};
+
+
+enum GPUBlendFactor {
+    "zero",
+    "one",
+    "src-color",
+    "one-minus-src-color",
+    "src-alpha",
+    "one-minus-src-alpha",
+    "dst-color",
+    "one-minus-dst-color",
+    "dst-alpha",
+    "one-minus-dst-alpha",
+    "src-alpha-saturated",
+    "blend-color",
+    "one-minus-blend-color"
+};
+
+
+enum GPUBlendOperation {
+    "add",
+    "subtract",
+    "reverse-subtract",
+    "min",
+    "max"
+};
+
+
+enum GPUStencilOperation {
+    "keep",
+    "zero",
+    "replace",
+    "invert",
+    "increment-clamp",
+    "decrement-clamp",
+    "increment-wrap",
+    "decrement-wrap"
+};
+
+
+dictionary GPUDepthStencilStateDescriptor {
+    required GPUTextureFormat format;
+
+    boolean depthWriteEnabled = false;
+    GPUCompareFunction depthCompare = "always";
+
+    GPUStencilStateFaceDescriptor stencilFront = {};
+    GPUStencilStateFaceDescriptor stencilBack = {};
+
+    unsigned long stencilReadMask = 0xFFFFFFFF;
+    unsigned long stencilWriteMask = 0xFFFFFFFF;
+};
+
+
+dictionary GPUStencilStateFaceDescriptor {
+    GPUCompareFunction compare = "always";
+    GPUStencilOperation failOp = "keep";
+    GPUStencilOperation depthFailOp = "keep";
+    GPUStencilOperation passOp = "keep";
+};
+
+
+enum GPUIndexFormat {
+    "uint16",
+    "uint32"
+};
+
+
+enum GPUVertexFormat {
+    "uchar2",
+    "uchar4",
+    "char2",
+    "char4",
+    "uchar2norm",
+    "uchar4norm",
+    "char2norm",
+    "char4norm",
+    "ushort2",
+    "ushort4",
+    "short2",
+    "short4",
+    "ushort2norm",
+    "ushort4norm",
+    "short2norm",
+    "short4norm",
+    "half2",
+    "half4",
+    "float",
+    "float2",
+    "float3",
+    "float4",
+    "uint",
+    "uint2",
+    "uint3",
+    "uint4",
+    "int",
+    "int2",
+    "int3",
+    "int4"
+};
+
+
+enum GPUInputStepMode {
+    "vertex",
+    "instance"
+};
+
+
+dictionary GPUVertexStateDescriptor {
+    GPUIndexFormat indexFormat = "uint32";
+    sequence<GPUVertexBufferLayoutDescriptor?> vertexBuffers = [];
+};
+
+
+dictionary GPUVertexBufferLayoutDescriptor {
+    required GPUBufferSize arrayStride;
+    GPUInputStepMode stepMode = "vertex";
+    required sequence<GPUVertexAttributeDescriptor> attributes;
+};
+
+
+dictionary GPUVertexAttributeDescriptor {
+    required GPUVertexFormat format;
+    required GPUBufferSize offset;
+
+    required unsigned long shaderLocation;
+};
+
+
+interface GPUCommandBuffer {
+};
+GPUCommandBuffer includes GPUObjectBase;
+
+
+dictionary GPUCommandBufferDescriptor : GPUObjectDescriptorBase {
+};
+
+
+interface GPUCommandEncoder {
+    GPURenderPassEncoder beginRenderPass(GPURenderPassDescriptor descriptor);
+    GPUComputePassEncoder beginComputePass(optional GPUComputePassDescriptor descriptor = {});
+
+    void copyBufferToBuffer(
+        GPUBuffer source,
+        GPUBufferSize sourceOffset,
+        GPUBuffer destination,
+        GPUBufferSize destinationOffset,
+        GPUBufferSize size);
+
+    void copyBufferToTexture(
+        GPUBufferCopyView source,
+        GPUTextureCopyView destination,
+        GPUExtent3D copySize);
+
+    void copyTextureToBuffer(
+        GPUTextureCopyView source,
+        GPUBufferCopyView destination,
+        GPUExtent3D copySize);
+
+    void copyTextureToTexture(
+        GPUTextureCopyView source,
+        GPUTextureCopyView destination,
+        GPUExtent3D copySize);
+
+    void pushDebugGroup(DOMString groupLabel);
+    void popDebugGroup();
+    void insertDebugMarker(DOMString markerLabel);
+
+    GPUCommandBuffer finish(optional GPUCommandBufferDescriptor descriptor = {});
+};
+GPUCommandEncoder includes GPUObjectBase;
+
+
+dictionary GPUCommandEncoderDescriptor : GPUObjectDescriptorBase {
+    // TODO: reusability flag?
+};
+
+
+dictionary GPUBufferCopyView {
+    required GPUBuffer buffer;
+    GPUBufferSize offset = 0;
+    required unsigned long rowPitch;
+    required unsigned long imageHeight;
+};
+
+
+dictionary GPUTextureCopyView {
+    required GPUTexture texture;
+    unsigned long mipLevel = 0;
+    unsigned long arrayLayer = 0;
+    GPUOrigin3D origin = {};
+};
+
+
+dictionary GPUImageBitmapCopyView {
+    required ImageBitmap imageBitmap;
+    GPUOrigin2D origin = {};
+};
+
+
+interface mixin GPUProgrammablePassEncoder {
+    void setBindGroup(unsigned long index, GPUBindGroup bindGroup,
+                      optional sequence<unsigned long> dynamicOffsets = []);
+
+    void setBindGroup(unsigned long index, GPUBindGroup bindGroup,
+                      Uint32Array dynamicOffsetsData,
+                      unsigned long long dynamicOffsetsDataStart,
+                      unsigned long long dynamicOffsetsDataLength);
+
+    void pushDebugGroup(DOMString groupLabel);
+    void popDebugGroup();
+    void insertDebugMarker(DOMString markerLabel);
+};
+
+
+interface GPUComputePassEncoder {
+    void setPipeline(GPUComputePipeline pipeline);
+    void dispatch(unsigned long x, optional unsigned long y = 1, optional unsigned long z = 1);
+    void dispatchIndirect(GPUBuffer indirectBuffer, GPUBufferSize indirectOffset);
+
+    void endPass();
+};
+GPUComputePassEncoder includes GPUObjectBase;
+GPUComputePassEncoder includes GPUProgrammablePassEncoder;
+
+
+dictionary GPUComputePassDescriptor : GPUObjectDescriptorBase {
+};
+
+
+interface mixin GPURenderEncoderBase {
+    void setPipeline(GPURenderPipeline pipeline);
+
+    void setIndexBuffer(GPUBuffer buffer, optional GPUBufferSize offset = 0);
+    void setVertexBuffer(unsigned long slot, GPUBuffer buffer, optional GPUBufferSize offset = 0);
+
+    void draw(unsigned long vertexCount, unsigned long instanceCount,
+              unsigned long firstVertex, unsigned long firstInstance);
+    void drawIndexed(unsigned long indexCount, unsigned long instanceCount,
+                     unsigned long firstIndex, long baseVertex, unsigned long firstInstance);
+
+    void drawIndirect(GPUBuffer indirectBuffer, GPUBufferSize indirectOffset);
+    void drawIndexedIndirect(GPUBuffer indirectBuffer, GPUBufferSize indirectOffset);
+};
+
+interface GPURenderPassEncoder {
+    void setViewport(float x, float y,
+                     float width, float height,
+                     float minDepth, float maxDepth);
+
+    void setScissorRect(unsigned long x, unsigned long y, unsigned long width, unsigned long height);
+
+    void setBlendColor(GPUColor color);
+    void setStencilReference(unsigned long reference);
+
+    void executeBundles(sequence<GPURenderBundle> bundles);
+    void endPass();
+};
+GPURenderPassEncoder includes GPUObjectBase;
+GPURenderPassEncoder includes GPUProgrammablePassEncoder;
+GPURenderPassEncoder includes GPURenderEncoderBase;
+
+
+dictionary GPURenderPassDescriptor : GPUObjectDescriptorBase {
+    required sequence<GPURenderPassColorAttachmentDescriptor> colorAttachments;
+    GPURenderPassDepthStencilAttachmentDescriptor depthStencilAttachment;
+};
+
+
+dictionary GPURenderPassColorAttachmentDescriptor {
+    required GPUTextureView attachment;
+    GPUTextureView resolveTarget;
+
+    required (GPULoadOp or GPUColor) loadValue;
+    GPUStoreOp storeOp = "store";
+};
+
+
+dictionary GPURenderPassDepthStencilAttachmentDescriptor {
+    required GPUTextureView attachment;
+
+    required (GPULoadOp or float) depthLoadValue;
+    required GPUStoreOp depthStoreOp;
+
+    required (GPULoadOp or unsigned long) stencilLoadValue;
+    required GPUStoreOp stencilStoreOp;
+};
+
+
+enum GPULoadOp {
+    "load"
+};
+
+
+enum GPUStoreOp {
+    "store",
+    "clear"
+};
+
+
+interface GPURenderBundle {
+};
+GPURenderBundle includes GPUObjectBase;
+
+
+dictionary GPURenderBundleDescriptor : GPUObjectDescriptorBase {
+};
+
+
+interface GPURenderBundleEncoder {
+    GPURenderBundle finish(optional GPURenderBundleDescriptor descriptor = {});
+};
+GPURenderBundleEncoder includes GPUObjectBase;
+GPURenderBundleEncoder includes GPUProgrammablePassEncoder;
+GPURenderBundleEncoder includes GPURenderEncoderBase;
+
+
+dictionary GPURenderBundleEncoderDescriptor : GPUObjectDescriptorBase {
+    required sequence<GPUTextureFormat> colorFormats;
+    GPUTextureFormat depthStencilFormat;
+    unsigned long sampleCount = 1;
+};
+
+
+interface GPUQueue {
+    void submit(sequence<GPUCommandBuffer> commandBuffers);
+
+    GPUFence createFence(optional GPUFenceDescriptor descriptor = {});
+    void signal(GPUFence fence, unsigned long long signalValue);
+
+    void copyImageBitmapToTexture(
+        GPUImageBitmapCopyView source,
+        GPUTextureCopyView destination,
+        GPUExtent3D copySize);
+};
+GPUQueue includes GPUObjectBase;
+
+
+interface GPUFence {
+    unsigned long long getCompletedValue();
+    Promise<void> onCompletion(unsigned long long completionValue);
+};
+GPUFence includes GPUObjectBase;
+
+
+dictionary GPUFenceDescriptor : GPUObjectDescriptorBase {
+    unsigned long long initialValue = 0;
+};
+
+
+interface GPUCanvasContext {
+    GPUSwapChain configureSwapChain(GPUSwapChainDescriptor descriptor);
+
+    Promise<GPUTextureFormat> getSwapChainPreferredFormat(GPUDevice device);
+};
+
+
+dictionary GPUSwapChainDescriptor : GPUObjectDescriptorBase {
+    required GPUDevice device;
+    required GPUTextureFormat format;
+    GPUTextureUsageFlags usage = 0x10;  // GPUTextureUsage.OUTPUT_ATTACHMENT
+};
+
+
+interface GPUSwapChain {
+    GPUTexture getCurrentTexture();
+};
+GPUSwapChain includes GPUObjectBase;
+
+
+interface GPUDeviceLostInfo {
+    readonly attribute DOMString message;
+};
+
+partial interface GPUDevice {
+    readonly attribute Promise<GPUDeviceLostInfo> lost;
+};
+
+
+enum GPUErrorFilter {
+    "none",
+    "out-of-memory",
+    "validation"
+};
+
+
+interface GPUOutOfMemoryError {
+    constructor();
+};
+
+interface GPUValidationError {
+    constructor(DOMString message);
+    readonly attribute DOMString message;
+};
+
+typedef (GPUOutOfMemoryError or GPUValidationError) GPUError;
+
+
+partial interface GPUDevice {
+    void pushErrorScope(GPUErrorFilter filter);
+    Promise<GPUError?> popErrorScope();
+};
+
+
+[
+    Exposed=(Window, DedicatedWorker)
+]
+interface GPUUncapturedErrorEvent : Event {
+    constructor(
+        DOMString type,
+        GPUUncapturedErrorEventInit gpuUncapturedErrorEventInitDict
+    );
+    [SameObject] readonly attribute GPUError error;
+};
+
+dictionary GPUUncapturedErrorEventInit : EventInit {
+    required GPUError error;
+};
+
+
+partial interface GPUDevice {
+    [Exposed=(Window, DedicatedWorker)]
+    attribute EventHandler onuncapturederror;
+};
+
+
+typedef unsigned long long GPUBufferSize;
+
+
+dictionary GPUColorDict {
+    required double r;
+    required double g;
+    required double b;
+    required double a;
+};
+typedef (sequence<double> or GPUColorDict) GPUColor;
+
+
+dictionary GPUOrigin2DDict {
+    unsigned long x = 0;
+    unsigned long y = 0;
+};
+typedef (sequence<unsigned long> or GPUOrigin2DDict) GPUOrigin2D;
+
+
+dictionary GPUOrigin3DDict {
+    unsigned long x = 0;
+    unsigned long y = 0;
+    unsigned long z = 0;
+};
+typedef (sequence<unsigned long> or GPUOrigin3DDict) GPUOrigin3D;
+
+
+dictionary GPUExtent3DDict {
+    required unsigned long width;
+    required unsigned long height;
+    required unsigned long depth;
+};
+typedef (sequence<unsigned long> or GPUExtent3DDict) GPUExtent3D;
+
+
+typedef sequence<(GPUBuffer or ArrayBuffer)> GPUMappedBuffer;
