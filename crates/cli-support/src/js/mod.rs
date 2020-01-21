@@ -2769,17 +2769,18 @@ impl<'a> Context<'a> {
             ),
         };
         let mut iter = object.iter();
-        let (key, value) = match iter.next() {
-            Some(pair) => pair,
-            None => return Ok(()),
-        };
-        if key != "dependencies" || iter.next().is_some() {
-            bail!(
-                "NPM manifest found at `{}` can currently only have one key, \
-                 `dependencies`, and no other fields",
-                path.display()
-            );
+        let mut value = None;
+        while let Some((key, v)) = iter.next() {
+            if key == "dependencies" {
+                value = Some(v);
+                break;
+            }
         }
+        let value = if let Some(value) = value {
+            value
+        } else {
+            return Ok(());
+        };
         let value = match value.as_object() {
             Some(s) => s,
             None => bail!(
