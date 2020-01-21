@@ -50,6 +50,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         anyref_drop_slice: _,
         exn_store: _,
         shadow_stack_pointer: _,
+        function_table: _,
     } = *aux;
 
     let adapter_context = |id: AdapterId| {
