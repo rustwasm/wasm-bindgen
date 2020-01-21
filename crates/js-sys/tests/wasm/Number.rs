@@ -1,9 +1,20 @@
 use std::f64::{INFINITY, NAN};
 
 use js_sys::*;
+use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
+
+#[wasm_bindgen(module = "tests/wasm/Number.js")]
+extern "C" {
+    fn const_epsilon() -> f64;
+    fn const_max_safe_integer() -> f64;
+    fn const_max_value() -> f64;
+    fn const_min_safe_integer() -> f64;
+    fn const_min_value() -> f64;
+    fn const_negative_infinity() -> f64;
+    fn const_positive_infinity() -> f64;
+}
 
 #[wasm_bindgen_test]
 fn is_finite() {
@@ -117,4 +128,31 @@ fn number_inheritance() {
     assert!(n.is_instance_of::<Number>());
     assert!(n.is_instance_of::<Object>());
     let _: &Object = n.as_ref();
+}
+
+#[wasm_bindgen_test]
+fn consts() {
+    assert_eq!(const_epsilon(), Number::EPSILON, "EPSILON");
+    assert_eq!(
+        const_max_safe_integer(),
+        Number::MAX_SAFE_INTEGER,
+        "MAX_SAFE_INTEGER"
+    );
+    assert_eq!(const_max_value(), Number::MAX_VALUE, "MAX_VALUE");
+    assert_eq!(
+        const_min_safe_integer(),
+        Number::MIN_SAFE_INTEGER,
+        "MIN_SAFE_INTEGER"
+    );
+    assert_eq!(const_min_value(), Number::MIN_VALUE, "MIN_VALUE");
+    assert_eq!(
+        const_negative_infinity(),
+        Number::NEGATIVE_INFINITY,
+        "NEGATIVE_INFINITY"
+    );
+    assert_eq!(
+        const_positive_infinity(),
+        Number::POSITIVE_INFINITY,
+        "POSITIVE_INFINITY"
+    );
 }
