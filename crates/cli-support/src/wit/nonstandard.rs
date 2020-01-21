@@ -50,6 +50,7 @@ pub struct WasmBindgenAux {
     /// Information about various internal functions used to manage the `anyref`
     /// table, later used to process JS bindings.
     pub anyref_table: Option<walrus::TableId>,
+    pub function_table: Option<walrus::TableId>,
     pub anyref_alloc: Option<walrus::FunctionId>,
     pub anyref_drop_slice: Option<walrus::FunctionId>,
 
@@ -364,6 +365,9 @@ impl walrus::CustomSection for WasmBindgenAux {
 
     fn add_gc_roots(&self, roots: &mut walrus::passes::Roots) {
         if let Some(id) = self.anyref_table {
+            roots.push_table(id);
+        }
+        if let Some(id) = self.function_table {
             roots.push_table(id);
         }
         if let Some(id) = self.anyref_alloc {

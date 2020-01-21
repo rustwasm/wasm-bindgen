@@ -164,6 +164,12 @@ impl<'a> Context<'a> {
             // access to them while processing programs.
             self.descriptors.extend(descriptors);
 
+            // If any closures exist we need to prevent the function table from
+            // getting gc'd
+            if closure_imports.len() > 0 {
+                self.aux.function_table = self.module.tables.main_function_table()?;
+            }
+
             // Register all the injected closure imports as that they're expected
             // to manufacture a particular type of closure.
             //
@@ -310,6 +316,9 @@ impl<'a> Context<'a> {
     }
 
     fn bind_intrinsic(&mut self, id: ImportId, intrinsic: Intrinsic) -> Result<(), Error> {
+        if let Intrinsic::FunctionTable = intrinsic {
+            self.aux.function_table = self.module.tables.main_function_table()?;
+        }
         let id = self.import_adapter(id, intrinsic.signature(), AdapterJsImportKind::Normal)?;
         self.aux
             .import_map

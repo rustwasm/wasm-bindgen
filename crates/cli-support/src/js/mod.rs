@@ -2889,7 +2889,7 @@ impl<'a> Context<'a> {
     }
 
     fn export_function_table(&mut self) -> Result<String, Error> {
-        match self.module.tables.main_function_table()? {
+        match self.aux.function_table {
             Some(id) => Ok(self.export_name_of(id)),
             None => bail!("no function table found in module"),
         }

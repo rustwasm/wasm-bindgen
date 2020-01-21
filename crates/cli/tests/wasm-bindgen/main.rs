@@ -334,3 +334,21 @@ $",
     )?);
     Ok(())
 }
+
+#[test]
+fn function_table_preserved() {
+    let (mut cmd, _out_dir) = Project::new("function_table_preserved")
+        .file(
+            "src/lib.rs",
+            r#"
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen]
+                pub fn bar() {
+                    Closure::wrap(Box::new(|| {}) as Box<dyn Fn()>);
+                }
+            "#,
+        )
+        .wasm_bindgen("");
+    cmd.assert().success();
+}
