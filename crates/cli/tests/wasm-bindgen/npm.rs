@@ -35,8 +35,8 @@ compatible with the `bundler` and `nodejs` targets
 }
 
 #[test]
-fn more_package_json_fields_rejected() {
-    let (mut cmd, _out_dir) = Project::new("more_package_json_fields_rejected")
+fn more_package_json_fields_ignored() {
+    let (mut cmd, _out_dir) = Project::new("more_package_json_fields_ignored")
         .file(
             "src/lib.rs",
             r#"
@@ -63,16 +63,7 @@ fn more_package_json_fields_rejected() {
             "#,
         )
         .wasm_bindgen("");
-    cmd.assert()
-        .stderr(
-            str::is_match(
-                "\
-error: NPM manifest found at `.*` can currently only have one key, .*
-",
-            )
-            .unwrap(),
-        )
-        .failure();
+    cmd.assert().success();
 }
 
 #[test]
