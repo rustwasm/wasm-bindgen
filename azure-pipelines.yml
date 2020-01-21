@@ -309,12 +309,8 @@ jobs:
     displayName: "Doc - build the API documentation"
     steps:
       - template: ci/azure-install-rust.yml
-        # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: beta
-      # Install rustfmt so we can format the web-sys bindings
-      - script: rustup component add rustfmt
-        displayName: "Install rustfmt"
+          toolchain: nightly
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
       - script: cargo doc --no-deps --features 'nightly serde-serialize'
@@ -323,8 +319,6 @@ jobs:
         displayName: "Document js-sys"
       - script: cargo doc --no-deps --manifest-path crates/web-sys/Cargo.toml --all-features
         displayName: "Document web-sys"
-        env:
-          WEBIDL_RUSTFMT_BINDINGS: 1
       - script: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
         displayName: "Document wasm-bindgen-futures"
       # Make a tarball even though a zip is uploaded, it looks like the tarball
