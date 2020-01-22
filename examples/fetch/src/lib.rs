@@ -33,7 +33,7 @@ pub struct Signature {
 }
 
 #[wasm_bindgen]
-pub async fn run(repo: &str) -> Result<JsValue, JsValue> {
+pub async fn run(repo: String) -> Result<JsValue, JsValue> {
     let mut opts = RequestInit::new();
     opts.method("GET");
     opts.mode(RequestMode::Cors);
