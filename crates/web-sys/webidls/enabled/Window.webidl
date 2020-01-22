@@ -273,4 +273,4 @@ dictionary IdleRequestOptions {
 
 callback IdleRequestCallback = void (IdleDeadline deadline);
 
-Window includes WebGPUProvider;
+//Window includes WebGPUProvider;
