@@ -15,7 +15,7 @@ implements the `std::future::Future` trait which allows naturally using it in an
 
 ```rust
 async fn get_from_js() -> Result<JsValue, JsValue> {
-    let promise = js_sys::Promise::resolved(&42.into());
+    let promise = js_sys::Promise::resolve(&42.into());
     let result = wasm_bindgen_futures::JsFuture::from(promise).await?;
     Ok(result)
 }
