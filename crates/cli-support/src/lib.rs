@@ -86,9 +86,15 @@ pub enum EncodeInto {
 
 impl Bindgen {
     pub fn new() -> Bindgen {
-        let anyref = env::var("WASM_BINDGEN_ANYREF").is_ok();
-        let wasm_interface_types = env::var("WASM_INTERFACE_TYPES").is_ok();
-        let multi_value = env::var("WASM_BINDGEN_MULTI_VALUE").is_ok();
+        let anyref = env::var("WASM_BINDGEN_ANYREF")
+            .map(|val| val == "1")
+            .unwrap_or(false);
+        let wasm_interface_types = env::var("WASM_INTERFACE_TYPES")
+            .map(|val| val == "1")
+            .unwrap_or(false);
+        let multi_value = env::var("WASM_BINDGEN_MULTI_VALUE")
+            .map(|val| val == "1")
+            .unwrap_or(false);
         Bindgen {
             input: Input::None,
             out_name: None,
@@ -102,7 +108,9 @@ impl Bindgen {
             remove_name_section: false,
             remove_producers_section: false,
             emit_start: true,
-            weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
+            weak_refs: env::var("WASM_BINDGEN_WEAKREF")
+                .map(|val| val == "1")
+                .unwrap_or(false),
             threads: threads_config(),
             anyref: anyref || wasm_interface_types,
             multi_value: multi_value || wasm_interface_types,
