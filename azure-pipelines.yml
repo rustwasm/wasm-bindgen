@@ -106,6 +106,30 @@ jobs:
       - script: cargo test -p wasm-bindgen-wasm-interpreter
         displayName: "wasm-bindgen-wasm-interpreter tests"
 
+  - job: test_cli_windows
+    displayName: "Run wasm-bindgen-cli crate tests (Windows)"
+    pool:
+      vmImage: vs2017-win2016
+    steps:
+      - template: ci/azure-install-rust.yml
+      # Temporarily disable sccache because it is failing on CI.
+      # - template: ci/azure-install-sccache.yml
+      - script: rustup target add wasm32-unknown-unknown
+        displayName: "install wasm target"
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '>=13.0'
+      - script: cargo test -p wasm-bindgen-cli-support
+        displayName: "wasm-bindgen-cli-support tests"
+      - script: cargo test -p wasm-bindgen-cli
+        displayName: "wasm-bindgen-cli tests"
+      - script: cargo test -p wasm-bindgen-anyref-xform
+        displayName: "wasm-bindgen-anyref-xform tests"
+      - script: cargo test -p wasm-bindgen-multi-value-xform
+        displayName: "wasm-bindgen-multi-value-xform tests"
+      - script: cargo test -p wasm-bindgen-wasm-interpreter
+        displayName: "wasm-bindgen-wasm-interpreter tests"
+
   - job: test_web_sys
     displayName: "Run web-sys crate tests"
     steps:
