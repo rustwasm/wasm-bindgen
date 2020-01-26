@@ -10,6 +10,8 @@
  * liability, trademark and document use rules apply.
  */
 
+// updated using https://dom.spec.whatwg.org/#interface-domtokenlist
+
 interface DOMTokenList {
   readonly attribute unsigned long length;
   getter DOMString? item(unsigned long index);
@@ -27,5 +29,5 @@ interface DOMTokenList {
   [CEReactions, SetterThrows]
   attribute DOMString value;
   stringifier DOMString ();
-  iterable<DOMString?>;
+  iterable<DOMString>;
 };
