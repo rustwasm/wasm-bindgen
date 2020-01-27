@@ -10,9 +10,11 @@
  * liability, trademark and document use rules apply.
  */
 
+// Updated using https://dom.spec.whatwg.org/#interface-nodelist
+
 [ProbablyShortLivingWrapper]
 interface NodeList {
   getter Node? item(unsigned long index);
   readonly attribute unsigned long length;
-  iterable<Node?>;
+  iterable<Node>;
 };
