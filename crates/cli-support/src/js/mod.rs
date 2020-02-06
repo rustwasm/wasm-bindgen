@@ -699,8 +699,13 @@ impl<'a> Context<'a> {
                 ts_dst.push_str("readonly ");
             }
             ts_dst.push_str(name);
-            ts_dst.push_str(": ");
-            ts_dst.push_str(ty);
+            if &ty[0..1] == "?" {
+                ts_dst.push_str("?: ");
+                ts_dst.push_str(&ty[1..]);
+            } else {
+                ts_dst.push_str(": ");
+                ts_dst.push_str(&ty);
+            }
             ts_dst.push_str(";\n");
         }
         dst.push_str("}\n");
@@ -772,9 +777,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("not_defined") {
             return;
         }
-        self.global(
-            "function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }"
-        );
+        self.global("function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }");
     }
 
     fn expose_assert_num(&mut self) {
@@ -3067,7 +3070,13 @@ impl ExportedClass {
             .typescript_fields
             .entry(field.to_string())
             .or_insert_with(Default::default);
-        *ty = ret_ty.to_string();
+
+        if docs.contains("| undefined") {
+            *ty = "?".to_string() + ret_ty;
+        } else {
+            *ty = ret_ty.to_string();
+        }
+
         has_setter
     }
 }
