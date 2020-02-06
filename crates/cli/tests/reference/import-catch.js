@@ -1,8 +1,6 @@
 import * as wasm from './reference_test_bg.wasm';
 
-const heap = [];
-
-heap.length = 32;
+const heap = new Array(32).fill(undefined);
 
 heap.push(undefined, null, true, false);
 

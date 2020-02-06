@@ -744,8 +744,7 @@ impl<'a> Context<'a> {
             return;
         }
         assert!(!self.config.anyref);
-        self.global(&format!("const heap = [];"));
-        self.global(&format!("heap.length = {};", INITIAL_HEAP_OFFSET));
+        self.global(&format!("const heap = new Array({}).fill(undefined);", INITIAL_HEAP_OFFSET));
         self.global(&format!("heap.push({});", INITIAL_HEAP_VALUES.join(", ")));
     }
 
