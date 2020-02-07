@@ -189,6 +189,10 @@ partial interface Navigator {
   VRServiceTest requestVRServiceTest();
 };
 
+partial interface Navigator {
+  [SecureContext, SameObject] readonly attribute XR xr;
+};
+
 // http://webaudio.github.io/web-midi-api/#requestmidiaccess
 partial interface Navigator {
   [Throws, Pref="dom.webmidi.enabled"]
