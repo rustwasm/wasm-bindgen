@@ -699,9 +699,9 @@ impl<'a> Context<'a> {
                 ts_dst.push_str("readonly ");
             }
             ts_dst.push_str(name);
-            if &ty[0..1] == "?" {
+            if ty.ends_with("?") {
                 ts_dst.push_str("?: ");
-                ts_dst.push_str(&ty[1..]);
+                ts_dst.push_str(&ty[..(ty.len() - 1)]);
             } else {
                 ts_dst.push_str(": ");
                 ts_dst.push_str(&ty);
@@ -3066,17 +3066,25 @@ impl ExportedClass {
         self.contents.push_str(field);
         self.contents.push_str(js);
         self.contents.push_str("\n");
+
+        let mut is_optional = false;
+        if let Some(getter) = self.typescript_fields.get(field) {
+            if getter.0.ends_with("| undefined") {
+                is_optional = true;
+            }
+        }
+
         let (ty, has_setter) = self
             .typescript_fields
             .entry(field.to_string())
             .or_insert_with(Default::default);
 
-        if docs.contains("| undefined") {
-            *ty = "?".to_string() + ret_ty;
-        } else {
-            *ty = ret_ty.to_string();
+        let mut ret_ty = ret_ty.to_string();
+        if is_optional {
+            ret_ty.push_str("?");
         }
 
+        *ty = ret_ty;
         has_setter
     }
 }
