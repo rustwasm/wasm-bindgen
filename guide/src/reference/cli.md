@@ -9,6 +9,14 @@ always be listed via `wasm-bindgen --help`.
 
 [wasm-pack]: https://github.com/rustwasm/wasm-pack
 
+## Installation
+
+The command line tool is available through a separate crate, `wasm-bindgen-cli`:
+
+```
+cargo install wasm-bindgen-cli
+```
+
 ## Usage
 
 ```
