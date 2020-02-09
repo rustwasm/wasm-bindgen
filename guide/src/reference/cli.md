@@ -11,9 +11,13 @@ always be listed via `wasm-bindgen --help`.
 
 ## Installation
 
-The command line tool is available through a separate crate, `wasm-bindgen-cli`:
+Although the command line tool is available through its own crate, `wasm-bindgen-cli`, the recommended way to install it is through installing the `wasm-pack` crate:
 
 ```
+# Recommended:
+cargo install wasm-pack
+
+# OR
 cargo install wasm-bindgen-cli
 ```
 
