@@ -197,8 +197,9 @@ impl<'a> Context<'a> {
     ) -> Result<(String, String), Error> {
         let mut ts = self.typescript.clone();
         let mut js = String::new();
-        if self.config.mode.no_modules() {
-            js.push_str("(function() {\n");
+
+        if let OutputMode::NoModules { global } = &self.config.mode {
+            js.push_str(&format!("let {};\n(function() {{\n", global));
         }
 
         // Depending on the output mode, generate necessary glue to actually
@@ -215,7 +216,7 @@ impl<'a> Context<'a> {
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
                 footer.push_str(&format!(
-                    "self.{} = Object.assign(init, __exports);\n",
+                    "{} = Object.assign(init, __exports);\n",
                     global
                 ));
             }
@@ -441,10 +442,10 @@ impl<'a> Context<'a> {
                 "\
                     if (typeof module === 'undefined') {
                         let src;
-                        if (self.document === undefined) {
-                            src = self.location.href;
+                        if (document === undefined) {
+                            src = location.href;
                         } else {
-                            src = self.document.currentScript.src;
+                            src = document.currentScript.src;
                         }
                         module = src.replace(/\\.js$/, '_bg.wasm');
                     }"
