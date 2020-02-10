@@ -433,20 +433,20 @@ impl<'a> Context<'a> {
         let default_module_path = match self.config.mode {
             OutputMode::Web => {
                 "\
-                    if (typeof module === 'undefined') {
-                        module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
+                    if (typeof input === 'undefined') {
+                        input = import.meta.url.replace(/\\.js$/, '_bg.wasm');
                     }"
             }
             OutputMode::NoModules { .. } => {
                 "\
-                    if (typeof module === 'undefined') {
+                    if (typeof input === 'undefined') {
                         let src;
                         if (self.document === undefined) {
                             src = self.location.href;
                         } else {
                             src = self.document.currentScript.src;
                         }
-                        module = src.replace(/\\.js$/, '_bg.wasm');
+                        input = src.replace(/\\.js$/, '_bg.wasm');
                     }"
             }
             _ => "",
@@ -503,54 +503,58 @@ impl<'a> Context<'a> {
 
         let js = format!(
             "\
-                function init(module{init_memory_arg}) {{
-                    {default_module_path}
-                    let result;
-                    const imports = {{}};
-                    {imports_init}
-                    if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {{
+                async function load(module, imports) {{
+                    if (typeof Response === 'function' && module instanceof Response) {{
                         {init_memory2}
-                        const response = fetch(module);
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
-                            result = WebAssembly.instantiateStreaming(response, imports)
-                                .catch(e => {{
-                                    return response
-                                        .then(r => {{
-                                            if (r.headers.get('Content-Type') != 'application/wasm') {{
-                                                console.warn(\"`WebAssembly.instantiateStreaming` failed \
-                                                                because your server does not serve wasm with \
-                                                                `application/wasm` MIME type. Falling back to \
-                                                                `WebAssembly.instantiate` which is slower. Original \
-                                                                error:\\n\", e);
-                                                return r.arrayBuffer();
-                                            }} else {{
-                                                throw e;
-                                            }}
-                                        }})
-                                        .then(bytes => WebAssembly.instantiate(bytes, imports));
-                                }});
-                        }} else {{
-                            result = response
-                                .then(r => r.arrayBuffer())
-                                .then(bytes => WebAssembly.instantiate(bytes, imports));
+                            try {{
+                                return await WebAssembly.instantiateStreaming(module, imports);
+
+                            }} catch (e) {{
+                                if (module.headers.get('Content-Type') != 'application/wasm') {{
+                                    console.warn(\"`WebAssembly.instantiateStreaming` failed \
+                                                    because your server does not serve wasm with \
+                                                    `application/wasm` MIME type. Falling back to \
+                                                    `WebAssembly.instantiate` which is slower. Original \
+                                                    error:\\n\", e);
+
+                                }} else {{
+                                    throw e;
+                                }}
+                            }}
                         }}
+
+                        const bytes = await module.arrayBuffer();
+                        return await WebAssembly.instantiate(bytes, imports);
+
                     }} else {{
                         {init_memory1}
-                        result = WebAssembly.instantiate(module, imports)
-                            .then(result => {{
-                                if (result instanceof WebAssembly.Instance) {{
-                                    return {{ instance: result, module }};
-                                }} else {{
-                                    return result;
-                                }}
-                            }});
+                        const instance = await WebAssembly.instantiate(module, imports);
+
+                        if (instance instanceof WebAssembly.Instance) {{
+                            return {{ instance, module }};
+
+                        }} else {{
+                            return instance;
+                        }}
                     }}
-                    return result.then(({{instance, module}}) => {{
-                        wasm = instance.exports;
-                        init.__wbindgen_wasm_module = module;
-                        {start}
-                        return wasm;
-                    }});
+                }}
+
+                async function init(input{init_memory_arg}) {{
+                    {default_module_path}
+                    const imports = {{}};
+                    {imports_init}
+
+                    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
+                        input = fetch(input);
+                    }}
+
+                    const {{ instance, module }} = await load(await input, imports);
+
+                    wasm = instance.exports;
+                    init.__wbindgen_wasm_module = module;
+                    {start}
+                    return wasm;
                 }}
             ",
             init_memory_arg = init_memory_arg,
