@@ -568,6 +568,7 @@ impl<'src> FirstPassRecord<'src> {
             } else {
                 Some(syn::parse_quote! { |_| false })
             },
+            typescript_name: Some(name.to_string()),
             extends: Vec::new(),
             vendor_prefixes: Vec::new(),
         };

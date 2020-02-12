@@ -554,6 +554,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             instanceof_shim: shim,
             is_type_of,
             rust_name: self.ident,
+            typescript_name: None,
             js_name,
             extends,
             vendor_prefixes,
