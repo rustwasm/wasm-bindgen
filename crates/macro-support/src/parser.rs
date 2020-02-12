@@ -22,6 +22,7 @@ struct AttributeParseState {
 pub struct BindgenAttrs {
     /// List of parsed attributes
     pub attrs: Vec<(Cell<bool>, BindgenAttr)>,
+    pub unstable_api_attr: Option<syn::Attribute>,
 }
 
 macro_rules! attrgen {
@@ -186,7 +187,7 @@ impl Default for BindgenAttrs {
         // sanity check that we call `check_used` an appropriate number of
         // times.
         ATTRS.with(|state| state.parsed.set(state.parsed.get() + 1));
-        BindgenAttrs { attrs: Vec::new() }
+        BindgenAttrs { attrs: Vec::new(), unstable_api_attr: None, }
     }
 }
 
@@ -353,6 +354,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 getter: Ident::new(&getter, Span::call_site()),
                 setter: Ident::new(&setter, Span::call_site()),
                 comments,
+                unstable_api: false,
             });
             attrs.check_used()?;
         }
@@ -513,6 +515,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             rust_name: self.sig.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,
+            unstable_api: false,
         });
         opts.check_used()?;
 
@@ -550,6 +553,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
             attrs: self.attrs,
+            unstable_api: false,
             doc_comment: None,
             instanceof_shim: shim,
             is_type_of,
@@ -777,6 +781,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     rust_class: None,
                     rust_name,
                     start,
+                    unstable_api: false,
                 });
             }
             syn::Item::Struct(mut s) => {
@@ -977,6 +982,7 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
             rust_class: Some(class.clone()),
             rust_name: self.sig.ident.clone(),
             start: false,
+            unstable_api: false,
         });
         opts.check_used()?;
         Ok(())
@@ -1071,6 +1077,7 @@ impl MacroParse<()> for syn::ItemEnum {
             variants,
             comments,
             hole,
+            unstable_api: false,
         });
         Ok(())
     }
@@ -1175,6 +1182,7 @@ impl MacroParse<ast::ImportModule> for syn::ForeignItem {
             module,
             js_namespace,
             kind,
+            unstable_api: false,
         });
 
         Ok(())

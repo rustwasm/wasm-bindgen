@@ -113,10 +113,12 @@ pub fn ident_ty(ident: Ident) -> syn::Type {
 }
 
 pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
+    let unstable_api = function.unstable_api;
     ast::Import {
         module: ast::ImportModule::None,
         js_namespace: None,
         kind: ast::ImportKind::Function(function),
+        unstable_api,
     }
 }
 
@@ -152,5 +154,20 @@ impl<T: Hash> fmt::Display for ShortHash<T> {
         HASH.load(SeqCst).hash(&mut h);
         self.0.hash(&mut h);
         write!(f, "{:016x}", h.finish())
+    }
+}
+
+
+/// Create a syn attribute for `#[cfg(web_sys_unstable_apis)]`.
+pub fn unstable_api_attr() -> syn::Attribute {
+    syn::parse_quote!( #[cfg(web_sys_unstable_apis)] )
+}
+
+
+pub fn maybe_unstable_api_attr(unstable_api: bool) -> Option<syn::Attribute> {
+    if unstable_api {
+        Some(unstable_api_attr())
+    } else {
+        None
     }
 }

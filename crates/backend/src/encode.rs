@@ -188,6 +188,7 @@ fn shared_export<'a>(
         function: shared_function(&export.function, intern),
         method_kind,
         start: export.start,
+        unstable_api: export.unstable_api,
     })
 }
 

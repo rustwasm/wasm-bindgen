@@ -17,7 +17,7 @@ fn main() {
     let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
     for (i, (idl, path)) in idls.enumerate() {
         println!("processing {:?}", path);
-        let mut generated_rust = wasm_bindgen_webidl::compile(&idl, None).unwrap();
+        let mut generated_rust = wasm_bindgen_webidl::compile(&idl, "", None).unwrap();
 
         generated_rust.insert_str(
             0,
