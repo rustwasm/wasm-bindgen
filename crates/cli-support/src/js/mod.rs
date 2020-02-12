@@ -316,6 +316,11 @@ impl<'a> Context<'a> {
 
     fn js_import_header(&self) -> Result<String, Error> {
         let mut imports = String::new();
+
+        if self.config.omit_imports {
+            return Ok(imports)
+        }
+
         match &self.config.mode {
             OutputMode::NoModules { .. } => {
                 for (module, _items) in self.js_imports.iter() {

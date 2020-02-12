@@ -28,6 +28,7 @@ Options:
     --browser                    Hint that JS should only be compatible with a browser
     --typescript                 Output a TypeScript definition file (on by default)
     --no-typescript              Don't emit a *.d.ts file
+    --omit-imports               Don't emit imports in generated JavaScript
     --debug                      Include otherwise-extraneous debug checks in output
     --no-demangle                Don't demangle Rust symbol names
     --keep-debug                 Keep debug sections in wasm files
@@ -49,6 +50,7 @@ struct Args {
     flag_no_modules: bool,
     flag_typescript: bool,
     flag_no_typescript: bool,
+    flag_omit_imports: bool,
     flag_out_dir: Option<PathBuf>,
     flag_out_name: Option<String>,
     flag_debug: bool,
@@ -109,7 +111,8 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .keep_debug(args.flag_keep_debug)
         .remove_name_section(args.flag_remove_name_section)
         .remove_producers_section(args.flag_remove_producers_section)
-        .typescript(typescript);
+        .typescript(typescript)
+        .omit_imports(args.flag_omit_imports);
     if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name)?;
     }
