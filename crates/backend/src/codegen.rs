@@ -144,7 +144,6 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
-
         (quote! {
             #[allow(clippy::all)]
             impl wasm_bindgen::describe::WasmDescribe for #name {
