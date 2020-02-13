@@ -338,8 +338,6 @@ impl InstructionBuilder<'_, '_> {
                 );
             }
             Descriptor::NamedAnyref(name) => {
-                // If this is `Some` then it's the index, otherwise if it's
-                // `None` then it's the index pointing to undefined.
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::TableGet,
