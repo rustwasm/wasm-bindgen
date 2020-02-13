@@ -1221,6 +1221,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
             adapter2ts(ty, dst);
             dst.push_str(" | undefined");
         }
+        AdapterType::NamedAnyref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
     }

@@ -585,7 +585,7 @@ impl ToTokens for ast::ImportType {
             let typescript_name_chars = typescript_name.chars().map(|c| c as u32);
             quote! {
                 use wasm_bindgen::describe::*;
-                inform(RUST_STRUCT);
+                inform(NAMED_ANYREF);
                 inform(#typescript_name_len);
                 #(inform(#typescript_name_chars);)*
             }

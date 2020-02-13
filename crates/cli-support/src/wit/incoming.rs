@@ -60,6 +60,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::NamedAnyref(name.clone())],
+                    Instruction::I32FromAnyrefOwned,
+                    &[AdapterType::I32]
+                )
+            }
             Descriptor::Anyref => {
                 self.instruction(
                     &[AdapterType::Anyref],
