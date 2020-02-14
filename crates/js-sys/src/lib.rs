@@ -4884,6 +4884,14 @@ macro_rules! arrays {
             /// input values from a specified array.
             #[wasm_bindgen(method)]
             pub fn set(this: &$name, src: &JsValue, offset: u32);
+
+            /// Gets the value at `idx`, equivalent to the javascript `my_var = arr[idx]`.
+            #[wasm_bindgen(method, structural, indexing_getter)]
+            pub fn get_(this: &$name, idx: u32) -> $ty;
+
+            /// Sets the value at `idx`, equivalent to the javascript `arr[idx] = value`.
+            #[wasm_bindgen(method, structural, indexing_setter)]
+            pub fn set_(this: &$name, idx: u32, value: $ty);
         }
 
         impl $name {
