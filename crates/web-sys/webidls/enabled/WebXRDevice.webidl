@@ -197,7 +197,6 @@ dictionary XRWebGLLayerInit {
 //[SecureContext, Exposed=Window]
 [SecureContext, Exposed=Window, Constructor(XRSession session, XRWebGLRenderingContext context)]
 interface XRWebGLLayer {
-  //constructor(XRSession session); // NOT WORKING
   //constructor(XRSession session,
   //           XRWebGLRenderingContext context,
   //           optional XRWebGLLayerInit layerInit = {});
