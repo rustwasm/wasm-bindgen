@@ -1788,8 +1788,10 @@ impl<'a> Context<'a> {
                     try {{
                         return f(state.a, state.b, ...args);
                     }} finally {{
-                        if (--state.cnt === 0) wasm.{}.get(dtor)(state.a, state.b);
-                        state.a = 0;
+                        if (--state.cnt === 0) {{
+                            wasm.{}.get(dtor)(state.a, state.b);
+                            state.a = 0;
+                        }}
                     }}
                 }};
                 real.original = state;
