@@ -22,6 +22,7 @@ use wasm_bindgen_wasm_interpreter::Interpreter;
 pub struct WasmBindgenDescriptorsSection {
     pub descriptors: HashMap<String, Descriptor>,
     pub closure_imports: HashMap<ImportId, Closure>,
+    cached_closures: HashMap<Descriptor, FunctionId>,
 }
 
 pub type WasmBindgenDescriptorsSectionId = TypedCustomSectionId<WasmBindgenDescriptorsSection>;
@@ -126,10 +127,18 @@ impl WasmBindgenDescriptorsSection {
         // ourselves, and then we're good to go.
         let ty = module.funcs.get(wbindgen_describe_closure).ty();
         for (func, descriptor) in func_to_descriptor {
-            let import_name = format!("__wbindgen_closure_wrapper{}", func.index());
-            let (id, import_id) =
-                module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
-            module.funcs.get_mut(id).name = Some(import_name);
+            let id = match self.cached_closures.get(&descriptor) {
+                Some(id) => *id,
+                None => {
+                    let import_name = format!("__wbindgen_closure_wrapper{}", func.index());
+                    let (id, import_id) =
+                        module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
+                    module.funcs.get_mut(id).name = Some(import_name);
+                    self.closure_imports.insert(import_id, descriptor.clone().unwrap_closure());
+                    self.cached_closures.insert(descriptor, id);
+                    id
+                },
+            };
 
             let local = match &mut module.funcs.get_mut(func).kind {
                 walrus::FunctionKind::Local(l) => l,
@@ -144,8 +153,6 @@ impl WasmBindgenDescriptorsSection {
                 local,
                 entry,
             );
-            self.closure_imports
-                .insert(import_id, descriptor.unwrap_closure());
         }
         return Ok(());
 

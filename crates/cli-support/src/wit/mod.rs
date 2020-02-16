@@ -159,6 +159,7 @@ impl<'a> Context<'a> {
             let WasmBindgenDescriptorsSection {
                 descriptors,
                 closure_imports,
+                ..
             } = *custom;
             // Store all the executed descriptors in our own field so we have
             // access to them while processing programs.
