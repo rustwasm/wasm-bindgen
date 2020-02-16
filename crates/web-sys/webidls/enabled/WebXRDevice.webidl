@@ -104,7 +104,10 @@ interface XRReferenceSpace : XRSpace {
 
 [SecureContext, Exposed=Window]
 interface XRBoundedReferenceSpace : XRReferenceSpace {
-  readonly attribute FrozenArray<DOMPointReadOnly> boundsGeometry;
+  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
+  //readonly attribute FrozenArray<DOMPointReadOnly> boundsGeometry;
+  [Frozen, Cached, Pure]
+  readonly attribute sequence<DOMPointReadOnly> boundsGeometry;
 };
 
 enum XREye {
@@ -141,7 +144,10 @@ interface XRRigidTransform {
 };
 
 [SecureContext, Exposed=Window] interface XRViewerPose : XRPose {
-  [SameObject] readonly attribute FrozenArray<XRView> views;
+  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
+  //[SameObject] readonly attribute FrozenArray<XRView> views;
+  [SameObject, Frozen, Cached, Pure]
+  readonly attribute sequence<XRView> views;
 };
 
 enum XRHandedness {
@@ -162,7 +168,10 @@ interface XRInputSource {
   readonly attribute XRTargetRayMode targetRayMode;
   [SameObject] readonly attribute XRSpace targetRaySpace;
   [SameObject] readonly attribute XRSpace? gripSpace;
-  [SameObject] readonly attribute FrozenArray<DOMString> profiles;
+  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
+  //[SameObject] readonly attribute FrozenArray<DOMString> profiles;
+  [SameObject, Frozen, Cached, Pure]
+  readonly attribute sequence<DOMString> profiles;
 };
 
 [SecureContext, Exposed=Window]
@@ -184,24 +193,27 @@ dictionary XRWebGLLayerInit {
   double framebufferScaleFactor = 1.0;
 };
 
-[SecureContext, Exposed=Window]
+// TODO: Change constructor back to original webidl and re-add commented properties
+//[SecureContext, Exposed=Window]
+[SecureContext, Exposed=Window, Constructor(XRSession session, XRWebGLRenderingContext context)]
 interface XRWebGLLayer {
-  constructor(XRSession session,
-             XRWebGLRenderingContext context,
-             optional XRWebGLLayerInit layerInit = {});
+  //constructor(XRSession session); // NOT WORKING
+  //constructor(XRSession session,
+  //           XRWebGLRenderingContext context,
+  //           optional XRWebGLLayerInit layerInit = {});
   // Attributes
-  readonly attribute boolean antialias;
-  readonly attribute boolean ignoreDepthValues;
+  //readonly attribute boolean antialias;
+  //readonly attribute boolean ignoreDepthValues;
 
   [SameObject] readonly attribute WebGLFramebuffer framebuffer;
-  readonly attribute unsigned long framebufferWidth;
-  readonly attribute unsigned long framebufferHeight;
+  //readonly attribute unsigned long framebufferWidth;
+  //readonly attribute unsigned long framebufferHeight;
 
   // Methods
-  XRViewport? getViewport(XRView view);
+  //XRViewport? getViewport(XRView view);
 
   // Static Methods
-  static double getNativeFramebufferScaleFactor(XRSession session);
+  //static double getNativeFramebufferScaleFactor(XRSession session);
 };
 
 partial dictionary WebGLContextAttributes {
@@ -238,14 +250,24 @@ dictionary XRInputSourceEventInit : EventInit {
 interface XRInputSourcesChangeEvent : Event {
   constructor(DOMString type, XRInputSourcesChangeEventInit eventInitDict);
   [SameObject] readonly attribute XRSession session;
-  [SameObject] readonly attribute FrozenArray<XRInputSource> added;
-  [SameObject] readonly attribute FrozenArray<XRInputSource> removed;
+  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
+  //[SameObject] readonly attribute FrozenArray<XRInputSource> added;
+  [SameObject, Frozen, Cached, Pure]
+  readonly attribute sequence<XRInputSource> added;
+  //[SameObject] readonly attribute FrozenArray<XRInputSource> removed;
+  [SameObject, Frozen, Cached, Pure]
+  readonly attribute sequence<XRInputSource> removed;
 };
 
 dictionary XRInputSourcesChangeEventInit : EventInit {
   required XRSession session;
-  required FrozenArray<XRInputSource> added;
-  required FrozenArray<XRInputSource> removed;
+  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
+  //required FrozenArray<XRInputSource> added;
+  [Frozen, Cached, Pure]
+  required sequence<XRInputSource> added;
+  //required FrozenArray<XRInputSource> removed;
+  [Frozen, Cached, Pure]
+  required sequence<XRInputSource> removed;
 
 };
 
