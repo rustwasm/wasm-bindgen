@@ -67,7 +67,8 @@ pub struct ExportedClass {
     /// All readable properties of the class
     readable_properties: Vec<String>,
     /// Map from field name to type as a string plus whether it has a setter
-    typescript_fields: HashMap<String, (String, bool)>,
+    /// and it is optional
+    typescript_fields: HashMap<String, (String, bool, bool)>,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -693,19 +694,18 @@ impl<'a> Context<'a> {
         let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
         fields.sort(); // make sure we have deterministic output
         for name in fields {
-            let (ty, has_setter) = &class.typescript_fields[name];
+            let (ty, has_setter, is_optional) = &class.typescript_fields[name];
             ts_dst.push_str("  ");
             if !has_setter {
                 ts_dst.push_str("readonly ");
             }
             ts_dst.push_str(name);
-            if ty.ends_with("?") {
+            if *is_optional {
                 ts_dst.push_str("?: ");
-                ts_dst.push_str(&ty[..(ty.len() - 1)]);
             } else {
                 ts_dst.push_str(": ");
-                ts_dst.push_str(&ty);
             }
+            ts_dst.push_str(&ty);
             ts_dst.push_str(";\n");
         }
         dst.push_str("}\n");
@@ -1959,6 +1959,7 @@ impl<'a> Context<'a> {
             ts_ret_ty,
             js_doc,
             code,
+            might_be_optional_field,
         } = builder
             .process(&adapter, instrs, arg_names)
             .with_context(|| match kind {
@@ -2003,7 +2004,7 @@ impl<'a> Context<'a> {
                     AuxExportKind::Setter { class, field } => {
                         let arg_ty = ts_arg_tys[0].clone();
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_setter(&docs, field, &code, &arg_ty);
+                        exported.push_setter(&docs, field, &code, &arg_ty, might_be_optional_field);
                     }
                     AuxExportKind::StaticFunction { class, name } => {
                         let exported = require_class(&mut self.exported_classes, class);
@@ -3048,9 +3049,17 @@ impl ExportedClass {
 
     /// Used for adding a setter to a class, mainly to ensure that TypeScript
     /// generation is handled specially.
-    fn push_setter(&mut self, docs: &str, field: &str, js: &str, ret_ty: &str) {
-        let has_setter = self.push_accessor(docs, field, js, "set ", ret_ty);
+    fn push_setter(
+        &mut self,
+        docs: &str,
+        field: &str,
+        js: &str,
+        ret_ty: &str,
+        might_be_optional_field: bool,
+    ) {
+        let (has_setter, is_optional) = self.push_accessor(docs, field, js, "set ", ret_ty);
         *has_setter = true;
+        *is_optional = might_be_optional_field;
     }
 
     fn push_accessor(
@@ -3060,32 +3069,20 @@ impl ExportedClass {
         js: &str,
         prefix: &str,
         ret_ty: &str,
-    ) -> &mut bool {
+    ) -> (&mut bool, &mut bool) {
         self.contents.push_str(docs);
         self.contents.push_str(prefix);
         self.contents.push_str(field);
         self.contents.push_str(js);
         self.contents.push_str("\n");
 
-        let mut is_optional = false;
-        if let Some(getter) = self.typescript_fields.get(field) {
-            if getter.0.ends_with("| undefined") {
-                is_optional = true;
-            }
-        }
-
-        let (ty, has_setter) = self
+        let (ty, has_setter, is_optional) = self
             .typescript_fields
             .entry(field.to_string())
             .or_insert_with(Default::default);
 
-        let mut ret_ty = ret_ty.to_string();
-        if is_optional {
-            ret_ty.push_str("?");
-        }
-
-        *ty = ret_ty;
-        has_setter
+        *ty = ret_ty.to_string();
+        (has_setter, is_optional)
     }
 }
 
