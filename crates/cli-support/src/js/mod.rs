@@ -1724,6 +1724,86 @@ impl<'a> Context<'a> {
         );
     }
 
+    fn expose_make_mut_closure(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("make_mut_closure") {
+            return Ok(());
+        }
+
+        let table = self.export_function_table()?;
+
+        // For mutable closures they can't be invoked recursively.
+        // To handle that we swap out the `this.a` pointer with zero
+        // while we invoke it. If we finish and the closure wasn't
+        // destroyed, then we put back the pointer so a future
+        // invocation can succeed.
+        self.global(&format!(
+            "
+            function makeMutClosure(arg0, arg1, dtor, f) {{
+                const state = {{ a: arg0, b: arg1, cnt: 1 }};
+                const real = (...args) => {{
+                    // First up with a closure we increment the internal reference
+                    // count. This ensures that the Rust closure environment won't
+                    // be deallocated while we're invoking it.
+                    state.cnt++;
+                    const a = state.a;
+                    state.a = 0;
+                    try {{
+                        return f(a, state.b, ...args);
+                    }} finally {{
+                        if (--state.cnt === 0) wasm.{}.get(dtor)(a, state.b);
+                        else state.a = a;
+                    }}
+                }};
+                real.original = state;
+                return real;
+            }}
+            ",
+            table
+        ));
+
+        Ok(())
+    }
+
+    fn expose_make_closure(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("make_closure") {
+            return Ok(());
+        }
+
+        let table = self.export_function_table()?;
+
+        // For shared closures they can be invoked recursively so we
+        // just immediately pass through `this.a`. If we end up
+        // executing the destructor, however, we clear out the
+        // `this.a` pointer to prevent it being used again the
+        // future.
+        self.global(&format!(
+            "
+            function makeClosure(arg0, arg1, dtor, f) {{
+                const state = {{ a: arg0, b: arg1, cnt: 1 }};
+                const real = (...args) => {{
+                    // First up with a closure we increment the internal reference
+                    // count. This ensures that the Rust closure environment won't
+                    // be deallocated while we're invoking it.
+                    state.cnt++;
+                    try {{
+                        return f(state.a, state.b, ...args);
+                    }} finally {{
+                        if (--state.cnt === 0) {{
+                            wasm.{}.get(dtor)(state.a, state.b);
+                            state.a = 0;
+                        }}
+                    }}
+                }};
+                real.original = state;
+                return real;
+            }}
+            ",
+            table
+        ));
+
+        Ok(())
+    }
+
     fn global(&mut self, s: &str) {
         let s = s.trim();
 
@@ -2338,73 +2418,36 @@ impl<'a> Context<'a> {
                 dtor,
                 mutable,
                 adapter,
-                nargs,
+                nargs: _,
             } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 3);
-                let arg_names = (0..*nargs)
-                    .map(|i| format!("arg{}", i))
-                    .collect::<Vec<_>>()
-                    .join(", ");
-                let mut js = format!("({}) => {{\n", arg_names);
-                // First up with a closure we increment the internal reference
-                // count. This ensures that the Rust closure environment won't
-                // be deallocated while we're invoking it.
-                js.push_str("state.cnt++;\n");
 
-                let table = self.export_function_table()?;
-                let dtor = format!("wasm.{}.get({})", table, dtor);
                 let call = self.adapter_name(*adapter);
 
                 if *mutable {
-                    // For mutable closures they can't be invoked recursively.
-                    // To handle that we swap out the `this.a` pointer with zero
-                    // while we invoke it. If we finish and the closure wasn't
-                    // destroyed, then we put back the pointer so a future
-                    // invocation can succeed.
-                    js.push_str("const a = state.a;\n");
-                    js.push_str("state.a = 0;\n");
-                    js.push_str("try {\n");
-                    js.push_str(&format!("return {}(a, state.b, {});\n", call, arg_names));
-                    js.push_str("} finally {\n");
-                    js.push_str("if (--state.cnt === 0) ");
-                    js.push_str(&dtor);
-                    js.push_str("(a, state.b);\n");
-                    js.push_str("else state.a = a;\n");
-                    js.push_str("}\n");
-                } else {
-                    // For shared closures they can be invoked recursively so we
-                    // just immediately pass through `this.a`. If we end up
-                    // executing the destructor, however, we clear out the
-                    // `this.a` pointer to prevent it being used again the
-                    // future.
-                    js.push_str("try {\n");
-                    js.push_str(&format!(
-                        "return {}(state.a, state.b, {});\n",
-                        call, arg_names
-                    ));
-                    js.push_str("} finally {\n");
-                    js.push_str("if (--state.cnt === 0) {\n");
-                    js.push_str(&dtor);
-                    js.push_str("(state.a, state.b);\n");
-                    js.push_str("state.a = 0;\n");
-                    js.push_str("}\n");
-                    js.push_str("}\n");
-                }
-                js.push_str("}\n");
+                    self.expose_make_mut_closure()?;
 
-                prelude.push_str(&format!(
-                    "
-                        const state = {{ a: {arg0}, b: {arg1}, cnt: 1 }};
-                        const real = {body};
-                        real.original = state;
-                    ",
-                    body = js,
-                    arg0 = &args[0],
-                    arg1 = &args[1],
-                ));
-                Ok("real".to_string())
+                    Ok(format!(
+                        "makeMutClosure({arg0}, {arg1}, {dtor}, {call})",
+                        arg0 = &args[0],
+                        arg1 = &args[1],
+                        dtor = dtor,
+                        call = call,
+                    ))
+
+                } else {
+                    self.expose_make_closure()?;
+
+                    Ok(format!(
+                        "makeClosure({arg0}, {arg1}, {dtor}, {call})",
+                        arg0 = &args[0],
+                        arg1 = &args[1],
+                        dtor = dtor,
+                        call = call,
+                    ))
+                }
             }
 
             AuxImport::StructuralMethod(name) => {

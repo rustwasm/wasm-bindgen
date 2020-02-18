@@ -39,7 +39,7 @@ tys! {
     CLAMPED
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Descriptor {
     I8,
     U8,
@@ -69,14 +69,14 @@ pub enum Descriptor {
     Unit,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Function {
     pub arguments: Vec<Descriptor>,
     pub shim_idx: u32,
     pub ret: Descriptor,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Closure {
     pub shim_idx: u32,
     pub dtor_idx: u32,
