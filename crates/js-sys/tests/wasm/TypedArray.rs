@@ -92,9 +92,9 @@ fn new_fill() {
 macro_rules! test_get_set {
     ($arr:ident) => {{
         let arr = $arr::new(&1.into());
-        assert_eq!(arr.get_(0) as f64, 0 as f64);
-        arr.set_(0, 1 as _);
-        assert_eq!(arr.get_(0) as f64, 1 as f64);
+        assert_eq!(arr.get_array_like(0) as f64, 0 as f64);
+        arr.set_array_like(0, 1 as _);
+        assert_eq!(arr.get_array_like(0) as f64, 1 as f64);
     }};
 }
 #[wasm_bindgen_test]

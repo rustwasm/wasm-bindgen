@@ -4887,11 +4887,11 @@ macro_rules! arrays {
 
             /// Gets the value at `idx`, equivalent to the javascript `my_var = arr[idx]`.
             #[wasm_bindgen(method, structural, indexing_getter)]
-            pub fn get_(this: &$name, idx: u32) -> $ty;
+            pub fn get_array_like(this: &$name, idx: u32) -> $ty;
 
             /// Sets the value at `idx`, equivalent to the javascript `arr[idx] = value`.
             #[wasm_bindgen(method, structural, indexing_setter)]
-            pub fn set_(this: &$name, idx: u32, value: $ty);
+            pub fn set_array_like(this: &$name, idx: u32, value: $ty);
         }
 
         impl $name {
