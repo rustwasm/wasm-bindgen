@@ -39,6 +39,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Anyref],
                 );
             }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::I32],
+                    Instruction::AnyrefLoadOwned,
+                    &[AdapterType::NamedAnyref(name.clone())],
+                );
+            }
             Descriptor::I8 => self.outgoing_i32(AdapterType::S8),
             Descriptor::U8 => self.outgoing_i32(AdapterType::U8),
             Descriptor::I16 => self.outgoing_i32(AdapterType::S16),
@@ -162,6 +169,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Anyref],
                 );
             }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::I32],
+                    Instruction::TableGet,
+                    &[AdapterType::NamedAnyref(name.clone())],
+                );
+            }
             Descriptor::CachedString => self.cached_string(false, false)?,
 
             Descriptor::String => {
@@ -225,6 +239,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                     Instruction::AnyrefLoadOwned,
                     &[AdapterType::Anyref.option()],
+                );
+            }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::I32],
+                    Instruction::AnyrefLoadOwned,
+                    &[AdapterType::NamedAnyref(name.clone()).option()],
                 );
             }
             Descriptor::I8 => self.out_option_sentinel(AdapterType::S8),
@@ -314,6 +335,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                     Instruction::TableGet,
                     &[AdapterType::Anyref.option()],
+                );
+            }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::I32],
+                    Instruction::TableGet,
+                    &[AdapterType::NamedAnyref(name.clone()).option()],
                 );
             }
             Descriptor::CachedString => self.cached_string(true, false)?,

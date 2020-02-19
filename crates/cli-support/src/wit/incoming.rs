@@ -67,6 +67,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::NamedAnyref(name.clone())],
+                    Instruction::I32FromAnyrefOwned,
+                    &[AdapterType::I32]
+                )
+            }
             Descriptor::RustStruct(class) => {
                 self.instruction(
                     &[AdapterType::Struct(class.clone())],
@@ -161,6 +168,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::NamedAnyref(name.clone())],
+                    Instruction::I32FromAnyrefBorrow,
+                    &[AdapterType::I32],
+                );
+            }
             Descriptor::String | Descriptor::CachedString => {
                 // This allocation is cleaned up once it's received in Rust.
                 self.instruction(
@@ -218,6 +232,15 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Anyref => {
                 self.instruction(
                     &[AdapterType::Anyref.option()],
+                    Instruction::I32FromOptionAnyref {
+                        table_and_alloc: None,
+                    },
+                    &[AdapterType::I32],
+                );
+            }
+            Descriptor::NamedAnyref(name) => {
+                self.instruction(
+                    &[AdapterType::NamedAnyref(name.clone()).option()],
                     Instruction::I32FromOptionAnyref {
                         table_and_alloc: None,
                     },

@@ -579,6 +579,21 @@ impl ToTokens for ast::ImportType {
             }
         };
 
+        let description = if let Some(typescript_name) = &self.typescript_name {
+            let typescript_name_len = typescript_name.len() as u32;
+            let typescript_name_chars = typescript_name.chars().map(|c| c as u32);
+            quote! {
+                use wasm_bindgen::describe::*;
+                inform(NAMED_ANYREF);
+                inform(#typescript_name_len);
+                #(inform(#typescript_name_chars);)*
+            }
+        } else {
+            quote! {
+                JsValue::describe()
+            }
+        };
+
         let is_type_of = self.is_type_of.as_ref().map(|is_type_of| {
             quote! {
                 #[inline]
@@ -611,7 +626,7 @@ impl ToTokens for ast::ImportType {
 
                 impl WasmDescribe for #rust_name {
                     fn describe() {
-                        JsValue::describe();
+                        #description
                     }
                 }
 

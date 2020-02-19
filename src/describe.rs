@@ -37,6 +37,7 @@ tys! {
     SLICE
     VECTOR
     ANYREF
+    NAMED_ANYREF
     ENUM
     RUST_STRUCT
     CHAR

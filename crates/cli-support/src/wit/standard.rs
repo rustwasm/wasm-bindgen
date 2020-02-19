@@ -84,6 +84,7 @@ pub enum AdapterType {
     Vector(VectorKind),
     Option(Box<AdapterType>),
     Struct(String),
+    NamedAnyref(String),
     Function,
 }
 
@@ -322,7 +323,7 @@ impl AdapterType {
             AdapterType::I64 => walrus::ValType::I64,
             AdapterType::F32 => walrus::ValType::F32,
             AdapterType::F64 => walrus::ValType::F64,
-            AdapterType::Anyref => walrus::ValType::Anyref,
+            AdapterType::Anyref | AdapterType::NamedAnyref(_) => walrus::ValType::Anyref,
             _ => return None,
         })
     }
@@ -340,7 +341,7 @@ impl AdapterType {
             AdapterType::F32 => wit_walrus::ValType::F32,
             AdapterType::F64 => wit_walrus::ValType::F64,
             AdapterType::String => wit_walrus::ValType::String,
-            AdapterType::Anyref => wit_walrus::ValType::Anyref,
+            AdapterType::Anyref | AdapterType::NamedAnyref(_) => wit_walrus::ValType::Anyref,
 
             AdapterType::I32 => wit_walrus::ValType::I32,
             AdapterType::I64 => wit_walrus::ValType::I64,
