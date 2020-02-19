@@ -28,6 +28,9 @@ interface Blob {
   Blob slice([Clamp] optional long long start,
              [Clamp] optional long long end,
              optional DOMString contentType);
+
+  [NewObject] Promise<DOMString> text();
+  [NewObject] Promise<ArrayBuffer> arrayBuffer();
 };
 
 enum EndingTypes { "transparent", "native" };
