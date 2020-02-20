@@ -510,7 +510,7 @@ impl<'a> Context<'a> {
 
         let js = format!(
             "\
-                async function load(module, imports) {{
+                async function load(module, imports{init_memory_arg}) {{
                     if (typeof Response === 'function' && module instanceof Response) {{
                         {init_memory2}
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
@@ -556,7 +556,7 @@ impl<'a> Context<'a> {
                         input = fetch(input);
                     }}
 
-                    const {{ instance, module }} = await load(await input, imports);
+                    const {{ instance, module }} = await load(await input, imports{init_memory_arg});
 
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
