@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(non_upper_case_globals)]
 #[cfg(target_arch = "wasm32")]
 #[link_section = "__wasm_bindgen_unstable"]

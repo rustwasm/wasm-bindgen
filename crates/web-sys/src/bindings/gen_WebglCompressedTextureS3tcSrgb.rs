@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "The `WEBGL_compressed_texture_s3tc_srgb` object\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_compressed_texture_s3tc_srgb)\n\n*This API requires the following crate features to be activated: `WebglCompressedTextureS3tcSrgb`*"]

@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[derive(Clone, Debug)]
 #[repr(transparent)]
 #[allow(clippy::all)]

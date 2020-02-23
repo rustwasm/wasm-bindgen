@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "The `HTMLScriptElement` object\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]

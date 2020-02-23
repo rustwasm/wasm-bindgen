@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "The `CanvasRenderingContext2D` object\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)\n\n*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]

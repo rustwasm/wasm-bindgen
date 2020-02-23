@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "The `OES_vertex_array_object` object\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_vertex_array_object)\n\n*This API requires the following crate features to be activated: `OesVertexArrayObject`*"]

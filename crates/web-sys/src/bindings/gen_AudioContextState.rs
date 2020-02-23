@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[allow(clippy::all)]

@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "The `WEBGL_color_buffer_float` object\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_color_buffer_float)\n\n*This API requires the following crate features to be activated: `WebglColorBufferFloat`*"]

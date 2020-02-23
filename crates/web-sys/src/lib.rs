@@ -12,7 +12,7 @@
 //! require.
 
 #![doc(html_root_url = "https://docs.rs/web-sys/0.2")]
-#![allow(unused_imports)]
+#![allow(unused_imports, deprecated)]
 
 mod bindings;
 pub use bindings::*;

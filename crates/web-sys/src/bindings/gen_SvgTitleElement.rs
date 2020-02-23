@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "The `SVGTitleElement` object\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTitleElement)\n\n*This API requires the following crate features to be activated: `SvgTitleElement`*"]

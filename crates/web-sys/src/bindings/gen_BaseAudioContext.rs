@@ -1,4 +1,5 @@
 use super::*;
+use js_sys::Object;
 #[allow(bad_style)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
