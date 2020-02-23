@@ -52,6 +52,7 @@ wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
 [workspace]
 members = [
   "benchmarks",
+  "bin/build-web-sys",
   "crates/cli",
   "crates/js-sys",
   "crates/test",

@@ -29,6 +29,20 @@ pub struct Program {
     pub inline_js: Vec<String>,
 }
 
+impl Program {
+    /// Returns true if the Program is empty
+    pub fn is_empty(&self) -> bool {
+        self.exports.is_empty() &&
+        self.imports.is_empty() &&
+        self.enums.is_empty() &&
+        self.structs.is_empty() &&
+        self.consts.is_empty() &&
+        self.dictionaries.is_empty() &&
+        self.typescript_custom_sections.is_empty() &&
+        self.inline_js.is_empty()
+    }
+}
+
 /// A rust to js interface. Allows interaction with rust objects/functions
 /// from javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
@@ -319,6 +333,7 @@ pub struct DictionaryField {
     pub js_name: String,
     pub required: bool,
     pub ty: syn::Type,
+    pub rust_attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
 }
 

@@ -20,18 +20,14 @@ use crate::util::{
     camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
     webidl_const_v_to_backend_const_v, TypePosition,
 };
-use anyhow::Result;
-use proc_macro2::{Ident, Span};
+use anyhow::{bail, Result};
+use proc_macro2::{Ident, Span, TokenStream, Literal};
 use quote::{quote, ToTokens};
-use std::collections::{BTreeSet, HashSet};
-use std::env;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
-use std::fmt::Display;
-use std::fs;
 use std::iter::FromIterator;
 use wasm_bindgen_backend::ast;
 use wasm_bindgen_backend::defined::ImportedTypeReferences;
-use wasm_bindgen_backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident, wrap_import_function};
 use wasm_bindgen_backend::TryToTokens;
 use weedle::attribute::ExtendedAttributeList;
@@ -39,9 +35,18 @@ use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
 use weedle::Parse;
 
+#[derive(Default)]
 struct Program {
     main: ast::Program,
-    submodules: Vec<(String, ast::Program)>,
+    submodules: Vec<(String, Program)>,
+    parent_features: BTreeSet<String>,
+}
+
+impl Program {
+    fn is_empty(&self) -> bool {
+        self.main.is_empty() &&
+        self.submodules.iter().all(|(_, program)| program.is_empty())
+    }
 }
 
 /// A parse error indicating where parsing failed
@@ -91,11 +96,7 @@ fn parse_source(source: &str) -> Result<Vec<weedle::Definition>> {
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-fn parse(
-    webidl_source: &str,
-    unstable_source: &str,
-    allowed_types: Option<&[&str]>,
-) -> Result<Program> {
+fn parse(webidl_source: &str, unstable_source: &str) -> Result<BTreeMap<String, Program>> {
     let mut first_pass_record: FirstPassRecord = Default::default();
     first_pass_record.builtin_idents = builtin_idents();
     first_pass_record.immutable_slice_whitelist = immutable_slice_whitelist();
@@ -106,69 +107,60 @@ fn parse(
     let unstable_definitions = parse_source(unstable_source)?;
     unstable_definitions.first_pass(&mut first_pass_record, ApiStability::Unstable)?;
 
-    let mut program = Default::default();
-    let mut submodules = Vec::new();
+    let mut types = BTreeMap::new();
 
-    let allowed_types = allowed_types.map(|list| list.iter().cloned().collect::<HashSet<_>>());
-    let filter = |name: &str| match &allowed_types {
-        Some(set) => set.contains(name),
-        None => true,
-    };
+    fn get_program<'a>(map: &'a mut BTreeMap<String, Program>, name: String) -> &'a mut Program {
+        map.entry(name).or_insert_with(|| Default::default())
+    }
 
     for (name, e) in first_pass_record.enums.iter() {
-        if filter(&camel_case_ident(name)) {
-            first_pass_record.append_enum(&mut program, e);
-        }
+        let program = get_program(&mut types, camel_case_ident(name));
+        first_pass_record.append_enum(&mut program.main, e);
     }
     for (name, d) in first_pass_record.dictionaries.iter() {
-        if filter(&camel_case_ident(name)) {
-            first_pass_record.append_dictionary(&mut program, d);
-        }
+        let mut program = get_program(&mut types, camel_case_ident(name));
+        first_pass_record.append_dictionary(&mut program, d);
     }
     for (name, n) in first_pass_record.namespaces.iter() {
-        if filter(&snake_case_ident(name)) {
-            let prog = first_pass_record.append_ns(name, n);
-            submodules.push((snake_case_ident(name).to_string(), prog));
-        }
+        let name = snake_case_ident(name);
+        let program = get_program(&mut types, name.clone());
+        let prog = first_pass_record.append_ns(&name, n);
+        program.submodules.push((name, prog));
     }
     for (name, d) in first_pass_record.interfaces.iter() {
-        if filter(&camel_case_ident(name)) {
-            first_pass_record.append_interface(&mut program, name, d);
-        }
+        let mut program = get_program(&mut types, camel_case_ident(name));
+        first_pass_record.append_interface(&mut program, name, d);
     }
     for (name, d) in first_pass_record.callback_interfaces.iter() {
-        if filter(&camel_case_ident(name)) {
-            first_pass_record.append_callback_interface(&mut program, d);
-        }
+        let mut program = get_program(&mut types, camel_case_ident(name));
+        first_pass_record.append_callback_interface(&mut program, d);
     }
 
-    // Prune out `extends` annotations that aren't defined as these shouldn't
-    // prevent the type from being usable entirely. They're just there for
-    // `AsRef` and such implementations.
-    for import in program.imports.iter_mut() {
-        if let ast::ImportKind::Type(t) = &mut import.kind {
-            t.extends.retain(|n| {
-                let ident = &n.segments.last().unwrap().ident;
-                first_pass_record.builtin_idents.contains(ident) || filter(&ident.to_string())
-            });
-        }
-    }
+    Ok(types)
+}
 
-    Ok(Program {
-        main: program,
-        submodules,
-    })
+/// Compiled Rust code and the parent features for a particular feature.
+#[derive(Debug, Clone)]
+pub struct Feature {
+    /// Compiled Rust code.
+    pub code: String,
+
+    /// Parent features.
+    pub parent_features: BTreeSet<String>,
 }
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile(
-    webidl_source: &str,
-    experimental_source: &str,
-    allowed_types: Option<&[&str]>,
-) -> Result<String> {
-    let ast = parse(webidl_source, experimental_source, allowed_types)?;
-    Ok(compile_ast(ast))
+pub fn compile(webidl_source: &str, experimental_source: &str) -> Result<BTreeMap<String, Feature>> {
+    let ast = parse(webidl_source, experimental_source)?;
+    Ok(ast.into_iter().filter_map(|(name, program)| {
+        if program.is_empty() {
+            None
+
+        } else {
+            Some((name, compile_ast(program)))
+        }
+    }).collect())
 }
 
 fn builtin_idents() -> BTreeSet<Ident> {
@@ -253,68 +245,64 @@ fn immutable_slice_whitelist() -> BTreeSet<&'static str> {
 }
 
 /// Run codegen on the AST to generate rust code.
-fn compile_ast(mut ast: Program) -> String {
-    // Iteratively prune all entries from the AST which reference undefined
-    // fields. Each pass may remove definitions of types and so we need to
-    // reexecute this pass to see if we need to keep removing types until we
-    // reach a steady state.
-    let builtin = builtin_idents();
-    let mut all_definitions = BTreeSet::new();
-    let track = env::var_os("__WASM_BINDGEN_DUMP_FEATURES");
-    loop {
-        let mut defined = builtin.clone();
-        {
-            let mut cb = |id: &Ident| {
-                defined.insert(id.clone());
-                if track.is_some() {
-                    all_definitions.insert(id.clone());
-                }
-            };
-            ast.main.imported_type_definitions(&mut cb);
-            for (name, m) in ast.submodules.iter() {
-                cb(&Ident::new(name, Span::call_site()));
-                m.imported_type_references(&mut cb);
-            }
-        }
-        let changed = ast
-            .main
-            .remove_undefined_imports(&|id| defined.contains(id))
-            || ast
-                .submodules
-                .iter_mut()
-                .any(|(_, m)| m.remove_undefined_imports(&|id| defined.contains(id)));
-        if !changed {
-            break;
-        }
-    }
-    if let Some(path) = track {
-        let contents = all_definitions
-            .into_iter()
-            .filter(|def| !builtin.contains(def))
-            .map(|s| format!("{} = []", s))
-            .collect::<Vec<_>>()
-            .join("\n");
-        fs::write(path, contents).unwrap();
-    }
+fn compile_ast(ast: Program) -> Feature {
+    let Program { main, submodules, mut parent_features } = ast;
 
     let mut tokens = proc_macro2::TokenStream::new();
-    if let Err(e) = ast.main.try_to_tokens(&mut tokens) {
+
+    (quote! {
+        use super::*;
+    }).to_tokens(&mut tokens);
+
+    if let Err(e) = main.try_to_tokens(&mut tokens) {
         e.panic();
     }
-    for (name, m) in ast.submodules.iter() {
+
+    for (name, p) in submodules.into_iter() {
         let mut m_tokens = proc_macro2::TokenStream::new();
-        if let Err(e) = m.try_to_tokens(&mut m_tokens) {
+
+        for feature in p.parent_features.into_iter() {
+            parent_features.insert(feature);
+        }
+
+        if let Err(e) = p.main.try_to_tokens(&mut m_tokens) {
             e.panic();
         }
 
-        let name = Ident::new(name, Span::call_site());
+        let name = Ident::new(&name, Span::call_site());
 
         (quote! {
             pub mod #name { #m_tokens }
         })
         .to_tokens(&mut tokens);
     }
-    tokens.to_string()
+
+    Feature {
+        code: tokens.to_string(),
+        parent_features,
+    }
+}
+
+fn into_cfg_feature(features: &BTreeSet<Ident>) -> Option<syn::Attribute> {
+    if features.is_empty() {
+        None
+
+    } else {
+        let features = features.into_iter()
+            .map(|feature| {
+                let feature = Literal::string(&feature.to_string());
+                quote!( feature = #feature, )
+            })
+            .collect::<TokenStream>();
+
+        Some(syn::parse_quote!( #[cfg(all(#features))] ))
+    }
+}
+
+fn append_extra_features(features: &mut BTreeSet<Ident>, extra: &[&str]) {
+    for extra in extra {
+        features.insert(Ident::new(extra, Span::call_site()));
+    }
 }
 
 impl<'src> FirstPassRecord<'src> {
@@ -350,7 +338,7 @@ impl<'src> FirstPassRecord<'src> {
     // https://www.w3.org/TR/WebIDL-1/#idl-dictionaries
     fn append_dictionary(
         &self,
-        program: &mut ast::Program,
+        program: &mut Program,
         data: &first_pass::DictionaryData<'src>,
     ) {
         let def = match data.definition {
@@ -368,12 +356,20 @@ impl<'src> FirstPassRecord<'src> {
                 "Configure the `{}` field of this object\n",
                 field.js_name,
             ));
-            self.append_required_features_doc(&*field, &mut doc_comment, &[&extra_feature]);
+
+            let mut features = self.get_required_features(&*field);
+
+            if let Some(attr) = into_cfg_feature(&features) {
+                field.rust_attrs.push(attr);
+            }
+
+            append_extra_features(&mut features, &[&extra_feature]);
+            self.append_required_features_doc(&mut doc_comment, &features);
             field.doc_comment = doc_comment;
         }
 
         let mut doc_comment = format!("The `{}` dictionary\n", def.identifier.0);
-        if let Some(s) = self.required_doc_string(vec![name.clone()]) {
+        if let Some(s) = self.required_doc_string(vec![name.to_string()]) {
             doc_comment.push_str(&s);
         }
         let mut dict = ast::Dictionary {
@@ -385,10 +381,14 @@ impl<'src> FirstPassRecord<'src> {
             unstable_api: data.stability.is_unstable(),
         };
         let mut ctor_doc_comment = Some(format!("Construct a new `{}`\n", def.identifier.0));
-        self.append_required_features_doc(&dict, &mut ctor_doc_comment, &[&extra_feature]);
+
+        let mut features = self.get_required_features(&dict);
+
+        append_extra_features(&mut features, &[&extra_feature]);
+        self.append_required_features_doc(&mut ctor_doc_comment, &features);
         dict.ctor_doc_comment = ctor_doc_comment;
 
-        program.dictionaries.push(dict);
+        program.main.dictionaries.push(dict);
     }
 
     fn append_dictionary_members(
@@ -489,6 +489,7 @@ impl<'src> FirstPassRecord<'src> {
             rust_name: rust_ident(&snake_case_ident(field.identifier.0)),
             js_name: field.identifier.0.to_string(),
             ty,
+            rust_attrs: vec![],
             doc_comment: None,
         })
     }
@@ -497,7 +498,7 @@ impl<'src> FirstPassRecord<'src> {
         &'src self,
         name: &'src str,
         ns: &'src first_pass::NamespaceData<'src>,
-    ) -> ast::Program {
+    ) -> Program {
         let mut ret = Default::default();
 
         for (id, data) in ns.operations.iter() {
@@ -509,7 +510,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_ns_member(
         &self,
-        module: &mut ast::Program,
+        program: &mut Program,
         self_name: &'src str,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
@@ -533,13 +534,23 @@ impl<'src> FirstPassRecord<'src> {
         );
 
         let kind = ast::ImportFunctionKind::Normal;
-        let extra = snake_case_ident(self_name);
-        let extra = &[&extra[..]];
+        let extra_name = snake_case_ident(self_name);
+        let extra = &[&extra_name[..]];
+
         for mut import_function in self.create_imports(None, kind, id, data, false) {
+            let mut features = self.get_required_features(&import_function);
+
+            if let Some(attr) = into_cfg_feature(&features) {
+                import_function.function.rust_attrs.push(attr);
+            }
+
+            append_extra_features(&mut features, extra);
+
             let mut doc = Some(doc_comment.clone());
-            self.append_required_features_doc(&import_function, &mut doc, extra);
+            self.append_required_features_doc(&mut doc, &features);
             import_function.doc_comment = doc;
-            module.imports.push(ast::Import {
+
+            program.main.imports.push(ast::Import {
                 module: ast::ImportModule::None,
                 js_namespace: Some(raw_ident(self_name)),
                 kind: ast::ImportKind::Function(import_function),
@@ -550,7 +561,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_const(
         &self,
-        program: &mut ast::Program,
+        program: &mut Program,
         self_name: &'src str,
         member: &'src weedle::interface::ConstMember<'src>,
         unstable_api: bool,
@@ -569,7 +580,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         };
 
-        program.consts.push(ast::Const {
+        program.main.consts.push(ast::Const {
             vis: public(),
             name: rust_ident(shouty_snake_case_ident(member.identifier.0).as_str()),
             class: Some(rust_ident(camel_case_ident(&self_name).as_str())),
@@ -581,7 +592,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_interface(
         &self,
-        program: &mut ast::Program,
+        program: &mut Program,
         name: &'src str,
         data: &InterfaceData<'src>,
     ) {
@@ -619,17 +630,25 @@ impl<'src> FirstPassRecord<'src> {
             }
             _ => {}
         }
-        let extra = camel_case_ident(name);
-        let extra = &[&extra[..]];
-        self.append_required_features_doc(&import_type, &mut doc_comment, extra);
+        let extra_name = camel_case_ident(name);
+        let extra = &[&extra_name[..]];
+        let mut features = self.get_required_features(&import_type);
+
+        append_extra_features(&mut features, extra);
+        self.append_required_features_doc(&mut doc_comment, &features);
+
+        for parent in self.all_superclasses(name) {
+            program.parent_features.insert(parent);
+        }
+
         import_type.extends = self
             .all_superclasses(name)
             .map(|name| Ident::new(&name, Span::call_site()).into())
-            .chain(Some(Ident::new("Object", Span::call_site()).into()))
+            .chain(Some(syn::parse_quote!( ::js_sys::Object )))
             .collect();
         import_type.doc_comment = doc_comment;
 
-        program.imports.push(ast::Import {
+        program.main.imports.push(ast::Import {
             module: ast::ImportModule::None,
             js_namespace: None,
             kind: ast::ImportKind::Type(import_type),
@@ -689,7 +708,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn member_attribute(
         &self,
-        program: &mut ast::Program,
+        program: &mut Program,
         self_name: &'src str,
         data: &InterfaceData<'src>,
         modifier: Option<weedle::interface::StringifierOrInheritOrStatic>,
@@ -719,9 +738,15 @@ impl<'src> FirstPassRecord<'src> {
             unstable_api,
         ) {
             let mut doc = import_function.doc_comment.take();
-            self.append_required_features_doc(&import_function, &mut doc, &[]);
+            let features = self.get_required_features(&import_function);
+
+            if let Some(attr) = into_cfg_feature(&features) {
+                import_function.function.rust_attrs.push(attr);
+            }
+
+            self.append_required_features_doc(&mut doc, &features);
             import_function.doc_comment = doc;
-            program.imports.push(wrap_import_function(import_function));
+            program.main.imports.push(wrap_import_function(import_function));
         }
 
         if !readonly {
@@ -735,17 +760,23 @@ impl<'src> FirstPassRecord<'src> {
                 unstable_api,
             ) {
                 let mut doc = import_function.doc_comment.take();
-                self.append_required_features_doc(&import_function, &mut doc, &[]);
+                let features = self.get_required_features(&import_function);
+
+                if let Some(attr) = into_cfg_feature(&features) {
+                    import_function.function.rust_attrs.push(attr);
+                }
+
+                self.append_required_features_doc(&mut doc, &features);
                 import_function.doc_comment = doc;
                 self.add_deprecated(data, &mut import_function.function.rust_attrs);
-                program.imports.push(wrap_import_function(import_function));
+                program.main.imports.push(wrap_import_function(import_function));
             }
         }
     }
 
     fn member_operation(
         &self,
-        program: &mut ast::Program,
+        program: &mut Program,
         self_name: &str,
         data: &InterfaceData<'src>,
         id: &OperationId<'src>,
@@ -791,10 +822,16 @@ impl<'src> FirstPassRecord<'src> {
             self.create_imports(attrs, kind, id, op_data, data.stability.is_unstable())
         {
             let mut doc = doc.clone();
-            self.append_required_features_doc(&method, &mut doc, &[]);
+            let features = self.get_required_features(&method);
+
+            if let Some(attr) = into_cfg_feature(&features) {
+                method.function.rust_attrs.push(attr);
+            }
+
+            self.append_required_features_doc(&mut doc, &features);
             method.doc_comment = doc;
             self.add_deprecated(data, &mut method.function.rust_attrs);
-            program.imports.push(wrap_import_function(method));
+            program.main.imports.push(wrap_import_function(method));
         }
     }
 
@@ -806,38 +843,42 @@ impl<'src> FirstPassRecord<'src> {
         dst.push(syn::parse_quote!( #[deprecated(note = #msg)] ));
     }
 
+    fn get_required_features(&self, item: impl ImportedTypeReferences) -> BTreeSet<Ident> {
+        let mut features = BTreeSet::new();
+
+        item.imported_type_references(&mut |f| {
+            if !self.builtin_idents.contains(f) {
+                features.insert(f.clone());
+            }
+        });
+
+        features
+    }
+
     fn append_required_features_doc(
         &self,
-        item: impl ImportedTypeReferences,
         doc: &mut Option<String>,
-        extra: &[&str],
+        features: &BTreeSet<Ident>,
     ) {
         let doc = match doc {
             Some(doc) => doc,
             None => return,
         };
-        let mut required = extra
-            .iter()
-            .map(|s| Ident::new(s, Span::call_site()))
-            .collect::<BTreeSet<_>>();
-        item.imported_type_references(&mut |f| {
-            if !self.builtin_idents.contains(f) {
-                required.insert(f.clone());
-            }
-        });
-        if required.len() == 0 {
-            return;
-        }
-        if let Some(extra) = self.required_doc_string(required) {
+
+        let features = features
+            .into_iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>();
+
+        if let Some(extra) = self.required_doc_string(features) {
             doc.push_str(&extra);
         }
     }
 
-    fn required_doc_string<T: Display>(
+    fn required_doc_string(
         &self,
-        features: impl IntoIterator<Item = T>,
+        features: Vec<String>,
     ) -> Option<String> {
-        let features = features.into_iter().collect::<Vec<_>>();
         if features.len() == 0 {
             return None;
         }
@@ -855,7 +896,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_callback_interface(
         &self,
-        program: &mut ast::Program,
+        program: &mut Program,
         item: &CallbackInterfaceData<'src>,
     ) {
         let mut fields = Vec::new();
@@ -873,6 +914,7 @@ impl<'src> FirstPassRecord<'src> {
                         js_name: identifier.to_string(),
                         ty: idl_type::IdlType::Callback.to_syn_type(pos).unwrap(),
                         doc_comment: None,
+                        rust_attrs: vec![],
                     });
                 }
                 _ => {
@@ -884,7 +926,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        program.dictionaries.push(ast::Dictionary {
+        program.main.dictionaries.push(ast::Dictionary {
             name: rust_ident(&camel_case_ident(item.definition.identifier.0)),
             fields,
             ctor: true,

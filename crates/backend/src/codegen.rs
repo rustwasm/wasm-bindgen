@@ -306,6 +306,7 @@ impl ToTokens for ast::StructField {
                 <#ty as WasmDescribe>::describe();
             },
             unstable_api: self.unstable_api,
+            attrs: vec![],
         }
         .to_tokens(tokens);
 
@@ -543,6 +544,7 @@ impl TryToTokens for ast::Export {
                 #describe_ret
             },
             unstable_api: self.unstable_api,
+            attrs: attrs.clone(),
         }
         .to_tokens(into);
 
@@ -1041,6 +1043,7 @@ impl TryToTokens for ast::ImportFunction {
         // the best we can in the meantime.
         let extern_fn = respan(
             quote! {
+                #(#attrs)*
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 extern "C" {
@@ -1124,6 +1127,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
                 #inform_ret
             },
             unstable_api: self.unstable_api,
+            attrs: f.function.rust_attrs.clone(),
         }
         .to_tokens(tokens);
     }
@@ -1234,6 +1238,7 @@ impl ToTokens for ast::ImportStatic {
                 <#ty as WasmDescribe>::describe();
             },
             unstable_api: false,
+            attrs: vec![],
         }
         .to_tokens(into);
     }
@@ -1455,6 +1460,7 @@ impl ToTokens for ast::Dictionary {
 
 impl ToTokens for ast::DictionaryField {
     fn to_tokens(&self, tokens: &mut TokenStream) {
+        let attrs = &self.rust_attrs;
         let rust_name = &self.rust_name;
         let js_name = &self.js_name;
         let ty = &self.ty;
@@ -1463,6 +1469,7 @@ impl ToTokens for ast::DictionaryField {
             Some(doc_string) => doc_string,
         };
         (quote! {
+            #(#attrs)*
             #[allow(clippy::all)]
             #[doc = #doc_comment]
             pub fn #rust_name(&mut self, val: #ty) -> &mut Self {
@@ -1486,6 +1493,7 @@ struct Descriptor<'a, T> {
     ident: &'a Ident,
     inner: T,
     unstable_api: bool,
+    attrs: Vec<syn::Attribute>,
 }
 
 impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
@@ -1515,7 +1523,9 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
         let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
         let inner = &self.inner;
+        let attrs = &self.attrs;
         (quote! {
+            #(#attrs)*
             #[no_mangle]
             #[allow(non_snake_case)]
             #[doc(hidden)]
