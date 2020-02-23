@@ -65,6 +65,8 @@ fn main() {
 
         generated_rust.push_str("}\nuse self::generated_code::*;");
 
+        println!("{}", generated_rust);
+
         fs::write(&out_file, generated_rust).unwrap();
 
         // Attempt to run rustfmt, but don't worry if it fails or if it isn't

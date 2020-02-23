@@ -250,11 +250,6 @@ fn compile_ast(ast: Program) -> Feature {
 
     let mut tokens = proc_macro2::TokenStream::new();
 
-    (quote! {
-        use super::*;
-        use js_sys::Object;
-    }).to_tokens(&mut tokens);
-
     if let Err(e) = main.try_to_tokens(&mut tokens) {
         e.panic();
     }

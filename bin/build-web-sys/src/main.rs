@@ -67,7 +67,7 @@ fn main() -> Result<()> {
     for (name, bindings) in bindings.iter() {
         let out_file_path = binding_dir.join(format!("gen_{}.rs", name));
 
-        fs::write(&out_file_path, &bindings.code)?;
+        fs::write(&out_file_path, format!("use super::*;\nuse js_sys::Object;\n{}", bindings.code))?;
 
         // run rustfmt on the generated file - really handy for debugging
         //
