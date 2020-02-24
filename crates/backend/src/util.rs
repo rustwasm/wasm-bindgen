@@ -24,7 +24,8 @@ fn is_rust_keyword(name: &str) -> bool {
     }
 }
 
-// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
+/// Create a valid Rust `Ident` from an input string, which may be modified if the input was a
+/// Rust keyword, or began with a number.
 pub fn rust_ident(name: &str) -> Ident {
     if name == "" {
         panic!("tried to create empty Ident (from \"\")");
@@ -57,8 +58,7 @@ pub fn rust_ident(name: &str) -> Ident {
     }
 }
 
-// Create an `Ident` without checking to see if it conflicts with a Rust
-// keyword.
+/// Create an `Ident` without any checking for validity.
 pub fn raw_ident(name: &str) -> Ident {
     Ident::new(name, proc_macro2::Span::call_site())
 }
@@ -82,6 +82,7 @@ where
     path_ty(true, segments)
 }
 
+/// Create a global path type from the given segments, either with or without a leading colon.
 fn path_ty<I>(leading_colon: bool, segments: I) -> syn::Type
 where
     I: IntoIterator<Item = Ident>,
@@ -108,10 +109,12 @@ where
     .into()
 }
 
+/// Create a (path) type from an `Ident`.
 pub fn ident_ty(ident: Ident) -> syn::Type {
     simple_path_ty(Some(ident))
 }
 
+/// Lift an import function to an import, assuming no js module or namespace.
 pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
     ast::Import {
         module: ast::ImportModule::None,

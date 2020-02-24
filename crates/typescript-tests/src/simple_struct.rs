@@ -14,7 +14,9 @@ impl A {
 
     pub fn foo(&self) {}
 
-    pub fn ret_bool(&self) -> bool { true }
+    pub fn ret_bool(&self) -> bool {
+        true
+    }
     pub fn take_bool(&self, _: bool) {}
     pub fn take_many(&self, _: bool, _: f64, _: u32) {}
 }

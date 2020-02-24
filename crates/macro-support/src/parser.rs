@@ -558,6 +558,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             js_name,
             extends,
             vendor_prefixes,
+            iterable: None,
         }))
     }
 }
