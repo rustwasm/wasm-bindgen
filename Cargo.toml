@@ -15,7 +15,6 @@ edition = "2018"
 
 [package.metadata.docs.rs]
 features = ["serde-serialize"]
-rustc-args = ["--cfg=web_sys_unstable_apis"]
 
 [lib]
 test = false
