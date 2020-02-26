@@ -158,15 +158,17 @@ impl<T: Hash> fmt::Display for ShortHash<T> {
 }
 
 
-/// Create a syn attribute for `#[cfg(web_sys_unstable_apis)]`.
-pub fn unstable_api_attr() -> syn::Attribute {
-    syn::parse_quote!( #[cfg(web_sys_unstable_apis)] )
+/// Create syn attribute for `#[cfg(web_sys_unstable_apis)]` and a doc comment.
+pub fn unstable_api_attrs() -> proc_macro2::TokenStream {
+    quote::quote!(
+        #[cfg(web_sys_unstable_apis)]
+        #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    )
 }
 
-
-pub fn maybe_unstable_api_attr(unstable_api: bool) -> Option<syn::Attribute> {
+pub fn maybe_unstable_api_attr(unstable_api: bool) -> Option<proc_macro2::TokenStream> {
     if unstable_api {
-        Some(unstable_api_attr())
+        Some(unstable_api_attrs())
     } else {
         None
     }
