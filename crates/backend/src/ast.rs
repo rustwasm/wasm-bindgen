@@ -51,6 +51,8 @@ pub struct Export {
     /// Whether or not this function should be flagged as the wasm start
     /// function.
     pub start: bool,
+    /// Whether the API is unstable. This is only used internally.
+    pub unstable_api: bool,
 }
 
 /// The 3 types variations of `self`.
@@ -71,6 +73,7 @@ pub struct Import {
     pub module: ImportModule,
     pub js_namespace: Option<Ident>,
     pub kind: ImportKind,
+    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
@@ -126,6 +129,7 @@ pub struct ImportFunction {
     pub kind: ImportFunctionKind,
     pub shim: Ident,
     pub doc_comment: Option<String>,
+    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -182,6 +186,7 @@ pub struct ImportType {
     pub js_name: String,
     pub attrs: Vec<syn::Attribute>,
     pub typescript_name: Option<String>,
+    pub unstable_api: bool,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
     pub is_type_of: Option<syn::Expr>,
@@ -202,6 +207,8 @@ pub struct ImportEnum {
     pub variant_values: Vec<String>,
     /// Attributes to apply to the Rust enum
     pub rust_attrs: Vec<syn::Attribute>,
+    /// Whether the enum is part of an unstable WebIDL
+    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
@@ -237,6 +244,7 @@ pub struct StructField {
     pub getter: Ident,
     pub setter: Ident,
     pub comments: Vec<String>,
+    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -246,6 +254,7 @@ pub struct Enum {
     pub variants: Vec<Variant>,
     pub comments: Vec<String>,
     pub hole: u32,
+    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -278,6 +287,7 @@ pub struct Const {
     pub class: Option<Ident>,
     pub ty: syn::Type,
     pub value: ConstValue,
+    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
@@ -299,6 +309,7 @@ pub struct Dictionary {
     pub ctor: bool,
     pub doc_comment: Option<String>,
     pub ctor_doc_comment: Option<String>,
+    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

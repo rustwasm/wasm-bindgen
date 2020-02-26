@@ -94,6 +94,7 @@ macro_rules! shared_api {
             function: Function<'a>,
             method_kind: MethodKind<'a>,
             start: bool,
+            unstable_api: bool,
         }
 
         struct Enum<'a> {

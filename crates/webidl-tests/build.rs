@@ -11,13 +11,22 @@ fn main() {
     let idls = fs::read_dir(".")
         .unwrap()
         .map(|f| f.unwrap().path())
-        .filter(|f| f.extension().and_then(|s| s.to_str()) == Some("webidl"))
-        .map(|f| (fs::read_to_string(&f).unwrap(), f));
+        .filter(|path| path.extension().and_then(|s| s.to_str()) == Some("webidl"))
+        .map(|path| {
+            let unstable = path.file_name().and_then(|s| s.to_str()) == Some("unstable.webidl");
+            let file = fs::read_to_string(&path).unwrap();
+            (file, path, unstable)
+        });
 
     let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
-    for (i, (idl, path)) in idls.enumerate() {
+    for (i, (idl, path, unstable)) in idls.enumerate() {
         println!("processing {:?}", path);
-        let mut generated_rust = wasm_bindgen_webidl::compile(&idl, None).unwrap();
+        let (stable_source, experimental_source) = if unstable {
+            (String::new(), idl)
+        } else {
+            (idl, String::new())
+        };
+        let mut generated_rust = wasm_bindgen_webidl::compile(&stable_source, &experimental_source, None).unwrap();
 
         generated_rust.insert_str(
             0,

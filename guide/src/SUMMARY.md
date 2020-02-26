@@ -88,6 +88,7 @@
   - [Function Overloads](./web-sys/function-overloads.md)
   - [Type Translations](./web-sys/type-translations.md)
   - [Inheritance](./web-sys/inheritance.md)
+  - [Unstable APIs](./web-sys/unstable-apis.md)
 
 - [Testing with `wasm-bindgen-test`](./wasm-bindgen-test/index.md)
   - [Usage](./wasm-bindgen-test/usage.md)

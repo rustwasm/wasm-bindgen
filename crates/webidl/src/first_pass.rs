@@ -20,15 +20,14 @@ use weedle::CallbackInterfaceDefinition;
 use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
 
 use super::Result;
-use crate::util;
-use crate::util::camel_case_ident;
+use crate::{util::{self, camel_case_ident}, ApiStability};
 
 /// Collection of constructs that may use partial.
 #[derive(Default)]
 pub(crate) struct FirstPassRecord<'src> {
     pub(crate) builtin_idents: BTreeSet<Ident>,
     pub(crate) interfaces: BTreeMap<&'src str, InterfaceData<'src>>,
-    pub(crate) enums: BTreeMap<&'src str, &'src weedle::EnumDefinition<'src>>,
+    pub(crate) enums: BTreeMap<&'src str, EnumData<'src>>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
     pub(crate) mixins: BTreeMap<&'src str, MixinData<'src>>,
     pub(crate) typedefs: BTreeMap<&'src str, &'src weedle::types::Type<'src>>,
@@ -40,6 +39,11 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) immutable_slice_whitelist: BTreeSet<&'static str>,
 }
 
+pub(crate) struct AttributeInterfaceData<'src> {
+    pub(crate) definition: &'src AttributeInterfaceMember<'src>,
+    pub(crate) stability: ApiStability,
+}
+
 /// We need to collect interface data during the first pass, to be used later.
 #[derive(Default)]
 pub(crate) struct InterfaceData<'src> {
@@ -47,11 +51,17 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) partial: bool,
     pub(crate) has_interface: bool,
     pub(crate) deprecated: Option<String>,
-    pub(crate) attributes: Vec<&'src AttributeInterfaceMember<'src>>,
+    pub(crate) attributes: Vec<AttributeInterfaceData<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
     pub(crate) superclass: Option<&'src str>,
     pub(crate) definition_attributes: Option<&'src ExtendedAttributeList<'src>>,
+    pub(crate) stability: ApiStability,
+}
+
+pub(crate) struct AttributeMixinData<'src> {
+    pub(crate) definition: &'src AttributeMixinMember<'src>,
+    pub(crate) stability: ApiStability,
 }
 
 /// We need to collect mixin data during the first pass, to be used later.
@@ -59,10 +69,11 @@ pub(crate) struct InterfaceData<'src> {
 pub(crate) struct MixinData<'src> {
     /// Whether only partial mixins were encountered
     pub(crate) partial: bool,
-    pub(crate) attributes: Vec<&'src AttributeMixinMember<'src>>,
+    pub(crate) attributes: Vec<AttributeMixinData<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
     pub(crate) definition_attributes: Option<&'src ExtendedAttributeList<'src>>,
+    pub(crate) stability: ApiStability,
 }
 
 /// We need to collect namespace data during the first pass, to be used later.
@@ -75,6 +86,12 @@ pub(crate) struct NamespaceData<'src> {
 pub(crate) struct DictionaryData<'src> {
     pub(crate) partials: Vec<&'src PartialDictionaryDefinition<'src>>,
     pub(crate) definition: Option<&'src DictionaryDefinition<'src>>,
+    pub(crate) stability: ApiStability,
+}
+
+pub(crate) struct EnumData<'src> {
+    pub(crate) definition: &'src weedle::EnumDefinition<'src>,
+    pub(crate) stability: ApiStability,
 }
 
 pub(crate) struct CallbackInterfaceData<'src> {
@@ -121,29 +138,29 @@ pub(crate) trait FirstPass<'src, Ctx> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, ctx: Ctx) -> Result<()>;
 }
 
-impl<'src> FirstPass<'src, ()> for [weedle::Definition<'src>] {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for [weedle::Definition<'src>] {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         for def in self {
-            def.first_pass(record, ())?;
+            def.first_pass(record, stability)?;
         }
 
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::Definition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         use weedle::Definition::*;
 
         match self {
-            Dictionary(dictionary) => dictionary.first_pass(record, ()),
+            Dictionary(dictionary) => dictionary.first_pass(record, stability),
             PartialDictionary(dictionary) => dictionary.first_pass(record, ()),
-            Enum(enum_) => enum_.first_pass(record, ()),
+            Enum(enum_) => enum_.first_pass(record, stability),
             IncludesStatement(includes) => includes.first_pass(record, ()),
-            Interface(interface) => interface.first_pass(record, ()),
-            PartialInterface(interface) => interface.first_pass(record, ()),
-            InterfaceMixin(mixin) => mixin.first_pass(record, ()),
-            PartialInterfaceMixin(mixin) => mixin.first_pass(record, ()),
+            Interface(interface) => interface.first_pass(record, stability),
+            PartialInterface(interface) => interface.first_pass(record, stability),
+            InterfaceMixin(mixin) => mixin.first_pass(record, stability),
+            PartialInterfaceMixin(mixin) => mixin.first_pass(record, stability),
             Namespace(namespace) => namespace.first_pass(record, ()),
             PartialNamespace(namespace) => namespace.first_pass(record, ()),
             Typedef(typedef) => typedef.first_pass(record, ()),
@@ -154,17 +171,20 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::DictionaryDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::DictionaryDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
 
-        record
+        let dictionary_data = record
             .dictionaries
             .entry(self.identifier.0)
-            .or_default()
-            .definition = Some(self);
+            .or_default();
+
+        dictionary_data.definition = Some(self);
+        dictionary_data.stability = stability;
+
         Ok(())
     }
 }
@@ -181,17 +201,23 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialDictionaryDefinition<'src> {
             .or_default()
             .partials
             .push(self);
+
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::EnumDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
 
-        if record.enums.insert(self.identifier.0, self).is_some() {
+        let enum_data = EnumData {
+            definition: self,
+            stability,
+        };
+
+        if record.enums.insert(self.identifier.0, enum_data).is_some() {
             log::info!(
                 "Encountered multiple enum declarations: {}",
                 self.identifier.0
@@ -298,8 +324,8 @@ fn first_pass_operation<'src>(
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::InterfaceDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -311,6 +337,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
         interface_data.deprecated =
             util::get_rust_deprecated(&self.attributes).map(|s| s.to_string());
         interface_data.has_interface = !util::is_no_interface_object(&self.attributes);
+        interface_data.stability = stability;
         if let Some(attrs) = &self.attributes {
             for attr in attrs.body.list.iter() {
                 process_interface_attribute(record, self.identifier.0, attr);
@@ -318,7 +345,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
         }
 
         for member in &self.members.body {
-            member.first_pass(record, self.identifier.0)?;
+            member.first_pass(record, (self.identifier.0, stability))?;
         }
 
         Ok(())
@@ -382,8 +409,8 @@ fn process_interface_attribute<'src>(
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::PartialInterfaceDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -392,31 +419,33 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
             .entry(self.identifier.0)
             .or_insert_with(|| InterfaceData {
                 partial: true,
+                stability,
                 ..Default::default()
             });
         for member in &self.members.body {
-            member.first_pass(record, self.identifier.0)?;
+            member.first_pass(record, (self.identifier.0, stability))?;
         }
+        
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::InterfaceMember<'src> {
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        ctx: (&'src str, ApiStability),
     ) -> Result<()> {
         match self {
-            InterfaceMember::Attribute(attr) => attr.first_pass(record, self_name),
-            InterfaceMember::Operation(op) => op.first_pass(record, self_name),
+            InterfaceMember::Attribute(attr) => attr.first_pass(record, ctx),
+            InterfaceMember::Operation(op) => op.first_pass(record, ctx.0),
             InterfaceMember::Const(const_) => {
                 if util::is_chrome_only(&const_.attributes) {
                     return Ok(());
                 }
                 record
                     .interfaces
-                    .get_mut(self_name)
+                    .get_mut(ctx.0)
                     .unwrap()
                     .consts
                     .push(const_);
@@ -484,11 +513,11 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::interface::AttributeInterfaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::AttributeInterfaceMember<'src> {
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        ctx: (&'src str, ApiStability),
     ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
@@ -496,16 +525,19 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::AttributeInterfaceM
 
         record
             .interfaces
-            .get_mut(self_name)
+            .get_mut(ctx.0)
             .unwrap()
             .attributes
-            .push(self);
+            .push(AttributeInterfaceData {
+                definition: self,
+                stability: ctx.1
+            });
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::InterfaceMixinDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -514,18 +546,19 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src> {
             let mixin_data = record.mixins.entry(self.identifier.0).or_default();
             mixin_data.partial = false;
             mixin_data.definition_attributes = self.attributes.as_ref();
+            mixin_data.stability = stability;
         }
 
         for member in &self.members.body {
-            member.first_pass(record, self.identifier.0)?;
+            member.first_pass(record, (self.identifier.0, stability))?;
         }
 
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceMixinDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::PartialInterfaceMixinDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -535,31 +568,32 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceMixinDefinition<'src>
             .entry(self.identifier.0)
             .or_insert_with(|| MixinData {
                 partial: true,
+                stability,
                 ..Default::default()
             });
 
         for member in &self.members.body {
-            member.first_pass(record, self.identifier.0)?;
+            member.first_pass(record, (self.identifier.0, stability))?;
         }
 
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::mixin::MixinMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::MixinMember<'src> {
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        ctx: (&'src str, ApiStability),
     ) -> Result<()> {
         match self {
-            MixinMember::Operation(op) => op.first_pass(record, self_name),
-            MixinMember::Attribute(a) => a.first_pass(record, self_name),
+            MixinMember::Operation(op) => op.first_pass(record, ctx),
+            MixinMember::Attribute(a) => a.first_pass(record, ctx),
             MixinMember::Const(a) => {
                 if util::is_chrome_only(&a.attributes) {
                     return Ok(());
                 }
-                record.mixins.get_mut(self_name).unwrap().consts.push(a);
+                record.mixins.get_mut(ctx.0).unwrap().consts.push(a);
                 Ok(())
             }
             MixinMember::Stringifier(_) => {
@@ -570,11 +604,11 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::MixinMember<'src> {
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::OperationMixinMember<'src> {
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        ctx: (&'src str, ApiStability),
     ) -> Result<()> {
         if self.stringifier.is_some() {
             log::warn!("Unsupported webidl stringifier: {:?}", self);
@@ -584,7 +618,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
         first_pass_operation(
             record,
             FirstPassOperationType::Mixin,
-            self_name,
+            ctx.0,
             &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
             &self.args.body.list,
             &self.return_type,
@@ -595,21 +629,24 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::mixin::AttributeMixinMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::AttributeMixinMember<'src> {
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        ctx: (&'src str, ApiStability),
     ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
         record
             .mixins
-            .get_mut(self_name)
+            .get_mut(ctx.0)
             .unwrap()
             .attributes
-            .push(self);
+            .push(AttributeMixinData {
+                definition: self,
+                stability: ctx.1
+            });
         Ok(())
     }
 }

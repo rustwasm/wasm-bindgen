@@ -231,6 +231,7 @@ impl<'src> FirstPassRecord<'src> {
         catch: bool,
         variadic: bool,
         doc_comment: Option<String>,
+        unstable_api: bool,
     ) -> Option<ast::ImportFunction>
     where
         'src: 'a,
@@ -327,6 +328,7 @@ impl<'src> FirstPassRecord<'src> {
             },
             kind,
             doc_comment,
+            unstable_api,
         })
     }
 
@@ -339,6 +341,7 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         attrs: &Option<ExtendedAttributeList>,
         container_attrs: Option<&ExtendedAttributeList>,
+        unstable_api: bool,
     ) -> Option<ast::ImportFunction> {
         let kind = ast::OperationKind::Getter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, is_static, kind);
@@ -357,6 +360,7 @@ impl<'src> FirstPassRecord<'src> {
                 name,
                 mdn_doc(self_name, Some(name))
             )),
+            unstable_api,
         )
     }
 
@@ -369,6 +373,7 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         attrs: &Option<ExtendedAttributeList>,
         container_attrs: Option<&ExtendedAttributeList>,
+        unstable_api: bool,
     ) -> Option<ast::ImportFunction> {
         let kind = ast::OperationKind::Setter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, is_static, kind);
@@ -387,6 +392,7 @@ impl<'src> FirstPassRecord<'src> {
                 name,
                 mdn_doc(self_name, Some(name))
             )),
+            unstable_api,
         )
     }
 
@@ -414,6 +420,7 @@ impl<'src> FirstPassRecord<'src> {
         kind: ast::ImportFunctionKind,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
+        unstable_api: bool,
     ) -> Vec<ast::ImportFunction> {
         // First up, prune all signatures that reference unsupported arguments.
         // We won't consider these until said arguments are implemented.
@@ -618,6 +625,7 @@ impl<'src> FirstPassRecord<'src> {
                     catch,
                     variadic,
                     None,
+                    unstable_api,
                 ),
             );
             if !variadic {
@@ -644,6 +652,7 @@ impl<'src> FirstPassRecord<'src> {
                         catch,
                         false,
                         None,
+                        unstable_api,
                     ),
                 );
             }

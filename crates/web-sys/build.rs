@@ -7,16 +7,12 @@ use std::fs;
 use std::path::{self, PathBuf};
 use std::process::Command;
 
-fn main() -> Result<()> {
-    #[cfg(feature = "env_logger")]
-    env_logger::init();
-    println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=webidls/enabled");
-
-    let entries = fs::read_dir("webidls/enabled").context("reading webidls/enabled directory")?;
+/// Read all WebIDL files in a directory into a single `SourceFile`
+fn read_source_from_path(dir: &str) -> Result<SourceFile> {
+    let entries = fs::read_dir(dir).context("reading webidls/enabled directory")?;
     let mut source = SourceFile::default();
     for entry in entries {
-        let entry = entry.context("getting webidls/enabled/*.webidl entry")?;
+        let entry = entry.context(format!("getting {}/*.webidl entry", dir))?;
         let path = entry.path();
         if path.extension() != Some(OsStr::new("webidl")) {
             continue;
@@ -26,6 +22,16 @@ fn main() -> Result<()> {
             .add_file(&path)
             .with_context(|| format!("reading contents of file \"{}\"", path.display()))?;
     }
+
+    Ok(source)
+}
+
+fn main() -> Result<()> {
+    #[cfg(feature = "env_logger")]
+    env_logger::init();
+    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=webidls/enabled");
+    println!("cargo:rerun-if-changed=webidls/unstable");
 
     // Read our manifest, learn all `[feature]` directives with "toml parsing".
     // Use all these names to match against environment variables set by Cargo
@@ -63,7 +69,10 @@ fn main() -> Result<()> {
         Some(&allowed[..])
     };
 
-    let bindings = match wasm_bindgen_webidl::compile(&source.contents, allowed) {
+    let source = read_source_from_path("webidls/enabled")?;
+    let unstable_source = read_source_from_path("webidls/unstable")?;
+
+    let bindings = match wasm_bindgen_webidl::compile(&source.contents, &unstable_source.contents, allowed) {
         Ok(bindings) => bindings,
         Err(e) => {
             if let Some(err) = e.downcast_ref::<wasm_bindgen_webidl::WebIDLParseError>() {

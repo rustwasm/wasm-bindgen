@@ -20,7 +20,7 @@ use crate::util::{
     camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
     webidl_const_v_to_backend_const_v, TypePosition,
 };
-use anyhow::{bail, Result};
+use anyhow::Result;
 use proc_macro2::{Ident, Span};
 use quote::{quote, ToTokens};
 use std::collections::{BTreeSet, HashSet};
@@ -55,37 +55,59 @@ impl fmt::Display for WebIDLParseError {
 
 impl std::error::Error for WebIDLParseError {}
 
-/// Parse a string of WebIDL source text into a wasm-bindgen AST.
-fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program> {
-    let definitions = match weedle::parse(webidl_source) {
-        Ok(def) => def,
-        Err(e) => {
-            match &e {
-                weedle::Err::Incomplete(needed) => bail!("needed {:?} more bytes", needed),
-                weedle::Err::Error(cx) | weedle::Err::Failure(cx) => {
-                    // Note that #[allow] here is a workaround for Geal/nom#843
-                    // because the `Context` type here comes from `nom` and if
-                    // something else in our crate graph enables the
-                    // `verbose-errors` feature then we need to still compiled
-                    // against the changed enum definition.
-                    #[allow(unreachable_patterns)]
-                    let remaining = match cx {
-                        weedle::Context::Code(remaining, _) => remaining.len(),
-                        _ => 0,
-                    };
-                    let pos = webidl_source.len() - remaining;
+#[derive(Clone, Copy, PartialEq)]
+pub(crate) enum ApiStability {
+    Stable,
+    Unstable,
+}
 
-                    bail!(WebIDLParseError(pos))
-                }
+impl ApiStability {
+    pub(crate) fn is_unstable(self) -> bool {
+        self == Self::Unstable
+    }
+}
+
+impl Default for ApiStability {
+    fn default() -> Self {
+        Self::Stable
+    }
+}
+
+fn parse_source(source: &str) -> Result<Vec<weedle::Definition>> {
+    weedle::parse(source).map_err(|e| {
+        match &e {
+            weedle::Err::Incomplete(needed) => anyhow::anyhow!("needed {:?} more bytes", needed),
+            weedle::Err::Error(cx) | weedle::Err::Failure(cx) => {
+                // Note that #[allow] here is a workaround for Geal/nom#843
+                // because the `Context` type here comes from `nom` and if
+                // something else in our crate graph enables the
+                // `verbose-errors` feature then we need to still compiled
+                // against the changed enum definition.
+                #[allow(unreachable_patterns)]
+                let remaining = match cx {
+                    weedle::Context::Code(remaining, _) => remaining.len(),
+                    _ => 0,
+                };
+                let pos = source.len() - remaining;
+
+                WebIDLParseError(pos).into()
             }
         }
-    };
+    })
+}
 
+/// Parse a string of WebIDL source text into a wasm-bindgen AST.
+fn parse(webidl_source: &str, unstable_source: &str, allowed_types: Option<&[&str]>) -> Result<Program> {
     let mut first_pass_record: FirstPassRecord = Default::default();
     first_pass_record.builtin_idents = builtin_idents();
     first_pass_record.immutable_slice_whitelist = immutable_slice_whitelist();
 
-    definitions.first_pass(&mut first_pass_record, ())?;
+    let definitions = parse_source(webidl_source)?;
+    definitions.first_pass(&mut first_pass_record, ApiStability::Stable)?;
+
+    let unstable_definitions = parse_source(unstable_source)?;
+    unstable_definitions.first_pass(&mut first_pass_record, ApiStability::Unstable)?;
+
     let mut program = Default::default();
     let mut submodules = Vec::new();
 
@@ -136,14 +158,14 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
 
     Ok(Program {
         main: program,
-        submodules: submodules,
+        submodules,
     })
 }
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<String> {
-    let ast = parse(webidl_source, allowed_types)?;
+pub fn compile(webidl_source: &str, experimental_source: &str, allowed_types: Option<&[&str]>) -> Result<String> {
+    let ast = parse(webidl_source, experimental_source, allowed_types)?;
     Ok(compile_ast(ast))
 }
 
@@ -292,8 +314,10 @@ fn compile_ast(mut ast: Program) -> String {
 }
 
 impl<'src> FirstPassRecord<'src> {
-    fn append_enum(&self, program: &mut ast::Program, enum_: &'src weedle::EnumDefinition<'src>) {
+    fn append_enum(&self, program: &mut ast::Program, data: &first_pass::EnumData<'src>) {
+        let enum_ = data.definition;
         let variants = &enum_.values.body.list;
+        let unstable_api = data.stability.is_unstable();
         program.imports.push(ast::Import {
             module: ast::ImportModule::None,
             js_namespace: None,
@@ -312,7 +336,9 @@ impl<'src> FirstPassRecord<'src> {
                     .collect(),
                 variant_values: variants.iter().map(|v| v.0.to_string()).collect(),
                 rust_attrs: vec![syn::parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
+                unstable_api,
             }),
+            unstable_api,
         });
     }
 
@@ -352,6 +378,7 @@ impl<'src> FirstPassRecord<'src> {
             ctor: true,
             doc_comment: Some(doc_comment),
             ctor_doc_comment: None,
+            unstable_api: data.stability.is_unstable(),
         };
         let mut ctor_doc_comment = Some(format!("Construct a new `{}`\n", def.identifier.0));
         self.append_required_features_doc(&dict, &mut ctor_doc_comment, &[&extra_feature]);
@@ -504,7 +531,7 @@ impl<'src> FirstPassRecord<'src> {
         let kind = ast::ImportFunctionKind::Normal;
         let extra = snake_case_ident(self_name);
         let extra = &[&extra[..]];
-        for mut import_function in self.create_imports(None, kind, id, data) {
+        for mut import_function in self.create_imports(None, kind, id, data, false) {
             let mut doc = Some(doc_comment.clone());
             self.append_required_features_doc(&import_function, &mut doc, extra);
             import_function.doc_comment = doc;
@@ -512,6 +539,7 @@ impl<'src> FirstPassRecord<'src> {
                 module: ast::ImportModule::None,
                 js_namespace: Some(raw_ident(self_name)),
                 kind: ast::ImportKind::Function(import_function),
+                unstable_api: false,
             });
         }
     }
@@ -521,6 +549,7 @@ impl<'src> FirstPassRecord<'src> {
         program: &mut ast::Program,
         self_name: &'src str,
         member: &'src weedle::interface::ConstMember<'src>,
+        unstable_api: bool,
     ) {
         let idl_type = member.const_type.to_idl_type(self);
         let ty = match idl_type.to_syn_type(TypePosition::Return) {
@@ -542,6 +571,7 @@ impl<'src> FirstPassRecord<'src> {
             class: Some(rust_ident(camel_case_ident(&self_name).as_str())),
             ty,
             value: webidl_const_v_to_backend_const_v(&member.const_value),
+            unstable_api,
         });
     }
 
@@ -553,6 +583,8 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         let mut doc_comment = Some(format!("The `{}` object\n\n{}", name, mdn_doc(name, None),));
 
+        let interface_unstable = data.stability.is_unstable();
+
         let mut attrs = Vec::new();
         attrs.push(syn::parse_quote!( #[derive(Debug, Clone, PartialEq, Eq)] ));
         self.add_deprecated(data, &mut attrs);
@@ -561,6 +593,7 @@ impl<'src> FirstPassRecord<'src> {
             rust_name: rust_ident(camel_case_ident(name).as_str()),
             js_name: name.to_string(),
             attrs,
+            unstable_api: interface_unstable,
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
             is_type_of: if data.has_interface {
@@ -596,25 +629,28 @@ impl<'src> FirstPassRecord<'src> {
             module: ast::ImportModule::None,
             js_namespace: None,
             kind: ast::ImportKind::Type(import_type),
+            unstable_api: interface_unstable,
         });
 
         for (id, op_data) in data.operations.iter() {
             self.member_operation(program, name, data, id, op_data);
         }
         for member in data.consts.iter() {
-            self.append_const(program, name, member);
+            self.append_const(program, name, member, interface_unstable);
         }
         for member in data.attributes.iter() {
+            let member_def = member.definition;
             self.member_attribute(
                 program,
                 name,
                 data,
-                member.modifier,
-                member.readonly.is_some(),
-                &member.type_,
-                member.identifier.0,
-                &member.attributes,
+                member_def.modifier,
+                member_def.readonly.is_some(),
+                &member_def.type_,
+                member_def.identifier.0,
+                &member_def.attributes,
                 data.definition_attributes,
+                interface_unstable || member.stability.is_unstable(),
             );
         }
 
@@ -623,23 +659,25 @@ impl<'src> FirstPassRecord<'src> {
                 self.member_operation(program, name, data, id, op_data);
             }
             for member in &mixin_data.consts {
-                self.append_const(program, name, member);
+                self.append_const(program, name, member, interface_unstable);
             }
             for member in &mixin_data.attributes {
+                let member_def = member.definition;
                 self.member_attribute(
                     program,
                     name,
                     data,
-                    if let Some(s) = member.stringifier {
+                    if let Some(s) = member_def.stringifier {
                         Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
                     } else {
                         None
                     },
-                    member.readonly.is_some(),
-                    &member.type_,
-                    member.identifier.0,
-                    &member.attributes,
+                    member_def.readonly.is_some(),
+                    &member_def.type_,
+                    member_def.identifier.0,
+                    &member_def.attributes,
                     data.definition_attributes,
+                    interface_unstable || member.stability.is_unstable(),
                 );
             }
         }
@@ -656,6 +694,7 @@ impl<'src> FirstPassRecord<'src> {
         identifier: &'src str,
         attrs: &'src Option<ExtendedAttributeList<'src>>,
         container_attrs: Option<&'src ExtendedAttributeList<'src>>,
+        unstable_api: bool,
     ) {
         use weedle::interface::StringifierOrInheritOrStatic::*;
 
@@ -673,6 +712,7 @@ impl<'src> FirstPassRecord<'src> {
             is_static,
             attrs,
             container_attrs,
+            unstable_api,
         ) {
             let mut doc = import_function.doc_comment.take();
             self.append_required_features_doc(&import_function, &mut doc, &[]);
@@ -688,6 +728,7 @@ impl<'src> FirstPassRecord<'src> {
                 is_static,
                 attrs,
                 container_attrs,
+                unstable_api,
             ) {
                 let mut doc = import_function.doc_comment.take();
                 self.append_required_features_doc(&import_function, &mut doc, &[]);
@@ -742,7 +783,7 @@ impl<'src> FirstPassRecord<'src> {
             OperationId::IndexingDeleter => Some(format!("The indexing deleter\n\n")),
         };
         let attrs = data.definition_attributes;
-        for mut method in self.create_imports(attrs, kind, id, op_data) {
+        for mut method in self.create_imports(attrs, kind, id, op_data, data.stability.is_unstable()) {
             let mut doc = doc.clone();
             self.append_required_features_doc(&method, &mut doc, &[]);
             method.doc_comment = doc;
@@ -843,6 +884,7 @@ impl<'src> FirstPassRecord<'src> {
             ctor: true,
             doc_comment: None,
             ctor_doc_comment: None,
+            unstable_api: false,
         });
     }
 }
