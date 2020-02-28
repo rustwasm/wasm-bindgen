@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FileSystemFlags ) ]
-    #[doc = "The `FileSystemFlags` dictionary.\n\n*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[doc = "The `FileSystemFlags` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub type FileSystemFlags;
 }
 impl FileSystemFlags {
-    #[doc = "Construct a new `FileSystemFlags`.\n\n*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[doc = "Construct a new `FileSystemFlags`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `create` field of this object.\n\n*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[doc = "Change the `create` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub fn create(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -25,7 +31,9 @@ impl FileSystemFlags {
         let _ = r;
         self
     }
-    #[doc = "Change the `exclusive` field of this object.\n\n*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[doc = "Change the `exclusive` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub fn exclusive(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

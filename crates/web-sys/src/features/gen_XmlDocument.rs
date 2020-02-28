@@ -4,15 +4,31 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = Document , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = XMLDocument , typescript_name = XMLDocument ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `XmlDocument` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument)\n\n*This API requires the following crate features to be activated: `XmlDocument`*"]
+    #[doc = "The `XmlDocument` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlDocument`*"]
     pub type XmlDocument;
     # [ wasm_bindgen ( structural , method , getter , js_class = "XMLDocument" , js_name = async ) ]
-    #[doc = "Getter for the `async` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument/async)\n\n*This API requires the following crate features to be activated: `XmlDocument`*"]
+    #[doc = "Getter for the `async` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument/async)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlDocument`*"]
     pub fn r#async(this: &XmlDocument) -> bool;
     # [ wasm_bindgen ( structural , method , setter , js_class = "XMLDocument" , js_name = async ) ]
-    #[doc = "Setter for the `async` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument/async)\n\n*This API requires the following crate features to be activated: `XmlDocument`*"]
+    #[doc = "Setter for the `async` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument/async)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlDocument`*"]
     pub fn set_async(this: &XmlDocument, value: bool);
     # [ wasm_bindgen ( catch , method , structural , js_class = "XMLDocument" , js_name = load ) ]
-    #[doc = "The `load()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument/load)\n\n*This API requires the following crate features to be activated: `XmlDocument`*"]
+    #[doc = "The `load()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument/load)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlDocument`*"]
     pub fn load(this: &XmlDocument, url: &str) -> Result<bool, JsValue>;
 }

@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CryptoKeyPair ) ]
-    #[doc = "The `CryptoKeyPair` dictionary.\n\n*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
+    #[doc = "The `CryptoKeyPair` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
     pub type CryptoKeyPair;
 }
 impl CryptoKeyPair {
     #[cfg(feature = "CryptoKey")]
-    #[doc = "Construct a new `CryptoKeyPair`.\n\n*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
+    #[doc = "Construct a new `CryptoKeyPair`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
     pub fn new(private_key: &CryptoKey, public_key: &CryptoKey) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -17,7 +21,9 @@ impl CryptoKeyPair {
         ret
     }
     #[cfg(feature = "CryptoKey")]
-    #[doc = "Change the `privateKey` field of this object.\n\n*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
+    #[doc = "Change the `privateKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
     pub fn private_key(&mut self, val: &CryptoKey) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -33,7 +39,9 @@ impl CryptoKeyPair {
         self
     }
     #[cfg(feature = "CryptoKey")]
-    #[doc = "Change the `publicKey` field of this object.\n\n*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
+    #[doc = "Change the `publicKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
     pub fn public_key(&mut self, val: &CryptoKey) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

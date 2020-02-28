@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaStreamAudioSourceOptions ) ]
-    #[doc = "The `MediaStreamAudioSourceOptions` dictionary.\n\n*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
+    #[doc = "The `MediaStreamAudioSourceOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
     pub type MediaStreamAudioSourceOptions;
 }
 impl MediaStreamAudioSourceOptions {
     #[cfg(feature = "MediaStream")]
-    #[doc = "Construct a new `MediaStreamAudioSourceOptions`.\n\n*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
+    #[doc = "Construct a new `MediaStreamAudioSourceOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
     pub fn new(media_stream: &MediaStream) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -16,7 +20,9 @@ impl MediaStreamAudioSourceOptions {
         ret
     }
     #[cfg(feature = "MediaStream")]
-    #[doc = "Change the `mediaStream` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
+    #[doc = "Change the `mediaStream` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
     pub fn media_stream(&mut self, val: &MediaStream) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

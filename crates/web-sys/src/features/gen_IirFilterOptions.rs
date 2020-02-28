@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IIRFilterOptions ) ]
-    #[doc = "The `IirFilterOptions` dictionary.\n\n*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[doc = "The `IirFilterOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub type IirFilterOptions;
 }
 impl IirFilterOptions {
-    #[doc = "Construct a new `IirFilterOptions`.\n\n*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[doc = "Construct a new `IirFilterOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn new(feedback: &::wasm_bindgen::JsValue, feedforward: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -15,7 +19,9 @@ impl IirFilterOptions {
         ret.feedforward(feedforward);
         ret
     }
-    #[doc = "Change the `channelCount` field of this object.\n\n*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[doc = "Change the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -31,7 +37,9 @@ impl IirFilterOptions {
         self
     }
     #[cfg(feature = "ChannelCountMode")]
-    #[doc = "Change the `channelCountMode` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelCountMode`, `IirFilterOptions`*"]
+    #[doc = "Change the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `IirFilterOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -47,7 +55,9 @@ impl IirFilterOptions {
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
-    #[doc = "Change the `channelInterpretation` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelInterpretation`, `IirFilterOptions`*"]
+    #[doc = "Change the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `IirFilterOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -62,7 +72,9 @@ impl IirFilterOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `feedback` field of this object.\n\n*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[doc = "Change the `feedback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn feedback(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -77,7 +89,9 @@ impl IirFilterOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `feedforward` field of this object.\n\n*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[doc = "Change the `feedforward` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn feedforward(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

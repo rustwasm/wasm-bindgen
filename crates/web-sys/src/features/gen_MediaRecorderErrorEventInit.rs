@@ -3,19 +3,25 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaRecorderErrorEventInit ) ]
-    #[doc = "The `MediaRecorderErrorEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
+    #[doc = "The `MediaRecorderErrorEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
     pub type MediaRecorderErrorEventInit;
 }
 impl MediaRecorderErrorEventInit {
     #[cfg(feature = "DomException")]
-    #[doc = "Construct a new `MediaRecorderErrorEventInit`.\n\n*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
+    #[doc = "Construct a new `MediaRecorderErrorEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
     pub fn new(error: &DomException) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.error(error);
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -30,7 +36,9 @@ impl MediaRecorderErrorEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -45,7 +53,9 @@ impl MediaRecorderErrorEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -61,7 +71,9 @@ impl MediaRecorderErrorEventInit {
         self
     }
     #[cfg(feature = "DomException")]
-    #[doc = "Change the `error` field of this object.\n\n*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
+    #[doc = "Change the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
     pub fn error(&mut self, val: &DomException) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("error"), &JsValue::from(val));

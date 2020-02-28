@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ConsoleStackEntry ) ]
-    #[doc = "The `ConsoleStackEntry` dictionary.\n\n*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
+    #[doc = "The `ConsoleStackEntry` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub type ConsoleStackEntry;
 }
 impl ConsoleStackEntry {
-    #[doc = "Construct a new `ConsoleStackEntry`.\n\n*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
+    #[doc = "Construct a new `ConsoleStackEntry`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `asyncCause` field of this object.\n\n*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
+    #[doc = "Change the `asyncCause` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub fn async_cause(&mut self, val: Option<&str>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl ConsoleStackEntry {
         let _ = r;
         self
     }
-    #[doc = "Change the `columnNumber` field of this object.\n\n*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
+    #[doc = "Change the `columnNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub fn column_number(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl ConsoleStackEntry {
         let _ = r;
         self
     }
-    #[doc = "Change the `filename` field of this object.\n\n*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
+    #[doc = "Change the `filename` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub fn filename(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl ConsoleStackEntry {
         let _ = r;
         self
     }
-    #[doc = "Change the `functionName` field of this object.\n\n*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
+    #[doc = "Change the `functionName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub fn function_name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl ConsoleStackEntry {
         let _ = r;
         self
     }
-    #[doc = "Change the `lineNumber` field of this object.\n\n*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
+    #[doc = "Change the `lineNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub fn line_number(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

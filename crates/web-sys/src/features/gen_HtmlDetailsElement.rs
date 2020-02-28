@@ -4,12 +4,24 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLDetailsElement , typescript_name = HTMLDetailsElement ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `HtmlDetailsElement` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement)\n\n*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
+    #[doc = "The `HtmlDetailsElement` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
     pub type HtmlDetailsElement;
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLDetailsElement" , js_name = open ) ]
-    #[doc = "Getter for the `open` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/open)\n\n*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
+    #[doc = "Getter for the `open` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/open)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
     pub fn open(this: &HtmlDetailsElement) -> bool;
     # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLDetailsElement" , js_name = open ) ]
-    #[doc = "Setter for the `open` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/open)\n\n*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
+    #[doc = "Setter for the `open` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/open)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
     pub fn set_open(this: &HtmlDetailsElement, value: bool);
 }

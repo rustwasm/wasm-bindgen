@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RcwnStatus ) ]
-    #[doc = "The `RcwnStatus` dictionary.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "The `RcwnStatus` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub type RcwnStatus;
 }
 impl RcwnStatus {
-    #[doc = "Construct a new `RcwnStatus`.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "Construct a new `RcwnStatus`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `cacheNotSlowCount` field of this object.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "Change the `cacheNotSlowCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn cache_not_slow_count(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl RcwnStatus {
         let _ = r;
         self
     }
-    #[doc = "Change the `cacheSlowCount` field of this object.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "Change the `cacheSlowCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn cache_slow_count(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl RcwnStatus {
         let _ = r;
         self
     }
-    #[doc = "Change the `perfStats` field of this object.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "Change the `perfStats` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn perf_stats(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl RcwnStatus {
         let _ = r;
         self
     }
-    #[doc = "Change the `rcwnCacheWonCount` field of this object.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "Change the `rcwnCacheWonCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn rcwn_cache_won_count(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl RcwnStatus {
         let _ = r;
         self
     }
-    #[doc = "Change the `rcwnNetWonCount` field of this object.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "Change the `rcwnNetWonCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn rcwn_net_won_count(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -88,7 +102,9 @@ impl RcwnStatus {
         let _ = r;
         self
     }
-    #[doc = "Change the `totalNetworkRequests` field of this object.\n\n*This API requires the following crate features to be activated: `RcwnStatus`*"]
+    #[doc = "Change the `totalNetworkRequests` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn total_network_requests(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

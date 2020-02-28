@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AnimationPropertyDetails ) ]
-    #[doc = "The `AnimationPropertyDetails` dictionary.\n\n*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    #[doc = "The `AnimationPropertyDetails` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub type AnimationPropertyDetails;
 }
 impl AnimationPropertyDetails {
-    #[doc = "Construct a new `AnimationPropertyDetails`.\n\n*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    #[doc = "Construct a new `AnimationPropertyDetails`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn new(
         property: &str,
         running_on_compositor: bool,
@@ -20,7 +24,9 @@ impl AnimationPropertyDetails {
         ret.values(values);
         ret
     }
-    #[doc = "Change the `property` field of this object.\n\n*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    #[doc = "Change the `property` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn property(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -35,7 +41,9 @@ impl AnimationPropertyDetails {
         let _ = r;
         self
     }
-    #[doc = "Change the `runningOnCompositor` field of this object.\n\n*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    #[doc = "Change the `runningOnCompositor` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn running_on_compositor(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -50,7 +58,9 @@ impl AnimationPropertyDetails {
         let _ = r;
         self
     }
-    #[doc = "Change the `values` field of this object.\n\n*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    #[doc = "Change the `values` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn values(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -62,7 +72,9 @@ impl AnimationPropertyDetails {
         let _ = r;
         self
     }
-    #[doc = "Change the `warning` field of this object.\n\n*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    #[doc = "Change the `warning` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn warning(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

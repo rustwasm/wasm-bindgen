@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCRtpParameters ) ]
-    #[doc = "The `RtcRtpParameters` dictionary.\n\n*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = "The `RtcRtpParameters` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub type RtcRtpParameters;
 }
 impl RtcRtpParameters {
-    #[doc = "Construct a new `RtcRtpParameters`.\n\n*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = "Construct a new `RtcRtpParameters`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `codecs` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = "Change the `codecs` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub fn codecs(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -25,7 +31,9 @@ impl RtcRtpParameters {
         let _ = r;
         self
     }
-    #[doc = "Change the `encodings` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = "Change the `encodings` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub fn encodings(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -40,7 +48,9 @@ impl RtcRtpParameters {
         let _ = r;
         self
     }
-    #[doc = "Change the `headerExtensions` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = "Change the `headerExtensions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub fn header_extensions(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -56,7 +66,9 @@ impl RtcRtpParameters {
         self
     }
     #[cfg(feature = "RtcRtcpParameters")]
-    #[doc = "Change the `rtcp` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtcpParameters`, `RtcRtpParameters`*"]
+    #[doc = "Change the `rtcp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`, `RtcRtpParameters`*"]
     pub fn rtcp(&mut self, val: &RtcRtcpParameters) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rtcp"), &JsValue::from(val));

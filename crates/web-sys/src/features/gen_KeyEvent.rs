@@ -4,16 +4,32 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = KeyEvent , typescript_name = KeyEvent ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `KeyEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`*"]
+    #[doc = "The `KeyEvent` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`*"]
     pub type KeyEvent;
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`*"]
     pub fn init_key_event(this: &KeyEvent, type_: &str);
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`*"]
     pub fn init_key_event_with_can_bubble(this: &KeyEvent, type_: &str, can_bubble: bool);
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable(
         this: &KeyEvent,
         type_: &str,
@@ -22,7 +38,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable_and_view(
         this: &KeyEvent,
         type_: &str,
@@ -32,7 +52,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable_and_view_and_ctrl_key(
         this: &KeyEvent,
         type_: &str,
@@ -43,7 +67,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable_and_view_and_ctrl_key_and_alt_key(
         this: &KeyEvent,
         type_: &str,
@@ -55,7 +83,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable_and_view_and_ctrl_key_and_alt_key_and_shift_key(
         this: &KeyEvent,
         type_: &str,
@@ -68,7 +100,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable_and_view_and_ctrl_key_and_alt_key_and_shift_key_and_meta_key(
         this: &KeyEvent,
         type_: &str,
@@ -82,7 +118,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable_and_view_and_ctrl_key_and_alt_key_and_shift_key_and_meta_key_and_key_code(
         this: &KeyEvent,
         type_: &str,
@@ -97,7 +137,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
-    #[doc = "The `initKeyEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)\n\n*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
+    #[doc = "The `initKeyEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyEvent`, `Window`*"]
     pub fn init_key_event_with_can_bubble_and_cancelable_and_view_and_ctrl_key_and_alt_key_and_shift_key_and_meta_key_and_key_code_and_char_code(
         this: &KeyEvent,
         type_: &str,

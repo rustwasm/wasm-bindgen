@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = HkdfParams ) ]
-    #[doc = "The `HkdfParams` dictionary.\n\n*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[doc = "The `HkdfParams` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     pub type HkdfParams;
 }
 impl HkdfParams {
-    #[doc = "Construct a new `HkdfParams`.\n\n*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[doc = "Construct a new `HkdfParams`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     pub fn new(
         name: &str,
         hash: &::wasm_bindgen::JsValue,
@@ -22,7 +26,9 @@ impl HkdfParams {
         ret.salt(salt);
         ret
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
@@ -33,7 +39,9 @@ impl HkdfParams {
         let _ = r;
         self
     }
-    #[doc = "Change the `hash` field of this object.\n\n*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[doc = "Change the `hash` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     pub fn hash(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("hash"), &JsValue::from(val));
@@ -44,7 +52,9 @@ impl HkdfParams {
         let _ = r;
         self
     }
-    #[doc = "Change the `info` field of this object.\n\n*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[doc = "Change the `info` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     pub fn info(&mut self, val: &::js_sys::Object) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("info"), &JsValue::from(val));
@@ -55,7 +65,9 @@ impl HkdfParams {
         let _ = r;
         self
     }
-    #[doc = "Change the `salt` field of this object.\n\n*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[doc = "Change the `salt` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     pub fn salt(&mut self, val: &::js_sys::Object) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("salt"), &JsValue::from(val));

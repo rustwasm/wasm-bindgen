@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RegisterResponse ) ]
-    #[doc = "The `RegisterResponse` dictionary.\n\n*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[doc = "The `RegisterResponse` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub type RegisterResponse;
 }
 impl RegisterResponse {
-    #[doc = "Construct a new `RegisterResponse`.\n\n*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[doc = "Construct a new `RegisterResponse`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `clientData` field of this object.\n\n*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[doc = "Change the `clientData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn client_data(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl RegisterResponse {
         let _ = r;
         self
     }
-    #[doc = "Change the `errorCode` field of this object.\n\n*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[doc = "Change the `errorCode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn error_code(&mut self, val: Option<u16>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl RegisterResponse {
         let _ = r;
         self
     }
-    #[doc = "Change the `errorMessage` field of this object.\n\n*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[doc = "Change the `errorMessage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn error_message(&mut self, val: Option<&str>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl RegisterResponse {
         let _ = r;
         self
     }
-    #[doc = "Change the `registrationData` field of this object.\n\n*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[doc = "Change the `registrationData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn registration_data(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl RegisterResponse {
         let _ = r;
         self
     }
-    #[doc = "Change the `version` field of this object.\n\n*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[doc = "Change the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn version(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

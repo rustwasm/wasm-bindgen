@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AudioContextOptions ) ]
-    #[doc = "The `AudioContextOptions` dictionary.\n\n*This API requires the following crate features to be activated: `AudioContextOptions`*"]
+    #[doc = "The `AudioContextOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub type AudioContextOptions;
 }
 impl AudioContextOptions {
-    #[doc = "Construct a new `AudioContextOptions`.\n\n*This API requires the following crate features to be activated: `AudioContextOptions`*"]
+    #[doc = "Construct a new `AudioContextOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `sampleRate` field of this object.\n\n*This API requires the following crate features to be activated: `AudioContextOptions`*"]
+    #[doc = "Change the `sampleRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub fn sample_rate(&mut self, val: f32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

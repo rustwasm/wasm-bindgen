@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ChromeFilePropertyBag ) ]
-    #[doc = "The `ChromeFilePropertyBag` dictionary.\n\n*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
+    #[doc = "The `ChromeFilePropertyBag` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
     pub type ChromeFilePropertyBag;
 }
 impl ChromeFilePropertyBag {
-    #[doc = "Construct a new `ChromeFilePropertyBag`.\n\n*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
+    #[doc = "Construct a new `ChromeFilePropertyBag`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `lastModified` field of this object.\n\n*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
+    #[doc = "Change the `lastModified` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
     pub fn last_modified(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl ChromeFilePropertyBag {
         let _ = r;
         self
     }
-    #[doc = "Change the `type` field of this object.\n\n*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
@@ -39,7 +47,9 @@ impl ChromeFilePropertyBag {
         let _ = r;
         self
     }
-    #[doc = "Change the `existenceCheck` field of this object.\n\n*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
+    #[doc = "Change the `existenceCheck` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
     pub fn existence_check(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -54,7 +64,9 @@ impl ChromeFilePropertyBag {
         let _ = r;
         self
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));

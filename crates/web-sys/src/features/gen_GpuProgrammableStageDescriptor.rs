@@ -1,18 +1,28 @@
 use super::*;
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
-#[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+#[doc = ""]
+#[doc = ""]
+#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUProgrammableStageDescriptor ) ]
-    #[doc = "The `GpuProgrammableStageDescriptor` dictionary.\n\n*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuShaderModule`*"]
+    #[doc = "The `GpuProgrammableStageDescriptor` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuShaderModule`*"]
     pub type GpuProgrammableStageDescriptor;
 }
 #[cfg(web_sys_unstable_apis)]
-#[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+#[doc = ""]
+#[doc = ""]
+#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 impl GpuProgrammableStageDescriptor {
     #[cfg(feature = "GpuShaderModule")]
-    #[doc = "Construct a new `GpuProgrammableStageDescriptor`.\n\n*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuShaderModule`*"]
+    #[doc = "Construct a new `GpuProgrammableStageDescriptor`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuShaderModule`*"]
     pub fn new(entry_point: &str, module: &GpuShaderModule) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -20,7 +30,9 @@ impl GpuProgrammableStageDescriptor {
         ret.module(module);
         ret
     }
-    #[doc = "Change the `entryPoint` field of this object.\n\n*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`*"]
+    #[doc = "Change the `entryPoint` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`*"]
     pub fn entry_point(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -36,7 +48,9 @@ impl GpuProgrammableStageDescriptor {
         self
     }
     #[cfg(feature = "GpuShaderModule")]
-    #[doc = "Change the `module` field of this object.\n\n*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuShaderModule`*"]
+    #[doc = "Change the `module` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuShaderModule`*"]
     pub fn module(&mut self, val: &GpuShaderModule) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

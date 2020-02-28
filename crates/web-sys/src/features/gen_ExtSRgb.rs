@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_sRGB , typescript_name = EXT_sRGB ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `ExtSRgb` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_sRGB)\n\n*This API requires the following crate features to be activated: `ExtSRgb`*"]
+    #[doc = "The `ExtSRgb` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_sRGB)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtSRgb`*"]
     pub type ExtSRgb;
 }
 impl ExtSRgb {

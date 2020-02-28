@@ -4,17 +4,33 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = SvgGeometryElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGPathElement , typescript_name = SVGPathElement ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `SvgPathElement` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement)\n\n*This API requires the following crate features to be activated: `SvgPathElement`*"]
+    #[doc = "The `SvgPathElement` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgPathElement`*"]
     pub type SvgPathElement;
     # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathElement" , js_name = pathSegList ) ]
     #[cfg(feature = "SvgPathSegList")]
-    #[doc = "Getter for the `pathSegList` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/pathSegList)\n\n*This API requires the following crate features to be activated: `SvgPathElement`, `SvgPathSegList`*"]
+    #[doc = "Getter for the `pathSegList` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/pathSegList)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgPathElement`, `SvgPathSegList`*"]
     pub fn path_seg_list(this: &SvgPathElement) -> SvgPathSegList;
     # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathElement" , js_name = animatedPathSegList ) ]
     #[cfg(feature = "SvgPathSegList")]
-    #[doc = "Getter for the `animatedPathSegList` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/animatedPathSegList)\n\n*This API requires the following crate features to be activated: `SvgPathElement`, `SvgPathSegList`*"]
+    #[doc = "Getter for the `animatedPathSegList` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/animatedPathSegList)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgPathElement`, `SvgPathSegList`*"]
     pub fn animated_path_seg_list(this: &SvgPathElement) -> SvgPathSegList;
     # [ wasm_bindgen ( method , structural , js_class = "SVGPathElement" , js_name = getPathSegAtLength ) ]
-    #[doc = "The `getPathSegAtLength()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/getPathSegAtLength)\n\n*This API requires the following crate features to be activated: `SvgPathElement`*"]
+    #[doc = "The `getPathSegAtLength()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/getPathSegAtLength)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgPathElement`*"]
     pub fn get_path_seg_at_length(this: &SvgPathElement, distance: f32) -> u32;
 }

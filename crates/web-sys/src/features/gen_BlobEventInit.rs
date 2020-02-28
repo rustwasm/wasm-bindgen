@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BlobEventInit ) ]
-    #[doc = "The `BlobEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[doc = "The `BlobEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     pub type BlobEventInit;
 }
 impl BlobEventInit {
-    #[doc = "Construct a new `BlobEventInit`.\n\n*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[doc = "Construct a new `BlobEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl BlobEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl BlobEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -59,7 +69,9 @@ impl BlobEventInit {
         self
     }
     #[cfg(feature = "Blob")]
-    #[doc = "Change the `data` field of this object.\n\n*This API requires the following crate features to be activated: `Blob`, `BlobEventInit`*"]
+    #[doc = "Change the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobEventInit`*"]
     pub fn data(&mut self, val: Option<&Blob>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("data"), &JsValue::from(val));

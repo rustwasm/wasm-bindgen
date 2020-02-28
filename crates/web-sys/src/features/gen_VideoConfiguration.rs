@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VideoConfiguration ) ]
-    #[doc = "The `VideoConfiguration` dictionary.\n\n*This API requires the following crate features to be activated: `VideoConfiguration`*"]
+    #[doc = "The `VideoConfiguration` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     pub type VideoConfiguration;
 }
 impl VideoConfiguration {
-    #[doc = "Construct a new `VideoConfiguration`.\n\n*This API requires the following crate features to be activated: `VideoConfiguration`*"]
+    #[doc = "Construct a new `VideoConfiguration`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bitrate` field of this object.\n\n*This API requires the following crate features to be activated: `VideoConfiguration`*"]
+    #[doc = "Change the `bitrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     pub fn bitrate(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl VideoConfiguration {
         let _ = r;
         self
     }
-    #[doc = "Change the `contentType` field of this object.\n\n*This API requires the following crate features to be activated: `VideoConfiguration`*"]
+    #[doc = "Change the `contentType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     pub fn content_type(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl VideoConfiguration {
         let _ = r;
         self
     }
-    #[doc = "Change the `framerate` field of this object.\n\n*This API requires the following crate features to be activated: `VideoConfiguration`*"]
+    #[doc = "Change the `framerate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     pub fn framerate(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl VideoConfiguration {
         let _ = r;
         self
     }
-    #[doc = "Change the `height` field of this object.\n\n*This API requires the following crate features to be activated: `VideoConfiguration`*"]
+    #[doc = "Change the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     pub fn height(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -70,7 +82,9 @@ impl VideoConfiguration {
         let _ = r;
         self
     }
-    #[doc = "Change the `width` field of this object.\n\n*This API requires the following crate features to be activated: `VideoConfiguration`*"]
+    #[doc = "Change the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     pub fn width(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("width"), &JsValue::from(val));

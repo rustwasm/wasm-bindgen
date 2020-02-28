@@ -4,6 +4,10 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MIDIOutputMap , typescript_name = MIDIOutputMap ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `MidiOutputMap` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIOutputMap)\n\n*This API requires the following crate features to be activated: `MidiOutputMap`*"]
+    #[doc = "The `MidiOutputMap` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIOutputMap)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOutputMap`*"]
     pub type MidiOutputMap;
 }

@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_compressed_texture_s3tc_srgb , typescript_name = WEBGL_compressed_texture_s3tc_srgb ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `WebglCompressedTextureS3tcSrgb` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_compressed_texture_s3tc_srgb)\n\n*This API requires the following crate features to be activated: `WebglCompressedTextureS3tcSrgb`*"]
+    #[doc = "The `WebglCompressedTextureS3tcSrgb` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_compressed_texture_s3tc_srgb)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebglCompressedTextureS3tcSrgb`*"]
     pub type WebglCompressedTextureS3tcSrgb;
 }
 impl WebglCompressedTextureS3tcSrgb {

@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AesCbcParams ) ]
-    #[doc = "The `AesCbcParams` dictionary.\n\n*This API requires the following crate features to be activated: `AesCbcParams`*"]
+    #[doc = "The `AesCbcParams` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub type AesCbcParams;
 }
 impl AesCbcParams {
-    #[doc = "Construct a new `AesCbcParams`.\n\n*This API requires the following crate features to be activated: `AesCbcParams`*"]
+    #[doc = "Construct a new `AesCbcParams`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub fn new(name: &str, iv: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -15,7 +19,9 @@ impl AesCbcParams {
         ret.iv(iv);
         ret
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `AesCbcParams`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
@@ -26,7 +32,9 @@ impl AesCbcParams {
         let _ = r;
         self
     }
-    #[doc = "Change the `iv` field of this object.\n\n*This API requires the following crate features to be activated: `AesCbcParams`*"]
+    #[doc = "Change the `iv` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub fn iv(&mut self, val: &::js_sys::Object) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("iv"), &JsValue::from(val));

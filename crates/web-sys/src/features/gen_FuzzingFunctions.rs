@@ -4,15 +4,31 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FuzzingFunctions , typescript_name = FuzzingFunctions ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `FuzzingFunctions` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions)\n\n*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
+    #[doc = "The `FuzzingFunctions` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
     pub type FuzzingFunctions;
     # [ wasm_bindgen ( static_method_of = FuzzingFunctions , js_class = "FuzzingFunctions" , js_name = cycleCollect ) ]
-    #[doc = "The `cycleCollect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions/cycleCollect)\n\n*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
+    #[doc = "The `cycleCollect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions/cycleCollect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
     pub fn cycle_collect();
     # [ wasm_bindgen ( catch , static_method_of = FuzzingFunctions , js_class = "FuzzingFunctions" , js_name = enableAccessibility ) ]
-    #[doc = "The `enableAccessibility()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions/enableAccessibility)\n\n*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
+    #[doc = "The `enableAccessibility()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions/enableAccessibility)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
     pub fn enable_accessibility() -> Result<(), JsValue>;
     # [ wasm_bindgen ( static_method_of = FuzzingFunctions , js_class = "FuzzingFunctions" , js_name = garbageCollect ) ]
-    #[doc = "The `garbageCollect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions/garbageCollect)\n\n*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
+    #[doc = "The `garbageCollect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FuzzingFunctions/garbageCollect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FuzzingFunctions`*"]
     pub fn garbage_collect();
 }

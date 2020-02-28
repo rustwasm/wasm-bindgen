@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RequestMediaKeySystemAccessNotification ) ]
-    #[doc = "The `RequestMediaKeySystemAccessNotification` dictionary.\n\n*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
+    #[doc = "The `RequestMediaKeySystemAccessNotification` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
     pub type RequestMediaKeySystemAccessNotification;
 }
 impl RequestMediaKeySystemAccessNotification {
     #[cfg(feature = "MediaKeySystemStatus")]
-    #[doc = "Construct a new `RequestMediaKeySystemAccessNotification`.\n\n*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
+    #[doc = "Construct a new `RequestMediaKeySystemAccessNotification`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
     pub fn new(key_system: &str, status: MediaKeySystemStatus) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -16,7 +20,9 @@ impl RequestMediaKeySystemAccessNotification {
         ret.status(status);
         ret
     }
-    #[doc = "Change the `keySystem` field of this object.\n\n*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
+    #[doc = "Change the `keySystem` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
     pub fn key_system(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -32,7 +38,9 @@ impl RequestMediaKeySystemAccessNotification {
         self
     }
     #[cfg(feature = "MediaKeySystemStatus")]
-    #[doc = "Change the `status` field of this object.\n\n*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
+    #[doc = "Change the `status` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
     pub fn status(&mut self, val: MediaKeySystemStatus) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

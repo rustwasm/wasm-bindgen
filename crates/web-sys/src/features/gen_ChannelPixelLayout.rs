@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ChannelPixelLayout ) ]
-    #[doc = "The `ChannelPixelLayout` dictionary.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`, `ChannelPixelLayoutDataType`*"]
+    #[doc = "The `ChannelPixelLayout` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`, `ChannelPixelLayoutDataType`*"]
     pub type ChannelPixelLayout;
 }
 impl ChannelPixelLayout {
     #[cfg(feature = "ChannelPixelLayoutDataType")]
-    #[doc = "Construct a new `ChannelPixelLayout`.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`, `ChannelPixelLayoutDataType`*"]
+    #[doc = "Construct a new `ChannelPixelLayout`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`, `ChannelPixelLayoutDataType`*"]
     pub fn new(
         data_type: ChannelPixelLayoutDataType,
         height: u32,
@@ -28,7 +32,9 @@ impl ChannelPixelLayout {
         ret
     }
     #[cfg(feature = "ChannelPixelLayoutDataType")]
-    #[doc = "Change the `dataType` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`, `ChannelPixelLayoutDataType`*"]
+    #[doc = "Change the `dataType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`, `ChannelPixelLayoutDataType`*"]
     pub fn data_type(&mut self, val: ChannelPixelLayoutDataType) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +49,9 @@ impl ChannelPixelLayout {
         let _ = r;
         self
     }
-    #[doc = "Change the `height` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
+    #[doc = "Change the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
     pub fn height(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -55,7 +63,9 @@ impl ChannelPixelLayout {
         let _ = r;
         self
     }
-    #[doc = "Change the `offset` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
+    #[doc = "Change the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
     pub fn offset(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -67,7 +77,9 @@ impl ChannelPixelLayout {
         let _ = r;
         self
     }
-    #[doc = "Change the `skip` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
+    #[doc = "Change the `skip` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
     pub fn skip(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("skip"), &JsValue::from(val));
@@ -78,7 +90,9 @@ impl ChannelPixelLayout {
         let _ = r;
         self
     }
-    #[doc = "Change the `stride` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
+    #[doc = "Change the `stride` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
     pub fn stride(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -90,7 +104,9 @@ impl ChannelPixelLayout {
         let _ = r;
         self
     }
-    #[doc = "Change the `width` field of this object.\n\n*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
+    #[doc = "Change the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
     pub fn width(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("width"), &JsValue::from(val));

@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `DecoderDoctorNotificationType` enum.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotificationType`*"]
+#[doc = "The `DecoderDoctorNotificationType` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotificationType`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum DecoderDoctorNotificationType {
     CannotPlay = "cannot-play",

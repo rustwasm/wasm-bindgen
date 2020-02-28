@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRLayer ) ]
-    #[doc = "The `VrLayer` dictionary.\n\n*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[doc = "The `VrLayer` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub type VrLayer;
 }
 impl VrLayer {
-    #[doc = "Construct a new `VrLayer`.\n\n*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[doc = "Construct a new `VrLayer`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `leftBounds` field of this object.\n\n*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[doc = "Change the `leftBounds` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub fn left_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl VrLayer {
         let _ = r;
         self
     }
-    #[doc = "Change the `rightBounds` field of this object.\n\n*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[doc = "Change the `rightBounds` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub fn right_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -44,7 +52,9 @@ impl VrLayer {
         self
     }
     #[cfg(feature = "HtmlCanvasElement")]
-    #[doc = "Change the `source` field of this object.\n\n*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VrLayer`*"]
+    #[doc = "Change the `source` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VrLayer`*"]
     pub fn source(&mut self, val: Option<&HtmlCanvasElement>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

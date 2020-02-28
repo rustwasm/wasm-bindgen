@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `ConnectionType` enum.\n\n*This API requires the following crate features to be activated: `ConnectionType`*"]
+#[doc = "The `ConnectionType` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ConnectionType`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ConnectionType {
     Cellular = "cellular",

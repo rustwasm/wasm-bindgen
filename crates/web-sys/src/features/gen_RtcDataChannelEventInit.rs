@@ -3,19 +3,25 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCDataChannelEventInit ) ]
-    #[doc = "The `RtcDataChannelEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
+    #[doc = "The `RtcDataChannelEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
     pub type RtcDataChannelEventInit;
 }
 impl RtcDataChannelEventInit {
     #[cfg(feature = "RtcDataChannel")]
-    #[doc = "Construct a new `RtcDataChannelEventInit`.\n\n*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
+    #[doc = "Construct a new `RtcDataChannelEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
     pub fn new(channel: &RtcDataChannel) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.channel(channel);
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `RtcDataChannelEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannelEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -30,7 +36,9 @@ impl RtcDataChannelEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `RtcDataChannelEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannelEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -45,7 +53,9 @@ impl RtcDataChannelEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `RtcDataChannelEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannelEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -61,7 +71,9 @@ impl RtcDataChannelEventInit {
         self
     }
     #[cfg(feature = "RtcDataChannel")]
-    #[doc = "Change the `channel` field of this object.\n\n*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
+    #[doc = "Change the `channel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
     pub fn channel(&mut self, val: &RtcDataChannel) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `ConsoleLogLevel` enum.\n\n*This API requires the following crate features to be activated: `ConsoleLogLevel`*"]
+#[doc = "The `ConsoleLogLevel` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ConsoleLogLevel`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ConsoleLogLevel {
     All = "All",

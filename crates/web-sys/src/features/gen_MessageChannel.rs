@@ -4,17 +4,33 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MessageChannel , typescript_name = MessageChannel ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `MessageChannel` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)\n\n*This API requires the following crate features to be activated: `MessageChannel`*"]
+    #[doc = "The `MessageChannel` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MessageChannel`*"]
     pub type MessageChannel;
     # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port1 ) ]
     #[cfg(feature = "MessagePort")]
-    #[doc = "Getter for the `port1` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port1)\n\n*This API requires the following crate features to be activated: `MessageChannel`, `MessagePort`*"]
+    #[doc = "Getter for the `port1` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port1)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MessageChannel`, `MessagePort`*"]
     pub fn port1(this: &MessageChannel) -> MessagePort;
     # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port2 ) ]
     #[cfg(feature = "MessagePort")]
-    #[doc = "Getter for the `port2` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port2)\n\n*This API requires the following crate features to be activated: `MessageChannel`, `MessagePort`*"]
+    #[doc = "Getter for the `port2` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port2)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MessageChannel`, `MessagePort`*"]
     pub fn port2(this: &MessageChannel) -> MessagePort;
     #[wasm_bindgen(catch, js_class = "MessageChannel", constructor)]
-    #[doc = "The `new MessageChannel(..)` constructor, creating a new instance of `MessageChannel`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/MessageChannel)\n\n*This API requires the following crate features to be activated: `MessageChannel`*"]
+    #[doc = "The `new MessageChannel(..)` constructor, creating a new instance of `MessageChannel`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/MessageChannel)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MessageChannel`*"]
     pub fn new(this: &MessageChannel) -> Result<MessageChannel, JsValue>;
 }

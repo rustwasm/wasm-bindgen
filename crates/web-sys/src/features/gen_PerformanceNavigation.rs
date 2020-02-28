@@ -4,16 +4,32 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceNavigation , typescript_name = PerformanceNavigation ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `PerformanceNavigation` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation)\n\n*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
+    #[doc = "The `PerformanceNavigation` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
     pub type PerformanceNavigation;
     # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceNavigation" , js_name = type ) ]
-    #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/type)\n\n*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
+    #[doc = "Getter for the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/type)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
     pub fn type_(this: &PerformanceNavigation) -> u16;
     # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceNavigation" , js_name = redirectCount ) ]
-    #[doc = "Getter for the `redirectCount` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/redirectCount)\n\n*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
+    #[doc = "Getter for the `redirectCount` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/redirectCount)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
     pub fn redirect_count(this: &PerformanceNavigation) -> u16;
     # [ wasm_bindgen ( method , structural , js_class = "PerformanceNavigation" , js_name = toJSON ) ]
-    #[doc = "The `toJSON()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/toJSON)\n\n*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
+    #[doc = "The `toJSON()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/toJSON)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
     pub fn to_json(this: &PerformanceNavigation) -> ::js_sys::Object;
 }
 impl PerformanceNavigation {

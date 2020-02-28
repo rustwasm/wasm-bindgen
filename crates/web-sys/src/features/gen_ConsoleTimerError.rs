@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ConsoleTimerError ) ]
-    #[doc = "The `ConsoleTimerError` dictionary.\n\n*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
+    #[doc = "The `ConsoleTimerError` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub type ConsoleTimerError;
 }
 impl ConsoleTimerError {
-    #[doc = "Construct a new `ConsoleTimerError`.\n\n*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
+    #[doc = "Construct a new `ConsoleTimerError`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `error` field of this object.\n\n*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
+    #[doc = "Change the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub fn error(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("error"), &JsValue::from(val));
@@ -24,7 +30,9 @@ impl ConsoleTimerError {
         let _ = r;
         self
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));

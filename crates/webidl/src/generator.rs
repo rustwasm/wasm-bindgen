@@ -26,11 +26,18 @@ fn get_features_doc(name: String) -> Option<String> {
     required_doc_string(&features)
 }
 
-fn comment(mut comment: String, features: &Option<String>) -> String {
+fn comment(mut comment: String, features: &Option<String>) -> TokenStream {
     if let Some(s) = features {
         comment.push_str(s);
     }
-    comment
+
+    let lines = comment.lines().map(|doc| {
+        quote!( #[doc = #doc] )
+    });
+
+    quote! {
+        #(#lines)*
+    }
 }
 
 
@@ -38,7 +45,10 @@ fn maybe_unstable_attr(unstable: bool) -> Option<proc_macro2::TokenStream> {
     if unstable {
         Some(quote! {
             #[cfg(web_sys_unstable_apis)]
-            #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+            #[doc = ""]
+            #[doc = ""]
+            #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+            #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
         })
     } else {
         None
@@ -90,7 +100,7 @@ impl Enum {
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen]
-            #[doc = #doc_comment]
+            #doc_comment
             #unstable_attr
             #[derive(Copy, Clone, PartialEq, Debug)]
             pub enum #name {
@@ -225,7 +235,7 @@ impl InterfaceAttribute {
                 js_name = #js_name
             )]
             #cfg_features
-            #[doc = #doc_comment]
+            #doc_comment
             #unstable_attr
             #def
         }
@@ -403,7 +413,7 @@ impl InterfaceMethod {
                 #variadic
                 #(#extra_args),*
             )]
-            #[doc = #doc_comment]
+            #doc_comment
             #unstable_attr
             pub fn #name(#this #(#arguments),*) #ret;
         }
@@ -568,7 +578,7 @@ impl Interface {
                     typescript_name = #js_name
                 )]
                 #[derive(Debug, Clone, PartialEq, Eq)]
-                #[doc = #doc_comment]
+                #doc_comment
                 #deprecated
                 pub type #name;
 
@@ -612,7 +622,7 @@ impl DictionaryField {
 
         quote! {
             #cfg_features
-            #[doc = #doc_comment]
+            #doc_comment
             pub fn #name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
                 let r = ::js_sys::Reflect::set(
@@ -686,14 +696,14 @@ impl Dictionary {
             #[wasm_bindgen]
             extern "C" {
                 #[wasm_bindgen(extends = ::js_sys::Object, js_name = #js_name)]
-                #[doc = #doc_comment]
+                #doc_comment
                 pub type #name;
             }
 
             #unstable_attr
             impl #name {
                 #cfg_features
-                #[doc = #ctor_doc_comment]
+                #ctor_doc_comment
                 pub fn new(#(#required_args),*) -> Self {
                     #[allow(unused_mut)]
                     let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -801,7 +811,7 @@ impl Function {
                 js_namespace = #js_namespace,
                 js_name = #js_name
             )]
-            #[doc = #doc_comment]
+            #doc_comment
             #unstable_attr
             pub fn #name(#(#arguments),*) #ret;
         }

@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FontFaceDescriptors ) ]
-    #[doc = "The `FontFaceDescriptors` dictionary.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "The `FontFaceDescriptors` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub type FontFaceDescriptors;
 }
 impl FontFaceDescriptors {
-    #[doc = "Construct a new `FontFaceDescriptors`.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Construct a new `FontFaceDescriptors`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `display` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `display` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn display(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl FontFaceDescriptors {
         let _ = r;
         self
     }
-    #[doc = "Change the `featureSettings` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `featureSettings` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn feature_settings(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl FontFaceDescriptors {
         let _ = r;
         self
     }
-    #[doc = "Change the `stretch` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `stretch` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn stretch(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl FontFaceDescriptors {
         let _ = r;
         self
     }
-    #[doc = "Change the `style` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `style` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn style(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("style"), &JsValue::from(val));
@@ -69,7 +81,9 @@ impl FontFaceDescriptors {
         let _ = r;
         self
     }
-    #[doc = "Change the `unicodeRange` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `unicodeRange` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn unicode_range(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -84,7 +98,9 @@ impl FontFaceDescriptors {
         let _ = r;
         self
     }
-    #[doc = "Change the `variant` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `variant` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn variant(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -99,7 +115,9 @@ impl FontFaceDescriptors {
         let _ = r;
         self
     }
-    #[doc = "Change the `variationSettings` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `variationSettings` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn variation_settings(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -114,7 +132,9 @@ impl FontFaceDescriptors {
         let _ = r;
         self
     }
-    #[doc = "Change the `weight` field of this object.\n\n*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
+    #[doc = "Change the `weight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     pub fn weight(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

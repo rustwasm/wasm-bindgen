@@ -4,12 +4,24 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = CssGroupingRule , extends = CssRule , extends = :: js_sys :: Object , js_name = CSSConditionRule , typescript_name = CSSConditionRule ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `CssConditionRule` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSConditionRule)\n\n*This API requires the following crate features to be activated: `CssConditionRule`*"]
+    #[doc = "The `CssConditionRule` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSConditionRule)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssConditionRule`*"]
     pub type CssConditionRule;
     # [ wasm_bindgen ( structural , method , getter , js_class = "CSSConditionRule" , js_name = conditionText ) ]
-    #[doc = "Getter for the `conditionText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSConditionRule/conditionText)\n\n*This API requires the following crate features to be activated: `CssConditionRule`*"]
+    #[doc = "Getter for the `conditionText` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSConditionRule/conditionText)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssConditionRule`*"]
     pub fn condition_text(this: &CssConditionRule) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_class = "CSSConditionRule" , js_name = conditionText ) ]
-    #[doc = "Setter for the `conditionText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSConditionRule/conditionText)\n\n*This API requires the following crate features to be activated: `CssConditionRule`*"]
+    #[doc = "Setter for the `conditionText` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSConditionRule/conditionText)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssConditionRule`*"]
     pub fn set_condition_text(this: &CssConditionRule, value: &str);
 }

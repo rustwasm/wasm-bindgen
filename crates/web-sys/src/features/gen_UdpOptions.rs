@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = UDPOptions ) ]
-    #[doc = "The `UdpOptions` dictionary.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "The `UdpOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub type UdpOptions;
 }
 impl UdpOptions {
-    #[doc = "Construct a new `UdpOptions`.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "Construct a new `UdpOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `addressReuse` field of this object.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "Change the `addressReuse` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn address_reuse(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl UdpOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `localAddress` field of this object.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "Change the `localAddress` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn local_address(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl UdpOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `localPort` field of this object.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "Change the `localPort` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn local_port(&mut self, val: u16) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl UdpOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `loopback` field of this object.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "Change the `loopback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn loopback(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl UdpOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `remoteAddress` field of this object.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "Change the `remoteAddress` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn remote_address(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -88,7 +102,9 @@ impl UdpOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `remotePort` field of this object.\n\n*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[doc = "Change the `remotePort` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn remote_port(&mut self, val: u16) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

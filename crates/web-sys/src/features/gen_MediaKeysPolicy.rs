@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaKeysPolicy ) ]
-    #[doc = "The `MediaKeysPolicy` dictionary.\n\n*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
+    #[doc = "The `MediaKeysPolicy` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
     pub type MediaKeysPolicy;
 }
 impl MediaKeysPolicy {
-    #[doc = "Construct a new `MediaKeysPolicy`.\n\n*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
+    #[doc = "Construct a new `MediaKeysPolicy`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `minHdcpVersion` field of this object.\n\n*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
+    #[doc = "Change the `minHdcpVersion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
     pub fn min_hdcp_version(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

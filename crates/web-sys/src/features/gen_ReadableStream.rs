@@ -4,6 +4,10 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ReadableStream , typescript_name = ReadableStream ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `ReadableStream` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)\n\n*This API requires the following crate features to be activated: `ReadableStream`*"]
+    #[doc = "The `ReadableStream` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStream`*"]
     pub type ReadableStream;
 }

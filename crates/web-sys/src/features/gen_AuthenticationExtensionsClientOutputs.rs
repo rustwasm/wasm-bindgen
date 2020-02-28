@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AuthenticationExtensionsClientOutputs ) ]
-    #[doc = "The `AuthenticationExtensionsClientOutputs` dictionary.\n\n*This API requires the following crate features to be activated: `AuthenticationExtensionsClientOutputs`*"]
+    #[doc = "The `AuthenticationExtensionsClientOutputs` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientOutputs`*"]
     pub type AuthenticationExtensionsClientOutputs;
 }
 impl AuthenticationExtensionsClientOutputs {
-    #[doc = "Construct a new `AuthenticationExtensionsClientOutputs`.\n\n*This API requires the following crate features to be activated: `AuthenticationExtensionsClientOutputs`*"]
+    #[doc = "Construct a new `AuthenticationExtensionsClientOutputs`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientOutputs`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `appid` field of this object.\n\n*This API requires the following crate features to be activated: `AuthenticationExtensionsClientOutputs`*"]
+    #[doc = "Change the `appid` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientOutputs`*"]
     pub fn appid(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("appid"), &JsValue::from(val));

@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MIDIOptions ) ]
-    #[doc = "The `MidiOptions` dictionary.\n\n*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[doc = "The `MidiOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     pub type MidiOptions;
 }
 impl MidiOptions {
-    #[doc = "Construct a new `MidiOptions`.\n\n*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[doc = "Construct a new `MidiOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `software` field of this object.\n\n*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[doc = "Change the `software` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     pub fn software(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl MidiOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `sysex` field of this object.\n\n*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[doc = "Change the `sysex` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     pub fn sysex(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("sysex"), &JsValue::from(val));

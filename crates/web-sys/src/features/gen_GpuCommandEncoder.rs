@@ -1,55 +1,104 @@
 use super::*;
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
-#[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+#[doc = ""]
+#[doc = ""]
+#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUCommandEncoder , typescript_name = GPUCommandEncoder ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuCommandEncoder` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
+    #[doc = "The `GpuCommandEncoder` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
     pub type GpuCommandEncoder;
     # [ wasm_bindgen ( structural , method , getter , js_class = "GPUCommandEncoder" , js_name = label ) ]
-    #[doc = "Getter for the `label` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/label)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
+    #[doc = "Getter for the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/label)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(this: &GpuCommandEncoder) -> Option<String>;
     # [ wasm_bindgen ( structural , method , setter , js_class = "GPUCommandEncoder" , js_name = label ) ]
-    #[doc = "Setter for the `label` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/label)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
+    #[doc = "Setter for the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/label)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_label(this: &GpuCommandEncoder, value: Option<&str>);
     #[cfg(feature = "GpuComputePassEncoder")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = beginComputePass ) ]
-    #[doc = "The `beginComputePass()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/beginComputePass)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuComputePassEncoder`*"]
+    #[doc = "The `beginComputePass()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/beginComputePass)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuComputePassEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn begin_compute_pass(this: &GpuCommandEncoder) -> GpuComputePassEncoder;
     #[cfg(all(
         feature = "GpuComputePassDescriptor",
         feature = "GpuComputePassEncoder",
     ))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = beginComputePass ) ]
-    #[doc = "The `beginComputePass()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/beginComputePass)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuComputePassDescriptor`, `GpuComputePassEncoder`*"]
+    #[doc = "The `beginComputePass()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/beginComputePass)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuComputePassDescriptor`, `GpuComputePassEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn begin_compute_pass_with_descriptor(
         this: &GpuCommandEncoder,
         descriptor: &GpuComputePassDescriptor,
     ) -> GpuComputePassEncoder;
     #[cfg(all(feature = "GpuRenderPassDescriptor", feature = "GpuRenderPassEncoder",))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = beginRenderPass ) ]
-    #[doc = "The `beginRenderPass()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/beginRenderPass)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuRenderPassDescriptor`, `GpuRenderPassEncoder`*"]
+    #[doc = "The `beginRenderPass()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/beginRenderPass)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuRenderPassDescriptor`, `GpuRenderPassEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn begin_render_pass(
         this: &GpuCommandEncoder,
         descriptor: &GpuRenderPassDescriptor,
     ) -> GpuRenderPassEncoder;
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_u32_and_u32_and_u32(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -60,9 +109,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_f64_and_u32_and_u32(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -73,9 +129,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_u32_and_f64_and_u32(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -86,9 +149,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_f64_and_f64_and_u32(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -99,9 +169,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_u32_and_u32_and_f64(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -112,9 +189,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_f64_and_u32_and_f64(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -125,9 +209,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_u32_and_f64_and_f64(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -138,9 +229,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToBuffer ) ]
-    #[doc = "The `copyBufferToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `copyBufferToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_buffer_with_f64_and_f64_and_f64(
         this: &GpuCommandEncoder,
         source: &GpuBuffer,
@@ -151,9 +249,16 @@ extern "C" {
     );
     #[cfg(all(feature = "GpuBufferCopyView", feature = "GpuTextureCopyView",))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToTexture ) ]
-    #[doc = "The `copyBufferToTexture()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture)\n\n*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuTextureCopyView`*"]
+    #[doc = "The `copyBufferToTexture()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuTextureCopyView`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_texture_with_u32_sequence(
         this: &GpuCommandEncoder,
         source: &GpuBufferCopyView,
@@ -166,9 +271,16 @@ extern "C" {
         feature = "GpuTextureCopyView",
     ))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToTexture ) ]
-    #[doc = "The `copyBufferToTexture()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture)\n\n*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
+    #[doc = "The `copyBufferToTexture()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_texture_with_gpu_extent_3d_dict(
         this: &GpuCommandEncoder,
         source: &GpuBufferCopyView,
@@ -177,9 +289,16 @@ extern "C" {
     );
     #[cfg(all(feature = "GpuBufferCopyView", feature = "GpuTextureCopyView",))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToBuffer ) ]
-    #[doc = "The `copyTextureToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuTextureCopyView`*"]
+    #[doc = "The `copyTextureToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuTextureCopyView`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_buffer_with_u32_sequence(
         this: &GpuCommandEncoder,
         source: &GpuTextureCopyView,
@@ -192,9 +311,16 @@ extern "C" {
         feature = "GpuTextureCopyView",
     ))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToBuffer ) ]
-    #[doc = "The `copyTextureToBuffer()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToBuffer)\n\n*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
+    #[doc = "The `copyTextureToBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_buffer_with_gpu_extent_3d_dict(
         this: &GpuCommandEncoder,
         source: &GpuTextureCopyView,
@@ -203,9 +329,16 @@ extern "C" {
     );
     #[cfg(feature = "GpuTextureCopyView")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToTexture ) ]
-    #[doc = "The `copyTextureToTexture()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToTexture)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuTextureCopyView`*"]
+    #[doc = "The `copyTextureToTexture()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToTexture)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuTextureCopyView`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_texture_with_u32_sequence(
         this: &GpuCommandEncoder,
         source: &GpuTextureCopyView,
@@ -214,9 +347,16 @@ extern "C" {
     );
     #[cfg(all(feature = "GpuExtent3dDict", feature = "GpuTextureCopyView",))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToTexture ) ]
-    #[doc = "The `copyTextureToTexture()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToTexture)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
+    #[doc = "The `copyTextureToTexture()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToTexture)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_texture_with_gpu_extent_3d_dict(
         this: &GpuCommandEncoder,
         source: &GpuTextureCopyView,
@@ -225,32 +365,67 @@ extern "C" {
     );
     #[cfg(feature = "GpuCommandBuffer")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = finish ) ]
-    #[doc = "The `finish()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/finish)\n\n*This API requires the following crate features to be activated: `GpuCommandBuffer`, `GpuCommandEncoder`*"]
+    #[doc = "The `finish()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/finish)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandBuffer`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn finish(this: &GpuCommandEncoder) -> GpuCommandBuffer;
     #[cfg(all(feature = "GpuCommandBuffer", feature = "GpuCommandBufferDescriptor",))]
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = finish ) ]
-    #[doc = "The `finish()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/finish)\n\n*This API requires the following crate features to be activated: `GpuCommandBuffer`, `GpuCommandBufferDescriptor`, `GpuCommandEncoder`*"]
+    #[doc = "The `finish()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/finish)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandBuffer`, `GpuCommandBufferDescriptor`, `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn finish_with_descriptor(
         this: &GpuCommandEncoder,
         descriptor: &GpuCommandBufferDescriptor,
     ) -> GpuCommandBuffer;
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = insertDebugMarker ) ]
-    #[doc = "The `insertDebugMarker()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/insertDebugMarker)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
+    #[doc = "The `insertDebugMarker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/insertDebugMarker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn insert_debug_marker(this: &GpuCommandEncoder, marker_label: &str);
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = popDebugGroup ) ]
-    #[doc = "The `popDebugGroup()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/popDebugGroup)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
+    #[doc = "The `popDebugGroup()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/popDebugGroup)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn pop_debug_group(this: &GpuCommandEncoder);
     # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = pushDebugGroup ) ]
-    #[doc = "The `pushDebugGroup()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/pushDebugGroup)\n\n*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
+    #[doc = "The `pushDebugGroup()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/pushDebugGroup)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`*"]
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn push_debug_group(this: &GpuCommandEncoder, group_label: &str);
 }

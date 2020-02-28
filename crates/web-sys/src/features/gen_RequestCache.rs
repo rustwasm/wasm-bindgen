@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `RequestCache` enum.\n\n*This API requires the following crate features to be activated: `RequestCache`*"]
+#[doc = "The `RequestCache` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RequestCache`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum RequestCache {
     Default = "default",

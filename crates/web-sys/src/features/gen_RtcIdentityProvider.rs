@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCIdentityProvider ) ]
-    #[doc = "The `RtcIdentityProvider` dictionary.\n\n*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[doc = "The `RtcIdentityProvider` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub type RtcIdentityProvider;
 }
 impl RtcIdentityProvider {
-    #[doc = "Construct a new `RtcIdentityProvider`.\n\n*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[doc = "Construct a new `RtcIdentityProvider`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub fn new(
         generate_assertion: &::js_sys::Function,
         validate_assertion: &::js_sys::Function,
@@ -18,7 +22,9 @@ impl RtcIdentityProvider {
         ret.validate_assertion(validate_assertion);
         ret
     }
-    #[doc = "Change the `generateAssertion` field of this object.\n\n*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[doc = "Change the `generateAssertion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub fn generate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -33,7 +39,9 @@ impl RtcIdentityProvider {
         let _ = r;
         self
     }
-    #[doc = "Change the `validateAssertion` field of this object.\n\n*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[doc = "Change the `validateAssertion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub fn validate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

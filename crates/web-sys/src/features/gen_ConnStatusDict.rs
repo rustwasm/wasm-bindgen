@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ConnStatusDict ) ]
-    #[doc = "The `ConnStatusDict` dictionary.\n\n*This API requires the following crate features to be activated: `ConnStatusDict`*"]
+    #[doc = "The `ConnStatusDict` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
     pub type ConnStatusDict;
 }
 impl ConnStatusDict {
-    #[doc = "Construct a new `ConnStatusDict`.\n\n*This API requires the following crate features to be activated: `ConnStatusDict`*"]
+    #[doc = "Construct a new `ConnStatusDict`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `status` field of this object.\n\n*This API requires the following crate features to be activated: `ConnStatusDict`*"]
+    #[doc = "Change the `status` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
     pub fn status(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

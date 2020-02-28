@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `ServiceWorkerState` enum.\n\n*This API requires the following crate features to be activated: `ServiceWorkerState`*"]
+#[doc = "The `ServiceWorkerState` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ServiceWorkerState`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ServiceWorkerState {
     Parsed = "parsed",

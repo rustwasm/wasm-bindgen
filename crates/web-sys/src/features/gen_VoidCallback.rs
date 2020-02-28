@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VoidCallback ) ]
-    #[doc = "The `VoidCallback` dictionary.\n\n*This API requires the following crate features to be activated: `VoidCallback`*"]
+    #[doc = "The `VoidCallback` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VoidCallback`*"]
     pub type VoidCallback;
 }
 impl VoidCallback {
-    #[doc = "Construct a new `VoidCallback`.\n\n*This API requires the following crate features to be activated: `VoidCallback`*"]
+    #[doc = "Construct a new `VoidCallback`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VoidCallback`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `handleEvent` field of this object.\n\n*This API requires the following crate features to be activated: `VoidCallback`*"]
+    #[doc = "Change the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VoidCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

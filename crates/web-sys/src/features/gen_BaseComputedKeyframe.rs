@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BaseComputedKeyframe ) ]
-    #[doc = "The `BaseComputedKeyframe` dictionary.\n\n*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
+    #[doc = "The `BaseComputedKeyframe` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
     pub type BaseComputedKeyframe;
 }
 impl BaseComputedKeyframe {
-    #[doc = "Construct a new `BaseComputedKeyframe`.\n\n*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
+    #[doc = "Construct a new `BaseComputedKeyframe`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "CompositeOperation")]
-    #[doc = "Change the `composite` field of this object.\n\n*This API requires the following crate features to be activated: `BaseComputedKeyframe`, `CompositeOperation`*"]
+    #[doc = "Change the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseComputedKeyframe`, `CompositeOperation`*"]
     pub fn composite(&mut self, val: Option<CompositeOperation>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -29,7 +35,9 @@ impl BaseComputedKeyframe {
         let _ = r;
         self
     }
-    #[doc = "Change the `easing` field of this object.\n\n*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
+    #[doc = "Change the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
     pub fn easing(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -41,7 +49,9 @@ impl BaseComputedKeyframe {
         let _ = r;
         self
     }
-    #[doc = "Change the `offset` field of this object.\n\n*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
+    #[doc = "Change the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
     pub fn offset(&mut self, val: Option<f64>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -53,7 +63,9 @@ impl BaseComputedKeyframe {
         let _ = r;
         self
     }
-    #[doc = "Change the `simulateComputeValuesFailure` field of this object.\n\n*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
+    #[doc = "Change the `simulateComputeValuesFailure` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
     pub fn simulate_compute_values_failure(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -68,7 +80,9 @@ impl BaseComputedKeyframe {
         let _ = r;
         self
     }
-    #[doc = "Change the `computedOffset` field of this object.\n\n*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
+    #[doc = "Change the `computedOffset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseComputedKeyframe`*"]
     pub fn computed_offset(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

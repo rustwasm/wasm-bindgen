@@ -4,12 +4,24 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = BeforeUnloadEvent , typescript_name = BeforeUnloadEvent ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `BeforeUnloadEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent)\n\n*This API requires the following crate features to be activated: `BeforeUnloadEvent`*"]
+    #[doc = "The `BeforeUnloadEvent` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BeforeUnloadEvent`*"]
     pub type BeforeUnloadEvent;
     # [ wasm_bindgen ( structural , method , getter , js_class = "BeforeUnloadEvent" , js_name = returnValue ) ]
-    #[doc = "Getter for the `returnValue` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent/returnValue)\n\n*This API requires the following crate features to be activated: `BeforeUnloadEvent`*"]
+    #[doc = "Getter for the `returnValue` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent/returnValue)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BeforeUnloadEvent`*"]
     pub fn return_value(this: &BeforeUnloadEvent) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_class = "BeforeUnloadEvent" , js_name = returnValue ) ]
-    #[doc = "Setter for the `returnValue` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent/returnValue)\n\n*This API requires the following crate features to be activated: `BeforeUnloadEvent`*"]
+    #[doc = "Setter for the `returnValue` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent/returnValue)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BeforeUnloadEvent`*"]
     pub fn set_return_value(this: &BeforeUnloadEvent, value: &str);
 }

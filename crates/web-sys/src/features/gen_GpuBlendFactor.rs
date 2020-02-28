@@ -1,8 +1,13 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `GpuBlendFactor` enum.\n\n*This API requires the following crate features to be activated: `GpuBlendFactor`*"]
+#[doc = "The `GpuBlendFactor` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuBlendFactor`*"]
 #[cfg(web_sys_unstable_apis)]
-#[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+#[doc = ""]
+#[doc = ""]
+#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum GpuBlendFactor {
     Zero = "zero",

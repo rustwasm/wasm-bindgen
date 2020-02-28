@@ -4,12 +4,24 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLParagraphElement , typescript_name = HTMLParagraphElement ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `HtmlParagraphElement` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement)\n\n*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
+    #[doc = "The `HtmlParagraphElement` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
     pub type HtmlParagraphElement;
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLParagraphElement" , js_name = align ) ]
-    #[doc = "Getter for the `align` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement/align)\n\n*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
+    #[doc = "Getter for the `align` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement/align)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
     pub fn align(this: &HtmlParagraphElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLParagraphElement" , js_name = align ) ]
-    #[doc = "Setter for the `align` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement/align)\n\n*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
+    #[doc = "Setter for the `align` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement/align)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
     pub fn set_align(this: &HtmlParagraphElement, value: &str);
 }

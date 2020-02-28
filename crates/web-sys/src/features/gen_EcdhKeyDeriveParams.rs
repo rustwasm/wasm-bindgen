@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = EcdhKeyDeriveParams ) ]
-    #[doc = "The `EcdhKeyDeriveParams` dictionary.\n\n*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
+    #[doc = "The `EcdhKeyDeriveParams` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
     pub type EcdhKeyDeriveParams;
 }
 impl EcdhKeyDeriveParams {
     #[cfg(feature = "CryptoKey")]
-    #[doc = "Construct a new `EcdhKeyDeriveParams`.\n\n*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
+    #[doc = "Construct a new `EcdhKeyDeriveParams`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
     pub fn new(name: &str, public: &CryptoKey) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -16,7 +20,9 @@ impl EcdhKeyDeriveParams {
         ret.public(public);
         ret
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
@@ -28,7 +34,9 @@ impl EcdhKeyDeriveParams {
         self
     }
     #[cfg(feature = "CryptoKey")]
-    #[doc = "Change the `public` field of this object.\n\n*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
+    #[doc = "Change the `public` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
     pub fn public(&mut self, val: &CryptoKey) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

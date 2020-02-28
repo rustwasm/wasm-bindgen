@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaStreamEventInit ) ]
-    #[doc = "The `MediaStreamEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
+    #[doc = "The `MediaStreamEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
     pub type MediaStreamEventInit;
 }
 impl MediaStreamEventInit {
-    #[doc = "Construct a new `MediaStreamEventInit`.\n\n*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
+    #[doc = "Construct a new `MediaStreamEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl MediaStreamEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl MediaStreamEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -59,7 +69,9 @@ impl MediaStreamEventInit {
         self
     }
     #[cfg(feature = "MediaStream")]
-    #[doc = "Change the `stream` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamEventInit`*"]
+    #[doc = "Change the `stream` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamEventInit`*"]
     pub fn stream(&mut self, val: Option<&MediaStream>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

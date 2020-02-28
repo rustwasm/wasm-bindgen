@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PushSubscriptionOptionsInit ) ]
-    #[doc = "The `PushSubscriptionOptionsInit` dictionary.\n\n*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
+    #[doc = "The `PushSubscriptionOptionsInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     pub type PushSubscriptionOptionsInit;
 }
 impl PushSubscriptionOptionsInit {
-    #[doc = "Construct a new `PushSubscriptionOptionsInit`.\n\n*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
+    #[doc = "Construct a new `PushSubscriptionOptionsInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `applicationServerKey` field of this object.\n\n*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
+    #[doc = "Change the `applicationServerKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     pub fn application_server_key(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

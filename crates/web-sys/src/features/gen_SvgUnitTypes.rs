@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGUnitTypes , typescript_name = SVGUnitTypes ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `SvgUnitTypes` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGUnitTypes)\n\n*This API requires the following crate features to be activated: `SvgUnitTypes`*"]
+    #[doc = "The `SvgUnitTypes` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGUnitTypes)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgUnitTypes`*"]
     pub type SvgUnitTypes;
 }
 impl SvgUnitTypes {

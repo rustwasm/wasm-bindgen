@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebSocketElement ) ]
-    #[doc = "The `WebSocketElement` dictionary.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "The `WebSocketElement` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub type WebSocketElement;
 }
 impl WebSocketElement {
-    #[doc = "Construct a new `WebSocketElement`.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "Construct a new `WebSocketElement`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `encrypted` field of this object.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "Change the `encrypted` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub fn encrypted(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl WebSocketElement {
         let _ = r;
         self
     }
-    #[doc = "Change the `hostport` field of this object.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "Change the `hostport` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub fn hostport(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl WebSocketElement {
         let _ = r;
         self
     }
-    #[doc = "Change the `msgreceived` field of this object.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "Change the `msgreceived` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub fn msgreceived(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl WebSocketElement {
         let _ = r;
         self
     }
-    #[doc = "Change the `msgsent` field of this object.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "Change the `msgsent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub fn msgsent(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl WebSocketElement {
         let _ = r;
         self
     }
-    #[doc = "Change the `receivedsize` field of this object.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "Change the `receivedsize` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub fn receivedsize(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -88,7 +102,9 @@ impl WebSocketElement {
         let _ = r;
         self
     }
-    #[doc = "Change the `sentsize` field of this object.\n\n*This API requires the following crate features to be activated: `WebSocketElement`*"]
+    #[doc = "Change the `sentsize` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
     pub fn sentsize(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

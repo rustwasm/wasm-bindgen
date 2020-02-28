@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CollectedClientData ) ]
-    #[doc = "The `CollectedClientData` dictionary.\n\n*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[doc = "The `CollectedClientData` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub type CollectedClientData;
 }
 impl CollectedClientData {
-    #[doc = "Construct a new `CollectedClientData`.\n\n*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[doc = "Construct a new `CollectedClientData`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn new(challenge: &str, hash_algorithm: &str, origin: &str, type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -17,7 +21,9 @@ impl CollectedClientData {
         ret.type_(type_);
         ret
     }
-    #[doc = "Change the `challenge` field of this object.\n\n*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[doc = "Change the `challenge` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn challenge(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -33,7 +39,9 @@ impl CollectedClientData {
         self
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
-    #[doc = "Change the `clientExtensions` field of this object.\n\n*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `CollectedClientData`*"]
+    #[doc = "Change the `clientExtensions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `CollectedClientData`*"]
     pub fn client_extensions(&mut self, val: &AuthenticationExtensionsClientInputs) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -48,7 +56,9 @@ impl CollectedClientData {
         let _ = r;
         self
     }
-    #[doc = "Change the `hashAlgorithm` field of this object.\n\n*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[doc = "Change the `hashAlgorithm` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn hash_algorithm(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -63,7 +73,9 @@ impl CollectedClientData {
         let _ = r;
         self
     }
-    #[doc = "Change the `origin` field of this object.\n\n*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[doc = "Change the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn origin(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -75,7 +87,9 @@ impl CollectedClientData {
         let _ = r;
         self
     }
-    #[doc = "Change the `tokenBindingId` field of this object.\n\n*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[doc = "Change the `tokenBindingId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn token_binding_id(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -90,7 +104,9 @@ impl CollectedClientData {
         let _ = r;
         self
     }
-    #[doc = "Change the `type` field of this object.\n\n*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));

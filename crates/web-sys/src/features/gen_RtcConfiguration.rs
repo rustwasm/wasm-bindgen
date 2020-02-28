@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCConfiguration ) ]
-    #[doc = "The `RtcConfiguration` dictionary.\n\n*This API requires the following crate features to be activated: `RtcConfiguration`*"]
+    #[doc = "The `RtcConfiguration` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
     pub type RtcConfiguration;
 }
 impl RtcConfiguration {
-    #[doc = "Construct a new `RtcConfiguration`.\n\n*This API requires the following crate features to be activated: `RtcConfiguration`*"]
+    #[doc = "Construct a new `RtcConfiguration`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "RtcBundlePolicy")]
-    #[doc = "Change the `bundlePolicy` field of this object.\n\n*This API requires the following crate features to be activated: `RtcBundlePolicy`, `RtcConfiguration`*"]
+    #[doc = "Change the `bundlePolicy` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcBundlePolicy`, `RtcConfiguration`*"]
     pub fn bundle_policy(&mut self, val: RtcBundlePolicy) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -29,7 +35,9 @@ impl RtcConfiguration {
         let _ = r;
         self
     }
-    #[doc = "Change the `certificates` field of this object.\n\n*This API requires the following crate features to be activated: `RtcConfiguration`*"]
+    #[doc = "Change the `certificates` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
     pub fn certificates(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -44,7 +52,9 @@ impl RtcConfiguration {
         let _ = r;
         self
     }
-    #[doc = "Change the `iceServers` field of this object.\n\n*This API requires the following crate features to be activated: `RtcConfiguration`*"]
+    #[doc = "Change the `iceServers` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
     pub fn ice_servers(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -60,7 +70,9 @@ impl RtcConfiguration {
         self
     }
     #[cfg(feature = "RtcIceTransportPolicy")]
-    #[doc = "Change the `iceTransportPolicy` field of this object.\n\n*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcIceTransportPolicy`*"]
+    #[doc = "Change the `iceTransportPolicy` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcIceTransportPolicy`*"]
     pub fn ice_transport_policy(&mut self, val: RtcIceTransportPolicy) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -75,7 +87,9 @@ impl RtcConfiguration {
         let _ = r;
         self
     }
-    #[doc = "Change the `peerIdentity` field of this object.\n\n*This API requires the following crate features to be activated: `RtcConfiguration`*"]
+    #[doc = "Change the `peerIdentity` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
     pub fn peer_identity(&mut self, val: Option<&str>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

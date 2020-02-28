@@ -4,32 +4,60 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = WaveShaperNode , typescript_name = WaveShaperNode ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `WaveShaperNode` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode)\n\n*This API requires the following crate features to be activated: `WaveShaperNode`*"]
+    #[doc = "The `WaveShaperNode` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WaveShaperNode`*"]
     pub type WaveShaperNode;
     # [ wasm_bindgen ( structural , method , getter , js_class = "WaveShaperNode" , js_name = curve ) ]
-    #[doc = "Getter for the `curve` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/curve)\n\n*This API requires the following crate features to be activated: `WaveShaperNode`*"]
+    #[doc = "Getter for the `curve` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/curve)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WaveShaperNode`*"]
     pub fn curve(this: &WaveShaperNode) -> Option<Vec<f32>>;
     # [ wasm_bindgen ( structural , method , setter , js_class = "WaveShaperNode" , js_name = curve ) ]
-    #[doc = "Setter for the `curve` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/curve)\n\n*This API requires the following crate features to be activated: `WaveShaperNode`*"]
+    #[doc = "Setter for the `curve` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/curve)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WaveShaperNode`*"]
     pub fn set_curve(this: &WaveShaperNode, value: Option<&mut [f32]>);
     # [ wasm_bindgen ( structural , method , getter , js_class = "WaveShaperNode" , js_name = oversample ) ]
     #[cfg(feature = "OverSampleType")]
-    #[doc = "Getter for the `oversample` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample)\n\n*This API requires the following crate features to be activated: `OverSampleType`, `WaveShaperNode`*"]
+    #[doc = "Getter for the `oversample` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OverSampleType`, `WaveShaperNode`*"]
     pub fn oversample(this: &WaveShaperNode) -> OverSampleType;
     # [ wasm_bindgen ( structural , method , setter , js_class = "WaveShaperNode" , js_name = oversample ) ]
     #[cfg(feature = "OverSampleType")]
-    #[doc = "Setter for the `oversample` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample)\n\n*This API requires the following crate features to be activated: `OverSampleType`, `WaveShaperNode`*"]
+    #[doc = "Setter for the `oversample` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OverSampleType`, `WaveShaperNode`*"]
     pub fn set_oversample(this: &WaveShaperNode, value: OverSampleType);
     #[cfg(feature = "BaseAudioContext")]
     #[wasm_bindgen(catch, js_class = "WaveShaperNode", constructor)]
-    #[doc = "The `new WaveShaperNode(..)` constructor, creating a new instance of `WaveShaperNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/WaveShaperNode)\n\n*This API requires the following crate features to be activated: `BaseAudioContext`, `WaveShaperNode`*"]
+    #[doc = "The `new WaveShaperNode(..)` constructor, creating a new instance of `WaveShaperNode`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/WaveShaperNode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `WaveShaperNode`*"]
     pub fn new(
         this: &WaveShaperNode,
         context: &BaseAudioContext,
     ) -> Result<WaveShaperNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "WaveShaperOptions",))]
     #[wasm_bindgen(catch, js_class = "WaveShaperNode", constructor)]
-    #[doc = "The `new WaveShaperNode(..)` constructor, creating a new instance of `WaveShaperNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/WaveShaperNode)\n\n*This API requires the following crate features to be activated: `BaseAudioContext`, `WaveShaperNode`, `WaveShaperOptions`*"]
+    #[doc = "The `new WaveShaperNode(..)` constructor, creating a new instance of `WaveShaperNode`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/WaveShaperNode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `WaveShaperNode`, `WaveShaperOptions`*"]
     pub fn new_with_options(
         this: &WaveShaperNode,
         context: &BaseAudioContext,

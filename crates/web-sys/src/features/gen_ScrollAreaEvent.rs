@@ -4,32 +4,64 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = ScrollAreaEvent , typescript_name = ScrollAreaEvent ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `ScrollAreaEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "The `ScrollAreaEvent` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub type ScrollAreaEvent;
     # [ wasm_bindgen ( structural , method , getter , js_class = "ScrollAreaEvent" , js_name = x ) ]
-    #[doc = "Getter for the `x` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/x)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "Getter for the `x` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/x)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub fn x(this: &ScrollAreaEvent) -> f32;
     # [ wasm_bindgen ( structural , method , getter , js_class = "ScrollAreaEvent" , js_name = y ) ]
-    #[doc = "Getter for the `y` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/y)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "Getter for the `y` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/y)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub fn y(this: &ScrollAreaEvent) -> f32;
     # [ wasm_bindgen ( structural , method , getter , js_class = "ScrollAreaEvent" , js_name = width ) ]
-    #[doc = "Getter for the `width` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/width)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "Getter for the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/width)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub fn width(this: &ScrollAreaEvent) -> f32;
     # [ wasm_bindgen ( structural , method , getter , js_class = "ScrollAreaEvent" , js_name = height ) ]
-    #[doc = "Getter for the `height` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/height)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "Getter for the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/height)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub fn height(this: &ScrollAreaEvent) -> f32;
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub fn init_scroll_area_event(this: &ScrollAreaEvent, type_: &str);
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub fn init_scroll_area_event_with_can_bubble(
         this: &ScrollAreaEvent,
         type_: &str,
         can_bubble: bool,
     );
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`*"]
     pub fn init_scroll_area_event_with_can_bubble_and_cancelable(
         this: &ScrollAreaEvent,
         type_: &str,
@@ -38,7 +70,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
     pub fn init_scroll_area_event_with_can_bubble_and_cancelable_and_view(
         this: &ScrollAreaEvent,
         type_: &str,
@@ -48,7 +84,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
     pub fn init_scroll_area_event_with_can_bubble_and_cancelable_and_view_and_detail(
         this: &ScrollAreaEvent,
         type_: &str,
@@ -59,7 +99,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
     pub fn init_scroll_area_event_with_can_bubble_and_cancelable_and_view_and_detail_and_x(
         this: &ScrollAreaEvent,
         type_: &str,
@@ -71,7 +115,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
     pub fn init_scroll_area_event_with_can_bubble_and_cancelable_and_view_and_detail_and_x_and_y(
         this: &ScrollAreaEvent,
         type_: &str,
@@ -84,7 +132,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
     pub fn init_scroll_area_event_with_can_bubble_and_cancelable_and_view_and_detail_and_x_and_y_and_width(
         this: &ScrollAreaEvent,
         type_: &str,
@@ -98,7 +150,11 @@ extern "C" {
     );
     #[cfg(feature = "Window")]
     # [ wasm_bindgen ( method , structural , js_class = "ScrollAreaEvent" , js_name = initScrollAreaEvent ) ]
-    #[doc = "The `initScrollAreaEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)\n\n*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
+    #[doc = "The `initScrollAreaEvent()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScrollAreaEvent/initScrollAreaEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollAreaEvent`, `Window`*"]
     pub fn init_scroll_area_event_with_can_bubble_and_cancelable_and_view_and_detail_and_x_and_y_and_width_and_height(
         this: &ScrollAreaEvent,
         type_: &str,

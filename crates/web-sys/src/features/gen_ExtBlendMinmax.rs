@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_blend_minmax , typescript_name = EXT_blend_minmax ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `ExtBlendMinmax` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_blend_minmax)\n\n*This API requires the following crate features to be activated: `ExtBlendMinmax`*"]
+    #[doc = "The `ExtBlendMinmax` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_blend_minmax)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtBlendMinmax`*"]
     pub type ExtBlendMinmax;
 }
 impl ExtBlendMinmax {

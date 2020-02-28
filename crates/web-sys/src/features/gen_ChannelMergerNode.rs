@@ -4,18 +4,30 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = ChannelMergerNode , typescript_name = ChannelMergerNode ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `ChannelMergerNode` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ChannelMergerNode)\n\n*This API requires the following crate features to be activated: `ChannelMergerNode`*"]
+    #[doc = "The `ChannelMergerNode` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ChannelMergerNode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelMergerNode`*"]
     pub type ChannelMergerNode;
     #[cfg(feature = "BaseAudioContext")]
     #[wasm_bindgen(catch, js_class = "ChannelMergerNode", constructor)]
-    #[doc = "The `new ChannelMergerNode(..)` constructor, creating a new instance of `ChannelMergerNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ChannelMergerNode/ChannelMergerNode)\n\n*This API requires the following crate features to be activated: `BaseAudioContext`, `ChannelMergerNode`*"]
+    #[doc = "The `new ChannelMergerNode(..)` constructor, creating a new instance of `ChannelMergerNode`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ChannelMergerNode/ChannelMergerNode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `ChannelMergerNode`*"]
     pub fn new(
         this: &ChannelMergerNode,
         context: &BaseAudioContext,
     ) -> Result<ChannelMergerNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "ChannelMergerOptions",))]
     #[wasm_bindgen(catch, js_class = "ChannelMergerNode", constructor)]
-    #[doc = "The `new ChannelMergerNode(..)` constructor, creating a new instance of `ChannelMergerNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ChannelMergerNode/ChannelMergerNode)\n\n*This API requires the following crate features to be activated: `BaseAudioContext`, `ChannelMergerNode`, `ChannelMergerOptions`*"]
+    #[doc = "The `new ChannelMergerNode(..)` constructor, creating a new instance of `ChannelMergerNode`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ChannelMergerNode/ChannelMergerNode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `ChannelMergerNode`, `ChannelMergerOptions`*"]
     pub fn new_with_options(
         this: &ChannelMergerNode,
         context: &BaseAudioContext,

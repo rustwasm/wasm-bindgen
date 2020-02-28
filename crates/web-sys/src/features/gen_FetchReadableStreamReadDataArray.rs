@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FetchReadableStreamReadDataArray ) ]
-    #[doc = "The `FetchReadableStreamReadDataArray` dictionary.\n\n*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
+    #[doc = "The `FetchReadableStreamReadDataArray` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
     pub type FetchReadableStreamReadDataArray;
 }
 impl FetchReadableStreamReadDataArray {
-    #[doc = "Construct a new `FetchReadableStreamReadDataArray`.\n\n*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
+    #[doc = "Construct a new `FetchReadableStreamReadDataArray`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());

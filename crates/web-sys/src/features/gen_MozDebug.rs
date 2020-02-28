@@ -4,10 +4,18 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = MOZ_debug , typescript_name = MOZ_debug ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `MozDebug` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MOZ_debug)\n\n*This API requires the following crate features to be activated: `MozDebug`*"]
+    #[doc = "The `MozDebug` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MOZ_debug)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MozDebug`*"]
     pub type MozDebug;
     # [ wasm_bindgen ( catch , method , structural , js_class = "MOZ_debug" , js_name = getParameter ) ]
-    #[doc = "The `getParameter()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MOZ_debug/getParameter)\n\n*This API requires the following crate features to be activated: `MozDebug`*"]
+    #[doc = "The `getParameter()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MOZ_debug/getParameter)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MozDebug`*"]
     pub fn get_parameter(this: &MozDebug, pname: u32) -> Result<::wasm_bindgen::JsValue, JsValue>;
 }
 impl MozDebug {

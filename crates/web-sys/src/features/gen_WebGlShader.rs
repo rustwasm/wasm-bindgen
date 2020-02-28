@@ -4,6 +4,10 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLShader , typescript_name = WebGLShader ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `WebGlShader` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLShader)\n\n*This API requires the following crate features to be activated: `WebGlShader`*"]
+    #[doc = "The `WebGlShader` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLShader)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlShader`*"]
     pub type WebGlShader;
 }

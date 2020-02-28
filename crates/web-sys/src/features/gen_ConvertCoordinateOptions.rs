@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ConvertCoordinateOptions ) ]
-    #[doc = "The `ConvertCoordinateOptions` dictionary.\n\n*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
+    #[doc = "The `ConvertCoordinateOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
     pub type ConvertCoordinateOptions;
 }
 impl ConvertCoordinateOptions {
-    #[doc = "Construct a new `ConvertCoordinateOptions`.\n\n*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
+    #[doc = "Construct a new `ConvertCoordinateOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "CssBoxType")]
-    #[doc = "Change the `fromBox` field of this object.\n\n*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    #[doc = "Change the `fromBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn from_box(&mut self, val: CssBoxType) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -30,7 +36,9 @@ impl ConvertCoordinateOptions {
         self
     }
     #[cfg(feature = "CssBoxType")]
-    #[doc = "Change the `toBox` field of this object.\n\n*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    #[doc = "Change the `toBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn to_box(&mut self, val: CssBoxType) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("toBox"), &JsValue::from(val));

@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ScrollIntoViewOptions ) ]
-    #[doc = "The `ScrollIntoViewOptions` dictionary.\n\n*This API requires the following crate features to be activated: `ScrollIntoViewOptions`*"]
+    #[doc = "The `ScrollIntoViewOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`*"]
     pub type ScrollIntoViewOptions;
 }
 impl ScrollIntoViewOptions {
-    #[doc = "Construct a new `ScrollIntoViewOptions`.\n\n*This API requires the following crate features to be activated: `ScrollIntoViewOptions`*"]
+    #[doc = "Construct a new `ScrollIntoViewOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "ScrollBehavior")]
-    #[doc = "Change the `behavior` field of this object.\n\n*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
+    #[doc = "Change the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -30,7 +36,9 @@ impl ScrollIntoViewOptions {
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
-    #[doc = "Change the `block` field of this object.\n\n*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[doc = "Change the `block` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     pub fn block(&mut self, val: ScrollLogicalPosition) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("block"), &JsValue::from(val));
@@ -42,7 +50,9 @@ impl ScrollIntoViewOptions {
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
-    #[doc = "Change the `inline` field of this object.\n\n*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[doc = "Change the `inline` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     pub fn inline(&mut self, val: ScrollLogicalPosition) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

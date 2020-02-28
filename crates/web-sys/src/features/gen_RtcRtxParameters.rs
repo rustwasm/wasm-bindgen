@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCRtxParameters ) ]
-    #[doc = "The `RtcRtxParameters` dictionary.\n\n*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
+    #[doc = "The `RtcRtxParameters` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     pub type RtcRtxParameters;
 }
 impl RtcRtxParameters {
-    #[doc = "Construct a new `RtcRtxParameters`.\n\n*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
+    #[doc = "Construct a new `RtcRtxParameters`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `ssrc` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
+    #[doc = "Change the `ssrc` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     pub fn ssrc(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ssrc"), &JsValue::from(val));

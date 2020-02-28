@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BasicCardRequest ) ]
-    #[doc = "The `BasicCardRequest` dictionary.\n\n*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[doc = "The `BasicCardRequest` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub type BasicCardRequest;
 }
 impl BasicCardRequest {
-    #[doc = "Construct a new `BasicCardRequest`.\n\n*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[doc = "Construct a new `BasicCardRequest`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `supportedNetworks` field of this object.\n\n*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[doc = "Change the `supportedNetworks` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub fn supported_networks(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl BasicCardRequest {
         let _ = r;
         self
     }
-    #[doc = "Change the `supportedTypes` field of this object.\n\n*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[doc = "Change the `supportedTypes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub fn supported_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

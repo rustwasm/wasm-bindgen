@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `OrientationLockType` enum.\n\n*This API requires the following crate features to be activated: `OrientationLockType`*"]
+#[doc = "The `OrientationLockType` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `OrientationLockType`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum OrientationLockType {
     Any = "any",

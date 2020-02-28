@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `BiquadFilterType` enum.\n\n*This API requires the following crate features to be activated: `BiquadFilterType`*"]
+#[doc = "The `BiquadFilterType` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `BiquadFilterType`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum BiquadFilterType {
     Lowpass = "lowpass",

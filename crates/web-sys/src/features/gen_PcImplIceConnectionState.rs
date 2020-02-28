@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `PcImplIceConnectionState` enum.\n\n*This API requires the following crate features to be activated: `PcImplIceConnectionState`*"]
+#[doc = "The `PcImplIceConnectionState` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PcImplIceConnectionState`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum PcImplIceConnectionState {
     New = "new",

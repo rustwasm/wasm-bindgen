@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DecoderDoctorNotification ) ]
-    #[doc = "The `DecoderDoctorNotification` dictionary.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`, `DecoderDoctorNotificationType`*"]
+    #[doc = "The `DecoderDoctorNotification` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`, `DecoderDoctorNotificationType`*"]
     pub type DecoderDoctorNotification;
 }
 impl DecoderDoctorNotification {
     #[cfg(feature = "DecoderDoctorNotificationType")]
-    #[doc = "Construct a new `DecoderDoctorNotification`.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`, `DecoderDoctorNotificationType`*"]
+    #[doc = "Construct a new `DecoderDoctorNotification`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`, `DecoderDoctorNotificationType`*"]
     pub fn new(
         decoder_doctor_report_id: &str,
         is_solved: bool,
@@ -21,7 +25,9 @@ impl DecoderDoctorNotification {
         ret.type_(type_);
         ret
     }
-    #[doc = "Change the `decodeIssue` field of this object.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
+    #[doc = "Change the `decodeIssue` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub fn decode_issue(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -36,7 +42,9 @@ impl DecoderDoctorNotification {
         let _ = r;
         self
     }
-    #[doc = "Change the `decoderDoctorReportId` field of this object.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
+    #[doc = "Change the `decoderDoctorReportId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub fn decoder_doctor_report_id(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -51,7 +59,9 @@ impl DecoderDoctorNotification {
         let _ = r;
         self
     }
-    #[doc = "Change the `docURL` field of this object.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
+    #[doc = "Change the `docURL` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub fn doc_url(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -63,7 +73,9 @@ impl DecoderDoctorNotification {
         let _ = r;
         self
     }
-    #[doc = "Change the `formats` field of this object.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
+    #[doc = "Change the `formats` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub fn formats(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -78,7 +90,9 @@ impl DecoderDoctorNotification {
         let _ = r;
         self
     }
-    #[doc = "Change the `isSolved` field of this object.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
+    #[doc = "Change the `isSolved` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub fn is_solved(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -93,7 +107,9 @@ impl DecoderDoctorNotification {
         let _ = r;
         self
     }
-    #[doc = "Change the `resourceURL` field of this object.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
+    #[doc = "Change the `resourceURL` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub fn resource_url(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -109,7 +125,9 @@ impl DecoderDoctorNotification {
         self
     }
     #[cfg(feature = "DecoderDoctorNotificationType")]
-    #[doc = "Change the `type` field of this object.\n\n*This API requires the following crate features to be activated: `DecoderDoctorNotification`, `DecoderDoctorNotificationType`*"]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`, `DecoderDoctorNotificationType`*"]
     pub fn type_(&mut self, val: DecoderDoctorNotificationType) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));

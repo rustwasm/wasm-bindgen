@@ -4,6 +4,10 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLProgram , typescript_name = WebGLProgram ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `WebGlProgram` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLProgram)\n\n*This API requires the following crate features to be activated: `WebGlProgram`*"]
+    #[doc = "The `WebGlProgram` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLProgram)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlProgram`*"]
     pub type WebGlProgram;
 }

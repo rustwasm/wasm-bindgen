@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ScrollToOptions ) ]
-    #[doc = "The `ScrollToOptions` dictionary.\n\n*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[doc = "The `ScrollToOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub type ScrollToOptions;
 }
 impl ScrollToOptions {
-    #[doc = "Construct a new `ScrollToOptions`.\n\n*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[doc = "Construct a new `ScrollToOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "ScrollBehavior")]
-    #[doc = "Change the `behavior` field of this object.\n\n*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollToOptions`*"]
+    #[doc = "Change the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollToOptions`*"]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -29,7 +35,9 @@ impl ScrollToOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `left` field of this object.\n\n*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[doc = "Change the `left` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub fn left(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("left"), &JsValue::from(val));
@@ -40,7 +48,9 @@ impl ScrollToOptions {
         let _ = r;
         self
     }
-    #[doc = "Change the `top` field of this object.\n\n*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[doc = "Change the `top` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub fn top(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("top"), &JsValue::from(val));

@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBVersionChangeEventInit ) ]
-    #[doc = "The `IdbVersionChangeEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    #[doc = "The `IdbVersionChangeEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub type IdbVersionChangeEventInit;
 }
 impl IdbVersionChangeEventInit {
-    #[doc = "Construct a new `IdbVersionChangeEventInit`.\n\n*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    #[doc = "Construct a new `IdbVersionChangeEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl IdbVersionChangeEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl IdbVersionChangeEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl IdbVersionChangeEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `newVersion` field of this object.\n\n*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    #[doc = "Change the `newVersion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn new_version(&mut self, val: Option<f64>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl IdbVersionChangeEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `oldVersion` field of this object.\n\n*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    #[doc = "Change the `oldVersion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn old_version(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

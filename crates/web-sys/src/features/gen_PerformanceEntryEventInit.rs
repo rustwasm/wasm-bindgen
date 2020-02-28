@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceEntryEventInit ) ]
-    #[doc = "The `PerformanceEntryEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "The `PerformanceEntryEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub type PerformanceEntryEventInit;
 }
 impl PerformanceEntryEventInit {
-    #[doc = "Construct a new `PerformanceEntryEventInit`.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Construct a new `PerformanceEntryEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `duration` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `duration` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn duration(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `entryType` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `entryType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn entry_type(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -88,7 +102,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `epoch` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `epoch` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn epoch(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("epoch"), &JsValue::from(val));
@@ -99,7 +115,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
@@ -110,7 +128,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `origin` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn origin(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -122,7 +142,9 @@ impl PerformanceEntryEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `startTime` field of this object.\n\n*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[doc = "Change the `startTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn start_time(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

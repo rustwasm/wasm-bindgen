@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MutationObserverInit ) ]
-    #[doc = "The `MutationObserverInit` dictionary.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "The `MutationObserverInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub type MutationObserverInit;
 }
 impl MutationObserverInit {
-    #[doc = "Construct a new `MutationObserverInit`.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Construct a new `MutationObserverInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `animations` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `animations` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn animations(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `attributeFilter` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `attributeFilter` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn attribute_filter(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `attributeOldValue` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `attributeOldValue` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn attribute_old_value(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `attributes` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `attributes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn attributes(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `characterData` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `characterData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn character_data(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -88,7 +102,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `characterDataOldValue` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `characterDataOldValue` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn character_data_old_value(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -103,7 +119,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `childList` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `childList` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn child_list(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -118,7 +136,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `nativeAnonymousChildList` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `nativeAnonymousChildList` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn native_anonymous_child_list(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -133,7 +153,9 @@ impl MutationObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `subtree` field of this object.\n\n*This API requires the following crate features to be activated: `MutationObserverInit`*"]
+    #[doc = "Change the `subtree` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
     pub fn subtree(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

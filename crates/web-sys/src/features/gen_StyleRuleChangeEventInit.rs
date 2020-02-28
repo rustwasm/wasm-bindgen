@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = StyleRuleChangeEventInit ) ]
-    #[doc = "The `StyleRuleChangeEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
+    #[doc = "The `StyleRuleChangeEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub type StyleRuleChangeEventInit;
 }
 impl StyleRuleChangeEventInit {
-    #[doc = "Construct a new `StyleRuleChangeEventInit`.\n\n*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
+    #[doc = "Construct a new `StyleRuleChangeEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl StyleRuleChangeEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl StyleRuleChangeEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -59,7 +69,9 @@ impl StyleRuleChangeEventInit {
         self
     }
     #[cfg(feature = "CssRule")]
-    #[doc = "Change the `rule` field of this object.\n\n*This API requires the following crate features to be activated: `CssRule`, `StyleRuleChangeEventInit`*"]
+    #[doc = "Change the `rule` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`, `StyleRuleChangeEventInit`*"]
     pub fn rule(&mut self, val: Option<&CssRule>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rule"), &JsValue::from(val));
@@ -71,7 +83,9 @@ impl StyleRuleChangeEventInit {
         self
     }
     #[cfg(feature = "CssStyleSheet")]
-    #[doc = "Change the `stylesheet` field of this object.\n\n*This API requires the following crate features to be activated: `CssStyleSheet`, `StyleRuleChangeEventInit`*"]
+    #[doc = "Change the `stylesheet` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`, `StyleRuleChangeEventInit`*"]
     pub fn stylesheet(&mut self, val: Option<&CssStyleSheet>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

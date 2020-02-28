@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CSPReportProperties ) ]
-    #[doc = "The `CspReportProperties` dictionary.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "The `CspReportProperties` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub type CspReportProperties;
 }
 impl CspReportProperties {
-    #[doc = "Construct a new `CspReportProperties`.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Construct a new `CspReportProperties`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `blocked-uri` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `blocked-uri` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn blocked_uri(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `column-number` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `column-number` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn column_number(&mut self, val: i32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `document-uri` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `document-uri` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn document_uri(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +68,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `line-number` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `line-number` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn line_number(&mut self, val: i32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,7 +85,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `original-policy` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `original-policy` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn original_policy(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -88,7 +102,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `referrer` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `referrer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn referrer(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -103,7 +119,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `script-sample` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `script-sample` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn script_sample(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -118,7 +136,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `source-file` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `source-file` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn source_file(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -133,7 +153,9 @@ impl CspReportProperties {
         let _ = r;
         self
     }
-    #[doc = "Change the `violated-directive` field of this object.\n\n*This API requires the following crate features to be activated: `CspReportProperties`*"]
+    #[doc = "Change the `violated-directive` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CspReportProperties`*"]
     pub fn violated_directive(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

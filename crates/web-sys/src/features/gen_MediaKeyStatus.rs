@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `MediaKeyStatus` enum.\n\n*This API requires the following crate features to be activated: `MediaKeyStatus`*"]
+#[doc = "The `MediaKeyStatus` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `MediaKeyStatus`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum MediaKeyStatus {
     Usable = "usable",

@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = EcKeyAlgorithm ) ]
-    #[doc = "The `EcKeyAlgorithm` dictionary.\n\n*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    #[doc = "The `EcKeyAlgorithm` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub type EcKeyAlgorithm;
 }
 impl EcKeyAlgorithm {
-    #[doc = "Construct a new `EcKeyAlgorithm`.\n\n*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    #[doc = "Construct a new `EcKeyAlgorithm`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub fn new(name: &str, named_curve: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -15,7 +19,9 @@ impl EcKeyAlgorithm {
         ret.named_curve(named_curve);
         ret
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
@@ -26,7 +32,9 @@ impl EcKeyAlgorithm {
         let _ = r;
         self
     }
-    #[doc = "Change the `namedCurve` field of this object.\n\n*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    #[doc = "Change the `namedCurve` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub fn named_curve(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

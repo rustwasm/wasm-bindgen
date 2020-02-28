@@ -4,14 +4,26 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GamepadHapticActuator , typescript_name = GamepadHapticActuator ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GamepadHapticActuator` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadHapticActuator)\n\n*This API requires the following crate features to be activated: `GamepadHapticActuator`*"]
+    #[doc = "The `GamepadHapticActuator` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadHapticActuator)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GamepadHapticActuator`*"]
     pub type GamepadHapticActuator;
     # [ wasm_bindgen ( structural , method , getter , js_class = "GamepadHapticActuator" , js_name = type ) ]
     #[cfg(feature = "GamepadHapticActuatorType")]
-    #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadHapticActuator/type)\n\n*This API requires the following crate features to be activated: `GamepadHapticActuator`, `GamepadHapticActuatorType`*"]
+    #[doc = "Getter for the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadHapticActuator/type)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GamepadHapticActuator`, `GamepadHapticActuatorType`*"]
     pub fn type_(this: &GamepadHapticActuator) -> GamepadHapticActuatorType;
     # [ wasm_bindgen ( catch , method , structural , js_class = "GamepadHapticActuator" , js_name = pulse ) ]
-    #[doc = "The `pulse()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadHapticActuator/pulse)\n\n*This API requires the following crate features to be activated: `GamepadHapticActuator`*"]
+    #[doc = "The `pulse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadHapticActuator/pulse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GamepadHapticActuator`*"]
     pub fn pulse(
         this: &GamepadHapticActuator,
         value: f64,

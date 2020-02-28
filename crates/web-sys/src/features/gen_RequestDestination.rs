@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `RequestDestination` enum.\n\n*This API requires the following crate features to be activated: `RequestDestination`*"]
+#[doc = "The `RequestDestination` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RequestDestination`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum RequestDestination {
     None = "",

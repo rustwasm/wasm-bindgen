@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCIdentityProviderDetails ) ]
-    #[doc = "The `RtcIdentityProviderDetails` dictionary.\n\n*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[doc = "The `RtcIdentityProviderDetails` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub type RtcIdentityProviderDetails;
 }
 impl RtcIdentityProviderDetails {
-    #[doc = "Construct a new `RtcIdentityProviderDetails`.\n\n*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[doc = "Construct a new `RtcIdentityProviderDetails`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub fn new(domain: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.domain(domain);
         ret
     }
-    #[doc = "Change the `domain` field of this object.\n\n*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[doc = "Change the `domain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub fn domain(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -26,7 +32,9 @@ impl RtcIdentityProviderDetails {
         let _ = r;
         self
     }
-    #[doc = "Change the `protocol` field of this object.\n\n*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[doc = "Change the `protocol` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub fn protocol(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

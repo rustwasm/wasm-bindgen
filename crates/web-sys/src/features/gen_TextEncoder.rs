@@ -4,18 +4,38 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TextEncoder , typescript_name = TextEncoder ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `TextEncoder` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder)\n\n*This API requires the following crate features to be activated: `TextEncoder`*"]
+    #[doc = "The `TextEncoder` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
     pub type TextEncoder;
     # [ wasm_bindgen ( structural , method , getter , js_class = "TextEncoder" , js_name = encoding ) ]
-    #[doc = "Getter for the `encoding` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encoding)\n\n*This API requires the following crate features to be activated: `TextEncoder`*"]
+    #[doc = "Getter for the `encoding` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encoding)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
     pub fn encoding(this: &TextEncoder) -> String;
     #[wasm_bindgen(catch, js_class = "TextEncoder", constructor)]
-    #[doc = "The `new TextEncoder(..)` constructor, creating a new instance of `TextEncoder`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/TextEncoder)\n\n*This API requires the following crate features to be activated: `TextEncoder`*"]
+    #[doc = "The `new TextEncoder(..)` constructor, creating a new instance of `TextEncoder`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/TextEncoder)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
     pub fn new(this: &TextEncoder) -> Result<TextEncoder, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "TextEncoder" , js_name = encode ) ]
-    #[doc = "The `encode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode)\n\n*This API requires the following crate features to be activated: `TextEncoder`*"]
+    #[doc = "The `encode()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
     pub fn encode(this: &TextEncoder) -> Vec<u8>;
     # [ wasm_bindgen ( method , structural , js_class = "TextEncoder" , js_name = encode ) ]
-    #[doc = "The `encode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode)\n\n*This API requires the following crate features to be activated: `TextEncoder`*"]
+    #[doc = "The `encode()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
     pub fn encode_with_input(this: &TextEncoder, input: &str) -> Vec<u8>;
 }

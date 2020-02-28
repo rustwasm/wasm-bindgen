@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ResponseInit ) ]
-    #[doc = "The `ResponseInit` dictionary.\n\n*This API requires the following crate features to be activated: `ResponseInit`*"]
+    #[doc = "The `ResponseInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub type ResponseInit;
 }
 impl ResponseInit {
-    #[doc = "Construct a new `ResponseInit`.\n\n*This API requires the following crate features to be activated: `ResponseInit`*"]
+    #[doc = "Construct a new `ResponseInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `headers` field of this object.\n\n*This API requires the following crate features to be activated: `ResponseInit`*"]
+    #[doc = "Change the `headers` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub fn headers(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl ResponseInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `status` field of this object.\n\n*This API requires the following crate features to be activated: `ResponseInit`*"]
+    #[doc = "Change the `status` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub fn status(&mut self, val: u16) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -40,7 +48,9 @@ impl ResponseInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `statusText` field of this object.\n\n*This API requires the following crate features to be activated: `ResponseInit`*"]
+    #[doc = "Change the `statusText` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub fn status_text(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

@@ -3,11 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WidevineCDMManifest ) ]
-    #[doc = "The `WidevineCdmManifest` dictionary.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "The `WidevineCdmManifest` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub type WidevineCdmManifest;
 }
 impl WidevineCdmManifest {
-    #[doc = "Construct a new `WidevineCdmManifest`.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Construct a new `WidevineCdmManifest`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn new(
         description: &str,
         name: &str,
@@ -28,7 +32,9 @@ impl WidevineCdmManifest {
         ret.x_cdm_module_versions(x_cdm_module_versions);
         ret
     }
-    #[doc = "Change the `description` field of this object.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Change the `description` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn description(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +49,9 @@ impl WidevineCdmManifest {
         let _ = r;
         self
     }
-    #[doc = "Change the `name` field of this object.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
@@ -54,7 +62,9 @@ impl WidevineCdmManifest {
         let _ = r;
         self
     }
-    #[doc = "Change the `version` field of this object.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Change the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn version(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -69,7 +79,9 @@ impl WidevineCdmManifest {
         let _ = r;
         self
     }
-    #[doc = "Change the `x-cdm-codecs` field of this object.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Change the `x-cdm-codecs` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_codecs(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -84,7 +96,9 @@ impl WidevineCdmManifest {
         let _ = r;
         self
     }
-    #[doc = "Change the `x-cdm-host-versions` field of this object.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Change the `x-cdm-host-versions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_host_versions(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -99,7 +113,9 @@ impl WidevineCdmManifest {
         let _ = r;
         self
     }
-    #[doc = "Change the `x-cdm-interface-versions` field of this object.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Change the `x-cdm-interface-versions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_interface_versions(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -114,7 +130,9 @@ impl WidevineCdmManifest {
         let _ = r;
         self
     }
-    #[doc = "Change the `x-cdm-module-versions` field of this object.\n\n*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
+    #[doc = "Change the `x-cdm-module-versions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_module_versions(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

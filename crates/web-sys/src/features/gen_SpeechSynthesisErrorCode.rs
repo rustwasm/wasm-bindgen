@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
-#[doc = "The `SpeechSynthesisErrorCode` enum.\n\n*This API requires the following crate features to be activated: `SpeechSynthesisErrorCode`*"]
+#[doc = "The `SpeechSynthesisErrorCode` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorCode`*"]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum SpeechSynthesisErrorCode {
     Canceled = "canceled",

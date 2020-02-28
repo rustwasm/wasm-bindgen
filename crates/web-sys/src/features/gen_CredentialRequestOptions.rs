@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CredentialRequestOptions ) ]
-    #[doc = "The `CredentialRequestOptions` dictionary.\n\n*This API requires the following crate features to be activated: `CredentialRequestOptions`*"]
+    #[doc = "The `CredentialRequestOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`*"]
     pub type CredentialRequestOptions;
 }
 impl CredentialRequestOptions {
-    #[doc = "Construct a new `CredentialRequestOptions`.\n\n*This API requires the following crate features to be activated: `CredentialRequestOptions`*"]
+    #[doc = "Construct a new `CredentialRequestOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "PublicKeyCredentialRequestOptions")]
-    #[doc = "Change the `publicKey` field of this object.\n\n*This API requires the following crate features to be activated: `CredentialRequestOptions`, `PublicKeyCredentialRequestOptions`*"]
+    #[doc = "Change the `publicKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`, `PublicKeyCredentialRequestOptions`*"]
     pub fn public_key(&mut self, val: &PublicKeyCredentialRequestOptions) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -30,7 +36,9 @@ impl CredentialRequestOptions {
         self
     }
     #[cfg(feature = "AbortSignal")]
-    #[doc = "Change the `signal` field of this object.\n\n*This API requires the following crate features to be activated: `AbortSignal`, `CredentialRequestOptions`*"]
+    #[doc = "Change the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialRequestOptions`*"]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

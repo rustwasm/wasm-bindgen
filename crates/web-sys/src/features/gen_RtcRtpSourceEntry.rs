@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCRtpSourceEntry ) ]
-    #[doc = "The `RtcRtpSourceEntry` dictionary.\n\n*This API requires the following crate features to be activated: `RtcRtpSourceEntry`, `RtcRtpSourceEntryType`*"]
+    #[doc = "The `RtcRtpSourceEntry` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`, `RtcRtpSourceEntryType`*"]
     pub type RtcRtpSourceEntry;
 }
 impl RtcRtpSourceEntry {
     #[cfg(feature = "RtcRtpSourceEntryType")]
-    #[doc = "Construct a new `RtcRtpSourceEntry`.\n\n*This API requires the following crate features to be activated: `RtcRtpSourceEntry`, `RtcRtpSourceEntryType`*"]
+    #[doc = "Construct a new `RtcRtpSourceEntry`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`, `RtcRtpSourceEntryType`*"]
     pub fn new(source: u32, timestamp: f64, source_type: RtcRtpSourceEntryType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -17,7 +21,9 @@ impl RtcRtpSourceEntry {
         ret.source_type(source_type);
         ret
     }
-    #[doc = "Change the `audioLevel` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
+    #[doc = "Change the `audioLevel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn audio_level(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -32,7 +38,9 @@ impl RtcRtpSourceEntry {
         let _ = r;
         self
     }
-    #[doc = "Change the `source` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
+    #[doc = "Change the `source` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn source(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -44,7 +52,9 @@ impl RtcRtpSourceEntry {
         let _ = r;
         self
     }
-    #[doc = "Change the `timestamp` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
+    #[doc = "Change the `timestamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -59,7 +69,9 @@ impl RtcRtpSourceEntry {
         let _ = r;
         self
     }
-    #[doc = "Change the `voiceActivityFlag` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
+    #[doc = "Change the `voiceActivityFlag` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn voice_activity_flag(&mut self, val: Option<bool>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -75,7 +87,9 @@ impl RtcRtpSourceEntry {
         self
     }
     #[cfg(feature = "RtcRtpSourceEntryType")]
-    #[doc = "Change the `sourceType` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpSourceEntry`, `RtcRtpSourceEntryType`*"]
+    #[doc = "Change the `sourceType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`, `RtcRtpSourceEntryType`*"]
     pub fn source_type(&mut self, val: RtcRtpSourceEntryType) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

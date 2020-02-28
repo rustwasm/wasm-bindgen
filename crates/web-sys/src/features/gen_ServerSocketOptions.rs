@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ServerSocketOptions ) ]
-    #[doc = "The `ServerSocketOptions` dictionary.\n\n*This API requires the following crate features to be activated: `ServerSocketOptions`*"]
+    #[doc = "The `ServerSocketOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`*"]
     pub type ServerSocketOptions;
 }
 impl ServerSocketOptions {
-    #[doc = "Construct a new `ServerSocketOptions`.\n\n*This API requires the following crate features to be activated: `ServerSocketOptions`*"]
+    #[doc = "Construct a new `ServerSocketOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "TcpSocketBinaryType")]
-    #[doc = "Change the `binaryType` field of this object.\n\n*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpSocketBinaryType`*"]
+    #[doc = "Change the `binaryType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpSocketBinaryType`*"]
     pub fn binary_type(&mut self, val: TcpSocketBinaryType) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

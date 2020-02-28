@@ -3,18 +3,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IntersectionObserverInit ) ]
-    #[doc = "The `IntersectionObserverInit` dictionary.\n\n*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
+    #[doc = "The `IntersectionObserverInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     pub type IntersectionObserverInit;
 }
 impl IntersectionObserverInit {
-    #[doc = "Construct a new `IntersectionObserverInit`.\n\n*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
+    #[doc = "Construct a new `IntersectionObserverInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
     #[cfg(feature = "Element")]
-    #[doc = "Change the `root` field of this object.\n\n*This API requires the following crate features to be activated: `Element`, `IntersectionObserverInit`*"]
+    #[doc = "Change the `root` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`, `IntersectionObserverInit`*"]
     pub fn root(&mut self, val: Option<&Element>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("root"), &JsValue::from(val));
@@ -25,7 +31,9 @@ impl IntersectionObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `rootMargin` field of this object.\n\n*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
+    #[doc = "Change the `rootMargin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     pub fn root_margin(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -40,7 +48,9 @@ impl IntersectionObserverInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `threshold` field of this object.\n\n*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
+    #[doc = "Change the `threshold` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     pub fn threshold(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

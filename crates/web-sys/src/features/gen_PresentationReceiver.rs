@@ -4,9 +4,17 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PresentationReceiver , typescript_name = PresentationReceiver ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `PresentationReceiver` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationReceiver)\n\n*This API requires the following crate features to be activated: `PresentationReceiver`*"]
+    #[doc = "The `PresentationReceiver` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationReceiver)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationReceiver`*"]
     pub type PresentationReceiver;
     # [ wasm_bindgen ( structural , catch , method , getter , js_class = "PresentationReceiver" , js_name = connectionList ) ]
-    #[doc = "Getter for the `connectionList` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationReceiver/connectionList)\n\n*This API requires the following crate features to be activated: `PresentationReceiver`*"]
+    #[doc = "Getter for the `connectionList` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationReceiver/connectionList)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationReceiver`*"]
     pub fn connection_list(this: &PresentationReceiver) -> Result<::js_sys::Promise, JsValue>;
 }

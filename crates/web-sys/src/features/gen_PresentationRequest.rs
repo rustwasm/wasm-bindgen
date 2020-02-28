@@ -4,39 +4,71 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = PresentationRequest , typescript_name = PresentationRequest ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `PresentationRequest` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "The `PresentationRequest` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub type PresentationRequest;
     # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationRequest" , js_name = onconnectionavailable ) ]
-    #[doc = "Getter for the `onconnectionavailable` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/onconnectionavailable)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "Getter for the `onconnectionavailable` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/onconnectionavailable)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn onconnectionavailable(this: &PresentationRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_class = "PresentationRequest" , js_name = onconnectionavailable ) ]
-    #[doc = "Setter for the `onconnectionavailable` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/onconnectionavailable)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "Setter for the `onconnectionavailable` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/onconnectionavailable)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn set_onconnectionavailable(
         this: &PresentationRequest,
         value: Option<&::js_sys::Function>,
     );
     #[wasm_bindgen(catch, js_class = "PresentationRequest", constructor)]
-    #[doc = "The `new PresentationRequest(..)` constructor, creating a new instance of `PresentationRequest`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/PresentationRequest)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "The `new PresentationRequest(..)` constructor, creating a new instance of `PresentationRequest`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/PresentationRequest)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn new_with_url(
         this: &PresentationRequest,
         url: &str,
     ) -> Result<PresentationRequest, JsValue>;
     #[wasm_bindgen(catch, js_class = "PresentationRequest", constructor)]
-    #[doc = "The `new PresentationRequest(..)` constructor, creating a new instance of `PresentationRequest`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/PresentationRequest)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "The `new PresentationRequest(..)` constructor, creating a new instance of `PresentationRequest`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/PresentationRequest)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn new_with_urls(
         this: &PresentationRequest,
         urls: &::wasm_bindgen::JsValue,
     ) -> Result<PresentationRequest, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "PresentationRequest" , js_name = getAvailability ) ]
-    #[doc = "The `getAvailability()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/getAvailability)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "The `getAvailability()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/getAvailability)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn get_availability(this: &PresentationRequest) -> Result<::js_sys::Promise, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "PresentationRequest" , js_name = reconnect ) ]
-    #[doc = "The `reconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/reconnect)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "The `reconnect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/reconnect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn reconnect(
         this: &PresentationRequest,
         presentation_id: &str,
     ) -> Result<::js_sys::Promise, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "PresentationRequest" , js_name = start ) ]
-    #[doc = "The `start()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/start)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
+    #[doc = "The `start()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/start)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn start(this: &PresentationRequest) -> Result<::js_sys::Promise, JsValue>;
 }

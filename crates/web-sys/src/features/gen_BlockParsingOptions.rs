@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BlockParsingOptions ) ]
-    #[doc = "The `BlockParsingOptions` dictionary.\n\n*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
+    #[doc = "The `BlockParsingOptions` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
     pub type BlockParsingOptions;
 }
 impl BlockParsingOptions {
-    #[doc = "Construct a new `BlockParsingOptions`.\n\n*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
+    #[doc = "Construct a new `BlockParsingOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `blockScriptCreated` field of this object.\n\n*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
+    #[doc = "Change the `blockScriptCreated` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
     pub fn block_script_created(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

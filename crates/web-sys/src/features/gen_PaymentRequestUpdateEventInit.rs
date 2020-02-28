@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PaymentRequestUpdateEventInit ) ]
-    #[doc = "The `PaymentRequestUpdateEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
+    #[doc = "The `PaymentRequestUpdateEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
     pub type PaymentRequestUpdateEventInit;
 }
 impl PaymentRequestUpdateEventInit {
-    #[doc = "Construct a new `PaymentRequestUpdateEventInit`.\n\n*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
+    #[doc = "Construct a new `PaymentRequestUpdateEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl PaymentRequestUpdateEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl PaymentRequestUpdateEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

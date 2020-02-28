@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_texture_half_float , typescript_name = OES_texture_half_float ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `OesTextureHalfFloat` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_texture_half_float)\n\n*This API requires the following crate features to be activated: `OesTextureHalfFloat`*"]
+    #[doc = "The `OesTextureHalfFloat` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_texture_half_float)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OesTextureHalfFloat`*"]
     pub type OesTextureHalfFloat;
 }
 impl OesTextureHalfFloat {

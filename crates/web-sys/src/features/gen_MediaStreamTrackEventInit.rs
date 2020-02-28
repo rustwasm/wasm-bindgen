@@ -3,19 +3,25 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaStreamTrackEventInit ) ]
-    #[doc = "The `MediaStreamTrackEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEventInit`*"]
+    #[doc = "The `MediaStreamTrackEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEventInit`*"]
     pub type MediaStreamTrackEventInit;
 }
 impl MediaStreamTrackEventInit {
     #[cfg(feature = "MediaStreamTrack")]
-    #[doc = "Construct a new `MediaStreamTrackEventInit`.\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEventInit`*"]
+    #[doc = "Construct a new `MediaStreamTrackEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEventInit`*"]
     pub fn new(track: &MediaStreamTrack) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.track(track);
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamTrackEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -30,7 +36,9 @@ impl MediaStreamTrackEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamTrackEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -45,7 +53,9 @@ impl MediaStreamTrackEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamTrackEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -61,7 +71,9 @@ impl MediaStreamTrackEventInit {
         self
     }
     #[cfg(feature = "MediaStreamTrack")]
-    #[doc = "Change the `track` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEventInit`*"]
+    #[doc = "Change the `track` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEventInit`*"]
     pub fn track(&mut self, val: &MediaStreamTrack) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("track"), &JsValue::from(val));

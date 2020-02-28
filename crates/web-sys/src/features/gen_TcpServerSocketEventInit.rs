@@ -3,17 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TCPServerSocketEventInit ) ]
-    #[doc = "The `TcpServerSocketEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
+    #[doc = "The `TcpServerSocketEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
     pub type TcpServerSocketEventInit;
 }
 impl TcpServerSocketEventInit {
-    #[doc = "Construct a new `TcpServerSocketEventInit`.\n\n*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
+    #[doc = "Construct a new `TcpServerSocketEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -28,7 +34,9 @@ impl TcpServerSocketEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -43,7 +51,9 @@ impl TcpServerSocketEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpServerSocketEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -59,7 +69,9 @@ impl TcpServerSocketEventInit {
         self
     }
     #[cfg(feature = "TcpSocket")]
-    #[doc = "Change the `socket` field of this object.\n\n*This API requires the following crate features to be activated: `TcpServerSocketEventInit`, `TcpSocket`*"]
+    #[doc = "Change the `socket` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpServerSocketEventInit`, `TcpSocket`*"]
     pub fn socket(&mut self, val: Option<&TcpSocket>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

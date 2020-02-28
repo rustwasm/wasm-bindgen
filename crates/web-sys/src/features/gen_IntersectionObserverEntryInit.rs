@@ -3,12 +3,16 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IntersectionObserverEntryInit ) ]
-    #[doc = "The `IntersectionObserverEntryInit` dictionary.\n\n*This API requires the following crate features to be activated: `DomRectInit`, `Element`, `IntersectionObserverEntryInit`*"]
+    #[doc = "The `IntersectionObserverEntryInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `Element`, `IntersectionObserverEntryInit`*"]
     pub type IntersectionObserverEntryInit;
 }
 impl IntersectionObserverEntryInit {
     #[cfg(all(feature = "DomRectInit", feature = "Element",))]
-    #[doc = "Construct a new `IntersectionObserverEntryInit`.\n\n*This API requires the following crate features to be activated: `DomRectInit`, `Element`, `IntersectionObserverEntryInit`*"]
+    #[doc = "Construct a new `IntersectionObserverEntryInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `Element`, `IntersectionObserverEntryInit`*"]
     pub fn new(
         bounding_client_rect: &DomRectInit,
         intersection_rect: &DomRectInit,
@@ -26,7 +30,9 @@ impl IntersectionObserverEntryInit {
         ret
     }
     #[cfg(feature = "DomRectInit")]
-    #[doc = "Change the `boundingClientRect` field of this object.\n\n*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
+    #[doc = "Change the `boundingClientRect` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
     pub fn bounding_client_rect(&mut self, val: &DomRectInit) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -42,7 +48,9 @@ impl IntersectionObserverEntryInit {
         self
     }
     #[cfg(feature = "DomRectInit")]
-    #[doc = "Change the `intersectionRect` field of this object.\n\n*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
+    #[doc = "Change the `intersectionRect` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
     pub fn intersection_rect(&mut self, val: &DomRectInit) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +66,9 @@ impl IntersectionObserverEntryInit {
         self
     }
     #[cfg(feature = "DomRectInit")]
-    #[doc = "Change the `rootBounds` field of this object.\n\n*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
+    #[doc = "Change the `rootBounds` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
     pub fn root_bounds(&mut self, val: &DomRectInit) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -74,7 +84,9 @@ impl IntersectionObserverEntryInit {
         self
     }
     #[cfg(feature = "Element")]
-    #[doc = "Change the `target` field of this object.\n\n*This API requires the following crate features to be activated: `Element`, `IntersectionObserverEntryInit`*"]
+    #[doc = "Change the `target` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`, `IntersectionObserverEntryInit`*"]
     pub fn target(&mut self, val: &Element) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -86,7 +98,9 @@ impl IntersectionObserverEntryInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `time` field of this object.\n\n*This API requires the following crate features to be activated: `IntersectionObserverEntryInit`*"]
+    #[doc = "Change the `time` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverEntryInit`*"]
     pub fn time(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("time"), &JsValue::from(val));

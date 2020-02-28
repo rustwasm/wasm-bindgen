@@ -3,7 +3,9 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCTrackEventInit ) ]
-    #[doc = "The `RtcTrackEventInit` dictionary.\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpReceiver`, `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
+    #[doc = "The `RtcTrackEventInit` dictionary."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpReceiver`, `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
     pub type RtcTrackEventInit;
 }
 impl RtcTrackEventInit {
@@ -12,7 +14,9 @@ impl RtcTrackEventInit {
         feature = "RtcRtpReceiver",
         feature = "RtcRtpTransceiver",
     ))]
-    #[doc = "Construct a new `RtcTrackEventInit`.\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpReceiver`, `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
+    #[doc = "Construct a new `RtcTrackEventInit`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpReceiver`, `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
     pub fn new(
         receiver: &RtcRtpReceiver,
         track: &MediaStreamTrack,
@@ -25,7 +29,9 @@ impl RtcTrackEventInit {
         ret.transceiver(transceiver);
         ret
     }
-    #[doc = "Change the `bubbles` field of this object.\n\n*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -40,7 +46,9 @@ impl RtcTrackEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `cancelable` field of this object.\n\n*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -55,7 +63,9 @@ impl RtcTrackEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `composed` field of this object.\n\n*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -71,7 +81,9 @@ impl RtcTrackEventInit {
         self
     }
     #[cfg(feature = "RtcRtpReceiver")]
-    #[doc = "Change the `receiver` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpReceiver`, `RtcTrackEventInit`*"]
+    #[doc = "Change the `receiver` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`, `RtcTrackEventInit`*"]
     pub fn receiver(&mut self, val: &RtcRtpReceiver) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -86,7 +98,9 @@ impl RtcTrackEventInit {
         let _ = r;
         self
     }
-    #[doc = "Change the `streams` field of this object.\n\n*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
+    #[doc = "Change the `streams` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn streams(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -102,7 +116,9 @@ impl RtcTrackEventInit {
         self
     }
     #[cfg(feature = "MediaStreamTrack")]
-    #[doc = "Change the `track` field of this object.\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcTrackEventInit`*"]
+    #[doc = "Change the `track` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcTrackEventInit`*"]
     pub fn track(&mut self, val: &MediaStreamTrack) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("track"), &JsValue::from(val));
@@ -114,7 +130,9 @@ impl RtcTrackEventInit {
         self
     }
     #[cfg(feature = "RtcRtpTransceiver")]
-    #[doc = "Change the `transceiver` field of this object.\n\n*This API requires the following crate features to be activated: `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
+    #[doc = "Change the `transceiver` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
     pub fn transceiver(&mut self, val: &RtcRtpTransceiver) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
