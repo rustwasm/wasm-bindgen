@@ -25,16 +25,6 @@ extern "C" {
 // These functions come from element.js
 }
 
-// TODO: Uncomment WebGlRenderingContext test. Every now and then we can check if this works
-// in the latest geckodriver.
-//
-// Currently commented out because WebGl isn't working in geckodriver.
-//
-// It currently works in chromedriver so if you need to run this in the meantime you can
-// uncomment this block and run it in using chromedriver.
-//
-// CHROMEDRIVER=chromedriver cargo test -p web-sys --target wasm32-unknown-unknown --all-features test_webgl_rendering_context_immutable_slices
-
 // Ensure that our whitelisted WebGlRenderingContext methods work
 // GECKODRIVER=geckodriver cargo test -p web-sys --target wasm32-unknown-unknown --all-features test_webgl_rendering_context_immutable_slices
 #[wasm_bindgen_test]
