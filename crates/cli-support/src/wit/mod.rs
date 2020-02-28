@@ -454,6 +454,7 @@ impl<'a> Context<'a> {
                 comments: concatenate_comments(&export.comments),
                 arg_names: Some(export.function.arg_names),
                 kind,
+                generate_typescript: export.function.generate_typescript,
             },
         );
         Ok(())
@@ -767,6 +768,7 @@ impl<'a> Context<'a> {
                 .iter()
                 .map(|v| (v.name.to_string(), v.value))
                 .collect(),
+            generate_typescript: enum_.generate_typescript,
         };
         self.aux.enums.push(aux);
         Ok(())
@@ -799,6 +801,7 @@ impl<'a> Context<'a> {
                         class: struct_.name.to_string(),
                         field: field.name.to_string(),
                     },
+                    generate_typescript: field.generate_typescript,
                 },
             );
 
@@ -824,6 +827,7 @@ impl<'a> Context<'a> {
                         class: struct_.name.to_string(),
                         field: field.name.to_string(),
                     },
+                    generate_typescript: field.generate_typescript,
                 },
             );
         }
@@ -831,6 +835,7 @@ impl<'a> Context<'a> {
             name: struct_.name.to_string(),
             comments: concatenate_comments(&struct_.comments),
             is_inspectable: struct_.is_inspectable,
+            generate_typescript: struct_.generate_typescript,
         };
         self.aux.structs.push(aux);
 
@@ -1048,6 +1053,7 @@ impl<'a> Context<'a> {
                 comments: String::new(),
                 arg_names: None,
                 kind,
+                generate_typescript: true,
             };
             assert!(self.aux.export_map.insert(id, export).is_none());
         }

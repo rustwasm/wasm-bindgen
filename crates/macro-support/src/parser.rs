@@ -51,6 +51,7 @@ macro_rules! attrgen {
             (vendor_prefix, VendorPrefix(Span, Ident)),
             (variadic, Variadic(Span)),
             (typescript_custom_section, TypescriptCustomSection(Span)),
+            (skip_typescript, SkipTypescript(Span)),
             (start, Start(Span)),
             (skip, Skip(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
@@ -354,9 +355,11 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 getter: Ident::new(&getter, Span::call_site()),
                 setter: Ident::new(&setter, Span::call_site()),
                 comments,
+                generate_typescript: attrs.skip_typescript().is_none(),
             });
             attrs.check_used()?;
         }
+        let generate_typescript = attrs.skip_typescript().is_none();
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
         attrs.check_used()?;
         Ok(ast::Struct {
@@ -365,6 +368,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             fields,
             comments,
             is_inspectable,
+            generate_typescript,
         })
     }
 }
@@ -720,6 +724,7 @@ fn function_from_decl(
             rust_attrs: attrs,
             rust_vis: vis,
             r#async: sig.asyncness.is_some(),
+            generate_typescript: opts.skip_typescript().is_none(),
         },
         method_self,
     ))
@@ -798,11 +803,12 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 };
                 f.macro_parse(program, opts)?;
             }
-            syn::Item::Enum(e) => {
-                if let Some(opts) = opts {
-                    opts.check_used()?;
-                }
-                e.macro_parse(program, (tokens,))?;
+            syn::Item::Enum(mut e) => {
+                let opts = match opts {
+                    Some(opts) => opts,
+                    None => BindgenAttrs::find(&mut e.attrs)?,
+                };
+                e.macro_parse(program, (tokens, opts))?;
             }
             syn::Item::Const(mut c) => {
                 let opts = match opts {
@@ -1032,15 +1038,17 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
     Ok(())
 }
 
-impl<'a> MacroParse<(&'a mut TokenStream,)> for syn::ItemEnum {
+impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
     fn macro_parse(
         self,
         program: &mut ast::Program,
-        (tokens,): (&'a mut TokenStream,),
+        (tokens, opts): (&'a mut TokenStream, BindgenAttrs),
     ) -> Result<(), Diagnostic> {
         if self.variants.len() == 0 {
             bail_span!(self, "cannot export empty enums to JS");
         }
+        let generate_typescript = opts.skip_typescript().is_none();
+        opts.check_used()?;
 
         // Check if the first value is a string literal
         match self.variants[0].discriminant {
@@ -1141,8 +1149,8 @@ impl<'a> MacroParse<(&'a mut TokenStream,)> for syn::ItemEnum {
             variants,
             comments,
             hole,
+            generate_typescript,
         });
-
         Ok(())
     }
 }

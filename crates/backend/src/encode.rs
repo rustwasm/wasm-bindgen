@@ -206,6 +206,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
     Function {
         arg_names,
         name: &func.name,
+        generate_typescript: func.generate_typescript,
     }
 }
 
@@ -218,6 +219,7 @@ fn shared_enum<'a>(e: &'a ast::Enum, intern: &'a Interner) -> Enum<'a> {
             .map(|v| shared_variant(v, intern))
             .collect(),
         comments: e.comments.iter().map(|s| &**s).collect(),
+        generate_typescript: e.generate_typescript,
     }
 }
 
@@ -307,6 +309,7 @@ fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {
             .collect(),
         comments: s.comments.iter().map(|s| &**s).collect(),
         is_inspectable: s.is_inspectable,
+        generate_typescript: s.generate_typescript,
     }
 }
 
@@ -318,6 +321,7 @@ fn shared_struct_field<'a>(s: &'a ast::StructField, intern: &'a Interner) -> Str
         },
         readonly: s.readonly,
         comments: s.comments.iter().map(|s| &**s).collect(),
+        generate_typescript: s.generate_typescript,
     }
 }
 

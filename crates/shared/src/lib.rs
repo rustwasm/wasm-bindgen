@@ -100,6 +100,7 @@ macro_rules! shared_api {
             name: &'a str,
             variants: Vec<EnumVariant<'a>>,
             comments: Vec<&'a str>,
+            generate_typescript: bool,
         }
 
         struct EnumVariant<'a> {
@@ -110,6 +111,7 @@ macro_rules! shared_api {
         struct Function<'a> {
             arg_names: Vec<String>,
             name: &'a str,
+            generate_typescript: bool,
         }
 
         struct Struct<'a> {
@@ -117,12 +119,14 @@ macro_rules! shared_api {
             fields: Vec<StructField<'a>>,
             comments: Vec<&'a str>,
             is_inspectable: bool,
+            generate_typescript: bool,
         }
 
         struct StructField<'a> {
             name: &'a str,
             readonly: bool,
             comments: Vec<&'a str>,
+            generate_typescript: bool,
         }
 
         struct LocalModule<'a> {
