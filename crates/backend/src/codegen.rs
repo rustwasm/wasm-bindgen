@@ -1,6 +1,6 @@
 use crate::ast;
 use crate::encode;
-use crate::util::{self, ShortHash};
+use crate::util::ShortHash;
 use crate::Diagnostic;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::{quote, ToTokens};
@@ -41,9 +41,7 @@ impl TryToTokens for ast::Program {
         for i in self.imports.iter() {
             DescribeImport {
                 kind: &i.kind,
-                unstable_api: i.unstable_api,
-            }
-            .to_tokens(tokens);
+            }.to_tokens(tokens);
 
             // If there is a js namespace, check that name isn't a type. If it is,
             // this import might be a method on that type.
@@ -299,7 +297,6 @@ impl ToTokens for ast::StructField {
             inner: quote! {
                 <#ty as WasmDescribe>::describe();
             },
-            unstable_api: self.unstable_api,
             attrs: vec![],
         }
         .to_tokens(tokens);
@@ -537,7 +534,6 @@ impl TryToTokens for ast::Export {
                 #(<#argtys as WasmDescribe>::describe();)*
                 #describe_ret
             },
-            unstable_api: self.unstable_api,
             attrs: attrs.clone(),
         }
         .to_tokens(into);
@@ -564,7 +560,6 @@ impl ToTokens for ast::ImportType {
         let vis = &self.vis;
         let rust_name = &self.rust_name;
         let attrs = &self.attrs;
-        let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
         let doc_comment = match &self.doc_comment {
             None => "",
             Some(comment) => comment,
@@ -613,14 +608,12 @@ impl ToTokens for ast::ImportType {
             #[doc = #doc_comment]
             #[repr(transparent)]
             #[allow(clippy::all)]
-            #unstable_api_attr
             #vis struct #rust_name {
                 obj: #internal_obj
             }
 
             #[allow(bad_style)]
             #[allow(clippy::all)]
-            #unstable_api_attr
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
@@ -771,7 +764,6 @@ impl ToTokens for ast::ImportType {
         for superclass in self.extends.iter() {
             (quote! {
                 #[allow(clippy::all)]
-                #unstable_api_attr
                 impl From<#rust_name> for #superclass {
                     #[inline]
                     fn from(obj: #rust_name) -> #superclass {
@@ -781,7 +773,6 @@ impl ToTokens for ast::ImportType {
                 }
 
                 #[allow(clippy::all)]
-                #unstable_api_attr
                 impl AsRef<#superclass> for #rust_name {
                     #[inline]
                     fn as_ref(&self) -> &#superclass {
@@ -803,7 +794,6 @@ impl ToTokens for ast::ImportEnum {
         let variants = &self.variants;
         let variant_strings = &self.variant_values;
         let attrs = &self.rust_attrs;
-        let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
 
         let mut current_idx: usize = 0;
         let variant_indexes: Vec<Literal> = variants
@@ -832,7 +822,6 @@ impl ToTokens for ast::ImportEnum {
             #[allow(bad_style)]
             #(#attrs)*
             #[allow(clippy::all)]
-            #unstable_api_attr
             #vis enum #name {
                 #(#variants = #variant_indexes_ref,)*
                 #[doc(hidden)]
@@ -840,7 +829,6 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl #name {
                 #vis fn from_js_value(obj: &wasm_bindgen::JsValue) -> Option<#name> {
                     obj.as_string().and_then(|obj_str| match obj_str.as_str() {
@@ -851,7 +839,6 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     wasm_bindgen::JsValue::describe()
@@ -859,7 +846,6 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = <wasm_bindgen::JsValue as
                     wasm_bindgen::convert::IntoWasmAbi>::Abi;
@@ -871,7 +857,6 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = <wasm_bindgen::JsValue as
                     wasm_bindgen::convert::FromWasmAbi>::Abi;
@@ -882,21 +867,18 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
                 fn none() -> Self::Abi { Object::none() }
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { Object::is_none(abi) }
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl From<#name> for wasm_bindgen::JsValue {
                 fn from(obj: #name) -> wasm_bindgen::JsValue {
                     match obj {
@@ -1008,7 +990,6 @@ impl TryToTokens for ast::ImportFunction {
         let arguments = &arguments;
         let abi_arguments = &abi_arguments;
         let abi_argument_names = &abi_argument_names;
-        let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
 
         let doc_comment = match &self.doc_comment {
             None => "",
@@ -1076,7 +1057,6 @@ impl TryToTokens for ast::ImportFunction {
 
         if let Some(class) = class_ty {
             (quote! {
-                #unstable_api_attr
                 impl #class {
                     #invocation
                 }
@@ -1093,7 +1073,6 @@ impl TryToTokens for ast::ImportFunction {
 // See comment above in ast::Export for what's going on here.
 struct DescribeImport<'a> {
     kind: &'a ast::ImportKind,
-    unstable_api: bool,
 }
 
 impl<'a> ToTokens for DescribeImport<'a> {
@@ -1120,7 +1099,6 @@ impl<'a> ToTokens for DescribeImport<'a> {
                 #(<#argtys as WasmDescribe>::describe();)*
                 #inform_ret
             },
-            unstable_api: self.unstable_api,
             attrs: f.function.rust_attrs.clone(),
         }
         .to_tokens(tokens);
@@ -1131,7 +1109,6 @@ impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut TokenStream) {
         let enum_name = &self.name;
         let hole = &self.hole;
-        let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
             quote! {
@@ -1142,7 +1119,6 @@ impl ToTokens for ast::Enum {
         });
         (quote! {
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::IntoWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1153,7 +1129,6 @@ impl ToTokens for ast::Enum {
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::FromWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1166,21 +1141,18 @@ impl ToTokens for ast::Enum {
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
                 #[inline]
                 fn is_none(val: &u32) -> bool { *val == #hole }
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
                 #[inline]
                 fn none() -> Self::Abi { #hole }
             }
 
             #[allow(clippy::all)]
-            #unstable_api_attr
             impl wasm_bindgen::describe::WasmDescribe for #enum_name {
                 fn describe() {
                     use wasm_bindgen::describe::*;
@@ -1231,7 +1203,6 @@ impl ToTokens for ast::ImportStatic {
             inner: quote! {
                 <#ty as WasmDescribe>::describe();
             },
-            unstable_api: false,
             attrs: vec![],
         }
         .to_tokens(into);
@@ -1243,7 +1214,6 @@ impl ToTokens for ast::ImportStatic {
 struct Descriptor<'a, T> {
     ident: &'a Ident,
     inner: T,
-    unstable_api: bool,
     attrs: Vec<syn::Attribute>,
 }
 
@@ -1272,7 +1242,6 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         }
 
         let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
-        let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
         let inner = &self.inner;
         let attrs = &self.attrs;
         (quote! {
@@ -1282,7 +1251,6 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[allow(clippy::all)]
-            #unstable_api_attr
             pub extern "C" fn #name() {
                 use wasm_bindgen::describe::*;
                 // See definition of `link_mem_intrinsics` for what this is doing

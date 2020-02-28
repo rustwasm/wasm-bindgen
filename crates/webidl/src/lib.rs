@@ -28,7 +28,7 @@ use crate::generator::{
     Enum, EnumVariant, Dictionary, DictionaryField, Interface, InterfaceMethod,
     InterfaceAttribute, InterfaceConst, Function, Namespace, InterfaceAttributeKind,
 };
-use anyhow::{bail, Result};
+use anyhow::Result;
 use proc_macro2::{Ident, TokenStream};
 use quote::ToTokens;
 use std::collections::{BTreeMap, BTreeSet};
@@ -171,10 +171,10 @@ pub fn compile(webidl_source: &str, experimental_source: &str) -> Result<BTreeMa
 
 impl<'src> FirstPassRecord<'src> {
     fn append_enum(&self, program: &mut Program, name: Ident, js_name: &str, data: &first_pass::EnumData<'src>) {
-        assert_eq!(js_name, enum_.identifier.0);
-
         let enum_ = data.definition;
-        let unstable_api = data.stability.is_unstable();
+        let unstable = data.stability.is_unstable();
+
+        assert_eq!(js_name, enum_.identifier.0);
 
         let variants = enum_.values.body.list.iter()
             .map(|v| {
@@ -190,7 +190,7 @@ impl<'src> FirstPassRecord<'src> {
             })
             .collect::<Vec<_>>();
 
-        Enum { name, variants }
+        Enum { name, variants, unstable }
             .generate()
             .to_tokens(&mut program.tokens);
     }
@@ -211,7 +211,7 @@ impl<'src> FirstPassRecord<'src> {
 
         assert_eq!(js_name, def.identifier.0);
 
-        let unstable_api = data.stability.is_unstable();
+        let unstable = data.stability.is_unstable();
 
         let mut fields = Vec::new();
 
@@ -219,7 +219,7 @@ impl<'src> FirstPassRecord<'src> {
             return;
         }
 
-        Dictionary { name, js_name, fields }
+        Dictionary { name, js_name, fields, unstable }
             .generate()
             .to_tokens(&mut program.tokens);
     }
@@ -428,7 +428,8 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         for member in data.attributes.iter() {
-            let member_def = member.definition;
+            let unstable = unstable || member.stability.is_unstable();
+            let member = member.definition;
             self.member_attribute(
                 &mut attributes,
                 member.modifier,
@@ -437,7 +438,7 @@ impl<'src> FirstPassRecord<'src> {
                 member.identifier.0.to_string(),
                 &member.attributes,
                 data.definition_attributes,
-                unstable || member.stability.is_unstable(),
+                unstable,
             );
         }
 
@@ -451,7 +452,8 @@ impl<'src> FirstPassRecord<'src> {
             }
 
             for member in &mixin_data.attributes {
-                let member_def = member.definition;
+                let unstable = unstable || member.stability.is_unstable();
+                let member = member.definition;
                 self.member_attribute(
                     &mut attributes,
                     if let Some(s) = member.stringifier {
@@ -464,7 +466,7 @@ impl<'src> FirstPassRecord<'src> {
                     member.identifier.0.to_string(),
                     &member.attributes,
                     data.definition_attributes,
-                    unstable || member.stability.is_unstable(),
+                    unstable,
                 );
             }
 
@@ -473,7 +475,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        Interface { name, js_name, deprecated, has_interface, parents, consts, attributes, methods }
+        Interface { name, js_name, deprecated, has_interface, parents, consts, attributes, methods, unstable }
             .generate()
             .to_tokens(&mut program.tokens);
     }
@@ -509,7 +511,7 @@ impl<'src> FirstPassRecord<'src> {
         // Skip types which can't be converted
         if let Some(ty) = ty {
             let kind = InterfaceAttributeKind::Getter;
-            attributes.push(InterfaceAttribute { is_static, structural, catch, ty, js_name: js_name.clone(), kind });
+            attributes.push(InterfaceAttribute { is_static, structural, catch, ty, js_name: js_name.clone(), kind, unstable });
         }
 
         if !readonly {

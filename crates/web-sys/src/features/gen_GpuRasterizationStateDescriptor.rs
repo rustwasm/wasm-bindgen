@@ -1,0 +1,97 @@
+use super::*;
+use wasm_bindgen::prelude::*;
+#[cfg(web_sys_unstable_apis)]
+#[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+#[wasm_bindgen]
+extern "C" {
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPURasterizationStateDescriptor ) ]
+    #[doc = "The `GpuRasterizationStateDescriptor` dictionary.\n\n*This API requires the following crate features to be activated: `GpuRasterizationStateDescriptor`*"]
+    pub type GpuRasterizationStateDescriptor;
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+impl GpuRasterizationStateDescriptor {
+    #[doc = "Construct a new `GpuRasterizationStateDescriptor`.\n\n*This API requires the following crate features to be activated: `GpuRasterizationStateDescriptor`*"]
+    pub fn new() -> Self {
+        #[allow(unused_mut)]
+        let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
+        ret
+    }
+    #[cfg(feature = "GpuCullMode")]
+    #[doc = "Change the `cullMode` field of this object.\n\n*This API requires the following crate features to be activated: `GpuCullMode`, `GpuRasterizationStateDescriptor`*"]
+    pub fn cull_mode(&mut self, val: GpuCullMode) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("cullMode"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[doc = "Change the `depthBias` field of this object.\n\n*This API requires the following crate features to be activated: `GpuRasterizationStateDescriptor`*"]
+    pub fn depth_bias(&mut self, val: i32) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("depthBias"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[doc = "Change the `depthBiasClamp` field of this object.\n\n*This API requires the following crate features to be activated: `GpuRasterizationStateDescriptor`*"]
+    pub fn depth_bias_clamp(&mut self, val: f32) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("depthBiasClamp"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[doc = "Change the `depthBiasSlopeScale` field of this object.\n\n*This API requires the following crate features to be activated: `GpuRasterizationStateDescriptor`*"]
+    pub fn depth_bias_slope_scale(&mut self, val: f32) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("depthBiasSlopeScale"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(feature = "GpuFrontFace")]
+    #[doc = "Change the `frontFace` field of this object.\n\n*This API requires the following crate features to be activated: `GpuFrontFace`, `GpuRasterizationStateDescriptor`*"]
+    pub fn front_face(&mut self, val: GpuFrontFace) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("frontFace"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+}

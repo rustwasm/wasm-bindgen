@@ -51,6 +51,12 @@ extern "C" {
     #[cfg(feature = "CredentialsContainer")]
     #[doc = "Getter for the `credentials` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/credentials)\n\n*This API requires the following crate features to be activated: `CredentialsContainer`, `Navigator`*"]
     pub fn credentials(this: &Navigator) -> CredentialsContainer;
+    # [ wasm_bindgen ( structural , method , getter , js_name = gpu ) ]
+    #[cfg(feature = "Gpu")]
+    #[doc = "Getter for the `gpu` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/gpu)\n\n*This API requires the following crate features to be activated: `Gpu`, `Navigator`*"]
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn gpu(this: &Navigator) -> Gpu;
     # [ wasm_bindgen ( structural , method , getter , js_name = hardwareConcurrency ) ]
     #[doc = "Getter for the `hardwareConcurrency` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/hardwareConcurrency)\n\n*This API requires the following crate features to be activated: `Navigator`*"]
     pub fn hardware_concurrency(this: &Navigator) -> f64;

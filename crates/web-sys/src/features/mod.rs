@@ -1041,6 +1041,303 @@
 #[cfg(feature = "GetUserMediaRequest")] mod gen_GetUserMediaRequest;
 #[cfg(feature = "GetUserMediaRequest")] pub use gen_GetUserMediaRequest::*;
 
+#[cfg(feature = "Gpu")] mod gen_Gpu;
+#[cfg(feature = "Gpu")] pub use gen_Gpu::*;
+
+#[cfg(feature = "GpuAdapter")] mod gen_GpuAdapter;
+#[cfg(feature = "GpuAdapter")] pub use gen_GpuAdapter::*;
+
+#[cfg(feature = "GpuAddressMode")] mod gen_GpuAddressMode;
+#[cfg(feature = "GpuAddressMode")] pub use gen_GpuAddressMode::*;
+
+#[cfg(feature = "GpuBindGroup")] mod gen_GpuBindGroup;
+#[cfg(feature = "GpuBindGroup")] pub use gen_GpuBindGroup::*;
+
+#[cfg(feature = "GpuBindGroupBinding")] mod gen_GpuBindGroupBinding;
+#[cfg(feature = "GpuBindGroupBinding")] pub use gen_GpuBindGroupBinding::*;
+
+#[cfg(feature = "GpuBindGroupDescriptor")] mod gen_GpuBindGroupDescriptor;
+#[cfg(feature = "GpuBindGroupDescriptor")] pub use gen_GpuBindGroupDescriptor::*;
+
+#[cfg(feature = "GpuBindGroupLayout")] mod gen_GpuBindGroupLayout;
+#[cfg(feature = "GpuBindGroupLayout")] pub use gen_GpuBindGroupLayout::*;
+
+#[cfg(feature = "GpuBindGroupLayoutBinding")] mod gen_GpuBindGroupLayoutBinding;
+#[cfg(feature = "GpuBindGroupLayoutBinding")] pub use gen_GpuBindGroupLayoutBinding::*;
+
+#[cfg(feature = "GpuBindGroupLayoutDescriptor")] mod gen_GpuBindGroupLayoutDescriptor;
+#[cfg(feature = "GpuBindGroupLayoutDescriptor")] pub use gen_GpuBindGroupLayoutDescriptor::*;
+
+#[cfg(feature = "GpuBindingType")] mod gen_GpuBindingType;
+#[cfg(feature = "GpuBindingType")] pub use gen_GpuBindingType::*;
+
+#[cfg(feature = "GpuBlendDescriptor")] mod gen_GpuBlendDescriptor;
+#[cfg(feature = "GpuBlendDescriptor")] pub use gen_GpuBlendDescriptor::*;
+
+#[cfg(feature = "GpuBlendFactor")] mod gen_GpuBlendFactor;
+#[cfg(feature = "GpuBlendFactor")] pub use gen_GpuBlendFactor::*;
+
+#[cfg(feature = "GpuBlendOperation")] mod gen_GpuBlendOperation;
+#[cfg(feature = "GpuBlendOperation")] pub use gen_GpuBlendOperation::*;
+
+#[cfg(feature = "GpuBuffer")] mod gen_GpuBuffer;
+#[cfg(feature = "GpuBuffer")] pub use gen_GpuBuffer::*;
+
+#[cfg(feature = "GpuBufferBinding")] mod gen_GpuBufferBinding;
+#[cfg(feature = "GpuBufferBinding")] pub use gen_GpuBufferBinding::*;
+
+#[cfg(feature = "GpuBufferCopyView")] mod gen_GpuBufferCopyView;
+#[cfg(feature = "GpuBufferCopyView")] pub use gen_GpuBufferCopyView::*;
+
+#[cfg(feature = "GpuBufferDescriptor")] mod gen_GpuBufferDescriptor;
+#[cfg(feature = "GpuBufferDescriptor")] pub use gen_GpuBufferDescriptor::*;
+
+#[cfg(feature = "GpuBufferUsage")] mod gen_GpuBufferUsage;
+#[cfg(feature = "GpuBufferUsage")] pub use gen_GpuBufferUsage::*;
+
+#[cfg(feature = "GpuCanvasContext")] mod gen_GpuCanvasContext;
+#[cfg(feature = "GpuCanvasContext")] pub use gen_GpuCanvasContext::*;
+
+#[cfg(feature = "GpuColorDict")] mod gen_GpuColorDict;
+#[cfg(feature = "GpuColorDict")] pub use gen_GpuColorDict::*;
+
+#[cfg(feature = "GpuColorStateDescriptor")] mod gen_GpuColorStateDescriptor;
+#[cfg(feature = "GpuColorStateDescriptor")] pub use gen_GpuColorStateDescriptor::*;
+
+#[cfg(feature = "GpuColorWrite")] mod gen_GpuColorWrite;
+#[cfg(feature = "GpuColorWrite")] pub use gen_GpuColorWrite::*;
+
+#[cfg(feature = "GpuCommandBuffer")] mod gen_GpuCommandBuffer;
+#[cfg(feature = "GpuCommandBuffer")] pub use gen_GpuCommandBuffer::*;
+
+#[cfg(feature = "GpuCommandBufferDescriptor")] mod gen_GpuCommandBufferDescriptor;
+#[cfg(feature = "GpuCommandBufferDescriptor")] pub use gen_GpuCommandBufferDescriptor::*;
+
+#[cfg(feature = "GpuCommandEncoder")] mod gen_GpuCommandEncoder;
+#[cfg(feature = "GpuCommandEncoder")] pub use gen_GpuCommandEncoder::*;
+
+#[cfg(feature = "GpuCommandEncoderDescriptor")] mod gen_GpuCommandEncoderDescriptor;
+#[cfg(feature = "GpuCommandEncoderDescriptor")] pub use gen_GpuCommandEncoderDescriptor::*;
+
+#[cfg(feature = "GpuCompareFunction")] mod gen_GpuCompareFunction;
+#[cfg(feature = "GpuCompareFunction")] pub use gen_GpuCompareFunction::*;
+
+#[cfg(feature = "GpuComputePassDescriptor")] mod gen_GpuComputePassDescriptor;
+#[cfg(feature = "GpuComputePassDescriptor")] pub use gen_GpuComputePassDescriptor::*;
+
+#[cfg(feature = "GpuComputePassEncoder")] mod gen_GpuComputePassEncoder;
+#[cfg(feature = "GpuComputePassEncoder")] pub use gen_GpuComputePassEncoder::*;
+
+#[cfg(feature = "GpuComputePipeline")] mod gen_GpuComputePipeline;
+#[cfg(feature = "GpuComputePipeline")] pub use gen_GpuComputePipeline::*;
+
+#[cfg(feature = "GpuComputePipelineDescriptor")] mod gen_GpuComputePipelineDescriptor;
+#[cfg(feature = "GpuComputePipelineDescriptor")] pub use gen_GpuComputePipelineDescriptor::*;
+
+#[cfg(feature = "GpuCullMode")] mod gen_GpuCullMode;
+#[cfg(feature = "GpuCullMode")] pub use gen_GpuCullMode::*;
+
+#[cfg(feature = "GpuDepthStencilStateDescriptor")] mod gen_GpuDepthStencilStateDescriptor;
+#[cfg(feature = "GpuDepthStencilStateDescriptor")] pub use gen_GpuDepthStencilStateDescriptor::*;
+
+#[cfg(feature = "GpuDevice")] mod gen_GpuDevice;
+#[cfg(feature = "GpuDevice")] pub use gen_GpuDevice::*;
+
+#[cfg(feature = "GpuDeviceDescriptor")] mod gen_GpuDeviceDescriptor;
+#[cfg(feature = "GpuDeviceDescriptor")] pub use gen_GpuDeviceDescriptor::*;
+
+#[cfg(feature = "GpuDeviceLostInfo")] mod gen_GpuDeviceLostInfo;
+#[cfg(feature = "GpuDeviceLostInfo")] pub use gen_GpuDeviceLostInfo::*;
+
+#[cfg(feature = "GpuErrorFilter")] mod gen_GpuErrorFilter;
+#[cfg(feature = "GpuErrorFilter")] pub use gen_GpuErrorFilter::*;
+
+#[cfg(feature = "GpuExtensionName")] mod gen_GpuExtensionName;
+#[cfg(feature = "GpuExtensionName")] pub use gen_GpuExtensionName::*;
+
+#[cfg(feature = "GpuExtent3dDict")] mod gen_GpuExtent3dDict;
+#[cfg(feature = "GpuExtent3dDict")] pub use gen_GpuExtent3dDict::*;
+
+#[cfg(feature = "GpuFence")] mod gen_GpuFence;
+#[cfg(feature = "GpuFence")] pub use gen_GpuFence::*;
+
+#[cfg(feature = "GpuFenceDescriptor")] mod gen_GpuFenceDescriptor;
+#[cfg(feature = "GpuFenceDescriptor")] pub use gen_GpuFenceDescriptor::*;
+
+#[cfg(feature = "GpuFilterMode")] mod gen_GpuFilterMode;
+#[cfg(feature = "GpuFilterMode")] pub use gen_GpuFilterMode::*;
+
+#[cfg(feature = "GpuFrontFace")] mod gen_GpuFrontFace;
+#[cfg(feature = "GpuFrontFace")] pub use gen_GpuFrontFace::*;
+
+#[cfg(feature = "GpuImageBitmapCopyView")] mod gen_GpuImageBitmapCopyView;
+#[cfg(feature = "GpuImageBitmapCopyView")] pub use gen_GpuImageBitmapCopyView::*;
+
+#[cfg(feature = "GpuIndexFormat")] mod gen_GpuIndexFormat;
+#[cfg(feature = "GpuIndexFormat")] pub use gen_GpuIndexFormat::*;
+
+#[cfg(feature = "GpuInputStepMode")] mod gen_GpuInputStepMode;
+#[cfg(feature = "GpuInputStepMode")] pub use gen_GpuInputStepMode::*;
+
+#[cfg(feature = "GpuLimits")] mod gen_GpuLimits;
+#[cfg(feature = "GpuLimits")] pub use gen_GpuLimits::*;
+
+#[cfg(feature = "GpuLoadOp")] mod gen_GpuLoadOp;
+#[cfg(feature = "GpuLoadOp")] pub use gen_GpuLoadOp::*;
+
+#[cfg(feature = "GpuObjectDescriptorBase")] mod gen_GpuObjectDescriptorBase;
+#[cfg(feature = "GpuObjectDescriptorBase")] pub use gen_GpuObjectDescriptorBase::*;
+
+#[cfg(feature = "GpuOrigin2dDict")] mod gen_GpuOrigin2dDict;
+#[cfg(feature = "GpuOrigin2dDict")] pub use gen_GpuOrigin2dDict::*;
+
+#[cfg(feature = "GpuOrigin3dDict")] mod gen_GpuOrigin3dDict;
+#[cfg(feature = "GpuOrigin3dDict")] pub use gen_GpuOrigin3dDict::*;
+
+#[cfg(feature = "GpuOutOfMemoryError")] mod gen_GpuOutOfMemoryError;
+#[cfg(feature = "GpuOutOfMemoryError")] pub use gen_GpuOutOfMemoryError::*;
+
+#[cfg(feature = "GpuPipelineDescriptorBase")] mod gen_GpuPipelineDescriptorBase;
+#[cfg(feature = "GpuPipelineDescriptorBase")] pub use gen_GpuPipelineDescriptorBase::*;
+
+#[cfg(feature = "GpuPipelineLayout")] mod gen_GpuPipelineLayout;
+#[cfg(feature = "GpuPipelineLayout")] pub use gen_GpuPipelineLayout::*;
+
+#[cfg(feature = "GpuPipelineLayoutDescriptor")] mod gen_GpuPipelineLayoutDescriptor;
+#[cfg(feature = "GpuPipelineLayoutDescriptor")] pub use gen_GpuPipelineLayoutDescriptor::*;
+
+#[cfg(feature = "GpuPowerPreference")] mod gen_GpuPowerPreference;
+#[cfg(feature = "GpuPowerPreference")] pub use gen_GpuPowerPreference::*;
+
+#[cfg(feature = "GpuPrimitiveTopology")] mod gen_GpuPrimitiveTopology;
+#[cfg(feature = "GpuPrimitiveTopology")] pub use gen_GpuPrimitiveTopology::*;
+
+#[cfg(feature = "GpuProgrammableStageDescriptor")] mod gen_GpuProgrammableStageDescriptor;
+#[cfg(feature = "GpuProgrammableStageDescriptor")] pub use gen_GpuProgrammableStageDescriptor::*;
+
+#[cfg(feature = "GpuQueue")] mod gen_GpuQueue;
+#[cfg(feature = "GpuQueue")] pub use gen_GpuQueue::*;
+
+#[cfg(feature = "GpuRasterizationStateDescriptor")] mod gen_GpuRasterizationStateDescriptor;
+#[cfg(feature = "GpuRasterizationStateDescriptor")] pub use gen_GpuRasterizationStateDescriptor::*;
+
+#[cfg(feature = "GpuRenderBundle")] mod gen_GpuRenderBundle;
+#[cfg(feature = "GpuRenderBundle")] pub use gen_GpuRenderBundle::*;
+
+#[cfg(feature = "GpuRenderBundleDescriptor")] mod gen_GpuRenderBundleDescriptor;
+#[cfg(feature = "GpuRenderBundleDescriptor")] pub use gen_GpuRenderBundleDescriptor::*;
+
+#[cfg(feature = "GpuRenderBundleEncoder")] mod gen_GpuRenderBundleEncoder;
+#[cfg(feature = "GpuRenderBundleEncoder")] pub use gen_GpuRenderBundleEncoder::*;
+
+#[cfg(feature = "GpuRenderBundleEncoderDescriptor")] mod gen_GpuRenderBundleEncoderDescriptor;
+#[cfg(feature = "GpuRenderBundleEncoderDescriptor")] pub use gen_GpuRenderBundleEncoderDescriptor::*;
+
+#[cfg(feature = "GpuRenderPassColorAttachmentDescriptor")] mod gen_GpuRenderPassColorAttachmentDescriptor;
+#[cfg(feature = "GpuRenderPassColorAttachmentDescriptor")] pub use gen_GpuRenderPassColorAttachmentDescriptor::*;
+
+#[cfg(feature = "GpuRenderPassDepthStencilAttachmentDescriptor")] mod gen_GpuRenderPassDepthStencilAttachmentDescriptor;
+#[cfg(feature = "GpuRenderPassDepthStencilAttachmentDescriptor")] pub use gen_GpuRenderPassDepthStencilAttachmentDescriptor::*;
+
+#[cfg(feature = "GpuRenderPassDescriptor")] mod gen_GpuRenderPassDescriptor;
+#[cfg(feature = "GpuRenderPassDescriptor")] pub use gen_GpuRenderPassDescriptor::*;
+
+#[cfg(feature = "GpuRenderPassEncoder")] mod gen_GpuRenderPassEncoder;
+#[cfg(feature = "GpuRenderPassEncoder")] pub use gen_GpuRenderPassEncoder::*;
+
+#[cfg(feature = "GpuRenderPipeline")] mod gen_GpuRenderPipeline;
+#[cfg(feature = "GpuRenderPipeline")] pub use gen_GpuRenderPipeline::*;
+
+#[cfg(feature = "GpuRenderPipelineDescriptor")] mod gen_GpuRenderPipelineDescriptor;
+#[cfg(feature = "GpuRenderPipelineDescriptor")] pub use gen_GpuRenderPipelineDescriptor::*;
+
+#[cfg(feature = "GpuRequestAdapterOptions")] mod gen_GpuRequestAdapterOptions;
+#[cfg(feature = "GpuRequestAdapterOptions")] pub use gen_GpuRequestAdapterOptions::*;
+
+#[cfg(feature = "GpuSampler")] mod gen_GpuSampler;
+#[cfg(feature = "GpuSampler")] pub use gen_GpuSampler::*;
+
+#[cfg(feature = "GpuSamplerDescriptor")] mod gen_GpuSamplerDescriptor;
+#[cfg(feature = "GpuSamplerDescriptor")] pub use gen_GpuSamplerDescriptor::*;
+
+#[cfg(feature = "GpuShaderModule")] mod gen_GpuShaderModule;
+#[cfg(feature = "GpuShaderModule")] pub use gen_GpuShaderModule::*;
+
+#[cfg(feature = "GpuShaderModuleDescriptor")] mod gen_GpuShaderModuleDescriptor;
+#[cfg(feature = "GpuShaderModuleDescriptor")] pub use gen_GpuShaderModuleDescriptor::*;
+
+#[cfg(feature = "GpuShaderStage")] mod gen_GpuShaderStage;
+#[cfg(feature = "GpuShaderStage")] pub use gen_GpuShaderStage::*;
+
+#[cfg(feature = "GpuStencilOperation")] mod gen_GpuStencilOperation;
+#[cfg(feature = "GpuStencilOperation")] pub use gen_GpuStencilOperation::*;
+
+#[cfg(feature = "GpuStencilStateFaceDescriptor")] mod gen_GpuStencilStateFaceDescriptor;
+#[cfg(feature = "GpuStencilStateFaceDescriptor")] pub use gen_GpuStencilStateFaceDescriptor::*;
+
+#[cfg(feature = "GpuStoreOp")] mod gen_GpuStoreOp;
+#[cfg(feature = "GpuStoreOp")] pub use gen_GpuStoreOp::*;
+
+#[cfg(feature = "GpuSwapChain")] mod gen_GpuSwapChain;
+#[cfg(feature = "GpuSwapChain")] pub use gen_GpuSwapChain::*;
+
+#[cfg(feature = "GpuSwapChainDescriptor")] mod gen_GpuSwapChainDescriptor;
+#[cfg(feature = "GpuSwapChainDescriptor")] pub use gen_GpuSwapChainDescriptor::*;
+
+#[cfg(feature = "GpuTexture")] mod gen_GpuTexture;
+#[cfg(feature = "GpuTexture")] pub use gen_GpuTexture::*;
+
+#[cfg(feature = "GpuTextureAspect")] mod gen_GpuTextureAspect;
+#[cfg(feature = "GpuTextureAspect")] pub use gen_GpuTextureAspect::*;
+
+#[cfg(feature = "GpuTextureComponentType")] mod gen_GpuTextureComponentType;
+#[cfg(feature = "GpuTextureComponentType")] pub use gen_GpuTextureComponentType::*;
+
+#[cfg(feature = "GpuTextureCopyView")] mod gen_GpuTextureCopyView;
+#[cfg(feature = "GpuTextureCopyView")] pub use gen_GpuTextureCopyView::*;
+
+#[cfg(feature = "GpuTextureDescriptor")] mod gen_GpuTextureDescriptor;
+#[cfg(feature = "GpuTextureDescriptor")] pub use gen_GpuTextureDescriptor::*;
+
+#[cfg(feature = "GpuTextureDimension")] mod gen_GpuTextureDimension;
+#[cfg(feature = "GpuTextureDimension")] pub use gen_GpuTextureDimension::*;
+
+#[cfg(feature = "GpuTextureFormat")] mod gen_GpuTextureFormat;
+#[cfg(feature = "GpuTextureFormat")] pub use gen_GpuTextureFormat::*;
+
+#[cfg(feature = "GpuTextureUsage")] mod gen_GpuTextureUsage;
+#[cfg(feature = "GpuTextureUsage")] pub use gen_GpuTextureUsage::*;
+
+#[cfg(feature = "GpuTextureView")] mod gen_GpuTextureView;
+#[cfg(feature = "GpuTextureView")] pub use gen_GpuTextureView::*;
+
+#[cfg(feature = "GpuTextureViewDescriptor")] mod gen_GpuTextureViewDescriptor;
+#[cfg(feature = "GpuTextureViewDescriptor")] pub use gen_GpuTextureViewDescriptor::*;
+
+#[cfg(feature = "GpuTextureViewDimension")] mod gen_GpuTextureViewDimension;
+#[cfg(feature = "GpuTextureViewDimension")] pub use gen_GpuTextureViewDimension::*;
+
+#[cfg(feature = "GpuUncapturedErrorEvent")] mod gen_GpuUncapturedErrorEvent;
+#[cfg(feature = "GpuUncapturedErrorEvent")] pub use gen_GpuUncapturedErrorEvent::*;
+
+#[cfg(feature = "GpuUncapturedErrorEventInit")] mod gen_GpuUncapturedErrorEventInit;
+#[cfg(feature = "GpuUncapturedErrorEventInit")] pub use gen_GpuUncapturedErrorEventInit::*;
+
+#[cfg(feature = "GpuValidationError")] mod gen_GpuValidationError;
+#[cfg(feature = "GpuValidationError")] pub use gen_GpuValidationError::*;
+
+#[cfg(feature = "GpuVertexAttributeDescriptor")] mod gen_GpuVertexAttributeDescriptor;
+#[cfg(feature = "GpuVertexAttributeDescriptor")] pub use gen_GpuVertexAttributeDescriptor::*;
+
+#[cfg(feature = "GpuVertexBufferLayoutDescriptor")] mod gen_GpuVertexBufferLayoutDescriptor;
+#[cfg(feature = "GpuVertexBufferLayoutDescriptor")] pub use gen_GpuVertexBufferLayoutDescriptor::*;
+
+#[cfg(feature = "GpuVertexFormat")] mod gen_GpuVertexFormat;
+#[cfg(feature = "GpuVertexFormat")] pub use gen_GpuVertexFormat::*;
+
+#[cfg(feature = "GpuVertexStateDescriptor")] mod gen_GpuVertexStateDescriptor;
+#[cfg(feature = "GpuVertexStateDescriptor")] pub use gen_GpuVertexStateDescriptor::*;
+
 #[cfg(feature = "GridDeclaration")] mod gen_GridDeclaration;
 #[cfg(feature = "GridDeclaration")] pub use gen_GridDeclaration::*;
 

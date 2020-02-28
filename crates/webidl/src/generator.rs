@@ -44,6 +44,18 @@ fn comment(mut comment: String, features: &Option<String>) -> String {
 }
 
 
+fn maybe_unstable_attr(unstable: bool) -> Option<proc_macro2::TokenStream> {
+    if unstable {
+        Some(quote! {
+            #[cfg(web_sys_unstable_apis)]
+            #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+        })
+    } else {
+        None
+    }
+}
+
+
 
 pub struct EnumVariant {
     pub name: Ident,
@@ -65,6 +77,7 @@ impl EnumVariant {
 pub struct Enum {
     pub name: Ident,
     pub variants: Vec<EnumVariant>,
+    pub unstable: bool,
 }
 
 impl Enum {
@@ -72,7 +85,10 @@ impl Enum {
         let Enum {
             name,
             variants,
+            unstable,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
 
         let doc_comment = comment(format!("The `{}` enum.", name), &get_features_doc(name.to_string()));
 
@@ -85,6 +101,7 @@ impl Enum {
 
             #[wasm_bindgen]
             #[doc = #doc_comment]
+            #unstable_attr
             #[derive(Copy, Clone, PartialEq, Debug)]
             pub enum #name {
                 #(#variants),*
@@ -106,6 +123,7 @@ pub struct InterfaceAttribute {
     pub structural: bool,
     pub catch: bool,
     pub kind: InterfaceAttributeKind,
+    pub unstable: bool,
 }
 
 impl InterfaceAttribute {
@@ -117,7 +135,10 @@ impl InterfaceAttribute {
             structural,
             catch,
             kind,
+            unstable,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
 
         let static_method_of = raw_ident(&parent_js_name);
 
@@ -203,6 +224,7 @@ impl InterfaceAttribute {
             )]
             #cfg_features
             #[doc = #doc_comment]
+            #unstable_attr
             #def
         }
     }
@@ -228,6 +250,7 @@ pub struct InterfaceMethod {
     pub structural: bool,
     pub catch: bool,
     pub variadic: bool,
+    pub unstable: bool,
 }
 
 impl InterfaceMethod {
@@ -242,7 +265,10 @@ impl InterfaceMethod {
             structural,
             catch,
             variadic,
+            unstable,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
 
         let static_method_of = raw_ident(&parent_js_name);
 
@@ -370,6 +396,7 @@ impl InterfaceMethod {
                 #(#extra_args),*
             )]
             #[doc = #doc_comment]
+            #unstable_attr
             pub fn #name(#this #(#arguments),*) #ret;
         }
     }
@@ -418,6 +445,7 @@ pub struct InterfaceConst {
     pub name: Ident,
     pub ty: syn::Type,
     pub value: InterfaceConstValue,
+    pub unstable: bool,
 }
 
 impl InterfaceConst {
@@ -425,8 +453,12 @@ impl InterfaceConst {
         let name = &self.name;
         let ty = &self.ty;
         let value = self.value.generate();
+        let unstable = self.unstable;
+
+        let unstable_attr = maybe_unstable_attr(unstable);
 
         quote! {
+            #unstable_attr
             pub const #name: #ty = #value as #ty;
         }
     }
@@ -442,6 +474,7 @@ pub struct Interface {
     pub consts: Vec<InterfaceConst>,
     pub attributes: Vec<InterfaceAttribute>,
     pub methods: Vec<InterfaceMethod>,
+    pub unstable: bool,
 }
 
 impl Interface {
@@ -455,7 +488,10 @@ impl Interface {
             consts,
             attributes,
             methods,
+            unstable,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
 
         let doc_comment = comment(
             format!("The `{}` class.\n\n{}", name, mdn_doc(js_name, None)),
@@ -491,6 +527,7 @@ impl Interface {
 
         } else {
             Some(quote! {
+                #unstable_attr
                 impl #name {
                     #(#deprecated #consts)*
                 }
@@ -511,6 +548,7 @@ impl Interface {
             use super::*;
             use wasm_bindgen::prelude::*;
 
+            #unstable_attr
             #[wasm_bindgen]
             extern "C" {
                 #[wasm_bindgen(
@@ -579,6 +617,7 @@ pub struct Dictionary {
     pub name: Ident,
     pub js_name: String,
     pub fields: Vec<DictionaryField>,
+    pub unstable: bool,
 }
 
 impl Dictionary {
@@ -587,7 +626,10 @@ impl Dictionary {
             name,
             js_name,
             fields,
+            unstable,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
 
         let js_name = raw_ident(js_name);
 
@@ -622,6 +664,7 @@ impl Dictionary {
             use super::*;
             use wasm_bindgen::prelude::*;
 
+            #unstable_attr
             #[wasm_bindgen]
             extern "C" {
                 #[wasm_bindgen(extends = ::js_sys::Object, js_name = #js_name)]
@@ -629,6 +672,7 @@ impl Dictionary {
                 pub type #name;
             }
 
+            #unstable_attr
             impl #name {
                 #cfg_features
                 #[doc = #ctor_doc_comment]
@@ -653,6 +697,7 @@ pub struct Function {
     pub ret_ty: Option<Type>,
     pub catch: bool,
     pub variadic: bool,
+    pub unstable: bool,
 }
 
 impl Function {
@@ -664,7 +709,10 @@ impl Function {
             ret_ty,
             catch,
             variadic,
+            unstable,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
 
         let js_namespace = raw_ident(&parent_js_name);
 
@@ -734,6 +782,7 @@ impl Function {
                 js_name = #js_name
             )]
             #[doc = #doc_comment]
+            #unstable_attr
             pub fn #name(#(#arguments),*) #ret;
         }
     }
