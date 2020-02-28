@@ -17,22 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopStateEvent`*"]
     pub fn state(this: &PopStateEvent) -> ::wasm_bindgen::JsValue;
-    #[wasm_bindgen(catch, js_class = "PopStateEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PopStateEvent")]
     #[doc = "The `new PopStateEvent(..)` constructor, creating a new instance of `PopStateEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopStateEvent/PopStateEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopStateEvent`*"]
-    pub fn new(this: &PopStateEvent, type_: &str) -> Result<PopStateEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<PopStateEvent, JsValue>;
     #[cfg(feature = "PopStateEventInit")]
-    #[wasm_bindgen(catch, js_class = "PopStateEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PopStateEvent")]
     #[doc = "The `new PopStateEvent(..)` constructor, creating a new instance of `PopStateEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopStateEvent/PopStateEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopStateEvent`, `PopStateEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &PopStateEvent,
         type_: &str,
         event_init_dict: &PopStateEventInit,
     ) -> Result<PopStateEvent, JsValue>;

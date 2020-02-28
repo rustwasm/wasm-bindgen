@@ -17,22 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEvent`*"]
     pub fn near(this: &UserProximityEvent) -> bool;
-    #[wasm_bindgen(catch, js_class = "UserProximityEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "UserProximityEvent")]
     #[doc = "The `new UserProximityEvent(..)` constructor, creating a new instance of `UserProximityEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/UserProximityEvent/UserProximityEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEvent`*"]
-    pub fn new(this: &UserProximityEvent, type_: &str) -> Result<UserProximityEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<UserProximityEvent, JsValue>;
     #[cfg(feature = "UserProximityEventInit")]
-    #[wasm_bindgen(catch, js_class = "UserProximityEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "UserProximityEvent")]
     #[doc = "The `new UserProximityEvent(..)` constructor, creating a new instance of `UserProximityEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/UserProximityEvent/UserProximityEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEvent`, `UserProximityEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &UserProximityEvent,
         type_: &str,
         event_init_dict: &UserProximityEventInit,
     ) -> Result<UserProximityEvent, JsValue>;

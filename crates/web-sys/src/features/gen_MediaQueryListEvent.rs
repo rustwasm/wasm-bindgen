@@ -24,22 +24,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryListEvent`*"]
     pub fn matches(this: &MediaQueryListEvent) -> bool;
-    #[wasm_bindgen(catch, js_class = "MediaQueryListEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaQueryListEvent")]
     #[doc = "The `new MediaQueryListEvent(..)` constructor, creating a new instance of `MediaQueryListEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryListEvent/MediaQueryListEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryListEvent`*"]
-    pub fn new(this: &MediaQueryListEvent, type_: &str) -> Result<MediaQueryListEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<MediaQueryListEvent, JsValue>;
     #[cfg(feature = "MediaQueryListEventInit")]
-    #[wasm_bindgen(catch, js_class = "MediaQueryListEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaQueryListEvent")]
     #[doc = "The `new MediaQueryListEvent(..)` constructor, creating a new instance of `MediaQueryListEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryListEvent/MediaQueryListEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryListEvent`, `MediaQueryListEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &MediaQueryListEvent,
         type_: &str,
         event_init_dict: &MediaQueryListEventInit,
     ) -> Result<MediaQueryListEvent, JsValue>;

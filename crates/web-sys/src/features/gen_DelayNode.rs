@@ -19,22 +19,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioParam`, `DelayNode`*"]
     pub fn delay_time(this: &DelayNode) -> AudioParam;
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "DelayNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DelayNode")]
     #[doc = "The `new DelayNode(..)` constructor, creating a new instance of `DelayNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DelayNode/DelayNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `DelayNode`*"]
-    pub fn new(this: &DelayNode, context: &BaseAudioContext) -> Result<DelayNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<DelayNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "DelayOptions",))]
-    #[wasm_bindgen(catch, js_class = "DelayNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DelayNode")]
     #[doc = "The `new DelayNode(..)` constructor, creating a new instance of `DelayNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DelayNode/DelayNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `DelayNode`, `DelayOptions`*"]
     pub fn new_with_options(
-        this: &DelayNode,
         context: &BaseAudioContext,
         options: &DelayOptions,
     ) -> Result<DelayNode, JsValue>;

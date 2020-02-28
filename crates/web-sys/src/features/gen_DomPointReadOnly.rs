@@ -38,51 +38,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointReadOnly`*"]
     pub fn w(this: &DomPointReadOnly) -> f64;
-    #[wasm_bindgen(catch, js_class = "DOMPointReadOnly", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPointReadOnly")]
     #[doc = "The `new DomPointReadOnly(..)` constructor, creating a new instance of `DomPointReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPointReadOnly/DOMPointReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointReadOnly`*"]
-    pub fn new(this: &DomPointReadOnly) -> Result<DomPointReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPointReadOnly", constructor)]
+    pub fn new() -> Result<DomPointReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPointReadOnly")]
     #[doc = "The `new DomPointReadOnly(..)` constructor, creating a new instance of `DomPointReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPointReadOnly/DOMPointReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointReadOnly`*"]
-    pub fn new_with_x(this: &DomPointReadOnly, x: f64) -> Result<DomPointReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPointReadOnly", constructor)]
+    pub fn new_with_x(x: f64) -> Result<DomPointReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPointReadOnly")]
     #[doc = "The `new DomPointReadOnly(..)` constructor, creating a new instance of `DomPointReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPointReadOnly/DOMPointReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointReadOnly`*"]
-    pub fn new_with_x_and_y(
-        this: &DomPointReadOnly,
-        x: f64,
-        y: f64,
-    ) -> Result<DomPointReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPointReadOnly", constructor)]
+    pub fn new_with_x_and_y(x: f64, y: f64) -> Result<DomPointReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPointReadOnly")]
     #[doc = "The `new DomPointReadOnly(..)` constructor, creating a new instance of `DomPointReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPointReadOnly/DOMPointReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointReadOnly`*"]
-    pub fn new_with_x_and_y_and_z(
-        this: &DomPointReadOnly,
-        x: f64,
-        y: f64,
-        z: f64,
-    ) -> Result<DomPointReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPointReadOnly", constructor)]
+    pub fn new_with_x_and_y_and_z(x: f64, y: f64, z: f64) -> Result<DomPointReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPointReadOnly")]
     #[doc = "The `new DomPointReadOnly(..)` constructor, creating a new instance of `DomPointReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPointReadOnly/DOMPointReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointReadOnly`*"]
     pub fn new_with_x_and_y_and_z_and_w(
-        this: &DomPointReadOnly,
         x: f64,
         y: f64,
         z: f64,

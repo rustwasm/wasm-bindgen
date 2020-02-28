@@ -96,11 +96,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Touch`*"]
     pub fn force(this: &Touch) -> f32;
     #[cfg(feature = "TouchInit")]
-    #[wasm_bindgen(catch, js_class = "Touch", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Touch")]
     #[doc = "The `new Touch(..)` constructor, creating a new instance of `Touch`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Touch/Touch)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Touch`, `TouchInit`*"]
-    pub fn new(this: &Touch, touch_init_dict: &TouchInit) -> Result<Touch, JsValue>;
+    pub fn new(touch_init_dict: &TouchInit) -> Result<Touch, JsValue>;
 }

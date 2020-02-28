@@ -109,54 +109,45 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn index(this: &HtmlOptionElement) -> i32;
-    #[wasm_bindgen(catch, js_class = "HTMLOptionElement", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLOptionElement")]
     #[doc = "The `new HtmlOptionElement(..)` constructor, creating a new instance of `HtmlOptionElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/HTMLOptionElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn new(this: &HtmlOptionElement) -> Result<HtmlOptionElement, JsValue>;
-    #[wasm_bindgen(catch, js_class = "HTMLOptionElement", constructor)]
+    pub fn new() -> Result<HtmlOptionElement, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLOptionElement")]
     #[doc = "The `new HtmlOptionElement(..)` constructor, creating a new instance of `HtmlOptionElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/HTMLOptionElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn new_with_text(
-        this: &HtmlOptionElement,
-        text: &str,
-    ) -> Result<HtmlOptionElement, JsValue>;
-    #[wasm_bindgen(catch, js_class = "HTMLOptionElement", constructor)]
+    pub fn new_with_text(text: &str) -> Result<HtmlOptionElement, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLOptionElement")]
     #[doc = "The `new HtmlOptionElement(..)` constructor, creating a new instance of `HtmlOptionElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/HTMLOptionElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn new_with_text_and_value(
-        this: &HtmlOptionElement,
-        text: &str,
-        value: &str,
-    ) -> Result<HtmlOptionElement, JsValue>;
-    #[wasm_bindgen(catch, js_class = "HTMLOptionElement", constructor)]
+    pub fn new_with_text_and_value(text: &str, value: &str) -> Result<HtmlOptionElement, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLOptionElement")]
     #[doc = "The `new HtmlOptionElement(..)` constructor, creating a new instance of `HtmlOptionElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/HTMLOptionElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn new_with_text_and_value_and_default_selected(
-        this: &HtmlOptionElement,
         text: &str,
         value: &str,
         default_selected: bool,
     ) -> Result<HtmlOptionElement, JsValue>;
-    #[wasm_bindgen(catch, js_class = "HTMLOptionElement", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLOptionElement")]
     #[doc = "The `new HtmlOptionElement(..)` constructor, creating a new instance of `HtmlOptionElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/HTMLOptionElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn new_with_text_and_value_and_default_selected_and_selected(
-        this: &HtmlOptionElement,
         text: &str,
         value: &str,
         default_selected: bool,

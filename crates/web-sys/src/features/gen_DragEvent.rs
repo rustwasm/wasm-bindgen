@@ -18,22 +18,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `DragEvent`*"]
     pub fn data_transfer(this: &DragEvent) -> Option<DataTransfer>;
-    #[wasm_bindgen(catch, js_class = "DragEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DragEvent")]
     #[doc = "The `new DragEvent(..)` constructor, creating a new instance of `DragEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DragEvent`*"]
-    pub fn new(this: &DragEvent, type_: &str) -> Result<DragEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<DragEvent, JsValue>;
     #[cfg(feature = "DragEventInit")]
-    #[wasm_bindgen(catch, js_class = "DragEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DragEvent")]
     #[doc = "The `new DragEvent(..)` constructor, creating a new instance of `DragEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DragEvent`, `DragEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &DragEvent,
         type_: &str,
         event_init_dict: &DragEventInit,
     ) -> Result<DragEvent, JsValue>;

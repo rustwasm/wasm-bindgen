@@ -38,22 +38,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WheelEvent`*"]
     pub fn delta_mode(this: &WheelEvent) -> u32;
-    #[wasm_bindgen(catch, js_class = "WheelEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "WheelEvent")]
     #[doc = "The `new WheelEvent(..)` constructor, creating a new instance of `WheelEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/WheelEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WheelEvent`*"]
-    pub fn new(this: &WheelEvent, type_: &str) -> Result<WheelEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<WheelEvent, JsValue>;
     #[cfg(feature = "WheelEventInit")]
-    #[wasm_bindgen(catch, js_class = "WheelEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "WheelEvent")]
     #[doc = "The `new WheelEvent(..)` constructor, creating a new instance of `WheelEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/WheelEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WheelEvent`, `WheelEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &WheelEvent,
         type_: &str,
         event_init_dict: &WheelEventInit,
     ) -> Result<WheelEvent, JsValue>;

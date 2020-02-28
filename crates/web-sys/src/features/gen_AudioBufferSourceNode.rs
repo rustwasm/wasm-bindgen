@@ -99,25 +99,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn set_onended(this: &AudioBufferSourceNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "AudioBufferSourceNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioBufferSourceNode")]
     #[doc = "The `new AudioBufferSourceNode(..)` constructor, creating a new instance of `AudioBufferSourceNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/AudioBufferSourceNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`, `BaseAudioContext`*"]
-    pub fn new(
-        this: &AudioBufferSourceNode,
-        context: &BaseAudioContext,
-    ) -> Result<AudioBufferSourceNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<AudioBufferSourceNode, JsValue>;
     #[cfg(all(feature = "AudioBufferSourceOptions", feature = "BaseAudioContext",))]
-    #[wasm_bindgen(catch, js_class = "AudioBufferSourceNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioBufferSourceNode")]
     #[doc = "The `new AudioBufferSourceNode(..)` constructor, creating a new instance of `AudioBufferSourceNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/AudioBufferSourceNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`, `AudioBufferSourceOptions`, `BaseAudioContext`*"]
     pub fn new_with_options(
-        this: &AudioBufferSourceNode,
         context: &BaseAudioContext,
         options: &AudioBufferSourceOptions,
     ) -> Result<AudioBufferSourceNode, JsValue>;

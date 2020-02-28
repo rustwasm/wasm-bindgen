@@ -124,11 +124,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollSetting`, `VttRegion`*"]
     pub fn set_scroll(this: &VttRegion, value: ScrollSetting);
-    #[wasm_bindgen(catch, js_class = "VTTRegion", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "VTTRegion")]
     #[doc = "The `new VttRegion(..)` constructor, creating a new instance of `VttRegion`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/VTTRegion)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn new(this: &VttRegion) -> Result<VttRegion, JsValue>;
+    pub fn new() -> Result<VttRegion, JsValue>;
 }

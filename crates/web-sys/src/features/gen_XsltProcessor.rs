@@ -10,13 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XsltProcessor`*"]
     pub type XsltProcessor;
-    #[wasm_bindgen(catch, js_class = "XSLTProcessor", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "XSLTProcessor")]
     #[doc = "The `new XsltProcessor(..)` constructor, creating a new instance of `XsltProcessor`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/XSLTProcessor)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XsltProcessor`*"]
-    pub fn new(this: &XsltProcessor) -> Result<XsltProcessor, JsValue>;
+    pub fn new() -> Result<XsltProcessor, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "XSLTProcessor" , js_name = clearParameters ) ]
     #[doc = "The `clearParameters()` method."]
     #[doc = ""]

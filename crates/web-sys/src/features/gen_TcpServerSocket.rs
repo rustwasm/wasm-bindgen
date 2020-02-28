@@ -45,34 +45,32 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpServerSocket`*"]
     pub fn set_onerror(this: &TcpServerSocket, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "TCPServerSocket", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TCPServerSocket")]
     #[doc = "The `new TcpServerSocket(..)` constructor, creating a new instance of `TcpServerSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPServerSocket/TCPServerSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpServerSocket`*"]
-    pub fn new(this: &TcpServerSocket, port: u16) -> Result<TcpServerSocket, JsValue>;
+    pub fn new(port: u16) -> Result<TcpServerSocket, JsValue>;
     #[cfg(feature = "ServerSocketOptions")]
-    #[wasm_bindgen(catch, js_class = "TCPServerSocket", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TCPServerSocket")]
     #[doc = "The `new TcpServerSocket(..)` constructor, creating a new instance of `TcpServerSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPServerSocket/TCPServerSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpServerSocket`*"]
     pub fn new_with_options(
-        this: &TcpServerSocket,
         port: u16,
         options: &ServerSocketOptions,
     ) -> Result<TcpServerSocket, JsValue>;
     #[cfg(feature = "ServerSocketOptions")]
-    #[wasm_bindgen(catch, js_class = "TCPServerSocket", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TCPServerSocket")]
     #[doc = "The `new TcpServerSocket(..)` constructor, creating a new instance of `TcpServerSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPServerSocket/TCPServerSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpServerSocket`*"]
     pub fn new_with_options_and_backlog(
-        this: &TcpServerSocket,
         port: u16,
         options: &ServerSocketOptions,
         backlog: u16,

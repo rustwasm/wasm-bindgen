@@ -11,14 +11,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IirFilterNode`*"]
     pub type IirFilterNode;
     #[cfg(all(feature = "BaseAudioContext", feature = "IirFilterOptions",))]
-    #[wasm_bindgen(catch, js_class = "IIRFilterNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "IIRFilterNode")]
     #[doc = "The `new IirFilterNode(..)` constructor, creating a new instance of `IirFilterNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IIRFilterNode/IIRFilterNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `IirFilterNode`, `IirFilterOptions`*"]
     pub fn new(
-        this: &IirFilterNode,
         context: &BaseAudioContext,
         options: &IirFilterOptions,
     ) -> Result<IirFilterNode, JsValue>;

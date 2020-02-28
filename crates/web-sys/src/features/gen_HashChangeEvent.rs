@@ -24,22 +24,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEvent`*"]
     pub fn new_url(this: &HashChangeEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "HashChangeEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "HashChangeEvent")]
     #[doc = "The `new HashChangeEvent(..)` constructor, creating a new instance of `HashChangeEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HashChangeEvent/HashChangeEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEvent`*"]
-    pub fn new(this: &HashChangeEvent, type_: &str) -> Result<HashChangeEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<HashChangeEvent, JsValue>;
     #[cfg(feature = "HashChangeEventInit")]
-    #[wasm_bindgen(catch, js_class = "HashChangeEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "HashChangeEvent")]
     #[doc = "The `new HashChangeEvent(..)` constructor, creating a new instance of `HashChangeEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HashChangeEvent/HashChangeEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEvent`, `HashChangeEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &HashChangeEvent,
         type_: &str,
         event_init_dict: &HashChangeEventInit,
     ) -> Result<HashChangeEvent, JsValue>;

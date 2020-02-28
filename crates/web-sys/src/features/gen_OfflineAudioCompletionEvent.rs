@@ -19,14 +19,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `OfflineAudioCompletionEvent`*"]
     pub fn rendered_buffer(this: &OfflineAudioCompletionEvent) -> AudioBuffer;
     #[cfg(feature = "OfflineAudioCompletionEventInit")]
-    #[wasm_bindgen(catch, js_class = "OfflineAudioCompletionEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "OfflineAudioCompletionEvent")]
     #[doc = "The `new OfflineAudioCompletionEvent(..)` constructor, creating a new instance of `OfflineAudioCompletionEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioCompletionEvent/OfflineAudioCompletionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEvent`, `OfflineAudioCompletionEventInit`*"]
     pub fn new(
-        this: &OfflineAudioCompletionEvent,
         type_: &str,
         event_init_dict: &OfflineAudioCompletionEventInit,
     ) -> Result<OfflineAudioCompletionEvent, JsValue>;

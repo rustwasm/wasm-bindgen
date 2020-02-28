@@ -117,44 +117,39 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `Request`*"]
     pub fn body(this: &Request) -> Option<ReadableStream>;
-    #[wasm_bindgen(catch, js_class = "Request", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Request")]
     #[doc = "The `new Request(..)` constructor, creating a new instance of `Request`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`*"]
-    pub fn new_with_request(this: &Request, input: &Request) -> Result<Request, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Request", constructor)]
+    pub fn new_with_request(input: &Request) -> Result<Request, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Request")]
     #[doc = "The `new Request(..)` constructor, creating a new instance of `Request`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`*"]
-    pub fn new_with_str(this: &Request, input: &str) -> Result<Request, JsValue>;
+    pub fn new_with_str(input: &str) -> Result<Request, JsValue>;
     #[cfg(feature = "RequestInit")]
-    #[wasm_bindgen(catch, js_class = "Request", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Request")]
     #[doc = "The `new Request(..)` constructor, creating a new instance of `Request`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`, `RequestInit`*"]
     pub fn new_with_request_and_init(
-        this: &Request,
         input: &Request,
         init: &RequestInit,
     ) -> Result<Request, JsValue>;
     #[cfg(feature = "RequestInit")]
-    #[wasm_bindgen(catch, js_class = "Request", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Request")]
     #[doc = "The `new Request(..)` constructor, creating a new instance of `Request`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`, `RequestInit`*"]
-    pub fn new_with_str_and_init(
-        this: &Request,
-        input: &str,
-        init: &RequestInit,
-    ) -> Result<Request, JsValue>;
+    pub fn new_with_str_and_init(input: &str, init: &RequestInit) -> Result<Request, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Request" , js_name = clone ) ]
     #[doc = "The `clone()` method."]
     #[doc = ""]

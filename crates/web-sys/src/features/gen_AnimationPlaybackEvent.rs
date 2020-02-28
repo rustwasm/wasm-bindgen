@@ -24,25 +24,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEvent`*"]
     pub fn timeline_time(this: &AnimationPlaybackEvent) -> Option<f64>;
-    #[wasm_bindgen(catch, js_class = "AnimationPlaybackEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AnimationPlaybackEvent")]
     #[doc = "The `new AnimationPlaybackEvent(..)` constructor, creating a new instance of `AnimationPlaybackEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnimationPlaybackEvent/AnimationPlaybackEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEvent`*"]
-    pub fn new(
-        this: &AnimationPlaybackEvent,
-        type_: &str,
-    ) -> Result<AnimationPlaybackEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<AnimationPlaybackEvent, JsValue>;
     #[cfg(feature = "AnimationPlaybackEventInit")]
-    #[wasm_bindgen(catch, js_class = "AnimationPlaybackEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AnimationPlaybackEvent")]
     #[doc = "The `new AnimationPlaybackEvent(..)` constructor, creating a new instance of `AnimationPlaybackEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnimationPlaybackEvent/AnimationPlaybackEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEvent`, `AnimationPlaybackEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &AnimationPlaybackEvent,
         type_: &str,
         event_init_dict: &AnimationPlaybackEventInit,
     ) -> Result<AnimationPlaybackEvent, JsValue>;

@@ -53,11 +53,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrFrameData`, `VrPose`*"]
     pub fn pose(this: &VrFrameData) -> VrPose;
-    #[wasm_bindgen(catch, js_class = "VRFrameData", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "VRFrameData")]
     #[doc = "The `new VrFrameData(..)` constructor, creating a new instance of `VrFrameData`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRFrameData/VRFrameData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrFrameData`*"]
-    pub fn new(this: &VrFrameData) -> Result<VrFrameData, JsValue>;
+    pub fn new() -> Result<VrFrameData, JsValue>;
 }

@@ -31,22 +31,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEvent`*"]
     pub fn pseudo_element(this: &AnimationEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "AnimationEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AnimationEvent")]
     #[doc = "The `new AnimationEvent(..)` constructor, creating a new instance of `AnimationEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnimationEvent/AnimationEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEvent`*"]
-    pub fn new(this: &AnimationEvent, type_: &str) -> Result<AnimationEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<AnimationEvent, JsValue>;
     #[cfg(feature = "AnimationEventInit")]
-    #[wasm_bindgen(catch, js_class = "AnimationEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AnimationEvent")]
     #[doc = "The `new AnimationEvent(..)` constructor, creating a new instance of `AnimationEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnimationEvent/AnimationEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEvent`, `AnimationEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &AnimationEvent,
         type_: &str,
         event_init_dict: &AnimationEventInit,
     ) -> Result<AnimationEvent, JsValue>;

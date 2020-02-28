@@ -19,25 +19,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioDestinationNode`*"]
     pub fn stream(this: &MediaStreamAudioDestinationNode) -> MediaStream;
     #[cfg(feature = "AudioContext")]
-    #[wasm_bindgen(catch, js_class = "MediaStreamAudioDestinationNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaStreamAudioDestinationNode")]
     #[doc = "The `new MediaStreamAudioDestinationNode(..)` constructor, creating a new instance of `MediaStreamAudioDestinationNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode/MediaStreamAudioDestinationNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`, `MediaStreamAudioDestinationNode`*"]
-    pub fn new(
-        this: &MediaStreamAudioDestinationNode,
-        context: &AudioContext,
-    ) -> Result<MediaStreamAudioDestinationNode, JsValue>;
+    pub fn new(context: &AudioContext) -> Result<MediaStreamAudioDestinationNode, JsValue>;
     #[cfg(all(feature = "AudioContext", feature = "AudioNodeOptions",))]
-    #[wasm_bindgen(catch, js_class = "MediaStreamAudioDestinationNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaStreamAudioDestinationNode")]
     #[doc = "The `new MediaStreamAudioDestinationNode(..)` constructor, creating a new instance of `MediaStreamAudioDestinationNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode/MediaStreamAudioDestinationNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`, `AudioNodeOptions`, `MediaStreamAudioDestinationNode`*"]
     pub fn new_with_options(
-        this: &MediaStreamAudioDestinationNode,
         context: &AudioContext,
         options: &AudioNodeOptions,
     ) -> Result<MediaStreamAudioDestinationNode, JsValue>;

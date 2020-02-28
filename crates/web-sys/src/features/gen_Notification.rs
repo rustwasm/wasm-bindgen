@@ -131,22 +131,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     pub fn data(this: &Notification) -> ::wasm_bindgen::JsValue;
-    #[wasm_bindgen(catch, js_class = "Notification", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Notification")]
     #[doc = "The `new Notification(..)` constructor, creating a new instance of `Notification`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn new(this: &Notification, title: &str) -> Result<Notification, JsValue>;
+    pub fn new(title: &str) -> Result<Notification, JsValue>;
     #[cfg(feature = "NotificationOptions")]
-    #[wasm_bindgen(catch, js_class = "Notification", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Notification")]
     #[doc = "The `new Notification(..)` constructor, creating a new instance of `Notification`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`, `NotificationOptions`*"]
     pub fn new_with_options(
-        this: &Notification,
         title: &str,
         options: &NotificationOptions,
     ) -> Result<Notification, JsValue>;

@@ -104,60 +104,51 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
     pub fn set_onwarning(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     #[cfg(feature = "MediaStream")]
-    #[wasm_bindgen(catch, js_class = "MediaRecorder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaRecorder")]
     #[doc = "The `new MediaRecorder(..)` constructor, creating a new instance of `MediaRecorder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`, `MediaStream`*"]
-    pub fn new_with_media_stream(
-        this: &MediaRecorder,
-        stream: &MediaStream,
-    ) -> Result<MediaRecorder, JsValue>;
+    pub fn new_with_media_stream(stream: &MediaStream) -> Result<MediaRecorder, JsValue>;
     #[cfg(all(feature = "MediaRecorderOptions", feature = "MediaStream",))]
-    #[wasm_bindgen(catch, js_class = "MediaRecorder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaRecorder")]
     #[doc = "The `new MediaRecorder(..)` constructor, creating a new instance of `MediaRecorder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`, `MediaRecorderOptions`, `MediaStream`*"]
     pub fn new_with_media_stream_and_media_recorder_options(
-        this: &MediaRecorder,
         stream: &MediaStream,
         options: &MediaRecorderOptions,
     ) -> Result<MediaRecorder, JsValue>;
     #[cfg(feature = "AudioNode")]
-    #[wasm_bindgen(catch, js_class = "MediaRecorder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaRecorder")]
     #[doc = "The `new MediaRecorder(..)` constructor, creating a new instance of `MediaRecorder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`, `MediaRecorder`*"]
-    pub fn new_with_audio_node(
-        this: &MediaRecorder,
-        node: &AudioNode,
-    ) -> Result<MediaRecorder, JsValue>;
+    pub fn new_with_audio_node(node: &AudioNode) -> Result<MediaRecorder, JsValue>;
     #[cfg(feature = "AudioNode")]
-    #[wasm_bindgen(catch, js_class = "MediaRecorder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaRecorder")]
     #[doc = "The `new MediaRecorder(..)` constructor, creating a new instance of `MediaRecorder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`, `MediaRecorder`*"]
     pub fn new_with_audio_node_and_u32(
-        this: &MediaRecorder,
         node: &AudioNode,
         output: u32,
     ) -> Result<MediaRecorder, JsValue>;
     #[cfg(all(feature = "AudioNode", feature = "MediaRecorderOptions",))]
-    #[wasm_bindgen(catch, js_class = "MediaRecorder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaRecorder")]
     #[doc = "The `new MediaRecorder(..)` constructor, creating a new instance of `MediaRecorder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`, `MediaRecorder`, `MediaRecorderOptions`*"]
     pub fn new_with_audio_node_and_u32_and_options(
-        this: &MediaRecorder,
         node: &AudioNode,
         output: u32,
         options: &MediaRecorderOptions,

@@ -10,33 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebKitCssMatrix`*"]
     pub type WebKitCssMatrix;
-    #[wasm_bindgen(catch, js_class = "WebKitCSSMatrix", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "WebKitCSSMatrix")]
     #[doc = "The `new WebKitCssMatrix(..)` constructor, creating a new instance of `WebKitCssMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebKitCSSMatrix/WebKitCSSMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebKitCssMatrix`*"]
-    pub fn new(this: &WebKitCssMatrix) -> Result<WebKitCssMatrix, JsValue>;
-    #[wasm_bindgen(catch, js_class = "WebKitCSSMatrix", constructor)]
+    pub fn new() -> Result<WebKitCssMatrix, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "WebKitCSSMatrix")]
     #[doc = "The `new WebKitCssMatrix(..)` constructor, creating a new instance of `WebKitCssMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebKitCSSMatrix/WebKitCSSMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebKitCssMatrix`*"]
-    pub fn new_with_transform_list(
-        this: &WebKitCssMatrix,
-        transform_list: &str,
-    ) -> Result<WebKitCssMatrix, JsValue>;
-    #[wasm_bindgen(catch, js_class = "WebKitCSSMatrix", constructor)]
+    pub fn new_with_transform_list(transform_list: &str) -> Result<WebKitCssMatrix, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "WebKitCSSMatrix")]
     #[doc = "The `new WebKitCssMatrix(..)` constructor, creating a new instance of `WebKitCssMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebKitCSSMatrix/WebKitCSSMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebKitCssMatrix`*"]
-    pub fn new_with_other(
-        this: &WebKitCssMatrix,
-        other: &WebKitCssMatrix,
-    ) -> Result<WebKitCssMatrix, JsValue>;
+    pub fn new_with_other(other: &WebKitCssMatrix) -> Result<WebKitCssMatrix, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "WebKitCSSMatrix" , js_name = inverse ) ]
     #[doc = "The `inverse()` method."]
     #[doc = ""]

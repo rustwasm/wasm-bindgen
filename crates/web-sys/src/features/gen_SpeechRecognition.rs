@@ -250,13 +250,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
     pub fn set_onend(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "SpeechRecognition", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechRecognition")]
     #[doc = "The `new SpeechRecognition(..)` constructor, creating a new instance of `SpeechRecognition`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/SpeechRecognition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
-    pub fn new(this: &SpeechRecognition) -> Result<SpeechRecognition, JsValue>;
+    pub fn new() -> Result<SpeechRecognition, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "SpeechRecognition" , js_name = abort ) ]
     #[doc = "The `abort()` method."]
     #[doc = ""]

@@ -24,98 +24,86 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn type_(this: &Blob) -> String;
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
-    pub fn new(this: &Blob) -> Result<Blob, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    pub fn new() -> Result<Blob, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn new_with_buffer_source_sequence(
-        this: &Blob,
         blob_parts: &::wasm_bindgen::JsValue,
     ) -> Result<Blob, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn new_with_u8_array_sequence(
-        this: &Blob,
         blob_parts: &::wasm_bindgen::JsValue,
     ) -> Result<Blob, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
-    pub fn new_with_blob_sequence(
-        this: &Blob,
-        blob_parts: &::wasm_bindgen::JsValue,
-    ) -> Result<Blob, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    pub fn new_with_blob_sequence(blob_parts: &::wasm_bindgen::JsValue) -> Result<Blob, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
-    pub fn new_with_str_sequence(
-        this: &Blob,
-        blob_parts: &::wasm_bindgen::JsValue,
-    ) -> Result<Blob, JsValue>;
+    pub fn new_with_str_sequence(blob_parts: &::wasm_bindgen::JsValue) -> Result<Blob, JsValue>;
     #[cfg(feature = "BlobPropertyBag")]
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     pub fn new_with_buffer_source_sequence_and_options(
-        this: &Blob,
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
     ) -> Result<Blob, JsValue>;
     #[cfg(feature = "BlobPropertyBag")]
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     pub fn new_with_u8_array_sequence_and_options(
-        this: &Blob,
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
     ) -> Result<Blob, JsValue>;
     #[cfg(feature = "BlobPropertyBag")]
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     pub fn new_with_blob_sequence_and_options(
-        this: &Blob,
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
     ) -> Result<Blob, JsValue>;
     #[cfg(feature = "BlobPropertyBag")]
-    #[wasm_bindgen(catch, js_class = "Blob", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     pub fn new_with_str_sequence_and_options(
-        this: &Blob,
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
     ) -> Result<Blob, JsValue>;

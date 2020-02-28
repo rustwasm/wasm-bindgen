@@ -10,22 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimeline`*"]
     pub type DocumentTimeline;
-    #[wasm_bindgen(catch, js_class = "DocumentTimeline", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DocumentTimeline")]
     #[doc = "The `new DocumentTimeline(..)` constructor, creating a new instance of `DocumentTimeline`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentTimeline/DocumentTimeline)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimeline`*"]
-    pub fn new(this: &DocumentTimeline) -> Result<DocumentTimeline, JsValue>;
+    pub fn new() -> Result<DocumentTimeline, JsValue>;
     #[cfg(feature = "DocumentTimelineOptions")]
-    #[wasm_bindgen(catch, js_class = "DocumentTimeline", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DocumentTimeline")]
     #[doc = "The `new DocumentTimeline(..)` constructor, creating a new instance of `DocumentTimeline`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentTimeline/DocumentTimeline)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimeline`, `DocumentTimelineOptions`*"]
-    pub fn new_with_options(
-        this: &DocumentTimeline,
-        options: &DocumentTimelineOptions,
-    ) -> Result<DocumentTimeline, JsValue>;
+    pub fn new_with_options(options: &DocumentTimelineOptions)
+        -> Result<DocumentTimeline, JsValue>;
 }

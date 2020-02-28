@@ -32,25 +32,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
     pub fn thresholds(this: &IntersectionObserver) -> ::js_sys::Array;
-    #[wasm_bindgen(catch, js_class = "IntersectionObserver", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "IntersectionObserver")]
     #[doc = "The `new IntersectionObserver(..)` constructor, creating a new instance of `IntersectionObserver`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
-    pub fn new(
-        this: &IntersectionObserver,
-        intersection_callback: &::js_sys::Function,
-    ) -> Result<IntersectionObserver, JsValue>;
+    pub fn new(intersection_callback: &::js_sys::Function)
+        -> Result<IntersectionObserver, JsValue>;
     #[cfg(feature = "IntersectionObserverInit")]
-    #[wasm_bindgen(catch, js_class = "IntersectionObserver", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "IntersectionObserver")]
     #[doc = "The `new IntersectionObserver(..)` constructor, creating a new instance of `IntersectionObserver`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`, `IntersectionObserverInit`*"]
     pub fn new_with_options(
-        this: &IntersectionObserver,
         intersection_callback: &::js_sys::Function,
         options: &IntersectionObserverInit,
     ) -> Result<IntersectionObserver, JsValue>;

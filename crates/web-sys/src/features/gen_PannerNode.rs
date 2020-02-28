@@ -175,22 +175,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PannerNode`*"]
     pub fn set_cone_outer_gain(this: &PannerNode, value: f64);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "PannerNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PannerNode")]
     #[doc = "The `new PannerNode(..)` constructor, creating a new instance of `PannerNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PannerNode/PannerNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PannerNode`*"]
-    pub fn new(this: &PannerNode, context: &BaseAudioContext) -> Result<PannerNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<PannerNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "PannerOptions",))]
-    #[wasm_bindgen(catch, js_class = "PannerNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PannerNode")]
     #[doc = "The `new PannerNode(..)` constructor, creating a new instance of `PannerNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PannerNode/PannerNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PannerNode`, `PannerOptions`*"]
     pub fn new_with_options(
-        this: &PannerNode,
         context: &BaseAudioContext,
         options: &PannerOptions,
     ) -> Result<PannerNode, JsValue>;

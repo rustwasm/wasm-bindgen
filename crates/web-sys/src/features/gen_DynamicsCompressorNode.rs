@@ -58,25 +58,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioParam`, `DynamicsCompressorNode`*"]
     pub fn release(this: &DynamicsCompressorNode) -> AudioParam;
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "DynamicsCompressorNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DynamicsCompressorNode")]
     #[doc = "The `new DynamicsCompressorNode(..)` constructor, creating a new instance of `DynamicsCompressorNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode/DynamicsCompressorNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `DynamicsCompressorNode`*"]
-    pub fn new(
-        this: &DynamicsCompressorNode,
-        context: &BaseAudioContext,
-    ) -> Result<DynamicsCompressorNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<DynamicsCompressorNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "DynamicsCompressorOptions",))]
-    #[wasm_bindgen(catch, js_class = "DynamicsCompressorNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DynamicsCompressorNode")]
     #[doc = "The `new DynamicsCompressorNode(..)` constructor, creating a new instance of `DynamicsCompressorNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode/DynamicsCompressorNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `DynamicsCompressorNode`, `DynamicsCompressorOptions`*"]
     pub fn new_with_options(
-        this: &DynamicsCompressorNode,
         context: &BaseAudioContext,
         options: &DynamicsCompressorOptions,
     ) -> Result<DynamicsCompressorNode, JsValue>;

@@ -87,22 +87,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEvent`*"]
     pub fn code(this: &KeyboardEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "KeyboardEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyboardEvent")]
     #[doc = "The `new KeyboardEvent(..)` constructor, creating a new instance of `KeyboardEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEvent`*"]
-    pub fn new(this: &KeyboardEvent, type_arg: &str) -> Result<KeyboardEvent, JsValue>;
+    pub fn new(type_arg: &str) -> Result<KeyboardEvent, JsValue>;
     #[cfg(feature = "KeyboardEventInit")]
-    #[wasm_bindgen(catch, js_class = "KeyboardEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyboardEvent")]
     #[doc = "The `new KeyboardEvent(..)` constructor, creating a new instance of `KeyboardEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEvent`, `KeyboardEventInit`*"]
     pub fn new_with_keyboard_event_init_dict(
-        this: &KeyboardEvent,
         type_arg: &str,
         keyboard_event_init_dict: &KeyboardEventInit,
     ) -> Result<KeyboardEvent, JsValue>;

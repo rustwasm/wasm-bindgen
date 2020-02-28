@@ -90,13 +90,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn set_onsourceclosed(this: &MediaSource, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "MediaSource", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaSource")]
     #[doc = "The `new MediaSource(..)` constructor, creating a new instance of `MediaSource`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/MediaSource)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
-    pub fn new(this: &MediaSource) -> Result<MediaSource, JsValue>;
+    pub fn new() -> Result<MediaSource, JsValue>;
     #[cfg(feature = "SourceBuffer")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "MediaSource" , js_name = addSourceBuffer ) ]
     #[doc = "The `addSourceBuffer()` method."]

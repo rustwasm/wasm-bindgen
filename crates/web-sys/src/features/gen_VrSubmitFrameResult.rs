@@ -24,11 +24,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrSubmitFrameResult`*"]
     pub fn base64_image(this: &VrSubmitFrameResult) -> Option<String>;
-    #[wasm_bindgen(catch, js_class = "VRSubmitFrameResult", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "VRSubmitFrameResult")]
     #[doc = "The `new VrSubmitFrameResult(..)` constructor, creating a new instance of `VrSubmitFrameResult`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRSubmitFrameResult/VRSubmitFrameResult)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrSubmitFrameResult`*"]
-    pub fn new(this: &VrSubmitFrameResult) -> Result<VrSubmitFrameResult, JsValue>;
+    pub fn new() -> Result<VrSubmitFrameResult, JsValue>;
 }

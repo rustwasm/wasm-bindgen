@@ -17,13 +17,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechGrammarList`*"]
     pub fn length(this: &SpeechGrammarList) -> u32;
-    #[wasm_bindgen(catch, js_class = "SpeechGrammarList", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechGrammarList")]
     #[doc = "The `new SpeechGrammarList(..)` constructor, creating a new instance of `SpeechGrammarList`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechGrammarList/SpeechGrammarList)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechGrammarList`*"]
-    pub fn new(this: &SpeechGrammarList) -> Result<SpeechGrammarList, JsValue>;
+    pub fn new() -> Result<SpeechGrammarList, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "SpeechGrammarList" , js_name = addFromString ) ]
     #[doc = "The `addFromString()` method."]
     #[doc = ""]

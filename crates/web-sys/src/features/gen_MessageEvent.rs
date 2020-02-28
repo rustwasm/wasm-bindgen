@@ -45,22 +45,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub fn ports(this: &MessageEvent) -> ::js_sys::Array;
-    #[wasm_bindgen(catch, js_class = "MessageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MessageEvent")]
     #[doc = "The `new MessageEvent(..)` constructor, creating a new instance of `MessageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/MessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
-    pub fn new(this: &MessageEvent, type_: &str) -> Result<MessageEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<MessageEvent, JsValue>;
     #[cfg(feature = "MessageEventInit")]
-    #[wasm_bindgen(catch, js_class = "MessageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MessageEvent")]
     #[doc = "The `new MessageEvent(..)` constructor, creating a new instance of `MessageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/MessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`, `MessageEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &MessageEvent,
         type_: &str,
         event_init_dict: &MessageEventInit,
     ) -> Result<MessageEvent, JsValue>;

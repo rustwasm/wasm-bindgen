@@ -31,22 +31,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProgressEvent`*"]
     pub fn total(this: &ProgressEvent) -> f64;
-    #[wasm_bindgen(catch, js_class = "ProgressEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ProgressEvent")]
     #[doc = "The `new ProgressEvent(..)` constructor, creating a new instance of `ProgressEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent/ProgressEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProgressEvent`*"]
-    pub fn new(this: &ProgressEvent, type_: &str) -> Result<ProgressEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<ProgressEvent, JsValue>;
     #[cfg(feature = "ProgressEventInit")]
-    #[wasm_bindgen(catch, js_class = "ProgressEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ProgressEvent")]
     #[doc = "The `new ProgressEvent(..)` constructor, creating a new instance of `ProgressEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent/ProgressEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProgressEvent`, `ProgressEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &ProgressEvent,
         type_: &str,
         event_init_dict: &ProgressEventInit,
     ) -> Result<ProgressEvent, JsValue>;

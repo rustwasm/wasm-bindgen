@@ -31,32 +31,30 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`*"]
     pub fn data(this: &ImageData) -> ::wasm_bindgen::Clamped<Vec<u8>>;
-    #[wasm_bindgen(catch, js_class = "ImageData", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ImageData")]
     #[doc = "The `new ImageData(..)` constructor, creating a new instance of `ImageData`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageData/ImageData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`*"]
-    pub fn new_with_sw(this: &ImageData, sw: u32, sh: u32) -> Result<ImageData, JsValue>;
-    #[wasm_bindgen(catch, js_class = "ImageData", constructor)]
+    pub fn new_with_sw(sw: u32, sh: u32) -> Result<ImageData, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "ImageData")]
     #[doc = "The `new ImageData(..)` constructor, creating a new instance of `ImageData`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageData/ImageData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`*"]
     pub fn new_with_u8_clamped_array(
-        this: &ImageData,
         data: ::wasm_bindgen::Clamped<&mut [u8]>,
         sw: u32,
     ) -> Result<ImageData, JsValue>;
-    #[wasm_bindgen(catch, js_class = "ImageData", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ImageData")]
     #[doc = "The `new ImageData(..)` constructor, creating a new instance of `ImageData`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageData/ImageData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`*"]
     pub fn new_with_u8_clamped_array_and_sh(
-        this: &ImageData,
         data: ::wasm_bindgen::Clamped<&mut [u8]>,
         sw: u32,
         sh: u32,

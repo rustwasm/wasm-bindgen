@@ -17,22 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEvent`*"]
     pub fn detail(this: &CustomEvent) -> ::wasm_bindgen::JsValue;
-    #[wasm_bindgen(catch, js_class = "CustomEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "CustomEvent")]
     #[doc = "The `new CustomEvent(..)` constructor, creating a new instance of `CustomEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEvent`*"]
-    pub fn new(this: &CustomEvent, type_: &str) -> Result<CustomEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<CustomEvent, JsValue>;
     #[cfg(feature = "CustomEventInit")]
-    #[wasm_bindgen(catch, js_class = "CustomEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "CustomEvent")]
     #[doc = "The `new CustomEvent(..)` constructor, creating a new instance of `CustomEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEvent`, `CustomEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &CustomEvent,
         type_: &str,
         event_init_dict: &CustomEventInit,
     ) -> Result<CustomEvent, JsValue>;

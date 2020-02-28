@@ -151,94 +151,84 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn loaded(this: &FontFace) -> Result<::js_sys::Promise, JsValue>;
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn new_with_str(this: &FontFace, family: &str, source: &str) -> Result<FontFace, JsValue>;
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    pub fn new_with_str(family: &str, source: &str) -> Result<FontFace, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn new_with_array_buffer(
-        this: &FontFace,
         family: &str,
         source: &::js_sys::ArrayBuffer,
     ) -> Result<FontFace, JsValue>;
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn new_with_array_buffer_view(
-        this: &FontFace,
         family: &str,
         source: &::js_sys::Object,
     ) -> Result<FontFace, JsValue>;
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn new_with_u8_array(
-        this: &FontFace,
-        family: &str,
-        source: &mut [u8],
-    ) -> Result<FontFace, JsValue>;
+    pub fn new_with_u8_array(family: &str, source: &mut [u8]) -> Result<FontFace, JsValue>;
     #[cfg(feature = "FontFaceDescriptors")]
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`, `FontFaceDescriptors`*"]
     pub fn new_with_str_and_descriptors(
-        this: &FontFace,
         family: &str,
         source: &str,
         descriptors: &FontFaceDescriptors,
     ) -> Result<FontFace, JsValue>;
     #[cfg(feature = "FontFaceDescriptors")]
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`, `FontFaceDescriptors`*"]
     pub fn new_with_array_buffer_and_descriptors(
-        this: &FontFace,
         family: &str,
         source: &::js_sys::ArrayBuffer,
         descriptors: &FontFaceDescriptors,
     ) -> Result<FontFace, JsValue>;
     #[cfg(feature = "FontFaceDescriptors")]
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`, `FontFaceDescriptors`*"]
     pub fn new_with_array_buffer_view_and_descriptors(
-        this: &FontFace,
         family: &str,
         source: &::js_sys::Object,
         descriptors: &FontFaceDescriptors,
     ) -> Result<FontFace, JsValue>;
     #[cfg(feature = "FontFaceDescriptors")]
-    #[wasm_bindgen(catch, js_class = "FontFace", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`, `FontFaceDescriptors`*"]
     pub fn new_with_u8_array_and_descriptors(
-        this: &FontFace,
         family: &str,
         source: &mut [u8],
         descriptors: &FontFaceDescriptors,

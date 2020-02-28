@@ -92,24 +92,22 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
     pub fn set_onstatechange(this: &OfflineAudioContext, value: Option<&::js_sys::Function>);
     #[cfg(feature = "OfflineAudioContextOptions")]
-    #[wasm_bindgen(catch, js_class = "OfflineAudioContext", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "OfflineAudioContext")]
     #[doc = "The `new OfflineAudioContext(..)` constructor, creating a new instance of `OfflineAudioContext`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/OfflineAudioContext)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`, `OfflineAudioContextOptions`*"]
     pub fn new_with_context_options(
-        this: &OfflineAudioContext,
         context_options: &OfflineAudioContextOptions,
     ) -> Result<OfflineAudioContext, JsValue>;
-    #[wasm_bindgen(catch, js_class = "OfflineAudioContext", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "OfflineAudioContext")]
     #[doc = "The `new OfflineAudioContext(..)` constructor, creating a new instance of `OfflineAudioContext`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/OfflineAudioContext)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
     pub fn new_with_number_of_channels_and_length_and_sample_rate(
-        this: &OfflineAudioContext,
         number_of_channels: u32,
         length: u32,
         sample_rate: f32,

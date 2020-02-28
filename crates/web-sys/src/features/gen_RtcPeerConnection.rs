@@ -249,33 +249,31 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn set_ondatachannel(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "RTCPeerConnection", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCPeerConnection")]
     #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn new(this: &RtcPeerConnection) -> Result<RtcPeerConnection, JsValue>;
+    pub fn new() -> Result<RtcPeerConnection, JsValue>;
     #[cfg(feature = "RtcConfiguration")]
-    #[wasm_bindgen(catch, js_class = "RTCPeerConnection", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCPeerConnection")]
     #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcPeerConnection`*"]
     pub fn new_with_configuration(
-        this: &RtcPeerConnection,
         configuration: &RtcConfiguration,
     ) -> Result<RtcPeerConnection, JsValue>;
     #[cfg(feature = "RtcConfiguration")]
-    #[wasm_bindgen(catch, js_class = "RTCPeerConnection", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCPeerConnection")]
     #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcPeerConnection`*"]
     pub fn new_with_configuration_and_constraints(
-        this: &RtcPeerConnection,
         configuration: &RtcConfiguration,
         constraints: Option<&::js_sys::Object>,
     ) -> Result<RtcPeerConnection, JsValue>;

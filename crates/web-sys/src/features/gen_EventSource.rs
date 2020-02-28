@@ -73,22 +73,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
     pub fn set_onerror(this: &EventSource, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "EventSource", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "EventSource")]
     #[doc = "The `new EventSource(..)` constructor, creating a new instance of `EventSource`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/EventSource)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
-    pub fn new(this: &EventSource, url: &str) -> Result<EventSource, JsValue>;
+    pub fn new(url: &str) -> Result<EventSource, JsValue>;
     #[cfg(feature = "EventSourceInit")]
-    #[wasm_bindgen(catch, js_class = "EventSource", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "EventSource")]
     #[doc = "The `new EventSource(..)` constructor, creating a new instance of `EventSource`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/EventSource)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`, `EventSourceInit`*"]
     pub fn new_with_event_source_init_dict(
-        this: &EventSource,
         url: &str,
         event_source_init_dict: &EventSourceInit,
     ) -> Result<EventSource, JsValue>;

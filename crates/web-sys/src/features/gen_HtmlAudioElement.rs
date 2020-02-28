@@ -10,18 +10,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAudioElement`*"]
     pub type HtmlAudioElement;
-    #[wasm_bindgen(catch, js_class = "HTMLAudioElement", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLAudioElement")]
     #[doc = "The `new HtmlAudioElement(..)` constructor, creating a new instance of `HtmlAudioElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/HTMLAudioElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAudioElement`*"]
-    pub fn new(this: &HtmlAudioElement) -> Result<HtmlAudioElement, JsValue>;
-    #[wasm_bindgen(catch, js_class = "HTMLAudioElement", constructor)]
+    pub fn new() -> Result<HtmlAudioElement, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLAudioElement")]
     #[doc = "The `new HtmlAudioElement(..)` constructor, creating a new instance of `HtmlAudioElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/HTMLAudioElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAudioElement`*"]
-    pub fn new_with_src(this: &HtmlAudioElement, src: &str) -> Result<HtmlAudioElement, JsValue>;
+    pub fn new_with_src(src: &str) -> Result<HtmlAudioElement, JsValue>;
 }

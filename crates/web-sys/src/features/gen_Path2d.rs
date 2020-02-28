@@ -10,27 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub type Path2d;
-    #[wasm_bindgen(catch, js_class = "Path2D", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Path2D")]
     #[doc = "The `new Path2d(..)` constructor, creating a new instance of `Path2d`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
-    pub fn new(this: &Path2d) -> Result<Path2d, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Path2D", constructor)]
+    pub fn new() -> Result<Path2d, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Path2D")]
     #[doc = "The `new Path2d(..)` constructor, creating a new instance of `Path2d`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
-    pub fn new_with_other(this: &Path2d, other: &Path2d) -> Result<Path2d, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Path2D", constructor)]
+    pub fn new_with_other(other: &Path2d) -> Result<Path2d, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Path2D")]
     #[doc = "The `new Path2d(..)` constructor, creating a new instance of `Path2d`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
-    pub fn new_with_path_string(this: &Path2d, path_string: &str) -> Result<Path2d, JsValue>;
+    pub fn new_with_path_string(path_string: &str) -> Result<Path2d, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = addPath ) ]
     #[doc = "The `addPath()` method."]
     #[doc = ""]

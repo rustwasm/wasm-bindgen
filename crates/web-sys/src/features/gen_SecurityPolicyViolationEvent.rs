@@ -97,25 +97,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEvent`*"]
     pub fn column_number(this: &SecurityPolicyViolationEvent) -> i32;
-    #[wasm_bindgen(catch, js_class = "SecurityPolicyViolationEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SecurityPolicyViolationEvent")]
     #[doc = "The `new SecurityPolicyViolationEvent(..)` constructor, creating a new instance of `SecurityPolicyViolationEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent/SecurityPolicyViolationEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEvent`*"]
-    pub fn new(
-        this: &SecurityPolicyViolationEvent,
-        type_: &str,
-    ) -> Result<SecurityPolicyViolationEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<SecurityPolicyViolationEvent, JsValue>;
     #[cfg(feature = "SecurityPolicyViolationEventInit")]
-    #[wasm_bindgen(catch, js_class = "SecurityPolicyViolationEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SecurityPolicyViolationEvent")]
     #[doc = "The `new SecurityPolicyViolationEvent(..)` constructor, creating a new instance of `SecurityPolicyViolationEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent/SecurityPolicyViolationEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEvent`, `SecurityPolicyViolationEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &SecurityPolicyViolationEvent,
         type_: &str,
         event_init_dict: &SecurityPolicyViolationEventInit,
     ) -> Result<SecurityPolicyViolationEvent, JsValue>;

@@ -57,25 +57,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `OscillatorNode`*"]
     pub fn set_onended(this: &OscillatorNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "OscillatorNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "OscillatorNode")]
     #[doc = "The `new OscillatorNode(..)` constructor, creating a new instance of `OscillatorNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode/OscillatorNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `OscillatorNode`*"]
-    pub fn new(
-        this: &OscillatorNode,
-        context: &BaseAudioContext,
-    ) -> Result<OscillatorNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<OscillatorNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "OscillatorOptions",))]
-    #[wasm_bindgen(catch, js_class = "OscillatorNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "OscillatorNode")]
     #[doc = "The `new OscillatorNode(..)` constructor, creating a new instance of `OscillatorNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode/OscillatorNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `OscillatorNode`, `OscillatorOptions`*"]
     pub fn new_with_options(
-        this: &OscillatorNode,
         context: &BaseAudioContext,
         options: &OscillatorOptions,
     ) -> Result<OscillatorNode, JsValue>;

@@ -17,13 +17,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
     pub fn encoding(this: &TextEncoder) -> String;
-    #[wasm_bindgen(catch, js_class = "TextEncoder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TextEncoder")]
     #[doc = "The `new TextEncoder(..)` constructor, creating a new instance of `TextEncoder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/TextEncoder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
-    pub fn new(this: &TextEncoder) -> Result<TextEncoder, JsValue>;
+    pub fn new() -> Result<TextEncoder, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "TextEncoder" , js_name = encode ) ]
     #[doc = "The `encode()` method."]
     #[doc = ""]

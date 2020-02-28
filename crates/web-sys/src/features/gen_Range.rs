@@ -55,13 +55,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Node`, `Range`*"]
     pub fn common_ancestor_container(this: &Range) -> Result<Node, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Range", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Range")]
     #[doc = "The `new Range(..)` constructor, creating a new instance of `Range`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Range/Range)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Range`*"]
-    pub fn new(this: &Range) -> Result<Range, JsValue>;
+    pub fn new() -> Result<Range, JsValue>;
     #[cfg(feature = "DocumentFragment")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Range" , js_name = cloneContents ) ]
     #[doc = "The `cloneContents()` method."]

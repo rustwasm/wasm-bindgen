@@ -24,22 +24,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadAxisMoveEvent`*"]
     pub fn value(this: &GamepadAxisMoveEvent) -> f64;
-    #[wasm_bindgen(catch, js_class = "GamepadAxisMoveEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "GamepadAxisMoveEvent")]
     #[doc = "The `new GamepadAxisMoveEvent(..)` constructor, creating a new instance of `GamepadAxisMoveEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadAxisMoveEvent/GamepadAxisMoveEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadAxisMoveEvent`*"]
-    pub fn new(this: &GamepadAxisMoveEvent, type_: &str) -> Result<GamepadAxisMoveEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<GamepadAxisMoveEvent, JsValue>;
     #[cfg(feature = "GamepadAxisMoveEventInit")]
-    #[wasm_bindgen(catch, js_class = "GamepadAxisMoveEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "GamepadAxisMoveEvent")]
     #[doc = "The `new GamepadAxisMoveEvent(..)` constructor, creating a new instance of `GamepadAxisMoveEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadAxisMoveEvent/GamepadAxisMoveEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadAxisMoveEvent`, `GamepadAxisMoveEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &GamepadAxisMoveEvent,
         type_: &str,
         event_init_dict: &GamepadAxisMoveEventInit,
     ) -> Result<GamepadAxisMoveEvent, JsValue>;

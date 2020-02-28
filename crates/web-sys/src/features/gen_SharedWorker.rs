@@ -32,33 +32,28 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SharedWorker`*"]
     pub fn set_onerror(this: &SharedWorker, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "SharedWorker", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SharedWorker")]
     #[doc = "The `new SharedWorker(..)` constructor, creating a new instance of `SharedWorker`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker/SharedWorker)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SharedWorker`*"]
-    pub fn new(this: &SharedWorker, script_url: &str) -> Result<SharedWorker, JsValue>;
-    #[wasm_bindgen(catch, js_class = "SharedWorker", constructor)]
+    pub fn new(script_url: &str) -> Result<SharedWorker, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "SharedWorker")]
     #[doc = "The `new SharedWorker(..)` constructor, creating a new instance of `SharedWorker`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker/SharedWorker)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SharedWorker`*"]
-    pub fn new_with_str(
-        this: &SharedWorker,
-        script_url: &str,
-        options: &str,
-    ) -> Result<SharedWorker, JsValue>;
+    pub fn new_with_str(script_url: &str, options: &str) -> Result<SharedWorker, JsValue>;
     #[cfg(feature = "WorkerOptions")]
-    #[wasm_bindgen(catch, js_class = "SharedWorker", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SharedWorker")]
     #[doc = "The `new SharedWorker(..)` constructor, creating a new instance of `SharedWorker`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker/SharedWorker)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SharedWorker`, `WorkerOptions`*"]
     pub fn new_with_worker_options(
-        this: &SharedWorker,
         script_url: &str,
         options: &WorkerOptions,
     ) -> Result<SharedWorker, JsValue>;

@@ -10,11 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChromeWorker`*"]
     pub type ChromeWorker;
-    #[wasm_bindgen(catch, js_class = "ChromeWorker", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ChromeWorker")]
     #[doc = "The `new ChromeWorker(..)` constructor, creating a new instance of `ChromeWorker`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ChromeWorker/ChromeWorker)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChromeWorker`*"]
-    pub fn new(this: &ChromeWorker, script_url: &str) -> Result<ChromeWorker, JsValue>;
+    pub fn new(script_url: &str) -> Result<ChromeWorker, JsValue>;
 }

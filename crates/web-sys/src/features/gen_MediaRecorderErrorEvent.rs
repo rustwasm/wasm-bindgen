@@ -19,14 +19,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEvent`*"]
     pub fn error(this: &MediaRecorderErrorEvent) -> DomException;
     #[cfg(feature = "MediaRecorderErrorEventInit")]
-    #[wasm_bindgen(catch, js_class = "MediaRecorderErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaRecorderErrorEvent")]
     #[doc = "The `new MediaRecorderErrorEvent(..)` constructor, creating a new instance of `MediaRecorderErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorderErrorEvent/MediaRecorderErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEvent`, `MediaRecorderErrorEventInit`*"]
     pub fn new(
-        this: &MediaRecorderErrorEvent,
         type_: &str,
         event_init_dict: &MediaRecorderErrorEventInit,
     ) -> Result<MediaRecorderErrorEvent, JsValue>;

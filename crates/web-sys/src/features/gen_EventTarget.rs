@@ -10,13 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`*"]
     pub type EventTarget;
-    #[wasm_bindgen(catch, js_class = "EventTarget", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "EventTarget")]
     #[doc = "The `new EventTarget(..)` constructor, creating a new instance of `EventTarget`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`*"]
-    pub fn new(this: &EventTarget) -> Result<EventTarget, JsValue>;
+    pub fn new() -> Result<EventTarget, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "EventTarget" , js_name = addEventListener ) ]
     #[doc = "The `addEventListener()` method."]
     #[doc = ""]

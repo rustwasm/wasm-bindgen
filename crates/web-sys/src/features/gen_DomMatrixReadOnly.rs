@@ -178,29 +178,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrixReadOnly`*"]
     pub fn is_identity(this: &DomMatrixReadOnly) -> bool;
-    #[wasm_bindgen(catch, js_class = "DOMMatrixReadOnly", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrixReadOnly")]
     #[doc = "The `new DomMatrixReadOnly(..)` constructor, creating a new instance of `DomMatrixReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly/DOMMatrixReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrixReadOnly`*"]
-    pub fn new(this: &DomMatrixReadOnly) -> Result<DomMatrixReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMMatrixReadOnly", constructor)]
+    pub fn new() -> Result<DomMatrixReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrixReadOnly")]
     #[doc = "The `new DomMatrixReadOnly(..)` constructor, creating a new instance of `DomMatrixReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly/DOMMatrixReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrixReadOnly`*"]
-    pub fn new_with_str(this: &DomMatrixReadOnly, init: &str)
-        -> Result<DomMatrixReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMMatrixReadOnly", constructor)]
+    pub fn new_with_str(init: &str) -> Result<DomMatrixReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrixReadOnly")]
     #[doc = "The `new DomMatrixReadOnly(..)` constructor, creating a new instance of `DomMatrixReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly/DOMMatrixReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrixReadOnly`*"]
     pub fn new_with_f64_sequence(
-        this: &DomMatrixReadOnly,
         init: &::wasm_bindgen::JsValue,
     ) -> Result<DomMatrixReadOnly, JsValue>;
     #[cfg(feature = "DomMatrix")]

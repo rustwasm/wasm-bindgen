@@ -117,29 +117,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BinaryType`, `WebSocket`*"]
     pub fn set_binary_type(this: &WebSocket, value: BinaryType);
-    #[wasm_bindgen(catch, js_class = "WebSocket", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "WebSocket")]
     #[doc = "The `new WebSocket(..)` constructor, creating a new instance of `WebSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn new(this: &WebSocket, url: &str) -> Result<WebSocket, JsValue>;
-    #[wasm_bindgen(catch, js_class = "WebSocket", constructor)]
+    pub fn new(url: &str) -> Result<WebSocket, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "WebSocket")]
     #[doc = "The `new WebSocket(..)` constructor, creating a new instance of `WebSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn new_with_str(this: &WebSocket, url: &str, protocols: &str)
-        -> Result<WebSocket, JsValue>;
-    #[wasm_bindgen(catch, js_class = "WebSocket", constructor)]
+    pub fn new_with_str(url: &str, protocols: &str) -> Result<WebSocket, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "WebSocket")]
     #[doc = "The `new WebSocket(..)` constructor, creating a new instance of `WebSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     pub fn new_with_str_sequence(
-        this: &WebSocket,
         url: &str,
         protocols: &::wasm_bindgen::JsValue,
     ) -> Result<WebSocket, JsValue>;

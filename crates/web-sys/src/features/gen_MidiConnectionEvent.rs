@@ -18,22 +18,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiConnectionEvent`, `MidiPort`*"]
     pub fn port(this: &MidiConnectionEvent) -> Option<MidiPort>;
-    #[wasm_bindgen(catch, js_class = "MIDIConnectionEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MIDIConnectionEvent")]
     #[doc = "The `new MidiConnectionEvent(..)` constructor, creating a new instance of `MidiConnectionEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIConnectionEvent/MIDIConnectionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiConnectionEvent`*"]
-    pub fn new(this: &MidiConnectionEvent, type_: &str) -> Result<MidiConnectionEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<MidiConnectionEvent, JsValue>;
     #[cfg(feature = "MidiConnectionEventInit")]
-    #[wasm_bindgen(catch, js_class = "MIDIConnectionEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MIDIConnectionEvent")]
     #[doc = "The `new MidiConnectionEvent(..)` constructor, creating a new instance of `MidiConnectionEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIConnectionEvent/MIDIConnectionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiConnectionEvent`, `MidiConnectionEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &MidiConnectionEvent,
         type_: &str,
         event_init_dict: &MidiConnectionEventInit,
     ) -> Result<MidiConnectionEvent, JsValue>;

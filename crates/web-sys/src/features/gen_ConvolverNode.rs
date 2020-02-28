@@ -41,22 +41,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConvolverNode`*"]
     pub fn set_normalize(this: &ConvolverNode, value: bool);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "ConvolverNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ConvolverNode")]
     #[doc = "The `new ConvolverNode(..)` constructor, creating a new instance of `ConvolverNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode/ConvolverNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `ConvolverNode`*"]
-    pub fn new(this: &ConvolverNode, context: &BaseAudioContext) -> Result<ConvolverNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<ConvolverNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "ConvolverOptions",))]
-    #[wasm_bindgen(catch, js_class = "ConvolverNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ConvolverNode")]
     #[doc = "The `new ConvolverNode(..)` constructor, creating a new instance of `ConvolverNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode/ConvolverNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `ConvolverNode`, `ConvolverOptions`*"]
     pub fn new_with_options(
-        this: &ConvolverNode,
         context: &BaseAudioContext,
         options: &ConvolverOptions,
     ) -> Result<ConvolverNode, JsValue>;

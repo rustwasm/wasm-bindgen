@@ -10,13 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReportService`*"]
     pub type CheckerboardReportService;
-    #[wasm_bindgen(catch, js_class = "CheckerboardReportService", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "CheckerboardReportService")]
     #[doc = "The `new CheckerboardReportService(..)` constructor, creating a new instance of `CheckerboardReportService`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CheckerboardReportService/CheckerboardReportService)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReportService`*"]
-    pub fn new(this: &CheckerboardReportService) -> Result<CheckerboardReportService, JsValue>;
+    pub fn new() -> Result<CheckerboardReportService, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "CheckerboardReportService" , js_name = flushActiveReports ) ]
     #[doc = "The `flushActiveReports()` method."]
     #[doc = ""]

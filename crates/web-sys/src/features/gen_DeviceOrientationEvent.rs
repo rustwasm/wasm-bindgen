@@ -38,25 +38,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEvent`*"]
     pub fn absolute(this: &DeviceOrientationEvent) -> bool;
-    #[wasm_bindgen(catch, js_class = "DeviceOrientationEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DeviceOrientationEvent")]
     #[doc = "The `new DeviceOrientationEvent(..)` constructor, creating a new instance of `DeviceOrientationEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent/DeviceOrientationEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEvent`*"]
-    pub fn new(
-        this: &DeviceOrientationEvent,
-        type_: &str,
-    ) -> Result<DeviceOrientationEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<DeviceOrientationEvent, JsValue>;
     #[cfg(feature = "DeviceOrientationEventInit")]
-    #[wasm_bindgen(catch, js_class = "DeviceOrientationEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DeviceOrientationEvent")]
     #[doc = "The `new DeviceOrientationEvent(..)` constructor, creating a new instance of `DeviceOrientationEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent/DeviceOrientationEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEvent`, `DeviceOrientationEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &DeviceOrientationEvent,
         type_: &str,
         event_init_dict: &DeviceOrientationEventInit,
     ) -> Result<DeviceOrientationEvent, JsValue>;

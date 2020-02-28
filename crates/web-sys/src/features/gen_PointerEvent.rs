@@ -80,22 +80,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEvent`*"]
     pub fn is_primary(this: &PointerEvent) -> bool;
-    #[wasm_bindgen(catch, js_class = "PointerEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PointerEvent")]
     #[doc = "The `new PointerEvent(..)` constructor, creating a new instance of `PointerEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEvent`*"]
-    pub fn new(this: &PointerEvent, type_: &str) -> Result<PointerEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<PointerEvent, JsValue>;
     #[cfg(feature = "PointerEventInit")]
-    #[wasm_bindgen(catch, js_class = "PointerEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PointerEvent")]
     #[doc = "The `new PointerEvent(..)` constructor, creating a new instance of `PointerEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEvent`, `PointerEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &PointerEvent,
         type_: &str,
         event_init_dict: &PointerEventInit,
     ) -> Result<PointerEvent, JsValue>;

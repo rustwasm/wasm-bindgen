@@ -304,7 +304,6 @@ impl InterfaceMethod {
         let doc_comment = match kind {
             InterfaceMethodKind::Constructor => {
                 is_constructor = true;
-                extra_args.push(quote!( constructor ));
                 format!(
                     "The `new {}(..)` constructor, creating a new \
                      instance of `{0}`.\n\n{}",
@@ -378,31 +377,32 @@ impl InterfaceMethod {
             None
         };
 
-        let structural = if *structural {
-            quote!( structural )
+        let (method, this) = if is_constructor {
+            assert!(!is_static);
 
-        } else {
-            quote!( final )
-        };
+            (
+                quote!( constructor, ),
+                None,
+            )
 
-        let (method, this) = if *is_static {
+        } else if *is_static {
             (
                 quote!( static_method_of = #parent_name, ),
                 None,
             )
 
         } else {
+            let structural = if *structural {
+                quote!( structural )
+
+            } else {
+                quote!( final )
+            };
+
             (
                 quote!( method, #structural, ),
                 Some(quote!( this: &#parent_name, )),
             )
-        };
-
-        let method = if is_constructor {
-            None
-
-        } else {
-            Some(method)
         };
 
         let variadic = if *variadic {

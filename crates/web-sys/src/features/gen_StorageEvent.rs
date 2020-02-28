@@ -46,22 +46,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`, `StorageEvent`*"]
     pub fn storage_area(this: &StorageEvent) -> Option<Storage>;
-    #[wasm_bindgen(catch, js_class = "StorageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "StorageEvent")]
     #[doc = "The `new StorageEvent(..)` constructor, creating a new instance of `StorageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent/StorageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEvent`*"]
-    pub fn new(this: &StorageEvent, type_: &str) -> Result<StorageEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<StorageEvent, JsValue>;
     #[cfg(feature = "StorageEventInit")]
-    #[wasm_bindgen(catch, js_class = "StorageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "StorageEvent")]
     #[doc = "The `new StorageEvent(..)` constructor, creating a new instance of `StorageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent/StorageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEvent`, `StorageEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &StorageEvent,
         type_: &str,
         event_init_dict: &StorageEventInit,
     ) -> Result<StorageEvent, JsValue>;

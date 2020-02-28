@@ -10,16 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserver`*"]
     pub type PerformanceObserver;
-    #[wasm_bindgen(catch, js_class = "PerformanceObserver", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PerformanceObserver")]
     #[doc = "The `new PerformanceObserver(..)` constructor, creating a new instance of `PerformanceObserver`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver/PerformanceObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserver`*"]
-    pub fn new(
-        this: &PerformanceObserver,
-        callback: &::js_sys::Function,
-    ) -> Result<PerformanceObserver, JsValue>;
+    pub fn new(callback: &::js_sys::Function) -> Result<PerformanceObserver, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "PerformanceObserver" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method."]
     #[doc = ""]

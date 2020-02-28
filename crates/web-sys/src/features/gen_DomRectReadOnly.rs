@@ -66,51 +66,45 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectReadOnly`*"]
     pub fn left(this: &DomRectReadOnly) -> f64;
-    #[wasm_bindgen(catch, js_class = "DOMRectReadOnly", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRectReadOnly")]
     #[doc = "The `new DomRectReadOnly(..)` constructor, creating a new instance of `DomRectReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly/DOMRectReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectReadOnly`*"]
-    pub fn new(this: &DomRectReadOnly) -> Result<DomRectReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRectReadOnly", constructor)]
+    pub fn new() -> Result<DomRectReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRectReadOnly")]
     #[doc = "The `new DomRectReadOnly(..)` constructor, creating a new instance of `DomRectReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly/DOMRectReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectReadOnly`*"]
-    pub fn new_with_x(this: &DomRectReadOnly, x: f64) -> Result<DomRectReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRectReadOnly", constructor)]
+    pub fn new_with_x(x: f64) -> Result<DomRectReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRectReadOnly")]
     #[doc = "The `new DomRectReadOnly(..)` constructor, creating a new instance of `DomRectReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly/DOMRectReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectReadOnly`*"]
-    pub fn new_with_x_and_y(
-        this: &DomRectReadOnly,
-        x: f64,
-        y: f64,
-    ) -> Result<DomRectReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRectReadOnly", constructor)]
+    pub fn new_with_x_and_y(x: f64, y: f64) -> Result<DomRectReadOnly, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRectReadOnly")]
     #[doc = "The `new DomRectReadOnly(..)` constructor, creating a new instance of `DomRectReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly/DOMRectReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectReadOnly`*"]
     pub fn new_with_x_and_y_and_width(
-        this: &DomRectReadOnly,
         x: f64,
         y: f64,
         width: f64,
     ) -> Result<DomRectReadOnly, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRectReadOnly", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRectReadOnly")]
     #[doc = "The `new DomRectReadOnly(..)` constructor, creating a new instance of `DomRectReadOnly`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly/DOMRectReadOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectReadOnly`*"]
     pub fn new_with_x_and_y_and_width_and_height(
-        this: &DomRectReadOnly,
         x: f64,
         y: f64,
         width: f64,

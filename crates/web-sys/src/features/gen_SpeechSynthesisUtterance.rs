@@ -194,21 +194,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn set_onboundary(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "SpeechSynthesisUtterance", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechSynthesisUtterance")]
     #[doc = "The `new SpeechSynthesisUtterance(..)` constructor, creating a new instance of `SpeechSynthesisUtterance`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/SpeechSynthesisUtterance)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn new(this: &SpeechSynthesisUtterance) -> Result<SpeechSynthesisUtterance, JsValue>;
-    #[wasm_bindgen(catch, js_class = "SpeechSynthesisUtterance", constructor)]
+    pub fn new() -> Result<SpeechSynthesisUtterance, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechSynthesisUtterance")]
     #[doc = "The `new SpeechSynthesisUtterance(..)` constructor, creating a new instance of `SpeechSynthesisUtterance`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/SpeechSynthesisUtterance)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn new_with_text(
-        this: &SpeechSynthesisUtterance,
-        text: &str,
-    ) -> Result<SpeechSynthesisUtterance, JsValue>;
+    pub fn new_with_text(text: &str) -> Result<SpeechSynthesisUtterance, JsValue>;
 }

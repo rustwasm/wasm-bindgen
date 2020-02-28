@@ -57,91 +57,82 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CompositeOperation`, `KeyframeEffect`*"]
     pub fn set_composite(this: &KeyframeEffect, value: CompositeOperation);
     #[cfg(feature = "Element")]
-    #[wasm_bindgen(catch, js_class = "KeyframeEffect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyframeEffect")]
     #[doc = "The `new KeyframeEffect(..)` constructor, creating a new instance of `KeyframeEffect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/KeyframeEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `KeyframeEffect`*"]
     pub fn new_with_opt_element_and_keyframes(
-        this: &KeyframeEffect,
         target: Option<&Element>,
         keyframes: Option<&::js_sys::Object>,
     ) -> Result<KeyframeEffect, JsValue>;
     #[cfg(feature = "CssPseudoElement")]
-    #[wasm_bindgen(catch, js_class = "KeyframeEffect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyframeEffect")]
     #[doc = "The `new KeyframeEffect(..)` constructor, creating a new instance of `KeyframeEffect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/KeyframeEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssPseudoElement`, `KeyframeEffect`*"]
     pub fn new_with_opt_css_pseudo_element_and_keyframes(
-        this: &KeyframeEffect,
         target: Option<&CssPseudoElement>,
         keyframes: Option<&::js_sys::Object>,
     ) -> Result<KeyframeEffect, JsValue>;
     #[cfg(feature = "Element")]
-    #[wasm_bindgen(catch, js_class = "KeyframeEffect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyframeEffect")]
     #[doc = "The `new KeyframeEffect(..)` constructor, creating a new instance of `KeyframeEffect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/KeyframeEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `KeyframeEffect`*"]
     pub fn new_with_opt_element_and_keyframes_and_f64(
-        this: &KeyframeEffect,
         target: Option<&Element>,
         keyframes: Option<&::js_sys::Object>,
         options: f64,
     ) -> Result<KeyframeEffect, JsValue>;
     #[cfg(feature = "CssPseudoElement")]
-    #[wasm_bindgen(catch, js_class = "KeyframeEffect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyframeEffect")]
     #[doc = "The `new KeyframeEffect(..)` constructor, creating a new instance of `KeyframeEffect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/KeyframeEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssPseudoElement`, `KeyframeEffect`*"]
     pub fn new_with_opt_css_pseudo_element_and_keyframes_and_f64(
-        this: &KeyframeEffect,
         target: Option<&CssPseudoElement>,
         keyframes: Option<&::js_sys::Object>,
         options: f64,
     ) -> Result<KeyframeEffect, JsValue>;
     #[cfg(all(feature = "Element", feature = "KeyframeEffectOptions",))]
-    #[wasm_bindgen(catch, js_class = "KeyframeEffect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyframeEffect")]
     #[doc = "The `new KeyframeEffect(..)` constructor, creating a new instance of `KeyframeEffect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/KeyframeEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `KeyframeEffect`, `KeyframeEffectOptions`*"]
     pub fn new_with_opt_element_and_keyframes_and_keyframe_effect_options(
-        this: &KeyframeEffect,
         target: Option<&Element>,
         keyframes: Option<&::js_sys::Object>,
         options: &KeyframeEffectOptions,
     ) -> Result<KeyframeEffect, JsValue>;
     #[cfg(all(feature = "CssPseudoElement", feature = "KeyframeEffectOptions",))]
-    #[wasm_bindgen(catch, js_class = "KeyframeEffect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyframeEffect")]
     #[doc = "The `new KeyframeEffect(..)` constructor, creating a new instance of `KeyframeEffect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/KeyframeEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssPseudoElement`, `KeyframeEffect`, `KeyframeEffectOptions`*"]
     pub fn new_with_opt_css_pseudo_element_and_keyframes_and_keyframe_effect_options(
-        this: &KeyframeEffect,
         target: Option<&CssPseudoElement>,
         keyframes: Option<&::js_sys::Object>,
         options: &KeyframeEffectOptions,
     ) -> Result<KeyframeEffect, JsValue>;
-    #[wasm_bindgen(catch, js_class = "KeyframeEffect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "KeyframeEffect")]
     #[doc = "The `new KeyframeEffect(..)` constructor, creating a new instance of `KeyframeEffect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/KeyframeEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyframeEffect`*"]
-    pub fn new_with_source(
-        this: &KeyframeEffect,
-        source: &KeyframeEffect,
-    ) -> Result<KeyframeEffect, JsValue>;
+    pub fn new_with_source(source: &KeyframeEffect) -> Result<KeyframeEffect, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "KeyframeEffect" , js_name = getKeyframes ) ]
     #[doc = "The `getKeyframes()` method."]
     #[doc = ""]

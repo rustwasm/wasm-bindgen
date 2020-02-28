@@ -59,25 +59,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioParam`, `BiquadFilterNode`*"]
     pub fn gain(this: &BiquadFilterNode) -> AudioParam;
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "BiquadFilterNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "BiquadFilterNode")]
     #[doc = "The `new BiquadFilterNode(..)` constructor, creating a new instance of `BiquadFilterNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/BiquadFilterNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `BiquadFilterNode`*"]
-    pub fn new(
-        this: &BiquadFilterNode,
-        context: &BaseAudioContext,
-    ) -> Result<BiquadFilterNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<BiquadFilterNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "BiquadFilterOptions",))]
-    #[wasm_bindgen(catch, js_class = "BiquadFilterNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "BiquadFilterNode")]
     #[doc = "The `new BiquadFilterNode(..)` constructor, creating a new instance of `BiquadFilterNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/BiquadFilterNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `BiquadFilterNode`, `BiquadFilterOptions`*"]
     pub fn new_with_options(
-        this: &BiquadFilterNode,
         context: &BaseAudioContext,
         options: &BiquadFilterOptions,
     ) -> Result<BiquadFilterNode, JsValue>;

@@ -62,22 +62,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEvent`*"]
     pub fn shift_key(this: &TouchEvent) -> bool;
-    #[wasm_bindgen(catch, js_class = "TouchEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TouchEvent")]
     #[doc = "The `new TouchEvent(..)` constructor, creating a new instance of `TouchEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEvent`*"]
-    pub fn new(this: &TouchEvent, type_: &str) -> Result<TouchEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<TouchEvent, JsValue>;
     #[cfg(feature = "TouchEventInit")]
-    #[wasm_bindgen(catch, js_class = "TouchEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TouchEvent")]
     #[doc = "The `new TouchEvent(..)` constructor, creating a new instance of `TouchEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEvent`, `TouchEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &TouchEvent,
         type_: &str,
         event_init_dict: &TouchEventInit,
     ) -> Result<TouchEvent, JsValue>;

@@ -33,25 +33,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConstantSourceNode`*"]
     pub fn set_onended(this: &ConstantSourceNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "ConstantSourceNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ConstantSourceNode")]
     #[doc = "The `new ConstantSourceNode(..)` constructor, creating a new instance of `ConstantSourceNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConstantSourceNode/ConstantSourceNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `ConstantSourceNode`*"]
-    pub fn new(
-        this: &ConstantSourceNode,
-        context: &BaseAudioContext,
-    ) -> Result<ConstantSourceNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<ConstantSourceNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "ConstantSourceOptions",))]
-    #[wasm_bindgen(catch, js_class = "ConstantSourceNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ConstantSourceNode")]
     #[doc = "The `new ConstantSourceNode(..)` constructor, creating a new instance of `ConstantSourceNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConstantSourceNode/ConstantSourceNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `ConstantSourceNode`, `ConstantSourceOptions`*"]
     pub fn new_with_options(
-        this: &ConstantSourceNode,
         context: &BaseAudioContext,
         options: &ConstantSourceOptions,
     ) -> Result<ConstantSourceNode, JsValue>;

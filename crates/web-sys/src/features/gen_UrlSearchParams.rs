@@ -10,30 +10,29 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UrlSearchParams`*"]
     pub type UrlSearchParams;
-    #[wasm_bindgen(catch, js_class = "URLSearchParams", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "URLSearchParams")]
     #[doc = "The `new UrlSearchParams(..)` constructor, creating a new instance of `UrlSearchParams`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UrlSearchParams`*"]
-    pub fn new(this: &UrlSearchParams) -> Result<UrlSearchParams, JsValue>;
-    #[wasm_bindgen(catch, js_class = "URLSearchParams", constructor)]
+    pub fn new() -> Result<UrlSearchParams, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "URLSearchParams")]
     #[doc = "The `new UrlSearchParams(..)` constructor, creating a new instance of `UrlSearchParams`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UrlSearchParams`*"]
     pub fn new_with_str_sequence_sequence(
-        this: &UrlSearchParams,
         init: &::wasm_bindgen::JsValue,
     ) -> Result<UrlSearchParams, JsValue>;
-    #[wasm_bindgen(catch, js_class = "URLSearchParams", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "URLSearchParams")]
     #[doc = "The `new UrlSearchParams(..)` constructor, creating a new instance of `UrlSearchParams`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UrlSearchParams`*"]
-    pub fn new_with_str(this: &UrlSearchParams, init: &str) -> Result<UrlSearchParams, JsValue>;
+    pub fn new_with_str(init: &str) -> Result<UrlSearchParams, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "URLSearchParams" , js_name = append ) ]
     #[doc = "The `append()` method."]
     #[doc = ""]

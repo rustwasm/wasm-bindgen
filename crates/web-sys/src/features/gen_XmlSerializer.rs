@@ -10,13 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlSerializer`*"]
     pub type XmlSerializer;
-    #[wasm_bindgen(catch, js_class = "XMLSerializer", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "XMLSerializer")]
     #[doc = "The `new XmlSerializer(..)` constructor, creating a new instance of `XmlSerializer`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLSerializer/XMLSerializer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlSerializer`*"]
-    pub fn new(this: &XmlSerializer) -> Result<XmlSerializer, JsValue>;
+    pub fn new() -> Result<XmlSerializer, JsValue>;
     #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "XMLSerializer" , js_name = serializeToString ) ]
     #[doc = "The `serializeToString()` method."]

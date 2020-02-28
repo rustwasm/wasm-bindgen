@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortController`, `AbortSignal`*"]
     pub fn signal(this: &AbortController) -> AbortSignal;
-    #[wasm_bindgen(catch, js_class = "AbortController", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AbortController")]
     #[doc = "The `new AbortController(..)` constructor, creating a new instance of `AbortController`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/AbortController)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortController`*"]
-    pub fn new(this: &AbortController) -> Result<AbortController, JsValue>;
+    pub fn new() -> Result<AbortController, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "AbortController" , js_name = abort ) ]
     #[doc = "The `abort()` method."]
     #[doc = ""]

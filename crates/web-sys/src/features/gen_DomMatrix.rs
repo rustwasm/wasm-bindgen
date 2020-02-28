@@ -318,55 +318,48 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
     pub fn set_m44(this: &DomMatrix, value: f64);
-    #[wasm_bindgen(catch, js_class = "DOMMatrix", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
-    pub fn new(this: &DomMatrix) -> Result<DomMatrix, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMMatrix", constructor)]
+    pub fn new() -> Result<DomMatrix, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
-    pub fn new_with_transform_list(
-        this: &DomMatrix,
-        transform_list: &str,
-    ) -> Result<DomMatrix, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMMatrix", constructor)]
+    pub fn new_with_transform_list(transform_list: &str) -> Result<DomMatrix, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
-    pub fn new_with_other(
-        this: &DomMatrix,
-        other: &DomMatrixReadOnly,
-    ) -> Result<DomMatrix, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMMatrix", constructor)]
+    pub fn new_with_other(other: &DomMatrixReadOnly) -> Result<DomMatrix, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
-    pub fn new_with_array32(this: &DomMatrix, array32: &mut [f32]) -> Result<DomMatrix, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMMatrix", constructor)]
+    pub fn new_with_array32(array32: &mut [f32]) -> Result<DomMatrix, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
-    pub fn new_with_array64(this: &DomMatrix, array64: &mut [f64]) -> Result<DomMatrix, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMMatrix", constructor)]
+    pub fn new_with_array64(array64: &mut [f64]) -> Result<DomMatrix, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
     pub fn new_with_number_sequence(
-        this: &DomMatrix,
         number_sequence: &::wasm_bindgen::JsValue,
     ) -> Result<DomMatrix, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "DOMMatrix" , js_name = invertSelf ) ]

@@ -24,22 +24,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
     pub fn message(this: &TcpSocketErrorEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "TCPSocketErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TCPSocketErrorEvent")]
     #[doc = "The `new TcpSocketErrorEvent(..)` constructor, creating a new instance of `TcpSocketErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/TCPSocketErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
-    pub fn new(this: &TcpSocketErrorEvent, type_: &str) -> Result<TcpSocketErrorEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<TcpSocketErrorEvent, JsValue>;
     #[cfg(feature = "TcpSocketErrorEventInit")]
-    #[wasm_bindgen(catch, js_class = "TCPSocketErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TCPSocketErrorEvent")]
     #[doc = "The `new TcpSocketErrorEvent(..)` constructor, creating a new instance of `TcpSocketErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/TCPSocketErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEvent`, `TcpSocketErrorEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &TcpSocketErrorEvent,
         type_: &str,
         event_init_dict: &TcpSocketErrorEventInit,
     ) -> Result<TcpSocketErrorEvent, JsValue>;

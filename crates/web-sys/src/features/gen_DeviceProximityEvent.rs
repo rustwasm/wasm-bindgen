@@ -31,22 +31,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEvent`*"]
     pub fn max(this: &DeviceProximityEvent) -> f64;
-    #[wasm_bindgen(catch, js_class = "DeviceProximityEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DeviceProximityEvent")]
     #[doc = "The `new DeviceProximityEvent(..)` constructor, creating a new instance of `DeviceProximityEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DeviceProximityEvent/DeviceProximityEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEvent`*"]
-    pub fn new(this: &DeviceProximityEvent, type_: &str) -> Result<DeviceProximityEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<DeviceProximityEvent, JsValue>;
     #[cfg(feature = "DeviceProximityEventInit")]
-    #[wasm_bindgen(catch, js_class = "DeviceProximityEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DeviceProximityEvent")]
     #[doc = "The `new DeviceProximityEvent(..)` constructor, creating a new instance of `DeviceProximityEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DeviceProximityEvent/DeviceProximityEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEvent`, `DeviceProximityEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &DeviceProximityEvent,
         type_: &str,
         event_init_dict: &DeviceProximityEventInit,
     ) -> Result<DeviceProximityEvent, JsValue>;

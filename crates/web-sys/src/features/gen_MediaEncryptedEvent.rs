@@ -24,22 +24,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncryptedEvent`*"]
     pub fn init_data(this: &MediaEncryptedEvent) -> Result<Option<::js_sys::ArrayBuffer>, JsValue>;
-    #[wasm_bindgen(catch, js_class = "MediaEncryptedEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaEncryptedEvent")]
     #[doc = "The `new MediaEncryptedEvent(..)` constructor, creating a new instance of `MediaEncryptedEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaEncryptedEvent/MediaEncryptedEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncryptedEvent`*"]
-    pub fn new(this: &MediaEncryptedEvent, type_: &str) -> Result<MediaEncryptedEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<MediaEncryptedEvent, JsValue>;
     #[cfg(feature = "MediaKeyNeededEventInit")]
-    #[wasm_bindgen(catch, js_class = "MediaEncryptedEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaEncryptedEvent")]
     #[doc = "The `new MediaEncryptedEvent(..)` constructor, creating a new instance of `MediaEncryptedEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaEncryptedEvent/MediaEncryptedEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncryptedEvent`, `MediaKeyNeededEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &MediaEncryptedEvent,
         type_: &str,
         event_init_dict: &MediaKeyNeededEventInit,
     ) -> Result<MediaEncryptedEvent, JsValue>;

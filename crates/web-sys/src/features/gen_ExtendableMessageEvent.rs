@@ -45,25 +45,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEvent`*"]
     pub fn ports(this: &ExtendableMessageEvent) -> ::js_sys::Array;
-    #[wasm_bindgen(catch, js_class = "ExtendableMessageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ExtendableMessageEvent")]
     #[doc = "The `new ExtendableMessageEvent(..)` constructor, creating a new instance of `ExtendableMessageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableMessageEvent/ExtendableMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEvent`*"]
-    pub fn new(
-        this: &ExtendableMessageEvent,
-        type_: &str,
-    ) -> Result<ExtendableMessageEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<ExtendableMessageEvent, JsValue>;
     #[cfg(feature = "ExtendableMessageEventInit")]
-    #[wasm_bindgen(catch, js_class = "ExtendableMessageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ExtendableMessageEvent")]
     #[doc = "The `new ExtendableMessageEvent(..)` constructor, creating a new instance of `ExtendableMessageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableMessageEvent/ExtendableMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEvent`, `ExtendableMessageEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &ExtendableMessageEvent,
         type_: &str,
         event_init_dict: &ExtendableMessageEventInit,
     ) -> Result<ExtendableMessageEvent, JsValue>;

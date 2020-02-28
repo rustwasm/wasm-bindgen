@@ -38,11 +38,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechGrammar`*"]
     pub fn set_weight(this: &SpeechGrammar, value: f32) -> Result<(), JsValue>;
-    #[wasm_bindgen(catch, js_class = "SpeechGrammar", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechGrammar")]
     #[doc = "The `new SpeechGrammar(..)` constructor, creating a new instance of `SpeechGrammar`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechGrammar/SpeechGrammar)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechGrammar`*"]
-    pub fn new(this: &SpeechGrammar) -> Result<SpeechGrammar, JsValue>;
+    pub fn new() -> Result<SpeechGrammar, JsValue>;
 }

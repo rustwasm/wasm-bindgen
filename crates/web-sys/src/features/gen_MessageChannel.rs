@@ -26,11 +26,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageChannel`, `MessagePort`*"]
     pub fn port2(this: &MessageChannel) -> MessagePort;
-    #[wasm_bindgen(catch, js_class = "MessageChannel", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MessageChannel")]
     #[doc = "The `new MessageChannel(..)` constructor, creating a new instance of `MessageChannel`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/MessageChannel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageChannel`*"]
-    pub fn new(this: &MessageChannel) -> Result<MessageChannel, JsValue>;
+    pub fn new() -> Result<MessageChannel, JsValue>;
 }

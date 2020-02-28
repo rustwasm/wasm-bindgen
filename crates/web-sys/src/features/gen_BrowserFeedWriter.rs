@@ -10,13 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserFeedWriter`*"]
     pub type BrowserFeedWriter;
-    #[wasm_bindgen(catch, js_class = "BrowserFeedWriter", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "BrowserFeedWriter")]
     #[doc = "The `new BrowserFeedWriter(..)` constructor, creating a new instance of `BrowserFeedWriter`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BrowserFeedWriter/BrowserFeedWriter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserFeedWriter`*"]
-    pub fn new(this: &BrowserFeedWriter) -> Result<BrowserFeedWriter, JsValue>;
+    pub fn new() -> Result<BrowserFeedWriter, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "BrowserFeedWriter" , js_name = close ) ]
     #[doc = "The `close()` method."]
     #[doc = ""]

@@ -24,98 +24,90 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     pub fn last_modified(this: &File) -> f64;
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     pub fn new_with_buffer_source_sequence(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
     ) -> Result<File, JsValue>;
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     pub fn new_with_u8_array_sequence(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
     ) -> Result<File, JsValue>;
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     pub fn new_with_blob_sequence(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
     ) -> Result<File, JsValue>;
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     pub fn new_with_str_sequence(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
     ) -> Result<File, JsValue>;
     #[cfg(feature = "FilePropertyBag")]
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     pub fn new_with_buffer_source_sequence_and_options(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
         options: &FilePropertyBag,
     ) -> Result<File, JsValue>;
     #[cfg(feature = "FilePropertyBag")]
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     pub fn new_with_u8_array_sequence_and_options(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
         options: &FilePropertyBag,
     ) -> Result<File, JsValue>;
     #[cfg(feature = "FilePropertyBag")]
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     pub fn new_with_blob_sequence_and_options(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
         options: &FilePropertyBag,
     ) -> Result<File, JsValue>;
     #[cfg(feature = "FilePropertyBag")]
-    #[wasm_bindgen(catch, js_class = "File", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "File")]
     #[doc = "The `new File(..)` constructor, creating a new instance of `File`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/File)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     pub fn new_with_str_sequence_and_options(
-        this: &File,
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
         options: &FilePropertyBag,

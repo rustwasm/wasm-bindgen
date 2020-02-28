@@ -19,22 +19,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioParam`, `GainNode`*"]
     pub fn gain(this: &GainNode) -> AudioParam;
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "GainNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "GainNode")]
     #[doc = "The `new GainNode(..)` constructor, creating a new instance of `GainNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GainNode/GainNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `GainNode`*"]
-    pub fn new(this: &GainNode, context: &BaseAudioContext) -> Result<GainNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<GainNode, JsValue>;
     #[cfg(all(feature = "BaseAudioContext", feature = "GainOptions",))]
-    #[wasm_bindgen(catch, js_class = "GainNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "GainNode")]
     #[doc = "The `new GainNode(..)` constructor, creating a new instance of `GainNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GainNode/GainNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `GainNode`, `GainOptions`*"]
     pub fn new_with_options(
-        this: &GainNode,
         context: &BaseAudioContext,
         options: &GainOptions,
     ) -> Result<GainNode, JsValue>;

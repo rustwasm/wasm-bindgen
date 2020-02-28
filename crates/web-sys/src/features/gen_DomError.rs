@@ -24,22 +24,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomError`*"]
     pub fn message(this: &DomError) -> String;
-    #[wasm_bindgen(catch, js_class = "DOMError", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMError")]
     #[doc = "The `new DomError(..)` constructor, creating a new instance of `DomError`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMError/DOMError)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomError`*"]
-    pub fn new(this: &DomError, name: &str) -> Result<DomError, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMError", constructor)]
+    pub fn new(name: &str) -> Result<DomError, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMError")]
     #[doc = "The `new DomError(..)` constructor, creating a new instance of `DomError`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMError/DOMError)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomError`*"]
-    pub fn new_with_message(
-        this: &DomError,
-        name: &str,
-        message: &str,
-    ) -> Result<DomError, JsValue>;
+    pub fn new_with_message(name: &str, message: &str) -> Result<DomError, JsValue>;
 }

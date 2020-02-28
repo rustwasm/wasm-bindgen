@@ -53,16 +53,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`*"]
     pub fn set_sdp_m_line_index(this: &RtcIceCandidate, value: Option<u16>);
     #[cfg(feature = "RtcIceCandidateInit")]
-    #[wasm_bindgen(catch, js_class = "RTCIceCandidate", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCIceCandidate")]
     #[doc = "The `new RtcIceCandidate(..)` constructor, creating a new instance of `RtcIceCandidate`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/RTCIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcIceCandidateInit`*"]
-    pub fn new(
-        this: &RtcIceCandidate,
-        candidate_init_dict: &RtcIceCandidateInit,
-    ) -> Result<RtcIceCandidate, JsValue>;
+    pub fn new(candidate_init_dict: &RtcIceCandidateInit) -> Result<RtcIceCandidate, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "RTCIceCandidate" , js_name = toJSON ) ]
     #[doc = "The `toJSON()` method."]
     #[doc = ""]

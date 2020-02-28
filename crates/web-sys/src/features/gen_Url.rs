@@ -165,20 +165,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
     pub fn set_hash(this: &Url, value: &str);
-    #[wasm_bindgen(catch, js_class = "URL", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "URL")]
     #[doc = "The `new Url(..)` constructor, creating a new instance of `Url`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn new(this: &Url, url: &str) -> Result<Url, JsValue>;
-    #[wasm_bindgen(catch, js_class = "URL", constructor)]
+    pub fn new(url: &str) -> Result<Url, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "URL")]
     #[doc = "The `new Url(..)` constructor, creating a new instance of `Url`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn new_with_base(this: &Url, url: &str, base: &str) -> Result<Url, JsValue>;
+    pub fn new_with_base(url: &str, base: &str) -> Result<Url, JsValue>;
     #[cfg(feature = "Blob")]
     # [ wasm_bindgen ( catch , static_method_of = Url , js_class = "URL" , js_name = createObjectURL ) ]
     #[doc = "The `createObjectURL()` method."]

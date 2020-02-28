@@ -40,25 +40,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `SpeechRecognitionEvent`*"]
     pub fn emma(this: &SpeechRecognitionEvent) -> Option<Document>;
-    #[wasm_bindgen(catch, js_class = "SpeechRecognitionEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechRecognitionEvent")]
     #[doc = "The `new SpeechRecognitionEvent(..)` constructor, creating a new instance of `SpeechRecognitionEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/SpeechRecognitionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`*"]
-    pub fn new(
-        this: &SpeechRecognitionEvent,
-        type_: &str,
-    ) -> Result<SpeechRecognitionEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<SpeechRecognitionEvent, JsValue>;
     #[cfg(feature = "SpeechRecognitionEventInit")]
-    #[wasm_bindgen(catch, js_class = "SpeechRecognitionEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechRecognitionEvent")]
     #[doc = "The `new SpeechRecognitionEvent(..)` constructor, creating a new instance of `SpeechRecognitionEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/SpeechRecognitionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`, `SpeechRecognitionEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &SpeechRecognitionEvent,
         type_: &str,
         event_init_dict: &SpeechRecognitionEventInit,
     ) -> Result<SpeechRecognitionEvent, JsValue>;

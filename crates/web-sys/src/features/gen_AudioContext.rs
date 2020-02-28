@@ -70,22 +70,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
     pub fn set_onstatechange(this: &AudioContext, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "AudioContext", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioContext")]
     #[doc = "The `new AudioContext(..)` constructor, creating a new instance of `AudioContext`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/AudioContext)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
-    pub fn new(this: &AudioContext) -> Result<AudioContext, JsValue>;
+    pub fn new() -> Result<AudioContext, JsValue>;
     #[cfg(feature = "AudioContextOptions")]
-    #[wasm_bindgen(catch, js_class = "AudioContext", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioContext")]
     #[doc = "The `new AudioContext(..)` constructor, creating a new instance of `AudioContext`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/AudioContext)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`, `AudioContextOptions`*"]
     pub fn new_with_context_options(
-        this: &AudioContext,
         context_options: &AudioContextOptions,
     ) -> Result<AudioContext, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "AudioContext" , js_name = close ) ]

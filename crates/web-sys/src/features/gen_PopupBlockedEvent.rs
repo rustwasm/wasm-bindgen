@@ -32,22 +32,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`*"]
     pub fn popup_window_features(this: &PopupBlockedEvent) -> Option<String>;
-    #[wasm_bindgen(catch, js_class = "PopupBlockedEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PopupBlockedEvent")]
     #[doc = "The `new PopupBlockedEvent(..)` constructor, creating a new instance of `PopupBlockedEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/PopupBlockedEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`*"]
-    pub fn new(this: &PopupBlockedEvent, type_: &str) -> Result<PopupBlockedEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<PopupBlockedEvent, JsValue>;
     #[cfg(feature = "PopupBlockedEventInit")]
-    #[wasm_bindgen(catch, js_class = "PopupBlockedEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PopupBlockedEvent")]
     #[doc = "The `new PopupBlockedEvent(..)` constructor, creating a new instance of `PopupBlockedEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/PopupBlockedEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`, `PopupBlockedEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &PopupBlockedEvent,
         type_: &str,
         event_init_dict: &PopupBlockedEventInit,
     ) -> Result<PopupBlockedEvent, JsValue>;

@@ -47,13 +47,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ImageCapture`*"]
     pub fn set_onerror(this: &ImageCapture, value: Option<&::js_sys::Function>);
     #[cfg(feature = "VideoStreamTrack")]
-    #[wasm_bindgen(catch, js_class = "ImageCapture", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ImageCapture")]
     #[doc = "The `new ImageCapture(..)` constructor, creating a new instance of `ImageCapture`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/ImageCapture)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageCapture`, `VideoStreamTrack`*"]
-    pub fn new(this: &ImageCapture, track: &VideoStreamTrack) -> Result<ImageCapture, JsValue>;
+    pub fn new(track: &VideoStreamTrack) -> Result<ImageCapture, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "ImageCapture" , js_name = takePhoto ) ]
     #[doc = "The `takePhoto()` method."]
     #[doc = ""]

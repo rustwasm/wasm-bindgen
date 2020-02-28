@@ -17,22 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiMessageEvent`*"]
     pub fn data(this: &MidiMessageEvent) -> Result<Vec<u8>, JsValue>;
-    #[wasm_bindgen(catch, js_class = "MIDIMessageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MIDIMessageEvent")]
     #[doc = "The `new MidiMessageEvent(..)` constructor, creating a new instance of `MidiMessageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIMessageEvent/MIDIMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiMessageEvent`*"]
-    pub fn new(this: &MidiMessageEvent, type_: &str) -> Result<MidiMessageEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<MidiMessageEvent, JsValue>;
     #[cfg(feature = "MidiMessageEventInit")]
-    #[wasm_bindgen(catch, js_class = "MIDIMessageEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MIDIMessageEvent")]
     #[doc = "The `new MidiMessageEvent(..)` constructor, creating a new instance of `MidiMessageEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIMessageEvent/MIDIMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiMessageEvent`, `MidiMessageEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &MidiMessageEvent,
         type_: &str,
         event_init_dict: &MidiMessageEventInit,
     ) -> Result<MidiMessageEvent, JsValue>;

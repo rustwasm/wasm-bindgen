@@ -19,14 +19,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorCode`, `SpeechSynthesisErrorEvent`*"]
     pub fn error(this: &SpeechSynthesisErrorEvent) -> SpeechSynthesisErrorCode;
     #[cfg(feature = "SpeechSynthesisErrorEventInit")]
-    #[wasm_bindgen(catch, js_class = "SpeechSynthesisErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechSynthesisErrorEvent")]
     #[doc = "The `new SpeechSynthesisErrorEvent(..)` constructor, creating a new instance of `SpeechSynthesisErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisErrorEvent/SpeechSynthesisErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEvent`, `SpeechSynthesisErrorEventInit`*"]
     pub fn new(
-        this: &SpeechSynthesisErrorEvent,
         type_: &str,
         event_init_dict: &SpeechSynthesisErrorEventInit,
     ) -> Result<SpeechSynthesisErrorEvent, JsValue>;

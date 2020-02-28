@@ -39,13 +39,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
     pub fn number_of_channels(this: &AudioBuffer) -> u32;
     #[cfg(feature = "AudioBufferOptions")]
-    #[wasm_bindgen(catch, js_class = "AudioBuffer", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioBuffer")]
     #[doc = "The `new AudioBuffer(..)` constructor, creating a new instance of `AudioBuffer`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer/AudioBuffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `AudioBufferOptions`*"]
-    pub fn new(this: &AudioBuffer, options: &AudioBufferOptions) -> Result<AudioBuffer, JsValue>;
+    pub fn new(options: &AudioBufferOptions) -> Result<AudioBuffer, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "AudioBuffer" , js_name = copyFromChannel ) ]
     #[doc = "The `copyFromChannel()` method."]
     #[doc = ""]

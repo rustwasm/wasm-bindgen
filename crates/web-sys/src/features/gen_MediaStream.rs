@@ -59,33 +59,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
     pub fn current_time(this: &MediaStream) -> f64;
-    #[wasm_bindgen(catch, js_class = "MediaStream", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaStream")]
     #[doc = "The `new MediaStream(..)` constructor, creating a new instance of `MediaStream`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/MediaStream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
-    pub fn new(this: &MediaStream) -> Result<MediaStream, JsValue>;
-    #[wasm_bindgen(catch, js_class = "MediaStream", constructor)]
+    pub fn new() -> Result<MediaStream, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "MediaStream")]
     #[doc = "The `new MediaStream(..)` constructor, creating a new instance of `MediaStream`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/MediaStream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
-    pub fn new_with_stream(
-        this: &MediaStream,
-        stream: &MediaStream,
-    ) -> Result<MediaStream, JsValue>;
-    #[wasm_bindgen(catch, js_class = "MediaStream", constructor)]
+    pub fn new_with_stream(stream: &MediaStream) -> Result<MediaStream, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "MediaStream")]
     #[doc = "The `new MediaStream(..)` constructor, creating a new instance of `MediaStream`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/MediaStream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
-    pub fn new_with_tracks(
-        this: &MediaStream,
-        tracks: &::wasm_bindgen::JsValue,
-    ) -> Result<MediaStream, JsValue>;
+    pub fn new_with_tracks(tracks: &::wasm_bindgen::JsValue) -> Result<MediaStream, JsValue>;
     #[cfg(feature = "MediaStreamTrack")]
     # [ wasm_bindgen ( method , structural , js_class = "MediaStream" , js_name = addTrack ) ]
     #[doc = "The `addTrack()` method."]

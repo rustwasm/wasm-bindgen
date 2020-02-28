@@ -41,13 +41,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn child_element_count(this: &DocumentFragment) -> u32;
-    #[wasm_bindgen(catch, js_class = "DocumentFragment", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DocumentFragment")]
     #[doc = "The `new DocumentFragment(..)` constructor, creating a new instance of `DocumentFragment`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/DocumentFragment)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
-    pub fn new(this: &DocumentFragment) -> Result<DocumentFragment, JsValue>;
+    pub fn new() -> Result<DocumentFragment, JsValue>;
     #[cfg(feature = "Element")]
     # [ wasm_bindgen ( method , structural , js_class = "DocumentFragment" , js_name = getElementById ) ]
     #[doc = "The `getElementById()` method."]

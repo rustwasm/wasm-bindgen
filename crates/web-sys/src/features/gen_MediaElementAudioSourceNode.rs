@@ -11,14 +11,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaElementAudioSourceNode`*"]
     pub type MediaElementAudioSourceNode;
     #[cfg(all(feature = "AudioContext", feature = "MediaElementAudioSourceOptions",))]
-    #[wasm_bindgen(catch, js_class = "MediaElementAudioSourceNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MediaElementAudioSourceNode")]
     #[doc = "The `new MediaElementAudioSourceNode(..)` constructor, creating a new instance of `MediaElementAudioSourceNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaElementAudioSourceNode/MediaElementAudioSourceNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`, `MediaElementAudioSourceNode`, `MediaElementAudioSourceOptions`*"]
     pub fn new(
-        this: &MediaElementAudioSourceNode,
         context: &AudioContext,
         options: &MediaElementAudioSourceOptions,
     ) -> Result<MediaElementAudioSourceNode, JsValue>;

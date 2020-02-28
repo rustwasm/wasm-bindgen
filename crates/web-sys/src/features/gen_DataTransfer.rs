@@ -61,13 +61,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `FileList`*"]
     pub fn files(this: &DataTransfer) -> Option<FileList>;
-    #[wasm_bindgen(catch, js_class = "DataTransfer", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DataTransfer")]
     #[doc = "The `new DataTransfer(..)` constructor, creating a new instance of `DataTransfer`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/DataTransfer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`*"]
-    pub fn new(this: &DataTransfer) -> Result<DataTransfer, JsValue>;
+    pub fn new() -> Result<DataTransfer, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DataTransfer" , js_name = clearData ) ]
     #[doc = "The `clearData()` method."]
     #[doc = ""]

@@ -10,13 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReaderSync`*"]
     pub type FileReaderSync;
-    #[wasm_bindgen(catch, js_class = "FileReaderSync", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FileReaderSync")]
     #[doc = "The `new FileReaderSync(..)` constructor, creating a new instance of `FileReaderSync`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReaderSync/FileReaderSync)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReaderSync`*"]
-    pub fn new(this: &FileReaderSync) -> Result<FileReaderSync, JsValue>;
+    pub fn new() -> Result<FileReaderSync, JsValue>;
     #[cfg(feature = "Blob")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "FileReaderSync" , js_name = readAsArrayBuffer ) ]
     #[doc = "The `readAsArrayBuffer()` method."]

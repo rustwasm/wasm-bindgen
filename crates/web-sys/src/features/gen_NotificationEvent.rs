@@ -19,14 +19,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Notification`, `NotificationEvent`*"]
     pub fn notification(this: &NotificationEvent) -> Notification;
     #[cfg(feature = "NotificationEventInit")]
-    #[wasm_bindgen(catch, js_class = "NotificationEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "NotificationEvent")]
     #[doc = "The `new NotificationEvent(..)` constructor, creating a new instance of `NotificationEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NotificationEvent/NotificationEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationEvent`, `NotificationEventInit`*"]
     pub fn new(
-        this: &NotificationEvent,
         type_: &str,
         event_init_dict: &NotificationEventInit,
     ) -> Result<NotificationEvent, JsValue>;

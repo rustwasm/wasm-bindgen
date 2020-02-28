@@ -25,25 +25,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionError`*"]
     pub fn message(this: &SpeechRecognitionError) -> Option<String>;
-    #[wasm_bindgen(catch, js_class = "SpeechRecognitionError", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechRecognitionError")]
     #[doc = "The `new SpeechRecognitionError(..)` constructor, creating a new instance of `SpeechRecognitionError`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionError/SpeechRecognitionError)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionError`*"]
-    pub fn new(
-        this: &SpeechRecognitionError,
-        type_: &str,
-    ) -> Result<SpeechRecognitionError, JsValue>;
+    pub fn new(type_: &str) -> Result<SpeechRecognitionError, JsValue>;
     #[cfg(feature = "SpeechRecognitionErrorInit")]
-    #[wasm_bindgen(catch, js_class = "SpeechRecognitionError", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "SpeechRecognitionError")]
     #[doc = "The `new SpeechRecognitionError(..)` constructor, creating a new instance of `SpeechRecognitionError`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionError/SpeechRecognitionError)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionError`, `SpeechRecognitionErrorInit`*"]
     pub fn new_with_event_init_dict(
-        this: &SpeechRecognitionError,
         type_: &str,
         event_init_dict: &SpeechRecognitionErrorInit,
     ) -> Result<SpeechRecognitionError, JsValue>;

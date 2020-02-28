@@ -24,29 +24,28 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn fatal(this: &TextDecoder) -> bool;
-    #[wasm_bindgen(catch, js_class = "TextDecoder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TextDecoder")]
     #[doc = "The `new TextDecoder(..)` constructor, creating a new instance of `TextDecoder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/TextDecoder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecoder`*"]
-    pub fn new(this: &TextDecoder) -> Result<TextDecoder, JsValue>;
-    #[wasm_bindgen(catch, js_class = "TextDecoder", constructor)]
+    pub fn new() -> Result<TextDecoder, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "TextDecoder")]
     #[doc = "The `new TextDecoder(..)` constructor, creating a new instance of `TextDecoder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/TextDecoder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecoder`*"]
-    pub fn new_with_label(this: &TextDecoder, label: &str) -> Result<TextDecoder, JsValue>;
+    pub fn new_with_label(label: &str) -> Result<TextDecoder, JsValue>;
     #[cfg(feature = "TextDecoderOptions")]
-    #[wasm_bindgen(catch, js_class = "TextDecoder", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TextDecoder")]
     #[doc = "The `new TextDecoder(..)` constructor, creating a new instance of `TextDecoder`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/TextDecoder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecoder`, `TextDecoderOptions`*"]
     pub fn new_with_label_and_options(
-        this: &TextDecoder,
         label: &str,
         options: &TextDecoderOptions,
     ) -> Result<TextDecoder, JsValue>;

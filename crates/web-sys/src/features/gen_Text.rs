@@ -25,20 +25,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSlotElement`, `Text`*"]
     pub fn assigned_slot(this: &Text) -> Option<HtmlSlotElement>;
-    #[wasm_bindgen(catch, js_class = "Text", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Text")]
     #[doc = "The `new Text(..)` constructor, creating a new instance of `Text`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/Text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
-    pub fn new(this: &Text) -> Result<Text, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Text", constructor)]
+    pub fn new() -> Result<Text, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Text")]
     #[doc = "The `new Text(..)` constructor, creating a new instance of `Text`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/Text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
-    pub fn new_with_data(this: &Text, data: &str) -> Result<Text, JsValue>;
+    pub fn new_with_data(data: &str) -> Result<Text, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = splitText ) ]
     #[doc = "The `splitText()` method."]
     #[doc = ""]

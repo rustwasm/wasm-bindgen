@@ -18,25 +18,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageCaptureError`, `ImageCaptureErrorEvent`*"]
     pub fn image_capture_error(this: &ImageCaptureErrorEvent) -> Option<ImageCaptureError>;
-    #[wasm_bindgen(catch, js_class = "ImageCaptureErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ImageCaptureErrorEvent")]
     #[doc = "The `new ImageCaptureErrorEvent(..)` constructor, creating a new instance of `ImageCaptureErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCaptureErrorEvent/ImageCaptureErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageCaptureErrorEvent`*"]
-    pub fn new(
-        this: &ImageCaptureErrorEvent,
-        type_: &str,
-    ) -> Result<ImageCaptureErrorEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<ImageCaptureErrorEvent, JsValue>;
     #[cfg(feature = "ImageCaptureErrorEventInit")]
-    #[wasm_bindgen(catch, js_class = "ImageCaptureErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ImageCaptureErrorEvent")]
     #[doc = "The `new ImageCaptureErrorEvent(..)` constructor, creating a new instance of `ImageCaptureErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCaptureErrorEvent/ImageCaptureErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageCaptureErrorEvent`, `ImageCaptureErrorEventInit`*"]
     pub fn new_with_image_capture_error_init_dict(
-        this: &ImageCaptureErrorEvent,
         type_: &str,
         image_capture_error_init_dict: &ImageCaptureErrorEventInit,
     ) -> Result<ImageCaptureErrorEvent, JsValue>;

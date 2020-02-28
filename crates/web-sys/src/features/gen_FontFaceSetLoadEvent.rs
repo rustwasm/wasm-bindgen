@@ -17,22 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetLoadEvent`*"]
     pub fn fontfaces(this: &FontFaceSetLoadEvent) -> ::js_sys::Array;
-    #[wasm_bindgen(catch, js_class = "FontFaceSetLoadEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFaceSetLoadEvent")]
     #[doc = "The `new FontFaceSetLoadEvent(..)` constructor, creating a new instance of `FontFaceSetLoadEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSetLoadEvent/FontFaceSetLoadEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetLoadEvent`*"]
-    pub fn new(this: &FontFaceSetLoadEvent, type_: &str) -> Result<FontFaceSetLoadEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<FontFaceSetLoadEvent, JsValue>;
     #[cfg(feature = "FontFaceSetLoadEventInit")]
-    #[wasm_bindgen(catch, js_class = "FontFaceSetLoadEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FontFaceSetLoadEvent")]
     #[doc = "The `new FontFaceSetLoadEvent(..)` constructor, creating a new instance of `FontFaceSetLoadEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSetLoadEvent/FontFaceSetLoadEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetLoadEvent`, `FontFaceSetLoadEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &FontFaceSetLoadEvent,
         type_: &str,
         event_init_dict: &FontFaceSetLoadEventInit,
     ) -> Result<FontFaceSetLoadEvent, JsValue>;

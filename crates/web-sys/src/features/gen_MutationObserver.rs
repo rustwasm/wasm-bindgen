@@ -10,16 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObserver`*"]
     pub type MutationObserver;
-    #[wasm_bindgen(catch, js_class = "MutationObserver", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "MutationObserver")]
     #[doc = "The `new MutationObserver(..)` constructor, creating a new instance of `MutationObserver`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/MutationObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObserver`*"]
-    pub fn new(
-        this: &MutationObserver,
-        mutation_callback: &::js_sys::Function,
-    ) -> Result<MutationObserver, JsValue>;
+    pub fn new(mutation_callback: &::js_sys::Function) -> Result<MutationObserver, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "MutationObserver" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method."]
     #[doc = ""]

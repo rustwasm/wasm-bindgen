@@ -124,22 +124,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
     pub fn set_onclose(this: &TcpSocket, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "TCPSocket", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TCPSocket")]
     #[doc = "The `new TcpSocket(..)` constructor, creating a new instance of `TcpSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/TCPSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
-    pub fn new(this: &TcpSocket, host: &str, port: u16) -> Result<TcpSocket, JsValue>;
+    pub fn new(host: &str, port: u16) -> Result<TcpSocket, JsValue>;
     #[cfg(feature = "SocketOptions")]
-    #[wasm_bindgen(catch, js_class = "TCPSocket", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "TCPSocket")]
     #[doc = "The `new TcpSocket(..)` constructor, creating a new instance of `TcpSocket`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/TCPSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketOptions`, `TcpSocket`*"]
     pub fn new_with_options(
-        this: &TcpSocket,
         host: &str,
         port: u16,
         options: &SocketOptions,

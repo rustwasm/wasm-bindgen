@@ -10,13 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomParser`*"]
     pub type DomParser;
-    #[wasm_bindgen(catch, js_class = "DOMParser", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMParser")]
     #[doc = "The `new DomParser(..)` constructor, creating a new instance of `DomParser`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomParser`*"]
-    pub fn new(this: &DomParser) -> Result<DomParser, JsValue>;
+    pub fn new() -> Result<DomParser, JsValue>;
     #[cfg(all(feature = "Document", feature = "SupportedType",))]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DOMParser" , js_name = parseFromString ) ]
     #[doc = "The `parseFromString()` method."]

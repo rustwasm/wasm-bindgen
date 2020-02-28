@@ -10,22 +10,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableEvent`*"]
     pub type ExtendableEvent;
-    #[wasm_bindgen(catch, js_class = "ExtendableEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ExtendableEvent")]
     #[doc = "The `new ExtendableEvent(..)` constructor, creating a new instance of `ExtendableEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/ExtendableEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableEvent`*"]
-    pub fn new(this: &ExtendableEvent, type_: &str) -> Result<ExtendableEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<ExtendableEvent, JsValue>;
     #[cfg(feature = "ExtendableEventInit")]
-    #[wasm_bindgen(catch, js_class = "ExtendableEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ExtendableEvent")]
     #[doc = "The `new ExtendableEvent(..)` constructor, creating a new instance of `ExtendableEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/ExtendableEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableEvent`, `ExtendableEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &ExtendableEvent,
         type_: &str,
         event_init_dict: &ExtendableEventInit,
     ) -> Result<ExtendableEvent, JsValue>;

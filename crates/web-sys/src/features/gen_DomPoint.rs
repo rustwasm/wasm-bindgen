@@ -66,47 +66,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPoint`*"]
     pub fn set_w(this: &DomPoint, value: f64);
-    #[wasm_bindgen(catch, js_class = "DOMPoint", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPoint")]
     #[doc = "The `new DomPoint(..)` constructor, creating a new instance of `DomPoint`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint/DOMPoint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPoint`*"]
-    pub fn new(this: &DomPoint) -> Result<DomPoint, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPoint", constructor)]
+    pub fn new() -> Result<DomPoint, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPoint")]
     #[doc = "The `new DomPoint(..)` constructor, creating a new instance of `DomPoint`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint/DOMPoint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPoint`*"]
-    pub fn new_with_x(this: &DomPoint, x: f64) -> Result<DomPoint, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPoint", constructor)]
+    pub fn new_with_x(x: f64) -> Result<DomPoint, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPoint")]
     #[doc = "The `new DomPoint(..)` constructor, creating a new instance of `DomPoint`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint/DOMPoint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPoint`*"]
-    pub fn new_with_x_and_y(this: &DomPoint, x: f64, y: f64) -> Result<DomPoint, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPoint", constructor)]
+    pub fn new_with_x_and_y(x: f64, y: f64) -> Result<DomPoint, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPoint")]
     #[doc = "The `new DomPoint(..)` constructor, creating a new instance of `DomPoint`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint/DOMPoint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPoint`*"]
-    pub fn new_with_x_and_y_and_z(
-        this: &DomPoint,
-        x: f64,
-        y: f64,
-        z: f64,
-    ) -> Result<DomPoint, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMPoint", constructor)]
+    pub fn new_with_x_and_y_and_z(x: f64, y: f64, z: f64) -> Result<DomPoint, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMPoint")]
     #[doc = "The `new DomPoint(..)` constructor, creating a new instance of `DomPoint`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint/DOMPoint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPoint`*"]
     pub fn new_with_x_and_y_and_z_and_w(
-        this: &DomPoint,
         x: f64,
         y: f64,
         z: f64,

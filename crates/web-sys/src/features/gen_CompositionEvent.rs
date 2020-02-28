@@ -24,22 +24,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`*"]
     pub fn locale(this: &CompositionEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "CompositionEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "CompositionEvent")]
     #[doc = "The `new CompositionEvent(..)` constructor, creating a new instance of `CompositionEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/CompositionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`*"]
-    pub fn new(this: &CompositionEvent, type_: &str) -> Result<CompositionEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<CompositionEvent, JsValue>;
     #[cfg(feature = "CompositionEventInit")]
-    #[wasm_bindgen(catch, js_class = "CompositionEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "CompositionEvent")]
     #[doc = "The `new CompositionEvent(..)` constructor, creating a new instance of `CompositionEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/CompositionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`, `CompositionEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &CompositionEvent,
         type_: &str,
         event_init_dict: &CompositionEventInit,
     ) -> Result<CompositionEvent, JsValue>;

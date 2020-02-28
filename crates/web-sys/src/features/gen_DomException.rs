@@ -73,31 +73,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
     pub fn stack(this: &DomException) -> String;
-    #[wasm_bindgen(catch, js_class = "DOMException", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMException")]
     #[doc = "The `new DomException(..)` constructor, creating a new instance of `DomException`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMException/DOMException)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
-    pub fn new(this: &DomException) -> Result<DomException, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMException", constructor)]
+    pub fn new() -> Result<DomException, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMException")]
     #[doc = "The `new DomException(..)` constructor, creating a new instance of `DomException`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMException/DOMException)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
-    pub fn new_with_message(this: &DomException, message: &str) -> Result<DomException, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMException", constructor)]
+    pub fn new_with_message(message: &str) -> Result<DomException, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMException")]
     #[doc = "The `new DomException(..)` constructor, creating a new instance of `DomException`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMException/DOMException)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
-    pub fn new_with_message_and_name(
-        this: &DomException,
-        message: &str,
-        name: &str,
-    ) -> Result<DomException, JsValue>;
+    pub fn new_with_message_and_name(message: &str, name: &str) -> Result<DomException, JsValue>;
 }
 impl DomException {
     #[doc = "The `DOMException.INDEX_SIZE_ERR` const."]

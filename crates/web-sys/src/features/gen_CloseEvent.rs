@@ -31,22 +31,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEvent`*"]
     pub fn reason(this: &CloseEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "CloseEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "CloseEvent")]
     #[doc = "The `new CloseEvent(..)` constructor, creating a new instance of `CloseEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/CloseEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEvent`*"]
-    pub fn new(this: &CloseEvent, type_: &str) -> Result<CloseEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<CloseEvent, JsValue>;
     #[cfg(feature = "CloseEventInit")]
-    #[wasm_bindgen(catch, js_class = "CloseEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "CloseEvent")]
     #[doc = "The `new CloseEvent(..)` constructor, creating a new instance of `CloseEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/CloseEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEvent`, `CloseEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &CloseEvent,
         type_: &str,
         event_init_dict: &CloseEventInit,
     ) -> Result<CloseEvent, JsValue>;

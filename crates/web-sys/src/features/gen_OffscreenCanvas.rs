@@ -38,14 +38,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     pub fn set_height(this: &OffscreenCanvas, value: u32);
-    #[wasm_bindgen(catch, js_class = "OffscreenCanvas", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "OffscreenCanvas")]
     #[doc = "The `new OffscreenCanvas(..)` constructor, creating a new instance of `OffscreenCanvas`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
-    pub fn new(this: &OffscreenCanvas, width: u32, height: u32)
-        -> Result<OffscreenCanvas, JsValue>;
+    pub fn new(width: u32, height: u32) -> Result<OffscreenCanvas, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "OffscreenCanvas" , js_name = getContext ) ]
     #[doc = "The `getContext()` method."]
     #[doc = ""]

@@ -40,22 +40,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescription`*"]
     pub fn set_sdp(this: &RtcSessionDescription, value: &str);
-    #[wasm_bindgen(catch, js_class = "RTCSessionDescription", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCSessionDescription")]
     #[doc = "The `new RtcSessionDescription(..)` constructor, creating a new instance of `RtcSessionDescription`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCSessionDescription/RTCSessionDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescription`*"]
-    pub fn new(this: &RtcSessionDescription) -> Result<RtcSessionDescription, JsValue>;
+    pub fn new() -> Result<RtcSessionDescription, JsValue>;
     #[cfg(feature = "RtcSessionDescriptionInit")]
-    #[wasm_bindgen(catch, js_class = "RTCSessionDescription", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCSessionDescription")]
     #[doc = "The `new RtcSessionDescription(..)` constructor, creating a new instance of `RtcSessionDescription`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCSessionDescription/RTCSessionDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescription`, `RtcSessionDescriptionInit`*"]
     pub fn new_with_description_init_dict(
-        this: &RtcSessionDescription,
         description_init_dict: &RtcSessionDescriptionInit,
     ) -> Result<RtcSessionDescription, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "RTCSessionDescription" , js_name = toJSON ) ]

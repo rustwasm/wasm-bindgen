@@ -10,18 +10,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Comment`*"]
     pub type Comment;
-    #[wasm_bindgen(catch, js_class = "Comment", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Comment")]
     #[doc = "The `new Comment(..)` constructor, creating a new instance of `Comment`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Comment/Comment)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Comment`*"]
-    pub fn new(this: &Comment) -> Result<Comment, JsValue>;
-    #[wasm_bindgen(catch, js_class = "Comment", constructor)]
+    pub fn new() -> Result<Comment, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Comment")]
     #[doc = "The `new Comment(..)` constructor, creating a new instance of `Comment`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Comment/Comment)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Comment`*"]
-    pub fn new_with_data(this: &Comment, data: &str) -> Result<Comment, JsValue>;
+    pub fn new_with_data(data: &str) -> Result<Comment, JsValue>;
 }

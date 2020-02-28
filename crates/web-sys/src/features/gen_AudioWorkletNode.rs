@@ -41,26 +41,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNode`*"]
     pub fn set_onprocessorerror(this: &AudioWorkletNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "AudioWorkletNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioWorkletNode")]
     #[doc = "The `new AudioWorkletNode(..)` constructor, creating a new instance of `AudioWorkletNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode/AudioWorkletNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNode`, `BaseAudioContext`*"]
-    pub fn new(
-        this: &AudioWorkletNode,
-        context: &BaseAudioContext,
-        name: &str,
-    ) -> Result<AudioWorkletNode, JsValue>;
+    pub fn new(context: &BaseAudioContext, name: &str) -> Result<AudioWorkletNode, JsValue>;
     #[cfg(all(feature = "AudioWorkletNodeOptions", feature = "BaseAudioContext",))]
-    #[wasm_bindgen(catch, js_class = "AudioWorkletNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioWorkletNode")]
     #[doc = "The `new AudioWorkletNode(..)` constructor, creating a new instance of `AudioWorkletNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode/AudioWorkletNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNode`, `AudioWorkletNodeOptions`, `BaseAudioContext`*"]
     pub fn new_with_options(
-        this: &AudioWorkletNode,
         context: &BaseAudioContext,
         name: &str,
         options: &AudioWorkletNodeOptions,

@@ -17,22 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadButtonEvent`*"]
     pub fn button(this: &GamepadButtonEvent) -> u32;
-    #[wasm_bindgen(catch, js_class = "GamepadButtonEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "GamepadButtonEvent")]
     #[doc = "The `new GamepadButtonEvent(..)` constructor, creating a new instance of `GamepadButtonEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadButtonEvent/GamepadButtonEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadButtonEvent`*"]
-    pub fn new(this: &GamepadButtonEvent, type_: &str) -> Result<GamepadButtonEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<GamepadButtonEvent, JsValue>;
     #[cfg(feature = "GamepadButtonEventInit")]
-    #[wasm_bindgen(catch, js_class = "GamepadButtonEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "GamepadButtonEvent")]
     #[doc = "The `new GamepadButtonEvent(..)` constructor, creating a new instance of `GamepadButtonEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadButtonEvent/GamepadButtonEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadButtonEvent`, `GamepadButtonEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &GamepadButtonEvent,
         type_: &str,
         event_init_dict: &GamepadButtonEventInit,
     ) -> Result<GamepadButtonEvent, JsValue>;

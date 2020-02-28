@@ -45,22 +45,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub fn error(this: &ErrorEvent) -> ::wasm_bindgen::JsValue;
-    #[wasm_bindgen(catch, js_class = "ErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ErrorEvent")]
     #[doc = "The `new ErrorEvent(..)` constructor, creating a new instance of `ErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/ErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEvent`*"]
-    pub fn new(this: &ErrorEvent, type_: &str) -> Result<ErrorEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<ErrorEvent, JsValue>;
     #[cfg(feature = "ErrorEventInit")]
-    #[wasm_bindgen(catch, js_class = "ErrorEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "ErrorEvent")]
     #[doc = "The `new ErrorEvent(..)` constructor, creating a new instance of `ErrorEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/ErrorEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEvent`, `ErrorEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &ErrorEvent,
         type_: &str,
         event_init_dict: &ErrorEventInit,
     ) -> Result<ErrorEvent, JsValue>;

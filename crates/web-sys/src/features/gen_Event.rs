@@ -96,22 +96,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`*"]
     pub fn set_cancel_bubble(this: &Event, value: bool);
-    #[wasm_bindgen(catch, js_class = "Event", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Event")]
     #[doc = "The `new Event(..)` constructor, creating a new instance of `Event`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`*"]
-    pub fn new(this: &Event, type_: &str) -> Result<Event, JsValue>;
+    pub fn new(type_: &str) -> Result<Event, JsValue>;
     #[cfg(feature = "EventInit")]
-    #[wasm_bindgen(catch, js_class = "Event", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Event")]
     #[doc = "The `new Event(..)` constructor, creating a new instance of `Event`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`, `EventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &Event,
         type_: &str,
         event_init_dict: &EventInit,
     ) -> Result<Event, JsValue>;

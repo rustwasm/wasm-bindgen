@@ -74,22 +74,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn set_smoothing_time_constant(this: &AnalyserNode, value: f64);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, js_class = "AnalyserNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AnalyserNode")]
     #[doc = "The `new AnalyserNode(..)` constructor, creating a new instance of `AnalyserNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/AnalyserNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`, `BaseAudioContext`*"]
-    pub fn new(this: &AnalyserNode, context: &BaseAudioContext) -> Result<AnalyserNode, JsValue>;
+    pub fn new(context: &BaseAudioContext) -> Result<AnalyserNode, JsValue>;
     #[cfg(all(feature = "AnalyserOptions", feature = "BaseAudioContext",))]
-    #[wasm_bindgen(catch, js_class = "AnalyserNode", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "AnalyserNode")]
     #[doc = "The `new AnalyserNode(..)` constructor, creating a new instance of `AnalyserNode`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/AnalyserNode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`, `AnalyserOptions`, `BaseAudioContext`*"]
     pub fn new_with_options(
-        this: &AnalyserNode,
         context: &BaseAudioContext,
         options: &AnalyserOptions,
     ) -> Result<AnalyserNode, JsValue>;

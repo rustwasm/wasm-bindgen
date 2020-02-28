@@ -17,22 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextEvent`*"]
     pub fn status_message(this: &WebGlContextEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "WebGLContextEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "WebGLContextEvent")]
     #[doc = "The `new WebGlContextEvent(..)` constructor, creating a new instance of `WebGlContextEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLContextEvent/WebGLContextEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextEvent`*"]
-    pub fn new(this: &WebGlContextEvent, type_: &str) -> Result<WebGlContextEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<WebGlContextEvent, JsValue>;
     #[cfg(feature = "WebGlContextEventInit")]
-    #[wasm_bindgen(catch, js_class = "WebGLContextEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "WebGLContextEvent")]
     #[doc = "The `new WebGlContextEvent(..)` constructor, creating a new instance of `WebGlContextEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLContextEvent/WebGLContextEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextEvent`, `WebGlContextEventInit`*"]
     pub fn new_with_event_init(
-        this: &WebGlContextEvent,
         type_: &str,
         event_init: &WebGlContextEventInit,
     ) -> Result<WebGlContextEvent, JsValue>;

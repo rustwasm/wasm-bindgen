@@ -27,26 +27,20 @@ extern "C" {
         this: &PresentationRequest,
         value: Option<&::js_sys::Function>,
     );
-    #[wasm_bindgen(catch, js_class = "PresentationRequest", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "PresentationRequest")]
     #[doc = "The `new PresentationRequest(..)` constructor, creating a new instance of `PresentationRequest`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/PresentationRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
-    pub fn new_with_url(
-        this: &PresentationRequest,
-        url: &str,
-    ) -> Result<PresentationRequest, JsValue>;
-    #[wasm_bindgen(catch, js_class = "PresentationRequest", constructor)]
+    pub fn new_with_url(url: &str) -> Result<PresentationRequest, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "PresentationRequest")]
     #[doc = "The `new PresentationRequest(..)` constructor, creating a new instance of `PresentationRequest`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/PresentationRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
-    pub fn new_with_urls(
-        this: &PresentationRequest,
-        urls: &::wasm_bindgen::JsValue,
-    ) -> Result<PresentationRequest, JsValue>;
+    pub fn new_with_urls(urls: &::wasm_bindgen::JsValue) -> Result<PresentationRequest, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "PresentationRequest" , js_name = getAvailability ) ]
     #[doc = "The `getAvailability()` method."]
     #[doc = ""]

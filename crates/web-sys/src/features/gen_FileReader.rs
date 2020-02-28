@@ -116,13 +116,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
     pub fn set_onloadend(this: &FileReader, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "FileReader", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "FileReader")]
     #[doc = "The `new FileReader(..)` constructor, creating a new instance of `FileReader`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/FileReader)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
-    pub fn new(this: &FileReader) -> Result<FileReader, JsValue>;
+    pub fn new() -> Result<FileReader, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "FileReader" , js_name = abort ) ]
     #[doc = "The `abort()` method."]
     #[doc = ""]

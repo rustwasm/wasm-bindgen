@@ -66,47 +66,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRect`*"]
     pub fn set_height(this: &DomRect, value: f64);
-    #[wasm_bindgen(catch, js_class = "DOMRect", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRect")]
     #[doc = "The `new DomRect(..)` constructor, creating a new instance of `DomRect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect/DOMRect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRect`*"]
-    pub fn new(this: &DomRect) -> Result<DomRect, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRect", constructor)]
+    pub fn new() -> Result<DomRect, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRect")]
     #[doc = "The `new DomRect(..)` constructor, creating a new instance of `DomRect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect/DOMRect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRect`*"]
-    pub fn new_with_x(this: &DomRect, x: f64) -> Result<DomRect, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRect", constructor)]
+    pub fn new_with_x(x: f64) -> Result<DomRect, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRect")]
     #[doc = "The `new DomRect(..)` constructor, creating a new instance of `DomRect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect/DOMRect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRect`*"]
-    pub fn new_with_x_and_y(this: &DomRect, x: f64, y: f64) -> Result<DomRect, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRect", constructor)]
+    pub fn new_with_x_and_y(x: f64, y: f64) -> Result<DomRect, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRect")]
     #[doc = "The `new DomRect(..)` constructor, creating a new instance of `DomRect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect/DOMRect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRect`*"]
-    pub fn new_with_x_and_y_and_width(
-        this: &DomRect,
-        x: f64,
-        y: f64,
-        width: f64,
-    ) -> Result<DomRect, JsValue>;
-    #[wasm_bindgen(catch, js_class = "DOMRect", constructor)]
+    pub fn new_with_x_and_y_and_width(x: f64, y: f64, width: f64) -> Result<DomRect, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "DOMRect")]
     #[doc = "The `new DomRect(..)` constructor, creating a new instance of `DomRect`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect/DOMRect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRect`*"]
     pub fn new_with_x_and_y_and_width_and_height(
-        this: &DomRect,
         x: f64,
         y: f64,
         width: f64,

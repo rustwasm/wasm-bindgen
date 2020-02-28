@@ -52,25 +52,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Worker`*"]
     pub fn set_onerror(this: &Worker, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "Worker", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Worker")]
     #[doc = "The `new Worker(..)` constructor, creating a new instance of `Worker`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Worker`*"]
-    pub fn new(this: &Worker, script_url: &str) -> Result<Worker, JsValue>;
+    pub fn new(script_url: &str) -> Result<Worker, JsValue>;
     #[cfg(feature = "WorkerOptions")]
-    #[wasm_bindgen(catch, js_class = "Worker", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Worker")]
     #[doc = "The `new Worker(..)` constructor, creating a new instance of `Worker`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Worker`, `WorkerOptions`*"]
-    pub fn new_with_options(
-        this: &Worker,
-        script_url: &str,
-        options: &WorkerOptions,
-    ) -> Result<Worker, JsValue>;
+    pub fn new_with_options(script_url: &str, options: &WorkerOptions) -> Result<Worker, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Worker" , js_name = postMessage ) ]
     #[doc = "The `postMessage()` method."]
     #[doc = ""]

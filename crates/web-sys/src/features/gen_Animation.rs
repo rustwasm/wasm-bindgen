@@ -155,33 +155,29 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
     pub fn set_oncancel(this: &Animation, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "Animation", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Animation")]
     #[doc = "The `new Animation(..)` constructor, creating a new instance of `Animation`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/Animation)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
-    pub fn new(this: &Animation) -> Result<Animation, JsValue>;
+    pub fn new() -> Result<Animation, JsValue>;
     #[cfg(feature = "AnimationEffect")]
-    #[wasm_bindgen(catch, js_class = "Animation", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Animation")]
     #[doc = "The `new Animation(..)` constructor, creating a new instance of `Animation`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/Animation)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`, `AnimationEffect`*"]
-    pub fn new_with_effect(
-        this: &Animation,
-        effect: Option<&AnimationEffect>,
-    ) -> Result<Animation, JsValue>;
+    pub fn new_with_effect(effect: Option<&AnimationEffect>) -> Result<Animation, JsValue>;
     #[cfg(all(feature = "AnimationEffect", feature = "AnimationTimeline",))]
-    #[wasm_bindgen(catch, js_class = "Animation", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Animation")]
     #[doc = "The `new Animation(..)` constructor, creating a new instance of `Animation`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/Animation)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`, `AnimationEffect`, `AnimationTimeline`*"]
     pub fn new_with_effect_and_timeline(
-        this: &Animation,
         effect: Option<&AnimationEffect>,
         timeline: Option<&AnimationTimeline>,
     ) -> Result<Animation, JsValue>;

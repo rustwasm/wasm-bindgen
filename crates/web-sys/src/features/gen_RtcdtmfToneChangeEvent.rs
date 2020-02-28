@@ -17,25 +17,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEvent`*"]
     pub fn tone(this: &RtcdtmfToneChangeEvent) -> String;
-    #[wasm_bindgen(catch, js_class = "RTCDTMFToneChangeEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCDTMFToneChangeEvent")]
     #[doc = "The `new RtcdtmfToneChangeEvent(..)` constructor, creating a new instance of `RtcdtmfToneChangeEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFToneChangeEvent/RTCDTMFToneChangeEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEvent`*"]
-    pub fn new(
-        this: &RtcdtmfToneChangeEvent,
-        type_: &str,
-    ) -> Result<RtcdtmfToneChangeEvent, JsValue>;
+    pub fn new(type_: &str) -> Result<RtcdtmfToneChangeEvent, JsValue>;
     #[cfg(feature = "RtcdtmfToneChangeEventInit")]
-    #[wasm_bindgen(catch, js_class = "RTCDTMFToneChangeEvent", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "RTCDTMFToneChangeEvent")]
     #[doc = "The `new RtcdtmfToneChangeEvent(..)` constructor, creating a new instance of `RtcdtmfToneChangeEvent`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFToneChangeEvent/RTCDTMFToneChangeEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEvent`, `RtcdtmfToneChangeEventInit`*"]
     pub fn new_with_event_init_dict(
-        this: &RtcdtmfToneChangeEvent,
         type_: &str,
         event_init_dict: &RtcdtmfToneChangeEventInit,
     ) -> Result<RtcdtmfToneChangeEvent, JsValue>;

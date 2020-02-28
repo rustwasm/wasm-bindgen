@@ -126,23 +126,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XmlHttpRequest`*"]
     pub fn response_xml(this: &XmlHttpRequest) -> Result<Option<Document>, JsValue>;
-    #[wasm_bindgen(catch, js_class = "XMLHttpRequest", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "XMLHttpRequest")]
     #[doc = "The `new XmlHttpRequest(..)` constructor, creating a new instance of `XmlHttpRequest`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/XMLHttpRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn new(this: &XmlHttpRequest) -> Result<XmlHttpRequest, JsValue>;
-    #[wasm_bindgen(catch, js_class = "XMLHttpRequest", constructor)]
+    pub fn new() -> Result<XmlHttpRequest, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "XMLHttpRequest")]
     #[doc = "The `new XmlHttpRequest(..)` constructor, creating a new instance of `XmlHttpRequest`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/XMLHttpRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn new_with_ignored(
-        this: &XmlHttpRequest,
-        ignored: &str,
-    ) -> Result<XmlHttpRequest, JsValue>;
+    pub fn new_with_ignored(ignored: &str) -> Result<XmlHttpRequest, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "XMLHttpRequest" , js_name = abort ) ]
     #[doc = "The `abort()` method."]
     #[doc = ""]

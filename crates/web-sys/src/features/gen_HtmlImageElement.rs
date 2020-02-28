@@ -276,32 +276,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`*"]
     pub fn current_src(this: &HtmlImageElement) -> String;
-    #[wasm_bindgen(catch, js_class = "HTMLImageElement", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLImageElement")]
     #[doc = "The `new HtmlImageElement(..)` constructor, creating a new instance of `HtmlImageElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/HTMLImageElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`*"]
-    pub fn new(this: &HtmlImageElement) -> Result<HtmlImageElement, JsValue>;
-    #[wasm_bindgen(catch, js_class = "HTMLImageElement", constructor)]
+    pub fn new() -> Result<HtmlImageElement, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLImageElement")]
     #[doc = "The `new HtmlImageElement(..)` constructor, creating a new instance of `HtmlImageElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/HTMLImageElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`*"]
-    pub fn new_with_width(this: &HtmlImageElement, width: u32)
-        -> Result<HtmlImageElement, JsValue>;
-    #[wasm_bindgen(catch, js_class = "HTMLImageElement", constructor)]
+    pub fn new_with_width(width: u32) -> Result<HtmlImageElement, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "HTMLImageElement")]
     #[doc = "The `new HtmlImageElement(..)` constructor, creating a new instance of `HtmlImageElement`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/HTMLImageElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`*"]
-    pub fn new_with_width_and_height(
-        this: &HtmlImageElement,
-        width: u32,
-        height: u32,
-    ) -> Result<HtmlImageElement, JsValue>;
+    pub fn new_with_width_and_height(width: u32, height: u32) -> Result<HtmlImageElement, JsValue>;
     # [ wasm_bindgen ( method , structural , js_class = "HTMLImageElement" , js_name = decode ) ]
     #[doc = "The `decode()` method."]
     #[doc = ""]

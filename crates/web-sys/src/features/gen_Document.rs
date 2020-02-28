@@ -1790,13 +1790,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
     pub fn set_ontouchcancel(this: &Document, value: Option<&::js_sys::Function>);
-    #[wasm_bindgen(catch, js_class = "Document", constructor)]
+    #[wasm_bindgen(catch, constructor, js_class = "Document")]
     #[doc = "The `new Document(..)` constructor, creating a new instance of `Document`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/Document)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn new(this: &Document) -> Result<Document, JsValue>;
+    pub fn new() -> Result<Document, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = adoptNode ) ]
     #[doc = "The `adoptNode()` method."]
     #[doc = ""]
