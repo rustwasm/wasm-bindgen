@@ -317,12 +317,19 @@ pub enum ConstValue {
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
+pub struct DictionaryConstructor {
+    pub doc_comment: Option<String>,
+    pub rust_attrs: Vec<syn::Attribute>,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Dictionary {
+    pub vis: syn::Visibility,
     pub name: Ident,
     pub fields: Vec<DictionaryField>,
-    pub ctor: bool,
+    pub constructor: Option<DictionaryConstructor>,
     pub doc_comment: Option<String>,
-    pub ctor_doc_comment: Option<String>,
     pub unstable_api: bool,
 }
 
@@ -333,8 +340,8 @@ pub struct DictionaryField {
     pub js_name: String,
     pub required: bool,
     pub ty: syn::Type,
-    pub rust_attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
+    pub rust_attrs: Vec<syn::Attribute>,
 }
 
 impl Export {

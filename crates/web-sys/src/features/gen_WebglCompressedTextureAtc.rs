@@ -1,0 +1,14 @@
+use super::*;
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+extern "C" {
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_compressed_texture_atc , typescript_name = WEBGL_compressed_texture_atc ) ]
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    #[doc = "The `WebglCompressedTextureAtc` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_compressed_texture_atc)\n\n*This API requires the following crate features to be activated: `WebglCompressedTextureAtc`*"]
+    pub type WebglCompressedTextureAtc;
+}
+impl WebglCompressedTextureAtc {
+    pub const COMPRESSED_RGB_ATC_WEBGL: u32 = 35986u64 as u32;
+    pub const COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL: u32 = 35987u64 as u32;
+    pub const COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL: u32 = 34798u64 as u32;
+}

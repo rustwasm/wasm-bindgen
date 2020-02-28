@@ -1,0 +1,8 @@
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+#[doc = "The `FontFaceSetLoadStatus` enum.\n\n*This API requires the following crate features to be activated: `FontFaceSetLoadStatus`*"]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum FontFaceSetLoadStatus {
+    Loading = "loading",
+    Loaded = "loaded",
+}

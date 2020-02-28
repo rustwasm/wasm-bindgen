@@ -1244,16 +1244,11 @@ impl ToTokens for ast::ImportStatic {
     }
 }
 
-impl ToTokens for ast::Const {
+impl ToTokens for ast::ConstValue {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use crate::ast::ConstValue::*;
 
-        let vis = &self.vis;
-        let name = &self.name;
-        let ty = &self.ty;
-        let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
-
-        let value: TokenStream = match self.value {
+        match self {
             BooleanLiteral(false) => quote!(false),
             BooleanLiteral(true) => quote!(true),
             // the actual type is unknown because of typedefs
@@ -1265,19 +1260,29 @@ impl ToTokens for ast::Const {
             // again no suffix
             // panics on +-inf, nan
             FloatLiteral(f) => {
-                let f = Literal::f64_suffixed(f);
+                let f = Literal::f64_suffixed(*f);
                 quote!(#f)
             }
             SignedIntegerLiteral(i) => {
-                let i = Literal::i64_suffixed(i);
+                let i = Literal::i64_suffixed(*i);
                 quote!(#i)
             }
             UnsignedIntegerLiteral(i) => {
-                let i = Literal::u64_suffixed(i);
+                let i = Literal::u64_suffixed(*i);
                 quote!(#i)
             }
             Null => unimplemented!(),
-        };
+        }.to_tokens(tokens)
+    }
+}
+
+impl ToTokens for ast::Const {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let vis = &self.vis;
+        let name = &self.name;
+        let ty = &self.ty;
+        let value = &self.value;
+        let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
 
         let declaration = quote!(#vis const #name: #ty = #value as #ty;);
 
@@ -1299,6 +1304,7 @@ impl ToTokens for ast::Dictionary {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let unstable_api_attr = util::maybe_unstable_api_attr(self.unstable_api);
         let name = &self.name;
+        let vis = &self.vis;
         let mut methods = TokenStream::new();
         for field in self.fields.iter() {
             field.to_tokens(&mut methods);
@@ -1322,32 +1328,36 @@ impl ToTokens for ast::Dictionary {
             Some(doc_string) => doc_string,
         };
 
-        let ctor = if self.ctor {
-            let doc_comment = match &self.ctor_doc_comment {
-                None => "",
-                Some(doc_string) => doc_string,
-            };
-            quote! {
-                #[doc = #doc_comment]
-                pub fn new(#(#required_names: #required_types),*) -> #name {
-                    let mut _ret = #name { obj: ::js_sys::Object::new() };
-                    #(_ret.#required_names2(#required_names3);)*
-                    return _ret
+        let ctor = match &self.constructor {
+            Some(ctor) => {
+                let attrs = &ctor.rust_attrs;
+
+                let doc_comment = match &ctor.doc_comment {
+                    None => "",
+                    Some(doc_string) => doc_string,
+                };
+
+                quote! {
+                    #(#attrs)*
+                    #[doc = #doc_comment]
+                    pub fn new(#(#required_names: #required_types),*) -> #name {
+                        let mut ret: #name = ::js_sys::Object::new().into();
+                        #(ret.#required_names2(#required_names3);)*
+                        ret
+                    }
                 }
-            }
-        } else {
-            quote! {}
+            },
+            None => quote! {},
         };
 
-        let const_name = Ident::new(&format!("_CONST_{}", name), Span::call_site());
         (quote! {
-            #[derive(Clone, Debug)]
-            #[repr(transparent)]
-            #[allow(clippy::all)]
-            #[doc = #doc_comment]
-            #unstable_api_attr
-            pub struct #name {
-                obj: ::js_sys::Object,
+            #[wasm_bindgen]
+            extern "C" {
+                #unstable_api_attr
+                #[wasm_bindgen(extends = ::js_sys::Object)]
+                #[doc = #doc_comment]
+                #[derive(Clone, Debug)]
+                #vis type #name;
             }
 
             #[allow(clippy::all)]
@@ -1356,103 +1366,6 @@ impl ToTokens for ast::Dictionary {
                 #ctor
                 #methods
             }
-
-            #[allow(bad_style)]
-            #[allow(clippy::all)]
-            #unstable_api_attr
-            const #const_name: () = {
-                use js_sys::Object;
-                use wasm_bindgen::describe::WasmDescribe;
-                use wasm_bindgen::convert::*;
-                use wasm_bindgen::{JsValue, JsCast};
-                use wasm_bindgen::__rt::core::mem::ManuallyDrop;
-
-                // interop w/ JsValue
-                impl From<#name> for JsValue {
-                    #[inline]
-                    fn from(val: #name) -> JsValue {
-                        val.obj.into()
-                    }
-                }
-                impl AsRef<JsValue> for #name {
-                    #[inline]
-                    fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
-                }
-
-                // Boundary conversion impls
-                impl WasmDescribe for #name {
-                    fn describe() {
-                        Object::describe();
-                    }
-                }
-
-                impl IntoWasmAbi for #name {
-                    type Abi = <Object as IntoWasmAbi>::Abi;
-                    #[inline]
-                    fn into_abi(self) -> Self::Abi {
-                        self.obj.into_abi()
-                    }
-                }
-
-                impl<'a> IntoWasmAbi for &'a #name {
-                    type Abi = <&'a Object as IntoWasmAbi>::Abi;
-                    #[inline]
-                    fn into_abi(self) -> Self::Abi {
-                        (&self.obj).into_abi()
-                    }
-                }
-
-                impl FromWasmAbi for #name {
-                    type Abi = <Object as FromWasmAbi>::Abi;
-                    #[inline]
-                    unsafe fn from_abi(abi: Self::Abi) -> Self {
-                        #name { obj: Object::from_abi(abi) }
-                    }
-                }
-
-                impl OptionIntoWasmAbi for #name {
-                    #[inline]
-                    fn none() -> Self::Abi { Object::none() }
-                }
-                impl<'a> OptionIntoWasmAbi for &'a #name {
-                    #[inline]
-                    fn none() -> Self::Abi { <&'a Object>::none() }
-                }
-                impl OptionFromWasmAbi for #name {
-                    #[inline]
-                    fn is_none(abi: &Self::Abi) -> bool { Object::is_none(abi) }
-                }
-
-                impl RefFromWasmAbi for #name {
-                    type Abi = <Object as RefFromWasmAbi>::Abi;
-                    type Anchor = ManuallyDrop<#name>;
-
-                    #[inline]
-                    unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                        let tmp = <Object as RefFromWasmAbi>::ref_from_abi(js);
-                        ManuallyDrop::new(#name {
-                            obj: ManuallyDrop::into_inner(tmp),
-                        })
-                    }
-                }
-
-                impl JsCast for #name {
-                    #[inline]
-                    fn instanceof(val: &JsValue) -> bool {
-                        Object::instanceof(val)
-                    }
-
-                    #[inline]
-                    fn unchecked_from_js(val: JsValue) -> Self {
-                        #name { obj: Object::unchecked_from_js(val) }
-                    }
-
-                    #[inline]
-                    fn unchecked_from_js_ref(val: &JsValue) -> &Self {
-                        unsafe { &*(val as *const JsValue as *const #name) }
-                    }
-                }
-            };
         })
         .to_tokens(tokens);
     }
@@ -1475,7 +1388,7 @@ impl ToTokens for ast::DictionaryField {
             pub fn #rust_name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
                 let r = ::js_sys::Reflect::set(
-                    self.obj.as_ref(),
+                    self.as_ref(),
                     &JsValue::from(#js_name),
                     &JsValue::from(val),
                 );

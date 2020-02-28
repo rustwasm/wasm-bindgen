@@ -10,7 +10,6 @@
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 
-use proc_macro2::Ident;
 use weedle;
 use weedle::argument::Argument;
 use weedle::attribute::*;
@@ -28,7 +27,6 @@ use crate::{
 /// Collection of constructs that may use partial.
 #[derive(Default)]
 pub(crate) struct FirstPassRecord<'src> {
-    pub(crate) builtin_idents: BTreeSet<Ident>,
     pub(crate) interfaces: BTreeMap<&'src str, InterfaceData<'src>>,
     pub(crate) enums: BTreeMap<&'src str, EnumData<'src>>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
@@ -39,7 +37,6 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
     pub(crate) callbacks: BTreeSet<&'src str>,
     pub(crate) callback_interfaces: BTreeMap<&'src str, CallbackInterfaceData<'src>>,
-    pub(crate) immutable_slice_whitelist: BTreeSet<&'static str>,
 }
 
 pub(crate) struct AttributeInterfaceData<'src> {

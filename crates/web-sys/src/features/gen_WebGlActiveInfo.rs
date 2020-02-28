@@ -1,0 +1,18 @@
+use super::*;
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+extern "C" {
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLActiveInfo , typescript_name = WebGLActiveInfo ) ]
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    #[doc = "The `WebGlActiveInfo` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLActiveInfo)\n\n*This API requires the following crate features to be activated: `WebGlActiveInfo`*"]
+    pub type WebGlActiveInfo;
+    # [ wasm_bindgen ( structural , method , getter , js_name = size ) ]
+    #[doc = "Getter for the `size` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLActiveInfo/size)\n\n*This API requires the following crate features to be activated: `WebGlActiveInfo`*"]
+    pub fn size(this: &WebGlActiveInfo) -> i32;
+    # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
+    #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLActiveInfo/type)\n\n*This API requires the following crate features to be activated: `WebGlActiveInfo`*"]
+    pub fn type_(this: &WebGlActiveInfo) -> u32;
+    # [ wasm_bindgen ( structural , method , getter , js_name = name ) ]
+    #[doc = "Getter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLActiveInfo/name)\n\n*This API requires the following crate features to be activated: `WebGlActiveInfo`*"]
+    pub fn name(this: &WebGlActiveInfo) -> String;
+}

@@ -369,7 +369,7 @@ impl RemoveUndefinedImports for ast::Program {
             // If a required field was removed we can no longer construct this
             // dictionary so disable the constructor.
             if before != num_required(dictionary) {
-                dictionary.ctor = false;
+                dictionary.constructor = None;
             }
         }
 

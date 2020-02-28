@@ -1,0 +1,24 @@
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+#[doc = "The `RequestDestination` enum.\n\n*This API requires the following crate features to be activated: `RequestDestination`*"]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum RequestDestination {
+    None = "",
+    Audio = "audio",
+    Audioworklet = "audioworklet",
+    Document = "document",
+    Embed = "embed",
+    Font = "font",
+    Image = "image",
+    Manifest = "manifest",
+    Object = "object",
+    Paintworklet = "paintworklet",
+    Report = "report",
+    Script = "script",
+    Sharedworker = "sharedworker",
+    Style = "style",
+    Track = "track",
+    Video = "video",
+    Worker = "worker",
+    Xslt = "xslt",
+}

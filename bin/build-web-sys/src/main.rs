@@ -36,8 +36,8 @@ fn main() -> Result<()> {
             .with_context(|| format!("reading contents of file \"{}\"", path.display()))?;
     }
 
-    let bindings = match wasm_bindgen_webidl::compile(&source.contents) {
-        Ok(bindings) => bindings,
+    let features = match wasm_bindgen_webidl::compile(&source.contents) {
+        Ok(features) => features,
         Err(e) => {
             if let Some(err) = e.downcast_ref::<wasm_bindgen_webidl::WebIDLParseError>() {
                 if let Some(pos) = source.resolve_offset(err.0) {
@@ -58,41 +58,38 @@ fn main() -> Result<()> {
     };
 
 
-    let binding_dir = web_sys_dir.join("src/bindings");
+    let binding_dir = web_sys_dir.join("src/features");
 
-    unwrap_not_found(fs::remove_dir_all(&binding_dir)).context("Removing bindings directory")?;
-    fs::create_dir_all(&binding_dir).context("Creating bindings directory")?;
+    unwrap_not_found(fs::remove_dir_all(&binding_dir)).context("Removing features directory")?;
+    fs::create_dir_all(&binding_dir).context("Creating features directory")?;
 
 
-    for (name, bindings) in bindings.iter() {
+    for (name, feature) in features.iter() {
         let out_file_path = binding_dir.join(format!("gen_{}.rs", name));
 
-        fs::write(&out_file_path, format!("use super::*;\nuse js_sys::Object;\n{}", bindings.code))?;
+        fs::write(&out_file_path, &feature.code)?;
 
         // run rustfmt on the generated file - really handy for debugging
-        //
-        // This is opportunistic though so don't assert that it succeeds.
-        drop(Command::new("rustfmt").arg(&out_file_path).status());
+        let result = Command::new("rustfmt")
+            .arg("--edition")
+            .arg("2018")
+            .arg(&out_file_path)
+            .status()
+            .context(format!("rustfmt on file gen_{}.rs", name))?;
+
+        assert!(result.success(), "rustfmt on file gen_{}.rs", name);
     }
 
 
-    let binding_file = bindings.keys().map(|name| {
-        /*let features = Some(name).into_iter()
-            .chain(feature.parent_features.iter())
-            .map(|feature| {
-                format!("feature = \"{}\"", feature)
-            })
-            .collect::<Vec<_>>()
-            .join(", ");*/
-
+    let binding_file = features.keys().map(|name| {
         format!("#[cfg(feature = \"{name}\")] mod gen_{name};\n#[cfg(feature = \"{name}\")] pub use gen_{name}::*;", name = name)
     }).collect::<Vec<_>>().join("\n\n");
 
     fs::write(binding_dir.join("mod.rs"), format!("#![allow(non_snake_case)]\n\n{}", binding_file))?;
 
 
-    let features = bindings.iter().map(|(name, feature)| {
-        let features = feature.parent_features.iter()
+    let features = features.iter().map(|(name, feature)| {
+        let features = feature.required_features.iter()
             .map(|x| format!("\"{}\"", x))
             .collect::<Vec<_>>()
             .join(", ");

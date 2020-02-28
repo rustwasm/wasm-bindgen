@@ -1,0 +1,11 @@
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+#[doc = "The `HeadersGuardEnum` enum.\n\n*This API requires the following crate features to be activated: `HeadersGuardEnum`*"]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum HeadersGuardEnum {
+    None = "none",
+    Request = "request",
+    RequestNoCors = "request-no-cors",
+    Response = "response",
+    Immutable = "immutable",
+}
