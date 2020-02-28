@@ -830,61 +830,68 @@ impl ToTokens for ast::ImportEnum {
 
             #[allow(clippy::all)]
             impl #name {
-                #vis fn from_js_value(obj: &wasm_bindgen::JsValue) -> Option<#name> {
-                    obj.as_string().and_then(|obj_str| match obj_str.as_str() {
+                fn from_str(s: &str) -> Option<#name> {
+                    match s {
                         #(#variant_strings => Some(#variant_paths_ref),)*
                         _ => None,
-                    })
+                    }
+                }
+
+                fn to_str(&self) -> &'static str {
+                    match self {
+                        #(#variant_paths_ref => #variant_strings,)*
+                        #name::__Nonexhaustive => panic!(#expect_string),
+                    }
+                }
+
+                #vis fn from_js_value(obj: &wasm_bindgen::JsValue) -> Option<#name> {
+                    obj.as_string().and_then(|obj_str| Self::from_str(obj_str.as_str()))
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
-                    wasm_bindgen::JsValue::describe()
+                    <&'static str as wasm_bindgen::describe::WasmDescribe>::describe()
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
-                type Abi = <wasm_bindgen::JsValue as
-                    wasm_bindgen::convert::IntoWasmAbi>::Abi;
+                type Abi = <&'static str as wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
                 #[inline]
                 fn into_abi(self) -> Self::Abi {
-                    wasm_bindgen::JsValue::from(self).into_abi()
+                    <&'static str as wasm_bindgen::convert::IntoWasmAbi>::into_abi(self.to_str())
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
-                type Abi = <wasm_bindgen::JsValue as
-                    wasm_bindgen::convert::FromWasmAbi>::Abi;
+                type Abi = <String as wasm_bindgen::convert::FromWasmAbi>::Abi;
 
                 unsafe fn from_abi(js: Self::Abi) -> Self {
-                    #name::from_js_value(&wasm_bindgen::JsValue::from_abi(js)).unwrap_or(#name::__Nonexhaustive)
+                    let s = <String as wasm_bindgen::convert::FromWasmAbi>::from_abi(js);
+                    #name::from_str(&s).unwrap_or(#name::__Nonexhaustive)
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
-                fn none() -> Self::Abi { Object::none() }
+                fn none() -> Self::Abi { <&'static str as wasm_bindgen::convert::OptionIntoWasmAbi>::none() }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
-                fn is_none(abi: &Self::Abi) -> bool { Object::is_none(abi) }
+                fn is_none(abi: &Self::Abi) -> bool { <String as wasm_bindgen::convert::OptionFromWasmAbi>::is_none(abi) }
             }
 
             #[allow(clippy::all)]
             impl From<#name> for wasm_bindgen::JsValue {
                 fn from(obj: #name) -> wasm_bindgen::JsValue {
-                    match obj {
-                        #(#variant_paths_ref => wasm_bindgen::JsValue::from_str(#variant_strings),)*
-                        #name::__Nonexhaustive => panic!(#expect_string),
-                    }
+                    wasm_bindgen::JsValue::from(obj.to_str())
                 }
             }
         }).to_tokens(tokens);

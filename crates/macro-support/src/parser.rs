@@ -804,8 +804,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 if let Some(opts) = opts {
                     opts.check_used()?;
                 }
-                e.to_tokens(tokens);
-                e.macro_parse(program, ())?;
+                e.macro_parse(program, (tokens,))?;
             }
             syn::Item::Const(mut c) => {
                 let opts = match opts {
@@ -989,18 +988,81 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
     }
 }
 
-impl MacroParse<()> for syn::ItemEnum {
-    fn macro_parse(self, program: &mut ast::Program, (): ()) -> Result<(), Diagnostic> {
-        match self.vis {
-            syn::Visibility::Public(_) => {}
-            _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
+fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), Diagnostic> {
+    let mut variants = vec![];
+    let mut variant_values = vec![];
+
+    for v in enum_.variants.iter() {
+        match v.fields {
+            syn::Fields::Unit => (),
+            _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
         }
 
+        match &v.discriminant {
+            Some((
+                _,
+                syn::Expr::Lit(syn::ExprLit {
+                    attrs: _,
+                    lit: syn::Lit::Str(str_lit),
+                }),
+            )) => {
+                variants.push(v.ident.clone());
+                variant_values.push(str_lit.value());
+            },
+            Some((_, expr)) => bail_span!(
+                expr,
+                "enums with #[wasm_bidngen] cannot mix string and non-string values",
+            ),
+            None => {
+                bail_span!(
+                    v,
+                    "all variants must have a value"
+                );
+            },
+        }
+    }
+
+    program.imports.push(ast::Import {
+        module: ast::ImportModule::None,
+        js_namespace: None,
+        kind: ast::ImportKind::Enum(ast::ImportEnum {
+            vis: enum_.vis,
+            name: enum_.ident,
+            variants,
+            variant_values,
+            rust_attrs: enum_.attrs,
+        }),
+    });
+
+    Ok(())
+}
+
+impl<'a> MacroParse<(&'a mut TokenStream,)> for syn::ItemEnum {
+    fn macro_parse(self, program: &mut ast::Program, (tokens,): (&'a mut TokenStream,)) -> Result<(), Diagnostic> {
         if self.variants.len() == 0 {
             bail_span!(self, "cannot export empty enums to JS");
         }
 
+        // Check if the first value is a string literal
+        match self.variants[0].discriminant {
+            Some((
+                _,
+                syn::Expr::Lit(syn::ExprLit {
+                    attrs: _,
+                    lit: syn::Lit::Str(_),
+                }),
+            )) => {
+                return import_enum(self, program);
+            },
+            _ => {},
+        }
+
         let has_discriminant = self.variants[0].discriminant.is_some();
+
+        match self.vis {
+            syn::Visibility::Public(_) => {}
+            _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
+        }
 
         let variants = self
             .variants
@@ -1072,12 +1134,16 @@ impl MacroParse<()> for syn::ItemEnum {
         }
 
         let comments = extract_doc_comments(&self.attrs);
+
+        self.to_tokens(tokens);
+
         program.enums.push(ast::Enum {
             name: self.ident,
             variants,
             comments,
             hole,
         });
+
         Ok(())
     }
 }
