@@ -27,7 +27,7 @@ extern "C" {
     pub fn onended(this: &OscillatorNode) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onended ) ]
     #[doc = "Setter for the `onended` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode/onended)\n\n*This API requires the following crate features to be activated: `OscillatorNode`*"]
-    pub fn set_onended(this: &OscillatorNode, value: Option<::js_sys::Function>);
+    pub fn set_onended(this: &OscillatorNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new OscillatorNode(..)` constructor, creating a new instance of `OscillatorNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode/OscillatorNode)\n\n*This API requires the following crate features to be activated: `BaseAudioContext`, `OscillatorNode`*"]

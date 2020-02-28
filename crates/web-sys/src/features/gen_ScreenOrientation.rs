@@ -18,7 +18,7 @@ extern "C" {
     pub fn onchange(this: &ScreenOrientation) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onchange ) ]
     #[doc = "Setter for the `onchange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/onchange)\n\n*This API requires the following crate features to be activated: `ScreenOrientation`*"]
-    pub fn set_onchange(this: &ScreenOrientation, value: Option<::js_sys::Function>);
+    pub fn set_onchange(this: &ScreenOrientation, value: Option<&::js_sys::Function>);
     #[cfg(feature = "OrientationLockType")]
     # [ wasm_bindgen ( catch , method , structural , js_name = lock ) ]
     #[doc = "The `lock()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/lock)\n\n*This API requires the following crate features to be activated: `OrientationLockType`, `ScreenOrientation`*"]

@@ -15,25 +15,25 @@ extern "C" {
     pub fn align(this: &HtmlTableSectionElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = align ) ]
     #[doc = "Setter for the `align` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/align)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn set_align(this: &HtmlTableSectionElement, value: String);
+    pub fn set_align(this: &HtmlTableSectionElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = ch ) ]
     #[doc = "Getter for the `ch` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/ch)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub fn ch(this: &HtmlTableSectionElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = ch ) ]
     #[doc = "Setter for the `ch` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/ch)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn set_ch(this: &HtmlTableSectionElement, value: String);
+    pub fn set_ch(this: &HtmlTableSectionElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = chOff ) ]
     #[doc = "Getter for the `chOff` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/chOff)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub fn ch_off(this: &HtmlTableSectionElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = chOff ) ]
     #[doc = "Setter for the `chOff` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/chOff)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn set_ch_off(this: &HtmlTableSectionElement, value: String);
+    pub fn set_ch_off(this: &HtmlTableSectionElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = vAlign ) ]
     #[doc = "Getter for the `vAlign` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/vAlign)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub fn v_align(this: &HtmlTableSectionElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = vAlign ) ]
     #[doc = "Setter for the `vAlign` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/vAlign)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn set_v_align(this: &HtmlTableSectionElement, value: String);
+    pub fn set_v_align(this: &HtmlTableSectionElement, value: &str);
     # [ wasm_bindgen ( catch , method , structural , js_name = deleteRow ) ]
     #[doc = "The `deleteRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/deleteRow)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub fn delete_row(this: &HtmlTableSectionElement, index: i32) -> Result<(), JsValue>;

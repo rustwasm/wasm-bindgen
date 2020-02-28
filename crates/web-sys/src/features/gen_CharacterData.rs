@@ -11,7 +11,7 @@ extern "C" {
     pub fn data(this: &CharacterData) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = data ) ]
     #[doc = "Setter for the `data` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/data)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
-    pub fn set_data(this: &CharacterData, value: String);
+    pub fn set_data(this: &CharacterData, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = length ) ]
     #[doc = "Getter for the `length` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/length)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn length(this: &CharacterData) -> u32;

@@ -11,7 +11,7 @@ extern "C" {
     pub fn key_text(this: &CssKeyframeRule) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = keyText ) ]
     #[doc = "Setter for the `keyText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSKeyframeRule/keyText)\n\n*This API requires the following crate features to be activated: `CssKeyframeRule`*"]
-    pub fn set_key_text(this: &CssKeyframeRule, value: String);
+    pub fn set_key_text(this: &CssKeyframeRule, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = style ) ]
     #[cfg(feature = "CssStyleDeclaration")]
     #[doc = "Getter for the `style` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSKeyframeRule/style)\n\n*This API requires the following crate features to be activated: `CssKeyframeRule`, `CssStyleDeclaration`*"]

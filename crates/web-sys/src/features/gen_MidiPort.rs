@@ -35,7 +35,7 @@ extern "C" {
     pub fn onstatechange(this: &MidiPort) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstatechange ) ]
     #[doc = "Setter for the `onstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/onstatechange)\n\n*This API requires the following crate features to be activated: `MidiPort`*"]
-    pub fn set_onstatechange(this: &MidiPort, value: Option<::js_sys::Function>);
+    pub fn set_onstatechange(this: &MidiPort, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( method , structural , js_name = close ) ]
     #[doc = "The `close()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/close)\n\n*This API requires the following crate features to be activated: `MidiPort`*"]
     pub fn close(this: &MidiPort) -> ::js_sys::Promise;

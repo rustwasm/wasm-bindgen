@@ -11,7 +11,7 @@ extern "C" {
     pub fn name(this: &IdbObjectStore) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/name)\n\n*This API requires the following crate features to be activated: `IdbObjectStore`*"]
-    pub fn set_name(this: &IdbObjectStore, value: String);
+    pub fn set_name(this: &IdbObjectStore, value: &str);
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = keyPath ) ]
     #[doc = "Getter for the `keyPath` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/keyPath)\n\n*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub fn key_path(this: &IdbObjectStore) -> Result<::wasm_bindgen::JsValue, JsValue>;

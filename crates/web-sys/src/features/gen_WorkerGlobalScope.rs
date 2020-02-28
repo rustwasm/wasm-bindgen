@@ -22,19 +22,19 @@ extern "C" {
     pub fn onerror(this: &WorkerGlobalScope) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/onerror)\n\n*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
-    pub fn set_onerror(this: &WorkerGlobalScope, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &WorkerGlobalScope, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onoffline ) ]
     #[doc = "Getter for the `onoffline` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/onoffline)\n\n*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     pub fn onoffline(this: &WorkerGlobalScope) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onoffline ) ]
     #[doc = "Setter for the `onoffline` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/onoffline)\n\n*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
-    pub fn set_onoffline(this: &WorkerGlobalScope, value: Option<::js_sys::Function>);
+    pub fn set_onoffline(this: &WorkerGlobalScope, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = ononline ) ]
     #[doc = "Getter for the `ononline` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/ononline)\n\n*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     pub fn ononline(this: &WorkerGlobalScope) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ononline ) ]
     #[doc = "Setter for the `ononline` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/ononline)\n\n*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
-    pub fn set_ononline(this: &WorkerGlobalScope, value: Option<::js_sys::Function>);
+    pub fn set_ononline(this: &WorkerGlobalScope, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = crypto ) ]
     #[cfg(feature = "Crypto")]
     #[doc = "Getter for the `crypto` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/crypto)\n\n*This API requires the following crate features to be activated: `Crypto`, `WorkerGlobalScope`*"]

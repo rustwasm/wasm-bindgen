@@ -26,7 +26,7 @@ use crate::util::{
 };
 use crate::generator::{
     Enum, EnumVariant, Dictionary, DictionaryField, Interface, InterfaceMethod,
-    InterfaceAttribute, InterfaceConst, Function, Namespace,
+    InterfaceAttribute, InterfaceConst, Function, Namespace, InterfaceAttributeKind,
 };
 use anyhow::{bail, Result};
 use proc_macro2::{Ident, TokenStream};
@@ -492,24 +492,37 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         use weedle::interface::StringifierOrInheritOrStatic::*;
 
+        let is_static = match modifier {
+            Some(Stringifier(_)) => unreachable!(), // filtered out earlier
+            Some(Inherit(_)) => false,
+            Some(Static(_)) => true,
+            None => false,
+        };
+
+        let structural = is_structural(attrs.as_ref(), container_attrs);
+
+        let catch = throws(attrs);
+
         let ty = type_.type_.to_idl_type(self)
             .to_syn_type(TypePosition::Return)
             .unwrap_or(None);
 
         // Skip types which can't be converted
         if let Some(ty) = ty {
-            let is_static = match modifier {
-                Some(Stringifier(_)) => unreachable!(), // filtered out earlier
-                Some(Inherit(_)) => false,
-                Some(Static(_)) => true,
-                None => false,
-            };
+            let kind = InterfaceAttributeKind::Getter;
+            attributes.push(InterfaceAttribute { is_static, structural, catch, ty, js_name: js_name.clone(), kind });
+        }
 
-            let structural = is_structural(attrs.as_ref(), container_attrs);
+        if !readonly {
+            let ty = type_.type_.to_idl_type(self)
+                .to_syn_type(TypePosition::Argument)
+                .unwrap_or(None);
 
-            let catch = throws(attrs);
-
-            attributes.push(InterfaceAttribute { readonly, is_static, structural, catch, ty, js_name, unstable });
+            // Skip types which can't be converted
+            if let Some(ty) = ty {
+                let kind = InterfaceAttributeKind::Setter;
+                attributes.push(InterfaceAttribute { is_static, structural, catch, ty, js_name, kind, unstable });
+            }
         }
     }
 

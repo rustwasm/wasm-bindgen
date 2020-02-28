@@ -15,7 +15,7 @@ extern "C" {
     pub fn onerror(this: &SharedWorker) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker/onerror)\n\n*This API requires the following crate features to be activated: `SharedWorker`*"]
-    pub fn set_onerror(this: &SharedWorker, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &SharedWorker, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new SharedWorker(..)` constructor, creating a new instance of `SharedWorker`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker/SharedWorker)\n\n*This API requires the following crate features to be activated: `SharedWorker`*"]
     pub fn new(this: &SharedWorker, script_url: &str) -> Result<SharedWorker, JsValue>;

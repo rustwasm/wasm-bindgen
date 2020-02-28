@@ -11,5 +11,5 @@ extern "C" {
     pub fn text(this: &HtmlTitleElement) -> Result<String, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = text ) ]
     #[doc = "Setter for the `text` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTitleElement/text)\n\n*This API requires the following crate features to be activated: `HtmlTitleElement`*"]
-    pub fn set_text(this: &HtmlTitleElement, value: Result<String, JsValue>);
+    pub fn set_text(this: &HtmlTitleElement, value: &str) -> Result<(), JsValue>;
 }

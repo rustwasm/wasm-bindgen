@@ -20,19 +20,19 @@ extern "C" {
     pub fn onopen(this: &WebSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onopen ) ]
     #[doc = "Setter for the `onopen` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onopen)\n\n*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn set_onopen(this: &WebSocket, value: Option<::js_sys::Function>);
+    pub fn set_onopen(this: &WebSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onerror)\n\n*This API requires the following crate features to be activated: `WebSocket`*"]
     pub fn onerror(this: &WebSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onerror)\n\n*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn set_onerror(this: &WebSocket, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &WebSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onclose ) ]
     #[doc = "Getter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onclose)\n\n*This API requires the following crate features to be activated: `WebSocket`*"]
     pub fn onclose(this: &WebSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onclose ) ]
     #[doc = "Setter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onclose)\n\n*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn set_onclose(this: &WebSocket, value: Option<::js_sys::Function>);
+    pub fn set_onclose(this: &WebSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = extensions ) ]
     #[doc = "Getter for the `extensions` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/extensions)\n\n*This API requires the following crate features to be activated: `WebSocket`*"]
     pub fn extensions(this: &WebSocket) -> String;
@@ -44,7 +44,7 @@ extern "C" {
     pub fn onmessage(this: &WebSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onmessage)\n\n*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn set_onmessage(this: &WebSocket, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &WebSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = binaryType ) ]
     #[cfg(feature = "BinaryType")]
     #[doc = "Getter for the `binaryType` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/binaryType)\n\n*This API requires the following crate features to be activated: `BinaryType`, `WebSocket`*"]

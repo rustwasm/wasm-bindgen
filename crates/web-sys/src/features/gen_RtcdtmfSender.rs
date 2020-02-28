@@ -11,7 +11,7 @@ extern "C" {
     pub fn ontonechange(this: &RtcdtmfSender) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ontonechange ) ]
     #[doc = "Setter for the `ontonechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/ontonechange)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
-    pub fn set_ontonechange(this: &RtcdtmfSender, value: Option<::js_sys::Function>);
+    pub fn set_ontonechange(this: &RtcdtmfSender, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = toneBuffer ) ]
     #[doc = "Getter for the `toneBuffer` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/toneBuffer)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub fn tone_buffer(this: &RtcdtmfSender) -> String;

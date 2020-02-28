@@ -43,7 +43,7 @@ extern "C" {
     pub fn oncuechange(this: &TextTrack) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = oncuechange ) ]
     #[doc = "Setter for the `oncuechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/oncuechange)\n\n*This API requires the following crate features to be activated: `TextTrack`*"]
-    pub fn set_oncuechange(this: &TextTrack, value: Option<::js_sys::Function>);
+    pub fn set_oncuechange(this: &TextTrack, value: Option<&::js_sys::Function>);
     #[cfg(feature = "VttCue")]
     # [ wasm_bindgen ( method , structural , js_name = addCue ) ]
     #[doc = "The `addCue()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/addCue)\n\n*This API requires the following crate features to be activated: `TextTrack`, `VttCue`*"]

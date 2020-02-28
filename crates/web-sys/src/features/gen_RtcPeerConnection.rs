@@ -56,43 +56,43 @@ extern "C" {
     pub fn onnegotiationneeded(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onnegotiationneeded ) ]
     #[doc = "Setter for the `onnegotiationneeded` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onnegotiationneeded)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onnegotiationneeded(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_onnegotiationneeded(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onicecandidate ) ]
     #[doc = "Getter for the `onicecandidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicecandidate)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn onicecandidate(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onicecandidate ) ]
     #[doc = "Setter for the `onicecandidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicecandidate)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onicecandidate(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_onicecandidate(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onsignalingstatechange ) ]
     #[doc = "Getter for the `onsignalingstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onsignalingstatechange)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn onsignalingstatechange(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onsignalingstatechange ) ]
     #[doc = "Setter for the `onsignalingstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onsignalingstatechange)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onsignalingstatechange(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_onsignalingstatechange(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onaddstream ) ]
     #[doc = "Getter for the `onaddstream` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddstream)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn onaddstream(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onaddstream ) ]
     #[doc = "Setter for the `onaddstream` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddstream)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onaddstream(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_onaddstream(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onaddtrack ) ]
     #[doc = "Getter for the `onaddtrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddtrack)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn onaddtrack(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onaddtrack ) ]
     #[doc = "Setter for the `onaddtrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddtrack)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onaddtrack(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_onaddtrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = ontrack ) ]
     #[doc = "Getter for the `ontrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn ontrack(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ontrack ) ]
     #[doc = "Setter for the `ontrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_ontrack(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_ontrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onremovestream ) ]
     #[doc = "Getter for the `onremovestream` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onremovestream)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn onremovestream(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onremovestream ) ]
     #[doc = "Setter for the `onremovestream` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onremovestream)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onremovestream(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_onremovestream(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = oniceconnectionstatechange ) ]
     #[doc = "Getter for the `oniceconnectionstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/oniceconnectionstatechange)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn oniceconnectionstatechange(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
@@ -100,7 +100,7 @@ extern "C" {
     #[doc = "Setter for the `oniceconnectionstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/oniceconnectionstatechange)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn set_oniceconnectionstatechange(
         this: &RtcPeerConnection,
-        value: Option<::js_sys::Function>,
+        value: Option<&::js_sys::Function>,
     );
     # [ wasm_bindgen ( structural , method , getter , js_name = onicegatheringstatechange ) ]
     #[doc = "Getter for the `onicegatheringstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicegatheringstatechange)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
@@ -109,14 +109,14 @@ extern "C" {
     #[doc = "Setter for the `onicegatheringstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicegatheringstatechange)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn set_onicegatheringstatechange(
         this: &RtcPeerConnection,
-        value: Option<::js_sys::Function>,
+        value: Option<&::js_sys::Function>,
     );
     # [ wasm_bindgen ( structural , method , getter , js_name = ondatachannel ) ]
     #[doc = "Getter for the `ondatachannel` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn ondatachannel(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ondatachannel ) ]
     #[doc = "Setter for the `ondatachannel` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_ondatachannel(this: &RtcPeerConnection, value: Option<::js_sys::Function>);
+    pub fn set_ondatachannel(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn new(this: &RtcPeerConnection) -> Result<RtcPeerConnection, JsValue>;

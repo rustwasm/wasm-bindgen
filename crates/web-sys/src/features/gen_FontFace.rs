@@ -11,55 +11,55 @@ extern "C" {
     pub fn family(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = family ) ]
     #[doc = "Setter for the `family` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/family)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_family(this: &FontFace, value: String);
+    pub fn set_family(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = style ) ]
     #[doc = "Getter for the `style` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/style)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn style(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = style ) ]
     #[doc = "Setter for the `style` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/style)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_style(this: &FontFace, value: String);
+    pub fn set_style(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = weight ) ]
     #[doc = "Getter for the `weight` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/weight)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn weight(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = weight ) ]
     #[doc = "Setter for the `weight` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/weight)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_weight(this: &FontFace, value: String);
+    pub fn set_weight(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = stretch ) ]
     #[doc = "Getter for the `stretch` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/stretch)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn stretch(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = stretch ) ]
     #[doc = "Setter for the `stretch` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/stretch)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_stretch(this: &FontFace, value: String);
+    pub fn set_stretch(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = unicodeRange ) ]
     #[doc = "Getter for the `unicodeRange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/unicodeRange)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn unicode_range(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = unicodeRange ) ]
     #[doc = "Setter for the `unicodeRange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/unicodeRange)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_unicode_range(this: &FontFace, value: String);
+    pub fn set_unicode_range(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = variant ) ]
     #[doc = "Getter for the `variant` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/variant)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn variant(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = variant ) ]
     #[doc = "Setter for the `variant` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/variant)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_variant(this: &FontFace, value: String);
+    pub fn set_variant(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = featureSettings ) ]
     #[doc = "Getter for the `featureSettings` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/featureSettings)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn feature_settings(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = featureSettings ) ]
     #[doc = "Setter for the `featureSettings` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/featureSettings)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_feature_settings(this: &FontFace, value: String);
+    pub fn set_feature_settings(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = variationSettings ) ]
     #[doc = "Getter for the `variationSettings` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/variationSettings)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn variation_settings(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = variationSettings ) ]
     #[doc = "Setter for the `variationSettings` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/variationSettings)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_variation_settings(this: &FontFace, value: String);
+    pub fn set_variation_settings(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = display ) ]
     #[doc = "Getter for the `display` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/display)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn display(this: &FontFace) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = display ) ]
     #[doc = "Setter for the `display` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/display)\n\n*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn set_display(this: &FontFace, value: String);
+    pub fn set_display(this: &FontFace, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = status ) ]
     #[cfg(feature = "FontFaceLoadStatus")]
     #[doc = "Getter for the `status` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/status)\n\n*This API requires the following crate features to be activated: `FontFace`, `FontFaceLoadStatus`*"]

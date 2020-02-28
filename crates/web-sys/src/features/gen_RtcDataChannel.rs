@@ -36,31 +36,31 @@ extern "C" {
     pub fn onopen(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onopen ) ]
     #[doc = "Setter for the `onopen` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onopen)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
-    pub fn set_onopen(this: &RtcDataChannel, value: Option<::js_sys::Function>);
+    pub fn set_onopen(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onerror)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
     pub fn onerror(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onerror)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
-    pub fn set_onerror(this: &RtcDataChannel, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onclose ) ]
     #[doc = "Getter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onclose)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
     pub fn onclose(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onclose ) ]
     #[doc = "Setter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onclose)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
-    pub fn set_onclose(this: &RtcDataChannel, value: Option<::js_sys::Function>);
+    pub fn set_onclose(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessage ) ]
     #[doc = "Getter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onmessage)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
     pub fn onmessage(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onmessage)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
-    pub fn set_onmessage(this: &RtcDataChannel, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onbufferedamountlow ) ]
     #[doc = "Getter for the `onbufferedamountlow` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onbufferedamountlow)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
     pub fn onbufferedamountlow(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onbufferedamountlow ) ]
     #[doc = "Setter for the `onbufferedamountlow` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onbufferedamountlow)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`*"]
-    pub fn set_onbufferedamountlow(this: &RtcDataChannel, value: Option<::js_sys::Function>);
+    pub fn set_onbufferedamountlow(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = binaryType ) ]
     #[cfg(feature = "RtcDataChannelType")]
     #[doc = "Getter for the `binaryType` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/binaryType)\n\n*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelType`*"]

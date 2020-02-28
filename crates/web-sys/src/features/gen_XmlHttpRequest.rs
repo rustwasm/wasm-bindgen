@@ -11,7 +11,7 @@ extern "C" {
     pub fn onreadystatechange(this: &XmlHttpRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onreadystatechange ) ]
     #[doc = "Setter for the `onreadystatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange)\n\n*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn set_onreadystatechange(this: &XmlHttpRequest, value: Option<::js_sys::Function>);
+    pub fn set_onreadystatechange(this: &XmlHttpRequest, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = readyState ) ]
     #[doc = "Getter for the `readyState` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState)\n\n*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub fn ready_state(this: &XmlHttpRequest) -> u16;

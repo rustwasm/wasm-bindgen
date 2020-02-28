@@ -11,11 +11,11 @@ extern "C" {
     pub fn cite(this: &HtmlModElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = cite ) ]
     #[doc = "Setter for the `cite` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLModElement/cite)\n\n*This API requires the following crate features to be activated: `HtmlModElement`*"]
-    pub fn set_cite(this: &HtmlModElement, value: String);
+    pub fn set_cite(this: &HtmlModElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = dateTime ) ]
     #[doc = "Getter for the `dateTime` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLModElement/dateTime)\n\n*This API requires the following crate features to be activated: `HtmlModElement`*"]
     pub fn date_time(this: &HtmlModElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = dateTime ) ]
     #[doc = "Setter for the `dateTime` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLModElement/dateTime)\n\n*This API requires the following crate features to be activated: `HtmlModElement`*"]
-    pub fn set_date_time(this: &HtmlModElement, value: String);
+    pub fn set_date_time(this: &HtmlModElement, value: &str);
 }

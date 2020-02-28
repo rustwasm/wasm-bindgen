@@ -14,7 +14,7 @@ extern "C" {
     pub fn value(this: &Attr) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Attr/value)\n\n*This API requires the following crate features to be activated: `Attr`*"]
-    pub fn set_value(this: &Attr, value: String);
+    pub fn set_value(this: &Attr, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = name ) ]
     #[doc = "Getter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Attr/name)\n\n*This API requires the following crate features to be activated: `Attr`*"]
     pub fn name(this: &Attr) -> String;

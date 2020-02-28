@@ -29,7 +29,7 @@ extern "C" {
     pub fn poster(this: &HtmlVideoElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = poster ) ]
     #[doc = "Setter for the `poster` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/poster)\n\n*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
-    pub fn set_poster(this: &HtmlVideoElement, value: String);
+    pub fn set_poster(this: &HtmlVideoElement, value: &str);
     #[cfg(feature = "VideoPlaybackQuality")]
     # [ wasm_bindgen ( method , structural , js_name = getVideoPlaybackQuality ) ]
     #[doc = "The `getVideoPlaybackQuality()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/getVideoPlaybackQuality)\n\n*This API requires the following crate features to be activated: `HtmlVideoElement`, `VideoPlaybackQuality`*"]

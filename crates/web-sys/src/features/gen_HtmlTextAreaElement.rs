@@ -11,7 +11,7 @@ extern "C" {
     pub fn autocomplete(this: &HtmlTextAreaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = autocomplete ) ]
     #[doc = "Setter for the `autocomplete` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/autocomplete)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_autocomplete(this: &HtmlTextAreaElement, value: String);
+    pub fn set_autocomplete(this: &HtmlTextAreaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = autofocus ) ]
     #[doc = "Getter for the `autofocus` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/autofocus)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn autofocus(this: &HtmlTextAreaElement) -> bool;
@@ -51,13 +51,13 @@ extern "C" {
     pub fn name(this: &HtmlTextAreaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/name)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_name(this: &HtmlTextAreaElement, value: String);
+    pub fn set_name(this: &HtmlTextAreaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = placeholder ) ]
     #[doc = "Getter for the `placeholder` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/placeholder)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn placeholder(this: &HtmlTextAreaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = placeholder ) ]
     #[doc = "Setter for the `placeholder` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/placeholder)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_placeholder(this: &HtmlTextAreaElement, value: String);
+    pub fn set_placeholder(this: &HtmlTextAreaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = readOnly ) ]
     #[doc = "Getter for the `readOnly` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/readOnly)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn read_only(this: &HtmlTextAreaElement) -> bool;
@@ -81,7 +81,7 @@ extern "C" {
     pub fn wrap(this: &HtmlTextAreaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = wrap ) ]
     #[doc = "Setter for the `wrap` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/wrap)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_wrap(this: &HtmlTextAreaElement, value: String);
+    pub fn set_wrap(this: &HtmlTextAreaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/type)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn type_(this: &HtmlTextAreaElement) -> String;
@@ -90,13 +90,13 @@ extern "C" {
     pub fn default_value(this: &HtmlTextAreaElement) -> Result<String, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = defaultValue ) ]
     #[doc = "Setter for the `defaultValue` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/defaultValue)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_default_value(this: &HtmlTextAreaElement, value: Result<String, JsValue>);
+    pub fn set_default_value(this: &HtmlTextAreaElement, value: &str) -> Result<(), JsValue>;
     # [ wasm_bindgen ( structural , method , getter , js_name = value ) ]
     #[doc = "Getter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/value)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn value(this: &HtmlTextAreaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/value)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_value(this: &HtmlTextAreaElement, value: String);
+    pub fn set_value(this: &HtmlTextAreaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = textLength ) ]
     #[doc = "Getter for the `textLength` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/textLength)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn text_length(this: &HtmlTextAreaElement) -> u32;
@@ -119,13 +119,17 @@ extern "C" {
     pub fn selection_start(this: &HtmlTextAreaElement) -> Result<Option<u32>, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = selectionStart ) ]
     #[doc = "Setter for the `selectionStart` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/selectionStart)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_selection_start(this: &HtmlTextAreaElement, value: Result<Option<u32>, JsValue>);
+    pub fn set_selection_start(
+        this: &HtmlTextAreaElement,
+        value: Option<u32>,
+    ) -> Result<(), JsValue>;
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = selectionEnd ) ]
     #[doc = "Getter for the `selectionEnd` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/selectionEnd)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn selection_end(this: &HtmlTextAreaElement) -> Result<Option<u32>, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = selectionEnd ) ]
     #[doc = "Setter for the `selectionEnd` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/selectionEnd)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_selection_end(this: &HtmlTextAreaElement, value: Result<Option<u32>, JsValue>);
+    pub fn set_selection_end(this: &HtmlTextAreaElement, value: Option<u32>)
+        -> Result<(), JsValue>;
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = selectionDirection ) ]
     #[doc = "Getter for the `selectionDirection` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/selectionDirection)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn selection_direction(this: &HtmlTextAreaElement) -> Result<Option<String>, JsValue>;
@@ -133,8 +137,8 @@ extern "C" {
     #[doc = "Setter for the `selectionDirection` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/selectionDirection)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn set_selection_direction(
         this: &HtmlTextAreaElement,
-        value: Result<Option<String>, JsValue>,
-    );
+        value: Option<&str>,
+    ) -> Result<(), JsValue>;
     # [ wasm_bindgen ( method , structural , js_name = checkValidity ) ]
     #[doc = "The `checkValidity()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/checkValidity)\n\n*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn check_validity(this: &HtmlTextAreaElement) -> bool;

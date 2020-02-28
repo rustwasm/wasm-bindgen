@@ -14,7 +14,7 @@ extern "C" {
     pub fn value(this: &SvgLength) -> Result<f32, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLength/value)\n\n*This API requires the following crate features to be activated: `SvgLength`*"]
-    pub fn set_value(this: &SvgLength, value: Result<f32, JsValue>);
+    pub fn set_value(this: &SvgLength, value: f32) -> Result<(), JsValue>;
     # [ wasm_bindgen ( structural , method , getter , js_name = valueInSpecifiedUnits ) ]
     #[doc = "Getter for the `valueInSpecifiedUnits` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLength/valueInSpecifiedUnits)\n\n*This API requires the following crate features to be activated: `SvgLength`*"]
     pub fn value_in_specified_units(this: &SvgLength) -> f32;
@@ -26,7 +26,7 @@ extern "C" {
     pub fn value_as_string(this: &SvgLength) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = valueAsString ) ]
     #[doc = "Setter for the `valueAsString` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLength/valueAsString)\n\n*This API requires the following crate features to be activated: `SvgLength`*"]
-    pub fn set_value_as_string(this: &SvgLength, value: String);
+    pub fn set_value_as_string(this: &SvgLength, value: &str);
     # [ wasm_bindgen ( catch , method , structural , js_name = convertToSpecifiedUnits ) ]
     #[doc = "The `convertToSpecifiedUnits()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLength/convertToSpecifiedUnits)\n\n*This API requires the following crate features to be activated: `SvgLength`*"]
     pub fn convert_to_specified_units(this: &SvgLength, unit_type: u16) -> Result<(), JsValue>;

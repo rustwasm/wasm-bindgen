@@ -11,5 +11,5 @@ extern "C" {
     pub fn value(this: &RadioNodeList) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RadioNodeList/value)\n\n*This API requires the following crate features to be activated: `RadioNodeList`*"]
-    pub fn set_value(this: &RadioNodeList, value: String);
+    pub fn set_value(this: &RadioNodeList, value: &str);
 }

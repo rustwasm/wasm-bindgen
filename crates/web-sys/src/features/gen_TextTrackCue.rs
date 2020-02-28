@@ -15,7 +15,7 @@ extern "C" {
     pub fn id(this: &TextTrackCue) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = id ) ]
     #[doc = "Setter for the `id` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/id)\n\n*This API requires the following crate features to be activated: `TextTrackCue`*"]
-    pub fn set_id(this: &TextTrackCue, value: String);
+    pub fn set_id(this: &TextTrackCue, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = startTime ) ]
     #[doc = "Getter for the `startTime` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/startTime)\n\n*This API requires the following crate features to be activated: `TextTrackCue`*"]
     pub fn start_time(this: &TextTrackCue) -> f64;
@@ -39,11 +39,11 @@ extern "C" {
     pub fn onenter(this: &TextTrackCue) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onenter ) ]
     #[doc = "Setter for the `onenter` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/onenter)\n\n*This API requires the following crate features to be activated: `TextTrackCue`*"]
-    pub fn set_onenter(this: &TextTrackCue, value: Option<::js_sys::Function>);
+    pub fn set_onenter(this: &TextTrackCue, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onexit ) ]
     #[doc = "Getter for the `onexit` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/onexit)\n\n*This API requires the following crate features to be activated: `TextTrackCue`*"]
     pub fn onexit(this: &TextTrackCue) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onexit ) ]
     #[doc = "Setter for the `onexit` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/onexit)\n\n*This API requires the following crate features to be activated: `TextTrackCue`*"]
-    pub fn set_onexit(this: &TextTrackCue, value: Option<::js_sys::Function>);
+    pub fn set_onexit(this: &TextTrackCue, value: Option<&::js_sys::Function>);
 }

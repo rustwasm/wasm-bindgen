@@ -13,7 +13,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = caption ) ]
     #[cfg(feature = "HtmlTableCaptionElement")]
     #[doc = "Setter for the `caption` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/caption)\n\n*This API requires the following crate features to be activated: `HtmlTableCaptionElement`, `HtmlTableElement`*"]
-    pub fn set_caption(this: &HtmlTableElement, value: Option<HtmlTableCaptionElement>);
+    pub fn set_caption(this: &HtmlTableElement, value: Option<&HtmlTableCaptionElement>);
     # [ wasm_bindgen ( structural , method , getter , js_name = tHead ) ]
     #[cfg(feature = "HtmlTableSectionElement")]
     #[doc = "Getter for the `tHead` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/tHead)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`, `HtmlTableSectionElement`*"]
@@ -21,7 +21,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = tHead ) ]
     #[cfg(feature = "HtmlTableSectionElement")]
     #[doc = "Setter for the `tHead` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/tHead)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`, `HtmlTableSectionElement`*"]
-    pub fn set_t_head(this: &HtmlTableElement, value: Option<HtmlTableSectionElement>);
+    pub fn set_t_head(this: &HtmlTableElement, value: Option<&HtmlTableSectionElement>);
     # [ wasm_bindgen ( structural , method , getter , js_name = tFoot ) ]
     #[cfg(feature = "HtmlTableSectionElement")]
     #[doc = "Getter for the `tFoot` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/tFoot)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`, `HtmlTableSectionElement`*"]
@@ -29,7 +29,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = tFoot ) ]
     #[cfg(feature = "HtmlTableSectionElement")]
     #[doc = "Setter for the `tFoot` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/tFoot)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`, `HtmlTableSectionElement`*"]
-    pub fn set_t_foot(this: &HtmlTableElement, value: Option<HtmlTableSectionElement>);
+    pub fn set_t_foot(this: &HtmlTableElement, value: Option<&HtmlTableSectionElement>);
     # [ wasm_bindgen ( structural , method , getter , js_name = tBodies ) ]
     #[cfg(feature = "HtmlCollection")]
     #[doc = "Getter for the `tBodies` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/tBodies)\n\n*This API requires the following crate features to be activated: `HtmlCollection`, `HtmlTableElement`*"]
@@ -43,55 +43,55 @@ extern "C" {
     pub fn align(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = align ) ]
     #[doc = "Setter for the `align` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/align)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_align(this: &HtmlTableElement, value: String);
+    pub fn set_align(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = border ) ]
     #[doc = "Getter for the `border` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/border)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn border(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = border ) ]
     #[doc = "Setter for the `border` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/border)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_border(this: &HtmlTableElement, value: String);
+    pub fn set_border(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = frame ) ]
     #[doc = "Getter for the `frame` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/frame)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn frame(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = frame ) ]
     #[doc = "Setter for the `frame` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/frame)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_frame(this: &HtmlTableElement, value: String);
+    pub fn set_frame(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = rules ) ]
     #[doc = "Getter for the `rules` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/rules)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn rules(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = rules ) ]
     #[doc = "Setter for the `rules` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/rules)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_rules(this: &HtmlTableElement, value: String);
+    pub fn set_rules(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = summary ) ]
     #[doc = "Getter for the `summary` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/summary)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn summary(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = summary ) ]
     #[doc = "Setter for the `summary` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/summary)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_summary(this: &HtmlTableElement, value: String);
+    pub fn set_summary(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = width ) ]
     #[doc = "Getter for the `width` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/width)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn width(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = width ) ]
     #[doc = "Setter for the `width` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/width)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_width(this: &HtmlTableElement, value: String);
+    pub fn set_width(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = bgColor ) ]
     #[doc = "Getter for the `bgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/bgColor)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn bg_color(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = bgColor ) ]
     #[doc = "Setter for the `bgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/bgColor)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_bg_color(this: &HtmlTableElement, value: String);
+    pub fn set_bg_color(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = cellPadding ) ]
     #[doc = "Getter for the `cellPadding` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/cellPadding)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn cell_padding(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = cellPadding ) ]
     #[doc = "Setter for the `cellPadding` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/cellPadding)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_cell_padding(this: &HtmlTableElement, value: String);
+    pub fn set_cell_padding(this: &HtmlTableElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = cellSpacing ) ]
     #[doc = "Getter for the `cellSpacing` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/cellSpacing)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn cell_spacing(this: &HtmlTableElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = cellSpacing ) ]
     #[doc = "Setter for the `cellSpacing` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/cellSpacing)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn set_cell_spacing(this: &HtmlTableElement, value: String);
+    pub fn set_cell_spacing(this: &HtmlTableElement, value: &str);
     #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( method , structural , js_name = createCaption ) ]
     #[doc = "The `createCaption()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createCaption)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableElement`*"]

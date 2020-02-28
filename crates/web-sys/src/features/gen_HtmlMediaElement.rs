@@ -15,7 +15,7 @@ extern "C" {
     pub fn src(this: &HtmlMediaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = src ) ]
     #[doc = "Setter for the `src` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/src)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_src(this: &HtmlMediaElement, value: String);
+    pub fn set_src(this: &HtmlMediaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = currentSrc ) ]
     #[doc = "Getter for the `currentSrc` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/currentSrc)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn current_src(this: &HtmlMediaElement) -> String;
@@ -26,13 +26,13 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = srcObject ) ]
     #[cfg(feature = "MediaStream")]
     #[doc = "Setter for the `srcObject` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`, `MediaStream`*"]
-    pub fn set_src_object(this: &HtmlMediaElement, value: Option<MediaStream>);
+    pub fn set_src_object(this: &HtmlMediaElement, value: Option<&MediaStream>);
     # [ wasm_bindgen ( structural , method , getter , js_name = crossOrigin ) ]
     #[doc = "Getter for the `crossOrigin` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/crossOrigin)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn cross_origin(this: &HtmlMediaElement) -> Option<String>;
     # [ wasm_bindgen ( structural , method , setter , js_name = crossOrigin ) ]
     #[doc = "Setter for the `crossOrigin` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/crossOrigin)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_cross_origin(this: &HtmlMediaElement, value: Option<String>);
+    pub fn set_cross_origin(this: &HtmlMediaElement, value: Option<&str>);
     # [ wasm_bindgen ( structural , method , getter , js_name = networkState ) ]
     #[doc = "Getter for the `networkState` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/networkState)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn network_state(this: &HtmlMediaElement) -> u16;
@@ -41,7 +41,7 @@ extern "C" {
     pub fn preload(this: &HtmlMediaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = preload ) ]
     #[doc = "Setter for the `preload` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/preload)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_preload(this: &HtmlMediaElement, value: String);
+    pub fn set_preload(this: &HtmlMediaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = buffered ) ]
     #[cfg(feature = "TimeRanges")]
     #[doc = "Getter for the `buffered` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/buffered)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`, `TimeRanges`*"]
@@ -144,13 +144,13 @@ extern "C" {
     pub fn onencrypted(this: &HtmlMediaElement) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onencrypted ) ]
     #[doc = "Setter for the `onencrypted` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/onencrypted)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_onencrypted(this: &HtmlMediaElement, value: Option<::js_sys::Function>);
+    pub fn set_onencrypted(this: &HtmlMediaElement, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onwaitingforkey ) ]
     #[doc = "Getter for the `onwaitingforkey` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/onwaitingforkey)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn onwaitingforkey(this: &HtmlMediaElement) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onwaitingforkey ) ]
     #[doc = "Setter for the `onwaitingforkey` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/onwaitingforkey)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_onwaitingforkey(this: &HtmlMediaElement, value: Option<::js_sys::Function>);
+    pub fn set_onwaitingforkey(this: &HtmlMediaElement, value: Option<&::js_sys::Function>);
     #[cfg(all(feature = "TextTrack", feature = "TextTrackKind",))]
     # [ wasm_bindgen ( method , structural , js_name = addTextTrack ) ]
     #[doc = "The `addTextTrack()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/addTextTrack)\n\n*This API requires the following crate features to be activated: `HtmlMediaElement`, `TextTrack`, `TextTrackKind`*"]

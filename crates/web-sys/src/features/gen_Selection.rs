@@ -34,7 +34,7 @@ extern "C" {
     pub fn caret_bidi_level(this: &Selection) -> Result<Option<i16>, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = caretBidiLevel ) ]
     #[doc = "Setter for the `caretBidiLevel` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Selection/caretBidiLevel)\n\n*This API requires the following crate features to be activated: `Selection`*"]
-    pub fn set_caret_bidi_level(this: &Selection, value: Result<Option<i16>, JsValue>);
+    pub fn set_caret_bidi_level(this: &Selection, value: Option<i16>) -> Result<(), JsValue>;
     #[cfg(feature = "Range")]
     # [ wasm_bindgen ( catch , method , structural , js_name = addRange ) ]
     #[doc = "The `addRange()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Selection/addRange)\n\n*This API requires the following crate features to be activated: `Range`, `Selection`*"]

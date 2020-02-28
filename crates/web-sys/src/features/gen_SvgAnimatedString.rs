@@ -11,7 +11,7 @@ extern "C" {
     pub fn base_val(this: &SvgAnimatedString) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = baseVal ) ]
     #[doc = "Setter for the `baseVal` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedString/baseVal)\n\n*This API requires the following crate features to be activated: `SvgAnimatedString`*"]
-    pub fn set_base_val(this: &SvgAnimatedString, value: String);
+    pub fn set_base_val(this: &SvgAnimatedString, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = animVal ) ]
     #[doc = "Getter for the `animVal` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedString/animVal)\n\n*This API requires the following crate features to be activated: `SvgAnimatedString`*"]
     pub fn anim_val(this: &SvgAnimatedString) -> String;

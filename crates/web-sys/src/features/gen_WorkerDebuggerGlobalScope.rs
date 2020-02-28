@@ -14,7 +14,7 @@ extern "C" {
     pub fn onmessage(this: &WorkerDebuggerGlobalScope) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerDebuggerGlobalScope/onmessage)\n\n*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
-    pub fn set_onmessage(this: &WorkerDebuggerGlobalScope, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &WorkerDebuggerGlobalScope, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( catch , method , structural , js_name = createSandbox ) ]
     #[doc = "The `createSandbox()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerDebuggerGlobalScope/createSandbox)\n\n*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
     pub fn create_sandbox(

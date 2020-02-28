@@ -28,13 +28,13 @@ extern "C" {
     pub fn onkeystatuseschange(this: &MediaKeySession) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onkeystatuseschange ) ]
     #[doc = "Setter for the `onkeystatuseschange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/onkeystatuseschange)\n\n*This API requires the following crate features to be activated: `MediaKeySession`*"]
-    pub fn set_onkeystatuseschange(this: &MediaKeySession, value: Option<::js_sys::Function>);
+    pub fn set_onkeystatuseschange(this: &MediaKeySession, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessage ) ]
     #[doc = "Getter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/onmessage)\n\n*This API requires the following crate features to be activated: `MediaKeySession`*"]
     pub fn onmessage(this: &MediaKeySession) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/onmessage)\n\n*This API requires the following crate features to be activated: `MediaKeySession`*"]
-    pub fn set_onmessage(this: &MediaKeySession, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &MediaKeySession, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( method , structural , js_name = close ) ]
     #[doc = "The `close()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/close)\n\n*This API requires the following crate features to be activated: `MediaKeySession`*"]
     pub fn close(this: &MediaKeySession) -> ::js_sys::Promise;

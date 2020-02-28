@@ -29,19 +29,19 @@ extern "C" {
     pub fn onsourceopen(this: &MediaSource) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onsourceopen ) ]
     #[doc = "Setter for the `onsourceopen` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceopen)\n\n*This API requires the following crate features to be activated: `MediaSource`*"]
-    pub fn set_onsourceopen(this: &MediaSource, value: Option<::js_sys::Function>);
+    pub fn set_onsourceopen(this: &MediaSource, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onsourceended ) ]
     #[doc = "Getter for the `onsourceended` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceended)\n\n*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn onsourceended(this: &MediaSource) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onsourceended ) ]
     #[doc = "Setter for the `onsourceended` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceended)\n\n*This API requires the following crate features to be activated: `MediaSource`*"]
-    pub fn set_onsourceended(this: &MediaSource, value: Option<::js_sys::Function>);
+    pub fn set_onsourceended(this: &MediaSource, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onsourceclosed ) ]
     #[doc = "Getter for the `onsourceclosed` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceclosed)\n\n*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn onsourceclosed(this: &MediaSource) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onsourceclosed ) ]
     #[doc = "Setter for the `onsourceclosed` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceclosed)\n\n*This API requires the following crate features to be activated: `MediaSource`*"]
-    pub fn set_onsourceclosed(this: &MediaSource, value: Option<::js_sys::Function>);
+    pub fn set_onsourceclosed(this: &MediaSource, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new MediaSource(..)` constructor, creating a new instance of `MediaSource`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/MediaSource)\n\n*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn new(this: &MediaSource) -> Result<MediaSource, JsValue>;

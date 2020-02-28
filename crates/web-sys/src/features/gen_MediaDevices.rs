@@ -11,7 +11,7 @@ extern "C" {
     pub fn ondevicechange(this: &MediaDevices) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ondevicechange ) ]
     #[doc = "Setter for the `ondevicechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/ondevicechange)\n\n*This API requires the following crate features to be activated: `MediaDevices`*"]
-    pub fn set_ondevicechange(this: &MediaDevices, value: Option<::js_sys::Function>);
+    pub fn set_ondevicechange(this: &MediaDevices, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( catch , method , structural , js_name = enumerateDevices ) ]
     #[doc = "The `enumerateDevices()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices)\n\n*This API requires the following crate features to be activated: `MediaDevices`*"]
     pub fn enumerate_devices(this: &MediaDevices) -> Result<::js_sys::Promise, JsValue>;

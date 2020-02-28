@@ -13,7 +13,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = buffer ) ]
     #[cfg(feature = "AudioBuffer")]
     #[doc = "Setter for the `buffer` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/buffer)\n\n*This API requires the following crate features to be activated: `AudioBuffer`, `AudioBufferSourceNode`*"]
-    pub fn set_buffer(this: &AudioBufferSourceNode, value: Option<AudioBuffer>);
+    pub fn set_buffer(this: &AudioBufferSourceNode, value: Option<&AudioBuffer>);
     # [ wasm_bindgen ( structural , method , getter , js_name = playbackRate ) ]
     #[cfg(feature = "AudioParam")]
     #[doc = "Getter for the `playbackRate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/playbackRate)\n\n*This API requires the following crate features to be activated: `AudioBufferSourceNode`, `AudioParam`*"]
@@ -45,7 +45,7 @@ extern "C" {
     pub fn onended(this: &AudioBufferSourceNode) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onended ) ]
     #[doc = "Setter for the `onended` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/onended)\n\n*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
-    pub fn set_onended(this: &AudioBufferSourceNode, value: Option<::js_sys::Function>);
+    pub fn set_onended(this: &AudioBufferSourceNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new AudioBufferSourceNode(..)` constructor, creating a new instance of `AudioBufferSourceNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/AudioBufferSourceNode)\n\n*This API requires the following crate features to be activated: `AudioBufferSourceNode`, `BaseAudioContext`*"]

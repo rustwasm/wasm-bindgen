@@ -27,19 +27,19 @@ extern "C" {
     pub fn form_action(this: &HtmlButtonElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = formAction ) ]
     #[doc = "Setter for the `formAction` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/formAction)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
-    pub fn set_form_action(this: &HtmlButtonElement, value: String);
+    pub fn set_form_action(this: &HtmlButtonElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = formEnctype ) ]
     #[doc = "Getter for the `formEnctype` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/formEnctype)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn form_enctype(this: &HtmlButtonElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = formEnctype ) ]
     #[doc = "Setter for the `formEnctype` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/formEnctype)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
-    pub fn set_form_enctype(this: &HtmlButtonElement, value: String);
+    pub fn set_form_enctype(this: &HtmlButtonElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = formMethod ) ]
     #[doc = "Getter for the `formMethod` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/formMethod)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn form_method(this: &HtmlButtonElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = formMethod ) ]
     #[doc = "Setter for the `formMethod` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/formMethod)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
-    pub fn set_form_method(this: &HtmlButtonElement, value: String);
+    pub fn set_form_method(this: &HtmlButtonElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = formNoValidate ) ]
     #[doc = "Getter for the `formNoValidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/formNoValidate)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn form_no_validate(this: &HtmlButtonElement) -> bool;
@@ -51,25 +51,25 @@ extern "C" {
     pub fn form_target(this: &HtmlButtonElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = formTarget ) ]
     #[doc = "Setter for the `formTarget` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/formTarget)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
-    pub fn set_form_target(this: &HtmlButtonElement, value: String);
+    pub fn set_form_target(this: &HtmlButtonElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = name ) ]
     #[doc = "Getter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/name)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn name(this: &HtmlButtonElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/name)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
-    pub fn set_name(this: &HtmlButtonElement, value: String);
+    pub fn set_name(this: &HtmlButtonElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/type)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn type_(this: &HtmlButtonElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = type ) ]
     #[doc = "Setter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/type)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
-    pub fn set_type(this: &HtmlButtonElement, value: String);
+    pub fn set_type(this: &HtmlButtonElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = value ) ]
     #[doc = "Getter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/value)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn value(this: &HtmlButtonElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/value)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
-    pub fn set_value(this: &HtmlButtonElement, value: String);
+    pub fn set_value(this: &HtmlButtonElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = willValidate ) ]
     #[doc = "Getter for the `willValidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/willValidate)\n\n*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn will_validate(this: &HtmlButtonElement) -> bool;

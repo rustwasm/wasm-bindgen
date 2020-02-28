@@ -33,7 +33,7 @@ extern "C" {
     pub fn onstatechange(this: &AudioContext) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstatechange ) ]
     #[doc = "Setter for the `onstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/onstatechange)\n\n*This API requires the following crate features to be activated: `AudioContext`*"]
-    pub fn set_onstatechange(this: &AudioContext, value: Option<::js_sys::Function>);
+    pub fn set_onstatechange(this: &AudioContext, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new AudioContext(..)` constructor, creating a new instance of `AudioContext`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/AudioContext)\n\n*This API requires the following crate features to be activated: `AudioContext`*"]
     pub fn new(this: &AudioContext) -> Result<AudioContext, JsValue>;

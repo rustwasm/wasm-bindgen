@@ -23,13 +23,13 @@ extern "C" {
     pub fn id(this: &Element) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = id ) ]
     #[doc = "Setter for the `id` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/id)\n\n*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_id(this: &Element, value: String);
+    pub fn set_id(this: &Element, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = className ) ]
     #[doc = "Getter for the `className` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/className)\n\n*This API requires the following crate features to be activated: `Element`*"]
     pub fn class_name(this: &Element) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = className ) ]
     #[doc = "Setter for the `className` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/className)\n\n*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_class_name(this: &Element, value: String);
+    pub fn set_class_name(this: &Element, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = classList ) ]
     #[cfg(feature = "DomTokenList")]
     #[doc = "Getter for the `classList` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/classList)\n\n*This API requires the following crate features to be activated: `DomTokenList`, `Element`*"]
@@ -73,13 +73,13 @@ extern "C" {
     pub fn inner_html(this: &Element) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = innerHTML ) ]
     #[doc = "Setter for the `innerHTML` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML)\n\n*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_inner_html(this: &Element, value: String);
+    pub fn set_inner_html(this: &Element, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = outerHTML ) ]
     #[doc = "Getter for the `outerHTML` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/outerHTML)\n\n*This API requires the following crate features to be activated: `Element`*"]
     pub fn outer_html(this: &Element) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = outerHTML ) ]
     #[doc = "Setter for the `outerHTML` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/outerHTML)\n\n*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_outer_html(this: &Element, value: String);
+    pub fn set_outer_html(this: &Element, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = shadowRoot ) ]
     #[cfg(feature = "ShadowRoot")]
     #[doc = "Getter for the `shadowRoot` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/shadowRoot)\n\n*This API requires the following crate features to be activated: `Element`, `ShadowRoot`*"]
@@ -93,7 +93,7 @@ extern "C" {
     pub fn slot(this: &Element) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = slot ) ]
     #[doc = "Setter for the `slot` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/slot)\n\n*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_slot(this: &Element, value: String);
+    pub fn set_slot(this: &Element, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = previousElementSibling ) ]
     #[doc = "Getter for the `previousElementSibling` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/previousElementSibling)\n\n*This API requires the following crate features to be activated: `Element`*"]
     pub fn previous_element_sibling(this: &Element) -> Option<Element>;

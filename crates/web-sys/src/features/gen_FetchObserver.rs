@@ -15,17 +15,17 @@ extern "C" {
     pub fn onstatechange(this: &FetchObserver) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstatechange ) ]
     #[doc = "Setter for the `onstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FetchObserver/onstatechange)\n\n*This API requires the following crate features to be activated: `FetchObserver`*"]
-    pub fn set_onstatechange(this: &FetchObserver, value: Option<::js_sys::Function>);
+    pub fn set_onstatechange(this: &FetchObserver, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onrequestprogress ) ]
     #[doc = "Getter for the `onrequestprogress` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FetchObserver/onrequestprogress)\n\n*This API requires the following crate features to be activated: `FetchObserver`*"]
     pub fn onrequestprogress(this: &FetchObserver) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onrequestprogress ) ]
     #[doc = "Setter for the `onrequestprogress` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FetchObserver/onrequestprogress)\n\n*This API requires the following crate features to be activated: `FetchObserver`*"]
-    pub fn set_onrequestprogress(this: &FetchObserver, value: Option<::js_sys::Function>);
+    pub fn set_onrequestprogress(this: &FetchObserver, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onresponseprogress ) ]
     #[doc = "Getter for the `onresponseprogress` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FetchObserver/onresponseprogress)\n\n*This API requires the following crate features to be activated: `FetchObserver`*"]
     pub fn onresponseprogress(this: &FetchObserver) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onresponseprogress ) ]
     #[doc = "Setter for the `onresponseprogress` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FetchObserver/onresponseprogress)\n\n*This API requires the following crate features to be activated: `FetchObserver`*"]
-    pub fn set_onresponseprogress(this: &FetchObserver, value: Option<::js_sys::Function>);
+    pub fn set_onresponseprogress(this: &FetchObserver, value: Option<&::js_sys::Function>);
 }

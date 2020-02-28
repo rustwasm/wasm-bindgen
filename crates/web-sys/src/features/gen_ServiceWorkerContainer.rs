@@ -18,19 +18,22 @@ extern "C" {
     pub fn oncontrollerchange(this: &ServiceWorkerContainer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = oncontrollerchange ) ]
     #[doc = "Setter for the `oncontrollerchange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/oncontrollerchange)\n\n*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
-    pub fn set_oncontrollerchange(this: &ServiceWorkerContainer, value: Option<::js_sys::Function>);
+    pub fn set_oncontrollerchange(
+        this: &ServiceWorkerContainer,
+        value: Option<&::js_sys::Function>,
+    );
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onerror)\n\n*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
     pub fn onerror(this: &ServiceWorkerContainer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onerror)\n\n*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
-    pub fn set_onerror(this: &ServiceWorkerContainer, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &ServiceWorkerContainer, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessage ) ]
     #[doc = "Getter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onmessage)\n\n*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
     pub fn onmessage(this: &ServiceWorkerContainer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onmessage)\n\n*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
-    pub fn set_onmessage(this: &ServiceWorkerContainer, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &ServiceWorkerContainer, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( method , structural , js_name = getRegistration ) ]
     #[doc = "The `getRegistration()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistration)\n\n*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
     pub fn get_registration(this: &ServiceWorkerContainer) -> ::js_sys::Promise;

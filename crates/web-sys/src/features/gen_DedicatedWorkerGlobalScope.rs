@@ -14,13 +14,16 @@ extern "C" {
     pub fn onmessage(this: &DedicatedWorkerGlobalScope) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/onmessage)\n\n*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
-    pub fn set_onmessage(this: &DedicatedWorkerGlobalScope, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &DedicatedWorkerGlobalScope, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessageerror ) ]
     #[doc = "Getter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/onmessageerror)\n\n*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
     pub fn onmessageerror(this: &DedicatedWorkerGlobalScope) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessageerror ) ]
     #[doc = "Setter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/onmessageerror)\n\n*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
-    pub fn set_onmessageerror(this: &DedicatedWorkerGlobalScope, value: Option<::js_sys::Function>);
+    pub fn set_onmessageerror(
+        this: &DedicatedWorkerGlobalScope,
+        value: Option<&::js_sys::Function>,
+    );
     # [ wasm_bindgen ( method , structural , js_name = close ) ]
     #[doc = "The `close()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/close)\n\n*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
     pub fn close(this: &DedicatedWorkerGlobalScope);

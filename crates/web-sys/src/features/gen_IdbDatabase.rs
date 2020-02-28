@@ -21,25 +21,25 @@ extern "C" {
     pub fn onabort(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onabort ) ]
     #[doc = "Setter for the `onabort` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onabort)\n\n*This API requires the following crate features to be activated: `IdbDatabase`*"]
-    pub fn set_onabort(this: &IdbDatabase, value: Option<::js_sys::Function>);
+    pub fn set_onabort(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onclose ) ]
     #[doc = "Getter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onclose)\n\n*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn onclose(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onclose ) ]
     #[doc = "Setter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onclose)\n\n*This API requires the following crate features to be activated: `IdbDatabase`*"]
-    pub fn set_onclose(this: &IdbDatabase, value: Option<::js_sys::Function>);
+    pub fn set_onclose(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onerror)\n\n*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn onerror(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onerror)\n\n*This API requires the following crate features to be activated: `IdbDatabase`*"]
-    pub fn set_onerror(this: &IdbDatabase, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onversionchange ) ]
     #[doc = "Getter for the `onversionchange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onversionchange)\n\n*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn onversionchange(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onversionchange ) ]
     #[doc = "Setter for the `onversionchange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onversionchange)\n\n*This API requires the following crate features to be activated: `IdbDatabase`*"]
-    pub fn set_onversionchange(this: &IdbDatabase, value: Option<::js_sys::Function>);
+    pub fn set_onversionchange(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = storage ) ]
     #[cfg(feature = "StorageType")]
     #[doc = "Getter for the `storage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/storage)\n\n*This API requires the following crate features to be activated: `IdbDatabase`, `StorageType`*"]

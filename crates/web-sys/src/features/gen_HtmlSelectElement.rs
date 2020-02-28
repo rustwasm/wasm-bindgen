@@ -17,7 +17,7 @@ extern "C" {
     pub fn autocomplete(this: &HtmlSelectElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = autocomplete ) ]
     #[doc = "Setter for the `autocomplete` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/autocomplete)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_autocomplete(this: &HtmlSelectElement, value: String);
+    pub fn set_autocomplete(this: &HtmlSelectElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = disabled ) ]
     #[doc = "Getter for the `disabled` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/disabled)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn disabled(this: &HtmlSelectElement) -> bool;
@@ -39,7 +39,7 @@ extern "C" {
     pub fn name(this: &HtmlSelectElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/name)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_name(this: &HtmlSelectElement, value: String);
+    pub fn set_name(this: &HtmlSelectElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = required ) ]
     #[doc = "Getter for the `required` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/required)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn required(this: &HtmlSelectElement) -> bool;
@@ -80,7 +80,7 @@ extern "C" {
     pub fn value(this: &HtmlSelectElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/value)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_value(this: &HtmlSelectElement, value: String);
+    pub fn set_value(this: &HtmlSelectElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = willValidate ) ]
     #[doc = "Getter for the `willValidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/willValidate)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn will_validate(this: &HtmlSelectElement) -> bool;

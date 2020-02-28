@@ -14,7 +14,7 @@ extern "C" {
     pub fn onconnect(this: &SharedWorkerGlobalScope) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onconnect ) ]
     #[doc = "Setter for the `onconnect` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorkerGlobalScope/onconnect)\n\n*This API requires the following crate features to be activated: `SharedWorkerGlobalScope`*"]
-    pub fn set_onconnect(this: &SharedWorkerGlobalScope, value: Option<::js_sys::Function>);
+    pub fn set_onconnect(this: &SharedWorkerGlobalScope, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( method , structural , js_name = close ) ]
     #[doc = "The `close()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorkerGlobalScope/close)\n\n*This API requires the following crate features to be activated: `SharedWorkerGlobalScope`*"]
     pub fn close(this: &SharedWorkerGlobalScope);

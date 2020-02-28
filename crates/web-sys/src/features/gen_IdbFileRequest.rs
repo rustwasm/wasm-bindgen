@@ -19,5 +19,5 @@ extern "C" {
     pub fn onprogress(this: &IdbFileRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onprogress ) ]
     #[doc = "Setter for the `onprogress` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileRequest/onprogress)\n\n*This API requires the following crate features to be activated: `IdbFileRequest`*"]
-    pub fn set_onprogress(this: &IdbFileRequest, value: Option<::js_sys::Function>);
+    pub fn set_onprogress(this: &IdbFileRequest, value: Option<&::js_sys::Function>);
 }

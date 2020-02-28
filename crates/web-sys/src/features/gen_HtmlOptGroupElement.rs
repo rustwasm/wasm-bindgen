@@ -17,5 +17,5 @@ extern "C" {
     pub fn label(this: &HtmlOptGroupElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = label ) ]
     #[doc = "Setter for the `label` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptGroupElement/label)\n\n*This API requires the following crate features to be activated: `HtmlOptGroupElement`*"]
-    pub fn set_label(this: &HtmlOptGroupElement, value: String);
+    pub fn set_label(this: &HtmlOptGroupElement, value: &str);
 }

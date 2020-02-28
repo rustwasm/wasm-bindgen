@@ -11,19 +11,19 @@ extern "C" {
     pub fn onmessage(this: &Worker) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/onmessage)\n\n*This API requires the following crate features to be activated: `Worker`*"]
-    pub fn set_onmessage(this: &Worker, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &Worker, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessageerror ) ]
     #[doc = "Getter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/onmessageerror)\n\n*This API requires the following crate features to be activated: `Worker`*"]
     pub fn onmessageerror(this: &Worker) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessageerror ) ]
     #[doc = "Setter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/onmessageerror)\n\n*This API requires the following crate features to be activated: `Worker`*"]
-    pub fn set_onmessageerror(this: &Worker, value: Option<::js_sys::Function>);
+    pub fn set_onmessageerror(this: &Worker, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/onerror)\n\n*This API requires the following crate features to be activated: `Worker`*"]
     pub fn onerror(this: &Worker) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/onerror)\n\n*This API requires the following crate features to be activated: `Worker`*"]
-    pub fn set_onerror(this: &Worker, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &Worker, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new Worker(..)` constructor, creating a new instance of `Worker`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)\n\n*This API requires the following crate features to be activated: `Worker`*"]
     pub fn new(this: &Worker, script_url: &str) -> Result<Worker, JsValue>;

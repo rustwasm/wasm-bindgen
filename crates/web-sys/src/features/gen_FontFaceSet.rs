@@ -14,19 +14,19 @@ extern "C" {
     pub fn onloading(this: &FontFaceSet) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onloading ) ]
     #[doc = "Setter for the `onloading` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloading)\n\n*This API requires the following crate features to be activated: `FontFaceSet`*"]
-    pub fn set_onloading(this: &FontFaceSet, value: Option<::js_sys::Function>);
+    pub fn set_onloading(this: &FontFaceSet, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onloadingdone ) ]
     #[doc = "Getter for the `onloadingdone` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingdone)\n\n*This API requires the following crate features to be activated: `FontFaceSet`*"]
     pub fn onloadingdone(this: &FontFaceSet) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onloadingdone ) ]
     #[doc = "Setter for the `onloadingdone` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingdone)\n\n*This API requires the following crate features to be activated: `FontFaceSet`*"]
-    pub fn set_onloadingdone(this: &FontFaceSet, value: Option<::js_sys::Function>);
+    pub fn set_onloadingdone(this: &FontFaceSet, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onloadingerror ) ]
     #[doc = "Getter for the `onloadingerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingerror)\n\n*This API requires the following crate features to be activated: `FontFaceSet`*"]
     pub fn onloadingerror(this: &FontFaceSet) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onloadingerror ) ]
     #[doc = "Setter for the `onloadingerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingerror)\n\n*This API requires the following crate features to be activated: `FontFaceSet`*"]
-    pub fn set_onloadingerror(this: &FontFaceSet, value: Option<::js_sys::Function>);
+    pub fn set_onloadingerror(this: &FontFaceSet, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = ready ) ]
     #[doc = "Getter for the `ready` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/ready)\n\n*This API requires the following crate features to be activated: `FontFaceSet`*"]
     pub fn ready(this: &FontFaceSet) -> Result<::js_sys::Promise, JsValue>;

@@ -20,7 +20,7 @@ extern "C" {
     pub fn onvoiceschanged(this: &SpeechSynthesis) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onvoiceschanged ) ]
     #[doc = "Setter for the `onvoiceschanged` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/onvoiceschanged)\n\n*This API requires the following crate features to be activated: `SpeechSynthesis`*"]
-    pub fn set_onvoiceschanged(this: &SpeechSynthesis, value: Option<::js_sys::Function>);
+    pub fn set_onvoiceschanged(this: &SpeechSynthesis, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( method , structural , js_name = cancel ) ]
     #[doc = "The `cancel()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/cancel)\n\n*This API requires the following crate features to be activated: `SpeechSynthesis`*"]
     pub fn cancel(this: &SpeechSynthesis);

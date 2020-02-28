@@ -11,5 +11,5 @@ extern "C" {
     pub fn version(this: &HtmlHtmlElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = version ) ]
     #[doc = "Setter for the `version` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHtmlElement/version)\n\n*This API requires the following crate features to be activated: `HtmlHtmlElement`*"]
-    pub fn set_version(this: &HtmlHtmlElement, value: String);
+    pub fn set_version(this: &HtmlHtmlElement, value: &str);
 }

@@ -14,13 +14,13 @@ extern "C" {
     pub fn onmessage(this: &BroadcastChannel) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel/onmessage)\n\n*This API requires the following crate features to be activated: `BroadcastChannel`*"]
-    pub fn set_onmessage(this: &BroadcastChannel, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &BroadcastChannel, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessageerror ) ]
     #[doc = "Getter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel/onmessageerror)\n\n*This API requires the following crate features to be activated: `BroadcastChannel`*"]
     pub fn onmessageerror(this: &BroadcastChannel) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessageerror ) ]
     #[doc = "Setter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel/onmessageerror)\n\n*This API requires the following crate features to be activated: `BroadcastChannel`*"]
-    pub fn set_onmessageerror(this: &BroadcastChannel, value: Option<::js_sys::Function>);
+    pub fn set_onmessageerror(this: &BroadcastChannel, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new BroadcastChannel(..)` constructor, creating a new instance of `BroadcastChannel`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel/BroadcastChannel)\n\n*This API requires the following crate features to be activated: `BroadcastChannel`*"]
     pub fn new(this: &BroadcastChannel, channel: &str) -> Result<BroadcastChannel, JsValue>;

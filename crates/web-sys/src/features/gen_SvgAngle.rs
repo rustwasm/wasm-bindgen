@@ -26,7 +26,7 @@ extern "C" {
     pub fn value_as_string(this: &SvgAngle) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = valueAsString ) ]
     #[doc = "Setter for the `valueAsString` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAngle/valueAsString)\n\n*This API requires the following crate features to be activated: `SvgAngle`*"]
-    pub fn set_value_as_string(this: &SvgAngle, value: String);
+    pub fn set_value_as_string(this: &SvgAngle, value: &str);
     # [ wasm_bindgen ( catch , method , structural , js_name = convertToSpecifiedUnits ) ]
     #[doc = "The `convertToSpecifiedUnits()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAngle/convertToSpecifiedUnits)\n\n*This API requires the following crate features to be activated: `SvgAngle`*"]
     pub fn convert_to_specified_units(this: &SvgAngle, unit_type: u16) -> Result<(), JsValue>;

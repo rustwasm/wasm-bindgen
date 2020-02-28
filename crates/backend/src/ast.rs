@@ -17,12 +17,6 @@ pub struct Program {
     pub enums: Vec<Enum>,
     /// rust structs
     pub structs: Vec<Struct>,
-    /// rust consts
-    pub consts: Vec<Const>,
-    /// "dictionaries", generated for WebIDL, which are basically just "typed
-    /// objects" in the sense that they represent a JS object with a particular
-    /// shape in JIT parlance.
-    pub dictionaries: Vec<Dictionary>,
     /// custom typescript sections to be included in the definition file
     pub typescript_custom_sections: Vec<String>,
     /// Inline JS snippets
@@ -36,8 +30,6 @@ impl Program {
         self.imports.is_empty() &&
         self.enums.is_empty() &&
         self.structs.is_empty() &&
-        self.consts.is_empty() &&
-        self.dictionaries.is_empty() &&
         self.typescript_custom_sections.is_empty() &&
         self.inline_js.is_empty()
     }
@@ -291,57 +283,6 @@ pub enum TypeLocation {
     ImportRet,
     ExportArgument,
     ExportRet,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
-#[derive(Clone)]
-pub struct Const {
-    pub vis: syn::Visibility,
-    pub name: Ident,
-    pub class: Option<Ident>,
-    pub ty: syn::Type,
-    pub value: ConstValue,
-    pub unstable_api: bool,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
-#[derive(Clone)]
-/// same as webidl::ast::ConstValue
-pub enum ConstValue {
-    BooleanLiteral(bool),
-    FloatLiteral(f64),
-    SignedIntegerLiteral(i64),
-    UnsignedIntegerLiteral(u64),
-    Null,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Clone)]
-pub struct DictionaryConstructor {
-    pub doc_comment: Option<String>,
-    pub rust_attrs: Vec<syn::Attribute>,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Clone)]
-pub struct Dictionary {
-    pub vis: syn::Visibility,
-    pub name: Ident,
-    pub fields: Vec<DictionaryField>,
-    pub constructor: Option<DictionaryConstructor>,
-    pub doc_comment: Option<String>,
-    pub unstable_api: bool,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Clone)]
-pub struct DictionaryField {
-    pub rust_name: Ident,
-    pub js_name: String,
-    pub required: bool,
-    pub ty: syn::Type,
-    pub doc_comment: Option<String>,
-    pub rust_attrs: Vec<syn::Attribute>,
 }
 
 impl Export {

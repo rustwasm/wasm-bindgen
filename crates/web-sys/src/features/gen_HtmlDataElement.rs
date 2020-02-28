@@ -11,5 +11,5 @@ extern "C" {
     pub fn value(this: &HtmlDataElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDataElement/value)\n\n*This API requires the following crate features to be activated: `HtmlDataElement`*"]
-    pub fn set_value(this: &HtmlDataElement, value: String);
+    pub fn set_value(this: &HtmlDataElement, value: &str);
 }

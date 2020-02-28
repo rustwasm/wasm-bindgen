@@ -11,13 +11,13 @@ extern "C" {
     pub fn src(this: &HtmlScriptElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = src ) ]
     #[doc = "Setter for the `src` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/src)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_src(this: &HtmlScriptElement, value: String);
+    pub fn set_src(this: &HtmlScriptElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/type)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
     pub fn type_(this: &HtmlScriptElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = type ) ]
     #[doc = "Setter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/type)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_type(this: &HtmlScriptElement, value: String);
+    pub fn set_type(this: &HtmlScriptElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = noModule ) ]
     #[doc = "Getter for the `noModule` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/noModule)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
     pub fn no_module(this: &HtmlScriptElement) -> bool;
@@ -29,7 +29,7 @@ extern "C" {
     pub fn charset(this: &HtmlScriptElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = charset ) ]
     #[doc = "Setter for the `charset` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/charset)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_charset(this: &HtmlScriptElement, value: String);
+    pub fn set_charset(this: &HtmlScriptElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = async ) ]
     #[doc = "Getter for the `async` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/async)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
     pub fn r#async(this: &HtmlScriptElement) -> bool;
@@ -47,29 +47,29 @@ extern "C" {
     pub fn cross_origin(this: &HtmlScriptElement) -> Option<String>;
     # [ wasm_bindgen ( structural , method , setter , js_name = crossOrigin ) ]
     #[doc = "Setter for the `crossOrigin` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/crossOrigin)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_cross_origin(this: &HtmlScriptElement, value: Option<String>);
+    pub fn set_cross_origin(this: &HtmlScriptElement, value: Option<&str>);
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = text ) ]
     #[doc = "Getter for the `text` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/text)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
     pub fn text(this: &HtmlScriptElement) -> Result<String, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = text ) ]
     #[doc = "Setter for the `text` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/text)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_text(this: &HtmlScriptElement, value: Result<String, JsValue>);
+    pub fn set_text(this: &HtmlScriptElement, value: &str) -> Result<(), JsValue>;
     # [ wasm_bindgen ( structural , method , getter , js_name = event ) ]
     #[doc = "Getter for the `event` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/event)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
     pub fn event(this: &HtmlScriptElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = event ) ]
     #[doc = "Setter for the `event` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/event)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_event(this: &HtmlScriptElement, value: String);
+    pub fn set_event(this: &HtmlScriptElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = htmlFor ) ]
     #[doc = "Getter for the `htmlFor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/htmlFor)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
     pub fn html_for(this: &HtmlScriptElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = htmlFor ) ]
     #[doc = "Setter for the `htmlFor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/htmlFor)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_html_for(this: &HtmlScriptElement, value: String);
+    pub fn set_html_for(this: &HtmlScriptElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = integrity ) ]
     #[doc = "Getter for the `integrity` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/integrity)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
     pub fn integrity(this: &HtmlScriptElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = integrity ) ]
     #[doc = "Setter for the `integrity` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/integrity)\n\n*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn set_integrity(this: &HtmlScriptElement, value: String);
+    pub fn set_integrity(this: &HtmlScriptElement, value: &str);
 }

@@ -18,13 +18,13 @@ extern "C" {
     pub fn onstatechange(this: &ServiceWorker) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstatechange ) ]
     #[doc = "Setter for the `onstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/onstatechange)\n\n*This API requires the following crate features to be activated: `ServiceWorker`*"]
-    pub fn set_onstatechange(this: &ServiceWorker, value: Option<::js_sys::Function>);
+    pub fn set_onstatechange(this: &ServiceWorker, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/onerror)\n\n*This API requires the following crate features to be activated: `ServiceWorker`*"]
     pub fn onerror(this: &ServiceWorker) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/onerror)\n\n*This API requires the following crate features to be activated: `ServiceWorker`*"]
-    pub fn set_onerror(this: &ServiceWorker, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &ServiceWorker, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( catch , method , structural , js_name = postMessage ) ]
     #[doc = "The `postMessage()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/postMessage)\n\n*This API requires the following crate features to be activated: `ServiceWorker`*"]
     pub fn post_message(

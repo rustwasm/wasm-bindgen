@@ -17,5 +17,5 @@ extern "C" {
     pub fn type_(this: &HtmlUListElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = type ) ]
     #[doc = "Setter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement/type)\n\n*This API requires the following crate features to be activated: `HtmlUListElement`*"]
-    pub fn set_type(this: &HtmlUListElement, value: String);
+    pub fn set_type(this: &HtmlUListElement, value: &str);
 }

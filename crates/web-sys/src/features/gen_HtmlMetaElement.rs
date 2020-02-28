@@ -11,23 +11,23 @@ extern "C" {
     pub fn name(this: &HtmlMetaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMetaElement/name)\n\n*This API requires the following crate features to be activated: `HtmlMetaElement`*"]
-    pub fn set_name(this: &HtmlMetaElement, value: String);
+    pub fn set_name(this: &HtmlMetaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = httpEquiv ) ]
     #[doc = "Getter for the `httpEquiv` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMetaElement/httpEquiv)\n\n*This API requires the following crate features to be activated: `HtmlMetaElement`*"]
     pub fn http_equiv(this: &HtmlMetaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = httpEquiv ) ]
     #[doc = "Setter for the `httpEquiv` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMetaElement/httpEquiv)\n\n*This API requires the following crate features to be activated: `HtmlMetaElement`*"]
-    pub fn set_http_equiv(this: &HtmlMetaElement, value: String);
+    pub fn set_http_equiv(this: &HtmlMetaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = content ) ]
     #[doc = "Getter for the `content` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMetaElement/content)\n\n*This API requires the following crate features to be activated: `HtmlMetaElement`*"]
     pub fn content(this: &HtmlMetaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = content ) ]
     #[doc = "Setter for the `content` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMetaElement/content)\n\n*This API requires the following crate features to be activated: `HtmlMetaElement`*"]
-    pub fn set_content(this: &HtmlMetaElement, value: String);
+    pub fn set_content(this: &HtmlMetaElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = scheme ) ]
     #[doc = "Getter for the `scheme` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMetaElement/scheme)\n\n*This API requires the following crate features to be activated: `HtmlMetaElement`*"]
     pub fn scheme(this: &HtmlMetaElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = scheme ) ]
     #[doc = "Setter for the `scheme` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMetaElement/scheme)\n\n*This API requires the following crate features to be activated: `HtmlMetaElement`*"]
-    pub fn set_scheme(this: &HtmlMetaElement, value: String);
+    pub fn set_scheme(this: &HtmlMetaElement, value: &str);
 }

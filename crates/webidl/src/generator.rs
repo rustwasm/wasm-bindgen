@@ -94,13 +94,18 @@ impl Enum {
 }
 
 
+pub enum InterfaceAttributeKind {
+    Getter,
+    Setter,
+}
+
 pub struct InterfaceAttribute {
     pub js_name: String,
     pub ty: Type,
-    pub readonly: bool,
     pub is_static: bool,
     pub structural: bool,
     pub catch: bool,
+    pub kind: InterfaceAttributeKind,
 }
 
 impl InterfaceAttribute {
@@ -108,10 +113,10 @@ impl InterfaceAttribute {
         let InterfaceAttribute {
             js_name,
             ty,
-            readonly,
             is_static,
             structural,
             catch,
+            kind,
         } = self;
 
         let static_method_of = raw_ident(&parent_js_name);
@@ -119,20 +124,6 @@ impl InterfaceAttribute {
         let mdn_docs = mdn_doc(parent_js_name, Some(js_name));
 
         let (cfg_features, doc_comment) = get_features(ty, parent_name.to_string());
-
-        let ty = if *catch {
-            quote!( Result<#ty, JsValue> )
-
-        } else {
-            quote!( #ty )
-        };
-
-        let catch = if *catch {
-            Some(quote!( catch, ))
-
-        } else {
-            None
-        };
 
         let structural = if *structural {
             quote!( structural, )
@@ -154,32 +145,52 @@ impl InterfaceAttribute {
             )
         };
 
-        let getter_name = rust_ident(&snake_case_ident(js_name));
-        let setter_name = rust_ident(&format!("set_{}", snake_case_ident(js_name)));
-        let js_name = raw_ident(js_name);
+        let (prefix, attr, def) = match kind {
+            InterfaceAttributeKind::Getter => {
+                let name = rust_ident(&snake_case_ident(js_name));
 
-        let setter = if *readonly {
-            None
+                let ty = if *catch {
+                    quote!( Result<#ty, JsValue> )
 
-        } else {
-            let doc_comment = comment(format!("Setter for the `{}` field of this object.\n\n{}", js_name, mdn_docs), &doc_comment);
+                } else {
+                    quote!( #ty )
+                };
 
-            Some(quote! {
-                #[wasm_bindgen(
-                    #structural
-                    #catch
-                    #static_method
-                    method,
-                    setter,
-                    js_name = #js_name
-                )]
-                #cfg_features
-                #[doc = #doc_comment]
-                pub fn #setter_name(#this value: #ty);
-            })
+                (
+                    "Getter",
+                    quote!( getter ),
+                    quote!( pub fn #name(#this) -> #ty; ),
+                )
+            },
+
+            InterfaceAttributeKind::Setter => {
+                let name = rust_ident(&format!("set_{}", snake_case_ident(js_name)));
+
+                let ret_ty = if *catch {
+                    Some(quote!( -> Result<(), JsValue> ))
+
+                } else {
+                    None
+                };
+
+                (
+                    "Setter",
+                    quote!( setter ),
+                    quote!( pub fn #name(#this value: #ty) #ret_ty; ),
+                )
+            },
         };
 
-        let doc_comment = comment(format!("Getter for the `{}` field of this object.\n\n{}", js_name, mdn_docs), &doc_comment);
+        let catch = if *catch {
+            Some(quote!( catch, ))
+
+        } else {
+            None
+        };
+
+        let doc_comment = comment(format!("{} for the `{}` field of this object.\n\n{}", prefix, js_name, mdn_docs), &doc_comment);
+
+        let js_name = raw_ident(js_name);
 
         quote! {
             #[wasm_bindgen(
@@ -187,14 +198,12 @@ impl InterfaceAttribute {
                 #catch
                 #static_method
                 method,
-                getter,
+                #attr,
                 js_name = #js_name
             )]
             #cfg_features
             #[doc = #doc_comment]
-            pub fn #getter_name(#this) -> #ty;
-
-            #setter
+            #def
         }
     }
 }
@@ -483,7 +492,7 @@ impl Interface {
         } else {
             Some(quote! {
                 impl #name {
-                    #(#consts)*
+                    #(#deprecated #consts)*
                 }
             })
         };
@@ -517,8 +526,8 @@ impl Interface {
                 #deprecated
                 pub type #name;
 
-                #(#attributes)*
-                #(#methods)*
+                #(#deprecated #attributes)*
+                #(#deprecated #methods)*
             }
 
             #consts

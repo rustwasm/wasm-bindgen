@@ -11,5 +11,5 @@ extern "C" {
     pub fn onmidimessage(this: &MidiInput) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmidimessage ) ]
     #[doc = "Setter for the `onmidimessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIInput/onmidimessage)\n\n*This API requires the following crate features to be activated: `MidiInput`*"]
-    pub fn set_onmidimessage(this: &MidiInput, value: Option<::js_sys::Function>);
+    pub fn set_onmidimessage(this: &MidiInput, value: Option<&::js_sys::Function>);
 }

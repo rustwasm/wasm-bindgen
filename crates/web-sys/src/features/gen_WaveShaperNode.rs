@@ -11,7 +11,7 @@ extern "C" {
     pub fn curve(this: &WaveShaperNode) -> Option<Vec<f32>>;
     # [ wasm_bindgen ( structural , method , setter , js_name = curve ) ]
     #[doc = "Setter for the `curve` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/curve)\n\n*This API requires the following crate features to be activated: `WaveShaperNode`*"]
-    pub fn set_curve(this: &WaveShaperNode, value: Option<Vec<f32>>);
+    pub fn set_curve(this: &WaveShaperNode, value: Option<&mut [f32]>);
     # [ wasm_bindgen ( structural , method , getter , js_name = oversample ) ]
     #[cfg(feature = "OverSampleType")]
     #[doc = "Getter for the `oversample` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample)\n\n*This API requires the following crate features to be activated: `OverSampleType`, `WaveShaperNode`*"]

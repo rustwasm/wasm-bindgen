@@ -14,7 +14,7 @@ extern "C" {
     pub fn value(this: &DomTokenList) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/value)\n\n*This API requires the following crate features to be activated: `DomTokenList`*"]
-    pub fn set_value(this: &DomTokenList, value: String);
+    pub fn set_value(this: &DomTokenList, value: &str);
     # [ wasm_bindgen ( catch , method , structural , variadic , js_name = add ) ]
     #[doc = "The `add()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/add)\n\n*This API requires the following crate features to be activated: `DomTokenList`*"]
     pub fn add(this: &DomTokenList, tokens: &str) -> Result<(), JsValue>;

@@ -11,7 +11,7 @@ extern "C" {
     pub fn id(this: &Animation) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = id ) ]
     #[doc = "Setter for the `id` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/id)\n\n*This API requires the following crate features to be activated: `Animation`*"]
-    pub fn set_id(this: &Animation, value: String);
+    pub fn set_id(this: &Animation, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = effect ) ]
     #[cfg(feature = "AnimationEffect")]
     #[doc = "Getter for the `effect` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect)\n\n*This API requires the following crate features to be activated: `Animation`, `AnimationEffect`*"]
@@ -19,7 +19,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = effect ) ]
     #[cfg(feature = "AnimationEffect")]
     #[doc = "Setter for the `effect` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect)\n\n*This API requires the following crate features to be activated: `Animation`, `AnimationEffect`*"]
-    pub fn set_effect(this: &Animation, value: Option<AnimationEffect>);
+    pub fn set_effect(this: &Animation, value: Option<&AnimationEffect>);
     # [ wasm_bindgen ( structural , method , getter , js_name = timeline ) ]
     #[cfg(feature = "AnimationTimeline")]
     #[doc = "Getter for the `timeline` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/timeline)\n\n*This API requires the following crate features to be activated: `Animation`, `AnimationTimeline`*"]
@@ -27,7 +27,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = timeline ) ]
     #[cfg(feature = "AnimationTimeline")]
     #[doc = "Setter for the `timeline` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/timeline)\n\n*This API requires the following crate features to be activated: `Animation`, `AnimationTimeline`*"]
-    pub fn set_timeline(this: &Animation, value: Option<AnimationTimeline>);
+    pub fn set_timeline(this: &Animation, value: Option<&AnimationTimeline>);
     # [ wasm_bindgen ( structural , method , getter , js_name = startTime ) ]
     #[doc = "Getter for the `startTime` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/startTime)\n\n*This API requires the following crate features to be activated: `Animation`*"]
     pub fn start_time(this: &Animation) -> Option<f64>;
@@ -64,13 +64,13 @@ extern "C" {
     pub fn onfinish(this: &Animation) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onfinish ) ]
     #[doc = "Setter for the `onfinish` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish)\n\n*This API requires the following crate features to be activated: `Animation`*"]
-    pub fn set_onfinish(this: &Animation, value: Option<::js_sys::Function>);
+    pub fn set_onfinish(this: &Animation, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = oncancel ) ]
     #[doc = "Getter for the `oncancel` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/oncancel)\n\n*This API requires the following crate features to be activated: `Animation`*"]
     pub fn oncancel(this: &Animation) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = oncancel ) ]
     #[doc = "Setter for the `oncancel` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/oncancel)\n\n*This API requires the following crate features to be activated: `Animation`*"]
-    pub fn set_oncancel(this: &Animation, value: Option<::js_sys::Function>);
+    pub fn set_oncancel(this: &Animation, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new Animation(..)` constructor, creating a new instance of `Animation`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/Animation)\n\n*This API requires the following crate features to be activated: `Animation`*"]
     pub fn new(this: &Animation) -> Result<Animation, JsValue>;

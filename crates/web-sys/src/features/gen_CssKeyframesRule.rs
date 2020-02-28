@@ -11,7 +11,7 @@ extern "C" {
     pub fn name(this: &CssKeyframesRule) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSKeyframesRule/name)\n\n*This API requires the following crate features to be activated: `CssKeyframesRule`*"]
-    pub fn set_name(this: &CssKeyframesRule, value: String);
+    pub fn set_name(this: &CssKeyframesRule, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = cssRules ) ]
     #[cfg(feature = "CssRuleList")]
     #[doc = "Getter for the `cssRules` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSKeyframesRule/cssRules)\n\n*This API requires the following crate features to be activated: `CssKeyframesRule`, `CssRuleList`*"]

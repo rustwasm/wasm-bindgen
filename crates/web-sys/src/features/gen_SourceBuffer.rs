@@ -44,31 +44,31 @@ extern "C" {
     pub fn onupdatestart(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onupdatestart ) ]
     #[doc = "Setter for the `onupdatestart` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdatestart)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_onupdatestart(this: &SourceBuffer, value: Option<::js_sys::Function>);
+    pub fn set_onupdatestart(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onupdate ) ]
     #[doc = "Getter for the `onupdate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdate)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn onupdate(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onupdate ) ]
     #[doc = "Setter for the `onupdate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdate)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_onupdate(this: &SourceBuffer, value: Option<::js_sys::Function>);
+    pub fn set_onupdate(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onupdateend ) ]
     #[doc = "Getter for the `onupdateend` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdateend)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn onupdateend(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onupdateend ) ]
     #[doc = "Setter for the `onupdateend` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdateend)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_onupdateend(this: &SourceBuffer, value: Option<::js_sys::Function>);
+    pub fn set_onupdateend(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onerror)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn onerror(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onerror)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_onerror(this: &SourceBuffer, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onabort ) ]
     #[doc = "Getter for the `onabort` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onabort)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn onabort(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onabort ) ]
     #[doc = "Setter for the `onabort` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onabort)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_onabort(this: &SourceBuffer, value: Option<::js_sys::Function>);
+    pub fn set_onabort(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( catch , method , structural , js_name = abort ) ]
     #[doc = "The `abort()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/abort)\n\n*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn abort(this: &SourceBuffer) -> Result<(), JsValue>;

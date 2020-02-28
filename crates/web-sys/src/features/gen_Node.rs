@@ -50,13 +50,13 @@ extern "C" {
     pub fn node_value(this: &Node) -> Option<String>;
     # [ wasm_bindgen ( structural , method , setter , js_name = nodeValue ) ]
     #[doc = "Setter for the `nodeValue` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue)\n\n*This API requires the following crate features to be activated: `Node`*"]
-    pub fn set_node_value(this: &Node, value: Option<String>);
+    pub fn set_node_value(this: &Node, value: Option<&str>);
     # [ wasm_bindgen ( structural , method , getter , js_name = textContent ) ]
     #[doc = "Getter for the `textContent` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)\n\n*This API requires the following crate features to be activated: `Node`*"]
     pub fn text_content(this: &Node) -> Option<String>;
     # [ wasm_bindgen ( structural , method , setter , js_name = textContent ) ]
     #[doc = "Setter for the `textContent` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)\n\n*This API requires the following crate features to be activated: `Node`*"]
-    pub fn set_text_content(this: &Node, value: Option<String>);
+    pub fn set_text_content(this: &Node, value: Option<&str>);
     # [ wasm_bindgen ( catch , method , structural , js_name = appendChild ) ]
     #[doc = "The `appendChild()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild)\n\n*This API requires the following crate features to be activated: `Node`*"]
     pub fn append_child(this: &Node, node: &Node) -> Result<Node, JsValue>;

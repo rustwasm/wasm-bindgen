@@ -29,13 +29,13 @@ extern "C" {
     pub fn onmute(this: &MediaStreamTrack) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmute ) ]
     #[doc = "Setter for the `onmute` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onmute)\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
-    pub fn set_onmute(this: &MediaStreamTrack, value: Option<::js_sys::Function>);
+    pub fn set_onmute(this: &MediaStreamTrack, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onunmute ) ]
     #[doc = "Getter for the `onunmute` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onunmute)\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
     pub fn onunmute(this: &MediaStreamTrack) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onunmute ) ]
     #[doc = "Setter for the `onunmute` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onunmute)\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
-    pub fn set_onunmute(this: &MediaStreamTrack, value: Option<::js_sys::Function>);
+    pub fn set_onunmute(this: &MediaStreamTrack, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = readyState ) ]
     #[cfg(feature = "MediaStreamTrackState")]
     #[doc = "Getter for the `readyState` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/readyState)\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackState`*"]
@@ -45,7 +45,7 @@ extern "C" {
     pub fn onended(this: &MediaStreamTrack) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onended ) ]
     #[doc = "Setter for the `onended` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onended)\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
-    pub fn set_onended(this: &MediaStreamTrack, value: Option<::js_sys::Function>);
+    pub fn set_onended(this: &MediaStreamTrack, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( catch , method , structural , js_name = applyConstraints ) ]
     #[doc = "The `applyConstraints()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/applyConstraints)\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
     pub fn apply_constraints(this: &MediaStreamTrack) -> Result<::js_sys::Promise, JsValue>;

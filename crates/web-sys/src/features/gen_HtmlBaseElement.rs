@@ -11,11 +11,11 @@ extern "C" {
     pub fn href(this: &HtmlBaseElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = href ) ]
     #[doc = "Setter for the `href` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBaseElement/href)\n\n*This API requires the following crate features to be activated: `HtmlBaseElement`*"]
-    pub fn set_href(this: &HtmlBaseElement, value: String);
+    pub fn set_href(this: &HtmlBaseElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = target ) ]
     #[doc = "Getter for the `target` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBaseElement/target)\n\n*This API requires the following crate features to be activated: `HtmlBaseElement`*"]
     pub fn target(this: &HtmlBaseElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = target ) ]
     #[doc = "Setter for the `target` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBaseElement/target)\n\n*This API requires the following crate features to be activated: `HtmlBaseElement`*"]
-    pub fn set_target(this: &HtmlBaseElement, value: String);
+    pub fn set_target(this: &HtmlBaseElement, value: &str);
 }

@@ -22,13 +22,13 @@ extern "C" {
     pub fn onsuccess(this: &DomRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onsuccess ) ]
     #[doc = "Setter for the `onsuccess` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRequest/onsuccess)\n\n*This API requires the following crate features to be activated: `DomRequest`*"]
-    pub fn set_onsuccess(this: &DomRequest, value: Option<::js_sys::Function>);
+    pub fn set_onsuccess(this: &DomRequest, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRequest/onerror)\n\n*This API requires the following crate features to be activated: `DomRequest`*"]
     pub fn onerror(this: &DomRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRequest/onerror)\n\n*This API requires the following crate features to be activated: `DomRequest`*"]
-    pub fn set_onerror(this: &DomRequest, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &DomRequest, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( catch , method , structural , js_name = then ) ]
     #[doc = "The `then()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRequest/then)\n\n*This API requires the following crate features to be activated: `DomRequest`*"]
     pub fn then(this: &DomRequest) -> Result<::wasm_bindgen::JsValue, JsValue>;

@@ -14,7 +14,7 @@ extern "C" {
     pub fn oncomplete(this: &OfflineAudioContext) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = oncomplete ) ]
     #[doc = "Setter for the `oncomplete` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/oncomplete)\n\n*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
-    pub fn set_oncomplete(this: &OfflineAudioContext, value: Option<::js_sys::Function>);
+    pub fn set_oncomplete(this: &OfflineAudioContext, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = destination ) ]
     #[cfg(feature = "AudioDestinationNode")]
     #[doc = "Getter for the `destination` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/destination)\n\n*This API requires the following crate features to be activated: `AudioDestinationNode`, `OfflineAudioContext`*"]
@@ -42,7 +42,7 @@ extern "C" {
     pub fn onstatechange(this: &OfflineAudioContext) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstatechange ) ]
     #[doc = "Setter for the `onstatechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/onstatechange)\n\n*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
-    pub fn set_onstatechange(this: &OfflineAudioContext, value: Option<::js_sys::Function>);
+    pub fn set_onstatechange(this: &OfflineAudioContext, value: Option<&::js_sys::Function>);
     #[cfg(feature = "OfflineAudioContextOptions")]
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new OfflineAudioContext(..)` constructor, creating a new instance of `OfflineAudioContext`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/OfflineAudioContext)\n\n*This API requires the following crate features to be activated: `OfflineAudioContext`, `OfflineAudioContextOptions`*"]

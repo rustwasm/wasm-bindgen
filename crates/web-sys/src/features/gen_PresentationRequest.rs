@@ -11,7 +11,10 @@ extern "C" {
     pub fn onconnectionavailable(this: &PresentationRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onconnectionavailable ) ]
     #[doc = "Setter for the `onconnectionavailable` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/onconnectionavailable)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
-    pub fn set_onconnectionavailable(this: &PresentationRequest, value: Option<::js_sys::Function>);
+    pub fn set_onconnectionavailable(
+        this: &PresentationRequest,
+        value: Option<&::js_sys::Function>,
+    );
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new PresentationRequest(..)` constructor, creating a new instance of `PresentationRequest`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest/PresentationRequest)\n\n*This API requires the following crate features to be activated: `PresentationRequest`*"]
     pub fn new_with_url(

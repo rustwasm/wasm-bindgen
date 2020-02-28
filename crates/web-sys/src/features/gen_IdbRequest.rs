@@ -29,11 +29,11 @@ extern "C" {
     pub fn onsuccess(this: &IdbRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onsuccess ) ]
     #[doc = "Setter for the `onsuccess` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/onsuccess)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
-    pub fn set_onsuccess(this: &IdbRequest, value: Option<::js_sys::Function>);
+    pub fn set_onsuccess(this: &IdbRequest, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/onerror)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn onerror(this: &IdbRequest) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/onerror)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
-    pub fn set_onerror(this: &IdbRequest, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &IdbRequest, value: Option<&::js_sys::Function>);
 }

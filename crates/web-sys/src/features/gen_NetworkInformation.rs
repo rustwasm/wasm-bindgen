@@ -15,5 +15,5 @@ extern "C" {
     pub fn ontypechange(this: &NetworkInformation) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ontypechange ) ]
     #[doc = "Setter for the `ontypechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/ontypechange)\n\n*This API requires the following crate features to be activated: `NetworkInformation`*"]
-    pub fn set_ontypechange(this: &NetworkInformation, value: Option<::js_sys::Function>);
+    pub fn set_ontypechange(this: &NetworkInformation, value: Option<&::js_sys::Function>);
 }

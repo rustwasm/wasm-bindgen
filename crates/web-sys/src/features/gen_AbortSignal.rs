@@ -14,5 +14,5 @@ extern "C" {
     pub fn onabort(this: &AbortSignal) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onabort ) ]
     #[doc = "Setter for the `onabort` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/onabort)\n\n*This API requires the following crate features to be activated: `AbortSignal`*"]
-    pub fn set_onabort(this: &AbortSignal, value: Option<::js_sys::Function>);
+    pub fn set_onabort(this: &AbortSignal, value: Option<&::js_sys::Function>);
 }

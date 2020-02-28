@@ -19,7 +19,7 @@ extern "C" {
     pub fn onprocessorerror(this: &AudioWorkletNode) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onprocessorerror ) ]
     #[doc = "Setter for the `onprocessorerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode/onprocessorerror)\n\n*This API requires the following crate features to be activated: `AudioWorkletNode`*"]
-    pub fn set_onprocessorerror(this: &AudioWorkletNode, value: Option<::js_sys::Function>);
+    pub fn set_onprocessorerror(this: &AudioWorkletNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new AudioWorkletNode(..)` constructor, creating a new instance of `AudioWorkletNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode/AudioWorkletNode)\n\n*This API requires the following crate features to be activated: `AudioWorkletNode`, `BaseAudioContext`*"]

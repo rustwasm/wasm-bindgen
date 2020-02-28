@@ -14,7 +14,7 @@ extern "C" {
     pub fn css_text(this: &CssRule) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = cssText ) ]
     #[doc = "Setter for the `cssText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/cssText)\n\n*This API requires the following crate features to be activated: `CssRule`*"]
-    pub fn set_css_text(this: &CssRule, value: String);
+    pub fn set_css_text(this: &CssRule, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = parentRule ) ]
     #[doc = "Getter for the `parentRule` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/parentRule)\n\n*This API requires the following crate features to be activated: `CssRule`*"]
     pub fn parent_rule(this: &CssRule) -> Option<CssRule>;

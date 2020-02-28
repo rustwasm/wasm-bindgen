@@ -53,5 +53,5 @@ extern "C" {
     pub fn onchange(this: &Screen) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onchange ) ]
     #[doc = "Setter for the `onchange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Screen/onchange)\n\n*This API requires the following crate features to be activated: `Screen`*"]
-    pub fn set_onchange(this: &Screen, value: Option<::js_sys::Function>);
+    pub fn set_onchange(this: &Screen, value: Option<&::js_sys::Function>);
 }

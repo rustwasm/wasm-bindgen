@@ -11,5 +11,5 @@ extern "C" {
     pub fn align(this: &HtmlTableCaptionElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = align ) ]
     #[doc = "Setter for the `align` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableCaptionElement/align)\n\n*This API requires the following crate features to be activated: `HtmlTableCaptionElement`*"]
-    pub fn set_align(this: &HtmlTableCaptionElement, value: String);
+    pub fn set_align(this: &HtmlTableCaptionElement, value: &str);
 }

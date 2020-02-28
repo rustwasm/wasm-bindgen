@@ -17,7 +17,7 @@ extern "C" {
     pub fn return_value(this: &HtmlDialogElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = returnValue ) ]
     #[doc = "Setter for the `returnValue` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/returnValue)\n\n*This API requires the following crate features to be activated: `HtmlDialogElement`*"]
-    pub fn set_return_value(this: &HtmlDialogElement, value: String);
+    pub fn set_return_value(this: &HtmlDialogElement, value: &str);
     # [ wasm_bindgen ( method , structural , js_name = close ) ]
     #[doc = "The `close()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close)\n\n*This API requires the following crate features to be activated: `HtmlDialogElement`*"]
     pub fn close(this: &HtmlDialogElement);

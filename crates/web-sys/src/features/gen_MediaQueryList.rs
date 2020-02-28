@@ -17,7 +17,7 @@ extern "C" {
     pub fn onchange(this: &MediaQueryList) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onchange ) ]
     #[doc = "Setter for the `onchange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/onchange)\n\n*This API requires the following crate features to be activated: `MediaQueryList`*"]
-    pub fn set_onchange(this: &MediaQueryList, value: Option<::js_sys::Function>);
+    pub fn set_onchange(this: &MediaQueryList, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( catch , method , structural , js_name = addListener ) ]
     #[doc = "The `addListener()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener)\n\n*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub fn add_listener_with_opt_callback(

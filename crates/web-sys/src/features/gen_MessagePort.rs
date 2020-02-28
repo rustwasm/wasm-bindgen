@@ -11,13 +11,13 @@ extern "C" {
     pub fn onmessage(this: &MessagePort) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/onmessage)\n\n*This API requires the following crate features to be activated: `MessagePort`*"]
-    pub fn set_onmessage(this: &MessagePort, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &MessagePort, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessageerror ) ]
     #[doc = "Getter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/onmessageerror)\n\n*This API requires the following crate features to be activated: `MessagePort`*"]
     pub fn onmessageerror(this: &MessagePort) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessageerror ) ]
     #[doc = "Setter for the `onmessageerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/onmessageerror)\n\n*This API requires the following crate features to be activated: `MessagePort`*"]
-    pub fn set_onmessageerror(this: &MessagePort, value: Option<::js_sys::Function>);
+    pub fn set_onmessageerror(this: &MessagePort, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( method , structural , js_name = close ) ]
     #[doc = "The `close()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/close)\n\n*This API requires the following crate features to be activated: `MessagePort`*"]
     pub fn close(this: &MessagePort);

@@ -24,7 +24,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = currentNode ) ]
     #[cfg(feature = "Node")]
     #[doc = "Setter for the `currentNode` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TreeWalker/currentNode)\n\n*This API requires the following crate features to be activated: `Node`, `TreeWalker`*"]
-    pub fn set_current_node(this: &TreeWalker, value: Node);
+    pub fn set_current_node(this: &TreeWalker, value: &Node);
     #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_name = firstChild ) ]
     #[doc = "The `firstChild()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TreeWalker/firstChild)\n\n*This API requires the following crate features to be activated: `Node`, `TreeWalker`*"]

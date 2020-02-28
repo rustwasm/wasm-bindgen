@@ -16,7 +16,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = scrollRestoration ) ]
     #[cfg(feature = "ScrollRestoration")]
     #[doc = "Setter for the `scrollRestoration` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/scrollRestoration)\n\n*This API requires the following crate features to be activated: `History`, `ScrollRestoration`*"]
-    pub fn set_scroll_restoration(this: &History, value: Result<ScrollRestoration, JsValue>);
+    pub fn set_scroll_restoration(this: &History, value: ScrollRestoration) -> Result<(), JsValue>;
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = state ) ]
     #[doc = "Getter for the `state` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/state)\n\n*This API requires the following crate features to be activated: `History`*"]
     pub fn state(this: &History) -> Result<::wasm_bindgen::JsValue, JsValue>;

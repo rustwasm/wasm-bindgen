@@ -20,19 +20,19 @@ extern "C" {
     pub fn onopen(this: &EventSource) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onopen ) ]
     #[doc = "Setter for the `onopen` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onopen)\n\n*This API requires the following crate features to be activated: `EventSource`*"]
-    pub fn set_onopen(this: &EventSource, value: Option<::js_sys::Function>);
+    pub fn set_onopen(this: &EventSource, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmessage ) ]
     #[doc = "Getter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onmessage)\n\n*This API requires the following crate features to be activated: `EventSource`*"]
     pub fn onmessage(this: &EventSource) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmessage ) ]
     #[doc = "Setter for the `onmessage` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onmessage)\n\n*This API requires the following crate features to be activated: `EventSource`*"]
-    pub fn set_onmessage(this: &EventSource, value: Option<::js_sys::Function>);
+    pub fn set_onmessage(this: &EventSource, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onerror)\n\n*This API requires the following crate features to be activated: `EventSource`*"]
     pub fn onerror(this: &EventSource) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onerror)\n\n*This API requires the following crate features to be activated: `EventSource`*"]
-    pub fn set_onerror(this: &EventSource, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &EventSource, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new EventSource(..)` constructor, creating a new instance of `EventSource`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/EventSource)\n\n*This API requires the following crate features to be activated: `EventSource`*"]
     pub fn new(this: &EventSource, url: &str) -> Result<EventSource, JsValue>;

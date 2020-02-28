@@ -32,7 +32,7 @@ extern "C" {
     pub fn onupdatefound(this: &ServiceWorkerRegistration) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onupdatefound ) ]
     #[doc = "Setter for the `onupdatefound` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/onupdatefound)\n\n*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
-    pub fn set_onupdatefound(this: &ServiceWorkerRegistration, value: Option<::js_sys::Function>);
+    pub fn set_onupdatefound(this: &ServiceWorkerRegistration, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = pushManager ) ]
     #[cfg(feature = "PushManager")]
     #[doc = "Getter for the `pushManager` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/pushManager)\n\n*This API requires the following crate features to be activated: `PushManager`, `ServiceWorkerRegistration`*"]

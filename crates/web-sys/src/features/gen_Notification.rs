@@ -15,25 +15,25 @@ extern "C" {
     pub fn onclick(this: &Notification) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onclick ) ]
     #[doc = "Setter for the `onclick` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onclick)\n\n*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn set_onclick(this: &Notification, value: Option<::js_sys::Function>);
+    pub fn set_onclick(this: &Notification, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onshow ) ]
     #[doc = "Getter for the `onshow` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onshow)\n\n*This API requires the following crate features to be activated: `Notification`*"]
     pub fn onshow(this: &Notification) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onshow ) ]
     #[doc = "Setter for the `onshow` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onshow)\n\n*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn set_onshow(this: &Notification, value: Option<::js_sys::Function>);
+    pub fn set_onshow(this: &Notification, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onerror)\n\n*This API requires the following crate features to be activated: `Notification`*"]
     pub fn onerror(this: &Notification) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onerror)\n\n*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn set_onerror(this: &Notification, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &Notification, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onclose ) ]
     #[doc = "Getter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onclose)\n\n*This API requires the following crate features to be activated: `Notification`*"]
     pub fn onclose(this: &Notification) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onclose ) ]
     #[doc = "Setter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onclose)\n\n*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn set_onclose(this: &Notification, value: Option<::js_sys::Function>);
+    pub fn set_onclose(this: &Notification, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = title ) ]
     #[doc = "Getter for the `title` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/title)\n\n*This API requires the following crate features to be activated: `Notification`*"]
     pub fn title(this: &Notification) -> String;

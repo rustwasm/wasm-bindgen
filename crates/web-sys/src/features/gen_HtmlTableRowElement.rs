@@ -21,31 +21,31 @@ extern "C" {
     pub fn align(this: &HtmlTableRowElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = align ) ]
     #[doc = "Setter for the `align` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/align)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
-    pub fn set_align(this: &HtmlTableRowElement, value: String);
+    pub fn set_align(this: &HtmlTableRowElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = ch ) ]
     #[doc = "Getter for the `ch` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/ch)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn ch(this: &HtmlTableRowElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = ch ) ]
     #[doc = "Setter for the `ch` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/ch)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
-    pub fn set_ch(this: &HtmlTableRowElement, value: String);
+    pub fn set_ch(this: &HtmlTableRowElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = chOff ) ]
     #[doc = "Getter for the `chOff` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/chOff)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn ch_off(this: &HtmlTableRowElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = chOff ) ]
     #[doc = "Setter for the `chOff` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/chOff)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
-    pub fn set_ch_off(this: &HtmlTableRowElement, value: String);
+    pub fn set_ch_off(this: &HtmlTableRowElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = vAlign ) ]
     #[doc = "Getter for the `vAlign` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/vAlign)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn v_align(this: &HtmlTableRowElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = vAlign ) ]
     #[doc = "Setter for the `vAlign` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/vAlign)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
-    pub fn set_v_align(this: &HtmlTableRowElement, value: String);
+    pub fn set_v_align(this: &HtmlTableRowElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = bgColor ) ]
     #[doc = "Getter for the `bgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/bgColor)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn bg_color(this: &HtmlTableRowElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = bgColor ) ]
     #[doc = "Setter for the `bgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/bgColor)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
-    pub fn set_bg_color(this: &HtmlTableRowElement, value: String);
+    pub fn set_bg_color(this: &HtmlTableRowElement, value: &str);
     # [ wasm_bindgen ( catch , method , structural , js_name = deleteCell ) ]
     #[doc = "The `deleteCell()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/deleteCell)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn delete_cell(this: &HtmlTableRowElement, index: i32) -> Result<(), JsValue>;

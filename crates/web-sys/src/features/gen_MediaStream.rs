@@ -17,13 +17,13 @@ extern "C" {
     pub fn onaddtrack(this: &MediaStream) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onaddtrack ) ]
     #[doc = "Setter for the `onaddtrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/onaddtrack)\n\n*This API requires the following crate features to be activated: `MediaStream`*"]
-    pub fn set_onaddtrack(this: &MediaStream, value: Option<::js_sys::Function>);
+    pub fn set_onaddtrack(this: &MediaStream, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onremovetrack ) ]
     #[doc = "Getter for the `onremovetrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/onremovetrack)\n\n*This API requires the following crate features to be activated: `MediaStream`*"]
     pub fn onremovetrack(this: &MediaStream) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onremovetrack ) ]
     #[doc = "Setter for the `onremovetrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/onremovetrack)\n\n*This API requires the following crate features to be activated: `MediaStream`*"]
-    pub fn set_onremovetrack(this: &MediaStream, value: Option<::js_sys::Function>);
+    pub fn set_onremovetrack(this: &MediaStream, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = currentTime ) ]
     #[doc = "Getter for the `currentTime` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/currentTime)\n\n*This API requires the following crate features to be activated: `MediaStream`*"]
     pub fn current_time(this: &MediaStream) -> f64;

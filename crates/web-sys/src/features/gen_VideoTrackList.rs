@@ -17,19 +17,19 @@ extern "C" {
     pub fn onchange(this: &VideoTrackList) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onchange ) ]
     #[doc = "Setter for the `onchange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onchange)\n\n*This API requires the following crate features to be activated: `VideoTrackList`*"]
-    pub fn set_onchange(this: &VideoTrackList, value: Option<::js_sys::Function>);
+    pub fn set_onchange(this: &VideoTrackList, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onaddtrack ) ]
     #[doc = "Getter for the `onaddtrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onaddtrack)\n\n*This API requires the following crate features to be activated: `VideoTrackList`*"]
     pub fn onaddtrack(this: &VideoTrackList) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onaddtrack ) ]
     #[doc = "Setter for the `onaddtrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onaddtrack)\n\n*This API requires the following crate features to be activated: `VideoTrackList`*"]
-    pub fn set_onaddtrack(this: &VideoTrackList, value: Option<::js_sys::Function>);
+    pub fn set_onaddtrack(this: &VideoTrackList, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onremovetrack ) ]
     #[doc = "Getter for the `onremovetrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onremovetrack)\n\n*This API requires the following crate features to be activated: `VideoTrackList`*"]
     pub fn onremovetrack(this: &VideoTrackList) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onremovetrack ) ]
     #[doc = "Setter for the `onremovetrack` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onremovetrack)\n\n*This API requires the following crate features to be activated: `VideoTrackList`*"]
-    pub fn set_onremovetrack(this: &VideoTrackList, value: Option<::js_sys::Function>);
+    pub fn set_onremovetrack(this: &VideoTrackList, value: Option<&::js_sys::Function>);
     #[cfg(feature = "VideoTrack")]
     # [ wasm_bindgen ( method , structural , js_name = getTrackById ) ]
     #[doc = "The `getTrackById()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/getTrackById)\n\n*This API requires the following crate features to be activated: `VideoTrack`, `VideoTrackList`*"]

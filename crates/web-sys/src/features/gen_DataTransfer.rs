@@ -11,13 +11,13 @@ extern "C" {
     pub fn drop_effect(this: &DataTransfer) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = dropEffect ) ]
     #[doc = "Setter for the `dropEffect` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect)\n\n*This API requires the following crate features to be activated: `DataTransfer`*"]
-    pub fn set_drop_effect(this: &DataTransfer, value: String);
+    pub fn set_drop_effect(this: &DataTransfer, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = effectAllowed ) ]
     #[doc = "Getter for the `effectAllowed` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed)\n\n*This API requires the following crate features to be activated: `DataTransfer`*"]
     pub fn effect_allowed(this: &DataTransfer) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = effectAllowed ) ]
     #[doc = "Setter for the `effectAllowed` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed)\n\n*This API requires the following crate features to be activated: `DataTransfer`*"]
-    pub fn set_effect_allowed(this: &DataTransfer, value: String);
+    pub fn set_effect_allowed(this: &DataTransfer, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = items ) ]
     #[cfg(feature = "DataTransferItemList")]
     #[doc = "Getter for the `items` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items)\n\n*This API requires the following crate features to be activated: `DataTransfer`, `DataTransferItemList`*"]

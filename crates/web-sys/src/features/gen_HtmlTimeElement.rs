@@ -11,5 +11,5 @@ extern "C" {
     pub fn date_time(this: &HtmlTimeElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = dateTime ) ]
     #[doc = "Setter for the `dateTime` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTimeElement/dateTime)\n\n*This API requires the following crate features to be activated: `HtmlTimeElement`*"]
-    pub fn set_date_time(this: &HtmlTimeElement, value: String);
+    pub fn set_date_time(this: &HtmlTimeElement, value: &str);
 }

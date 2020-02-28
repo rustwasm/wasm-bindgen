@@ -11,13 +11,13 @@ extern "C" {
     pub fn text(this: &SpeechSynthesisUtterance) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = text ) ]
     #[doc = "Setter for the `text` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/text)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_text(this: &SpeechSynthesisUtterance, value: String);
+    pub fn set_text(this: &SpeechSynthesisUtterance, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = lang ) ]
     #[doc = "Getter for the `lang` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/lang)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn lang(this: &SpeechSynthesisUtterance) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = lang ) ]
     #[doc = "Setter for the `lang` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/lang)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_lang(this: &SpeechSynthesisUtterance, value: String);
+    pub fn set_lang(this: &SpeechSynthesisUtterance, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = voice ) ]
     #[cfg(feature = "SpeechSynthesisVoice")]
     #[doc = "Getter for the `voice` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/voice)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`, `SpeechSynthesisVoice`*"]
@@ -25,7 +25,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = voice ) ]
     #[cfg(feature = "SpeechSynthesisVoice")]
     #[doc = "Setter for the `voice` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/voice)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`, `SpeechSynthesisVoice`*"]
-    pub fn set_voice(this: &SpeechSynthesisUtterance, value: Option<SpeechSynthesisVoice>);
+    pub fn set_voice(this: &SpeechSynthesisUtterance, value: Option<&SpeechSynthesisVoice>);
     # [ wasm_bindgen ( structural , method , getter , js_name = volume ) ]
     #[doc = "Getter for the `volume` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/volume)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn volume(this: &SpeechSynthesisUtterance) -> f32;
@@ -49,43 +49,43 @@ extern "C" {
     pub fn onstart(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstart ) ]
     #[doc = "Setter for the `onstart` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onstart)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_onstart(this: &SpeechSynthesisUtterance, value: Option<::js_sys::Function>);
+    pub fn set_onstart(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onend ) ]
     #[doc = "Getter for the `onend` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onend)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn onend(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onend ) ]
     #[doc = "Setter for the `onend` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onend)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_onend(this: &SpeechSynthesisUtterance, value: Option<::js_sys::Function>);
+    pub fn set_onend(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onerror)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn onerror(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onerror)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_onerror(this: &SpeechSynthesisUtterance, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onpause ) ]
     #[doc = "Getter for the `onpause` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onpause)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn onpause(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onpause ) ]
     #[doc = "Setter for the `onpause` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onpause)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_onpause(this: &SpeechSynthesisUtterance, value: Option<::js_sys::Function>);
+    pub fn set_onpause(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onresume ) ]
     #[doc = "Getter for the `onresume` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onresume)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn onresume(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onresume ) ]
     #[doc = "Setter for the `onresume` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onresume)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_onresume(this: &SpeechSynthesisUtterance, value: Option<::js_sys::Function>);
+    pub fn set_onresume(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onmark ) ]
     #[doc = "Getter for the `onmark` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onmark)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn onmark(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onmark ) ]
     #[doc = "Setter for the `onmark` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onmark)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_onmark(this: &SpeechSynthesisUtterance, value: Option<::js_sys::Function>);
+    pub fn set_onmark(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onboundary ) ]
     #[doc = "Getter for the `onboundary` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onboundary)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn onboundary(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onboundary ) ]
     #[doc = "Setter for the `onboundary` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onboundary)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
-    pub fn set_onboundary(this: &SpeechSynthesisUtterance, value: Option<::js_sys::Function>);
+    pub fn set_onboundary(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new SpeechSynthesisUtterance(..)` constructor, creating a new instance of `SpeechSynthesisUtterance`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/SpeechSynthesisUtterance)\n\n*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn new(this: &SpeechSynthesisUtterance) -> Result<SpeechSynthesisUtterance, JsValue>;

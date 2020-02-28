@@ -23,19 +23,19 @@ extern "C" {
     pub fn onabort(this: &IdbTransaction) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onabort ) ]
     #[doc = "Setter for the `onabort` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onabort)\n\n*This API requires the following crate features to be activated: `IdbTransaction`*"]
-    pub fn set_onabort(this: &IdbTransaction, value: Option<::js_sys::Function>);
+    pub fn set_onabort(this: &IdbTransaction, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = oncomplete ) ]
     #[doc = "Getter for the `oncomplete` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)\n\n*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn oncomplete(this: &IdbTransaction) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = oncomplete ) ]
     #[doc = "Setter for the `oncomplete` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)\n\n*This API requires the following crate features to be activated: `IdbTransaction`*"]
-    pub fn set_oncomplete(this: &IdbTransaction, value: Option<::js_sys::Function>);
+    pub fn set_oncomplete(this: &IdbTransaction, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)\n\n*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn onerror(this: &IdbTransaction) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)\n\n*This API requires the following crate features to be activated: `IdbTransaction`*"]
-    pub fn set_onerror(this: &IdbTransaction, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &IdbTransaction, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = objectStoreNames ) ]
     #[cfg(feature = "DomStringList")]
     #[doc = "Getter for the `objectStoreNames` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/objectStoreNames)\n\n*This API requires the following crate features to be activated: `DomStringList`, `IdbTransaction`*"]

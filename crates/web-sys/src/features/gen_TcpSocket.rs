@@ -31,31 +31,31 @@ extern "C" {
     pub fn onopen(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onopen ) ]
     #[doc = "Setter for the `onopen` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onopen)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
-    pub fn set_onopen(this: &TcpSocket, value: Option<::js_sys::Function>);
+    pub fn set_onopen(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = ondrain ) ]
     #[doc = "Getter for the `ondrain` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondrain)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
     pub fn ondrain(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ondrain ) ]
     #[doc = "Setter for the `ondrain` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondrain)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
-    pub fn set_ondrain(this: &TcpSocket, value: Option<::js_sys::Function>);
+    pub fn set_ondrain(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = ondata ) ]
     #[doc = "Getter for the `ondata` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondata)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
     pub fn ondata(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ondata ) ]
     #[doc = "Setter for the `ondata` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondata)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
-    pub fn set_ondata(this: &TcpSocket, value: Option<::js_sys::Function>);
+    pub fn set_ondata(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onerror)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
     pub fn onerror(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onerror)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
-    pub fn set_onerror(this: &TcpSocket, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onclose ) ]
     #[doc = "Getter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onclose)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
     pub fn onclose(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onclose ) ]
     #[doc = "Setter for the `onclose` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onclose)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
-    pub fn set_onclose(this: &TcpSocket, value: Option<::js_sys::Function>);
+    pub fn set_onclose(this: &TcpSocket, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new TcpSocket(..)` constructor, creating a new instance of `TcpSocket`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/TCPSocket)\n\n*This API requires the following crate features to be activated: `TcpSocket`*"]
     pub fn new(this: &TcpSocket, host: &str, port: u16) -> Result<TcpSocket, JsValue>;

@@ -23,7 +23,7 @@ extern "C" {
     pub fn type_(this: &HtmlOListElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = type ) ]
     #[doc = "Setter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOListElement/type)\n\n*This API requires the following crate features to be activated: `HtmlOListElement`*"]
-    pub fn set_type(this: &HtmlOListElement, value: String);
+    pub fn set_type(this: &HtmlOListElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = compact ) ]
     #[doc = "Getter for the `compact` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOListElement/compact)\n\n*This API requires the following crate features to be activated: `HtmlOListElement`*"]
     pub fn compact(this: &HtmlOListElement) -> bool;

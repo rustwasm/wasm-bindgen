@@ -13,7 +13,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = buffer ) ]
     #[cfg(feature = "AudioBuffer")]
     #[doc = "Setter for the `buffer` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode/buffer)\n\n*This API requires the following crate features to be activated: `AudioBuffer`, `ConvolverNode`*"]
-    pub fn set_buffer(this: &ConvolverNode, value: Option<AudioBuffer>);
+    pub fn set_buffer(this: &ConvolverNode, value: Option<&AudioBuffer>);
     # [ wasm_bindgen ( structural , method , getter , js_name = normalize ) ]
     #[doc = "Getter for the `normalize` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode/normalize)\n\n*This API requires the following crate features to be activated: `ConvolverNode`*"]
     pub fn normalize(this: &ConvolverNode) -> bool;

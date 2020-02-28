@@ -13,7 +13,7 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_name = region ) ]
     #[cfg(feature = "VttRegion")]
     #[doc = "Setter for the `region` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/region)\n\n*This API requires the following crate features to be activated: `VttCue`, `VttRegion`*"]
-    pub fn set_region(this: &VttCue, value: Option<VttRegion>);
+    pub fn set_region(this: &VttCue, value: Option<&VttRegion>);
     # [ wasm_bindgen ( structural , method , getter , js_name = vertical ) ]
     #[cfg(feature = "DirectionSetting")]
     #[doc = "Getter for the `vertical` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/vertical)\n\n*This API requires the following crate features to be activated: `DirectionSetting`, `VttCue`*"]
@@ -33,7 +33,7 @@ extern "C" {
     pub fn line(this: &VttCue) -> ::wasm_bindgen::JsValue;
     # [ wasm_bindgen ( structural , method , setter , js_name = line ) ]
     #[doc = "Setter for the `line` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/line)\n\n*This API requires the following crate features to be activated: `VttCue`*"]
-    pub fn set_line(this: &VttCue, value: ::wasm_bindgen::JsValue);
+    pub fn set_line(this: &VttCue, value: &::wasm_bindgen::JsValue);
     # [ wasm_bindgen ( structural , method , getter , js_name = lineAlign ) ]
     #[cfg(feature = "LineAlignSetting")]
     #[doc = "Getter for the `lineAlign` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/lineAlign)\n\n*This API requires the following crate features to be activated: `LineAlignSetting`, `VttCue`*"]
@@ -47,7 +47,7 @@ extern "C" {
     pub fn position(this: &VttCue) -> ::wasm_bindgen::JsValue;
     # [ wasm_bindgen ( structural , method , setter , js_name = position ) ]
     #[doc = "Setter for the `position` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/position)\n\n*This API requires the following crate features to be activated: `VttCue`*"]
-    pub fn set_position(this: &VttCue, value: ::wasm_bindgen::JsValue);
+    pub fn set_position(this: &VttCue, value: &::wasm_bindgen::JsValue);
     # [ wasm_bindgen ( structural , method , getter , js_name = positionAlign ) ]
     #[cfg(feature = "PositionAlignSetting")]
     #[doc = "Getter for the `positionAlign` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/positionAlign)\n\n*This API requires the following crate features to be activated: `PositionAlignSetting`, `VttCue`*"]
@@ -75,7 +75,7 @@ extern "C" {
     pub fn text(this: &VttCue) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = text ) ]
     #[doc = "Setter for the `text` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/text)\n\n*This API requires the following crate features to be activated: `VttCue`*"]
-    pub fn set_text(this: &VttCue, value: String);
+    pub fn set_text(this: &VttCue, value: &str);
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new VttCue(..)` constructor, creating a new instance of `VttCue`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/VTTCue)\n\n*This API requires the following crate features to be activated: `VttCue`*"]
     pub fn new(

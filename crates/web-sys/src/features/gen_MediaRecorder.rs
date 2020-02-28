@@ -22,31 +22,31 @@ extern "C" {
     pub fn ondataavailable(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = ondataavailable ) ]
     #[doc = "Setter for the `ondataavailable` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/ondataavailable)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
-    pub fn set_ondataavailable(this: &MediaRecorder, value: Option<::js_sys::Function>);
+    pub fn set_ondataavailable(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onerror)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
     pub fn onerror(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onerror)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
-    pub fn set_onerror(this: &MediaRecorder, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onstart ) ]
     #[doc = "Getter for the `onstart` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstart)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
     pub fn onstart(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstart ) ]
     #[doc = "Setter for the `onstart` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstart)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
-    pub fn set_onstart(this: &MediaRecorder, value: Option<::js_sys::Function>);
+    pub fn set_onstart(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onstop ) ]
     #[doc = "Getter for the `onstop` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstop)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
     pub fn onstop(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onstop ) ]
     #[doc = "Setter for the `onstop` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstop)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
-    pub fn set_onstop(this: &MediaRecorder, value: Option<::js_sys::Function>);
+    pub fn set_onstop(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onwarning ) ]
     #[doc = "Getter for the `onwarning` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onwarning)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
     pub fn onwarning(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onwarning ) ]
     #[doc = "Setter for the `onwarning` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onwarning)\n\n*This API requires the following crate features to be activated: `MediaRecorder`*"]
-    pub fn set_onwarning(this: &MediaRecorder, value: Option<::js_sys::Function>);
+    pub fn set_onwarning(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     #[cfg(feature = "MediaStream")]
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new MediaRecorder(..)` constructor, creating a new instance of `MediaRecorder`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder)\n\n*This API requires the following crate features to be activated: `MediaRecorder`, `MediaStream`*"]

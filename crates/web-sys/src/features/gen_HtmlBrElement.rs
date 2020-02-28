@@ -11,5 +11,5 @@ extern "C" {
     pub fn clear(this: &HtmlBrElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = clear ) ]
     #[doc = "Setter for the `clear` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement/clear)\n\n*This API requires the following crate features to be activated: `HtmlBrElement`*"]
-    pub fn set_clear(this: &HtmlBrElement, value: String);
+    pub fn set_clear(this: &HtmlBrElement, value: &str);
 }

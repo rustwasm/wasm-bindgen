@@ -22,7 +22,7 @@ extern "C" {
     pub fn onresourcetimingbufferfull(this: &Performance) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onresourcetimingbufferfull ) ]
     #[doc = "Setter for the `onresourcetimingbufferfull` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Performance/onresourcetimingbufferfull)\n\n*This API requires the following crate features to be activated: `Performance`*"]
-    pub fn set_onresourcetimingbufferfull(this: &Performance, value: Option<::js_sys::Function>);
+    pub fn set_onresourcetimingbufferfull(this: &Performance, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( method , structural , js_name = clearMarks ) ]
     #[doc = "The `clearMarks()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Performance/clearMarks)\n\n*This API requires the following crate features to be activated: `Performance`*"]
     pub fn clear_marks(this: &Performance);

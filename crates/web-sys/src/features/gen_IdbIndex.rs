@@ -11,7 +11,7 @@ extern "C" {
     pub fn name(this: &IdbIndex) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBIndex/name)\n\n*This API requires the following crate features to be activated: `IdbIndex`*"]
-    pub fn set_name(this: &IdbIndex, value: String);
+    pub fn set_name(this: &IdbIndex, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = objectStore ) ]
     #[cfg(feature = "IdbObjectStore")]
     #[doc = "Getter for the `objectStore` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBIndex/objectStore)\n\n*This API requires the following crate features to be activated: `IdbIndex`, `IdbObjectStore`*"]

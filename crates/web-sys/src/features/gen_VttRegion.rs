@@ -11,7 +11,7 @@ extern "C" {
     pub fn id(this: &VttRegion) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = id ) ]
     #[doc = "Setter for the `id` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/id)\n\n*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn set_id(this: &VttRegion, value: String);
+    pub fn set_id(this: &VttRegion, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = width ) ]
     #[doc = "Getter for the `width` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/width)\n\n*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn width(this: &VttRegion) -> f64;

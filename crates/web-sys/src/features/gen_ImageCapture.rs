@@ -15,13 +15,13 @@ extern "C" {
     pub fn onphoto(this: &ImageCapture) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onphoto ) ]
     #[doc = "Setter for the `onphoto` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/onphoto)\n\n*This API requires the following crate features to be activated: `ImageCapture`*"]
-    pub fn set_onphoto(this: &ImageCapture, value: Option<::js_sys::Function>);
+    pub fn set_onphoto(this: &ImageCapture, value: Option<&::js_sys::Function>);
     # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/onerror)\n\n*This API requires the following crate features to be activated: `ImageCapture`*"]
     pub fn onerror(this: &ImageCapture) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/onerror)\n\n*This API requires the following crate features to be activated: `ImageCapture`*"]
-    pub fn set_onerror(this: &ImageCapture, value: Option<::js_sys::Function>);
+    pub fn set_onerror(this: &ImageCapture, value: Option<&::js_sys::Function>);
     #[cfg(feature = "VideoStreamTrack")]
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new ImageCapture(..)` constructor, creating a new instance of `ImageCapture`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/ImageCapture)\n\n*This API requires the following crate features to be activated: `ImageCapture`, `VideoStreamTrack`*"]

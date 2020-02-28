@@ -17,7 +17,7 @@ extern "C" {
     pub fn selected_index(this: &HtmlOptionsCollection) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = selectedIndex ) ]
     #[doc = "Setter for the `selectedIndex` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/selectedIndex)\n\n*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
-    pub fn set_selected_index(this: &HtmlOptionsCollection, value: Result<i32, JsValue>);
+    pub fn set_selected_index(this: &HtmlOptionsCollection, value: i32) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlOptionElement")]
     # [ wasm_bindgen ( catch , method , structural , js_name = add ) ]
     #[doc = "The `add()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/add)\n\n*This API requires the following crate features to be activated: `HtmlOptionElement`, `HtmlOptionsCollection`*"]

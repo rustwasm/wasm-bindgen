@@ -15,7 +15,7 @@ extern "C" {
     pub fn onended(this: &ConstantSourceNode) -> Option<::js_sys::Function>;
     # [ wasm_bindgen ( structural , method , setter , js_name = onended ) ]
     #[doc = "Setter for the `onended` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConstantSourceNode/onended)\n\n*This API requires the following crate features to be activated: `ConstantSourceNode`*"]
-    pub fn set_onended(this: &ConstantSourceNode, value: Option<::js_sys::Function>);
+    pub fn set_onended(this: &ConstantSourceNode, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BaseAudioContext")]
     #[wasm_bindgen(catch, constructor)]
     #[doc = "The `new ConstantSourceNode(..)` constructor, creating a new instance of `ConstantSourceNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConstantSourceNode/ConstantSourceNode)\n\n*This API requires the following crate features to be activated: `BaseAudioContext`, `ConstantSourceNode`*"]

@@ -11,49 +11,49 @@ extern "C" {
     pub fn domain(this: &HtmlDocument) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = domain ) ]
     #[doc = "Setter for the `domain` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/domain)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_domain(this: &HtmlDocument, value: String);
+    pub fn set_domain(this: &HtmlDocument, value: &str);
     # [ wasm_bindgen ( structural , catch , method , getter , js_name = cookie ) ]
     #[doc = "Getter for the `cookie` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/cookie)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn cookie(this: &HtmlDocument) -> Result<String, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_name = cookie ) ]
     #[doc = "Setter for the `cookie` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/cookie)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_cookie(this: &HtmlDocument, value: Result<String, JsValue>);
+    pub fn set_cookie(this: &HtmlDocument, value: &str) -> Result<(), JsValue>;
     # [ wasm_bindgen ( structural , method , getter , js_name = designMode ) ]
     #[doc = "Getter for the `designMode` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/designMode)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn design_mode(this: &HtmlDocument) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = designMode ) ]
     #[doc = "Setter for the `designMode` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/designMode)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_design_mode(this: &HtmlDocument, value: String);
+    pub fn set_design_mode(this: &HtmlDocument, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = fgColor ) ]
     #[doc = "Getter for the `fgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/fgColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn fg_color(this: &HtmlDocument) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = fgColor ) ]
     #[doc = "Setter for the `fgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/fgColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_fg_color(this: &HtmlDocument, value: String);
+    pub fn set_fg_color(this: &HtmlDocument, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = linkColor ) ]
     #[doc = "Getter for the `linkColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/linkColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn link_color(this: &HtmlDocument) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = linkColor ) ]
     #[doc = "Setter for the `linkColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/linkColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_link_color(this: &HtmlDocument, value: String);
+    pub fn set_link_color(this: &HtmlDocument, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = vlinkColor ) ]
     #[doc = "Getter for the `vlinkColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/vlinkColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn vlink_color(this: &HtmlDocument) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = vlinkColor ) ]
     #[doc = "Setter for the `vlinkColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/vlinkColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_vlink_color(this: &HtmlDocument, value: String);
+    pub fn set_vlink_color(this: &HtmlDocument, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = alinkColor ) ]
     #[doc = "Getter for the `alinkColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/alinkColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn alink_color(this: &HtmlDocument) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = alinkColor ) ]
     #[doc = "Setter for the `alinkColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/alinkColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_alink_color(this: &HtmlDocument, value: String);
+    pub fn set_alink_color(this: &HtmlDocument, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = bgColor ) ]
     #[doc = "Getter for the `bgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/bgColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn bg_color(this: &HtmlDocument) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = bgColor ) ]
     #[doc = "Setter for the `bgColor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/bgColor)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_bg_color(this: &HtmlDocument, value: String);
+    pub fn set_bg_color(this: &HtmlDocument, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = all ) ]
     #[cfg(feature = "HtmlAllCollection")]
     #[doc = "Getter for the `all` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/all)\n\n*This API requires the following crate features to be activated: `HtmlAllCollection`, `HtmlDocument`*"]

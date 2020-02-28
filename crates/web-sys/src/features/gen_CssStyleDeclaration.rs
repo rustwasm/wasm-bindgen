@@ -11,7 +11,7 @@ extern "C" {
     pub fn css_text(this: &CssStyleDeclaration) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = cssText ) ]
     #[doc = "Setter for the `cssText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/cssText)\n\n*This API requires the following crate features to be activated: `CssStyleDeclaration`*"]
-    pub fn set_css_text(this: &CssStyleDeclaration, value: String);
+    pub fn set_css_text(this: &CssStyleDeclaration, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = length ) ]
     #[doc = "Getter for the `length` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/length)\n\n*This API requires the following crate features to be activated: `CssStyleDeclaration`*"]
     pub fn length(this: &CssStyleDeclaration) -> u32;

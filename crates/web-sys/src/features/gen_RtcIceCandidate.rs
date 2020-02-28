@@ -11,13 +11,13 @@ extern "C" {
     pub fn candidate(this: &RtcIceCandidate) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = candidate ) ]
     #[doc = "Setter for the `candidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/candidate)\n\n*This API requires the following crate features to be activated: `RtcIceCandidate`*"]
-    pub fn set_candidate(this: &RtcIceCandidate, value: String);
+    pub fn set_candidate(this: &RtcIceCandidate, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = sdpMid ) ]
     #[doc = "Getter for the `sdpMid` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/sdpMid)\n\n*This API requires the following crate features to be activated: `RtcIceCandidate`*"]
     pub fn sdp_mid(this: &RtcIceCandidate) -> Option<String>;
     # [ wasm_bindgen ( structural , method , setter , js_name = sdpMid ) ]
     #[doc = "Setter for the `sdpMid` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/sdpMid)\n\n*This API requires the following crate features to be activated: `RtcIceCandidate`*"]
-    pub fn set_sdp_mid(this: &RtcIceCandidate, value: Option<String>);
+    pub fn set_sdp_mid(this: &RtcIceCandidate, value: Option<&str>);
     # [ wasm_bindgen ( structural , method , getter , js_name = sdpMLineIndex ) ]
     #[doc = "Getter for the `sdpMLineIndex` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/sdpMLineIndex)\n\n*This API requires the following crate features to be activated: `RtcIceCandidate`*"]
     pub fn sdp_m_line_index(this: &RtcIceCandidate) -> Option<u16>;

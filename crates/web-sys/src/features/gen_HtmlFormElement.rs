@@ -11,43 +11,43 @@ extern "C" {
     pub fn accept_charset(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = acceptCharset ) ]
     #[doc = "Setter for the `acceptCharset` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/acceptCharset)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_accept_charset(this: &HtmlFormElement, value: String);
+    pub fn set_accept_charset(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = action ) ]
     #[doc = "Getter for the `action` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/action)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn action(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = action ) ]
     #[doc = "Setter for the `action` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/action)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_action(this: &HtmlFormElement, value: String);
+    pub fn set_action(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = autocomplete ) ]
     #[doc = "Getter for the `autocomplete` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/autocomplete)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn autocomplete(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = autocomplete ) ]
     #[doc = "Setter for the `autocomplete` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/autocomplete)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_autocomplete(this: &HtmlFormElement, value: String);
+    pub fn set_autocomplete(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = enctype ) ]
     #[doc = "Getter for the `enctype` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/enctype)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn enctype(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = enctype ) ]
     #[doc = "Setter for the `enctype` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/enctype)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_enctype(this: &HtmlFormElement, value: String);
+    pub fn set_enctype(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = encoding ) ]
     #[doc = "Getter for the `encoding` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/encoding)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn encoding(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = encoding ) ]
     #[doc = "Setter for the `encoding` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/encoding)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_encoding(this: &HtmlFormElement, value: String);
+    pub fn set_encoding(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = method ) ]
     #[doc = "Getter for the `method` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/method)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn method(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = method ) ]
     #[doc = "Setter for the `method` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/method)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_method(this: &HtmlFormElement, value: String);
+    pub fn set_method(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = name ) ]
     #[doc = "Getter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/name)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn name(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/name)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_name(this: &HtmlFormElement, value: String);
+    pub fn set_name(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = noValidate ) ]
     #[doc = "Getter for the `noValidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/noValidate)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn no_validate(this: &HtmlFormElement) -> bool;
@@ -59,7 +59,7 @@ extern "C" {
     pub fn target(this: &HtmlFormElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = target ) ]
     #[doc = "Setter for the `target` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/target)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
-    pub fn set_target(this: &HtmlFormElement, value: String);
+    pub fn set_target(this: &HtmlFormElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = elements ) ]
     #[cfg(feature = "HtmlCollection")]
     #[doc = "Getter for the `elements` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements)\n\n*This API requires the following crate features to be activated: `HtmlCollection`, `HtmlFormElement`*"]

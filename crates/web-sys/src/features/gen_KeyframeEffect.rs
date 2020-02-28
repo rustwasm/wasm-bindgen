@@ -11,7 +11,7 @@ extern "C" {
     pub fn target(this: &KeyframeEffect) -> Option<::js_sys::Object>;
     # [ wasm_bindgen ( structural , method , setter , js_name = target ) ]
     #[doc = "Setter for the `target` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target)\n\n*This API requires the following crate features to be activated: `KeyframeEffect`*"]
-    pub fn set_target(this: &KeyframeEffect, value: Option<::js_sys::Object>);
+    pub fn set_target(this: &KeyframeEffect, value: Option<&::js_sys::Object>);
     # [ wasm_bindgen ( structural , method , getter , js_name = iterationComposite ) ]
     #[cfg(feature = "IterationCompositeOperation")]
     #[doc = "Getter for the `iterationComposite` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/iterationComposite)\n\n*This API requires the following crate features to be activated: `IterationCompositeOperation`, `KeyframeEffect`*"]

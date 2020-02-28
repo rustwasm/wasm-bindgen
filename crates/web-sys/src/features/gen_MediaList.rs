@@ -11,7 +11,7 @@ extern "C" {
     pub fn media_text(this: &MediaList) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = mediaText ) ]
     #[doc = "Setter for the `mediaText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaList/mediaText)\n\n*This API requires the following crate features to be activated: `MediaList`*"]
-    pub fn set_media_text(this: &MediaList, value: String);
+    pub fn set_media_text(this: &MediaList, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = length ) ]
     #[doc = "Getter for the `length` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaList/length)\n\n*This API requires the following crate features to be activated: `MediaList`*"]
     pub fn length(this: &MediaList) -> u32;

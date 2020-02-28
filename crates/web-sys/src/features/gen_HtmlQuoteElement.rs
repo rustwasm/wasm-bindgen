@@ -11,5 +11,5 @@ extern "C" {
     pub fn cite(this: &HtmlQuoteElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = cite ) ]
     #[doc = "Setter for the `cite` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLQuoteElement/cite)\n\n*This API requires the following crate features to be activated: `HtmlQuoteElement`*"]
-    pub fn set_cite(this: &HtmlQuoteElement, value: String);
+    pub fn set_cite(this: &HtmlQuoteElement, value: &str);
 }

@@ -19,7 +19,7 @@ extern "C" {
     pub fn name(this: &HtmlOutputElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = name ) ]
     #[doc = "Setter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/name)\n\n*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn set_name(this: &HtmlOutputElement, value: String);
+    pub fn set_name(this: &HtmlOutputElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/type)\n\n*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
     pub fn type_(this: &HtmlOutputElement) -> String;
@@ -28,13 +28,13 @@ extern "C" {
     pub fn default_value(this: &HtmlOutputElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = defaultValue ) ]
     #[doc = "Setter for the `defaultValue` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/defaultValue)\n\n*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn set_default_value(this: &HtmlOutputElement, value: String);
+    pub fn set_default_value(this: &HtmlOutputElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = value ) ]
     #[doc = "Getter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/value)\n\n*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
     pub fn value(this: &HtmlOutputElement) -> String;
     # [ wasm_bindgen ( structural , method , setter , js_name = value ) ]
     #[doc = "Setter for the `value` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/value)\n\n*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn set_value(this: &HtmlOutputElement, value: String);
+    pub fn set_value(this: &HtmlOutputElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_name = willValidate ) ]
     #[doc = "Getter for the `willValidate` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/willValidate)\n\n*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
     pub fn will_validate(this: &HtmlOutputElement) -> bool;

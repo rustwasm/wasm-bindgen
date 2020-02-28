@@ -16,6 +16,6 @@ extern "C" {
     #[doc = "Setter for the `onconnectionavailable` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionList/onconnectionavailable)\n\n*This API requires the following crate features to be activated: `PresentationConnectionList`*"]
     pub fn set_onconnectionavailable(
         this: &PresentationConnectionList,
-        value: Option<::js_sys::Function>,
+        value: Option<&::js_sys::Function>,
     );
 }
