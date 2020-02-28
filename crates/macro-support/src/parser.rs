@@ -866,7 +866,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
             syn::Type::Path(syn::TypePath {
                 qself: None,
                 ref path,
-            }) => extract_path_ident(path)?,
+            }) => path,
             _ => bail_span!(
                 self.self_ty,
                 "unsupported self type in #[wasm_bindgen] impl"
@@ -894,7 +894,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
 // then go for the rest.
 fn prepare_for_impl_recursion(
     item: &mut syn::ImplItem,
-    class: &Ident,
+    class: &syn::Path,
     impl_opts: &BindgenAttrs,
 ) -> Result<(), Diagnostic> {
     let method = match item {
@@ -920,10 +920,12 @@ fn prepare_for_impl_recursion(
         other => bail_span!(other, "failed to parse this item as a known item"),
     };
 
+    let ident = extract_path_ident(class)?;
+
     let js_class = impl_opts
         .js_class()
         .map(|s| s.0.to_string())
-        .unwrap_or(class.to_string());
+        .unwrap_or(ident.to_string());
 
     method.attrs.insert(
         0,
@@ -1294,20 +1296,23 @@ fn assert_not_variadic(attrs: &BindgenAttrs) -> Result<(), Diagnostic> {
     Ok(())
 }
 
-/// If the path is a single ident, return it.
+/// Extracts the last ident from the path
 fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
-    if path.leading_colon.is_some() {
-        bail_span!(path, "global paths are not supported yet");
+    for segment in path.segments.iter() {
+        match segment.arguments {
+            syn::PathArguments::None => {}
+            _ => bail_span!(path, "paths with type parameters are not supported yet"),
+        }
     }
-    if path.segments.len() != 1 {
-        bail_span!(path, "multi-segment paths are not supported yet");
+
+    match path.segments.last() {
+        Some(value) => {
+            Ok(value.ident.clone())
+        },
+        None => {
+            bail_span!(path, "empty idents are not supported");
+        },
     }
-    let value = &path.segments[0];
-    match value.arguments {
-        syn::PathArguments::None => {}
-        _ => bail_span!(path, "paths with type parameters are not supported yet"),
-    }
-    Ok(value.ident.clone())
 }
 
 pub fn reset_attrs_used() {

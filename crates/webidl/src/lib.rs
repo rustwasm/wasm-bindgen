@@ -377,7 +377,6 @@ impl<'src> FirstPassRecord<'src> {
                 js_name: x.js_name,
                 arguments: x.arguments,
                 ret_ty: x.ret_ty,
-                structural: x.structural,
                 catch: x.catch,
                 variadic: x.variadic,
                 unstable: false,

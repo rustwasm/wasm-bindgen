@@ -651,7 +651,6 @@ pub struct Function {
     pub js_name: String,
     pub arguments: Vec<(Ident, Type)>,
     pub ret_ty: Option<Type>,
-    pub structural: bool,
     pub catch: bool,
     pub variadic: bool,
 }
@@ -663,7 +662,6 @@ impl Function {
             js_name,
             arguments,
             ret_ty,
-            structural,
             catch,
             variadic,
         } = self;
@@ -712,13 +710,6 @@ impl Function {
             None
         };
 
-        let structural = if *structural {
-            quote!( structural, )
-
-        } else {
-            quote!( final, )
-        };
-
         let variadic = if *variadic {
             Some(quote!( variadic, ))
 
@@ -739,8 +730,6 @@ impl Function {
             #[wasm_bindgen(
                 #catch
                 #variadic
-                method,
-                #structural
                 js_namespace = #js_namespace,
                 js_name = #js_name
             )]
