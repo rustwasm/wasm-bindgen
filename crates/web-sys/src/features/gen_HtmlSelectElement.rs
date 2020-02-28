@@ -109,17 +109,17 @@ extern "C" {
         this: &HtmlSelectElement,
         element: &HtmlOptGroupElement,
     ) -> Result<(), JsValue>;
-    #[cfg(all(feature = "HtmlElement", feature = "HtmlOptionElement",))]
+    #[cfg(feature = "HtmlOptionElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLSelectElement" , js_name = add ) ]
-    #[doc = "The `add()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/add)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlOptionElement`, `HtmlSelectElement`*"]
+    #[doc = "The `add()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/add)\n\n*This API requires the following crate features to be activated: `HtmlOptionElement`, `HtmlSelectElement`*"]
     pub fn add_with_html_option_element_and_opt_html_element(
         this: &HtmlSelectElement,
         element: &HtmlOptionElement,
         before: Option<&HtmlElement>,
     ) -> Result<(), JsValue>;
-    #[cfg(all(feature = "HtmlElement", feature = "HtmlOptGroupElement",))]
+    #[cfg(feature = "HtmlOptGroupElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLSelectElement" , js_name = add ) ]
-    #[doc = "The `add()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/add)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlOptGroupElement`, `HtmlSelectElement`*"]
+    #[doc = "The `add()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/add)\n\n*This API requires the following crate features to be activated: `HtmlOptGroupElement`, `HtmlSelectElement`*"]
     pub fn add_with_html_opt_group_element_and_opt_html_element(
         this: &HtmlSelectElement,
         element: &HtmlOptGroupElement,
@@ -144,9 +144,8 @@ extern "C" {
     # [ wasm_bindgen ( method , structural , js_class = "HTMLSelectElement" , js_name = checkValidity ) ]
     #[doc = "The `checkValidity()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/checkValidity)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn check_validity(this: &HtmlSelectElement) -> bool;
-    #[cfg(feature = "Element")]
     # [ wasm_bindgen ( method , structural , js_class = "HTMLSelectElement" , js_name = item ) ]
-    #[doc = "The `item()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/item)\n\n*This API requires the following crate features to be activated: `Element`, `HtmlSelectElement`*"]
+    #[doc = "The `item()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/item)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn item(this: &HtmlSelectElement, index: u32) -> Option<Element>;
     #[cfg(feature = "HtmlOptionElement")]
     # [ wasm_bindgen ( method , structural , js_class = "HTMLSelectElement" , js_name = namedItem ) ]
@@ -164,9 +163,8 @@ extern "C" {
     # [ wasm_bindgen ( method , structural , js_class = "HTMLSelectElement" , js_name = setCustomValidity ) ]
     #[doc = "The `setCustomValidity()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/setCustomValidity)\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn set_custom_validity(this: &HtmlSelectElement, error: &str);
-    #[cfg(feature = "Element")]
     #[wasm_bindgen(method, structural, js_class = "HTMLSelectElement", indexing_getter)]
-    #[doc = "Indexing getter.\n\n\n\n*This API requires the following crate features to be activated: `Element`, `HtmlSelectElement`*"]
+    #[doc = "Indexing getter.\n\n\n\n*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn get(this: &HtmlSelectElement, index: u32) -> Option<Element>;
     #[cfg(feature = "HtmlOptionElement")]
     #[wasm_bindgen(

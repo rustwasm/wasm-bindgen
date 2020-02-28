@@ -37,13 +37,11 @@ extern "C" {
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableSectionElement" , js_name = deleteRow ) ]
     #[doc = "The `deleteRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/deleteRow)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub fn delete_row(this: &HtmlTableSectionElement, index: i32) -> Result<(), JsValue>;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableSectionElement" , js_name = insertRow ) ]
-    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableSectionElement`*"]
+    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub fn insert_row(this: &HtmlTableSectionElement) -> Result<HtmlElement, JsValue>;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableSectionElement" , js_name = insertRow ) ]
-    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableSectionElement`*"]
+    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub fn insert_row_with_index(
         this: &HtmlTableSectionElement,
         index: i32,

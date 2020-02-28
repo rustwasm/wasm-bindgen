@@ -42,37 +42,32 @@ extern "C" {
         this: &DocumentFragment,
         selectors: &str,
     ) -> Result<NodeList, JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node(this: &DocumentFragment, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
     #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_0(this: &DocumentFragment) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_1(this: &DocumentFragment, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_2(
         this: &DocumentFragment,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_3(
         this: &DocumentFragment,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_4(
         this: &DocumentFragment,
         nodes_1: &Node,
@@ -80,9 +75,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_5(
         this: &DocumentFragment,
         nodes_1: &Node,
@@ -91,9 +85,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_6(
         this: &DocumentFragment,
         nodes_1: &Node,
@@ -103,9 +96,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn append_with_node_7(
         this: &DocumentFragment,
         nodes_1: &Node,
@@ -182,37 +174,32 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node(this: &DocumentFragment, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
     #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_0(this: &DocumentFragment) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_1(this: &DocumentFragment, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_2(
         this: &DocumentFragment,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_3(
         this: &DocumentFragment,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_4(
         this: &DocumentFragment,
         nodes_1: &Node,
@@ -220,9 +207,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_5(
         this: &DocumentFragment,
         nodes_1: &Node,
@@ -231,9 +217,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_6(
         this: &DocumentFragment,
         nodes_1: &Node,
@@ -243,9 +228,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)\n\n*This API requires the following crate features to be activated: `DocumentFragment`*"]
     pub fn prepend_with_node_7(
         this: &DocumentFragment,
         nodes_1: &Node,

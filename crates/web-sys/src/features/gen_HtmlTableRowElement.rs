@@ -49,13 +49,11 @@ extern "C" {
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableRowElement" , js_name = deleteCell ) ]
     #[doc = "The `deleteCell()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/deleteCell)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn delete_cell(this: &HtmlTableRowElement, index: i32) -> Result<(), JsValue>;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableRowElement" , js_name = insertCell ) ]
-    #[doc = "The `insertCell()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/insertCell)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableRowElement`*"]
+    #[doc = "The `insertCell()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/insertCell)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn insert_cell(this: &HtmlTableRowElement) -> Result<HtmlElement, JsValue>;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableRowElement" , js_name = insertCell ) ]
-    #[doc = "The `insertCell()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/insertCell)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableRowElement`*"]
+    #[doc = "The `insertCell()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/insertCell)\n\n*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn insert_cell_with_index(
         this: &HtmlTableRowElement,
         index: i32,

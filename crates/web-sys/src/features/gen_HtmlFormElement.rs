@@ -79,9 +79,8 @@ extern "C" {
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLFormElement" , js_name = submit ) ]
     #[doc = "The `submit()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit)\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn submit(this: &HtmlFormElement) -> Result<(), JsValue>;
-    #[cfg(feature = "Element")]
     #[wasm_bindgen(method, structural, js_class = "HTMLFormElement", indexing_getter)]
-    #[doc = "Indexing getter.\n\n\n\n*This API requires the following crate features to be activated: `Element`, `HtmlFormElement`*"]
+    #[doc = "Indexing getter.\n\n\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn get_with_index(this: &HtmlFormElement, index: u32) -> Option<Element>;
     #[wasm_bindgen(method, structural, js_class = "HTMLFormElement", indexing_getter)]
     #[doc = "Indexing getter.\n\n\n\n*This API requires the following crate features to be activated: `HtmlFormElement`*"]

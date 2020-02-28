@@ -147,9 +147,8 @@ extern "C" {
         this: &DomMatrix,
         transform_list: &str,
     ) -> Result<DomMatrix, JsValue>;
-    #[cfg(feature = "DomMatrixReadOnly")]
     #[wasm_bindgen(catch, js_class = "DOMMatrix", constructor)]
-    #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)\n\n*This API requires the following crate features to be activated: `DomMatrix`, `DomMatrixReadOnly`*"]
+    #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)\n\n*This API requires the following crate features to be activated: `DomMatrix`*"]
     pub fn new_with_other(
         this: &DomMatrix,
         other: &DomMatrixReadOnly,

@@ -109,8 +109,7 @@ extern "C" {
     #[doc = "Setter for the `inputMode` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/inputMode)\n\n*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn set_input_mode(this: &HtmlInputElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLInputElement" , js_name = list ) ]
-    #[cfg(feature = "HtmlElement")]
-    #[doc = "Getter for the `list` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/list)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlInputElement`*"]
+    #[doc = "Getter for the `list` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/list)\n\n*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn list(this: &HtmlInputElement) -> Option<HtmlElement>;
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLInputElement" , js_name = max ) ]
     #[doc = "Getter for the `max` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/max)\n\n*This API requires the following crate features to be activated: `HtmlInputElement`*"]

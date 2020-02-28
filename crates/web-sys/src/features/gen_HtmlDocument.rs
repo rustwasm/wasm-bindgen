@@ -85,17 +85,14 @@ extern "C" {
         show_ui: bool,
         value: &str,
     ) -> Result<bool, JsValue>;
-    #[cfg(feature = "Document")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLDocument" , js_name = open ) ]
-    #[doc = "The `open()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/open)\n\n*This API requires the following crate features to be activated: `Document`, `HtmlDocument`*"]
+    #[doc = "The `open()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/open)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn open(this: &HtmlDocument) -> Result<Document, JsValue>;
-    #[cfg(feature = "Document")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLDocument" , js_name = open ) ]
-    #[doc = "The `open()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/open)\n\n*This API requires the following crate features to be activated: `Document`, `HtmlDocument`*"]
+    #[doc = "The `open()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/open)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn open_with_type(this: &HtmlDocument, type_: &str) -> Result<Document, JsValue>;
-    #[cfg(feature = "Document")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLDocument" , js_name = open ) ]
-    #[doc = "The `open()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/open)\n\n*This API requires the following crate features to be activated: `Document`, `HtmlDocument`*"]
+    #[doc = "The `open()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/open)\n\n*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn open_with_type_and_replace(
         this: &HtmlDocument,
         type_: &str,

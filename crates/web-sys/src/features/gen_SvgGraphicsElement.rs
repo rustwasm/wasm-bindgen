@@ -11,12 +11,10 @@ extern "C" {
     #[doc = "Getter for the `transform` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/transform)\n\n*This API requires the following crate features to be activated: `SvgAnimatedTransformList`, `SvgGraphicsElement`*"]
     pub fn transform(this: &SvgGraphicsElement) -> SvgAnimatedTransformList;
     # [ wasm_bindgen ( structural , method , getter , js_class = "SVGGraphicsElement" , js_name = nearestViewportElement ) ]
-    #[cfg(feature = "SvgElement")]
-    #[doc = "Getter for the `nearestViewportElement` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/nearestViewportElement)\n\n*This API requires the following crate features to be activated: `SvgElement`, `SvgGraphicsElement`*"]
+    #[doc = "Getter for the `nearestViewportElement` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/nearestViewportElement)\n\n*This API requires the following crate features to be activated: `SvgGraphicsElement`*"]
     pub fn nearest_viewport_element(this: &SvgGraphicsElement) -> Option<SvgElement>;
     # [ wasm_bindgen ( structural , method , getter , js_class = "SVGGraphicsElement" , js_name = farthestViewportElement ) ]
-    #[cfg(feature = "SvgElement")]
-    #[doc = "Getter for the `farthestViewportElement` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/farthestViewportElement)\n\n*This API requires the following crate features to be activated: `SvgElement`, `SvgGraphicsElement`*"]
+    #[doc = "Getter for the `farthestViewportElement` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/farthestViewportElement)\n\n*This API requires the following crate features to be activated: `SvgGraphicsElement`*"]
     pub fn farthest_viewport_element(this: &SvgGraphicsElement) -> Option<SvgElement>;
     # [ wasm_bindgen ( structural , method , getter , js_class = "SVGGraphicsElement" , js_name = requiredFeatures ) ]
     #[cfg(feature = "SvgStringList")]

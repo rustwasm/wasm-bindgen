@@ -17,7 +17,6 @@ extern "C" {
     #[doc = "Setter for the `htmlFor` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor)\n\n*This API requires the following crate features to be activated: `HtmlLabelElement`*"]
     pub fn set_html_for(this: &HtmlLabelElement, value: &str);
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLabelElement" , js_name = control ) ]
-    #[cfg(feature = "HtmlElement")]
-    #[doc = "Getter for the `control` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlLabelElement`*"]
+    #[doc = "Getter for the `control` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control)\n\n*This API requires the following crate features to be activated: `HtmlLabelElement`*"]
     pub fn control(this: &HtmlLabelElement) -> Option<HtmlElement>;
 }

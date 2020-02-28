@@ -15,37 +15,32 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , getter , js_class = "DocumentType" , js_name = systemId ) ]
     #[doc = "Getter for the `systemId` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/systemId)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn system_id(this: &DocumentType) -> String;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node(this: &DocumentType, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
     #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_0(this: &DocumentType) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_1(this: &DocumentType, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_2(
         this: &DocumentType,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_3(
         this: &DocumentType,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_4(
         this: &DocumentType,
         nodes_1: &Node,
@@ -53,9 +48,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_5(
         this: &DocumentType,
         nodes_1: &Node,
@@ -64,9 +58,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_6(
         this: &DocumentType,
         nodes_1: &Node,
@@ -76,9 +69,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn after_with_node_7(
         this: &DocumentType,
         nodes_1: &Node,
@@ -155,37 +147,32 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node(this: &DocumentType, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
     #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_0(this: &DocumentType) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_1(this: &DocumentType, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_2(
         this: &DocumentType,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_3(
         this: &DocumentType,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_4(
         this: &DocumentType,
         nodes_1: &Node,
@@ -193,9 +180,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_5(
         this: &DocumentType,
         nodes_1: &Node,
@@ -204,9 +190,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_6(
         this: &DocumentType,
         nodes_1: &Node,
@@ -216,9 +201,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn before_with_node_7(
         this: &DocumentType,
         nodes_1: &Node,
@@ -298,37 +282,32 @@ extern "C" {
     # [ wasm_bindgen ( method , structural , js_class = "DocumentType" , js_name = remove ) ]
     #[doc = "The `remove()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/remove)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn remove(this: &DocumentType);
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node(this: &DocumentType, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
     #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_0(this: &DocumentType) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_1(this: &DocumentType, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_2(
         this: &DocumentType,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_3(
         this: &DocumentType,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_4(
         this: &DocumentType,
         nodes_1: &Node,
@@ -336,9 +315,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_5(
         this: &DocumentType,
         nodes_1: &Node,
@@ -347,9 +325,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_6(
         this: &DocumentType,
         nodes_1: &Node,
@@ -359,9 +336,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)\n\n*This API requires the following crate features to be activated: `DocumentType`*"]
     pub fn replace_with_with_node_7(
         this: &DocumentType,
         nodes_1: &Node,

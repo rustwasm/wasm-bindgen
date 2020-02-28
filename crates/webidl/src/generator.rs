@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 use proc_macro2::TokenStream;
 use quote::quote;
 use proc_macro2::Literal;
-use syn::{Ident, Type, Attribute};
+use syn::{Ident, Type};
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
@@ -10,11 +10,11 @@ use crate::traverse::TraverseType;
 use crate::util::{snake_case_ident, required_doc_string, get_cfg_features, mdn_doc};
 
 
-fn add_features(features: &mut BTreeSet<String>, ty: &impl TraverseType, self_name: &str) {
+fn add_features(features: &mut BTreeSet<String>, ty: &impl TraverseType) {
     ty.traverse_type(&mut |ident| {
         let ident = ident.to_string();
 
-        if ident != self_name && !BUILTIN_IDENTS.contains(ident.as_str()) {
+        if !BUILTIN_IDENTS.contains(ident.as_str()) {
             features.insert(ident);
         }
     });
@@ -24,15 +24,6 @@ fn get_features_doc(name: String) -> Option<String> {
     let mut features = BTreeSet::new();
     features.insert(name);
     required_doc_string(&features)
-}
-
-fn get_features(ty: &impl TraverseType, name: String) -> (Option<Attribute>, Option<String>) {
-    let mut features = BTreeSet::new();
-    add_features(&mut features, ty, &name);
-    let cfg = get_cfg_features(&features);
-    features.insert(name);
-    let doc = required_doc_string(&features);
-    (cfg, doc)
 }
 
 fn comment(mut comment: String, features: &Option<String>) -> String {
@@ -126,7 +117,7 @@ pub struct InterfaceAttribute {
 }
 
 impl InterfaceAttribute {
-    fn generate(&self, parent_name: &Ident, parent_js_name: &str) -> TokenStream {
+    fn generate(&self, parent_name: &Ident, parent_js_name: &str, parents: &[Ident]) -> TokenStream {
         let InterfaceAttribute {
             js_name,
             ty,
@@ -141,7 +132,21 @@ impl InterfaceAttribute {
 
         let mdn_docs = mdn_doc(parent_js_name, Some(js_name));
 
-        let (cfg_features, doc_comment) = get_features(ty, parent_name.to_string());
+        let mut features = BTreeSet::new();
+
+        add_features(&mut features, ty);
+
+        for parent in parents {
+            features.remove(&parent.to_string());
+        }
+
+        features.remove(&parent_name.to_string());
+
+        let cfg_features = get_cfg_features(&features);
+
+        features.insert(parent_name.to_string());
+
+        let doc_comment = required_doc_string(&features);
 
         let structural = if *structural {
             quote!( structural, )
@@ -251,7 +256,7 @@ pub struct InterfaceMethod {
 }
 
 impl InterfaceMethod {
-    fn generate(&self, parent_name: &Ident, parent_js_name: String) -> TokenStream {
+    fn generate(&self, parent_name: &Ident, parent_js_name: String, parents: &[Ident]) -> TokenStream {
         let InterfaceMethod {
             name,
             js_name,
@@ -312,12 +317,18 @@ impl InterfaceMethod {
         let mut features = BTreeSet::new();
 
         for (_, ty) in arguments.iter() {
-            add_features(&mut features, ty, &parent_name.to_string());
+            add_features(&mut features, ty);
         }
 
         if let Some(ty) = ret_ty {
-            add_features(&mut features, ty, &parent_name.to_string());
+            add_features(&mut features, ty);
         }
+
+        for parent in parents {
+            features.remove(&parent.to_string());
+        }
+
+        features.remove(&parent_name.to_string());
 
         let cfg_features = get_cfg_features(&features);
 
@@ -532,11 +543,11 @@ impl Interface {
         };
 
         let attributes = attributes.into_iter()
-            .map(|x| x.generate(&name, js_name))
+            .map(|x| x.generate(&name, js_name, &parents))
             .collect::<Vec<_>>();
 
         let methods = methods.into_iter()
-            .map(|x| x.generate(&name, js_name.to_string()))
+            .map(|x| x.generate(&name, js_name.to_string(), &parents))
             .collect::<Vec<_>>();
 
         let js_name = raw_ident(js_name);
@@ -587,9 +598,17 @@ impl DictionaryField {
             required: _,
         } = self;
 
-        let (cfg_features, doc_comment) = get_features(ty, parent_name);
+        let mut features = BTreeSet::new();
 
-        let doc_comment = comment(format!("Change the `{}` field of this object.", js_name), &doc_comment);
+        add_features(&mut features, ty);
+
+        features.remove(&parent_name);
+
+        let cfg_features = get_cfg_features(&features);
+
+        features.insert(parent_name);
+
+        let doc_comment = comment(format!("Change the `{}` field of this object.", js_name), &required_doc_string(&features));
 
         quote! {
             #cfg_features
@@ -640,9 +659,11 @@ impl Dictionary {
                 let ty = &field.ty;
                 required_args.push(quote!( #name: #ty ));
                 required_calls.push(quote!( ret.#name(#name); ));
-                add_features(&mut required_features, &field.ty, &name.to_string());
+                add_features(&mut required_features, &field.ty);
             }
         }
+
+        required_features.remove(&name.to_string());
 
         let cfg_features = get_cfg_features(&required_features);
 
@@ -723,12 +744,14 @@ impl Function {
         let mut features = BTreeSet::new();
 
         for (_, ty) in arguments.iter() {
-            add_features(&mut features, ty, &parent_name.to_string());
+            add_features(&mut features, ty);
         }
 
         if let Some(ty) = ret_ty {
-            add_features(&mut features, ty, &parent_name.to_string());
+            add_features(&mut features, ty);
         }
+
+        features.remove(&parent_name.to_string());
 
         let cfg_features = get_cfg_features(&features);
 

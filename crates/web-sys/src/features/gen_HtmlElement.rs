@@ -81,8 +81,7 @@ extern "C" {
     #[doc = "Getter for the `style` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)\n\n*This API requires the following crate features to be activated: `CssStyleDeclaration`, `HtmlElement`*"]
     pub fn style(this: &HtmlElement) -> CssStyleDeclaration;
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLElement" , js_name = offsetParent ) ]
-    #[cfg(feature = "Element")]
-    #[doc = "Getter for the `offsetParent` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent)\n\n*This API requires the following crate features to be activated: `Element`, `HtmlElement`*"]
+    #[doc = "Getter for the `offsetParent` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent)\n\n*This API requires the following crate features to be activated: `HtmlElement`*"]
     pub fn offset_parent(this: &HtmlElement) -> Option<Element>;
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLElement" , js_name = offsetTop ) ]
     #[doc = "Getter for the `offsetTop` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop)\n\n*This API requires the following crate features to be activated: `HtmlElement`*"]

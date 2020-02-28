@@ -44,37 +44,32 @@ extern "C" {
     #[doc = "The `substringData()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/substringData)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn substring_data(this: &CharacterData, offset: u32, count: u32)
         -> Result<String, JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node(this: &CharacterData, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
     #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_0(this: &CharacterData) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_1(this: &CharacterData, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_2(
         this: &CharacterData,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_3(
         this: &CharacterData,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_4(
         this: &CharacterData,
         nodes_1: &Node,
@@ -82,9 +77,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_5(
         this: &CharacterData,
         nodes_1: &Node,
@@ -93,9 +87,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_6(
         this: &CharacterData,
         nodes_1: &Node,
@@ -105,9 +98,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = after ) ]
-    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `after()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/after)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn after_with_node_7(
         this: &CharacterData,
         nodes_1: &Node,
@@ -184,37 +176,32 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node(this: &CharacterData, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
     #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_0(this: &CharacterData) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_1(this: &CharacterData, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_2(
         this: &CharacterData,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_3(
         this: &CharacterData,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_4(
         this: &CharacterData,
         nodes_1: &Node,
@@ -222,9 +209,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_5(
         this: &CharacterData,
         nodes_1: &Node,
@@ -233,9 +219,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_6(
         this: &CharacterData,
         nodes_1: &Node,
@@ -245,9 +230,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = before ) ]
-    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `before()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/before)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn before_with_node_7(
         this: &CharacterData,
         nodes_1: &Node,
@@ -327,37 +311,32 @@ extern "C" {
     # [ wasm_bindgen ( method , structural , js_class = "CharacterData" , js_name = remove ) ]
     #[doc = "The `remove()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/remove)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn remove(this: &CharacterData);
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node(this: &CharacterData, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
     #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_0(this: &CharacterData) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_1(this: &CharacterData, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_2(
         this: &CharacterData,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_3(
         this: &CharacterData,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_4(
         this: &CharacterData,
         nodes_1: &Node,
@@ -365,9 +344,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_5(
         this: &CharacterData,
         nodes_1: &Node,
@@ -376,9 +354,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_6(
         this: &CharacterData,
         nodes_1: &Node,
@@ -388,9 +365,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CharacterData" , js_name = replaceWith ) ]
-    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`, `Node`*"]
+    #[doc = "The `replaceWith()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/replaceWith)\n\n*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn replace_with_with_node_7(
         this: &CharacterData,
         nodes_1: &Node,

@@ -96,9 +96,8 @@ extern "C" {
     # [ wasm_bindgen ( method , structural , js_class = "SVGSVGElement" , js_name = getCurrentTime ) ]
     #[doc = "The `getCurrentTime()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/getCurrentTime)\n\n*This API requires the following crate features to be activated: `SvgsvgElement`*"]
     pub fn get_current_time(this: &SvgsvgElement) -> f32;
-    #[cfg(feature = "Element")]
     # [ wasm_bindgen ( method , structural , js_class = "SVGSVGElement" , js_name = getElementById ) ]
-    #[doc = "The `getElementById()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/getElementById)\n\n*This API requires the following crate features to be activated: `Element`, `SvgsvgElement`*"]
+    #[doc = "The `getElementById()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/getElementById)\n\n*This API requires the following crate features to be activated: `SvgsvgElement`*"]
     pub fn get_element_by_id(this: &SvgsvgElement, element_id: &str) -> Option<Element>;
     # [ wasm_bindgen ( method , structural , js_class = "SVGSVGElement" , js_name = pauseAnimations ) ]
     #[doc = "The `pauseAnimations()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/pauseAnimations)\n\n*This API requires the following crate features to be activated: `SvgsvgElement`*"]

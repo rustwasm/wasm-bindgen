@@ -789,9 +789,8 @@ extern "C" {
     #[wasm_bindgen(catch, js_class = "Document", constructor)]
     #[doc = "The `new Document(..)` constructor, creating a new instance of `Document`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/Document)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn new(this: &Document) -> Result<Document, JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = adoptNode ) ]
-    #[doc = "The `adoptNode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptNode)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `adoptNode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptNode)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn adopt_node(this: &Document, node: &Node) -> Result<Node, JsValue>;
     #[cfg(feature = "CaretPosition")]
     # [ wasm_bindgen ( method , structural , js_class = "Document" , js_name = caretPositionFromPoint ) ]
@@ -871,21 +870,21 @@ extern "C" {
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = createEvent ) ]
     #[doc = "The `createEvent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createEvent)\n\n*This API requires the following crate features to be activated: `Document`, `Event`*"]
     pub fn create_event(this: &Document, interface: &str) -> Result<Event, JsValue>;
-    #[cfg(all(feature = "Node", feature = "NodeIterator",))]
+    #[cfg(feature = "NodeIterator")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = createNodeIterator ) ]
-    #[doc = "The `createNodeIterator()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `NodeIterator`*"]
+    #[doc = "The `createNodeIterator()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator)\n\n*This API requires the following crate features to be activated: `Document`, `NodeIterator`*"]
     pub fn create_node_iterator(this: &Document, root: &Node) -> Result<NodeIterator, JsValue>;
-    #[cfg(all(feature = "Node", feature = "NodeIterator",))]
+    #[cfg(feature = "NodeIterator")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = createNodeIterator ) ]
-    #[doc = "The `createNodeIterator()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `NodeIterator`*"]
+    #[doc = "The `createNodeIterator()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator)\n\n*This API requires the following crate features to be activated: `Document`, `NodeIterator`*"]
     pub fn create_node_iterator_with_what_to_show(
         this: &Document,
         root: &Node,
         what_to_show: u32,
     ) -> Result<NodeIterator, JsValue>;
-    #[cfg(all(feature = "Node", feature = "NodeFilter", feature = "NodeIterator",))]
+    #[cfg(all(feature = "NodeFilter", feature = "NodeIterator",))]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = createNodeIterator ) ]
-    #[doc = "The `createNodeIterator()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `NodeFilter`, `NodeIterator`*"]
+    #[doc = "The `createNodeIterator()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator)\n\n*This API requires the following crate features to be activated: `Document`, `NodeFilter`, `NodeIterator`*"]
     pub fn create_node_iterator_with_what_to_show_and_filter(
         this: &Document,
         root: &Node,
@@ -908,21 +907,21 @@ extern "C" {
     # [ wasm_bindgen ( method , structural , js_class = "Document" , js_name = createTextNode ) ]
     #[doc = "The `createTextNode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode)\n\n*This API requires the following crate features to be activated: `Document`, `Text`*"]
     pub fn create_text_node(this: &Document, data: &str) -> Text;
-    #[cfg(all(feature = "Node", feature = "TreeWalker",))]
+    #[cfg(feature = "TreeWalker")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = createTreeWalker ) ]
-    #[doc = "The `createTreeWalker()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `TreeWalker`*"]
+    #[doc = "The `createTreeWalker()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker)\n\n*This API requires the following crate features to be activated: `Document`, `TreeWalker`*"]
     pub fn create_tree_walker(this: &Document, root: &Node) -> Result<TreeWalker, JsValue>;
-    #[cfg(all(feature = "Node", feature = "TreeWalker",))]
+    #[cfg(feature = "TreeWalker")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = createTreeWalker ) ]
-    #[doc = "The `createTreeWalker()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `TreeWalker`*"]
+    #[doc = "The `createTreeWalker()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker)\n\n*This API requires the following crate features to be activated: `Document`, `TreeWalker`*"]
     pub fn create_tree_walker_with_what_to_show(
         this: &Document,
         root: &Node,
         what_to_show: u32,
     ) -> Result<TreeWalker, JsValue>;
-    #[cfg(all(feature = "Node", feature = "NodeFilter", feature = "TreeWalker",))]
+    #[cfg(all(feature = "NodeFilter", feature = "TreeWalker",))]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = createTreeWalker ) ]
-    #[doc = "The `createTreeWalker()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `NodeFilter`, `TreeWalker`*"]
+    #[doc = "The `createTreeWalker()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker)\n\n*This API requires the following crate features to be activated: `Document`, `NodeFilter`, `TreeWalker`*"]
     pub fn create_tree_walker_with_what_to_show_and_filter(
         this: &Document,
         root: &Node,
@@ -972,13 +971,11 @@ extern "C" {
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = hasFocus ) ]
     #[doc = "The `hasFocus()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn has_focus(this: &Document) -> Result<bool, JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = importNode ) ]
-    #[doc = "The `importNode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `importNode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn import_node(this: &Document, node: &Node) -> Result<Node, JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = importNode ) ]
-    #[doc = "The `importNode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `importNode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn import_node_with_deep(this: &Document, node: &Node, deep: bool)
         -> Result<Node, JsValue>;
     #[cfg(feature = "Element")]
@@ -1198,37 +1195,32 @@ extern "C" {
         this: &Document,
         options: &BoxQuadOptions,
     ) -> Result<::js_sys::Array, JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node(this: &Document, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
     #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_0(this: &Document) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_1(this: &Document, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_2(
         this: &Document,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_3(
         this: &Document,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_4(
         this: &Document,
         nodes_1: &Node,
@@ -1236,9 +1228,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_5(
         this: &Document,
         nodes_1: &Node,
@@ -1247,9 +1238,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_6(
         this: &Document,
         nodes_1: &Node,
@@ -1259,9 +1249,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
-    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `append()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn append_with_node_7(
         this: &Document,
         nodes_1: &Node,
@@ -1334,37 +1323,32 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , variadic , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node(this: &Document, nodes: &Node) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
     #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_0(this: &Document) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_1(this: &Document, nodes_1: &Node) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_2(
         this: &Document,
         nodes_1: &Node,
         nodes_2: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_3(
         this: &Document,
         nodes_1: &Node,
         nodes_2: &Node,
         nodes_3: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_4(
         this: &Document,
         nodes_1: &Node,
@@ -1372,9 +1356,8 @@ extern "C" {
         nodes_3: &Node,
         nodes_4: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_5(
         this: &Document,
         nodes_1: &Node,
@@ -1383,9 +1366,8 @@ extern "C" {
         nodes_4: &Node,
         nodes_5: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_6(
         this: &Document,
         nodes_1: &Node,
@@ -1395,9 +1377,8 @@ extern "C" {
         nodes_5: &Node,
         nodes_6: &Node,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
-    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `prepend()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn prepend_with_node_7(
         this: &Document,
         nodes_1: &Node,
@@ -1492,39 +1473,38 @@ extern "C" {
         expression: &str,
         resolver: Option<&XPathNsResolver>,
     ) -> Result<XPathExpression, JsValue>;
-    #[cfg(feature = "Node")]
     # [ wasm_bindgen ( method , structural , js_class = "Document" , js_name = createNSResolver ) ]
-    #[doc = "The `createNSResolver()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNSResolver)\n\n*This API requires the following crate features to be activated: `Document`, `Node`*"]
+    #[doc = "The `createNSResolver()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNSResolver)\n\n*This API requires the following crate features to be activated: `Document`*"]
     pub fn create_ns_resolver(this: &Document, node_resolver: &Node) -> Node;
-    #[cfg(all(feature = "Node", feature = "XPathResult",))]
+    #[cfg(feature = "XPathResult")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = evaluate ) ]
-    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XPathResult`*"]
+    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
     pub fn evaluate(
         this: &Document,
         expression: &str,
         context_node: &Node,
     ) -> Result<XPathResult, JsValue>;
-    #[cfg(all(feature = "Node", feature = "XPathResult",))]
+    #[cfg(feature = "XPathResult")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = evaluate ) ]
-    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XPathResult`*"]
+    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
     pub fn evaluate_with_opt_callback(
         this: &Document,
         expression: &str,
         context_node: &Node,
         resolver: Option<&::js_sys::Function>,
     ) -> Result<XPathResult, JsValue>;
-    #[cfg(all(feature = "Node", feature = "XPathNsResolver", feature = "XPathResult",))]
+    #[cfg(all(feature = "XPathNsResolver", feature = "XPathResult",))]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = evaluate ) ]
-    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XPathNsResolver`, `XPathResult`*"]
+    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `XPathNsResolver`, `XPathResult`*"]
     pub fn evaluate_with_opt_x_path_ns_resolver(
         this: &Document,
         expression: &str,
         context_node: &Node,
         resolver: Option<&XPathNsResolver>,
     ) -> Result<XPathResult, JsValue>;
-    #[cfg(all(feature = "Node", feature = "XPathResult",))]
+    #[cfg(feature = "XPathResult")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = evaluate ) ]
-    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XPathResult`*"]
+    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
     pub fn evaluate_with_opt_callback_and_type(
         this: &Document,
         expression: &str,
@@ -1532,9 +1512,9 @@ extern "C" {
         resolver: Option<&::js_sys::Function>,
         type_: u16,
     ) -> Result<XPathResult, JsValue>;
-    #[cfg(all(feature = "Node", feature = "XPathNsResolver", feature = "XPathResult",))]
+    #[cfg(all(feature = "XPathNsResolver", feature = "XPathResult",))]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = evaluate ) ]
-    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XPathNsResolver`, `XPathResult`*"]
+    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `XPathNsResolver`, `XPathResult`*"]
     pub fn evaluate_with_opt_x_path_ns_resolver_and_type(
         this: &Document,
         expression: &str,
@@ -1542,9 +1522,9 @@ extern "C" {
         resolver: Option<&XPathNsResolver>,
         type_: u16,
     ) -> Result<XPathResult, JsValue>;
-    #[cfg(all(feature = "Node", feature = "XPathResult",))]
+    #[cfg(feature = "XPathResult")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = evaluate ) ]
-    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XPathResult`*"]
+    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
     pub fn evaluate_with_opt_callback_and_type_and_result(
         this: &Document,
         expression: &str,
@@ -1553,9 +1533,9 @@ extern "C" {
         type_: u16,
         result: Option<&::js_sys::Object>,
     ) -> Result<XPathResult, JsValue>;
-    #[cfg(all(feature = "Node", feature = "XPathNsResolver", feature = "XPathResult",))]
+    #[cfg(all(feature = "XPathNsResolver", feature = "XPathResult",))]
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = evaluate ) ]
-    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XPathNsResolver`, `XPathResult`*"]
+    #[doc = "The `evaluate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)\n\n*This API requires the following crate features to be activated: `Document`, `XPathNsResolver`, `XPathResult`*"]
     pub fn evaluate_with_opt_x_path_ns_resolver_and_type_and_result(
         this: &Document,
         expression: &str,

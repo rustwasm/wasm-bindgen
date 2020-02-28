@@ -7,8 +7,7 @@ extern "C" {
     #[doc = "The `SvgAnimationElement` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimationElement)\n\n*This API requires the following crate features to be activated: `SvgAnimationElement`*"]
     pub type SvgAnimationElement;
     # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimationElement" , js_name = targetElement ) ]
-    #[cfg(feature = "SvgElement")]
-    #[doc = "Getter for the `targetElement` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimationElement/targetElement)\n\n*This API requires the following crate features to be activated: `SvgAnimationElement`, `SvgElement`*"]
+    #[doc = "Getter for the `targetElement` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimationElement/targetElement)\n\n*This API requires the following crate features to be activated: `SvgAnimationElement`*"]
     pub fn target_element(this: &SvgAnimationElement) -> Option<SvgElement>;
     # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimationElement" , js_name = requiredFeatures ) ]
     #[cfg(feature = "SvgStringList")]

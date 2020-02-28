@@ -92,21 +92,17 @@ extern "C" {
     # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLTableElement" , js_name = cellSpacing ) ]
     #[doc = "Setter for the `cellSpacing` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/cellSpacing)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn set_cell_spacing(this: &HtmlTableElement, value: &str);
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( method , structural , js_class = "HTMLTableElement" , js_name = createCaption ) ]
-    #[doc = "The `createCaption()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createCaption)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableElement`*"]
+    #[doc = "The `createCaption()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createCaption)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn create_caption(this: &HtmlTableElement) -> HtmlElement;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( method , structural , js_class = "HTMLTableElement" , js_name = createTBody ) ]
-    #[doc = "The `createTBody()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createTBody)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableElement`*"]
+    #[doc = "The `createTBody()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createTBody)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn create_t_body(this: &HtmlTableElement) -> HtmlElement;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( method , structural , js_class = "HTMLTableElement" , js_name = createTFoot ) ]
-    #[doc = "The `createTFoot()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createTFoot)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableElement`*"]
+    #[doc = "The `createTFoot()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createTFoot)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn create_t_foot(this: &HtmlTableElement) -> HtmlElement;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( method , structural , js_class = "HTMLTableElement" , js_name = createTHead ) ]
-    #[doc = "The `createTHead()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createTHead)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableElement`*"]
+    #[doc = "The `createTHead()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/createTHead)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn create_t_head(this: &HtmlTableElement) -> HtmlElement;
     # [ wasm_bindgen ( method , structural , js_class = "HTMLTableElement" , js_name = deleteCaption ) ]
     #[doc = "The `deleteCaption()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/deleteCaption)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
@@ -120,13 +116,11 @@ extern "C" {
     # [ wasm_bindgen ( method , structural , js_class = "HTMLTableElement" , js_name = deleteTHead ) ]
     #[doc = "The `deleteTHead()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/deleteTHead)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn delete_t_head(this: &HtmlTableElement);
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableElement" , js_name = insertRow ) ]
-    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableElement`*"]
+    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn insert_row(this: &HtmlTableElement) -> Result<HtmlElement, JsValue>;
-    #[cfg(feature = "HtmlElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLTableElement" , js_name = insertRow ) ]
-    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlElement`, `HtmlTableElement`*"]
+    #[doc = "The `insertRow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/insertRow)\n\n*This API requires the following crate features to be activated: `HtmlTableElement`*"]
     pub fn insert_row_with_index(
         this: &HtmlTableElement,
         index: i32,
