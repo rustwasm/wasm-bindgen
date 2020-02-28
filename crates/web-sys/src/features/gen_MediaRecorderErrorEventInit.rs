@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaRecorderErrorEventInit ) ]
     #[doc = "The `MediaRecorderErrorEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub type MediaRecorderErrorEventInit;
 }
 impl MediaRecorderErrorEventInit {

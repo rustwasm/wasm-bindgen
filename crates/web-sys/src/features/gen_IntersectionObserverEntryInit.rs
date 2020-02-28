@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IntersectionObserverEntryInit ) ]
     #[doc = "The `IntersectionObserverEntryInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `Element`, `IntersectionObserverEntryInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverEntryInit`*"]
     pub type IntersectionObserverEntryInit;
 }
 impl IntersectionObserverEntryInit {

@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaDecodingConfiguration ) ]
     #[doc = "The `MediaDecodingConfiguration` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`, `MediaDecodingType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`*"]
     pub type MediaDecodingConfiguration;
 }
 impl MediaDecodingConfiguration {

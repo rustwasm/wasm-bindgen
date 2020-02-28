@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PresentationConnectionAvailableEventInit ) ]
     #[doc = "The `PresentationConnectionAvailableEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`, `PresentationConnectionAvailableEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionAvailableEventInit`*"]
     pub type PresentationConnectionAvailableEventInit;
 }
 impl PresentationConnectionAvailableEventInit {

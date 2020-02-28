@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ShadowRootInit ) ]
     #[doc = "The `ShadowRootInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`, `ShadowRootMode`*"]
+    #[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`*"]
     pub type ShadowRootInit;
 }
 impl ShadowRootInit {

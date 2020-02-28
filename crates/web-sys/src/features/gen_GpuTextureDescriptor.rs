@@ -6,7 +6,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUTextureDescriptor ) ]
     #[doc = "The `GpuTextureDescriptor` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuTextureDescriptor`, `GpuTextureFormat`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTextureDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

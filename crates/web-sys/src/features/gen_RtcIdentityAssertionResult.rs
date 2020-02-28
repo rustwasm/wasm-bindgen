@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCIdentityAssertionResult ) ]
     #[doc = "The `RtcIdentityAssertionResult` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`, `RtcIdentityProviderDetails`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
     pub type RtcIdentityAssertionResult;
 }
 impl RtcIdentityAssertionResult {

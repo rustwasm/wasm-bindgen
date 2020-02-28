@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = OfflineAudioCompletionEventInit ) ]
     #[doc = "The `OfflineAudioCompletionEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `OfflineAudioCompletionEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
     pub type OfflineAudioCompletionEventInit;
 }
 impl OfflineAudioCompletionEventInit {

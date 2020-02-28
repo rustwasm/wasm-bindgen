@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaElementAudioSourceOptions ) ]
     #[doc = "The `MediaElementAudioSourceOptions` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `MediaElementAudioSourceOptions`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MediaElementAudioSourceOptions`*"]
     pub type MediaElementAudioSourceOptions;
 }
 impl MediaElementAudioSourceOptions {

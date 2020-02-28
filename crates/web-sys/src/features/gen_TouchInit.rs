@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TouchInit ) ]
     #[doc = "The `TouchInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `EventTarget`, `TouchInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub type TouchInit;
 }
 impl TouchInit {

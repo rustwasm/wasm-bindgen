@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PermissionDescriptor ) ]
     #[doc = "The `PermissionDescriptor` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PermissionDescriptor`, `PermissionName`*"]
+    #[doc = "*This API requires the following crate features to be activated: `PermissionDescriptor`*"]
     pub type PermissionDescriptor;
 }
 impl PermissionDescriptor {

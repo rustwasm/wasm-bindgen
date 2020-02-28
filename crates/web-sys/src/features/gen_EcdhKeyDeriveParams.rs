@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = EcdhKeyDeriveParams ) ]
     #[doc = "The `EcdhKeyDeriveParams` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
+    #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
     pub type EcdhKeyDeriveParams;
 }
 impl EcdhKeyDeriveParams {

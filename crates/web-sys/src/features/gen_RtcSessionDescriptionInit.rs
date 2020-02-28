@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCSessionDescriptionInit ) ]
     #[doc = "The `RtcSessionDescriptionInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcSdpType`, `RtcSessionDescriptionInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     pub type RtcSessionDescriptionInit;
 }
 impl RtcSessionDescriptionInit {

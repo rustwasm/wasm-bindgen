@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ChannelPixelLayout ) ]
     #[doc = "The `ChannelPixelLayout` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`, `ChannelPixelLayoutDataType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayout`*"]
     pub type ChannelPixelLayout;
 }
 impl ChannelPixelLayout {

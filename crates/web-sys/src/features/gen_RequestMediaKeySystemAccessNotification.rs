@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RequestMediaKeySystemAccessNotification ) ]
     #[doc = "The `RequestMediaKeySystemAccessNotification` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
     pub type RequestMediaKeySystemAccessNotification;
 }
 impl RequestMediaKeySystemAccessNotification {

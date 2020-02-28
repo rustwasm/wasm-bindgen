@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PublicKeyCredentialDescriptor ) ]
     #[doc = "The `PublicKeyCredentialDescriptor` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialDescriptor`, `PublicKeyCredentialType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialDescriptor`*"]
     pub type PublicKeyCredentialDescriptor;
 }
 impl PublicKeyCredentialDescriptor {

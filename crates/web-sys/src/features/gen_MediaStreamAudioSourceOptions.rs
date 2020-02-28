@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaStreamAudioSourceOptions ) ]
     #[doc = "The `MediaStreamAudioSourceOptions` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamAudioSourceOptions`*"]
     pub type MediaStreamAudioSourceOptions;
 }
 impl MediaStreamAudioSourceOptions {

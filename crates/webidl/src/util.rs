@@ -607,6 +607,7 @@ pub fn get_cfg_features(features: &BTreeSet<String>) -> Option<syn::Attribute> {
             .map(|feature| quote!( feature = #feature, ))
             .collect::<TokenStream>();
 
+        // This is technically unneeded but it generates more idiomatic code
         if len == 1 {
             Some(syn::parse_quote!( #[cfg(#features)] ))
 

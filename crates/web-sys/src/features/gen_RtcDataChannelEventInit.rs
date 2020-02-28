@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCDataChannelEventInit ) ]
     #[doc = "The `RtcDataChannelEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannelEventInit`*"]
     pub type RtcDataChannelEventInit;
 }
 impl RtcDataChannelEventInit {

@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use sourcefile::SourceFile;
 use std::ffi::OsStr;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 /// Read all WebIDL files in a directory into a single `SourceFile`
@@ -21,6 +21,20 @@ fn read_source_from_path(dir: &Path) -> Result<SourceFile> {
     }
 
     Ok(source)
+}
+
+fn rustfmt(path: &PathBuf, name: &str) -> Result<()> {
+    // run rustfmt on the generated file - really handy for debugging
+    let result = Command::new("rustfmt")
+        .arg("--edition")
+        .arg("2018")
+        .arg(&path)
+        .status()
+        .context(format!("rustfmt on file {}", name))?;
+
+    assert!(result.success(), "rustfmt on file {}", name);
+
+    Ok(())
 }
 
 fn parse_args() -> (String, String) {
@@ -77,15 +91,7 @@ fn main() -> Result<()> {
 
         fs::write(&out_file_path, &feature.code)?;
 
-        // run rustfmt on the generated file - really handy for debugging
-        let result = Command::new("rustfmt")
-            .arg("--edition")
-            .arg("2018")
-            .arg(&out_file_path)
-            .status()
-            .context(format!("rustfmt on file gen_{}.rs", name))?;
-
-        assert!(result.success(), "rustfmt on file gen_{}.rs", name);
+        rustfmt(&out_file_path, name)?;
     }
 
 
@@ -94,6 +100,8 @@ fn main() -> Result<()> {
     }).collect::<Vec<_>>().join("\n\n");
 
     fs::write(to.join("mod.rs"), format!("#![allow(non_snake_case)]\n\n{}", binding_file))?;
+
+    rustfmt(&to.join("mod.rs"), "mod")?;
 
 
     let features = features.iter().map(|(name, feature)| {

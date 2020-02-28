@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NotificationEventInit ) ]
     #[doc = "The `NotificationEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Notification`, `NotificationEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
     pub type NotificationEventInit;
 }
 impl NotificationEventInit {

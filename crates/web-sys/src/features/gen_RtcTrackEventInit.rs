@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCTrackEventInit ) ]
     #[doc = "The `RtcTrackEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpReceiver`, `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub type RtcTrackEventInit;
 }
 impl RtcTrackEventInit {

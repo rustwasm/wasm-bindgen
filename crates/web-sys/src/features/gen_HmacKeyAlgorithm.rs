@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = HmacKeyAlgorithm ) ]
     #[doc = "The `HmacKeyAlgorithm` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`, `KeyAlgorithm`*"]
+    #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
     pub type HmacKeyAlgorithm;
 }
 impl HmacKeyAlgorithm {

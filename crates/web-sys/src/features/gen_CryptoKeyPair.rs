@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CryptoKeyPair ) ]
     #[doc = "The `CryptoKeyPair` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKeyPair`*"]
     pub type CryptoKeyPair;
 }
 impl CryptoKeyPair {

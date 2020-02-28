@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FetchEventInit ) ]
     #[doc = "The `FetchEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`, `Request`*"]
+    #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`*"]
     pub type FetchEventInit;
 }
 impl FetchEventInit {

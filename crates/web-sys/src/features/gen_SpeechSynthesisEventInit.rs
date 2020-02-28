@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SpeechSynthesisEventInit ) ]
     #[doc = "The `SpeechSynthesisEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisEventInit`, `SpeechSynthesisUtterance`*"]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisEventInit`*"]
     pub type SpeechSynthesisEventInit;
 }
 impl SpeechSynthesisEventInit {

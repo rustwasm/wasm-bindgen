@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DecoderDoctorNotification ) ]
     #[doc = "The `DecoderDoctorNotification` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`, `DecoderDoctorNotificationType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub type DecoderDoctorNotification;
 }
 impl DecoderDoctorNotification {

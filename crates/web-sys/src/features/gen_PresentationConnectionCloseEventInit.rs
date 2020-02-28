@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PresentationConnectionCloseEventInit ) ]
     #[doc = "The `PresentationConnectionCloseEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`, `PresentationConnectionClosedReason`*"]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     pub type PresentationConnectionCloseEventInit;
 }
 impl PresentationConnectionCloseEventInit {

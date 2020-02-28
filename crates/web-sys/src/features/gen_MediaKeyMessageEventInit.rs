@@ -5,7 +5,7 @@ extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaKeyMessageEventInit ) ]
     #[doc = "The `MediaKeyMessageEventInit` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`, `MediaKeyMessageType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     pub type MediaKeyMessageEventInit;
 }
 impl MediaKeyMessageEventInit {
