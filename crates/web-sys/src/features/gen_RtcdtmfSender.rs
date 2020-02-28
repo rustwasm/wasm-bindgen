@@ -6,22 +6,22 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `RtcdtmfSender` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub type RtcdtmfSender;
-    # [ wasm_bindgen ( structural , method , getter , js_name = ontonechange ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCDTMFSender" , js_name = ontonechange ) ]
     #[doc = "Getter for the `ontonechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/ontonechange)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub fn ontonechange(this: &RtcdtmfSender) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_name = ontonechange ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "RTCDTMFSender" , js_name = ontonechange ) ]
     #[doc = "Setter for the `ontonechange` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/ontonechange)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub fn set_ontonechange(this: &RtcdtmfSender, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_name = toneBuffer ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCDTMFSender" , js_name = toneBuffer ) ]
     #[doc = "Getter for the `toneBuffer` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/toneBuffer)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub fn tone_buffer(this: &RtcdtmfSender) -> String;
-    # [ wasm_bindgen ( method , structural , js_name = insertDTMF ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "RTCDTMFSender" , js_name = insertDTMF ) ]
     #[doc = "The `insertDTMF()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/insertDTMF)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub fn insert_dtmf(this: &RtcdtmfSender, tones: &str);
-    # [ wasm_bindgen ( method , structural , js_name = insertDTMF ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "RTCDTMFSender" , js_name = insertDTMF ) ]
     #[doc = "The `insertDTMF()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/insertDTMF)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub fn insert_dtmf_with_duration(this: &RtcdtmfSender, tones: &str, duration: u32);
-    # [ wasm_bindgen ( method , structural , js_name = insertDTMF ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "RTCDTMFSender" , js_name = insertDTMF ) ]
     #[doc = "The `insertDTMF()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/insertDTMF)\n\n*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
     pub fn insert_dtmf_with_duration_and_inter_tone_gap(
         this: &RtcdtmfSender,

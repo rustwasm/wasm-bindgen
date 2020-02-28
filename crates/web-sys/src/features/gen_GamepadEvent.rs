@@ -6,15 +6,15 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GamepadEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadEvent)\n\n*This API requires the following crate features to be activated: `GamepadEvent`*"]
     pub type GamepadEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = gamepad ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "GamepadEvent" , js_name = gamepad ) ]
     #[cfg(feature = "Gamepad")]
     #[doc = "Getter for the `gamepad` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadEvent/gamepad)\n\n*This API requires the following crate features to be activated: `Gamepad`, `GamepadEvent`*"]
     pub fn gamepad(this: &GamepadEvent) -> Option<Gamepad>;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "GamepadEvent", constructor)]
     #[doc = "The `new GamepadEvent(..)` constructor, creating a new instance of `GamepadEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadEvent/GamepadEvent)\n\n*This API requires the following crate features to be activated: `GamepadEvent`*"]
     pub fn new(this: &GamepadEvent, type_: &str) -> Result<GamepadEvent, JsValue>;
     #[cfg(feature = "GamepadEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "GamepadEvent", constructor)]
     #[doc = "The `new GamepadEvent(..)` constructor, creating a new instance of `GamepadEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadEvent/GamepadEvent)\n\n*This API requires the following crate features to be activated: `GamepadEvent`, `GamepadEventInit`*"]
     pub fn new_with_event_init_dict(
         this: &GamepadEvent,

@@ -6,19 +6,19 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PerformanceEntry` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry)\n\n*This API requires the following crate features to be activated: `PerformanceEntry`*"]
     pub type PerformanceEntry;
-    # [ wasm_bindgen ( structural , method , getter , js_name = name ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceEntry" , js_name = name ) ]
     #[doc = "Getter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/name)\n\n*This API requires the following crate features to be activated: `PerformanceEntry`*"]
     pub fn name(this: &PerformanceEntry) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_name = entryType ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceEntry" , js_name = entryType ) ]
     #[doc = "Getter for the `entryType` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/entryType)\n\n*This API requires the following crate features to be activated: `PerformanceEntry`*"]
     pub fn entry_type(this: &PerformanceEntry) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_name = startTime ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceEntry" , js_name = startTime ) ]
     #[doc = "Getter for the `startTime` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/startTime)\n\n*This API requires the following crate features to be activated: `PerformanceEntry`*"]
     pub fn start_time(this: &PerformanceEntry) -> f64;
-    # [ wasm_bindgen ( structural , method , getter , js_name = duration ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceEntry" , js_name = duration ) ]
     #[doc = "Getter for the `duration` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration)\n\n*This API requires the following crate features to be activated: `PerformanceEntry`*"]
     pub fn duration(this: &PerformanceEntry) -> f64;
-    # [ wasm_bindgen ( method , structural , js_name = toJSON ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "PerformanceEntry" , js_name = toJSON ) ]
     #[doc = "The `toJSON()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/toJSON)\n\n*This API requires the following crate features to be activated: `PerformanceEntry`*"]
     pub fn to_json(this: &PerformanceEntry) -> ::js_sys::Object;
 }

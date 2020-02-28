@@ -7,7 +7,7 @@ extern "C" {
     #[doc = "The `MediaStreamAudioSourceNode` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioSourceNode)\n\n*This API requires the following crate features to be activated: `MediaStreamAudioSourceNode`*"]
     pub type MediaStreamAudioSourceNode;
     #[cfg(all(feature = "AudioContext", feature = "MediaStreamAudioSourceOptions",))]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "MediaStreamAudioSourceNode", constructor)]
     #[doc = "The `new MediaStreamAudioSourceNode(..)` constructor, creating a new instance of `MediaStreamAudioSourceNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioSourceNode/MediaStreamAudioSourceNode)\n\n*This API requires the following crate features to be activated: `AudioContext`, `MediaStreamAudioSourceNode`, `MediaStreamAudioSourceOptions`*"]
     pub fn new(
         this: &MediaStreamAudioSourceNode,

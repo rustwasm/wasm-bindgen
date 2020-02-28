@@ -6,19 +6,19 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `CssRule` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule)\n\n*This API requires the following crate features to be activated: `CssRule`*"]
     pub type CssRule;
-    # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSRule" , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/type)\n\n*This API requires the following crate features to be activated: `CssRule`*"]
     pub fn type_(this: &CssRule) -> u16;
-    # [ wasm_bindgen ( structural , method , getter , js_name = cssText ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSRule" , js_name = cssText ) ]
     #[doc = "Getter for the `cssText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/cssText)\n\n*This API requires the following crate features to be activated: `CssRule`*"]
     pub fn css_text(this: &CssRule) -> String;
-    # [ wasm_bindgen ( structural , method , setter , js_name = cssText ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "CSSRule" , js_name = cssText ) ]
     #[doc = "Setter for the `cssText` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/cssText)\n\n*This API requires the following crate features to be activated: `CssRule`*"]
     pub fn set_css_text(this: &CssRule, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_name = parentRule ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSRule" , js_name = parentRule ) ]
     #[doc = "Getter for the `parentRule` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/parentRule)\n\n*This API requires the following crate features to be activated: `CssRule`*"]
     pub fn parent_rule(this: &CssRule) -> Option<CssRule>;
-    # [ wasm_bindgen ( structural , method , getter , js_name = parentStyleSheet ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSRule" , js_name = parentStyleSheet ) ]
     #[cfg(feature = "CssStyleSheet")]
     #[doc = "Getter for the `parentStyleSheet` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/parentStyleSheet)\n\n*This API requires the following crate features to be activated: `CssRule`, `CssStyleSheet`*"]
     pub fn parent_style_sheet(this: &CssRule) -> Option<CssStyleSheet>;

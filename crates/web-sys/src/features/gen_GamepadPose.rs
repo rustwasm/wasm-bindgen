@@ -6,28 +6,28 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GamepadPose` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub type GamepadPose;
-    # [ wasm_bindgen ( structural , method , getter , js_name = hasOrientation ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "GamepadPose" , js_name = hasOrientation ) ]
     #[doc = "Getter for the `hasOrientation` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/hasOrientation)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn has_orientation(this: &GamepadPose) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_name = hasPosition ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "GamepadPose" , js_name = hasPosition ) ]
     #[doc = "Getter for the `hasPosition` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/hasPosition)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn has_position(this: &GamepadPose) -> bool;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = position ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "GamepadPose" , js_name = position ) ]
     #[doc = "Getter for the `position` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/position)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn position(this: &GamepadPose) -> Result<Option<Vec<f32>>, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = linearVelocity ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "GamepadPose" , js_name = linearVelocity ) ]
     #[doc = "Getter for the `linearVelocity` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/linearVelocity)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn linear_velocity(this: &GamepadPose) -> Result<Option<Vec<f32>>, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = linearAcceleration ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "GamepadPose" , js_name = linearAcceleration ) ]
     #[doc = "Getter for the `linearAcceleration` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/linearAcceleration)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn linear_acceleration(this: &GamepadPose) -> Result<Option<Vec<f32>>, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = orientation ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "GamepadPose" , js_name = orientation ) ]
     #[doc = "Getter for the `orientation` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/orientation)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn orientation(this: &GamepadPose) -> Result<Option<Vec<f32>>, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = angularVelocity ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "GamepadPose" , js_name = angularVelocity ) ]
     #[doc = "Getter for the `angularVelocity` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/angularVelocity)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn angular_velocity(this: &GamepadPose) -> Result<Option<Vec<f32>>, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = angularAcceleration ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "GamepadPose" , js_name = angularAcceleration ) ]
     #[doc = "Getter for the `angularAcceleration` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadPose/angularAcceleration)\n\n*This API requires the following crate features to be activated: `GamepadPose`*"]
     pub fn angular_acceleration(this: &GamepadPose) -> Result<Option<Vec<f32>>, JsValue>;
 }

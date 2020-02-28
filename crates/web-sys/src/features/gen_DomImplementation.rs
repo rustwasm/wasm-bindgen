@@ -7,7 +7,7 @@ extern "C" {
     #[doc = "The `DomImplementation` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation)\n\n*This API requires the following crate features to be activated: `DomImplementation`*"]
     pub type DomImplementation;
     #[cfg(feature = "Document")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = createDocument ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "DOMImplementation" , js_name = createDocument ) ]
     #[doc = "The `createDocument()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createDocument)\n\n*This API requires the following crate features to be activated: `Document`, `DomImplementation`*"]
     pub fn create_document(
         this: &DomImplementation,
@@ -15,7 +15,7 @@ extern "C" {
         qualified_name: &str,
     ) -> Result<Document, JsValue>;
     #[cfg(all(feature = "Document", feature = "DocumentType",))]
-    # [ wasm_bindgen ( catch , method , structural , js_name = createDocument ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "DOMImplementation" , js_name = createDocument ) ]
     #[doc = "The `createDocument()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createDocument)\n\n*This API requires the following crate features to be activated: `Document`, `DocumentType`, `DomImplementation`*"]
     pub fn create_document_with_doctype(
         this: &DomImplementation,
@@ -24,7 +24,7 @@ extern "C" {
         doctype: Option<&DocumentType>,
     ) -> Result<Document, JsValue>;
     #[cfg(feature = "DocumentType")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = createDocumentType ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "DOMImplementation" , js_name = createDocumentType ) ]
     #[doc = "The `createDocumentType()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createDocumentType)\n\n*This API requires the following crate features to be activated: `DocumentType`, `DomImplementation`*"]
     pub fn create_document_type(
         this: &DomImplementation,
@@ -33,17 +33,17 @@ extern "C" {
         system_id: &str,
     ) -> Result<DocumentType, JsValue>;
     #[cfg(feature = "Document")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = createHTMLDocument ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "DOMImplementation" , js_name = createHTMLDocument ) ]
     #[doc = "The `createHTMLDocument()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createHTMLDocument)\n\n*This API requires the following crate features to be activated: `Document`, `DomImplementation`*"]
     pub fn create_html_document(this: &DomImplementation) -> Result<Document, JsValue>;
     #[cfg(feature = "Document")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = createHTMLDocument ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "DOMImplementation" , js_name = createHTMLDocument ) ]
     #[doc = "The `createHTMLDocument()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createHTMLDocument)\n\n*This API requires the following crate features to be activated: `Document`, `DomImplementation`*"]
     pub fn create_html_document_with_title(
         this: &DomImplementation,
         title: &str,
     ) -> Result<Document, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_name = hasFeature ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "DOMImplementation" , js_name = hasFeature ) ]
     #[doc = "The `hasFeature()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/hasFeature)\n\n*This API requires the following crate features to be activated: `DomImplementation`*"]
     pub fn has_feature(this: &DomImplementation) -> bool;
 }

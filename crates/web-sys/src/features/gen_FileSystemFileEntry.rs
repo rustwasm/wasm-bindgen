@@ -6,14 +6,14 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `FileSystemFileEntry` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry)\n\n*This API requires the following crate features to be activated: `FileSystemFileEntry`*"]
     pub type FileSystemFileEntry;
-    # [ wasm_bindgen ( method , structural , js_name = file ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemFileEntry" , js_name = file ) ]
     #[doc = "The `file()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)\n\n*This API requires the following crate features to be activated: `FileSystemFileEntry`*"]
     pub fn file_with_callback(this: &FileSystemFileEntry, success_callback: &::js_sys::Function);
     #[cfg(feature = "FileCallback")]
-    # [ wasm_bindgen ( method , structural , js_name = file ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemFileEntry" , js_name = file ) ]
     #[doc = "The `file()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)\n\n*This API requires the following crate features to be activated: `FileCallback`, `FileSystemFileEntry`*"]
     pub fn file_with_file_callback(this: &FileSystemFileEntry, success_callback: &FileCallback);
-    # [ wasm_bindgen ( method , structural , js_name = file ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemFileEntry" , js_name = file ) ]
     #[doc = "The `file()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)\n\n*This API requires the following crate features to be activated: `FileSystemFileEntry`*"]
     pub fn file_with_callback_and_callback(
         this: &FileSystemFileEntry,
@@ -21,7 +21,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     );
     #[cfg(feature = "FileCallback")]
-    # [ wasm_bindgen ( method , structural , js_name = file ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemFileEntry" , js_name = file ) ]
     #[doc = "The `file()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)\n\n*This API requires the following crate features to be activated: `FileCallback`, `FileSystemFileEntry`*"]
     pub fn file_with_file_callback_and_callback(
         this: &FileSystemFileEntry,
@@ -29,7 +29,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     );
     #[cfg(feature = "ErrorCallback")]
-    # [ wasm_bindgen ( method , structural , js_name = file ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemFileEntry" , js_name = file ) ]
     #[doc = "The `file()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)\n\n*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemFileEntry`*"]
     pub fn file_with_callback_and_error_callback(
         this: &FileSystemFileEntry,
@@ -37,7 +37,7 @@ extern "C" {
         error_callback: &ErrorCallback,
     );
     #[cfg(all(feature = "ErrorCallback", feature = "FileCallback",))]
-    # [ wasm_bindgen ( method , structural , js_name = file ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemFileEntry" , js_name = file ) ]
     #[doc = "The `file()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)\n\n*This API requires the following crate features to be activated: `ErrorCallback`, `FileCallback`, `FileSystemFileEntry`*"]
     pub fn file_with_file_callback_and_error_callback(
         this: &FileSystemFileEntry,

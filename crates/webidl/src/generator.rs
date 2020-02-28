@@ -39,7 +39,6 @@ fn comment(mut comment: String, features: &Option<String>) -> String {
     if let Some(s) = features {
         comment.push_str(s);
     }
-
     comment
 }
 
@@ -140,8 +139,6 @@ impl InterfaceAttribute {
 
         let unstable_attr = maybe_unstable_attr(*unstable);
 
-        let static_method_of = raw_ident(&parent_js_name);
-
         let mdn_docs = mdn_doc(parent_js_name, Some(js_name));
 
         let (cfg_features, doc_comment) = get_features(ty, parent_name.to_string());
@@ -155,7 +152,7 @@ impl InterfaceAttribute {
 
         let (method, this) = if *is_static {
             (
-                quote!( static_method_of = #static_method_of, ),
+                quote!( static_method_of = #parent_name, ),
                 None,
             )
 
@@ -219,6 +216,7 @@ impl InterfaceAttribute {
                 #catch
                 #method
                 #attr
+                js_class = #parent_js_name,
                 js_name = #js_name
             )]
             #cfg_features
@@ -269,10 +267,11 @@ impl InterfaceMethod {
 
         let unstable_attr = maybe_unstable_attr(*unstable);
 
-        let static_method_of = raw_ident(&parent_js_name);
-
         let mut is_constructor = false;
-        let mut extra_args = vec![];
+
+        let mut extra_args = vec![
+            quote!( js_class = #parent_js_name ),
+        ];
 
         let doc_comment = match kind {
             InterfaceMethodKind::Constructor => {
@@ -354,7 +353,7 @@ impl InterfaceMethod {
 
         let (method, this) = if *is_static {
             (
-                quote!( static_method_of = #static_method_of, ),
+                quote!( static_method_of = #parent_name, ),
                 None,
             )
 

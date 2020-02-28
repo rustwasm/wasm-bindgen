@@ -6,7 +6,7 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `WebglCompressedTextureAstc` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_compressed_texture_astc)\n\n*This API requires the following crate features to be activated: `WebglCompressedTextureAstc`*"]
     pub type WebglCompressedTextureAstc;
-    # [ wasm_bindgen ( method , structural , js_name = getSupportedProfiles ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "WEBGL_compressed_texture_astc" , js_name = getSupportedProfiles ) ]
     #[doc = "The `getSupportedProfiles()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_compressed_texture_astc/getSupportedProfiles)\n\n*This API requires the following crate features to be activated: `WebglCompressedTextureAstc`*"]
     pub fn get_supported_profiles(this: &WebglCompressedTextureAstc) -> Option<::js_sys::Array>;
 }

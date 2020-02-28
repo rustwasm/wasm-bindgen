@@ -6,16 +6,16 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgPathSegMovetoAbs` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegMovetoAbs)\n\n*This API requires the following crate features to be activated: `SvgPathSegMovetoAbs`*"]
     pub type SvgPathSegMovetoAbs;
-    # [ wasm_bindgen ( structural , method , getter , js_name = x ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegMovetoAbs" , js_name = x ) ]
     #[doc = "Getter for the `x` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegMovetoAbs/x)\n\n*This API requires the following crate features to be activated: `SvgPathSegMovetoAbs`*"]
     pub fn x(this: &SvgPathSegMovetoAbs) -> f32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = x ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegMovetoAbs" , js_name = x ) ]
     #[doc = "Setter for the `x` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegMovetoAbs/x)\n\n*This API requires the following crate features to be activated: `SvgPathSegMovetoAbs`*"]
     pub fn set_x(this: &SvgPathSegMovetoAbs, value: f32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = y ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegMovetoAbs" , js_name = y ) ]
     #[doc = "Getter for the `y` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegMovetoAbs/y)\n\n*This API requires the following crate features to be activated: `SvgPathSegMovetoAbs`*"]
     pub fn y(this: &SvgPathSegMovetoAbs) -> f32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = y ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegMovetoAbs" , js_name = y ) ]
     #[doc = "Setter for the `y` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegMovetoAbs/y)\n\n*This API requires the following crate features to be activated: `SvgPathSegMovetoAbs`*"]
     pub fn set_y(this: &SvgPathSegMovetoAbs, value: f32);
 }

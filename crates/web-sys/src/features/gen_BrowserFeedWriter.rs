@@ -6,13 +6,13 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `BrowserFeedWriter` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BrowserFeedWriter)\n\n*This API requires the following crate features to be activated: `BrowserFeedWriter`*"]
     pub type BrowserFeedWriter;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "BrowserFeedWriter", constructor)]
     #[doc = "The `new BrowserFeedWriter(..)` constructor, creating a new instance of `BrowserFeedWriter`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BrowserFeedWriter/BrowserFeedWriter)\n\n*This API requires the following crate features to be activated: `BrowserFeedWriter`*"]
     pub fn new(this: &BrowserFeedWriter) -> Result<BrowserFeedWriter, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_name = close ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "BrowserFeedWriter" , js_name = close ) ]
     #[doc = "The `close()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BrowserFeedWriter/close)\n\n*This API requires the following crate features to be activated: `BrowserFeedWriter`*"]
     pub fn close(this: &BrowserFeedWriter);
-    # [ wasm_bindgen ( method , structural , js_name = writeContent ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "BrowserFeedWriter" , js_name = writeContent ) ]
     #[doc = "The `writeContent()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BrowserFeedWriter/writeContent)\n\n*This API requires the following crate features to be activated: `BrowserFeedWriter`*"]
     pub fn write_content(this: &BrowserFeedWriter);
 }

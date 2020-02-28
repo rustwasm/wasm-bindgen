@@ -6,10 +6,10 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PositionError` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PositionError)\n\n*This API requires the following crate features to be activated: `PositionError`*"]
     pub type PositionError;
-    # [ wasm_bindgen ( structural , method , getter , js_name = code ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PositionError" , js_name = code ) ]
     #[doc = "Getter for the `code` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PositionError/code)\n\n*This API requires the following crate features to be activated: `PositionError`*"]
     pub fn code(this: &PositionError) -> u16;
-    # [ wasm_bindgen ( structural , method , getter , js_name = message ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PositionError" , js_name = message ) ]
     #[doc = "Getter for the `message` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PositionError/message)\n\n*This API requires the following crate features to be activated: `PositionError`*"]
     pub fn message(this: &PositionError) -> String;
 }

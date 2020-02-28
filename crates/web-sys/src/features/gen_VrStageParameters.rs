@@ -6,13 +6,13 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `VrStageParameters` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRStageParameters)\n\n*This API requires the following crate features to be activated: `VrStageParameters`*"]
     pub type VrStageParameters;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = sittingToStandingTransform ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "VRStageParameters" , js_name = sittingToStandingTransform ) ]
     #[doc = "Getter for the `sittingToStandingTransform` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRStageParameters/sittingToStandingTransform)\n\n*This API requires the following crate features to be activated: `VrStageParameters`*"]
     pub fn sitting_to_standing_transform(this: &VrStageParameters) -> Result<Vec<f32>, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_name = sizeX ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "VRStageParameters" , js_name = sizeX ) ]
     #[doc = "Getter for the `sizeX` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRStageParameters/sizeX)\n\n*This API requires the following crate features to be activated: `VrStageParameters`*"]
     pub fn size_x(this: &VrStageParameters) -> f32;
-    # [ wasm_bindgen ( structural , method , getter , js_name = sizeZ ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "VRStageParameters" , js_name = sizeZ ) ]
     #[doc = "Getter for the `sizeZ` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRStageParameters/sizeZ)\n\n*This API requires the following crate features to be activated: `VrStageParameters`*"]
     pub fn size_z(this: &VrStageParameters) -> f32;
 }

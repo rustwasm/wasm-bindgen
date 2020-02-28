@@ -6,7 +6,7 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `WebglDrawBuffers` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_draw_buffers)\n\n*This API requires the following crate features to be activated: `WebglDrawBuffers`*"]
     pub type WebglDrawBuffers;
-    # [ wasm_bindgen ( method , structural , js_name = drawBuffersWEBGL ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "WEBGL_draw_buffers" , js_name = drawBuffersWEBGL ) ]
     #[doc = "The `drawBuffersWEBGL()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_draw_buffers/drawBuffersWEBGL)\n\n*This API requires the following crate features to be activated: `WebglDrawBuffers`*"]
     pub fn draw_buffers_webgl(this: &WebglDrawBuffers, buffers: &::wasm_bindgen::JsValue);
 }

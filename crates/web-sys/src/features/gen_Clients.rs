@@ -6,23 +6,23 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Clients` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Clients)\n\n*This API requires the following crate features to be activated: `Clients`*"]
     pub type Clients;
-    # [ wasm_bindgen ( method , structural , js_name = claim ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "Clients" , js_name = claim ) ]
     #[doc = "The `claim()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Clients/claim)\n\n*This API requires the following crate features to be activated: `Clients`*"]
     pub fn claim(this: &Clients) -> ::js_sys::Promise;
-    # [ wasm_bindgen ( method , structural , js_name = get ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "Clients" , js_name = get ) ]
     #[doc = "The `get()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Clients/get)\n\n*This API requires the following crate features to be activated: `Clients`*"]
     pub fn get(this: &Clients, id: &str) -> ::js_sys::Promise;
-    # [ wasm_bindgen ( method , structural , js_name = matchAll ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "Clients" , js_name = matchAll ) ]
     #[doc = "The `matchAll()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Clients/matchAll)\n\n*This API requires the following crate features to be activated: `Clients`*"]
     pub fn match_all(this: &Clients) -> ::js_sys::Promise;
     #[cfg(feature = "ClientQueryOptions")]
-    # [ wasm_bindgen ( method , structural , js_name = matchAll ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "Clients" , js_name = matchAll ) ]
     #[doc = "The `matchAll()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Clients/matchAll)\n\n*This API requires the following crate features to be activated: `ClientQueryOptions`, `Clients`*"]
     pub fn match_all_with_options(
         this: &Clients,
         options: &ClientQueryOptions,
     ) -> ::js_sys::Promise;
-    # [ wasm_bindgen ( method , structural , js_name = openWindow ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "Clients" , js_name = openWindow ) ]
     #[doc = "The `openWindow()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Clients/openWindow)\n\n*This API requires the following crate features to be activated: `Clients`*"]
     pub fn open_window(this: &Clients, url: &str) -> ::js_sys::Promise;
 }

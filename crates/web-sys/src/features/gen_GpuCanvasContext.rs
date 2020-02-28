@@ -9,7 +9,7 @@ extern "C" {
     #[doc = "The `GpuCanvasContext` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCanvasContext)\n\n*This API requires the following crate features to be activated: `GpuCanvasContext`*"]
     pub type GpuCanvasContext;
     #[cfg(all(feature = "GpuSwapChain", feature = "GpuSwapChainDescriptor",))]
-    # [ wasm_bindgen ( method , structural , js_name = configureSwapChain ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUCanvasContext" , js_name = configureSwapChain ) ]
     #[doc = "The `configureSwapChain()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCanvasContext/configureSwapChain)\n\n*This API requires the following crate features to be activated: `GpuCanvasContext`, `GpuSwapChain`, `GpuSwapChainDescriptor`*"]
     #[cfg(web_sys_unstable_apis)]
     #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -18,7 +18,7 @@ extern "C" {
         descriptor: &GpuSwapChainDescriptor,
     ) -> GpuSwapChain;
     #[cfg(feature = "GpuDevice")]
-    # [ wasm_bindgen ( method , structural , js_name = getSwapChainPreferredFormat ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUCanvasContext" , js_name = getSwapChainPreferredFormat ) ]
     #[doc = "The `getSwapChainPreferredFormat()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCanvasContext/getSwapChainPreferredFormat)\n\n*This API requires the following crate features to be activated: `GpuCanvasContext`, `GpuDevice`*"]
     #[cfg(web_sys_unstable_apis)]
     #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

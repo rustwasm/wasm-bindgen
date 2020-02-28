@@ -6,52 +6,52 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AudioNode` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub type AudioNode;
-    # [ wasm_bindgen ( structural , method , getter , js_name = context ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioNode" , js_name = context ) ]
     #[cfg(feature = "BaseAudioContext")]
     #[doc = "Getter for the `context` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/context)\n\n*This API requires the following crate features to be activated: `AudioNode`, `BaseAudioContext`*"]
     pub fn context(this: &AudioNode) -> BaseAudioContext;
-    # [ wasm_bindgen ( structural , method , getter , js_name = numberOfInputs ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioNode" , js_name = numberOfInputs ) ]
     #[doc = "Getter for the `numberOfInputs` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/numberOfInputs)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn number_of_inputs(this: &AudioNode) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_name = numberOfOutputs ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioNode" , js_name = numberOfOutputs ) ]
     #[doc = "Getter for the `numberOfOutputs` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/numberOfOutputs)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn number_of_outputs(this: &AudioNode) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_name = channelCount ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioNode" , js_name = channelCount ) ]
     #[doc = "Getter for the `channelCount` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelCount)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn channel_count(this: &AudioNode) -> u32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = channelCount ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioNode" , js_name = channelCount ) ]
     #[doc = "Setter for the `channelCount` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelCount)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn set_channel_count(this: &AudioNode, value: u32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = channelCountMode ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioNode" , js_name = channelCountMode ) ]
     #[cfg(feature = "ChannelCountMode")]
     #[doc = "Getter for the `channelCountMode` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelCountMode)\n\n*This API requires the following crate features to be activated: `AudioNode`, `ChannelCountMode`*"]
     pub fn channel_count_mode(this: &AudioNode) -> ChannelCountMode;
-    # [ wasm_bindgen ( structural , method , setter , js_name = channelCountMode ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioNode" , js_name = channelCountMode ) ]
     #[cfg(feature = "ChannelCountMode")]
     #[doc = "Setter for the `channelCountMode` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelCountMode)\n\n*This API requires the following crate features to be activated: `AudioNode`, `ChannelCountMode`*"]
     pub fn set_channel_count_mode(this: &AudioNode, value: ChannelCountMode);
-    # [ wasm_bindgen ( structural , method , getter , js_name = channelInterpretation ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioNode" , js_name = channelInterpretation ) ]
     #[cfg(feature = "ChannelInterpretation")]
     #[doc = "Getter for the `channelInterpretation` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelInterpretation)\n\n*This API requires the following crate features to be activated: `AudioNode`, `ChannelInterpretation`*"]
     pub fn channel_interpretation(this: &AudioNode) -> ChannelInterpretation;
-    # [ wasm_bindgen ( structural , method , setter , js_name = channelInterpretation ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioNode" , js_name = channelInterpretation ) ]
     #[cfg(feature = "ChannelInterpretation")]
     #[doc = "Setter for the `channelInterpretation` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelInterpretation)\n\n*This API requires the following crate features to be activated: `AudioNode`, `ChannelInterpretation`*"]
     pub fn set_channel_interpretation(this: &AudioNode, value: ChannelInterpretation);
-    # [ wasm_bindgen ( catch , method , structural , js_name = connect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = connect ) ]
     #[doc = "The `connect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn connect_with_audio_node(
         this: &AudioNode,
         destination: &AudioNode,
     ) -> Result<AudioNode, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = connect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = connect ) ]
     #[doc = "The `connect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn connect_with_audio_node_and_output(
         this: &AudioNode,
         destination: &AudioNode,
         output: u32,
     ) -> Result<AudioNode, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = connect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = connect ) ]
     #[doc = "The `connect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn connect_with_audio_node_and_output_and_input(
         this: &AudioNode,
@@ -60,40 +60,40 @@ extern "C" {
         input: u32,
     ) -> Result<AudioNode, JsValue>;
     #[cfg(feature = "AudioParam")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = connect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = connect ) ]
     #[doc = "The `connect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect)\n\n*This API requires the following crate features to be activated: `AudioNode`, `AudioParam`*"]
     pub fn connect_with_audio_param(
         this: &AudioNode,
         destination: &AudioParam,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "AudioParam")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = connect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = connect ) ]
     #[doc = "The `connect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect)\n\n*This API requires the following crate features to be activated: `AudioNode`, `AudioParam`*"]
     pub fn connect_with_audio_param_and_output(
         this: &AudioNode,
         destination: &AudioParam,
         output: u32,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = disconnect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/disconnect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn disconnect(this: &AudioNode) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = disconnect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/disconnect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn disconnect_with_output(this: &AudioNode, output: u32) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = disconnect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/disconnect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn disconnect_with_audio_node(
         this: &AudioNode,
         destination: &AudioNode,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = disconnect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/disconnect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn disconnect_with_audio_node_and_output(
         this: &AudioNode,
         destination: &AudioNode,
         output: u32,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = disconnect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/disconnect)\n\n*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn disconnect_with_audio_node_and_output_and_input(
         this: &AudioNode,
@@ -102,14 +102,14 @@ extern "C" {
         input: u32,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "AudioParam")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = disconnect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/disconnect)\n\n*This API requires the following crate features to be activated: `AudioNode`, `AudioParam`*"]
     pub fn disconnect_with_audio_param(
         this: &AudioNode,
         destination: &AudioParam,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "AudioParam")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = disconnect ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioNode" , js_name = disconnect ) ]
     #[doc = "The `disconnect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/disconnect)\n\n*This API requires the following crate features to be activated: `AudioNode`, `AudioParam`*"]
     pub fn disconnect_with_audio_param_and_output(
         this: &AudioNode,

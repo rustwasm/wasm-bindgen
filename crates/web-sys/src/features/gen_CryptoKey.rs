@@ -6,16 +6,16 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `CryptoKey` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey)\n\n*This API requires the following crate features to be activated: `CryptoKey`*"]
     pub type CryptoKey;
-    # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CryptoKey" , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey/type)\n\n*This API requires the following crate features to be activated: `CryptoKey`*"]
     pub fn type_(this: &CryptoKey) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_name = extractable ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CryptoKey" , js_name = extractable ) ]
     #[doc = "Getter for the `extractable` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey/extractable)\n\n*This API requires the following crate features to be activated: `CryptoKey`*"]
     pub fn extractable(this: &CryptoKey) -> bool;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = algorithm ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "CryptoKey" , js_name = algorithm ) ]
     #[doc = "Getter for the `algorithm` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey/algorithm)\n\n*This API requires the following crate features to be activated: `CryptoKey`*"]
     pub fn algorithm(this: &CryptoKey) -> Result<::js_sys::Object, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_name = usages ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CryptoKey" , js_name = usages ) ]
     #[doc = "Getter for the `usages` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey/usages)\n\n*This API requires the following crate features to be activated: `CryptoKey`*"]
     pub fn usages(this: &CryptoKey) -> ::js_sys::Array;
 }

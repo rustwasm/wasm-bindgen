@@ -6,7 +6,7 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AngleInstancedArrays` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays)\n\n*This API requires the following crate features to be activated: `AngleInstancedArrays`*"]
     pub type AngleInstancedArrays;
-    # [ wasm_bindgen ( method , structural , js_name = drawArraysInstancedANGLE ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawArraysInstancedANGLE ) ]
     #[doc = "The `drawArraysInstancedANGLE()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/drawArraysInstancedANGLE)\n\n*This API requires the following crate features to be activated: `AngleInstancedArrays`*"]
     pub fn draw_arrays_instanced_angle(
         this: &AngleInstancedArrays,
@@ -15,7 +15,7 @@ extern "C" {
         count: i32,
         primcount: i32,
     );
-    # [ wasm_bindgen ( method , structural , js_name = drawElementsInstancedANGLE ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawElementsInstancedANGLE ) ]
     #[doc = "The `drawElementsInstancedANGLE()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/drawElementsInstancedANGLE)\n\n*This API requires the following crate features to be activated: `AngleInstancedArrays`*"]
     pub fn draw_elements_instanced_angle_with_i32(
         this: &AngleInstancedArrays,
@@ -25,7 +25,7 @@ extern "C" {
         offset: i32,
         primcount: i32,
     );
-    # [ wasm_bindgen ( method , structural , js_name = drawElementsInstancedANGLE ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawElementsInstancedANGLE ) ]
     #[doc = "The `drawElementsInstancedANGLE()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/drawElementsInstancedANGLE)\n\n*This API requires the following crate features to be activated: `AngleInstancedArrays`*"]
     pub fn draw_elements_instanced_angle_with_f64(
         this: &AngleInstancedArrays,
@@ -35,7 +35,7 @@ extern "C" {
         offset: f64,
         primcount: i32,
     );
-    # [ wasm_bindgen ( method , structural , js_name = vertexAttribDivisorANGLE ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = vertexAttribDivisorANGLE ) ]
     #[doc = "The `vertexAttribDivisorANGLE()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/vertexAttribDivisorANGLE)\n\n*This API requires the following crate features to be activated: `AngleInstancedArrays`*"]
     pub fn vertex_attrib_divisor_angle(this: &AngleInstancedArrays, index: u32, divisor: u32);
 }

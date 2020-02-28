@@ -6,46 +6,46 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgPathSegArcAbs` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub type SvgPathSegArcAbs;
-    # [ wasm_bindgen ( structural , method , getter , js_name = x ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegArcAbs" , js_name = x ) ]
     #[doc = "Getter for the `x` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/x)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn x(this: &SvgPathSegArcAbs) -> f32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = x ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegArcAbs" , js_name = x ) ]
     #[doc = "Setter for the `x` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/x)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn set_x(this: &SvgPathSegArcAbs, value: f32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = y ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegArcAbs" , js_name = y ) ]
     #[doc = "Getter for the `y` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/y)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn y(this: &SvgPathSegArcAbs) -> f32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = y ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegArcAbs" , js_name = y ) ]
     #[doc = "Setter for the `y` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/y)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn set_y(this: &SvgPathSegArcAbs, value: f32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = r1 ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegArcAbs" , js_name = r1 ) ]
     #[doc = "Getter for the `r1` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/r1)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn r1(this: &SvgPathSegArcAbs) -> f32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = r1 ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegArcAbs" , js_name = r1 ) ]
     #[doc = "Setter for the `r1` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/r1)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn set_r1(this: &SvgPathSegArcAbs, value: f32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = r2 ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegArcAbs" , js_name = r2 ) ]
     #[doc = "Getter for the `r2` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/r2)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn r2(this: &SvgPathSegArcAbs) -> f32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = r2 ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegArcAbs" , js_name = r2 ) ]
     #[doc = "Setter for the `r2` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/r2)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn set_r2(this: &SvgPathSegArcAbs, value: f32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = angle ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegArcAbs" , js_name = angle ) ]
     #[doc = "Getter for the `angle` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/angle)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn angle(this: &SvgPathSegArcAbs) -> f32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = angle ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegArcAbs" , js_name = angle ) ]
     #[doc = "Setter for the `angle` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/angle)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn set_angle(this: &SvgPathSegArcAbs, value: f32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = largeArcFlag ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegArcAbs" , js_name = largeArcFlag ) ]
     #[doc = "Getter for the `largeArcFlag` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/largeArcFlag)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn large_arc_flag(this: &SvgPathSegArcAbs) -> bool;
-    # [ wasm_bindgen ( structural , method , setter , js_name = largeArcFlag ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegArcAbs" , js_name = largeArcFlag ) ]
     #[doc = "Setter for the `largeArcFlag` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/largeArcFlag)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn set_large_arc_flag(this: &SvgPathSegArcAbs, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_name = sweepFlag ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegArcAbs" , js_name = sweepFlag ) ]
     #[doc = "Getter for the `sweepFlag` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/sweepFlag)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn sweep_flag(this: &SvgPathSegArcAbs) -> bool;
-    # [ wasm_bindgen ( structural , method , setter , js_name = sweepFlag ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SVGPathSegArcAbs" , js_name = sweepFlag ) ]
     #[doc = "Setter for the `sweepFlag` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegArcAbs/sweepFlag)\n\n*This API requires the following crate features to be activated: `SvgPathSegArcAbs`*"]
     pub fn set_sweep_flag(this: &SvgPathSegArcAbs, value: bool);
 }

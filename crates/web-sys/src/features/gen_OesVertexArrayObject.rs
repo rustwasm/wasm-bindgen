@@ -7,25 +7,25 @@ extern "C" {
     #[doc = "The `OesVertexArrayObject` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_vertex_array_object)\n\n*This API requires the following crate features to be activated: `OesVertexArrayObject`*"]
     pub type OesVertexArrayObject;
     #[cfg(feature = "WebGlVertexArrayObject")]
-    # [ wasm_bindgen ( method , structural , js_name = bindVertexArrayOES ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "OES_vertex_array_object" , js_name = bindVertexArrayOES ) ]
     #[doc = "The `bindVertexArrayOES()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_vertex_array_object/bindVertexArrayOES)\n\n*This API requires the following crate features to be activated: `OesVertexArrayObject`, `WebGlVertexArrayObject`*"]
     pub fn bind_vertex_array_oes(
         this: &OesVertexArrayObject,
         array_object: Option<&WebGlVertexArrayObject>,
     );
     #[cfg(feature = "WebGlVertexArrayObject")]
-    # [ wasm_bindgen ( method , structural , js_name = createVertexArrayOES ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "OES_vertex_array_object" , js_name = createVertexArrayOES ) ]
     #[doc = "The `createVertexArrayOES()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_vertex_array_object/createVertexArrayOES)\n\n*This API requires the following crate features to be activated: `OesVertexArrayObject`, `WebGlVertexArrayObject`*"]
     pub fn create_vertex_array_oes(this: &OesVertexArrayObject) -> Option<WebGlVertexArrayObject>;
     #[cfg(feature = "WebGlVertexArrayObject")]
-    # [ wasm_bindgen ( method , structural , js_name = deleteVertexArrayOES ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "OES_vertex_array_object" , js_name = deleteVertexArrayOES ) ]
     #[doc = "The `deleteVertexArrayOES()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_vertex_array_object/deleteVertexArrayOES)\n\n*This API requires the following crate features to be activated: `OesVertexArrayObject`, `WebGlVertexArrayObject`*"]
     pub fn delete_vertex_array_oes(
         this: &OesVertexArrayObject,
         array_object: Option<&WebGlVertexArrayObject>,
     );
     #[cfg(feature = "WebGlVertexArrayObject")]
-    # [ wasm_bindgen ( method , structural , js_name = isVertexArrayOES ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "OES_vertex_array_object" , js_name = isVertexArrayOES ) ]
     #[doc = "The `isVertexArrayOES()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OES_vertex_array_object/isVertexArrayOES)\n\n*This API requires the following crate features to be activated: `OesVertexArrayObject`, `WebGlVertexArrayObject`*"]
     pub fn is_vertex_array_oes(
         this: &OesVertexArrayObject,

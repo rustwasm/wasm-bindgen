@@ -6,15 +6,15 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ClipboardEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent)\n\n*This API requires the following crate features to be activated: `ClipboardEvent`*"]
     pub type ClipboardEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = clipboardData ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ClipboardEvent" , js_name = clipboardData ) ]
     #[cfg(feature = "DataTransfer")]
     #[doc = "Getter for the `clipboardData` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent/clipboardData)\n\n*This API requires the following crate features to be activated: `ClipboardEvent`, `DataTransfer`*"]
     pub fn clipboard_data(this: &ClipboardEvent) -> Option<DataTransfer>;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "ClipboardEvent", constructor)]
     #[doc = "The `new ClipboardEvent(..)` constructor, creating a new instance of `ClipboardEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent/ClipboardEvent)\n\n*This API requires the following crate features to be activated: `ClipboardEvent`*"]
     pub fn new(this: &ClipboardEvent, type_: &str) -> Result<ClipboardEvent, JsValue>;
     #[cfg(feature = "ClipboardEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "ClipboardEvent", constructor)]
     #[doc = "The `new ClipboardEvent(..)` constructor, creating a new instance of `ClipboardEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent/ClipboardEvent)\n\n*This API requires the following crate features to be activated: `ClipboardEvent`, `ClipboardEventInit`*"]
     pub fn new_with_event_init_dict(
         this: &ClipboardEvent,

@@ -6,22 +6,22 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `HtmlMenuElement` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMenuElement)\n\n*This API requires the following crate features to be activated: `HtmlMenuElement`*"]
     pub type HtmlMenuElement;
-    # [ wasm_bindgen ( structural , method , getter , js_name = type ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMenuElement" , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMenuElement/type)\n\n*This API requires the following crate features to be activated: `HtmlMenuElement`*"]
     pub fn type_(this: &HtmlMenuElement) -> String;
-    # [ wasm_bindgen ( structural , method , setter , js_name = type ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLMenuElement" , js_name = type ) ]
     #[doc = "Setter for the `type` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMenuElement/type)\n\n*This API requires the following crate features to be activated: `HtmlMenuElement`*"]
     pub fn set_type(this: &HtmlMenuElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_name = label ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMenuElement" , js_name = label ) ]
     #[doc = "Getter for the `label` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMenuElement/label)\n\n*This API requires the following crate features to be activated: `HtmlMenuElement`*"]
     pub fn label(this: &HtmlMenuElement) -> String;
-    # [ wasm_bindgen ( structural , method , setter , js_name = label ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLMenuElement" , js_name = label ) ]
     #[doc = "Setter for the `label` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMenuElement/label)\n\n*This API requires the following crate features to be activated: `HtmlMenuElement`*"]
     pub fn set_label(this: &HtmlMenuElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_name = compact ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMenuElement" , js_name = compact ) ]
     #[doc = "Getter for the `compact` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMenuElement/compact)\n\n*This API requires the following crate features to be activated: `HtmlMenuElement`*"]
     pub fn compact(this: &HtmlMenuElement) -> bool;
-    # [ wasm_bindgen ( structural , method , setter , js_name = compact ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLMenuElement" , js_name = compact ) ]
     #[doc = "Setter for the `compact` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMenuElement/compact)\n\n*This API requires the following crate features to be activated: `HtmlMenuElement`*"]
     pub fn set_compact(this: &HtmlMenuElement, value: bool);
 }

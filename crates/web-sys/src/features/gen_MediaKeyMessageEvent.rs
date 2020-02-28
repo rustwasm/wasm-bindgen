@@ -6,15 +6,15 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `MediaKeyMessageEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyMessageEvent)\n\n*This API requires the following crate features to be activated: `MediaKeyMessageEvent`*"]
     pub type MediaKeyMessageEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = messageType ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaKeyMessageEvent" , js_name = messageType ) ]
     #[cfg(feature = "MediaKeyMessageType")]
     #[doc = "Getter for the `messageType` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyMessageEvent/messageType)\n\n*This API requires the following crate features to be activated: `MediaKeyMessageEvent`, `MediaKeyMessageType`*"]
     pub fn message_type(this: &MediaKeyMessageEvent) -> MediaKeyMessageType;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = message ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "MediaKeyMessageEvent" , js_name = message ) ]
     #[doc = "Getter for the `message` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyMessageEvent/message)\n\n*This API requires the following crate features to be activated: `MediaKeyMessageEvent`*"]
     pub fn message(this: &MediaKeyMessageEvent) -> Result<::js_sys::ArrayBuffer, JsValue>;
     #[cfg(feature = "MediaKeyMessageEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "MediaKeyMessageEvent", constructor)]
     #[doc = "The `new MediaKeyMessageEvent(..)` constructor, creating a new instance of `MediaKeyMessageEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyMessageEvent/MediaKeyMessageEvent)\n\n*This API requires the following crate features to be activated: `MediaKeyMessageEvent`, `MediaKeyMessageEventInit`*"]
     pub fn new(
         this: &MediaKeyMessageEvent,

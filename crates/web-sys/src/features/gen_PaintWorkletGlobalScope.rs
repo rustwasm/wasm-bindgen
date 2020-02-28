@@ -6,7 +6,7 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PaintWorkletGlobalScope` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaintWorkletGlobalScope)\n\n*This API requires the following crate features to be activated: `PaintWorkletGlobalScope`*"]
     pub type PaintWorkletGlobalScope;
-    # [ wasm_bindgen ( method , structural , js_name = registerPaint ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "PaintWorkletGlobalScope" , js_name = registerPaint ) ]
     #[doc = "The `registerPaint()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaintWorkletGlobalScope/registerPaint)\n\n*This API requires the following crate features to be activated: `PaintWorkletGlobalScope`*"]
     pub fn register_paint(
         this: &PaintWorkletGlobalScope,

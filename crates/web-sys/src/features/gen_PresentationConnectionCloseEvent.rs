@@ -6,15 +6,15 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PresentationConnectionCloseEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionCloseEvent)\n\n*This API requires the following crate features to be activated: `PresentationConnectionCloseEvent`*"]
     pub type PresentationConnectionCloseEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = reason ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnectionCloseEvent" , js_name = reason ) ]
     #[cfg(feature = "PresentationConnectionClosedReason")]
     #[doc = "Getter for the `reason` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionCloseEvent/reason)\n\n*This API requires the following crate features to be activated: `PresentationConnectionCloseEvent`, `PresentationConnectionClosedReason`*"]
     pub fn reason(this: &PresentationConnectionCloseEvent) -> PresentationConnectionClosedReason;
-    # [ wasm_bindgen ( structural , method , getter , js_name = message ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnectionCloseEvent" , js_name = message ) ]
     #[doc = "Getter for the `message` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionCloseEvent/message)\n\n*This API requires the following crate features to be activated: `PresentationConnectionCloseEvent`*"]
     pub fn message(this: &PresentationConnectionCloseEvent) -> String;
     #[cfg(feature = "PresentationConnectionCloseEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "PresentationConnectionCloseEvent", constructor)]
     #[doc = "The `new PresentationConnectionCloseEvent(..)` constructor, creating a new instance of `PresentationConnectionCloseEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionCloseEvent/PresentationConnectionCloseEvent)\n\n*This API requires the following crate features to be activated: `PresentationConnectionCloseEvent`, `PresentationConnectionCloseEventInit`*"]
     pub fn new(
         this: &PresentationConnectionCloseEvent,

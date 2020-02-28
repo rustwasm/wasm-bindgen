@@ -7,17 +7,17 @@ extern "C" {
     #[doc = "The `FileSystemDirectoryEntry` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`*"]
     pub type FileSystemDirectoryEntry;
     #[cfg(feature = "FileSystemDirectoryReader")]
-    # [ wasm_bindgen ( method , structural , js_name = createReader ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = createReader ) ]
     #[doc = "The `createReader()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/createReader)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemDirectoryReader`*"]
     pub fn create_reader(this: &FileSystemDirectoryEntry) -> FileSystemDirectoryReader;
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`*"]
     pub fn get_directory(this: &FileSystemDirectoryEntry);
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`*"]
     pub fn get_directory_with_path(this: &FileSystemDirectoryEntry, path: Option<&str>);
     #[cfg(feature = "FileSystemFlags")]
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_directory_with_path_and_options(
         this: &FileSystemDirectoryEntry,
@@ -25,7 +25,7 @@ extern "C" {
         options: &FileSystemFlags,
     );
     #[cfg(feature = "FileSystemFlags")]
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_directory_with_path_and_options_and_callback(
         this: &FileSystemDirectoryEntry,
@@ -34,7 +34,7 @@ extern "C" {
         success_callback: &::js_sys::Function,
     );
     #[cfg(all(feature = "FileSystemEntryCallback", feature = "FileSystemFlags",))]
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
     pub fn get_directory_with_path_and_options_and_file_system_entry_callback(
         this: &FileSystemDirectoryEntry,
@@ -43,7 +43,7 @@ extern "C" {
         success_callback: &FileSystemEntryCallback,
     );
     #[cfg(feature = "FileSystemFlags")]
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_directory_with_path_and_options_and_callback_and_callback(
         this: &FileSystemDirectoryEntry,
@@ -53,7 +53,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     );
     #[cfg(all(feature = "FileSystemEntryCallback", feature = "FileSystemFlags",))]
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
     pub fn get_directory_with_path_and_options_and_file_system_entry_callback_and_callback(
         this: &FileSystemDirectoryEntry,
@@ -63,7 +63,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     );
     #[cfg(all(feature = "ErrorCallback", feature = "FileSystemFlags",))]
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_directory_with_path_and_options_and_callback_and_error_callback(
         this: &FileSystemDirectoryEntry,
@@ -77,7 +77,7 @@ extern "C" {
         feature = "FileSystemEntryCallback",
         feature = "FileSystemFlags",
     ))]
-    # [ wasm_bindgen ( method , structural , js_name = getDirectory ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getDirectory ) ]
     #[doc = "The `getDirectory()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)\n\n*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
     pub fn get_directory_with_path_and_options_and_file_system_entry_callback_and_error_callback(
         this: &FileSystemDirectoryEntry,
@@ -86,14 +86,14 @@ extern "C" {
         success_callback: &FileSystemEntryCallback,
         error_callback: &ErrorCallback,
     );
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`*"]
     pub fn get_file(this: &FileSystemDirectoryEntry);
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`*"]
     pub fn get_file_with_path(this: &FileSystemDirectoryEntry, path: Option<&str>);
     #[cfg(feature = "FileSystemFlags")]
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_file_with_path_and_options(
         this: &FileSystemDirectoryEntry,
@@ -101,7 +101,7 @@ extern "C" {
         options: &FileSystemFlags,
     );
     #[cfg(feature = "FileSystemFlags")]
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_file_with_path_and_options_and_callback(
         this: &FileSystemDirectoryEntry,
@@ -110,7 +110,7 @@ extern "C" {
         success_callback: &::js_sys::Function,
     );
     #[cfg(all(feature = "FileSystemEntryCallback", feature = "FileSystemFlags",))]
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
     pub fn get_file_with_path_and_options_and_file_system_entry_callback(
         this: &FileSystemDirectoryEntry,
@@ -119,7 +119,7 @@ extern "C" {
         success_callback: &FileSystemEntryCallback,
     );
     #[cfg(feature = "FileSystemFlags")]
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_file_with_path_and_options_and_callback_and_callback(
         this: &FileSystemDirectoryEntry,
@@ -129,7 +129,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     );
     #[cfg(all(feature = "FileSystemEntryCallback", feature = "FileSystemFlags",))]
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
     pub fn get_file_with_path_and_options_and_file_system_entry_callback_and_callback(
         this: &FileSystemDirectoryEntry,
@@ -139,7 +139,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     );
     #[cfg(all(feature = "ErrorCallback", feature = "FileSystemFlags",))]
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
     pub fn get_file_with_path_and_options_and_callback_and_error_callback(
         this: &FileSystemDirectoryEntry,
@@ -153,7 +153,7 @@ extern "C" {
         feature = "FileSystemEntryCallback",
         feature = "FileSystemFlags",
     ))]
-    # [ wasm_bindgen ( method , structural , js_name = getFile ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "FileSystemDirectoryEntry" , js_name = getFile ) ]
     #[doc = "The `getFile()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)\n\n*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
     pub fn get_file_with_path_and_options_and_file_system_entry_callback_and_error_callback(
         this: &FileSystemDirectoryEntry,

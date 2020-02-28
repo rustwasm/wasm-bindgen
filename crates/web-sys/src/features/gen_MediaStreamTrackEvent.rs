@@ -6,12 +6,12 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `MediaStreamTrackEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackEvent)\n\n*This API requires the following crate features to be activated: `MediaStreamTrackEvent`*"]
     pub type MediaStreamTrackEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = track ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaStreamTrackEvent" , js_name = track ) ]
     #[cfg(feature = "MediaStreamTrack")]
     #[doc = "Getter for the `track` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackEvent/track)\n\n*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEvent`*"]
     pub fn track(this: &MediaStreamTrackEvent) -> MediaStreamTrack;
     #[cfg(feature = "MediaStreamTrackEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "MediaStreamTrackEvent", constructor)]
     #[doc = "The `new MediaStreamTrackEvent(..)` constructor, creating a new instance of `MediaStreamTrackEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackEvent/MediaStreamTrackEvent)\n\n*This API requires the following crate features to be activated: `MediaStreamTrackEvent`, `MediaStreamTrackEventInit`*"]
     pub fn new(
         this: &MediaStreamTrackEvent,

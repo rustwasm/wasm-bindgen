@@ -6,27 +6,27 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `XsltProcessor` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor)\n\n*This API requires the following crate features to be activated: `XsltProcessor`*"]
     pub type XsltProcessor;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "XSLTProcessor", constructor)]
     #[doc = "The `new XsltProcessor(..)` constructor, creating a new instance of `XsltProcessor`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/XSLTProcessor)\n\n*This API requires the following crate features to be activated: `XsltProcessor`*"]
     pub fn new(this: &XsltProcessor) -> Result<XsltProcessor, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_name = clearParameters ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "XSLTProcessor" , js_name = clearParameters ) ]
     #[doc = "The `clearParameters()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/clearParameters)\n\n*This API requires the following crate features to be activated: `XsltProcessor`*"]
     pub fn clear_parameters(this: &XsltProcessor);
     #[cfg(feature = "Node")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = importStylesheet ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "XSLTProcessor" , js_name = importStylesheet ) ]
     #[doc = "The `importStylesheet()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/importStylesheet)\n\n*This API requires the following crate features to be activated: `Node`, `XsltProcessor`*"]
     pub fn import_stylesheet(this: &XsltProcessor, style: &Node) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = removeParameter ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "XSLTProcessor" , js_name = removeParameter ) ]
     #[doc = "The `removeParameter()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/removeParameter)\n\n*This API requires the following crate features to be activated: `XsltProcessor`*"]
     pub fn remove_parameter(
         this: &XsltProcessor,
         namespace_uri: &str,
         local_name: &str,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( method , structural , js_name = reset ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "XSLTProcessor" , js_name = reset ) ]
     #[doc = "The `reset()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/reset)\n\n*This API requires the following crate features to be activated: `XsltProcessor`*"]
     pub fn reset(this: &XsltProcessor);
-    # [ wasm_bindgen ( catch , method , structural , js_name = setParameter ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "XSLTProcessor" , js_name = setParameter ) ]
     #[doc = "The `setParameter()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/setParameter)\n\n*This API requires the following crate features to be activated: `XsltProcessor`*"]
     pub fn set_parameter(
         this: &XsltProcessor,
@@ -35,11 +35,11 @@ extern "C" {
         value: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
     #[cfg(all(feature = "Document", feature = "Node",))]
-    # [ wasm_bindgen ( catch , method , structural , js_name = transformToDocument ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "XSLTProcessor" , js_name = transformToDocument ) ]
     #[doc = "The `transformToDocument()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/transformToDocument)\n\n*This API requires the following crate features to be activated: `Document`, `Node`, `XsltProcessor`*"]
     pub fn transform_to_document(this: &XsltProcessor, source: &Node) -> Result<Document, JsValue>;
     #[cfg(all(feature = "Document", feature = "DocumentFragment", feature = "Node",))]
-    # [ wasm_bindgen ( catch , method , structural , js_name = transformToFragment ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "XSLTProcessor" , js_name = transformToFragment ) ]
     #[doc = "The `transformToFragment()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XSLTProcessor/transformToFragment)\n\n*This API requires the following crate features to be activated: `Document`, `DocumentFragment`, `Node`, `XsltProcessor`*"]
     pub fn transform_to_fragment(
         this: &XsltProcessor,

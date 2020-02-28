@@ -6,26 +6,26 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgLengthList` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList)\n\n*This API requires the following crate features to be activated: `SvgLengthList`*"]
     pub type SvgLengthList;
-    # [ wasm_bindgen ( structural , method , getter , js_name = numberOfItems ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGLengthList" , js_name = numberOfItems ) ]
     #[doc = "Getter for the `numberOfItems` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/numberOfItems)\n\n*This API requires the following crate features to be activated: `SvgLengthList`*"]
     pub fn number_of_items(this: &SvgLengthList) -> u32;
     #[cfg(feature = "SvgLength")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = appendItem ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGLengthList" , js_name = appendItem ) ]
     #[doc = "The `appendItem()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/appendItem)\n\n*This API requires the following crate features to be activated: `SvgLength`, `SvgLengthList`*"]
     pub fn append_item(this: &SvgLengthList, new_item: &SvgLength) -> Result<SvgLength, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = clear ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGLengthList" , js_name = clear ) ]
     #[doc = "The `clear()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/clear)\n\n*This API requires the following crate features to be activated: `SvgLengthList`*"]
     pub fn clear(this: &SvgLengthList) -> Result<(), JsValue>;
     #[cfg(feature = "SvgLength")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = getItem ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGLengthList" , js_name = getItem ) ]
     #[doc = "The `getItem()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/getItem)\n\n*This API requires the following crate features to be activated: `SvgLength`, `SvgLengthList`*"]
     pub fn get_item(this: &SvgLengthList, index: u32) -> Result<SvgLength, JsValue>;
     #[cfg(feature = "SvgLength")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = initialize ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGLengthList" , js_name = initialize ) ]
     #[doc = "The `initialize()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/initialize)\n\n*This API requires the following crate features to be activated: `SvgLength`, `SvgLengthList`*"]
     pub fn initialize(this: &SvgLengthList, new_item: &SvgLength) -> Result<SvgLength, JsValue>;
     #[cfg(feature = "SvgLength")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = insertItemBefore ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGLengthList" , js_name = insertItemBefore ) ]
     #[doc = "The `insertItemBefore()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/insertItemBefore)\n\n*This API requires the following crate features to be activated: `SvgLength`, `SvgLengthList`*"]
     pub fn insert_item_before(
         this: &SvgLengthList,
@@ -33,11 +33,11 @@ extern "C" {
         index: u32,
     ) -> Result<SvgLength, JsValue>;
     #[cfg(feature = "SvgLength")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = removeItem ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGLengthList" , js_name = removeItem ) ]
     #[doc = "The `removeItem()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/removeItem)\n\n*This API requires the following crate features to be activated: `SvgLength`, `SvgLengthList`*"]
     pub fn remove_item(this: &SvgLengthList, index: u32) -> Result<SvgLength, JsValue>;
     #[cfg(feature = "SvgLength")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = replaceItem ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGLengthList" , js_name = replaceItem ) ]
     #[doc = "The `replaceItem()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLengthList/replaceItem)\n\n*This API requires the following crate features to be activated: `SvgLength`, `SvgLengthList`*"]
     pub fn replace_item(
         this: &SvgLengthList,
@@ -45,7 +45,7 @@ extern "C" {
         index: u32,
     ) -> Result<SvgLength, JsValue>;
     #[cfg(feature = "SvgLength")]
-    #[wasm_bindgen(catch, method, structural, indexing_getter)]
+    #[wasm_bindgen(catch, method, structural, js_class = "SVGLengthList", indexing_getter)]
     #[doc = "Indexing getter.\n\n\n\n*This API requires the following crate features to be activated: `SvgLength`, `SvgLengthList`*"]
     pub fn get(this: &SvgLengthList, index: u32) -> Result<SvgLength, JsValue>;
 }

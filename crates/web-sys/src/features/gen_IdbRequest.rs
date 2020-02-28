@@ -6,34 +6,34 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `IdbRequest` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub type IdbRequest;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = result ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBRequest" , js_name = result ) ]
     #[doc = "Getter for the `result` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/result)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn result(this: &IdbRequest) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_name = error ) ]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBRequest" , js_name = error ) ]
     #[cfg(feature = "DomException")]
     #[doc = "Getter for the `error` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/error)\n\n*This API requires the following crate features to be activated: `DomException`, `IdbRequest`*"]
     pub fn error(this: &IdbRequest) -> Result<Option<DomException>, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_name = source ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = source ) ]
     #[doc = "Getter for the `source` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/source)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn source(this: &IdbRequest) -> Option<::js_sys::Object>;
-    # [ wasm_bindgen ( structural , method , getter , js_name = transaction ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = transaction ) ]
     #[cfg(feature = "IdbTransaction")]
     #[doc = "Getter for the `transaction` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/transaction)\n\n*This API requires the following crate features to be activated: `IdbRequest`, `IdbTransaction`*"]
     pub fn transaction(this: &IdbRequest) -> Option<IdbTransaction>;
-    # [ wasm_bindgen ( structural , method , getter , js_name = readyState ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = readyState ) ]
     #[cfg(feature = "IdbRequestReadyState")]
     #[doc = "Getter for the `readyState` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/readyState)\n\n*This API requires the following crate features to be activated: `IdbRequest`, `IdbRequestReadyState`*"]
     pub fn ready_state(this: &IdbRequest) -> IdbRequestReadyState;
-    # [ wasm_bindgen ( structural , method , getter , js_name = onsuccess ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = onsuccess ) ]
     #[doc = "Getter for the `onsuccess` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/onsuccess)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn onsuccess(this: &IdbRequest) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_name = onsuccess ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "IDBRequest" , js_name = onsuccess ) ]
     #[doc = "Setter for the `onsuccess` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/onsuccess)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn set_onsuccess(this: &IdbRequest, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_name = onerror ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = onerror ) ]
     #[doc = "Getter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/onerror)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn onerror(this: &IdbRequest) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_name = onerror ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "IDBRequest" , js_name = onerror ) ]
     #[doc = "Setter for the `onerror` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/onerror)\n\n*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn set_onerror(this: &IdbRequest, value: Option<&::js_sys::Function>);
 }

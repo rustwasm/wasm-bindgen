@@ -7,14 +7,14 @@ extern "C" {
     #[doc = "The `MediaCapabilities` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaCapabilities)\n\n*This API requires the following crate features to be activated: `MediaCapabilities`*"]
     pub type MediaCapabilities;
     #[cfg(feature = "MediaDecodingConfiguration")]
-    # [ wasm_bindgen ( method , structural , js_name = decodingInfo ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "MediaCapabilities" , js_name = decodingInfo ) ]
     #[doc = "The `decodingInfo()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaCapabilities/decodingInfo)\n\n*This API requires the following crate features to be activated: `MediaCapabilities`, `MediaDecodingConfiguration`*"]
     pub fn decoding_info(
         this: &MediaCapabilities,
         configuration: &MediaDecodingConfiguration,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "MediaEncodingConfiguration")]
-    # [ wasm_bindgen ( method , structural , js_name = encodingInfo ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "MediaCapabilities" , js_name = encodingInfo ) ]
     #[doc = "The `encodingInfo()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaCapabilities/encodingInfo)\n\n*This API requires the following crate features to be activated: `MediaCapabilities`, `MediaEncodingConfiguration`*"]
     pub fn encoding_info(
         this: &MediaCapabilities,

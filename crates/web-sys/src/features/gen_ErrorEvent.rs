@@ -6,26 +6,26 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ErrorEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent)\n\n*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub type ErrorEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = message ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ErrorEvent" , js_name = message ) ]
     #[doc = "Getter for the `message` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/message)\n\n*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub fn message(this: &ErrorEvent) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_name = filename ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ErrorEvent" , js_name = filename ) ]
     #[doc = "Getter for the `filename` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/filename)\n\n*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub fn filename(this: &ErrorEvent) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_name = lineno ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ErrorEvent" , js_name = lineno ) ]
     #[doc = "Getter for the `lineno` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/lineno)\n\n*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub fn lineno(this: &ErrorEvent) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_name = colno ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ErrorEvent" , js_name = colno ) ]
     #[doc = "Getter for the `colno` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/colno)\n\n*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub fn colno(this: &ErrorEvent) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_name = error ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ErrorEvent" , js_name = error ) ]
     #[doc = "Getter for the `error` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/error)\n\n*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub fn error(this: &ErrorEvent) -> ::wasm_bindgen::JsValue;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "ErrorEvent", constructor)]
     #[doc = "The `new ErrorEvent(..)` constructor, creating a new instance of `ErrorEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/ErrorEvent)\n\n*This API requires the following crate features to be activated: `ErrorEvent`*"]
     pub fn new(this: &ErrorEvent, type_: &str) -> Result<ErrorEvent, JsValue>;
     #[cfg(feature = "ErrorEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "ErrorEvent", constructor)]
     #[doc = "The `new ErrorEvent(..)` constructor, creating a new instance of `ErrorEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/ErrorEvent)\n\n*This API requires the following crate features to be activated: `ErrorEvent`, `ErrorEventInit`*"]
     pub fn new_with_event_init_dict(
         this: &ErrorEvent,

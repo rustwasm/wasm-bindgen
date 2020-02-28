@@ -6,10 +6,10 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `HtmlQuoteElement` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLQuoteElement)\n\n*This API requires the following crate features to be activated: `HtmlQuoteElement`*"]
     pub type HtmlQuoteElement;
-    # [ wasm_bindgen ( structural , method , getter , js_name = cite ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLQuoteElement" , js_name = cite ) ]
     #[doc = "Getter for the `cite` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLQuoteElement/cite)\n\n*This API requires the following crate features to be activated: `HtmlQuoteElement`*"]
     pub fn cite(this: &HtmlQuoteElement) -> String;
-    # [ wasm_bindgen ( structural , method , setter , js_name = cite ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLQuoteElement" , js_name = cite ) ]
     #[doc = "Setter for the `cite` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLQuoteElement/cite)\n\n*This API requires the following crate features to be activated: `HtmlQuoteElement`*"]
     pub fn set_cite(this: &HtmlQuoteElement, value: &str);
 }

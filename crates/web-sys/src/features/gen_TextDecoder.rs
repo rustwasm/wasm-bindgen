@@ -6,40 +6,40 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `TextDecoder` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub type TextDecoder;
-    # [ wasm_bindgen ( structural , method , getter , js_name = encoding ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TextDecoder" , js_name = encoding ) ]
     #[doc = "Getter for the `encoding` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/encoding)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn encoding(this: &TextDecoder) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_name = fatal ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TextDecoder" , js_name = fatal ) ]
     #[doc = "Getter for the `fatal` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/fatal)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn fatal(this: &TextDecoder) -> bool;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "TextDecoder", constructor)]
     #[doc = "The `new TextDecoder(..)` constructor, creating a new instance of `TextDecoder`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/TextDecoder)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn new(this: &TextDecoder) -> Result<TextDecoder, JsValue>;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "TextDecoder", constructor)]
     #[doc = "The `new TextDecoder(..)` constructor, creating a new instance of `TextDecoder`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/TextDecoder)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn new_with_label(this: &TextDecoder, label: &str) -> Result<TextDecoder, JsValue>;
     #[cfg(feature = "TextDecoderOptions")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "TextDecoder", constructor)]
     #[doc = "The `new TextDecoder(..)` constructor, creating a new instance of `TextDecoder`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/TextDecoder)\n\n*This API requires the following crate features to be activated: `TextDecoder`, `TextDecoderOptions`*"]
     pub fn new_with_label_and_options(
         this: &TextDecoder,
         label: &str,
         options: &TextDecoderOptions,
     ) -> Result<TextDecoder, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = decode ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "TextDecoder" , js_name = decode ) ]
     #[doc = "The `decode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn decode(this: &TextDecoder) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = decode ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "TextDecoder" , js_name = decode ) ]
     #[doc = "The `decode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn decode_with_buffer_source(
         this: &TextDecoder,
         input: &::js_sys::Object,
     ) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_name = decode ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "TextDecoder" , js_name = decode ) ]
     #[doc = "The `decode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode)\n\n*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn decode_with_u8_array(this: &TextDecoder, input: &mut [u8]) -> Result<String, JsValue>;
     #[cfg(feature = "TextDecodeOptions")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = decode ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "TextDecoder" , js_name = decode ) ]
     #[doc = "The `decode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode)\n\n*This API requires the following crate features to be activated: `TextDecodeOptions`, `TextDecoder`*"]
     pub fn decode_with_buffer_source_and_options(
         this: &TextDecoder,
@@ -47,7 +47,7 @@ extern "C" {
         options: &TextDecodeOptions,
     ) -> Result<String, JsValue>;
     #[cfg(feature = "TextDecodeOptions")]
-    # [ wasm_bindgen ( catch , method , structural , js_name = decode ) ]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "TextDecoder" , js_name = decode ) ]
     #[doc = "The `decode()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode)\n\n*This API requires the following crate features to be activated: `TextDecodeOptions`, `TextDecoder`*"]
     pub fn decode_with_u8_array_and_options(
         this: &TextDecoder,

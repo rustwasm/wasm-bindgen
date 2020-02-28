@@ -6,55 +6,55 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AnalyserNode` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub type AnalyserNode;
-    # [ wasm_bindgen ( structural , method , getter , js_name = fftSize ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AnalyserNode" , js_name = fftSize ) ]
     #[doc = "Getter for the `fftSize` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/fftSize)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn fft_size(this: &AnalyserNode) -> u32;
-    # [ wasm_bindgen ( structural , method , setter , js_name = fftSize ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "AnalyserNode" , js_name = fftSize ) ]
     #[doc = "Setter for the `fftSize` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/fftSize)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn set_fft_size(this: &AnalyserNode, value: u32);
-    # [ wasm_bindgen ( structural , method , getter , js_name = frequencyBinCount ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AnalyserNode" , js_name = frequencyBinCount ) ]
     #[doc = "Getter for the `frequencyBinCount` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/frequencyBinCount)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn frequency_bin_count(this: &AnalyserNode) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_name = minDecibels ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AnalyserNode" , js_name = minDecibels ) ]
     #[doc = "Getter for the `minDecibels` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/minDecibels)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn min_decibels(this: &AnalyserNode) -> f64;
-    # [ wasm_bindgen ( structural , method , setter , js_name = minDecibels ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "AnalyserNode" , js_name = minDecibels ) ]
     #[doc = "Setter for the `minDecibels` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/minDecibels)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn set_min_decibels(this: &AnalyserNode, value: f64);
-    # [ wasm_bindgen ( structural , method , getter , js_name = maxDecibels ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AnalyserNode" , js_name = maxDecibels ) ]
     #[doc = "Getter for the `maxDecibels` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/maxDecibels)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn max_decibels(this: &AnalyserNode) -> f64;
-    # [ wasm_bindgen ( structural , method , setter , js_name = maxDecibels ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "AnalyserNode" , js_name = maxDecibels ) ]
     #[doc = "Setter for the `maxDecibels` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/maxDecibels)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn set_max_decibels(this: &AnalyserNode, value: f64);
-    # [ wasm_bindgen ( structural , method , getter , js_name = smoothingTimeConstant ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AnalyserNode" , js_name = smoothingTimeConstant ) ]
     #[doc = "Getter for the `smoothingTimeConstant` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/smoothingTimeConstant)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn smoothing_time_constant(this: &AnalyserNode) -> f64;
-    # [ wasm_bindgen ( structural , method , setter , js_name = smoothingTimeConstant ) ]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "AnalyserNode" , js_name = smoothingTimeConstant ) ]
     #[doc = "Setter for the `smoothingTimeConstant` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/smoothingTimeConstant)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn set_smoothing_time_constant(this: &AnalyserNode, value: f64);
     #[cfg(feature = "BaseAudioContext")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "AnalyserNode", constructor)]
     #[doc = "The `new AnalyserNode(..)` constructor, creating a new instance of `AnalyserNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/AnalyserNode)\n\n*This API requires the following crate features to be activated: `AnalyserNode`, `BaseAudioContext`*"]
     pub fn new(this: &AnalyserNode, context: &BaseAudioContext) -> Result<AnalyserNode, JsValue>;
     #[cfg(all(feature = "AnalyserOptions", feature = "BaseAudioContext",))]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "AnalyserNode", constructor)]
     #[doc = "The `new AnalyserNode(..)` constructor, creating a new instance of `AnalyserNode`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/AnalyserNode)\n\n*This API requires the following crate features to be activated: `AnalyserNode`, `AnalyserOptions`, `BaseAudioContext`*"]
     pub fn new_with_options(
         this: &AnalyserNode,
         context: &BaseAudioContext,
         options: &AnalyserOptions,
     ) -> Result<AnalyserNode, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_name = getByteFrequencyData ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "AnalyserNode" , js_name = getByteFrequencyData ) ]
     #[doc = "The `getByteFrequencyData()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getByteFrequencyData)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_byte_frequency_data(this: &AnalyserNode, array: &mut [u8]);
-    # [ wasm_bindgen ( method , structural , js_name = getByteTimeDomainData ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "AnalyserNode" , js_name = getByteTimeDomainData ) ]
     #[doc = "The `getByteTimeDomainData()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getByteTimeDomainData)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_byte_time_domain_data(this: &AnalyserNode, array: &mut [u8]);
-    # [ wasm_bindgen ( method , structural , js_name = getFloatFrequencyData ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "AnalyserNode" , js_name = getFloatFrequencyData ) ]
     #[doc = "The `getFloatFrequencyData()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatFrequencyData)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_float_frequency_data(this: &AnalyserNode, array: &mut [f32]);
-    # [ wasm_bindgen ( method , structural , js_name = getFloatTimeDomainData ) ]
+    # [ wasm_bindgen ( method , structural , js_class = "AnalyserNode" , js_name = getFloatTimeDomainData ) ]
     #[doc = "The `getFloatTimeDomainData()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatTimeDomainData)\n\n*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_float_time_domain_data(this: &AnalyserNode, array: &mut [f32]);
 }

@@ -6,19 +6,19 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgForeignObjectElement` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGForeignObjectElement)\n\n*This API requires the following crate features to be activated: `SvgForeignObjectElement`*"]
     pub type SvgForeignObjectElement;
-    # [ wasm_bindgen ( structural , method , getter , js_name = x ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGForeignObjectElement" , js_name = x ) ]
     #[cfg(feature = "SvgAnimatedLength")]
     #[doc = "Getter for the `x` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGForeignObjectElement/x)\n\n*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgForeignObjectElement`*"]
     pub fn x(this: &SvgForeignObjectElement) -> SvgAnimatedLength;
-    # [ wasm_bindgen ( structural , method , getter , js_name = y ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGForeignObjectElement" , js_name = y ) ]
     #[cfg(feature = "SvgAnimatedLength")]
     #[doc = "Getter for the `y` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGForeignObjectElement/y)\n\n*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgForeignObjectElement`*"]
     pub fn y(this: &SvgForeignObjectElement) -> SvgAnimatedLength;
-    # [ wasm_bindgen ( structural , method , getter , js_name = width ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGForeignObjectElement" , js_name = width ) ]
     #[cfg(feature = "SvgAnimatedLength")]
     #[doc = "Getter for the `width` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGForeignObjectElement/width)\n\n*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgForeignObjectElement`*"]
     pub fn width(this: &SvgForeignObjectElement) -> SvgAnimatedLength;
-    # [ wasm_bindgen ( structural , method , getter , js_name = height ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGForeignObjectElement" , js_name = height ) ]
     #[cfg(feature = "SvgAnimatedLength")]
     #[doc = "Getter for the `height` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGForeignObjectElement/height)\n\n*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgForeignObjectElement`*"]
     pub fn height(this: &SvgForeignObjectElement) -> SvgAnimatedLength;

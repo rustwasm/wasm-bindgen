@@ -6,17 +6,17 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `TcpSocketErrorEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent)\n\n*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
     pub type TcpSocketErrorEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = name ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TCPSocketErrorEvent" , js_name = name ) ]
     #[doc = "Getter for the `name` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/name)\n\n*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
     pub fn name(this: &TcpSocketErrorEvent) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_name = message ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TCPSocketErrorEvent" , js_name = message ) ]
     #[doc = "Getter for the `message` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/message)\n\n*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
     pub fn message(this: &TcpSocketErrorEvent) -> String;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "TCPSocketErrorEvent", constructor)]
     #[doc = "The `new TcpSocketErrorEvent(..)` constructor, creating a new instance of `TcpSocketErrorEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/TCPSocketErrorEvent)\n\n*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
     pub fn new(this: &TcpSocketErrorEvent, type_: &str) -> Result<TcpSocketErrorEvent, JsValue>;
     #[cfg(feature = "TcpSocketErrorEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "TCPSocketErrorEvent", constructor)]
     #[doc = "The `new TcpSocketErrorEvent(..)` constructor, creating a new instance of `TcpSocketErrorEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/TCPSocketErrorEvent)\n\n*This API requires the following crate features to be activated: `TcpSocketErrorEvent`, `TcpSocketErrorEventInit`*"]
     pub fn new_with_event_init_dict(
         this: &TcpSocketErrorEvent,

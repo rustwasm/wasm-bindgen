@@ -6,14 +6,14 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `TcpSocketEvent` class.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketEvent)\n\n*This API requires the following crate features to be activated: `TcpSocketEvent`*"]
     pub type TcpSocketEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_name = data ) ]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TCPSocketEvent" , js_name = data ) ]
     #[doc = "Getter for the `data` field of this object.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketEvent/data)\n\n*This API requires the following crate features to be activated: `TcpSocketEvent`*"]
     pub fn data(this: &TcpSocketEvent) -> ::wasm_bindgen::JsValue;
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "TCPSocketEvent", constructor)]
     #[doc = "The `new TcpSocketEvent(..)` constructor, creating a new instance of `TcpSocketEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketEvent/TCPSocketEvent)\n\n*This API requires the following crate features to be activated: `TcpSocketEvent`*"]
     pub fn new(this: &TcpSocketEvent, type_: &str) -> Result<TcpSocketEvent, JsValue>;
     #[cfg(feature = "TcpSocketEventInit")]
-    #[wasm_bindgen(catch, constructor)]
+    #[wasm_bindgen(catch, js_class = "TCPSocketEvent", constructor)]
     #[doc = "The `new TcpSocketEvent(..)` constructor, creating a new instance of `TcpSocketEvent`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketEvent/TCPSocketEvent)\n\n*This API requires the following crate features to be activated: `TcpSocketEvent`, `TcpSocketEventInit`*"]
     pub fn new_with_event_init_dict(
         this: &TcpSocketEvent,
