@@ -80,8 +80,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
     pub fn set_onunmute(this: &MediaStreamTrack, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaStreamTrack" , js_name = readyState ) ]
     #[cfg(feature = "MediaStreamTrackState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaStreamTrack" , js_name = readyState ) ]
     #[doc = "Getter for the `readyState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/readyState)"]

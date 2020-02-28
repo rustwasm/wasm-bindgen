@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     pub type Notification;
-    # [ wasm_bindgen ( structural , static_method_of = Notification , getter , js_class = "Notification" , js_name = permission ) ]
     #[cfg(feature = "NotificationPermission")]
+    # [ wasm_bindgen ( structural , static_method_of = Notification , getter , js_class = "Notification" , js_name = permission ) ]
     #[doc = "Getter for the `permission` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/permission)"]
@@ -81,8 +81,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     pub fn title(this: &Notification) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Notification" , js_name = dir ) ]
     #[cfg(feature = "NotificationDirection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Notification" , js_name = dir ) ]
     #[doc = "Getter for the `dir` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/dir)"]

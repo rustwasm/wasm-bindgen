@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnectionIceEvent`*"]
     pub type RtcPeerConnectionIceEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCPeerConnectionIceEvent" , js_name = candidate ) ]
     #[cfg(feature = "RtcIceCandidate")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCPeerConnectionIceEvent" , js_name = candidate ) ]
     #[doc = "Getter for the `candidate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceEvent/candidate)"]

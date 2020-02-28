@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEvent`*"]
     pub type PresentationConnectionCloseEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnectionCloseEvent" , js_name = reason ) ]
     #[cfg(feature = "PresentationConnectionClosedReason")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnectionCloseEvent" , js_name = reason ) ]
     #[doc = "Getter for the `reason` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionCloseEvent/reason)"]

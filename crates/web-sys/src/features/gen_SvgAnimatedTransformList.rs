@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedTransformList`*"]
     pub type SvgAnimatedTransformList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedTransformList" , js_name = baseVal ) ]
     #[cfg(feature = "SvgTransformList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedTransformList" , js_name = baseVal ) ]
     #[doc = "Getter for the `baseVal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedTransformList/baseVal)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedTransformList`, `SvgTransformList`*"]
     pub fn base_val(this: &SvgAnimatedTransformList) -> SvgTransformList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedTransformList" , js_name = animVal ) ]
     #[cfg(feature = "SvgTransformList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedTransformList" , js_name = animVal ) ]
     #[doc = "Getter for the `animVal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedTransformList/animVal)"]

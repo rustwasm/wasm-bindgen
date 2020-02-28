@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredential`*"]
     pub fn raw_id(this: &PublicKeyCredential) -> ::js_sys::ArrayBuffer;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PublicKeyCredential" , js_name = response ) ]
     #[cfg(feature = "AuthenticatorResponse")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PublicKeyCredential" , js_name = response ) ]
     #[doc = "Getter for the `response` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/response)"]

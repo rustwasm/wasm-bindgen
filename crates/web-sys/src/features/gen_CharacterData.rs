@@ -31,16 +31,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn length(this: &CharacterData) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CharacterData" , js_name = previousElementSibling ) ]
     #[cfg(feature = "Element")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CharacterData" , js_name = previousElementSibling ) ]
     #[doc = "Getter for the `previousElementSibling` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/previousElementSibling)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CharacterData`, `Element`*"]
     pub fn previous_element_sibling(this: &CharacterData) -> Option<Element>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CharacterData" , js_name = nextElementSibling ) ]
     #[cfg(feature = "Element")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CharacterData" , js_name = nextElementSibling ) ]
     #[doc = "Getter for the `nextElementSibling` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/nextElementSibling)"]

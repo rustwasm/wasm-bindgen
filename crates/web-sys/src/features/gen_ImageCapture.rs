@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageCapture`*"]
     pub type ImageCapture;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ImageCapture" , js_name = videoStreamTrack ) ]
     #[cfg(feature = "VideoStreamTrack")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ImageCapture" , js_name = videoStreamTrack ) ]
     #[doc = "Getter for the `videoStreamTrack` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/videoStreamTrack)"]

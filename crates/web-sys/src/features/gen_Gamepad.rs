@@ -24,16 +24,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`*"]
     pub fn index(this: &Gamepad) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Gamepad" , js_name = mapping ) ]
     #[cfg(feature = "GamepadMappingType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Gamepad" , js_name = mapping ) ]
     #[doc = "Getter for the `mapping` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/mapping)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`, `GamepadMappingType`*"]
     pub fn mapping(this: &Gamepad) -> GamepadMappingType;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Gamepad" , js_name = hand ) ]
     #[cfg(feature = "GamepadHand")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Gamepad" , js_name = hand ) ]
     #[doc = "Getter for the `hand` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/hand)"]
@@ -75,8 +75,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`*"]
     pub fn timestamp(this: &Gamepad) -> f64;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Gamepad" , js_name = pose ) ]
     #[cfg(feature = "GamepadPose")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Gamepad" , js_name = pose ) ]
     #[doc = "Getter for the `pose` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/pose)"]

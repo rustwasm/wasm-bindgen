@@ -80,8 +80,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
     pub fn set_use_map(this: &HtmlObjectElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/form)"]
@@ -116,16 +116,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
     pub fn set_height(this: &HtmlObjectElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = contentDocument ) ]
     #[cfg(feature = "Document")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = contentDocument ) ]
     #[doc = "Getter for the `contentDocument` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/contentDocument)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `HtmlObjectElement`*"]
     pub fn content_document(this: &HtmlObjectElement) -> Option<Document>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = contentWindow ) ]
     #[cfg(feature = "Window")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = contentWindow ) ]
     #[doc = "Getter for the `contentWindow` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/contentWindow)"]
@@ -139,8 +139,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
     pub fn will_validate(this: &HtmlObjectElement) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = validity ) ]
     #[cfg(feature = "ValidityState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLObjectElement" , js_name = validity ) ]
     #[doc = "Getter for the `validity` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/validity)"]

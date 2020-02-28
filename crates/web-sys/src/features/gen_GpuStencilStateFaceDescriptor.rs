@@ -1,36 +1,38 @@
 use super::*;
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
-#[doc = ""]
-#[doc = ""]
-#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUStencilStateFaceDescriptor ) ]
     #[doc = "The `GpuStencilStateFaceDescriptor` dictionary."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuStencilStateFaceDescriptor;
 }
 #[cfg(web_sys_unstable_apis)]
-#[doc = ""]
-#[doc = ""]
-#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 impl GpuStencilStateFaceDescriptor {
     #[doc = "Construct a new `GpuStencilStateFaceDescriptor`."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuCompareFunction")]
     #[doc = "Change the `compare` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuCompareFunction`, `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn compare(&mut self, val: GpuCompareFunction) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -45,10 +47,14 @@ impl GpuStencilStateFaceDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilOperation")]
     #[doc = "Change the `depthFailOp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuStencilOperation`, `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_fail_op(&mut self, val: GpuStencilOperation) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -63,10 +69,14 @@ impl GpuStencilStateFaceDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilOperation")]
     #[doc = "Change the `failOp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuStencilOperation`, `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn fail_op(&mut self, val: GpuStencilOperation) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -78,10 +88,14 @@ impl GpuStencilStateFaceDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilOperation")]
     #[doc = "Change the `passOp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuStencilOperation`, `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn pass_op(&mut self, val: GpuStencilOperation) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

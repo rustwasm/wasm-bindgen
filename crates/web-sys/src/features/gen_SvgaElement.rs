@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
     pub type SvgaElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAElement" , js_name = target ) ]
     #[cfg(feature = "SvgAnimatedString")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAElement" , js_name = target ) ]
     #[doc = "Getter for the `target` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/target)"]
@@ -74,8 +74,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
     pub fn set_referrer_policy(this: &SvgaElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAElement" , js_name = relList ) ]
     #[cfg(feature = "DomTokenList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAElement" , js_name = relList ) ]
     #[doc = "Getter for the `relList` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/relList)"]
@@ -124,8 +124,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
     pub fn set_text(this: &SvgaElement, value: &str) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAElement" , js_name = href ) ]
     #[cfg(feature = "SvgAnimatedString")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAElement" , js_name = href ) ]
     #[doc = "Getter for the `href` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/href)"]

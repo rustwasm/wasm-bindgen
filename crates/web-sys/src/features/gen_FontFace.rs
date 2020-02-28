@@ -136,8 +136,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
     pub fn set_display(this: &FontFace, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FontFace" , js_name = status ) ]
     #[cfg(feature = "FontFaceLoadStatus")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "FontFace" , js_name = status ) ]
     #[doc = "Getter for the `status` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/status)"]

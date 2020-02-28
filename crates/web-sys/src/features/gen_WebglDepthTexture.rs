@@ -12,5 +12,8 @@ extern "C" {
     pub type WebglDepthTexture;
 }
 impl WebglDepthTexture {
+    #[doc = "The `WEBGL_depth_texture.UNSIGNED_INT_24_8_WEBGL` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebglDepthTexture`*"]
     pub const UNSIGNED_INT_24_8_WEBGL: u32 = 34042u64 as u32;
 }

@@ -87,8 +87,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub fn ready_state(this: &HtmlTrackElement) -> u16;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTrackElement" , js_name = track ) ]
     #[cfg(feature = "TextTrack")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTrackElement" , js_name = track ) ]
     #[doc = "Getter for the `track` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTrackElement/track)"]
@@ -97,8 +97,20 @@ extern "C" {
     pub fn track(this: &HtmlTrackElement) -> Option<TextTrack>;
 }
 impl HtmlTrackElement {
+    #[doc = "The `HTMLTrackElement.NONE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub const NONE: u16 = 0i64 as u16;
+    #[doc = "The `HTMLTrackElement.LOADING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub const LOADING: u16 = 1u64 as u16;
+    #[doc = "The `HTMLTrackElement.LOADED` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub const LOADED: u16 = 2u64 as u16;
+    #[doc = "The `HTMLTrackElement.ERROR` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub const ERROR: u16 = 3u64 as u16;
 }

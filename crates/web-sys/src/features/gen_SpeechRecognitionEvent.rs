@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`*"]
     pub fn result_index(this: &SpeechRecognitionEvent) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = results ) ]
     #[cfg(feature = "SpeechRecognitionResultList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = results ) ]
     #[doc = "Getter for the `results` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/results)"]
@@ -32,8 +32,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`*"]
     pub fn interpretation(this: &SpeechRecognitionEvent) -> ::wasm_bindgen::JsValue;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = emma ) ]
     #[cfg(feature = "Document")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = emma ) ]
     #[doc = "Getter for the `emma` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/emma)"]

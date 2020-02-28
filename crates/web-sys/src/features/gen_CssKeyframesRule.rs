@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssKeyframesRule`*"]
     pub fn set_name(this: &CssKeyframesRule, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSKeyframesRule" , js_name = cssRules ) ]
     #[cfg(feature = "CssRuleList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSKeyframesRule" , js_name = cssRules ) ]
     #[doc = "Getter for the `cssRules` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSKeyframesRule/cssRules)"]

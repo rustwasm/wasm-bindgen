@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeBoxObject`*"]
     pub fn set_focused(this: &TreeBoxObject, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "TreeBoxObject" , js_name = treeBody ) ]
     #[cfg(feature = "Element")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TreeBoxObject" , js_name = treeBody ) ]
     #[doc = "Getter for the `treeBody` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TreeBoxObject/treeBody)"]

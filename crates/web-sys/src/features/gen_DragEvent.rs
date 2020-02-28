@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DragEvent`*"]
     pub type DragEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "DragEvent" , js_name = dataTransfer ) ]
     #[cfg(feature = "DataTransfer")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "DragEvent" , js_name = dataTransfer ) ]
     #[doc = "Getter for the `dataTransfer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/dataTransfer)"]

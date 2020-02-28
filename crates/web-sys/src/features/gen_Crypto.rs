@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Crypto`*"]
     pub type Crypto;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Crypto" , js_name = subtle ) ]
     #[cfg(feature = "SubtleCrypto")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Crypto" , js_name = subtle ) ]
     #[doc = "Getter for the `subtle` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/subtle)"]

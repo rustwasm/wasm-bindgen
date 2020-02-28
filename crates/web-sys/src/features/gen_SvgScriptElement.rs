@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgScriptElement`*"]
     pub fn set_cross_origin(this: &SvgScriptElement, value: Option<&str>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGScriptElement" , js_name = href ) ]
     #[cfg(feature = "SvgAnimatedString")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGScriptElement" , js_name = href ) ]
     #[doc = "Getter for the `href` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGScriptElement/href)"]

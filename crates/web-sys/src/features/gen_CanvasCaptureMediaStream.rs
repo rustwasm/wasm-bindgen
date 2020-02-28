@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasCaptureMediaStream`*"]
     pub type CanvasCaptureMediaStream;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CanvasCaptureMediaStream" , js_name = canvas ) ]
     #[cfg(feature = "HtmlCanvasElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CanvasCaptureMediaStream" , js_name = canvas ) ]
     #[doc = "Getter for the `canvas` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasCaptureMediaStream/canvas)"]

@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`*"]
     pub fn set_effect_allowed(this: &DataTransfer, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "DataTransfer" , js_name = items ) ]
     #[cfg(feature = "DataTransferItemList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "DataTransfer" , js_name = items ) ]
     #[doc = "Getter for the `items` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items)"]
@@ -53,8 +53,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`*"]
     pub fn types(this: &DataTransfer) -> ::js_sys::Array;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "DataTransfer" , js_name = files ) ]
     #[cfg(feature = "FileList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "DataTransfer" , js_name = files ) ]
     #[doc = "Getter for the `files` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/files)"]

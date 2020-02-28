@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationEvent`*"]
     pub type MutationEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MutationEvent" , js_name = relatedNode ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MutationEvent" , js_name = relatedNode ) ]
     #[doc = "Getter for the `relatedNode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationEvent/relatedNode)"]
@@ -158,7 +158,16 @@ extern "C" {
     ) -> Result<(), JsValue>;
 }
 impl MutationEvent {
+    #[doc = "The `MutationEvent.MODIFICATION` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationEvent`*"]
     pub const MODIFICATION: u16 = 1u64 as u16;
+    #[doc = "The `MutationEvent.ADDITION` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationEvent`*"]
     pub const ADDITION: u16 = 2u64 as u16;
+    #[doc = "The `MutationEvent.REMOVAL` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationEvent`*"]
     pub const REMOVAL: u16 = 3u64 as u16;
 }

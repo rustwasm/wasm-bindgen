@@ -31,16 +31,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub fn key_path(this: &IdbObjectStore) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = indexNames ) ]
     #[cfg(feature = "DomStringList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = indexNames ) ]
     #[doc = "Getter for the `indexNames` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/indexNames)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomStringList`, `IdbObjectStore`*"]
     pub fn index_names(this: &IdbObjectStore) -> DomStringList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = transaction ) ]
     #[cfg(feature = "IdbTransaction")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = transaction ) ]
     #[doc = "Getter for the `transaction` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/transaction)"]

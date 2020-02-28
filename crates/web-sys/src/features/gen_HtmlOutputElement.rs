@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
     pub type HtmlOutputElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = htmlFor ) ]
     #[cfg(feature = "DomTokenList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = htmlFor ) ]
     #[doc = "Getter for the `htmlFor` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/htmlFor)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`, `HtmlOutputElement`*"]
     pub fn html_for(this: &HtmlOutputElement) -> DomTokenList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/form)"]
@@ -82,8 +82,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
     pub fn will_validate(this: &HtmlOutputElement) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = validity ) ]
     #[cfg(feature = "ValidityState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = validity ) ]
     #[doc = "Getter for the `validity` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/validity)"]
@@ -97,8 +97,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
     pub fn validation_message(this: &HtmlOutputElement) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = labels ) ]
     #[cfg(feature = "NodeList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOutputElement" , js_name = labels ) ]
     #[doc = "Getter for the `labels` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/labels)"]

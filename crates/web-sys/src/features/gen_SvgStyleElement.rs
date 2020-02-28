@@ -66,8 +66,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgStyleElement`*"]
     pub fn set_title(this: &SvgStyleElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGStyleElement" , js_name = sheet ) ]
     #[cfg(feature = "StyleSheet")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGStyleElement" , js_name = sheet ) ]
     #[doc = "Getter for the `sheet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGStyleElement/sheet)"]

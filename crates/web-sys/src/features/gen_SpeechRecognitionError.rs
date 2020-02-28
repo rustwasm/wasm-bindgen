@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionError`*"]
     pub type SpeechRecognitionError;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionError" , js_name = error ) ]
     #[cfg(feature = "SpeechRecognitionErrorCode")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionError" , js_name = error ) ]
     #[doc = "Getter for the `error` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionError/error)"]

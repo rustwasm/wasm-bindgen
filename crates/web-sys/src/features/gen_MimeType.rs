@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MimeType`*"]
     pub fn description(this: &MimeType) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MimeType" , js_name = enabledPlugin ) ]
     #[cfg(feature = "Plugin")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MimeType" , js_name = enabledPlugin ) ]
     #[doc = "Getter for the `enabledPlugin` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeType/enabledPlugin)"]

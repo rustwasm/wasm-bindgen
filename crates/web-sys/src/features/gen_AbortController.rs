@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortController`*"]
     pub type AbortController;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AbortController" , js_name = signal ) ]
     #[cfg(feature = "AbortSignal")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "AbortController" , js_name = signal ) ]
     #[doc = "Getter for the `signal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/signal)"]

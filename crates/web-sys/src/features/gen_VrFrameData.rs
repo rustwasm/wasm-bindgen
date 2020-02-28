@@ -45,8 +45,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrFrameData`*"]
     pub fn right_view_matrix(this: &VrFrameData) -> Result<Vec<f32>, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "VRFrameData" , js_name = pose ) ]
     #[cfg(feature = "VrPose")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "VRFrameData" , js_name = pose ) ]
     #[doc = "Getter for the `pose` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRFrameData/pose)"]

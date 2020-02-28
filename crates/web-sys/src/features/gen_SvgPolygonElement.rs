@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPolygonElement`*"]
     pub type SvgPolygonElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolygonElement" , js_name = points ) ]
     #[cfg(feature = "SvgPointList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolygonElement" , js_name = points ) ]
     #[doc = "Getter for the `points` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPolygonElement/points)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPointList`, `SvgPolygonElement`*"]
     pub fn points(this: &SvgPolygonElement) -> SvgPointList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolygonElement" , js_name = animatedPoints ) ]
     #[cfg(feature = "SvgPointList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolygonElement" , js_name = animatedPoints ) ]
     #[doc = "Getter for the `animatedPoints` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPolygonElement/animatedPoints)"]

@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgClipPathElement`*"]
     pub type SvgClipPathElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGClipPathElement" , js_name = clipPathUnits ) ]
     #[cfg(feature = "SvgAnimatedEnumeration")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGClipPathElement" , js_name = clipPathUnits ) ]
     #[doc = "Getter for the `clipPathUnits` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGClipPathElement/clipPathUnits)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedEnumeration`, `SvgClipPathElement`*"]
     pub fn clip_path_units(this: &SvgClipPathElement) -> SvgAnimatedEnumeration;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGClipPathElement" , js_name = transform ) ]
     #[cfg(feature = "SvgAnimatedTransformList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGClipPathElement" , js_name = transform ) ]
     #[doc = "Getter for the `transform` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGClipPathElement/transform)"]

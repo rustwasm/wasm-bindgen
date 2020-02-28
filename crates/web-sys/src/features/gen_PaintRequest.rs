@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaintRequest`*"]
     pub type PaintRequest;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PaintRequest" , js_name = clientRect ) ]
     #[cfg(feature = "DomRect")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PaintRequest" , js_name = clientRect ) ]
     #[doc = "Getter for the `clientRect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaintRequest/clientRect)"]

@@ -122,8 +122,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn set_bg_color(this: &HtmlDocument, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLDocument" , js_name = all ) ]
     #[cfg(feature = "HtmlAllCollection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLDocument" , js_name = all ) ]
     #[doc = "Getter for the `all` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/all)"]

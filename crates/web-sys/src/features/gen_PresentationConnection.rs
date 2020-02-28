@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
     pub fn url(this: &PresentationConnection) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnection" , js_name = state ) ]
     #[cfg(feature = "PresentationConnectionState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnection" , js_name = state ) ]
     #[doc = "Getter for the `state` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/state)"]
@@ -74,16 +74,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
     pub fn set_onterminate(this: &PresentationConnection, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnection" , js_name = binaryType ) ]
     #[cfg(feature = "PresentationConnectionBinaryType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnection" , js_name = binaryType ) ]
     #[doc = "Getter for the `binaryType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/binaryType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`, `PresentationConnectionBinaryType`*"]
     pub fn binary_type(this: &PresentationConnection) -> PresentationConnectionBinaryType;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "PresentationConnection" , js_name = binaryType ) ]
     #[cfg(feature = "PresentationConnectionBinaryType")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "PresentationConnection" , js_name = binaryType ) ]
     #[doc = "Setter for the `binaryType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/binaryType)"]

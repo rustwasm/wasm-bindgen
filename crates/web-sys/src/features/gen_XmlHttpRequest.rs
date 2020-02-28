@@ -59,8 +59,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub fn set_with_credentials(this: &XmlHttpRequest, value: bool);
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = upload ) ]
     #[cfg(feature = "XmlHttpRequestUpload")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = upload ) ]
     #[doc = "Getter for the `upload` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload)"]
@@ -88,16 +88,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub fn status_text(this: &XmlHttpRequest) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XMLHttpRequest" , js_name = responseType ) ]
     #[cfg(feature = "XmlHttpRequestResponseType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "XMLHttpRequest" , js_name = responseType ) ]
     #[doc = "Getter for the `responseType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`, `XmlHttpRequestResponseType`*"]
     pub fn response_type(this: &XmlHttpRequest) -> XmlHttpRequestResponseType;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XMLHttpRequest" , js_name = responseType ) ]
     #[cfg(feature = "XmlHttpRequestResponseType")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "XMLHttpRequest" , js_name = responseType ) ]
     #[doc = "Setter for the `responseType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType)"]
@@ -118,8 +118,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub fn response_text(this: &XmlHttpRequest) -> Result<Option<String>, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = responseXML ) ]
     #[cfg(feature = "Document")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = responseXML ) ]
     #[doc = "Getter for the `responseXML` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseXML)"]
@@ -319,9 +319,24 @@ extern "C" {
     ) -> Result<(), JsValue>;
 }
 impl XmlHttpRequest {
+    #[doc = "The `XMLHttpRequest.UNSENT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub const UNSENT: u16 = 0i64 as u16;
+    #[doc = "The `XMLHttpRequest.OPENED` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub const OPENED: u16 = 1u64 as u16;
+    #[doc = "The `XMLHttpRequest.HEADERS_RECEIVED` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub const HEADERS_RECEIVED: u16 = 2u64 as u16;
+    #[doc = "The `XMLHttpRequest.LOADING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub const LOADING: u16 = 3u64 as u16;
+    #[doc = "The `XMLHttpRequest.DONE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub const DONE: u16 = 4u64 as u16;
 }

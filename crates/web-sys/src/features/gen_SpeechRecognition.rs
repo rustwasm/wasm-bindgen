@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
     pub type SpeechRecognition;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognition" , js_name = grammars ) ]
     #[cfg(feature = "SpeechGrammarList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognition" , js_name = grammars ) ]
     #[doc = "Getter for the `grammars` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/grammars)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechGrammarList`, `SpeechRecognition`*"]
     pub fn grammars(this: &SpeechRecognition) -> SpeechGrammarList;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "SpeechRecognition" , js_name = grammars ) ]
     #[cfg(feature = "SpeechGrammarList")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SpeechRecognition" , js_name = grammars ) ]
     #[doc = "Setter for the `grammars` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/grammars)"]

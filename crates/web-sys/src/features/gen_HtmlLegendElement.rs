@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLegendElement`*"]
     pub type HtmlLegendElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLegendElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLegendElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLegendElement/form)"]

@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemEntry`*"]
     pub fn full_path(this: &FileSystemEntry) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FileSystemEntry" , js_name = filesystem ) ]
     #[cfg(feature = "FileSystem")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "FileSystemEntry" , js_name = filesystem ) ]
     #[doc = "Getter for the `filesystem` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemEntry/filesystem)"]

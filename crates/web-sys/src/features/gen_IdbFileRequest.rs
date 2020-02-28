@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileRequest`*"]
     pub type IdbFileRequest;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileRequest" , js_name = fileHandle ) ]
     #[cfg(feature = "IdbFileHandle")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileRequest" , js_name = fileHandle ) ]
     #[doc = "Getter for the `fileHandle` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileRequest/fileHandle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`, `IdbFileRequest`*"]
     pub fn file_handle(this: &IdbFileRequest) -> Option<IdbFileHandle>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileRequest" , js_name = lockedFile ) ]
     #[cfg(feature = "IdbFileHandle")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileRequest" , js_name = lockedFile ) ]
     #[doc = "Getter for the `lockedFile` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileRequest/lockedFile)"]

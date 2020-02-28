@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiAccess`*"]
     pub type MidiAccess;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MIDIAccess" , js_name = inputs ) ]
     #[cfg(feature = "MidiInputMap")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MIDIAccess" , js_name = inputs ) ]
     #[doc = "Getter for the `inputs` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess/inputs)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiAccess`, `MidiInputMap`*"]
     pub fn inputs(this: &MidiAccess) -> MidiInputMap;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MIDIAccess" , js_name = outputs ) ]
     #[cfg(feature = "MidiOutputMap")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MIDIAccess" , js_name = outputs ) ]
     #[doc = "Getter for the `outputs` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess/outputs)"]

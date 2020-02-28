@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionAvailableEvent`*"]
     pub type PresentationConnectionAvailableEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnectionAvailableEvent" , js_name = connection ) ]
     #[cfg(feature = "PresentationConnection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PresentationConnectionAvailableEvent" , js_name = connection ) ]
     #[doc = "Getter for the `connection` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionAvailableEvent/connection)"]

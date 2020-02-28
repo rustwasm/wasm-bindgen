@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssMediaRule`*"]
     pub type CssMediaRule;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSMediaRule" , js_name = media ) ]
     #[cfg(feature = "MediaList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSMediaRule" , js_name = media ) ]
     #[doc = "Getter for the `media` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSMediaRule/media)"]

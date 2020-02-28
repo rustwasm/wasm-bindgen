@@ -52,8 +52,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn set_disabled(this: &HtmlSelectElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/form)"]
@@ -123,8 +123,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn type_(this: &HtmlSelectElement) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = options ) ]
     #[cfg(feature = "HtmlOptionsCollection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = options ) ]
     #[doc = "Getter for the `options` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/options)"]
@@ -145,8 +145,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn set_length(this: &HtmlSelectElement, value: u32);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = selectedOptions ) ]
     #[cfg(feature = "HtmlCollection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = selectedOptions ) ]
     #[doc = "Getter for the `selectedOptions` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/selectedOptions)"]
@@ -188,8 +188,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn will_validate(this: &HtmlSelectElement) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = validity ) ]
     #[cfg(feature = "ValidityState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = validity ) ]
     #[doc = "Getter for the `validity` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/validity)"]
@@ -203,8 +203,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn validation_message(this: &HtmlSelectElement) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = labels ) ]
     #[cfg(feature = "NodeList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLSelectElement" , js_name = labels ) ]
     #[doc = "Getter for the `labels` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/labels)"]

@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub type HtmlMediaElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = error ) ]
     #[cfg(feature = "MediaError")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = error ) ]
     #[doc = "Getter for the `error` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/error)"]
@@ -39,16 +39,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn current_src(this: &HtmlMediaElement) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = srcObject ) ]
     #[cfg(feature = "MediaStream")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = srcObject ) ]
     #[doc = "Getter for the `srcObject` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `MediaStream`*"]
     pub fn src_object(this: &HtmlMediaElement) -> Option<MediaStream>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLMediaElement" , js_name = srcObject ) ]
     #[cfg(feature = "MediaStream")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLMediaElement" , js_name = srcObject ) ]
     #[doc = "Setter for the `srcObject` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject)"]
@@ -90,8 +90,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn set_preload(this: &HtmlMediaElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = buffered ) ]
     #[cfg(feature = "TimeRanges")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = buffered ) ]
     #[doc = "Getter for the `buffered` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/buffered)"]
@@ -168,16 +168,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn set_playback_rate(this: &HtmlMediaElement, value: f64);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = played ) ]
     #[cfg(feature = "TimeRanges")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = played ) ]
     #[doc = "Getter for the `played` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/played)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `TimeRanges`*"]
     pub fn played(this: &HtmlMediaElement) -> TimeRanges;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = seekable ) ]
     #[cfg(feature = "TimeRanges")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = seekable ) ]
     #[doc = "Getter for the `seekable` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seekable)"]
@@ -275,32 +275,32 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn set_default_muted(this: &HtmlMediaElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = audioTracks ) ]
     #[cfg(feature = "AudioTrackList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = audioTracks ) ]
     #[doc = "Getter for the `audioTracks` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/audioTracks)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioTrackList`, `HtmlMediaElement`*"]
     pub fn audio_tracks(this: &HtmlMediaElement) -> AudioTrackList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = videoTracks ) ]
     #[cfg(feature = "VideoTrackList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = videoTracks ) ]
     #[doc = "Getter for the `videoTracks` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/videoTracks)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `VideoTrackList`*"]
     pub fn video_tracks(this: &HtmlMediaElement) -> VideoTrackList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = textTracks ) ]
     #[cfg(feature = "TextTrackList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = textTracks ) ]
     #[doc = "Getter for the `textTracks` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/textTracks)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `TextTrackList`*"]
     pub fn text_tracks(this: &HtmlMediaElement) -> Option<TextTrackList>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = mediaKeys ) ]
     #[cfg(feature = "MediaKeys")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLMediaElement" , js_name = mediaKeys ) ]
     #[doc = "Getter for the `mediaKeys` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/mediaKeys)"]
@@ -437,13 +437,40 @@ extern "C" {
     pub fn set_visible(this: &HtmlMediaElement, a_visible: bool);
 }
 impl HtmlMediaElement {
+    #[doc = "The `HTMLMediaElement.NETWORK_EMPTY` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const NETWORK_EMPTY: u16 = 0i64 as u16;
+    #[doc = "The `HTMLMediaElement.NETWORK_IDLE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const NETWORK_IDLE: u16 = 1u64 as u16;
+    #[doc = "The `HTMLMediaElement.NETWORK_LOADING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const NETWORK_LOADING: u16 = 2u64 as u16;
+    #[doc = "The `HTMLMediaElement.NETWORK_NO_SOURCE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const NETWORK_NO_SOURCE: u16 = 3u64 as u16;
+    #[doc = "The `HTMLMediaElement.HAVE_NOTHING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const HAVE_NOTHING: u16 = 0i64 as u16;
+    #[doc = "The `HTMLMediaElement.HAVE_METADATA` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const HAVE_METADATA: u16 = 1u64 as u16;
+    #[doc = "The `HTMLMediaElement.HAVE_CURRENT_DATA` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const HAVE_CURRENT_DATA: u16 = 2u64 as u16;
+    #[doc = "The `HTMLMediaElement.HAVE_FUTURE_DATA` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const HAVE_FUTURE_DATA: u16 = 3u64 as u16;
+    #[doc = "The `HTMLMediaElement.HAVE_ENOUGH_DATA` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub const HAVE_ENOUGH_DATA: u16 = 4u64 as u16;
 }

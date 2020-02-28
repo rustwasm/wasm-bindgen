@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCue`*"]
     pub type TextTrackCue;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "TextTrackCue" , js_name = track ) ]
     #[cfg(feature = "TextTrack")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TextTrackCue" , js_name = track ) ]
     #[doc = "Getter for the `track` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/track)"]

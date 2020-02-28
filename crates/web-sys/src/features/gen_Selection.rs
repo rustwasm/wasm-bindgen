@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Selection`*"]
     pub type Selection;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Selection" , js_name = anchorNode ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Selection" , js_name = anchorNode ) ]
     #[doc = "Getter for the `anchorNode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Selection/anchorNode)"]
@@ -25,8 +25,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Selection`*"]
     pub fn anchor_offset(this: &Selection) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Selection" , js_name = focusNode ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Selection" , js_name = focusNode ) ]
     #[doc = "Getter for the `focusNode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Selection/focusNode)"]

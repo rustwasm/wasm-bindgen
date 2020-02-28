@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
     pub fn max_retransmits(this: &RtcDataChannel) -> Option<u16>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCDataChannel" , js_name = readyState ) ]
     #[cfg(feature = "RtcDataChannelState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCDataChannel" , js_name = readyState ) ]
     #[doc = "Getter for the `readyState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/readyState)"]
@@ -137,16 +137,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
     pub fn set_onbufferedamountlow(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCDataChannel" , js_name = binaryType ) ]
     #[cfg(feature = "RtcDataChannelType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCDataChannel" , js_name = binaryType ) ]
     #[doc = "Getter for the `binaryType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/binaryType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelType`*"]
     pub fn binary_type(this: &RtcDataChannel) -> RtcDataChannelType;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "RTCDataChannel" , js_name = binaryType ) ]
     #[cfg(feature = "RtcDataChannelType")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "RTCDataChannel" , js_name = binaryType ) ]
     #[doc = "Setter for the `binaryType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/binaryType)"]

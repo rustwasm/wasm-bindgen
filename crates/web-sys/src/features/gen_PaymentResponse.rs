@@ -31,8 +31,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
     pub fn details(this: &PaymentResponse) -> ::js_sys::Object;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PaymentResponse" , js_name = shippingAddress ) ]
     #[cfg(feature = "PaymentAddress")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PaymentResponse" , js_name = shippingAddress ) ]
     #[doc = "Getter for the `shippingAddress` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/shippingAddress)"]

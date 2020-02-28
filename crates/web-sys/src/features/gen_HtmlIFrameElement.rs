@@ -52,8 +52,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn set_name(this: &HtmlIFrameElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLIFrameElement" , js_name = sandbox ) ]
     #[cfg(feature = "DomTokenList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLIFrameElement" , js_name = sandbox ) ]
     #[doc = "Getter for the `sandbox` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/sandbox)"]
@@ -130,16 +130,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn set_referrer_policy(this: &HtmlIFrameElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLIFrameElement" , js_name = contentDocument ) ]
     #[cfg(feature = "Document")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLIFrameElement" , js_name = contentDocument ) ]
     #[doc = "Getter for the `contentDocument` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/contentDocument)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `HtmlIFrameElement`*"]
     pub fn content_document(this: &HtmlIFrameElement) -> Option<Document>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLIFrameElement" , js_name = contentWindow ) ]
     #[cfg(feature = "Window")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLIFrameElement" , js_name = contentWindow ) ]
     #[doc = "Getter for the `contentWindow` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/contentWindow)"]

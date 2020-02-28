@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn set_disabled(this: &HtmlOptionElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOptionElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOptionElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/form)"]

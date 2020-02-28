@@ -66,8 +66,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn set_disabled(this: &HtmlTextAreaElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/form)"]
@@ -235,8 +235,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn will_validate(this: &HtmlTextAreaElement) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = validity ) ]
     #[cfg(feature = "ValidityState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = validity ) ]
     #[doc = "Getter for the `validity` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/validity)"]
@@ -250,8 +250,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn validation_message(this: &HtmlTextAreaElement) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = labels ) ]
     #[cfg(feature = "NodeList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = labels ) ]
     #[doc = "Getter for the `labels` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/labels)"]

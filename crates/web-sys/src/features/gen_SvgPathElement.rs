@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathElement`*"]
     pub type SvgPathElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathElement" , js_name = pathSegList ) ]
     #[cfg(feature = "SvgPathSegList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathElement" , js_name = pathSegList ) ]
     #[doc = "Getter for the `pathSegList` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/pathSegList)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathElement`, `SvgPathSegList`*"]
     pub fn path_seg_list(this: &SvgPathElement) -> SvgPathSegList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathElement" , js_name = animatedPathSegList ) ]
     #[cfg(feature = "SvgPathSegList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathElement" , js_name = animatedPathSegList ) ]
     #[doc = "Getter for the `animatedPathSegList` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/animatedPathSegList)"]

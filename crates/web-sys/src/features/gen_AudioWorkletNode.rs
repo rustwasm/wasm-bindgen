@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNode`*"]
     pub type AudioWorkletNode;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "AudioWorkletNode" , js_name = parameters ) ]
     #[cfg(feature = "AudioParamMap")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "AudioWorkletNode" , js_name = parameters ) ]
     #[doc = "Getter for the `parameters` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode/parameters)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`, `AudioWorkletNode`*"]
     pub fn parameters(this: &AudioWorkletNode) -> Result<AudioParamMap, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "AudioWorkletNode" , js_name = port ) ]
     #[cfg(feature = "MessagePort")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "AudioWorkletNode" , js_name = port ) ]
     #[doc = "Getter for the `port` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode/port)"]

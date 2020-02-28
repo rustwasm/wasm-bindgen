@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvolverNode`*"]
     pub type ConvolverNode;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ConvolverNode" , js_name = buffer ) ]
     #[cfg(feature = "AudioBuffer")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ConvolverNode" , js_name = buffer ) ]
     #[doc = "Getter for the `buffer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode/buffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `ConvolverNode`*"]
     pub fn buffer(this: &ConvolverNode) -> Option<AudioBuffer>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "ConvolverNode" , js_name = buffer ) ]
     #[cfg(feature = "AudioBuffer")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "ConvolverNode" , js_name = buffer ) ]
     #[doc = "Setter for the `buffer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode/buffer)"]

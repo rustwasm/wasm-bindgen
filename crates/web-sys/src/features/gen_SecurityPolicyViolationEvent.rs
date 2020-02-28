@@ -66,8 +66,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEvent`*"]
     pub fn sample(this: &SecurityPolicyViolationEvent) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SecurityPolicyViolationEvent" , js_name = disposition ) ]
     #[cfg(feature = "SecurityPolicyViolationEventDisposition")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SecurityPolicyViolationEvent" , js_name = disposition ) ]
     #[doc = "Getter for the `disposition` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent/disposition)"]

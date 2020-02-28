@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub fn parent_rule(this: &CssRule) -> Option<CssRule>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSRule" , js_name = parentStyleSheet ) ]
     #[cfg(feature = "CssStyleSheet")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSRule" , js_name = parentStyleSheet ) ]
     #[doc = "Getter for the `parentStyleSheet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/parentStyleSheet)"]
@@ -48,16 +48,52 @@ extern "C" {
     pub fn parent_style_sheet(this: &CssRule) -> Option<CssStyleSheet>;
 }
 impl CssRule {
+    #[doc = "The `CSSRule.STYLE_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const STYLE_RULE: u16 = 1u64 as u16;
+    #[doc = "The `CSSRule.CHARSET_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const CHARSET_RULE: u16 = 2u64 as u16;
+    #[doc = "The `CSSRule.IMPORT_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const IMPORT_RULE: u16 = 3u64 as u16;
+    #[doc = "The `CSSRule.MEDIA_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const MEDIA_RULE: u16 = 4u64 as u16;
+    #[doc = "The `CSSRule.FONT_FACE_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const FONT_FACE_RULE: u16 = 5u64 as u16;
+    #[doc = "The `CSSRule.PAGE_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const PAGE_RULE: u16 = 6u64 as u16;
+    #[doc = "The `CSSRule.NAMESPACE_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const NAMESPACE_RULE: u16 = 10u64 as u16;
+    #[doc = "The `CSSRule.KEYFRAMES_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const KEYFRAMES_RULE: u16 = 7u64 as u16;
+    #[doc = "The `CSSRule.KEYFRAME_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const KEYFRAME_RULE: u16 = 8u64 as u16;
+    #[doc = "The `CSSRule.COUNTER_STYLE_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const COUNTER_STYLE_RULE: u16 = 11u64 as u16;
+    #[doc = "The `CSSRule.SUPPORTS_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const SUPPORTS_RULE: u16 = 12u64 as u16;
+    #[doc = "The `CSSRule.FONT_FEATURE_VALUES_RULE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
     pub const FONT_FEATURE_VALUES_RULE: u16 = 14u64 as u16;
 }

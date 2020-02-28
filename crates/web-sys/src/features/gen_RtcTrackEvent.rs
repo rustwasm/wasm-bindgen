@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEvent`*"]
     pub type RtcTrackEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCTrackEvent" , js_name = receiver ) ]
     #[cfg(feature = "RtcRtpReceiver")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCTrackEvent" , js_name = receiver ) ]
     #[doc = "Getter for the `receiver` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCTrackEvent/receiver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`, `RtcTrackEvent`*"]
     pub fn receiver(this: &RtcTrackEvent) -> RtcRtpReceiver;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCTrackEvent" , js_name = track ) ]
     #[cfg(feature = "MediaStreamTrack")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCTrackEvent" , js_name = track ) ]
     #[doc = "Getter for the `track` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCTrackEvent/track)"]
@@ -33,8 +33,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEvent`*"]
     pub fn streams(this: &RtcTrackEvent) -> ::js_sys::Array;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCTrackEvent" , js_name = transceiver ) ]
     #[cfg(feature = "RtcRtpTransceiver")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCTrackEvent" , js_name = transceiver ) ]
     #[doc = "Getter for the `transceiver` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCTrackEvent/transceiver)"]

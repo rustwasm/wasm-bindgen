@@ -31,8 +31,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssStyleDeclaration`*"]
     pub fn length(this: &CssStyleDeclaration) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSStyleDeclaration" , js_name = parentRule ) ]
     #[cfg(feature = "CssRule")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSStyleDeclaration" , js_name = parentRule ) ]
     #[doc = "Getter for the `parentRule` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/parentRule)"]

@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamEvent`*"]
     pub type MediaStreamEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaStreamEvent" , js_name = stream ) ]
     #[cfg(feature = "MediaStream")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaStreamEvent" , js_name = stream ) ]
     #[doc = "Getter for the `stream` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamEvent/stream)"]

@@ -143,8 +143,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
     pub fn set_search(this: &Url, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "URL" , js_name = searchParams ) ]
     #[cfg(feature = "UrlSearchParams")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "URL" , js_name = searchParams ) ]
     #[doc = "Getter for the `searchParams` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams)"]

@@ -52,8 +52,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlStyleElement`*"]
     pub fn set_type(this: &HtmlStyleElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLStyleElement" , js_name = sheet ) ]
     #[cfg(feature = "StyleSheet")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLStyleElement" , js_name = sheet ) ]
     #[doc = "Getter for the `sheet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLStyleElement/sheet)"]

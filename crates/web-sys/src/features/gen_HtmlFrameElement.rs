@@ -94,16 +94,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn set_no_resize(this: &HtmlFrameElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFrameElement" , js_name = contentDocument ) ]
     #[cfg(feature = "Document")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFrameElement" , js_name = contentDocument ) ]
     #[doc = "Getter for the `contentDocument` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/contentDocument)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `HtmlFrameElement`*"]
     pub fn content_document(this: &HtmlFrameElement) -> Option<Document>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFrameElement" , js_name = contentWindow ) ]
     #[cfg(feature = "Window")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFrameElement" , js_name = contentWindow ) ]
     #[doc = "Getter for the `contentWindow` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/contentWindow)"]

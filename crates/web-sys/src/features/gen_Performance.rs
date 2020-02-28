@@ -17,16 +17,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
     pub fn time_origin(this: &Performance) -> f64;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Performance" , js_name = timing ) ]
     #[cfg(feature = "PerformanceTiming")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Performance" , js_name = timing ) ]
     #[doc = "Getter for the `timing` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Performance/timing)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`, `PerformanceTiming`*"]
     pub fn timing(this: &Performance) -> PerformanceTiming;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Performance" , js_name = navigation ) ]
     #[cfg(feature = "PerformanceNavigation")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Performance" , js_name = navigation ) ]
     #[doc = "Getter for the `navigation` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Performance/navigation)"]

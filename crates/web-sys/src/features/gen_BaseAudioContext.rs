@@ -12,8 +12,8 @@ extern "C" {
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     pub type BaseAudioContext;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = destination ) ]
     #[cfg(feature = "AudioDestinationNode")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = destination ) ]
     #[doc = "Getter for the `destination` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/destination)"]
@@ -37,8 +37,8 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
     pub fn current_time(this: &BaseAudioContext) -> f64;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = listener ) ]
     #[cfg(feature = "AudioListener")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = listener ) ]
     #[doc = "Getter for the `listener` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/listener)"]
@@ -46,8 +46,8 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioListener`, `BaseAudioContext`*"]
     pub fn listener(this: &BaseAudioContext) -> AudioListener;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = state ) ]
     #[cfg(feature = "AudioContextState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = state ) ]
     #[doc = "Getter for the `state` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/state)"]
@@ -55,8 +55,8 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioContextState`, `BaseAudioContext`*"]
     pub fn state(this: &BaseAudioContext) -> AudioContextState;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "BaseAudioContext" , js_name = audioWorklet ) ]
     #[cfg(feature = "AudioWorklet")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "BaseAudioContext" , js_name = audioWorklet ) ]
     #[doc = "Getter for the `audioWorklet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/audioWorklet)"]

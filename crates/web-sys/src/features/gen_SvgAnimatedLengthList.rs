@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLengthList`*"]
     pub type SvgAnimatedLengthList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedLengthList" , js_name = baseVal ) ]
     #[cfg(feature = "SvgLengthList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedLengthList" , js_name = baseVal ) ]
     #[doc = "Getter for the `baseVal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedLengthList/baseVal)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLengthList`, `SvgLengthList`*"]
     pub fn base_val(this: &SvgAnimatedLengthList) -> SvgLengthList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedLengthList" , js_name = animVal ) ]
     #[cfg(feature = "SvgLengthList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedLengthList" , js_name = animVal ) ]
     #[doc = "Getter for the `animVal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedLengthList/animVal)"]

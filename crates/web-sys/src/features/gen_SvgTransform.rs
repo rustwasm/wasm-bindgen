@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub fn type_(this: &SvgTransform) -> u16;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTransform" , js_name = matrix ) ]
     #[cfg(feature = "SvgMatrix")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTransform" , js_name = matrix ) ]
     #[doc = "Getter for the `matrix` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTransform/matrix)"]
@@ -77,11 +77,32 @@ extern "C" {
     pub fn set_translate(this: &SvgTransform, tx: f32, ty: f32) -> Result<(), JsValue>;
 }
 impl SvgTransform {
+    #[doc = "The `SVGTransform.SVG_TRANSFORM_UNKNOWN` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub const SVG_TRANSFORM_UNKNOWN: u16 = 0i64 as u16;
+    #[doc = "The `SVGTransform.SVG_TRANSFORM_MATRIX` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub const SVG_TRANSFORM_MATRIX: u16 = 1u64 as u16;
+    #[doc = "The `SVGTransform.SVG_TRANSFORM_TRANSLATE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub const SVG_TRANSFORM_TRANSLATE: u16 = 2u64 as u16;
+    #[doc = "The `SVGTransform.SVG_TRANSFORM_SCALE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub const SVG_TRANSFORM_SCALE: u16 = 3u64 as u16;
+    #[doc = "The `SVGTransform.SVG_TRANSFORM_ROTATE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub const SVG_TRANSFORM_ROTATE: u16 = 4u64 as u16;
+    #[doc = "The `SVGTransform.SVG_TRANSFORM_SKEWX` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub const SVG_TRANSFORM_SKEWX: u16 = 5u64 as u16;
+    #[doc = "The `SVGTransform.SVG_TRANSFORM_SKEWY` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTransform`*"]
     pub const SVG_TRANSFORM_SKEWY: u16 = 6u64 as u16;
 }

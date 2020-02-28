@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DelayNode`*"]
     pub type DelayNode;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "DelayNode" , js_name = delayTime ) ]
     #[cfg(feature = "AudioParam")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "DelayNode" , js_name = delayTime ) ]
     #[doc = "Getter for the `delayTime` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DelayNode/delayTime)"]

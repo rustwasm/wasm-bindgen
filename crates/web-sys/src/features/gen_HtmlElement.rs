@@ -52,8 +52,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
     pub fn set_dir(this: &HtmlElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLElement" , js_name = dataset ) ]
     #[cfg(feature = "DomStringMap")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLElement" , js_name = dataset ) ]
     #[doc = "Getter for the `dataset` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset)"]
@@ -172,8 +172,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
     pub fn set_spellcheck(this: &HtmlElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLElement" , js_name = style ) ]
     #[cfg(feature = "CssStyleDeclaration")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLElement" , js_name = style ) ]
     #[doc = "Getter for the `style` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)"]

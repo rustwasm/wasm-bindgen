@@ -393,10 +393,11 @@ impl<'src> FirstPassRecord<'src> {
         let idl_type = member.const_type.to_idl_type(self);
         let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
 
-        let name = rust_ident(shouty_snake_case_ident(member.identifier.0).as_str());
+        let js_name = member.identifier.0;
+        let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
         let value = webidl_const_v_to_backend_const_v(&member.const_value);
 
-        consts.push(InterfaceConst { name, ty, value, unstable });
+        consts.push(InterfaceConst { name, js_name: js_name.to_string(), ty, value, unstable });
     }
 
     fn append_interface(

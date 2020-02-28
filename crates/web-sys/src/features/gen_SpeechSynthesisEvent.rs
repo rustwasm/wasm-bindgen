@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisEvent`*"]
     pub type SpeechSynthesisEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechSynthesisEvent" , js_name = utterance ) ]
     #[cfg(feature = "SpeechSynthesisUtterance")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechSynthesisEvent" , js_name = utterance ) ]
     #[doc = "Getter for the `utterance` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisEvent/utterance)"]

@@ -108,16 +108,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn set_viewport_anchor_y(this: &VttRegion, value: f64);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "VTTRegion" , js_name = scroll ) ]
     #[cfg(feature = "ScrollSetting")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "VTTRegion" , js_name = scroll ) ]
     #[doc = "Getter for the `scroll` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/scroll)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollSetting`, `VttRegion`*"]
     pub fn scroll(this: &VttRegion) -> ScrollSetting;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "VTTRegion" , js_name = scroll ) ]
     #[cfg(feature = "ScrollSetting")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "VTTRegion" , js_name = scroll ) ]
     #[doc = "Setter for the `scroll` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/scroll)"]

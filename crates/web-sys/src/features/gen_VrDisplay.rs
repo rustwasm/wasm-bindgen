@@ -24,16 +24,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
     pub fn is_presenting(this: &VrDisplay) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "VRDisplay" , js_name = capabilities ) ]
     #[cfg(feature = "VrDisplayCapabilities")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "VRDisplay" , js_name = capabilities ) ]
     #[doc = "Getter for the `capabilities` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/capabilities)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`, `VrDisplayCapabilities`*"]
     pub fn capabilities(this: &VrDisplay) -> VrDisplayCapabilities;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "VRDisplay" , js_name = stageParameters ) ]
     #[cfg(feature = "VrStageParameters")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "VRDisplay" , js_name = stageParameters ) ]
     #[doc = "Getter for the `stageParameters` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/stageParameters)"]

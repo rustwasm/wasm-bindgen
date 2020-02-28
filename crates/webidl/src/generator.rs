@@ -45,7 +45,15 @@ fn maybe_unstable_attr(unstable: bool) -> Option<proc_macro2::TokenStream> {
     if unstable {
         Some(quote! {
             #[cfg(web_sys_unstable_apis)]
-            #[doc = ""]
+        })
+    } else {
+        None
+    }
+}
+
+fn maybe_unstable_docs(unstable: bool) -> Option<proc_macro2::TokenStream> {
+    if unstable {
+        Some(quote! {
             #[doc = ""]
             #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
             #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -89,6 +97,7 @@ impl Enum {
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
 
         let doc_comment = comment(format!("The `{}` enum.", name), &get_features_doc(name.to_string()));
 
@@ -99,9 +108,10 @@ impl Enum {
         quote! {
             use wasm_bindgen::prelude::*;
 
+            #unstable_attr
             #[wasm_bindgen]
             #doc_comment
-            #unstable_attr
+            #unstable_docs
             #[derive(Copy, Clone, PartialEq, Debug)]
             pub enum #name {
                 #(#variants),*
@@ -139,6 +149,7 @@ impl InterfaceAttribute {
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
 
         let mdn_docs = mdn_doc(parent_js_name, Some(js_name));
 
@@ -226,6 +237,8 @@ impl InterfaceAttribute {
         let js_name = raw_ident(js_name);
 
         quote! {
+            #unstable_attr
+            #cfg_features
             #[wasm_bindgen(
                 #structural
                 #catch
@@ -234,9 +247,8 @@ impl InterfaceAttribute {
                 js_class = #parent_js_name,
                 js_name = #js_name
             )]
-            #cfg_features
             #doc_comment
-            #unstable_attr
+            #unstable_docs
             #def
         }
     }
@@ -281,6 +293,7 @@ impl InterfaceMethod {
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
 
         let mut is_constructor = false;
 
@@ -406,6 +419,7 @@ impl InterfaceMethod {
             .collect::<Vec<_>>();
 
         quote! {
+            #unstable_attr
             #cfg_features
             #[wasm_bindgen(
                 #catch
@@ -414,7 +428,7 @@ impl InterfaceMethod {
                 #(#extra_args),*
             )]
             #doc_comment
-            #unstable_attr
+            #unstable_docs
             pub fn #name(#this #(#arguments),*) #ret;
         }
     }
@@ -461,22 +475,32 @@ impl InterfaceConstValue {
 
 pub struct InterfaceConst {
     pub name: Ident,
+    pub js_name: String,
     pub ty: syn::Type,
     pub value: InterfaceConstValue,
     pub unstable: bool,
 }
 
 impl InterfaceConst {
-    fn generate(&self) -> TokenStream {
+    fn generate(&self, parent_name: &Ident, parent_js_name: &str) -> TokenStream {
         let name = &self.name;
         let ty = &self.ty;
+        let js_name = &self.js_name;
         let value = self.value.generate();
         let unstable = self.unstable;
 
         let unstable_attr = maybe_unstable_attr(unstable);
+        let unstable_docs = maybe_unstable_docs(unstable);
+
+        let doc_comment = comment(
+            format!("The `{}.{}` const.", parent_js_name, js_name),
+            &get_features_doc(parent_name.to_string()),
+        );
 
         quote! {
             #unstable_attr
+            #doc_comment
+            #unstable_docs
             pub const #name: #ty = #value as #ty;
         }
     }
@@ -510,6 +534,7 @@ impl Interface {
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
 
         let doc_comment = comment(
             format!("The `{}` class.\n\n{}", name, mdn_doc(js_name, None)),
@@ -537,7 +562,7 @@ impl Interface {
             .collect::<Vec<_>>();
 
         let consts = consts.into_iter()
-            .map(|x| x.generate())
+            .map(|x| x.generate(&name, js_name))
             .collect::<Vec<_>>();
 
         let consts = if consts.is_empty() {
@@ -579,6 +604,7 @@ impl Interface {
                 )]
                 #[derive(Debug, Clone, PartialEq, Eq)]
                 #doc_comment
+                #unstable_docs
                 #deprecated
                 pub type #name;
 
@@ -600,13 +626,16 @@ pub struct DictionaryField {
 }
 
 impl DictionaryField {
-    fn generate_rust(&self, parent_name: String) -> TokenStream {
+    fn generate_rust(&self, parent_name: String, unstable: bool) -> TokenStream {
         let DictionaryField {
             name,
             js_name,
             ty,
             required: _,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(unstable);
+        let unstable_docs = maybe_unstable_docs(unstable);
 
         let mut features = BTreeSet::new();
 
@@ -621,8 +650,10 @@ impl DictionaryField {
         let doc_comment = comment(format!("Change the `{}` field of this object.", js_name), &required_doc_string(&features));
 
         quote! {
+            #unstable_attr
             #cfg_features
             #doc_comment
+            #unstable_docs
             pub fn #name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
                 let r = ::js_sys::Reflect::set(
@@ -656,6 +687,7 @@ impl Dictionary {
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
 
         let js_name = raw_ident(js_name);
 
@@ -679,13 +711,11 @@ impl Dictionary {
 
         required_features.insert(name.to_string());
 
-        let doc_features = required_doc_string(&required_features);
-
-        let doc_comment = comment(format!("The `{}` dictionary.", name), &doc_features);
-        let ctor_doc_comment = comment(format!("Construct a new `{}`.", name), &doc_features);
+        let doc_comment = comment(format!("The `{}` dictionary.", name), &get_features_doc(name.to_string()));
+        let ctor_doc_comment = comment(format!("Construct a new `{}`.", name), &required_doc_string(&required_features));
 
         let fields = fields.into_iter()
-            .map(|field| field.generate_rust(name.to_string()))
+            .map(|field| field.generate_rust(name.to_string(), *unstable))
             .collect::<Vec<_>>();
 
         quote! {
@@ -697,6 +727,7 @@ impl Dictionary {
             extern "C" {
                 #[wasm_bindgen(extends = ::js_sys::Object, js_name = #js_name)]
                 #doc_comment
+                #unstable_docs
                 pub type #name;
             }
 
@@ -704,6 +735,7 @@ impl Dictionary {
             impl #name {
                 #cfg_features
                 #ctor_doc_comment
+                #unstable_docs
                 pub fn new(#(#required_args),*) -> Self {
                     #[allow(unused_mut)]
                     let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -741,6 +773,7 @@ impl Function {
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
 
         let js_namespace = raw_ident(&parent_js_name);
 
@@ -804,6 +837,7 @@ impl Function {
         let js_name = raw_ident(js_name);
 
         quote! {
+            #unstable_attr
             #cfg_features
             #[wasm_bindgen(
                 #catch
@@ -812,7 +846,7 @@ impl Function {
                 js_name = #js_name
             )]
             #doc_comment
-            #unstable_attr
+            #unstable_docs
             pub fn #name(#(#arguments),*) #ret;
         }
     }

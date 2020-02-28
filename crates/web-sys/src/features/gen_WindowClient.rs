@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WindowClient`*"]
     pub type WindowClient;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "WindowClient" , js_name = visibilityState ) ]
     #[cfg(feature = "VisibilityState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "WindowClient" , js_name = visibilityState ) ]
     #[doc = "Getter for the `visibilityState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WindowClient/visibilityState)"]

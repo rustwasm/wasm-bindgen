@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
     pub fn set_disabled(this: &HtmlFieldSetElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/form)"]
@@ -53,8 +53,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
     pub fn type_(this: &HtmlFieldSetElement) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = elements ) ]
     #[cfg(feature = "HtmlCollection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = elements ) ]
     #[doc = "Getter for the `elements` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/elements)"]
@@ -68,8 +68,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
     pub fn will_validate(this: &HtmlFieldSetElement) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = validity ) ]
     #[cfg(feature = "ValidityState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = validity ) ]
     #[doc = "Getter for the `validity` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/validity)"]

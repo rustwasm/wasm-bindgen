@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn version(this: &IdbDatabase) -> f64;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = objectStoreNames ) ]
     #[cfg(feature = "DomStringList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = objectStoreNames ) ]
     #[doc = "Getter for the `objectStoreNames` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/objectStoreNames)"]
@@ -88,8 +88,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn set_onversionchange(this: &IdbDatabase, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = storage ) ]
     #[cfg(feature = "StorageType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = storage ) ]
     #[doc = "Getter for the `storage` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/storage)"]

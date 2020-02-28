@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableRowElement`*"]
     pub fn section_row_index(this: &HtmlTableRowElement) -> i32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTableRowElement" , js_name = cells ) ]
     #[cfg(feature = "HtmlCollection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTableRowElement" , js_name = cells ) ]
     #[doc = "Getter for the `cells` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/cells)"]

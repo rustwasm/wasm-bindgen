@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssFontFaceRule`*"]
     pub type CssFontFaceRule;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSFontFaceRule" , js_name = style ) ]
     #[cfg(feature = "CssStyleDeclaration")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSFontFaceRule" , js_name = style ) ]
     #[doc = "Getter for the `style` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSFontFaceRule/style)"]

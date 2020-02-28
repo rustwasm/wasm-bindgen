@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
     pub type ServiceWorkerContainer;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerContainer" , js_name = controller ) ]
     #[cfg(feature = "ServiceWorker")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerContainer" , js_name = controller ) ]
     #[doc = "Getter for the `controller` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller)"]

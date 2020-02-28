@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
     pub fn result(this: &FileReader) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FileReader" , js_name = error ) ]
     #[cfg(feature = "DomException")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "FileReader" , js_name = error ) ]
     #[doc = "Getter for the `error` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/error)"]
@@ -176,7 +176,16 @@ extern "C" {
     ) -> Result<(), JsValue>;
 }
 impl FileReader {
+    #[doc = "The `FileReader.EMPTY` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
     pub const EMPTY: u16 = 0i64 as u16;
+    #[doc = "The `FileReader.LOADING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
     pub const LOADING: u16 = 1u64 as u16;
+    #[doc = "The `FileReader.DONE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
     pub const DONE: u16 = 2u64 as u16;
 }

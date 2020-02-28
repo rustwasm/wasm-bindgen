@@ -66,8 +66,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLinkElement`*"]
     pub fn set_rel(this: &HtmlLinkElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLinkElement" , js_name = relList ) ]
     #[cfg(feature = "DomTokenList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLinkElement" , js_name = relList ) ]
     #[doc = "Getter for the `relList` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLinkElement/relList)"]
@@ -130,8 +130,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLinkElement`*"]
     pub fn set_referrer_policy(this: &HtmlLinkElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLinkElement" , js_name = sizes ) ]
     #[cfg(feature = "DomTokenList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLinkElement" , js_name = sizes ) ]
     #[doc = "Getter for the `sizes` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLinkElement/sizes)"]
@@ -208,8 +208,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLinkElement`*"]
     pub fn set_as(this: &HtmlLinkElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLinkElement" , js_name = sheet ) ]
     #[cfg(feature = "StyleSheet")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLLinkElement" , js_name = sheet ) ]
     #[doc = "Getter for the `sheet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLinkElement/sheet)"]

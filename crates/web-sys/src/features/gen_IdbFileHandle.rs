@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`*"]
     pub type IdbFileHandle;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileHandle" , js_name = mutableFile ) ]
     #[cfg(feature = "IdbMutableFile")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileHandle" , js_name = mutableFile ) ]
     #[doc = "Getter for the `mutableFile` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileHandle/mutableFile)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`, `IdbMutableFile`*"]
     pub fn mutable_file(this: &IdbFileHandle) -> Option<IdbMutableFile>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileHandle" , js_name = fileHandle ) ]
     #[cfg(feature = "IdbMutableFile")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBFileHandle" , js_name = fileHandle ) ]
     #[doc = "Getter for the `fileHandle` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileHandle/fileHandle)"]

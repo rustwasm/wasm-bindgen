@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDeviceInfo`*"]
     pub fn device_id(this: &MediaDeviceInfo) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaDeviceInfo" , js_name = kind ) ]
     #[cfg(feature = "MediaDeviceKind")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaDeviceInfo" , js_name = kind ) ]
     #[doc = "Getter for the `kind` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDeviceInfo/kind)"]

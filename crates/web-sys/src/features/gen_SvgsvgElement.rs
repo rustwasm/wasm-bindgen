@@ -10,32 +10,32 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgsvgElement`*"]
     pub type SvgsvgElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = x ) ]
     #[cfg(feature = "SvgAnimatedLength")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = x ) ]
     #[doc = "Getter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/x)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgsvgElement`*"]
     pub fn x(this: &SvgsvgElement) -> SvgAnimatedLength;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = y ) ]
     #[cfg(feature = "SvgAnimatedLength")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = y ) ]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/y)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgsvgElement`*"]
     pub fn y(this: &SvgsvgElement) -> SvgAnimatedLength;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = width ) ]
     #[cfg(feature = "SvgAnimatedLength")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = width ) ]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgsvgElement`*"]
     pub fn width(this: &SvgsvgElement) -> SvgAnimatedLength;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = height ) ]
     #[cfg(feature = "SvgAnimatedLength")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = height ) ]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/height)"]
@@ -63,24 +63,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgsvgElement`*"]
     pub fn set_current_scale(this: &SvgsvgElement, value: f32);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = currentTranslate ) ]
     #[cfg(feature = "SvgPoint")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = currentTranslate ) ]
     #[doc = "Getter for the `currentTranslate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/currentTranslate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPoint`, `SvgsvgElement`*"]
     pub fn current_translate(this: &SvgsvgElement) -> SvgPoint;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = viewBox ) ]
     #[cfg(feature = "SvgAnimatedRect")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = viewBox ) ]
     #[doc = "Getter for the `viewBox` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/viewBox)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedRect`, `SvgsvgElement`*"]
     pub fn view_box(this: &SvgsvgElement) -> SvgAnimatedRect;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = preserveAspectRatio ) ]
     #[cfg(feature = "SvgAnimatedPreserveAspectRatio")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGSVGElement" , js_name = preserveAspectRatio ) ]
     #[doc = "Getter for the `preserveAspectRatio` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGSVGElement/preserveAspectRatio)"]
@@ -247,7 +247,16 @@ extern "C" {
     pub fn unsuspend_redraw_all(this: &SvgsvgElement);
 }
 impl SvgsvgElement {
+    #[doc = "The `SVGSVGElement.SVG_ZOOMANDPAN_UNKNOWN` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgsvgElement`*"]
     pub const SVG_ZOOMANDPAN_UNKNOWN: u16 = 0i64 as u16;
+    #[doc = "The `SVGSVGElement.SVG_ZOOMANDPAN_DISABLE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgsvgElement`*"]
     pub const SVG_ZOOMANDPAN_DISABLE: u16 = 1u64 as u16;
+    #[doc = "The `SVGSVGElement.SVG_ZOOMANDPAN_MAGNIFY` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgsvgElement`*"]
     pub const SVG_ZOOMANDPAN_MAGNIFY: u16 = 2u64 as u16;
 }

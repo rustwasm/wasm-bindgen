@@ -1,38 +1,40 @@
 use super::*;
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
-#[doc = ""]
-#[doc = ""]
-#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUDepthStencilStateDescriptor ) ]
     #[doc = "The `GpuDepthStencilStateDescriptor` dictionary."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuDepthStencilStateDescriptor;
 }
 #[cfg(web_sys_unstable_apis)]
-#[doc = ""]
-#[doc = ""]
-#[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-#[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 impl GpuDepthStencilStateDescriptor {
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Construct a new `GpuDepthStencilStateDescriptor`."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(format: GpuTextureFormat) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.format(format);
         ret
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuCompareFunction")]
     #[doc = "Change the `depthCompare` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuCompareFunction`, `GpuDepthStencilStateDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_compare(&mut self, val: GpuCompareFunction) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -47,9 +49,13 @@ impl GpuDepthStencilStateDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `depthWriteEnabled` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_write_enabled(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -64,10 +70,14 @@ impl GpuDepthStencilStateDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Change the `format` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn format(&mut self, val: GpuTextureFormat) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -79,10 +89,14 @@ impl GpuDepthStencilStateDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilStateFaceDescriptor")]
     #[doc = "Change the `stencilBack` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`, `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_back(&mut self, val: &GpuStencilStateFaceDescriptor) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -97,10 +111,14 @@ impl GpuDepthStencilStateDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilStateFaceDescriptor")]
     #[doc = "Change the `stencilFront` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`, `GpuStencilStateFaceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_front(&mut self, val: &GpuStencilStateFaceDescriptor) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -115,9 +133,13 @@ impl GpuDepthStencilStateDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `stencilReadMask` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_read_mask(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -132,9 +154,13 @@ impl GpuDepthStencilStateDescriptor {
         let _ = r;
         self
     }
+    #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `stencilWriteMask` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_write_mask(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

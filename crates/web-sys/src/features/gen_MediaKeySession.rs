@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     pub type MediaKeySession;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaKeySession" , js_name = error ) ]
     #[cfg(feature = "MediaKeyError")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaKeySession" , js_name = error ) ]
     #[doc = "Getter for the `error` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/error)"]
@@ -39,8 +39,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     pub fn closed(this: &MediaKeySession) -> ::js_sys::Promise;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaKeySession" , js_name = keyStatuses ) ]
     #[cfg(feature = "MediaKeyStatusMap")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaKeySession" , js_name = keyStatuses ) ]
     #[doc = "Getter for the `keyStatuses` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/keyStatuses)"]

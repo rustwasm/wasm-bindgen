@@ -79,15 +79,48 @@ extern "C" {
     ) -> Result<(), JsValue>;
 }
 impl SvgLength {
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_UNKNOWN` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_UNKNOWN: u16 = 0i64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_NUMBER` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_NUMBER: u16 = 1u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_PERCENTAGE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_PERCENTAGE: u16 = 2u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_EMS` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_EMS: u16 = 3u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_EXS` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_EXS: u16 = 4u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_PX` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_PX: u16 = 5u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_CM` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_CM: u16 = 6u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_MM` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_MM: u16 = 7u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_IN` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_IN: u16 = 8u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_PT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_PT: u16 = 9u64 as u16;
+    #[doc = "The `SVGLength.SVG_LENGTHTYPE_PC` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
     pub const SVG_LENGTHTYPE_PC: u16 = 10u64 as u16;
 }

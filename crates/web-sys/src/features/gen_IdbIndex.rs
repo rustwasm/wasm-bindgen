@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`*"]
     pub fn set_name(this: &IdbIndex, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBIndex" , js_name = objectStore ) ]
     #[cfg(feature = "IdbObjectStore")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBIndex" , js_name = objectStore ) ]
     #[doc = "Getter for the `objectStore` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBIndex/objectStore)"]

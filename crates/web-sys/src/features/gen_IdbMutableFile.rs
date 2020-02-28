@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbMutableFile`*"]
     pub fn type_(this: &IdbMutableFile) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBMutableFile" , js_name = database ) ]
     #[cfg(feature = "IdbDatabase")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBMutableFile" , js_name = database ) ]
     #[doc = "Getter for the `database` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBMutableFile/database)"]

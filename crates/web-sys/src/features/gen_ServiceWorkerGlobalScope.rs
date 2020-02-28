@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerGlobalScope`*"]
     pub type ServiceWorkerGlobalScope;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerGlobalScope" , js_name = clients ) ]
     #[cfg(feature = "Clients")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerGlobalScope" , js_name = clients ) ]
     #[doc = "Getter for the `clients` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/clients)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Clients`, `ServiceWorkerGlobalScope`*"]
     pub fn clients(this: &ServiceWorkerGlobalScope) -> Clients;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerGlobalScope" , js_name = registration ) ]
     #[cfg(feature = "ServiceWorkerRegistration")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerGlobalScope" , js_name = registration ) ]
     #[doc = "Getter for the `registration` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/registration)"]

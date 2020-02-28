@@ -24,16 +24,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WaveShaperNode`*"]
     pub fn set_curve(this: &WaveShaperNode, value: Option<&mut [f32]>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "WaveShaperNode" , js_name = oversample ) ]
     #[cfg(feature = "OverSampleType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "WaveShaperNode" , js_name = oversample ) ]
     #[doc = "Getter for the `oversample` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OverSampleType`, `WaveShaperNode`*"]
     pub fn oversample(this: &WaveShaperNode) -> OverSampleType;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "WaveShaperNode" , js_name = oversample ) ]
     #[cfg(feature = "OverSampleType")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "WaveShaperNode" , js_name = oversample ) ]
     #[doc = "Setter for the `oversample` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample)"]

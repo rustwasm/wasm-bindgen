@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn result(this: &IdbRequest) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBRequest" , js_name = error ) ]
     #[cfg(feature = "DomException")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBRequest" , js_name = error ) ]
     #[doc = "Getter for the `error` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/error)"]
@@ -32,16 +32,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbRequest`*"]
     pub fn source(this: &IdbRequest) -> Option<::js_sys::Object>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = transaction ) ]
     #[cfg(feature = "IdbTransaction")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = transaction ) ]
     #[doc = "Getter for the `transaction` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/transaction)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbRequest`, `IdbTransaction`*"]
     pub fn transaction(this: &IdbRequest) -> Option<IdbTransaction>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = readyState ) ]
     #[cfg(feature = "IdbRequestReadyState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBRequest" , js_name = readyState ) ]
     #[doc = "Getter for the `readyState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/readyState)"]

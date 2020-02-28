@@ -24,8 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssStyleRule`*"]
     pub fn set_selector_text(this: &CssStyleRule, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSStyleRule" , js_name = style ) ]
     #[cfg(feature = "CssStyleDeclaration")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSStyleRule" , js_name = style ) ]
     #[doc = "Getter for the `style` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleRule/style)"]

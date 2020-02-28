@@ -17,16 +17,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`*"]
     pub fn type_(this: &Event) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Event" , js_name = target ) ]
     #[cfg(feature = "EventTarget")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Event" , js_name = target ) ]
     #[doc = "Getter for the `target` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Event/target)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`, `EventTarget`*"]
     pub fn target(this: &Event) -> Option<EventTarget>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Event" , js_name = currentTarget ) ]
     #[cfg(feature = "EventTarget")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Event" , js_name = currentTarget ) ]
     #[doc = "Getter for the `currentTarget` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget)"]
@@ -171,8 +171,20 @@ extern "C" {
     pub fn stop_propagation(this: &Event);
 }
 impl Event {
+    #[doc = "The `Event.NONE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Event`*"]
     pub const NONE: u16 = 0i64 as u16;
+    #[doc = "The `Event.CAPTURING_PHASE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Event`*"]
     pub const CAPTURING_PHASE: u16 = 1u64 as u16;
+    #[doc = "The `Event.AT_TARGET` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Event`*"]
     pub const AT_TARGET: u16 = 2u64 as u16;
+    #[doc = "The `Event.BUBBLING_PHASE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Event`*"]
     pub const BUBBLING_PHASE: u16 = 3u64 as u16;
 }

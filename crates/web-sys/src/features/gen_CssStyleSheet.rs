@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`*"]
     pub type CssStyleSheet;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSStyleSheet" , js_name = ownerRule ) ]
     #[cfg(feature = "CssRule")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSStyleSheet" , js_name = ownerRule ) ]
     #[doc = "Getter for the `ownerRule` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/ownerRule)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssRule`, `CssStyleSheet`*"]
     pub fn owner_rule(this: &CssStyleSheet) -> Option<CssRule>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "CSSStyleSheet" , js_name = cssRules ) ]
     #[cfg(feature = "CssRuleList")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "CSSStyleSheet" , js_name = cssRules ) ]
     #[doc = "Getter for the `cssRules` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/cssRules)"]

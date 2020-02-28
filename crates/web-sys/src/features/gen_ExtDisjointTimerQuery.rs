@@ -82,11 +82,32 @@ extern "C" {
     pub fn query_counter_ext(this: &ExtDisjointTimerQuery, query: &WebGlQuery, target: u32);
 }
 impl ExtDisjointTimerQuery {
+    #[doc = "The `EXT_disjoint_timer_query.QUERY_COUNTER_BITS_EXT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub const QUERY_COUNTER_BITS_EXT: u32 = 34916u64 as u32;
+    #[doc = "The `EXT_disjoint_timer_query.CURRENT_QUERY_EXT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub const CURRENT_QUERY_EXT: u32 = 34917u64 as u32;
+    #[doc = "The `EXT_disjoint_timer_query.QUERY_RESULT_EXT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub const QUERY_RESULT_EXT: u32 = 34918u64 as u32;
+    #[doc = "The `EXT_disjoint_timer_query.QUERY_RESULT_AVAILABLE_EXT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub const QUERY_RESULT_AVAILABLE_EXT: u32 = 34919u64 as u32;
+    #[doc = "The `EXT_disjoint_timer_query.TIME_ELAPSED_EXT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub const TIME_ELAPSED_EXT: u32 = 35007u64 as u32;
+    #[doc = "The `EXT_disjoint_timer_query.TIMESTAMP_EXT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub const TIMESTAMP_EXT: u32 = 36392u64 as u32;
+    #[doc = "The `EXT_disjoint_timer_query.GPU_DISJOINT_EXT` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub const GPU_DISJOINT_EXT: u32 = 36795u64 as u32;
 }

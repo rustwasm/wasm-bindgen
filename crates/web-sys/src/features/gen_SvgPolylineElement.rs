@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPolylineElement`*"]
     pub type SvgPolylineElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolylineElement" , js_name = points ) ]
     #[cfg(feature = "SvgPointList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolylineElement" , js_name = points ) ]
     #[doc = "Getter for the `points` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPolylineElement/points)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPointList`, `SvgPolylineElement`*"]
     pub fn points(this: &SvgPolylineElement) -> SvgPointList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolylineElement" , js_name = animatedPoints ) ]
     #[cfg(feature = "SvgPointList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolylineElement" , js_name = animatedPoints ) ]
     #[doc = "Getter for the `animatedPoints` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPolylineElement/animatedPoints)"]

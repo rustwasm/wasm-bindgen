@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbCursor`*"]
     pub fn source(this: &IdbCursor) -> ::js_sys::Object;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBCursor" , js_name = direction ) ]
     #[cfg(feature = "IdbCursorDirection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBCursor" , js_name = direction ) ]
     #[doc = "Getter for the `direction` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBCursor/direction)"]

@@ -53,5 +53,8 @@ extern "C" {
     ) -> bool;
 }
 impl OesVertexArrayObject {
+    #[doc = "The `OES_vertex_array_object.VERTEX_ARRAY_BINDING_OES` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OesVertexArrayObject`*"]
     pub const VERTEX_ARRAY_BINDING_OES: u32 = 34229u64 as u32;
 }

@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEvent`*"]
     pub type MediaKeyMessageEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaKeyMessageEvent" , js_name = messageType ) ]
     #[cfg(feature = "MediaKeyMessageType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaKeyMessageEvent" , js_name = messageType ) ]
     #[doc = "Getter for the `messageType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyMessageEvent/messageType)"]

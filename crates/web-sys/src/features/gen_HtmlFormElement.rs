@@ -136,8 +136,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn set_target(this: &HtmlFormElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFormElement" , js_name = elements ) ]
     #[cfg(feature = "HtmlCollection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLFormElement" , js_name = elements ) ]
     #[doc = "Getter for the `elements` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements)"]

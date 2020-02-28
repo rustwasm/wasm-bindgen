@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
     pub type MediaRecorder;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaRecorder" , js_name = stream ) ]
     #[cfg(feature = "MediaStream")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaRecorder" , js_name = stream ) ]
     #[doc = "Getter for the `stream` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/stream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`, `MediaStream`*"]
     pub fn stream(this: &MediaRecorder) -> MediaStream;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaRecorder" , js_name = state ) ]
     #[cfg(feature = "RecordingState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaRecorder" , js_name = state ) ]
     #[doc = "Getter for the `state` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/state)"]

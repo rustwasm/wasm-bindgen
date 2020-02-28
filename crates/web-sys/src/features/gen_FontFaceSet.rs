@@ -66,8 +66,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
     pub fn ready(this: &FontFaceSet) -> Result<::js_sys::Promise, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FontFaceSet" , js_name = status ) ]
     #[cfg(feature = "FontFaceSetLoadStatus")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "FontFaceSet" , js_name = status ) ]
     #[doc = "Getter for the `status` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/status)"]

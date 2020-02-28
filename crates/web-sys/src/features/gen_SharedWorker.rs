@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SharedWorker`*"]
     pub type SharedWorker;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SharedWorker" , js_name = port ) ]
     #[cfg(feature = "MessagePort")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SharedWorker" , js_name = port ) ]
     #[doc = "Getter for the `port` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker/port)"]

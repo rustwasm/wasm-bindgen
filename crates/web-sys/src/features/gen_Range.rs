@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Range`*"]
     pub type Range;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Range" , js_name = startContainer ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Range" , js_name = startContainer ) ]
     #[doc = "Getter for the `startContainer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Range/startContainer)"]
@@ -25,8 +25,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Range`*"]
     pub fn start_offset(this: &Range) -> Result<u32, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Range" , js_name = endContainer ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Range" , js_name = endContainer ) ]
     #[doc = "Getter for the `endContainer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Range/endContainer)"]
@@ -47,8 +47,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Range`*"]
     pub fn collapsed(this: &Range) -> bool;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Range" , js_name = commonAncestorContainer ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Range" , js_name = commonAncestorContainer ) ]
     #[doc = "Getter for the `commonAncestorContainer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Range/commonAncestorContainer)"]
@@ -257,8 +257,20 @@ extern "C" {
     pub fn surround_contents(this: &Range, new_parent: &Node) -> Result<(), JsValue>;
 }
 impl Range {
+    #[doc = "The `Range.START_TO_START` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Range`*"]
     pub const START_TO_START: u16 = 0i64 as u16;
+    #[doc = "The `Range.START_TO_END` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Range`*"]
     pub const START_TO_END: u16 = 1u64 as u16;
+    #[doc = "The `Range.END_TO_END` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Range`*"]
     pub const END_TO_END: u16 = 2u64 as u16;
+    #[doc = "The `Range.END_TO_START` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Range`*"]
     pub const END_TO_START: u16 = 3u64 as u16;
 }

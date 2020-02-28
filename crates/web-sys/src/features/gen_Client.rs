@@ -17,16 +17,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
     pub fn url(this: &Client) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = frameType ) ]
     #[cfg(feature = "FrameType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = frameType ) ]
     #[doc = "Getter for the `frameType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/frameType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`, `FrameType`*"]
     pub fn frame_type(this: &Client) -> FrameType;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = type ) ]
     #[cfg(feature = "ClientType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/type)"]

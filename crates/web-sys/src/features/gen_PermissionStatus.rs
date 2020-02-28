@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PermissionStatus`*"]
     pub type PermissionStatus;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PermissionStatus" , js_name = state ) ]
     #[cfg(feature = "PermissionState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PermissionStatus" , js_name = state ) ]
     #[doc = "Getter for the `state` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PermissionStatus/state)"]

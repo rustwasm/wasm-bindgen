@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgTextContentElement`*"]
     pub type SvgTextContentElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextContentElement" , js_name = textLength ) ]
     #[cfg(feature = "SvgAnimatedLength")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextContentElement" , js_name = textLength ) ]
     #[doc = "Getter for the `textLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/textLength)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgTextContentElement`*"]
     pub fn text_length(this: &SvgTextContentElement) -> SvgAnimatedLength;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextContentElement" , js_name = lengthAdjust ) ]
     #[cfg(feature = "SvgAnimatedEnumeration")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextContentElement" , js_name = lengthAdjust ) ]
     #[doc = "Getter for the `lengthAdjust` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/lengthAdjust)"]
@@ -113,7 +113,16 @@ extern "C" {
     ) -> Result<(), JsValue>;
 }
 impl SvgTextContentElement {
+    #[doc = "The `SVGTextContentElement.LENGTHADJUST_UNKNOWN` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTextContentElement`*"]
     pub const LENGTHADJUST_UNKNOWN: u16 = 0i64 as u16;
+    #[doc = "The `SVGTextContentElement.LENGTHADJUST_SPACING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTextContentElement`*"]
     pub const LENGTHADJUST_SPACING: u16 = 1u64 as u16;
+    #[doc = "The `SVGTextContentElement.LENGTHADJUST_SPACINGANDGLYPHS` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgTextContentElement`*"]
     pub const LENGTHADJUST_SPACINGANDGLYPHS: u16 = 2u64 as u16;
 }

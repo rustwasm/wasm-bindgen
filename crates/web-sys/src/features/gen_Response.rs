@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     pub type Response;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Response" , js_name = type ) ]
     #[cfg(feature = "ResponseType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Response" , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/type)"]
@@ -53,8 +53,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     pub fn status_text(this: &Response) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Response" , js_name = headers ) ]
     #[cfg(feature = "Headers")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Response" , js_name = headers ) ]
     #[doc = "Getter for the `headers` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/headers)"]
@@ -68,8 +68,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     pub fn body_used(this: &Response) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Response" , js_name = body ) ]
     #[cfg(feature = "ReadableStream")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Response" , js_name = body ) ]
     #[doc = "Getter for the `body` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/body)"]

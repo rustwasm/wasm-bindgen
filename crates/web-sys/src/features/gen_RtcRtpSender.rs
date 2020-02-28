@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`*"]
     pub type RtcRtpSender;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCRtpSender" , js_name = track ) ]
     #[cfg(feature = "MediaStreamTrack")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCRtpSender" , js_name = track ) ]
     #[doc = "Getter for the `track` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/track)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpSender`*"]
     pub fn track(this: &RtcRtpSender) -> Option<MediaStreamTrack>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCRtpSender" , js_name = dtmf ) ]
     #[cfg(feature = "RtcdtmfSender")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCRtpSender" , js_name = dtmf ) ]
     #[doc = "Getter for the `dtmf` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/dtmf)"]

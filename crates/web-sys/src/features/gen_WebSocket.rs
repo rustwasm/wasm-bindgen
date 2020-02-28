@@ -101,16 +101,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     pub fn set_onmessage(this: &WebSocket, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "WebSocket" , js_name = binaryType ) ]
     #[cfg(feature = "BinaryType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "WebSocket" , js_name = binaryType ) ]
     #[doc = "Getter for the `binaryType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/binaryType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BinaryType`, `WebSocket`*"]
     pub fn binary_type(this: &WebSocket) -> BinaryType;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "WebSocket" , js_name = binaryType ) ]
     #[cfg(feature = "BinaryType")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "WebSocket" , js_name = binaryType ) ]
     #[doc = "Setter for the `binaryType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/binaryType)"]
@@ -212,8 +212,20 @@ extern "C" {
     pub fn send_with_u8_array(this: &WebSocket, data: &mut [u8]) -> Result<(), JsValue>;
 }
 impl WebSocket {
+    #[doc = "The `WebSocket.CONNECTING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     pub const CONNECTING: u16 = 0i64 as u16;
+    #[doc = "The `WebSocket.OPEN` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     pub const OPEN: u16 = 1u64 as u16;
+    #[doc = "The `WebSocket.CLOSING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     pub const CLOSING: u16 = 2u64 as u16;
+    #[doc = "The `WebSocket.CLOSED` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     pub const CLOSED: u16 = 3u64 as u16;
 }

@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`*"]
     pub type PopupBlockedEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PopupBlockedEvent" , js_name = requestingWindow ) ]
     #[cfg(feature = "Window")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PopupBlockedEvent" , js_name = requestingWindow ) ]
     #[doc = "Getter for the `requestingWindow` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/requestingWindow)"]

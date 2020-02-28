@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgfeDistantLightElement`*"]
     pub type SvgfeDistantLightElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDistantLightElement" , js_name = azimuth ) ]
     #[cfg(feature = "SvgAnimatedNumber")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDistantLightElement" , js_name = azimuth ) ]
     #[doc = "Getter for the `azimuth` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDistantLightElement/azimuth)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeDistantLightElement`*"]
     pub fn azimuth(this: &SvgfeDistantLightElement) -> SvgAnimatedNumber;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDistantLightElement" , js_name = elevation ) ]
     #[cfg(feature = "SvgAnimatedNumber")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDistantLightElement" , js_name = elevation ) ]
     #[doc = "Getter for the `elevation` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDistantLightElement/elevation)"]

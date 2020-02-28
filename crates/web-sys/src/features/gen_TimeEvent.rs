@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TimeEvent`*"]
     pub fn detail(this: &TimeEvent) -> i32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "TimeEvent" , js_name = view ) ]
     #[cfg(feature = "Window")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "TimeEvent" , js_name = view ) ]
     #[doc = "Getter for the `view` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TimeEvent/view)"]

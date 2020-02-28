@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CaretPosition`*"]
     pub type CaretPosition;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CaretPosition" , js_name = offsetNode ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CaretPosition" , js_name = offsetNode ) ]
     #[doc = "Getter for the `offsetNode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CaretPosition/offsetNode)"]

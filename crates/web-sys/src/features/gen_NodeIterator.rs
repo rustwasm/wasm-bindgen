@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NodeIterator`*"]
     pub type NodeIterator;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "NodeIterator" , js_name = root ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "NodeIterator" , js_name = root ) ]
     #[doc = "Getter for the `root` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NodeIterator/root)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Node`, `NodeIterator`*"]
     pub fn root(this: &NodeIterator) -> Node;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "NodeIterator" , js_name = referenceNode ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "NodeIterator" , js_name = referenceNode ) ]
     #[doc = "Getter for the `referenceNode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NodeIterator/referenceNode)"]
@@ -40,8 +40,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NodeIterator`*"]
     pub fn what_to_show(this: &NodeIterator) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "NodeIterator" , js_name = filter ) ]
     #[cfg(feature = "NodeFilter")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "NodeIterator" , js_name = filter ) ]
     #[doc = "Getter for the `filter` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NodeIterator/filter)"]

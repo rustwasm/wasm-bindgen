@@ -38,16 +38,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
     pub fn set_lang(this: &SpeechSynthesisUtterance, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = voice ) ]
     #[cfg(feature = "SpeechSynthesisVoice")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = voice ) ]
     #[doc = "Getter for the `voice` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/voice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`, `SpeechSynthesisVoice`*"]
     pub fn voice(this: &SpeechSynthesisUtterance) -> Option<SpeechSynthesisVoice>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = voice ) ]
     #[cfg(feature = "SpeechSynthesisVoice")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = voice ) ]
     #[doc = "Setter for the `voice` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/voice)"]

@@ -122,8 +122,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn set_referrer_policy(this: &HtmlAreaElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLAreaElement" , js_name = relList ) ]
     #[cfg(feature = "DomTokenList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLAreaElement" , js_name = relList ) ]
     #[doc = "Getter for the `relList` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/relList)"]

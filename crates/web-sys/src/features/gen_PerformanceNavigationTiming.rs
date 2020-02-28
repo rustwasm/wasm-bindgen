@@ -66,8 +66,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigationTiming`*"]
     pub fn load_event_end(this: &PerformanceNavigationTiming) -> f64;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceNavigationTiming" , js_name = type ) ]
     #[cfg(feature = "NavigationType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceNavigationTiming" , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming/type)"]

@@ -45,8 +45,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlProgressElement`*"]
     pub fn position(this: &HtmlProgressElement) -> f64;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLProgressElement" , js_name = labels ) ]
     #[cfg(feature = "NodeList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLProgressElement" , js_name = labels ) ]
     #[doc = "Getter for the `labels` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLProgressElement/labels)"]

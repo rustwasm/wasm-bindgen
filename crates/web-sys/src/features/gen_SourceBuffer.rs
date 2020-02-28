@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub type SourceBuffer;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SourceBuffer" , js_name = mode ) ]
     #[cfg(feature = "SourceBufferAppendMode")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SourceBuffer" , js_name = mode ) ]
     #[doc = "Getter for the `mode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/mode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`, `SourceBufferAppendMode`*"]
     pub fn mode(this: &SourceBuffer) -> SourceBufferAppendMode;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "SourceBuffer" , js_name = mode ) ]
     #[cfg(feature = "SourceBufferAppendMode")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "SourceBuffer" , js_name = mode ) ]
     #[doc = "Setter for the `mode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/mode)"]
@@ -33,8 +33,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn updating(this: &SourceBuffer) -> bool;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "SourceBuffer" , js_name = buffered ) ]
     #[cfg(feature = "TimeRanges")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "SourceBuffer" , js_name = buffered ) ]
     #[doc = "Getter for the `buffered` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/buffered)"]

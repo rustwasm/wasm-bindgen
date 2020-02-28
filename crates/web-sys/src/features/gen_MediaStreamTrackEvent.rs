@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackEvent`*"]
     pub type MediaStreamTrackEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaStreamTrackEvent" , js_name = track ) ]
     #[cfg(feature = "MediaStreamTrack")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MediaStreamTrackEvent" , js_name = track ) ]
     #[doc = "Getter for the `track` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackEvent/track)"]

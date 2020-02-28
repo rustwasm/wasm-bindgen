@@ -17,8 +17,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscription`*"]
     pub fn endpoint(this: &PushSubscription) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PushSubscription" , js_name = options ) ]
     #[cfg(feature = "PushSubscriptionOptions")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "PushSubscription" , js_name = options ) ]
     #[doc = "Getter for the `options` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushSubscription/options)"]

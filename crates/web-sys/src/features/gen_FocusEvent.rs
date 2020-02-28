@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FocusEvent`*"]
     pub type FocusEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FocusEvent" , js_name = relatedTarget ) ]
     #[cfg(feature = "EventTarget")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "FocusEvent" , js_name = relatedTarget ) ]
     #[doc = "Getter for the `relatedTarget` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/relatedTarget)"]

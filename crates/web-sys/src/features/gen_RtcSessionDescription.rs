@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescription`*"]
     pub type RtcSessionDescription;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCSessionDescription" , js_name = type ) ]
     #[cfg(feature = "RtcSdpType")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "RTCSessionDescription" , js_name = type ) ]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCSessionDescription/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSdpType`, `RtcSessionDescription`*"]
     pub fn type_(this: &RtcSessionDescription) -> RtcSdpType;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "RTCSessionDescription" , js_name = type ) ]
     #[cfg(feature = "RtcSdpType")]
+    # [ wasm_bindgen ( structural , method , setter , js_class = "RTCSessionDescription" , js_name = type ) ]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCSessionDescription/type)"]

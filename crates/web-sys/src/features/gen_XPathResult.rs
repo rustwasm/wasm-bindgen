@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub fn boolean_value(this: &XPathResult) -> Result<bool, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "XPathResult" , js_name = singleNodeValue ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "XPathResult" , js_name = singleNodeValue ) ]
     #[doc = "Getter for the `singleNodeValue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XPathResult/singleNodeValue)"]
@@ -78,14 +78,44 @@ extern "C" {
     pub fn snapshot_item(this: &XPathResult, index: u32) -> Result<Option<Node>, JsValue>;
 }
 impl XPathResult {
+    #[doc = "The `XPathResult.ANY_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const ANY_TYPE: u16 = 0i64 as u16;
+    #[doc = "The `XPathResult.NUMBER_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const NUMBER_TYPE: u16 = 1u64 as u16;
+    #[doc = "The `XPathResult.STRING_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const STRING_TYPE: u16 = 2u64 as u16;
+    #[doc = "The `XPathResult.BOOLEAN_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const BOOLEAN_TYPE: u16 = 3u64 as u16;
+    #[doc = "The `XPathResult.UNORDERED_NODE_ITERATOR_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const UNORDERED_NODE_ITERATOR_TYPE: u16 = 4u64 as u16;
+    #[doc = "The `XPathResult.ORDERED_NODE_ITERATOR_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const ORDERED_NODE_ITERATOR_TYPE: u16 = 5u64 as u16;
+    #[doc = "The `XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const UNORDERED_NODE_SNAPSHOT_TYPE: u16 = 6u64 as u16;
+    #[doc = "The `XPathResult.ORDERED_NODE_SNAPSHOT_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const ORDERED_NODE_SNAPSHOT_TYPE: u16 = 7u64 as u16;
+    #[doc = "The `XPathResult.ANY_UNORDERED_NODE_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const ANY_UNORDERED_NODE_TYPE: u16 = 8u64 as u16;
+    #[doc = "The `XPathResult.FIRST_ORDERED_NODE_TYPE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
     pub const FIRST_ORDERED_NODE_TYPE: u16 = 9u64 as u16;
 }

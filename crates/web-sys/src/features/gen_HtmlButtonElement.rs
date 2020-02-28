@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn set_disabled(this: &HtmlButtonElement, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLButtonElement" , js_name = form ) ]
     #[cfg(feature = "HtmlFormElement")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLButtonElement" , js_name = form ) ]
     #[doc = "Getter for the `form` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/form)"]
@@ -165,8 +165,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn will_validate(this: &HtmlButtonElement) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLButtonElement" , js_name = validity ) ]
     #[cfg(feature = "ValidityState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLButtonElement" , js_name = validity ) ]
     #[doc = "Getter for the `validity` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/validity)"]
@@ -180,8 +180,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
     pub fn validation_message(this: &HtmlButtonElement) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLButtonElement" , js_name = labels ) ]
     #[cfg(feature = "NodeList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLButtonElement" , js_name = labels ) ]
     #[doc = "Getter for the `labels` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/labels)"]

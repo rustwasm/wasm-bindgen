@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumberList`*"]
     pub type SvgAnimatedNumberList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedNumberList" , js_name = baseVal ) ]
     #[cfg(feature = "SvgNumberList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedNumberList" , js_name = baseVal ) ]
     #[doc = "Getter for the `baseVal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedNumberList/baseVal)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumberList`, `SvgNumberList`*"]
     pub fn base_val(this: &SvgAnimatedNumberList) -> SvgNumberList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedNumberList" , js_name = animVal ) ]
     #[cfg(feature = "SvgNumberList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGAnimatedNumberList" , js_name = animVal ) ]
     #[doc = "Getter for the `animVal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedNumberList/animVal)"]

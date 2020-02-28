@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEvent`*"]
     pub fn url(this: &StorageEvent) -> Option<String>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "StorageEvent" , js_name = storageArea ) ]
     #[cfg(feature = "Storage")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "StorageEvent" , js_name = storageArea ) ]
     #[doc = "Getter for the `storageArea` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent/storageArea)"]

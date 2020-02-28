@@ -60,5 +60,8 @@ extern "C" {
     pub fn vertex_attrib_divisor_angle(this: &AngleInstancedArrays, index: u32, divisor: u32);
 }
 impl AngleInstancedArrays {
+    #[doc = "The `ANGLE_instanced_arrays.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AngleInstancedArrays`*"]
     pub const VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE: u32 = 35070u64 as u32;
 }

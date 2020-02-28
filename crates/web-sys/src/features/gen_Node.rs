@@ -38,8 +38,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub fn is_connected(this: &Node) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Node" , js_name = ownerDocument ) ]
     #[cfg(feature = "Document")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Node" , js_name = ownerDocument ) ]
     #[doc = "Getter for the `ownerDocument` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument)"]
@@ -53,16 +53,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub fn parent_node(this: &Node) -> Option<Node>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Node" , js_name = parentElement ) ]
     #[cfg(feature = "Element")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Node" , js_name = parentElement ) ]
     #[doc = "Getter for the `parentElement` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Node/parentElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `Node`*"]
     pub fn parent_element(this: &Node) -> Option<Element>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Node" , js_name = childNodes ) ]
     #[cfg(feature = "NodeList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Node" , js_name = childNodes ) ]
     #[doc = "Getter for the `childNodes` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Node/childNodes)"]
@@ -247,22 +247,76 @@ extern "C" {
     pub fn replace_child(this: &Node, node: &Node, child: &Node) -> Result<Node, JsValue>;
 }
 impl Node {
+    #[doc = "The `Node.ELEMENT_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const ELEMENT_NODE: u16 = 1u64 as u16;
+    #[doc = "The `Node.ATTRIBUTE_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const ATTRIBUTE_NODE: u16 = 2u64 as u16;
+    #[doc = "The `Node.TEXT_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const TEXT_NODE: u16 = 3u64 as u16;
+    #[doc = "The `Node.CDATA_SECTION_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const CDATA_SECTION_NODE: u16 = 4u64 as u16;
+    #[doc = "The `Node.ENTITY_REFERENCE_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const ENTITY_REFERENCE_NODE: u16 = 5u64 as u16;
+    #[doc = "The `Node.ENTITY_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const ENTITY_NODE: u16 = 6u64 as u16;
+    #[doc = "The `Node.PROCESSING_INSTRUCTION_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const PROCESSING_INSTRUCTION_NODE: u16 = 7u64 as u16;
+    #[doc = "The `Node.COMMENT_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const COMMENT_NODE: u16 = 8u64 as u16;
+    #[doc = "The `Node.DOCUMENT_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_NODE: u16 = 9u64 as u16;
+    #[doc = "The `Node.DOCUMENT_TYPE_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_TYPE_NODE: u16 = 10u64 as u16;
+    #[doc = "The `Node.DOCUMENT_FRAGMENT_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_FRAGMENT_NODE: u16 = 11u64 as u16;
+    #[doc = "The `Node.NOTATION_NODE` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const NOTATION_NODE: u16 = 12u64 as u16;
+    #[doc = "The `Node.DOCUMENT_POSITION_DISCONNECTED` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_POSITION_DISCONNECTED: u16 = 1u64 as u16;
+    #[doc = "The `Node.DOCUMENT_POSITION_PRECEDING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_POSITION_PRECEDING: u16 = 2u64 as u16;
+    #[doc = "The `Node.DOCUMENT_POSITION_FOLLOWING` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_POSITION_FOLLOWING: u16 = 4u64 as u16;
+    #[doc = "The `Node.DOCUMENT_POSITION_CONTAINS` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_POSITION_CONTAINS: u16 = 8u64 as u16;
+    #[doc = "The `Node.DOCUMENT_POSITION_CONTAINED_BY` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_POSITION_CONTAINED_BY: u16 = 16u64 as u16;
+    #[doc = "The `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Node`*"]
     pub const DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC: u16 = 32u64 as u16;
 }

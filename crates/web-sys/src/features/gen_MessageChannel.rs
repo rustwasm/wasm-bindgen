@@ -10,16 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageChannel`*"]
     pub type MessageChannel;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port1 ) ]
     #[cfg(feature = "MessagePort")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port1 ) ]
     #[doc = "Getter for the `port1` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port1)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageChannel`, `MessagePort`*"]
     pub fn port1(this: &MessageChannel) -> MessagePort;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port2 ) ]
     #[cfg(feature = "MessagePort")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port2 ) ]
     #[doc = "Getter for the `port2` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port2)"]

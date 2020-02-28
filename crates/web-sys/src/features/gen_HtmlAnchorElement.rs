@@ -80,8 +80,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
     pub fn set_referrer_policy(this: &HtmlAnchorElement, value: &str);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLAnchorElement" , js_name = relList ) ]
     #[cfg(feature = "DomTokenList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLAnchorElement" , js_name = relList ) ]
     #[doc = "Getter for the `relList` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/relList)"]

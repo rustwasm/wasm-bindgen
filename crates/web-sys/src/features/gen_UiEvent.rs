@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEvent`*"]
     pub type UiEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "UIEvent" , js_name = view ) ]
     #[cfg(feature = "Window")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "UIEvent" , js_name = view ) ]
     #[doc = "Getter for the `view` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view)"]
@@ -60,8 +60,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEvent`*"]
     pub fn which(this: &UiEvent) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "UIEvent" , js_name = rangeParent ) ]
     #[cfg(feature = "Node")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "UIEvent" , js_name = rangeParent ) ]
     #[doc = "Getter for the `rangeParent` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/rangeParent)"]
@@ -151,6 +151,12 @@ extern "C" {
     );
 }
 impl UiEvent {
+    #[doc = "The `UIEvent.SCROLL_PAGE_UP` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UiEvent`*"]
     pub const SCROLL_PAGE_UP: i32 = -32768i64 as i32;
+    #[doc = "The `UIEvent.SCROLL_PAGE_DOWN` const."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UiEvent`*"]
     pub const SCROLL_PAGE_DOWN: i32 = 32768u64 as i32;
 }

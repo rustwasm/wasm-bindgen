@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgGeometryElement`*"]
     pub type SvgGeometryElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGGeometryElement" , js_name = pathLength ) ]
     #[cfg(feature = "SvgAnimatedNumber")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGGeometryElement" , js_name = pathLength ) ]
     #[doc = "Getter for the `pathLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/pathLength)"]

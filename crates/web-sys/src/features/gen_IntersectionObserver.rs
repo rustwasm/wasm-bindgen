@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
     pub type IntersectionObserver;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IntersectionObserver" , js_name = root ) ]
     #[cfg(feature = "Element")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "IntersectionObserver" , js_name = root ) ]
     #[doc = "Getter for the `root` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root)"]

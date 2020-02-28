@@ -17,16 +17,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssImportRule`*"]
     pub fn href(this: &CssImportRule) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSImportRule" , js_name = media ) ]
     #[cfg(feature = "MediaList")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSImportRule" , js_name = media ) ]
     #[doc = "Getter for the `media` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSImportRule/media)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssImportRule`, `MediaList`*"]
     pub fn media(this: &CssImportRule) -> Option<MediaList>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSImportRule" , js_name = styleSheet ) ]
     #[cfg(feature = "CssStyleSheet")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSImportRule" , js_name = styleSheet ) ]
     #[doc = "Getter for the `styleSheet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSImportRule/styleSheet)"]

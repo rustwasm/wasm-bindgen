@@ -17,16 +17,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub fn length(this: &History) -> Result<u32, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "History" , js_name = scrollRestoration ) ]
     #[cfg(feature = "ScrollRestoration")]
+    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "History" , js_name = scrollRestoration ) ]
     #[doc = "Getter for the `scrollRestoration` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/scrollRestoration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`, `ScrollRestoration`*"]
     pub fn scroll_restoration(this: &History) -> Result<ScrollRestoration, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , setter , js_class = "History" , js_name = scrollRestoration ) ]
     #[cfg(feature = "ScrollRestoration")]
+    # [ wasm_bindgen ( structural , catch , method , setter , js_class = "History" , js_name = scrollRestoration ) ]
     #[doc = "Setter for the `scrollRestoration` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/scrollRestoration)"]

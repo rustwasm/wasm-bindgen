@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRequest`*"]
     pub type DomRequest;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "DOMRequest" , js_name = readyState ) ]
     #[cfg(feature = "DomRequestReadyState")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "DOMRequest" , js_name = readyState ) ]
     #[doc = "Getter for the `readyState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRequest/readyState)"]
@@ -25,8 +25,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRequest`*"]
     pub fn result(this: &DomRequest) -> ::wasm_bindgen::JsValue;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "DOMRequest" , js_name = error ) ]
     #[cfg(feature = "DomException")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "DOMRequest" , js_name = error ) ]
     #[doc = "Getter for the `error` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMRequest/error)"]

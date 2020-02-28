@@ -10,8 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
     pub type HtmlTableSectionElement;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTableSectionElement" , js_name = rows ) ]
     #[cfg(feature = "HtmlCollection")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLTableSectionElement" , js_name = rows ) ]
     #[doc = "Getter for the `rows` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/rows)"]
