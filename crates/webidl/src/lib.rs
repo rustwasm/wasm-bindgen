@@ -245,7 +245,7 @@ fn immutable_slice_whitelist() -> BTreeSet<&'static str> {
         "clearBufferiv",
         "clearBufferuiv",
         // WebSocket
-        "send_with_u8_array",
+        "send",
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ])
 }
