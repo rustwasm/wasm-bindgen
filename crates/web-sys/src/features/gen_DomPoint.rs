@@ -56,11 +56,11 @@ extern "C" {
         z: f64,
         w: f64,
     ) -> Result<DomPoint, JsValue>;
-    # [ wasm_bindgen ( method , structural , static_method_of = DOMPoint , js_name = fromPoint ) ]
+    # [ wasm_bindgen ( static_method_of = DOMPoint , js_name = fromPoint ) ]
     #[doc = "The `fromPoint()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint/fromPoint)\n\n*This API requires the following crate features to be activated: `DomPoint`*"]
     pub fn from_point() -> DomPoint;
     #[cfg(feature = "DomPointInit")]
-    # [ wasm_bindgen ( method , structural , static_method_of = DOMPoint , js_name = fromPoint ) ]
+    # [ wasm_bindgen ( static_method_of = DOMPoint , js_name = fromPoint ) ]
     #[doc = "The `fromPoint()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint/fromPoint)\n\n*This API requires the following crate features to be activated: `DomPoint`, `DomPointInit`*"]
     pub fn from_point_with_other(other: &DomPointInit) -> DomPoint;
 }

@@ -19,7 +19,7 @@ extern "C" {
     pub fn get_client_extension_results(
         this: &PublicKeyCredential,
     ) -> AuthenticationExtensionsClientOutputs;
-    # [ wasm_bindgen ( method , structural , static_method_of = PublicKeyCredential , js_name = isUserVerifyingPlatformAuthenticatorAvailable ) ]
+    # [ wasm_bindgen ( static_method_of = PublicKeyCredential , js_name = isUserVerifyingPlatformAuthenticatorAvailable ) ]
     #[doc = "The `isUserVerifyingPlatformAuthenticatorAvailable()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/isUserVerifyingPlatformAuthenticatorAvailable)\n\n*This API requires the following crate features to be activated: `PublicKeyCredential`*"]
     pub fn is_user_verifying_platform_authenticator_available() -> ::js_sys::Promise;
 }

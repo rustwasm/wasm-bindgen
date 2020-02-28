@@ -153,15 +153,15 @@ impl InterfaceAttribute {
             quote!( final, )
         };
 
-        let (static_method, this) = if *is_static {
+        let (method, this) = if *is_static {
             (
-                Some(quote!( static_method_of = #static_method_of, )),
+                quote!( static_method_of = #static_method_of, ),
                 None,
             )
 
         } else {
             (
-                None,
+                quote!( method, ),
                 Some(quote!( this: &#parent_name, )),
             )
         };
@@ -179,7 +179,7 @@ impl InterfaceAttribute {
 
                 (
                     "Getter",
-                    quote!( getter ),
+                    quote!( getter, ),
                     quote!( pub fn #name(#this) -> #ty; ),
                 )
             },
@@ -196,7 +196,7 @@ impl InterfaceAttribute {
 
                 (
                     "Setter",
-                    quote!( setter ),
+                    quote!( setter, ),
                     quote!( pub fn #name(#this value: #ty) #ret_ty; ),
                 )
             },
@@ -217,9 +217,8 @@ impl InterfaceAttribute {
             #[wasm_bindgen(
                 #structural
                 #catch
-                #static_method
-                method,
-                #attr,
+                #method
+                #attr
                 js_name = #js_name
             )]
             #cfg_features
@@ -346,11 +345,24 @@ impl InterfaceMethod {
             None
         };
 
-        let method = if *structural {
-            quote!( method, structural, )
+        let structural = if *structural {
+            quote!( structural )
 
         } else {
-            quote!( method, final, )
+            quote!( final )
+        };
+
+        let (method, this) = if *is_static {
+            (
+                quote!( static_method_of = #static_method_of, ),
+                None,
+            )
+
+        } else {
+            (
+                quote!( method, #structural, ),
+                Some(quote!( this: &#parent_name, )),
+            )
         };
 
         let method = if is_constructor {
@@ -367,19 +379,6 @@ impl InterfaceMethod {
             None
         };
 
-        let (static_method, this) = if *is_static {
-            (
-                Some(quote!( static_method_of = #static_method_of, )),
-                None,
-            )
-
-        } else {
-            (
-                None,
-                Some(quote!( this: &#parent_name, )),
-            )
-        };
-
         let arguments = arguments.into_iter()
             .map(|(name, ty)| {
                 quote!( #name: #ty )
@@ -392,7 +391,6 @@ impl InterfaceMethod {
                 #catch
                 #method
                 #variadic
-                #static_method
                 #(#extra_args),*
             )]
             #[doc = #doc_comment]

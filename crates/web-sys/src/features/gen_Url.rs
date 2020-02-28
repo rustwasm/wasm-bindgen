@@ -80,14 +80,14 @@ extern "C" {
     #[doc = "The `new Url(..)` constructor, creating a new instance of `Url`.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL)\n\n*This API requires the following crate features to be activated: `Url`*"]
     pub fn new_with_base(this: &Url, url: &str, base: &str) -> Result<Url, JsValue>;
     #[cfg(feature = "Blob")]
-    # [ wasm_bindgen ( catch , method , structural , static_method_of = URL , js_name = createObjectURL ) ]
+    # [ wasm_bindgen ( catch , static_method_of = URL , js_name = createObjectURL ) ]
     #[doc = "The `createObjectURL()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL)\n\n*This API requires the following crate features to be activated: `Blob`, `Url`*"]
     pub fn create_object_url_with_blob(blob: &Blob) -> Result<String, JsValue>;
     #[cfg(feature = "MediaSource")]
-    # [ wasm_bindgen ( catch , method , structural , static_method_of = URL , js_name = createObjectURL ) ]
+    # [ wasm_bindgen ( catch , static_method_of = URL , js_name = createObjectURL ) ]
     #[doc = "The `createObjectURL()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL)\n\n*This API requires the following crate features to be activated: `MediaSource`, `Url`*"]
     pub fn create_object_url_with_source(source: &MediaSource) -> Result<String, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , static_method_of = URL , js_name = revokeObjectURL ) ]
+    # [ wasm_bindgen ( catch , static_method_of = URL , js_name = revokeObjectURL ) ]
     #[doc = "The `revokeObjectURL()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL)\n\n*This API requires the following crate features to be activated: `Url`*"]
     pub fn revoke_object_url(url: &str) -> Result<(), JsValue>;
     # [ wasm_bindgen ( method , structural , js_name = toJSON ) ]

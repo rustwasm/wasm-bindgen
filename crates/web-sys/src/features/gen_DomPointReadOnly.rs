@@ -48,11 +48,11 @@ extern "C" {
         z: f64,
         w: f64,
     ) -> Result<DomPointReadOnly, JsValue>;
-    # [ wasm_bindgen ( method , structural , static_method_of = DOMPointReadOnly , js_name = fromPoint ) ]
+    # [ wasm_bindgen ( static_method_of = DOMPointReadOnly , js_name = fromPoint ) ]
     #[doc = "The `fromPoint()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPointReadOnly/fromPoint)\n\n*This API requires the following crate features to be activated: `DomPointReadOnly`*"]
     pub fn from_point() -> DomPointReadOnly;
     #[cfg(feature = "DomPointInit")]
-    # [ wasm_bindgen ( method , structural , static_method_of = DOMPointReadOnly , js_name = fromPoint ) ]
+    # [ wasm_bindgen ( static_method_of = DOMPointReadOnly , js_name = fromPoint ) ]
     #[doc = "The `fromPoint()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMPointReadOnly/fromPoint)\n\n*This API requires the following crate features to be activated: `DomPointInit`, `DomPointReadOnly`*"]
     pub fn from_point_with_other(other: &DomPointInit) -> DomPointReadOnly;
     # [ wasm_bindgen ( method , structural , js_name = toJSON ) ]

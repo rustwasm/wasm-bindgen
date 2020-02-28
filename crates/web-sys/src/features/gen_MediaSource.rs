@@ -62,7 +62,7 @@ extern "C" {
         this: &MediaSource,
         error: MediaSourceEndOfStreamError,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( method , structural , static_method_of = MediaSource , js_name = isTypeSupported ) ]
+    # [ wasm_bindgen ( static_method_of = MediaSource , js_name = isTypeSupported ) ]
     #[doc = "The `isTypeSupported()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/isTypeSupported)\n\n*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn is_type_supported(type_: &str) -> bool;
     #[cfg(feature = "SourceBuffer")]

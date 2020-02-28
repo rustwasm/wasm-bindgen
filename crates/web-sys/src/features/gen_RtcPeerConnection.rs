@@ -391,12 +391,12 @@ extern "C" {
         failure_callback: &::js_sys::Function,
         options: &RtcOfferOptions,
     ) -> ::js_sys::Promise;
-    # [ wasm_bindgen ( catch , method , structural , static_method_of = RTCPeerConnection , js_name = generateCertificate ) ]
+    # [ wasm_bindgen ( catch , static_method_of = RTCPeerConnection , js_name = generateCertificate ) ]
     #[doc = "The `generateCertificate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn generate_certificate_with_object(
         keygen_algorithm: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , static_method_of = RTCPeerConnection , js_name = generateCertificate ) ]
+    # [ wasm_bindgen ( catch , static_method_of = RTCPeerConnection , js_name = generateCertificate ) ]
     #[doc = "The `generateCertificate()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)\n\n*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn generate_certificate_with_str(
         keygen_algorithm: &str,

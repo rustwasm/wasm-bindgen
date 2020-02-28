@@ -138,13 +138,13 @@ extern "C" {
     # [ wasm_bindgen ( catch , method , structural , js_name = clone ) ]
     #[doc = "The `clone()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/clone)\n\n*This API requires the following crate features to be activated: `Response`*"]
     pub fn clone(this: &Response) -> Result<Response, JsValue>;
-    # [ wasm_bindgen ( method , structural , static_method_of = Response , js_name = error ) ]
+    # [ wasm_bindgen ( static_method_of = Response , js_name = error ) ]
     #[doc = "The `error()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/error)\n\n*This API requires the following crate features to be activated: `Response`*"]
     pub fn error() -> Response;
-    # [ wasm_bindgen ( catch , method , structural , static_method_of = Response , js_name = redirect ) ]
+    # [ wasm_bindgen ( catch , static_method_of = Response , js_name = redirect ) ]
     #[doc = "The `redirect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/redirect)\n\n*This API requires the following crate features to be activated: `Response`*"]
     pub fn redirect(url: &str) -> Result<Response, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , static_method_of = Response , js_name = redirect ) ]
+    # [ wasm_bindgen ( catch , static_method_of = Response , js_name = redirect ) ]
     #[doc = "The `redirect()` method.\n\n[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/redirect)\n\n*This API requires the following crate features to be activated: `Response`*"]
     pub fn redirect_with_status(url: &str, status: u16) -> Result<Response, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_name = arrayBuffer ) ]
