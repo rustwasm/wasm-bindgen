@@ -45,7 +45,17 @@ impl InstructionBuilder<'_, '_> {
     fn _incoming(&mut self, arg: &Descriptor) -> Result<(), Error> {
         use walrus::ValType as WasmVT;
         use wit_walrus::ValType as WitVT;
+        let vector_kind = |arg: &Descriptor| arg.vector_kind().ok_or_else(|| {
+            format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
+        });
         match arg {
+            Descriptor::Array => {
+                self.instruction(
+                    &[AdapterType::Vector(vector_kind(arg)?)],
+                    Instruction::I32FromAnyrefOwned,
+                    &[AdapterType::I32],
+                );
+            }
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::Bool],
@@ -117,9 +127,7 @@ impl InstructionBuilder<'_, '_> {
             }
 
             Descriptor::Vector(_) => {
-                let kind = arg.vector_kind().ok_or_else(|| {
-                    format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
-                })?;
+                let kind = vector_kind(arg)?;
                 self.instruction(
                     &[AdapterType::Vector(kind)],
                     Instruction::VectorToMemory {

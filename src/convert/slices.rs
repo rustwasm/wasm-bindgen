@@ -271,3 +271,53 @@ if_std! {
         fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
 }
+
+
+macro_rules! array_impls {
+    ($($N:expr),+) => {
+        $(
+            unsafe impl<T> WasmAbi for [T; $N] {}
+
+            impl<T> FromWasmAbi for [T; $N]
+            where
+                T: Copy + FromWasmAbi<Abi = [T; $N]>
+            {
+                type Abi = [T; $N];
+        
+                #[inline]
+                unsafe fn from_abi(js: Self::Abi) -> Self {
+                    use core::convert::TryInto;
+                    let slice = slice::from_raw_parts(
+                        <*const T>::from_abi(js.as_ptr() as u32),
+                        js.len(),
+                    );
+                    slice.try_into().unwrap()
+                }
+            }
+
+            impl<T> IntoWasmAbi for [T; $N]
+            where
+                T: Copy + IntoWasmAbi<Abi = [T; $N]>
+            {
+                type Abi = [T; $N];
+            
+                #[inline]
+                fn into_abi(self) -> Self::Abi {
+                    unsafe {
+                        use core::convert::TryInto;
+                        let slice = slice::from_raw_parts(
+                            self.as_ptr(),
+                            self.len()
+                        );
+                        slice.try_into().unwrap()
+                    }
+                }
+            }
+        )+
+    }
+}
+
+array_impls!(
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+    26, 27, 28, 29, 30, 31, 32
+);

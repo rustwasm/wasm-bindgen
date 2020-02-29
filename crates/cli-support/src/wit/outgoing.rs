@@ -24,7 +24,17 @@ impl InstructionBuilder<'_, '_> {
     }
 
     fn _outgoing(&mut self, arg: &Descriptor) -> Result<(), Error> {
+        let vector_kind = |arg: &Descriptor| arg.vector_kind().ok_or_else(|| {
+            format_err!("unsupported argument type for calling JS function from Rust {:?}", arg)
+        });
         match arg {
+            Descriptor::Array => {
+                self.instruction(
+                    &[AdapterType::I32],
+                    Instruction::I32FromAnyrefOwned,
+                    &[AdapterType::Vector(vector_kind(arg)?)],
+                );
+            }
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::I32],
@@ -129,12 +139,7 @@ impl InstructionBuilder<'_, '_> {
             }
 
             Descriptor::Vector(_) => {
-                let kind = arg.vector_kind().ok_or_else(|| {
-                    format_err!(
-                        "unsupported argument type for calling JS function from Rust {:?}",
-                        arg
-                    )
-                })?;
+                let kind = vector_kind(arg)?;
                 let mem = self.cx.memory()?;
                 let free = self.cx.free()?;
                 self.instruction(

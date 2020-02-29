@@ -53,6 +53,7 @@ pub enum Descriptor {
     U64,
     F32,
     F64,
+    Array,
     Boolean,
     Function(Box<Function>),
     Closure(Box<Closure>),
