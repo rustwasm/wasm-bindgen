@@ -1,39 +1,45 @@
 use super::*;
 use wasm_bindgen::prelude::*;
+
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
+
 extern "C" {
+
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUCommandBuffer , typescript_name = GPUCommandBuffer ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuCommandBuffer` class."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandBuffer)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandBuffer`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    ///The `GpuCommandBuffer` class.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandBuffer)
+    ///
+    ///*This API requires the following crate features to be activated: `GpuCommandBuffer`*
+    ///
+    ///*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as
+    ///[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*
     pub type GpuCommandBuffer;
+
     #[cfg(web_sys_unstable_apis)]
     # [ wasm_bindgen ( structural , method , getter , js_class = "GPUCommandBuffer" , js_name = label ) ]
-    #[doc = "Getter for the `label` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandBuffer/label)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandBuffer`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    ///Getter for the `label` field of this object.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandBuffer/label)
+    ///
+    ///*This API requires the following crate features to be activated: `GpuCommandBuffer`*
+    ///
+    ///*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as
+    ///[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*
     pub fn label(this: &GpuCommandBuffer) -> Option<String>;
+
     #[cfg(web_sys_unstable_apis)]
     # [ wasm_bindgen ( structural , method , setter , js_class = "GPUCommandBuffer" , js_name = label ) ]
-    #[doc = "Setter for the `label` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandBuffer/label)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandBuffer`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    ///Setter for the `label` field of this object.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandBuffer/label)
+    ///
+    ///*This API requires the following crate features to be activated: `GpuCommandBuffer`*
+    ///
+    ///*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as
+    ///[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*
     pub fn set_label(this: &GpuCommandBuffer, value: Option<&str>);
+
 }

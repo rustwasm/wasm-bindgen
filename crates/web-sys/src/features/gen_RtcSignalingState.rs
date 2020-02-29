@@ -1,9 +1,11 @@
 use wasm_bindgen::prelude::*;
+
 #[wasm_bindgen]
-#[doc = "The `RtcSignalingState` enum."]
-#[doc = ""]
-#[doc = "*This API requires the following crate features to be activated: `RtcSignalingState`*"]
+///The `RtcSignalingState` enum.
+///
+///*This API requires the following crate features to be activated: `RtcSignalingState`*
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
 pub enum RtcSignalingState {
     Stable = "stable",
     HaveLocalOffer = "have-local-offer",

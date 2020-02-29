@@ -1,52 +1,61 @@
 use super::*;
 use wasm_bindgen::prelude::*;
+
 #[wasm_bindgen]
+
 extern "C" {
+
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MimeTypeArray , typescript_name = MimeTypeArray ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `MimeTypeArray` class."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MimeTypeArray`*"]
+    ///The `MimeTypeArray` class.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray)
+    ///
+    ///*This API requires the following crate features to be activated: `MimeTypeArray`*
     pub type MimeTypeArray;
+
     # [ wasm_bindgen ( structural , method , getter , js_class = "MimeTypeArray" , js_name = length ) ]
-    #[doc = "Getter for the `length` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/length)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MimeTypeArray`*"]
+    ///Getter for the `length` field of this object.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/length)
+    ///
+    ///*This API requires the following crate features to be activated: `MimeTypeArray`*
     pub fn length(this: &MimeTypeArray) -> u32;
+
     #[cfg(feature = "MimeType")]
     # [ wasm_bindgen ( method , structural , js_class = "MimeTypeArray" , js_name = item ) ]
-    #[doc = "The `item()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/item)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*"]
+    ///The `item()` method.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/item)
+    ///
+    ///*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*
     pub fn item(this: &MimeTypeArray, index: u32) -> Option<MimeType>;
+
     #[cfg(feature = "MimeType")]
     # [ wasm_bindgen ( method , structural , js_class = "MimeTypeArray" , js_name = namedItem ) ]
-    #[doc = "The `namedItem()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/namedItem)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*"]
+    ///The `namedItem()` method.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/namedItem)
+    ///
+    ///*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*
     pub fn named_item(this: &MimeTypeArray, name: &str) -> Option<MimeType>;
+
     #[cfg(feature = "MimeType")]
     #[wasm_bindgen(method, structural, js_class = "MimeTypeArray", indexing_getter)]
-    #[doc = "Indexing getter."]
-    #[doc = ""]
-    #[doc = ""]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*"]
+    ///Indexing getter.
+    ///
+    ///
+    ///
+    ///*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*
     pub fn get_with_index(this: &MimeTypeArray, index: u32) -> Option<MimeType>;
+
     #[cfg(feature = "MimeType")]
     #[wasm_bindgen(method, structural, js_class = "MimeTypeArray", indexing_getter)]
-    #[doc = "Indexing getter."]
-    #[doc = ""]
-    #[doc = ""]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*"]
+    ///Indexing getter.
+    ///
+    ///
+    ///
+    ///*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*
     pub fn get_with_name(this: &MimeTypeArray, name: &str) -> Option<MimeType>;
+
 }

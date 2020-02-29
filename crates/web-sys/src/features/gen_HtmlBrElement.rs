@@ -1,27 +1,33 @@
 use super::*;
 use wasm_bindgen::prelude::*;
+
 #[wasm_bindgen]
+
 extern "C" {
+
     # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLBRElement , typescript_name = HTMLBRElement ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `HtmlBrElement` class."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlBrElement`*"]
+    ///The `HtmlBrElement` class.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement)
+    ///
+    ///*This API requires the following crate features to be activated: `HtmlBrElement`*
     pub type HtmlBrElement;
+
     # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLBRElement" , js_name = clear ) ]
-    #[doc = "Getter for the `clear` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement/clear)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlBrElement`*"]
+    ///Getter for the `clear` field of this object.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement/clear)
+    ///
+    ///*This API requires the following crate features to be activated: `HtmlBrElement`*
     pub fn clear(this: &HtmlBrElement) -> String;
+
     # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLBRElement" , js_name = clear ) ]
-    #[doc = "Setter for the `clear` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement/clear)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlBrElement`*"]
+    ///Setter for the `clear` field of this object.
+    ///
+    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement/clear)
+    ///
+    ///*This API requires the following crate features to be activated: `HtmlBrElement`*
     pub fn set_clear(this: &HtmlBrElement, value: &str);
+
 }

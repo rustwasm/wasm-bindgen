@@ -1,9 +1,11 @@
 use wasm_bindgen::prelude::*;
+
 #[wasm_bindgen]
-#[doc = "The `ChannelPixelLayoutDataType` enum."]
-#[doc = ""]
-#[doc = "*This API requires the following crate features to be activated: `ChannelPixelLayoutDataType`*"]
+///The `ChannelPixelLayoutDataType` enum.
+///
+///*This API requires the following crate features to be activated: `ChannelPixelLayoutDataType`*
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
 pub enum ChannelPixelLayoutDataType {
     Uint8 = "uint8",
     Int8 = "int8",

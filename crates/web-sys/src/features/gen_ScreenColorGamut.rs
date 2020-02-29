@@ -1,9 +1,11 @@
 use wasm_bindgen::prelude::*;
+
 #[wasm_bindgen]
-#[doc = "The `ScreenColorGamut` enum."]
-#[doc = ""]
-#[doc = "*This API requires the following crate features to be activated: `ScreenColorGamut`*"]
+///The `ScreenColorGamut` enum.
+///
+///*This API requires the following crate features to be activated: `ScreenColorGamut`*
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
 pub enum ScreenColorGamut {
     Srgb = "srgb",
     P3 = "p3",

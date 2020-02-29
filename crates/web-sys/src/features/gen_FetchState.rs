@@ -1,9 +1,11 @@
 use wasm_bindgen::prelude::*;
+
 #[wasm_bindgen]
-#[doc = "The `FetchState` enum."]
-#[doc = ""]
-#[doc = "*This API requires the following crate features to be activated: `FetchState`*"]
+///The `FetchState` enum.
+///
+///*This API requires the following crate features to be activated: `FetchState`*
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
 pub enum FetchState {
     Requesting = "requesting",
     Responding = "responding",
