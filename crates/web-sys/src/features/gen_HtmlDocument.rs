@@ -281,7 +281,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/write)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn write(this: &HtmlDocument, text: &str) -> Result<(), JsValue>;
+    pub fn write(this: &HtmlDocument, text: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLDocument" , js_name = write ) ]
     #[doc = "The `write()` method."]
     #[doc = ""]
@@ -379,7 +379,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/writeln)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn writeln(this: &HtmlDocument, text: &str) -> Result<(), JsValue>;
+    pub fn writeln(this: &HtmlDocument, text: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLDocument" , js_name = writeln ) ]
     #[doc = "The `writeln()` method."]
     #[doc = ""]

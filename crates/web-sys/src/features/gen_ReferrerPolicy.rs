@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `ReferrerPolicy` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `ReferrerPolicy`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ReferrerPolicy {
     None = "",
     NoReferrer = "no-referrer",

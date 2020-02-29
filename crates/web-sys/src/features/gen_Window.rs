@@ -2623,7 +2623,7 @@ extern "C" {
         this: &Window,
         handler: &::js_sys::Function,
         timeout: i32,
-        arguments: &::wasm_bindgen::JsValue,
+        arguments: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Window" , js_name = setInterval ) ]
     #[doc = "The `setInterval()` method."]
@@ -2758,7 +2758,7 @@ extern "C" {
         this: &Window,
         handler: &str,
         timeout: i32,
-        unused: &::wasm_bindgen::JsValue,
+        unused: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Window" , js_name = setInterval ) ]
     #[doc = "The `setInterval()` method."]
@@ -2896,7 +2896,7 @@ extern "C" {
         this: &Window,
         handler: &::js_sys::Function,
         timeout: i32,
-        arguments: &::wasm_bindgen::JsValue,
+        arguments: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Window" , js_name = setTimeout ) ]
     #[doc = "The `setTimeout()` method."]
@@ -3031,7 +3031,7 @@ extern "C" {
         this: &Window,
         handler: &str,
         timeout: i32,
-        unused: &::wasm_bindgen::JsValue,
+        unused: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Window" , js_name = setTimeout ) ]
     #[doc = "The `setTimeout()` method."]

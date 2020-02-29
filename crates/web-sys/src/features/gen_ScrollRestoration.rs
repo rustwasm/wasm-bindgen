@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `ScrollRestoration` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `ScrollRestoration`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ScrollRestoration {
     Auto = "auto",
     Manual = "manual",

@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `SupportedType` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `SupportedType`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SupportedType {
     TextHtml = "text/html",
     TextXml = "text/xml",

@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `VideoFacingModeEnum` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `VideoFacingModeEnum`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum VideoFacingModeEnum {
     User = "user",
     Environment = "environment",

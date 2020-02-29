@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `CaretChangedReason` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `CaretChangedReason`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CaretChangedReason {
     Visibilitychange = "visibilitychange",
     Updateposition = "updateposition",

@@ -119,7 +119,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/importScripts)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
-    pub fn import_scripts(this: &WorkerGlobalScope, urls: &str) -> Result<(), JsValue>;
+    pub fn import_scripts(this: &WorkerGlobalScope, urls: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "WorkerGlobalScope" , js_name = importScripts ) ]
     #[doc = "The `importScripts()` method."]
     #[doc = ""]
@@ -546,7 +546,7 @@ extern "C" {
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
         timeout: i32,
-        arguments: &::wasm_bindgen::JsValue,
+        arguments: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "WorkerGlobalScope" , js_name = setInterval ) ]
     #[doc = "The `setInterval()` method."]
@@ -681,7 +681,7 @@ extern "C" {
         this: &WorkerGlobalScope,
         handler: &str,
         timeout: i32,
-        unused: &::wasm_bindgen::JsValue,
+        unused: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "WorkerGlobalScope" , js_name = setInterval ) ]
     #[doc = "The `setInterval()` method."]
@@ -819,7 +819,7 @@ extern "C" {
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
         timeout: i32,
-        arguments: &::wasm_bindgen::JsValue,
+        arguments: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "WorkerGlobalScope" , js_name = setTimeout ) ]
     #[doc = "The `setTimeout()` method."]
@@ -954,7 +954,7 @@ extern "C" {
         this: &WorkerGlobalScope,
         handler: &str,
         timeout: i32,
-        unused: &::wasm_bindgen::JsValue,
+        unused: &::js_sys::Array,
     ) -> Result<i32, JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "WorkerGlobalScope" , js_name = setTimeout ) ]
     #[doc = "The `setTimeout()` method."]

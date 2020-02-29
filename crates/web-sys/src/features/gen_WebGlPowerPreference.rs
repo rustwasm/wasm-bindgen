@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `WebGlPowerPreference` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `WebGlPowerPreference`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WebGlPowerPreference {
     Default = "default",
     LowPower = "low-power",

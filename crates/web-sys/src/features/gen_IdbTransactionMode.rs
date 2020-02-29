@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `IdbTransactionMode` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `IdbTransactionMode`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IdbTransactionMode {
     Readonly = "readonly",
     Readwrite = "readwrite",

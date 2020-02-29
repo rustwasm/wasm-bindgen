@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `RequestMode` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `RequestMode`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RequestMode {
     SameOrigin = "same-origin",
     NoCors = "no-cors",

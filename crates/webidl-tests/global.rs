@@ -1,7 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-
-include!(concat!(env!("OUT_DIR"), "/global.rs"));
+use crate::generated::*;
 
 #[wasm_bindgen]
 extern "C" {

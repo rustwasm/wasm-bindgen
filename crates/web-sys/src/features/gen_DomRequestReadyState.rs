@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `DomRequestReadyState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `DomRequestReadyState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DomRequestReadyState {
     Pending = "pending",
     Done = "done",

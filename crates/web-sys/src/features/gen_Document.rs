@@ -2453,7 +2453,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn append_with_node(this: &Document, nodes: &Node) -> Result<(), JsValue>;
+    pub fn append_with_node(this: &Document, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
     #[doc = "The `append()` method."]
     #[doc = ""]
@@ -2555,7 +2555,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/append)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn append_with_str(this: &Document, nodes: &str) -> Result<(), JsValue>;
+    pub fn append_with_str(this: &Document, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = append ) ]
     #[doc = "The `append()` method."]
     #[doc = ""]
@@ -2653,7 +2653,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn prepend_with_node(this: &Document, nodes: &Node) -> Result<(), JsValue>;
+    pub fn prepend_with_node(this: &Document, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
     #[doc = "The `prepend()` method."]
     #[doc = ""]
@@ -2755,7 +2755,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/prepend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn prepend_with_str(this: &Document, nodes: &str) -> Result<(), JsValue>;
+    pub fn prepend_with_str(this: &Document, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Document" , js_name = prepend ) ]
     #[doc = "The `prepend()` method."]
     #[doc = ""]

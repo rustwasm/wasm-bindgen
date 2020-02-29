@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `RtcDegradationPreference` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `RtcDegradationPreference`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RtcDegradationPreference {
     MaintainFramerate = "maintain-framerate",
     MaintainResolution = "maintain-resolution",

@@ -335,7 +335,7 @@ extern "C" {
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
         stream: &MediaStream,
-        more_streams: &MediaStream,
+        more_streams: &::js_sys::Array,
     ) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",

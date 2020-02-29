@@ -84,7 +84,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
-    pub fn append_with_node(this: &DocumentFragment, nodes: &Node) -> Result<(), JsValue>;
+    pub fn append_with_node(
+        this: &DocumentFragment,
+        nodes: &::js_sys::Array,
+    ) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
     #[doc = "The `append()` method."]
     #[doc = ""]
@@ -186,7 +189,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/append)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
-    pub fn append_with_str(this: &DocumentFragment, nodes: &str) -> Result<(), JsValue>;
+    pub fn append_with_str(this: &DocumentFragment, nodes: &::js_sys::Array)
+        -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = append ) ]
     #[doc = "The `append()` method."]
     #[doc = ""]
@@ -288,7 +292,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
-    pub fn prepend_with_node(this: &DocumentFragment, nodes: &Node) -> Result<(), JsValue>;
+    pub fn prepend_with_node(
+        this: &DocumentFragment,
+        nodes: &::js_sys::Array,
+    ) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
     #[doc = "The `prepend()` method."]
     #[doc = ""]
@@ -390,7 +397,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/prepend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
-    pub fn prepend_with_str(this: &DocumentFragment, nodes: &str) -> Result<(), JsValue>;
+    pub fn prepend_with_str(
+        this: &DocumentFragment,
+        nodes: &::js_sys::Array,
+    ) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentFragment" , js_name = prepend ) ]
     #[doc = "The `prepend()` method."]
     #[doc = ""]

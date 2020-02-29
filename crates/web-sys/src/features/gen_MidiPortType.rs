@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `MidiPortType` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `MidiPortType`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MidiPortType {
     Input = "input",
     Output = "output",

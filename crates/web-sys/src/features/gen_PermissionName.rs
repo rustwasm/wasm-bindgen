@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `PermissionName` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `PermissionName`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PermissionName {
     Geolocation = "geolocation",
     Notifications = "notifications",

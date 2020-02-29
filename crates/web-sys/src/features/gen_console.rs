@@ -16,7 +16,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/assert)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn assert_with_condition_and_data(condition: bool, data: &::wasm_bindgen::JsValue);
+        pub fn assert_with_condition_and_data(condition: bool, data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = assert ) ]
         #[doc = "The `console.assert()` function."]
         #[doc = ""]
@@ -153,7 +153,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/debug)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn debug(data: &::wasm_bindgen::JsValue);
+        pub fn debug(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = debug ) ]
         #[doc = "The `console.debug()` function."]
         #[doc = ""]
@@ -246,7 +246,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/dir)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn dir(data: &::wasm_bindgen::JsValue);
+        pub fn dir(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = dir ) ]
         #[doc = "The `console.dir()` function."]
         #[doc = ""]
@@ -339,7 +339,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/dirxml)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn dirxml(data: &::wasm_bindgen::JsValue);
+        pub fn dirxml(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = dirxml ) ]
         #[doc = "The `console.dirxml()` function."]
         #[doc = ""]
@@ -432,7 +432,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/error)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn error(data: &::wasm_bindgen::JsValue);
+        pub fn error(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = error ) ]
         #[doc = "The `console.error()` function."]
         #[doc = ""]
@@ -525,7 +525,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/exception)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn exception(data: &::wasm_bindgen::JsValue);
+        pub fn exception(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = exception ) ]
         #[doc = "The `console.exception()` function."]
         #[doc = ""]
@@ -618,7 +618,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/group)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn group(data: &::wasm_bindgen::JsValue);
+        pub fn group(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = group ) ]
         #[doc = "The `console.group()` function."]
         #[doc = ""]
@@ -711,7 +711,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/groupCollapsed)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn group_collapsed(data: &::wasm_bindgen::JsValue);
+        pub fn group_collapsed(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = groupCollapsed ) ]
         #[doc = "The `console.groupCollapsed()` function."]
         #[doc = ""]
@@ -814,7 +814,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/info)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn info(data: &::wasm_bindgen::JsValue);
+        pub fn info(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = info ) ]
         #[doc = "The `console.info()` function."]
         #[doc = ""]
@@ -907,7 +907,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/log)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn log(data: &::wasm_bindgen::JsValue);
+        pub fn log(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = log ) ]
         #[doc = "The `console.log()` function."]
         #[doc = ""]
@@ -1000,7 +1000,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/profile)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn profile(data: &::wasm_bindgen::JsValue);
+        pub fn profile(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = profile ) ]
         #[doc = "The `console.profile()` function."]
         #[doc = ""]
@@ -1093,7 +1093,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/profileEnd)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn profile_end(data: &::wasm_bindgen::JsValue);
+        pub fn profile_end(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = profileEnd ) ]
         #[doc = "The `console.profileEnd()` function."]
         #[doc = ""]
@@ -1186,7 +1186,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/table)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn table(data: &::wasm_bindgen::JsValue);
+        pub fn table(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = table ) ]
         #[doc = "The `console.table()` function."]
         #[doc = ""]
@@ -1314,7 +1314,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/timeLog)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn time_log_with_label_and_data(label: &str, data: &::wasm_bindgen::JsValue);
+        pub fn time_log_with_label_and_data(label: &str, data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = timeLog ) ]
         #[doc = "The `console.timeLog()` function."]
         #[doc = ""]
@@ -1430,7 +1430,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/trace)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn trace(data: &::wasm_bindgen::JsValue);
+        pub fn trace(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = trace ) ]
         #[doc = "The `console.trace()` function."]
         #[doc = ""]
@@ -1523,7 +1523,7 @@ pub mod console {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/console/warn)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `console`*"]
-        pub fn warn(data: &::wasm_bindgen::JsValue);
+        pub fn warn(data: &::js_sys::Array);
         # [ wasm_bindgen ( js_namespace = console , js_name = warn ) ]
         #[doc = "The `console.warn()` function."]
         #[doc = ""]

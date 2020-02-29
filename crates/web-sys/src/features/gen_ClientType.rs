@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `ClientType` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `ClientType`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ClientType {
     Window = "window",
     Worker = "worker",

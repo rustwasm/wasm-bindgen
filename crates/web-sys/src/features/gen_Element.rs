@@ -667,7 +667,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/after)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn after_with_node(this: &Element, nodes: &Node) -> Result<(), JsValue>;
+    pub fn after_with_node(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = after ) ]
     #[doc = "The `after()` method."]
     #[doc = ""]
@@ -766,7 +766,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/after)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn after_with_str(this: &Element, nodes: &str) -> Result<(), JsValue>;
+    pub fn after_with_str(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = after ) ]
     #[doc = "The `after()` method."]
     #[doc = ""]
@@ -864,7 +864,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/before)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn before_with_node(this: &Element, nodes: &Node) -> Result<(), JsValue>;
+    pub fn before_with_node(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = before ) ]
     #[doc = "The `before()` method."]
     #[doc = ""]
@@ -966,7 +966,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/before)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn before_with_str(this: &Element, nodes: &str) -> Result<(), JsValue>;
+    pub fn before_with_str(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = before ) ]
     #[doc = "The `before()` method."]
     #[doc = ""]
@@ -1071,7 +1071,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceWith)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn replace_with_with_node(this: &Element, nodes: &Node) -> Result<(), JsValue>;
+    pub fn replace_with_with_node(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = replaceWith ) ]
     #[doc = "The `replaceWith()` method."]
     #[doc = ""]
@@ -1173,7 +1173,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceWith)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn replace_with_with_str(this: &Element, nodes: &str) -> Result<(), JsValue>;
+    pub fn replace_with_with_str(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = replaceWith ) ]
     #[doc = "The `replaceWith()` method."]
     #[doc = ""]
@@ -1554,7 +1554,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/append)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn append_with_node(this: &Element, nodes: &Node) -> Result<(), JsValue>;
+    pub fn append_with_node(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = append ) ]
     #[doc = "The `append()` method."]
     #[doc = ""]
@@ -1656,7 +1656,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/append)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn append_with_str(this: &Element, nodes: &str) -> Result<(), JsValue>;
+    pub fn append_with_str(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = append ) ]
     #[doc = "The `append()` method."]
     #[doc = ""]
@@ -1754,7 +1754,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/prepend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn prepend_with_node(this: &Element, nodes: &Node) -> Result<(), JsValue>;
+    pub fn prepend_with_node(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = prepend ) ]
     #[doc = "The `prepend()` method."]
     #[doc = ""]
@@ -1856,7 +1856,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/prepend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn prepend_with_str(this: &Element, nodes: &str) -> Result<(), JsValue>;
+    pub fn prepend_with_str(this: &Element, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "Element" , js_name = prepend ) ]
     #[doc = "The `prepend()` method."]
     #[doc = ""]

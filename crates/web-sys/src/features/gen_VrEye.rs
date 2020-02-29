@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `VrEye` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `VrEye`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum VrEye {
     Left = "left",
     Right = "right",

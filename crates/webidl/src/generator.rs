@@ -5,6 +5,7 @@ use proc_macro2::Literal;
 use syn::{Ident, Type};
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
+use crate::Options;
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
 use crate::traverse::TraverseType;
 use crate::util::{snake_case_ident, required_doc_string, get_cfg_features, mdn_doc};
@@ -20,10 +21,10 @@ fn add_features(features: &mut BTreeSet<String>, ty: &impl TraverseType) {
     });
 }
 
-fn get_features_doc(name: String) -> Option<String> {
+fn get_features_doc(options: &Options, name: String) -> Option<String> {
     let mut features = BTreeSet::new();
     features.insert(name);
-    required_doc_string(&features)
+    required_doc_string(options, &features)
 }
 
 fn comment(mut comment: String, features: &Option<String>) -> TokenStream {
@@ -63,6 +64,31 @@ fn maybe_unstable_docs(unstable: bool) -> Option<proc_macro2::TokenStream> {
     }
 }
 
+fn generate_arguments(arguments: &[(Ident, Type)], variadic: bool) -> Vec<TokenStream> {
+    let last = arguments.len() - 1;
+
+    arguments.into_iter()
+        .enumerate()
+        .map(|(i, (name, ty))| {
+            if variadic && i == last {
+                quote!( #name: &::js_sys::Array )
+
+            } else {
+                quote!( #name: #ty )
+            }
+        })
+        .collect::<Vec<_>>()
+}
+
+fn generate_variadic(variadic: bool) -> Option<TokenStream> {
+    if variadic {
+        Some(quote!( variadic, ))
+
+    } else {
+        None
+    }
+}
+
 
 
 pub struct EnumVariant {
@@ -89,7 +115,7 @@ pub struct Enum {
 }
 
 impl Enum {
-    pub fn generate(&self) -> TokenStream {
+    pub fn generate(&self, options: &Options) -> TokenStream {
         let Enum {
             name,
             variants,
@@ -99,7 +125,7 @@ impl Enum {
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
 
-        let doc_comment = comment(format!("The `{}` enum.", name), &get_features_doc(name.to_string()));
+        let doc_comment = comment(format!("The `{}` enum.", name), &get_features_doc(options, name.to_string()));
 
         let variants = variants.into_iter()
             .map(|variant| variant.generate())
@@ -112,7 +138,7 @@ impl Enum {
             #[wasm_bindgen]
             #doc_comment
             #unstable_docs
-            #[derive(Copy, Clone, PartialEq, Debug)]
+            #[derive(Debug, Clone, Copy, PartialEq, Eq)]
             pub enum #name {
                 #(#variants),*
             }
@@ -137,7 +163,7 @@ pub struct InterfaceAttribute {
 }
 
 impl InterfaceAttribute {
-    fn generate(&self, parent_name: &Ident, parent_js_name: &str, parents: &[Ident]) -> TokenStream {
+    fn generate(&self, options: &Options, parent_name: &Ident, parent_js_name: &str, parents: &[Ident]) -> TokenStream {
         let InterfaceAttribute {
             js_name,
             ty,
@@ -163,11 +189,11 @@ impl InterfaceAttribute {
 
         features.remove(&parent_name.to_string());
 
-        let cfg_features = get_cfg_features(&features);
+        let cfg_features = get_cfg_features(options, &features);
 
         features.insert(parent_name.to_string());
 
-        let doc_comment = required_doc_string(&features);
+        let doc_comment = required_doc_string(options, &features);
 
         let structural = if *structural {
             quote!( structural, )
@@ -278,7 +304,7 @@ pub struct InterfaceMethod {
 }
 
 impl InterfaceMethod {
-    fn generate(&self, parent_name: &Ident, parent_js_name: String, parents: &[Ident]) -> TokenStream {
+    fn generate(&self, options: &Options, parent_name: &Ident, parent_js_name: String, parents: &[Ident]) -> TokenStream {
         let InterfaceMethod {
             name,
             js_name,
@@ -352,11 +378,11 @@ impl InterfaceMethod {
 
         features.remove(&parent_name.to_string());
 
-        let cfg_features = get_cfg_features(&features);
+        let cfg_features = get_cfg_features(options, &features);
 
         features.insert(parent_name.to_string());
 
-        let doc_comment = comment(doc_comment, &required_doc_string(&features));
+        let doc_comment = comment(doc_comment, &required_doc_string(options, &features));
 
         let ret = ret_ty.as_ref().map(|ret| quote!( #ret ));
 
@@ -405,18 +431,8 @@ impl InterfaceMethod {
             )
         };
 
-        let variadic = if *variadic {
-            Some(quote!( variadic, ))
-
-        } else {
-            None
-        };
-
-        let arguments = arguments.into_iter()
-            .map(|(name, ty)| {
-                quote!( #name: #ty )
-            })
-            .collect::<Vec<_>>();
+        let arguments = generate_arguments(arguments, *variadic);
+        let variadic = generate_variadic(*variadic);
 
         quote! {
             #unstable_attr
@@ -482,7 +498,7 @@ pub struct InterfaceConst {
 }
 
 impl InterfaceConst {
-    fn generate(&self, parent_name: &Ident, parent_js_name: &str) -> TokenStream {
+    fn generate(&self, options: &Options, parent_name: &Ident, parent_js_name: &str) -> TokenStream {
         let name = &self.name;
         let ty = &self.ty;
         let js_name = &self.js_name;
@@ -494,7 +510,7 @@ impl InterfaceConst {
 
         let doc_comment = comment(
             format!("The `{}.{}` const.", parent_js_name, js_name),
-            &get_features_doc(parent_name.to_string()),
+            &get_features_doc(options, parent_name.to_string()),
         );
 
         quote! {
@@ -520,7 +536,7 @@ pub struct Interface {
 }
 
 impl Interface {
-    pub fn generate(&self) -> TokenStream {
+    pub fn generate(&self, options: &Options) -> TokenStream {
         let Interface {
             name,
             js_name,
@@ -538,7 +554,7 @@ impl Interface {
 
         let doc_comment = comment(
             format!("The `{}` class.\n\n{}", name, mdn_doc(js_name, None)),
-            &get_features_doc(name.to_string()),
+            &get_features_doc(options, name.to_string()),
         );
 
         let deprecated = deprecated.as_ref().map(|msg| {
@@ -562,7 +578,7 @@ impl Interface {
             .collect::<Vec<_>>();
 
         let consts = consts.into_iter()
-            .map(|x| x.generate(&name, js_name))
+            .map(|x| x.generate(options, &name, js_name))
             .collect::<Vec<_>>();
 
         let consts = if consts.is_empty() {
@@ -578,11 +594,11 @@ impl Interface {
         };
 
         let attributes = attributes.into_iter()
-            .map(|x| x.generate(&name, js_name, &parents))
+            .map(|x| x.generate(options, &name, js_name, &parents))
             .collect::<Vec<_>>();
 
         let methods = methods.into_iter()
-            .map(|x| x.generate(&name, js_name.to_string(), &parents))
+            .map(|x| x.generate(options, &name, js_name.to_string(), &parents))
             .collect::<Vec<_>>();
 
         let js_name = raw_ident(js_name);
@@ -626,7 +642,7 @@ pub struct DictionaryField {
 }
 
 impl DictionaryField {
-    fn generate_rust(&self, parent_name: String, unstable: bool) -> TokenStream {
+    fn generate_rust(&self, options: &Options, parent_name: String, unstable: bool) -> TokenStream {
         let DictionaryField {
             name,
             js_name,
@@ -643,11 +659,11 @@ impl DictionaryField {
 
         features.remove(&parent_name);
 
-        let cfg_features = get_cfg_features(&features);
+        let cfg_features = get_cfg_features(options, &features);
 
         features.insert(parent_name);
 
-        let doc_comment = comment(format!("Change the `{}` field of this object.", js_name), &required_doc_string(&features));
+        let doc_comment = comment(format!("Change the `{}` field of this object.", js_name), &required_doc_string(options, &features));
 
         quote! {
             #unstable_attr
@@ -678,7 +694,7 @@ pub struct Dictionary {
 }
 
 impl Dictionary {
-    pub fn generate(&self) -> TokenStream {
+    pub fn generate(&self, options: &Options) -> TokenStream {
         let Dictionary {
             name,
             js_name,
@@ -707,15 +723,15 @@ impl Dictionary {
 
         required_features.remove(&name.to_string());
 
-        let cfg_features = get_cfg_features(&required_features);
+        let cfg_features = get_cfg_features(options, &required_features);
 
         required_features.insert(name.to_string());
 
-        let doc_comment = comment(format!("The `{}` dictionary.", name), &get_features_doc(name.to_string()));
-        let ctor_doc_comment = comment(format!("Construct a new `{}`.", name), &required_doc_string(&required_features));
+        let doc_comment = comment(format!("The `{}` dictionary.", name), &get_features_doc(options, name.to_string()));
+        let ctor_doc_comment = comment(format!("Construct a new `{}`.", name), &required_doc_string(options, &required_features));
 
         let fields = fields.into_iter()
-            .map(|field| field.generate_rust(name.to_string(), *unstable))
+            .map(|field| field.generate_rust(options, name.to_string(), *unstable))
             .collect::<Vec<_>>();
 
         quote! {
@@ -726,6 +742,7 @@ impl Dictionary {
             #[wasm_bindgen]
             extern "C" {
                 #[wasm_bindgen(extends = ::js_sys::Object, js_name = #js_name)]
+                #[derive(Debug, Clone, PartialEq, Eq)]
                 #doc_comment
                 #unstable_docs
                 pub type #name;
@@ -761,7 +778,7 @@ pub struct Function {
 }
 
 impl Function {
-    fn generate(&self, parent_name: &Ident, parent_js_name: String) -> TokenStream {
+    fn generate(&self, options: &Options, parent_name: &Ident, parent_js_name: String) -> TokenStream {
         let Function {
             name,
             js_name,
@@ -796,11 +813,11 @@ impl Function {
 
         features.remove(&parent_name.to_string());
 
-        let cfg_features = get_cfg_features(&features);
+        let cfg_features = get_cfg_features(options, &features);
 
         features.insert(parent_name.to_string());
 
-        let doc_comment = comment(doc_comment, &required_doc_string(&features));
+        let doc_comment = comment(doc_comment, &required_doc_string(options, &features));
 
         let ret = ret_ty.as_ref().map(|ret| quote!( #ret ));
 
@@ -821,18 +838,8 @@ impl Function {
             None
         };
 
-        let variadic = if *variadic {
-            Some(quote!( variadic, ))
-
-        } else {
-            None
-        };
-
-        let arguments = arguments.into_iter()
-            .map(|(name, ty)| {
-                quote!( #name: #ty )
-            })
-            .collect::<Vec<_>>();
+        let arguments = generate_arguments(arguments, *variadic);
+        let variadic = generate_variadic(*variadic);
 
         let js_name = raw_ident(js_name);
 
@@ -859,7 +866,7 @@ pub struct Namespace {
 }
 
 impl Namespace {
-    pub fn generate(&self) -> TokenStream {
+    pub fn generate(&self, options: &Options) -> TokenStream {
         let Namespace {
             name,
             js_name,
@@ -867,7 +874,7 @@ impl Namespace {
         } = self;
 
         let functions = functions.into_iter()
-            .map(|x| x.generate(&name, js_name.to_string()))
+            .map(|x| x.generate(options, &name, js_name.to_string()))
             .collect::<Vec<_>>();
 
         quote! {

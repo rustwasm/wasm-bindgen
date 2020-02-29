@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `FlexLineGrowthState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `FlexLineGrowthState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FlexLineGrowthState {
     Unchanged = "unchanged",
     Shrinking = "shrinking",

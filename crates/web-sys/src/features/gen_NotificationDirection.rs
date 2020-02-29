@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `NotificationDirection` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `NotificationDirection`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NotificationDirection {
     Auto = "auto",
     Ltr = "ltr",

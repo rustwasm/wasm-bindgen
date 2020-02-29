@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `FrameType` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `FrameType`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FrameType {
     Auxiliary = "auxiliary",
     TopLevel = "top-level",

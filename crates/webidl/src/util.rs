@@ -11,6 +11,7 @@ use weedle;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
+use crate::Options;
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use crate::idl_type::{IdlType, ToIdlType};
 use crate::generator::{InterfaceConstValue, InterfaceMethodKind, InterfaceMethod};
@@ -580,8 +581,8 @@ fn flag_slices_immutable(ty: &mut IdlType) {
     }
 }
 
-pub fn required_doc_string(features: &BTreeSet<String>) -> Option<String> {
-    if features.len() == 0 {
+pub fn required_doc_string(options: &Options, features: &BTreeSet<String>) -> Option<String> {
+    if !options.features || features.len() == 0 {
         return None;
     }
     let list = features
@@ -596,10 +597,10 @@ pub fn required_doc_string(features: &BTreeSet<String>) -> Option<String> {
     ))
 }
 
-pub fn get_cfg_features(features: &BTreeSet<String>) -> Option<syn::Attribute> {
+pub fn get_cfg_features(options: &Options, features: &BTreeSet<String>) -> Option<syn::Attribute> {
     let len = features.len();
 
-    if len == 0 {
+    if !options.features || len == 0 {
         None
 
     } else {

@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `Transport` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `Transport`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Transport {
     Bt = "bt",
     Ble = "ble",

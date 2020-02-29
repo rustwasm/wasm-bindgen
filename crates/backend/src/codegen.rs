@@ -849,43 +849,44 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
+            // It should really be using &str for all of these, but that requires some major changes to cli-support
             #[allow(clippy::all)]
             impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
-                    <&'static str as wasm_bindgen::describe::WasmDescribe>::describe()
+                    <wasm_bindgen::JsValue as wasm_bindgen::describe::WasmDescribe>::describe()
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
-                type Abi = <&'static str as wasm_bindgen::convert::IntoWasmAbi>::Abi;
+                type Abi = <wasm_bindgen::JsValue as wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
                 #[inline]
                 fn into_abi(self) -> Self::Abi {
-                    <&'static str as wasm_bindgen::convert::IntoWasmAbi>::into_abi(self.to_str())
+                    <wasm_bindgen::JsValue as wasm_bindgen::convert::IntoWasmAbi>::into_abi(self.into())
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
-                type Abi = <String as wasm_bindgen::convert::FromWasmAbi>::Abi;
+                type Abi = <wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>::Abi;
 
                 unsafe fn from_abi(js: Self::Abi) -> Self {
-                    let s = <String as wasm_bindgen::convert::FromWasmAbi>::from_abi(js);
-                    #name::from_str(&s).unwrap_or(#name::__Nonexhaustive)
+                    let s = <wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>::from_abi(js);
+                    #name::from_js_value(&s).unwrap_or(#name::__Nonexhaustive)
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
-                fn none() -> Self::Abi { <&'static str as wasm_bindgen::convert::OptionIntoWasmAbi>::none() }
+                fn none() -> Self::Abi { <::js_sys::Object as wasm_bindgen::convert::OptionIntoWasmAbi>::none() }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
-                fn is_none(abi: &Self::Abi) -> bool { <String as wasm_bindgen::convert::OptionFromWasmAbi>::is_none(abi) }
+                fn is_none(abi: &Self::Abi) -> bool { <::js_sys::Object as wasm_bindgen::convert::OptionFromWasmAbi>::is_none(abi) }
             }
 
             #[allow(clippy::all)]

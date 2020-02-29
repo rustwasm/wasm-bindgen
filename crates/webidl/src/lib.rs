@@ -40,6 +40,14 @@ use weedle::interface::InterfaceMember;
 use weedle::Parse;
 
 
+/// Options to configure the conversion process
+#[derive(Debug)]
+pub struct Options {
+    /// Whether to generate cfg features or not
+    pub features: bool,
+}
+
+
 #[derive(Default)]
 struct Program {
     tokens: TokenStream,
@@ -105,7 +113,7 @@ fn parse_source(source: &str) -> Result<Vec<weedle::Definition>> {
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-fn parse(webidl_source: &str, unstable_source: &str) -> Result<BTreeMap<String, Program>> {
+fn parse(webidl_source: &str, unstable_source: &str, options: Options) -> Result<BTreeMap<String, Program>> {
     let mut first_pass_record: FirstPassRecord = Default::default();
 
     let definitions = parse_source(webidl_source)?;
@@ -119,27 +127,27 @@ fn parse(webidl_source: &str, unstable_source: &str) -> Result<BTreeMap<String, 
     for (js_name, e) in first_pass_record.enums.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_enum(program, name, js_name, e);
+        first_pass_record.append_enum(&options, program, name, js_name, e);
     }
     for (js_name, d) in first_pass_record.dictionaries.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_dictionary(program, name, js_name.to_string(), d);
+        first_pass_record.append_dictionary(&options, program, name, js_name.to_string(), d);
     }
     for (js_name, n) in first_pass_record.namespaces.iter() {
         let name = rust_ident(&snake_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_ns(program, name, js_name.to_string(), n);
+        first_pass_record.append_ns(&options, program, name, js_name.to_string(), n);
     }
     for (js_name, d) in first_pass_record.interfaces.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_interface(program, name, js_name.to_string(), d);
+        first_pass_record.append_interface(&options, program, name, js_name.to_string(), d);
     }
     for (js_name, d) in first_pass_record.callback_interfaces.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_callback_interface(program, name, js_name.to_string(), d);
+        first_pass_record.append_callback_interface(&options, program, name, js_name.to_string(), d);
     }
 
     Ok(types)
@@ -157,8 +165,8 @@ pub struct Feature {
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile(webidl_source: &str, experimental_source: &str) -> Result<BTreeMap<String, Feature>> {
-    let ast = parse(webidl_source, experimental_source)?;
+pub fn compile(webidl_source: &str, experimental_source: &str, options: Options) -> Result<BTreeMap<String, Feature>> {
+    let ast = parse(webidl_source, experimental_source, options)?;
 
     let features = ast.into_iter().filter_map(|(name, program)| {
         let code = program.to_string()?;
@@ -170,7 +178,7 @@ pub fn compile(webidl_source: &str, experimental_source: &str) -> Result<BTreeMa
 }
 
 impl<'src> FirstPassRecord<'src> {
-    fn append_enum(&self, program: &mut Program, name: Ident, js_name: &str, data: &first_pass::EnumData<'src>) {
+    fn append_enum(&self, options: &Options, program: &mut Program, name: Ident, js_name: &str, data: &first_pass::EnumData<'src>) {
         let enum_ = data.definition;
         let unstable = data.stability.is_unstable();
 
@@ -191,7 +199,7 @@ impl<'src> FirstPassRecord<'src> {
             .collect::<Vec<_>>();
 
         Enum { name, variants, unstable }
-            .generate()
+            .generate(options)
             .to_tokens(&mut program.tokens);
     }
 
@@ -199,6 +207,7 @@ impl<'src> FirstPassRecord<'src> {
     // https://www.w3.org/TR/WebIDL-1/#idl-dictionaries
     fn append_dictionary(
         &self,
+        options: &Options,
         program: &mut Program,
         name: Ident,
         js_name: String,
@@ -220,7 +229,7 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         Dictionary { name, js_name, fields, unstable }
-            .generate()
+            .generate(options)
             .to_tokens(&mut program.tokens);
     }
 
@@ -334,6 +343,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_ns(
         &'src self,
+        options: &Options,
         program: &mut Program,
         name: Ident,
         js_name: String,
@@ -347,7 +357,7 @@ impl<'src> FirstPassRecord<'src> {
 
         if !functions.is_empty() {
             Namespace { name, js_name, functions }
-                .generate()
+                .generate(options)
                 .to_tokens(&mut program.tokens);
         }
     }
@@ -402,6 +412,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_interface(
         &self,
+        options: &Options,
         program: &mut Program,
         name: Ident,
         js_name: String,
@@ -477,7 +488,7 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         Interface { name, js_name, deprecated, has_interface, parents, consts, attributes, methods, unstable }
-            .generate()
+            .generate(options)
             .to_tokens(&mut program.tokens);
     }
 
@@ -545,6 +556,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_callback_interface(
         &self,
+        options: &Options,
         program: &mut Program,
         name: Ident,
         js_name: String,
@@ -580,7 +592,7 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         Dictionary { name, js_name, fields, unstable: false }
-            .generate()
+            .generate(options)
             .to_tokens(&mut program.tokens);
     }
 }

@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `MediaSourceReadyState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `MediaSourceReadyState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MediaSourceReadyState {
     Closed = "closed",
     Open = "open",

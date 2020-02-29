@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `MidiPortDeviceState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `MidiPortDeviceState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MidiPortDeviceState {
     Disconnected = "disconnected",
     Connected = "connected",

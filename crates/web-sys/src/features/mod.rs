@@ -1,4 +1,4 @@
-#![allow(non_snake_case)]
+#![allow(non_snake_case, unused_imports)]
 
 #[cfg(feature = "AbortController")]
 mod gen_AbortController;

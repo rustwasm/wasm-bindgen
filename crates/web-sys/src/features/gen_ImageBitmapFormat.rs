@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `ImageBitmapFormat` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `ImageBitmapFormat`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ImageBitmapFormat {
     Rgba32 = "RGBA32",
     Bgra32 = "BGRA32",

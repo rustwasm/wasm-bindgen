@@ -37,7 +37,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn after_with_node(this: &DocumentType, nodes: &Node) -> Result<(), JsValue>;
+    pub fn after_with_node(this: &DocumentType, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
     #[doc = "The `after()` method."]
     #[doc = ""]
@@ -139,7 +139,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/after)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn after_with_str(this: &DocumentType, nodes: &str) -> Result<(), JsValue>;
+    pub fn after_with_str(this: &DocumentType, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = after ) ]
     #[doc = "The `after()` method."]
     #[doc = ""]
@@ -241,7 +241,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn before_with_node(this: &DocumentType, nodes: &Node) -> Result<(), JsValue>;
+    pub fn before_with_node(this: &DocumentType, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
     #[doc = "The `before()` method."]
     #[doc = ""]
@@ -343,7 +343,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/before)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn before_with_str(this: &DocumentType, nodes: &str) -> Result<(), JsValue>;
+    pub fn before_with_str(this: &DocumentType, nodes: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = before ) ]
     #[doc = "The `before()` method."]
     #[doc = ""]
@@ -452,7 +452,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn replace_with_with_node(this: &DocumentType, nodes: &Node) -> Result<(), JsValue>;
+    pub fn replace_with_with_node(
+        this: &DocumentType,
+        nodes: &::js_sys::Array,
+    ) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
     #[doc = "The `replaceWith()` method."]
     #[doc = ""]
@@ -554,7 +557,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/replaceWith)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn replace_with_with_str(this: &DocumentType, nodes: &str) -> Result<(), JsValue>;
+    pub fn replace_with_with_str(
+        this: &DocumentType,
+        nodes: &::js_sys::Array,
+    ) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DocumentType" , js_name = replaceWith ) ]
     #[doc = "The `replaceWith()` method."]
     #[doc = ""]

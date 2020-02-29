@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUComputePassDescriptor ) ]
+    #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuComputePassDescriptor` dictionary."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuComputePassDescriptor`*"]

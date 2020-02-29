@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `TextTrackMode` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `TextTrackMode`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TextTrackMode {
     Disabled = "disabled",
     Hidden = "hidden",

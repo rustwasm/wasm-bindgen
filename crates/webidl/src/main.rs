@@ -1,9 +1,27 @@
 use anyhow::{Context, Result};
 use sourcefile::SourceFile;
+use std::collections::BTreeMap;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use structopt::StructOpt;
+use wasm_bindgen_webidl::Feature;
+
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "wasm-bindgen-webidl", about = "Converts WebIDL into wasm-bindgen compatible code.")]
+struct Opt {
+    #[structopt(parse(from_os_str))]
+    input_dir: PathBuf,
+
+    #[structopt(parse(from_os_str))]
+    output_dir: PathBuf,
+
+    #[structopt(long)]
+    no_features: bool,
+}
+
 
 /// Read all WebIDL files in a directory into a single `SourceFile`
 fn read_source_from_path(dir: &Path) -> Result<SourceFile> {
@@ -37,31 +55,16 @@ fn rustfmt(path: &PathBuf, name: &str) -> Result<()> {
     Ok(())
 }
 
-fn parse_args() -> (String, String) {
-    let mut args = std::env::args().into_iter();
+fn parse_webidl(opt: &Opt, enabled: SourceFile, unstable: SourceFile) -> Result<BTreeMap<String, Feature>> {
+    let options = wasm_bindgen_webidl::Options {
+        features: !opt.no_features,
+    };
 
-    let _ = args.next().unwrap();
-    let from = args.next().unwrap();
-    let to = args.next().unwrap();
-
-    (from, to)
-}
-
-fn main() -> Result<()> {
-    env_logger::init();
-
-    let (from, to) = parse_args();
-    let from = Path::new(&from);
-    let to = Path::new(&to);
-
-    let source = read_source_from_path(&from.join("enabled"))?;
-    let unstable_source = read_source_from_path(&from.join("unstable"))?;
-
-    let features = match wasm_bindgen_webidl::compile(&source.contents, &unstable_source.contents) {
-        Ok(features) => features,
+    match wasm_bindgen_webidl::compile(&enabled.contents, &unstable.contents, options) {
+        Ok(features) => Ok(features),
         Err(e) => {
             if let Some(err) = e.downcast_ref::<wasm_bindgen_webidl::WebIDLParseError>() {
-                if let Some(pos) = source.resolve_offset(err.0) {
+                if let Some(pos) = enabled.resolve_offset(err.0) {
                     let ctx = format!(
                         "compiling WebIDL into wasm-bindgen bindings in file \
                          \"{}\", line {} column {}",
@@ -76,7 +79,21 @@ fn main() -> Result<()> {
             }
             return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
         }
-    };
+    }
+}
+
+fn main() -> Result<()> {
+    env_logger::init();
+
+    let opt = Opt::from_args();
+
+    let from = &opt.input_dir;
+    let to = &opt.output_dir;
+
+    let source = read_source_from_path(&from.join("enabled"))?;
+    let unstable_source = read_source_from_path(&from.join("unstable"))?;
+
+    let features = parse_webidl(&opt, source, unstable_source)?;
 
 
     if to.exists() {
@@ -96,23 +113,29 @@ fn main() -> Result<()> {
 
 
     let binding_file = features.keys().map(|name| {
-        format!("#[cfg(feature = \"{name}\")] mod gen_{name};\n#[cfg(feature = \"{name}\")] pub use gen_{name}::*;", name = name)
+        if opt.no_features {
+            format!("mod gen_{name};\npub use gen_{name}::*;", name = name)
+        } else {
+            format!("#[cfg(feature = \"{name}\")] mod gen_{name};\n#[cfg(feature = \"{name}\")] pub use gen_{name}::*;", name = name)
+        }
     }).collect::<Vec<_>>().join("\n\n");
 
-    fs::write(to.join("mod.rs"), format!("#![allow(non_snake_case)]\n\n{}", binding_file))?;
+    fs::write(to.join("mod.rs"), format!("#![allow(non_snake_case, unused_imports)]\n\n{}", binding_file))?;
 
     rustfmt(&to.join("mod.rs"), "mod")?;
 
 
-    let features = features.iter().map(|(name, feature)| {
-        let features = feature.required_features.iter()
-            .map(|x| format!("\"{}\"", x))
-            .collect::<Vec<_>>()
-            .join(", ");
-        format!("{} = [{}]", name, features)
-    }).collect::<Vec<_>>().join("\n");
+    if !opt.no_features {
+        let features = features.iter().map(|(name, feature)| {
+            let features = feature.required_features.iter()
+                .map(|x| format!("\"{}\"", x))
+                .collect::<Vec<_>>()
+                .join(", ");
+            format!("{} = [{}]", name, features)
+        }).collect::<Vec<_>>().join("\n");
 
-    fs::write(&"features", features).context("writing features to current directory")?;
+        fs::write(&"features", features).context("writing features to current directory")?;
+    }
 
     Ok(())
 }

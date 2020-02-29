@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `BiquadFilterType` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `BiquadFilterType`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BiquadFilterType {
     Lowpass = "lowpass",
     Highpass = "highpass",

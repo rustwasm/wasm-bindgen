@@ -37,7 +37,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/add)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
-    pub fn add(this: &DomTokenList, tokens: &str) -> Result<(), JsValue>;
+    pub fn add(this: &DomTokenList, tokens: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DOMTokenList" , js_name = add ) ]
     #[doc = "The `add()` method."]
     #[doc = ""]
@@ -149,7 +149,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/remove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
-    pub fn remove(this: &DomTokenList, tokens: &str) -> Result<(), JsValue>;
+    pub fn remove(this: &DomTokenList, tokens: &::js_sys::Array) -> Result<(), JsValue>;
     # [ wasm_bindgen ( catch , method , structural , js_class = "DOMTokenList" , js_name = remove ) ]
     #[doc = "The `remove()` method."]
     #[doc = ""]

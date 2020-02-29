@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `ProfileTimelineMessagePortOperationType` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMessagePortOperationType`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ProfileTimelineMessagePortOperationType {
     SerializeData = "serializeData",
     DeserializeData = "deserializeData",

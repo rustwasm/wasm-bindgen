@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `MediaStreamTrackState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MediaStreamTrackState {
     Live = "live",
     Ended = "ended",

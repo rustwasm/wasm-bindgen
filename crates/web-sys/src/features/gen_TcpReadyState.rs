@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `TcpReadyState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `TcpReadyState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TcpReadyState {
     Connecting = "connecting",
     Open = "open",

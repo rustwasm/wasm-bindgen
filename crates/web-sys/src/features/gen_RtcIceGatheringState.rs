@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `RtcIceGatheringState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `RtcIceGatheringState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RtcIceGatheringState {
     New = "new",
     Gathering = "gathering",

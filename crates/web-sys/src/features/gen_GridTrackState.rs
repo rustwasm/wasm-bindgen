@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 #[doc = "The `GridTrackState` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `GridTrackState`*"]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GridTrackState {
     Static = "static",
     Repeat = "repeat",
