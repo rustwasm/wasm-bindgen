@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VTTRegion , typescript_name = VTTRegion ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VTTRegion , typescript_type = "VTTRegion" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VttRegion` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GamepadHapticActuator , typescript_name = GamepadHapticActuator ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GamepadHapticActuator , typescript_type = "GamepadHapticActuator" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GamepadHapticActuator` class.
     ///

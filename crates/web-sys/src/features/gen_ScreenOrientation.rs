@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = ScreenOrientation , typescript_name = ScreenOrientation ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = ScreenOrientation , typescript_type = "ScreenOrientation" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ScreenOrientation` class.
     ///

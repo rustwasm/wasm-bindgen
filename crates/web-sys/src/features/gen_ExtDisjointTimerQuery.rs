@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_disjoint_timer_query , typescript_name = EXT_disjoint_timer_query ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_disjoint_timer_query , typescript_type = "EXT_disjoint_timer_query" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ExtDisjointTimerQuery` class.
     ///

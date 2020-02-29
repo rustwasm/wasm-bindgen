@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlCollection , extends = :: js_sys :: Object , js_name = HTMLOptionsCollection , typescript_name = HTMLOptionsCollection ) ]
+    # [ wasm_bindgen ( extends = HtmlCollection , extends = :: js_sys :: Object , js_name = HTMLOptionsCollection , typescript_type = "HTMLOptionsCollection" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlOptionsCollection` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBCursor , typescript_name = IDBCursor ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBCursor , typescript_type = "IDBCursor" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `IdbCursor` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = PointerEvent , typescript_name = PointerEvent ) ]
+    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = PointerEvent , typescript_type = "PointerEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PointerEvent` class.
     ///

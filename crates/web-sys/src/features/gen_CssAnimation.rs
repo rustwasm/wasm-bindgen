@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Animation , extends = EventTarget , extends = :: js_sys :: Object , js_name = CSSAnimation , typescript_name = CSSAnimation ) ]
+    # [ wasm_bindgen ( extends = Animation , extends = EventTarget , extends = :: js_sys :: Object , js_name = CSSAnimation , typescript_type = "CSSAnimation" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssAnimation` class.
     ///

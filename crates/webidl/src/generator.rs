@@ -601,7 +601,7 @@ impl Interface {
             .map(|x| x.generate(options, &name, js_name.to_string(), &parents))
             .collect::<Vec<_>>();
 
-        let js_name = raw_ident(js_name);
+        let js_ident = raw_ident(js_name);
 
         quote! {
             use super::*;
@@ -615,8 +615,8 @@ impl Interface {
                     #prefixes
                     #(#extends)*
                     extends = ::js_sys::Object,
-                    js_name = #js_name,
-                    typescript_name = #js_name
+                    js_name = #js_ident,
+                    typescript_type = #js_name
                 )]
                 #[derive(Debug, Clone, PartialEq, Eq)]
                 #doc_comment

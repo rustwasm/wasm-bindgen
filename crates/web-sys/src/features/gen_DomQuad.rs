@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMQuad , typescript_name = DOMQuad ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMQuad , typescript_type = "DOMQuad" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomQuad` class.
     ///

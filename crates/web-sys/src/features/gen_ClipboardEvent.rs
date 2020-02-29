@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = ClipboardEvent , typescript_name = ClipboardEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = ClipboardEvent , typescript_type = "ClipboardEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ClipboardEvent` class.
     ///

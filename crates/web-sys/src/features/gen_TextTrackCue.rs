@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = TextTrackCue , typescript_name = TextTrackCue ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = TextTrackCue , typescript_type = "TextTrackCue" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TextTrackCue` class.
     ///

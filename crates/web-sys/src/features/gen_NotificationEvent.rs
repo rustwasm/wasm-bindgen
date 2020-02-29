@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = ExtendableEvent , extends = Event , extends = :: js_sys :: Object , js_name = NotificationEvent , typescript_name = NotificationEvent ) ]
+    # [ wasm_bindgen ( extends = ExtendableEvent , extends = Event , extends = :: js_sys :: Object , js_name = NotificationEvent , typescript_type = "NotificationEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `NotificationEvent` class.
     ///

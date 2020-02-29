@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BrowserFeedWriter , typescript_name = BrowserFeedWriter ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BrowserFeedWriter , typescript_type = "BrowserFeedWriter" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `BrowserFeedWriter` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = XPathResult , typescript_name = XPathResult ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = XPathResult , typescript_type = "XPathResult" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `XPathResult` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_blend_minmax , typescript_name = EXT_blend_minmax ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_blend_minmax , typescript_type = "EXT_blend_minmax" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ExtBlendMinmax` class.
     ///

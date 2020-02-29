@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBIndex , typescript_name = IDBIndex ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBIndex , typescript_type = "IDBIndex" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `IdbIndex` class.
     ///

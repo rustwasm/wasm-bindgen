@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTimeElement , typescript_name = HTMLTimeElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTimeElement , typescript_type = "HTMLTimeElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlTimeElement` class.
     ///

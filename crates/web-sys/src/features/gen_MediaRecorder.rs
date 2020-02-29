@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = MediaRecorder , typescript_name = MediaRecorder ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = MediaRecorder , typescript_type = "MediaRecorder" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaRecorder` class.
     ///

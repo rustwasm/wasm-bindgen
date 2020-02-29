@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = DragEvent , typescript_name = DragEvent ) ]
+    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = DragEvent , typescript_type = "DragEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DragEvent` class.
     ///

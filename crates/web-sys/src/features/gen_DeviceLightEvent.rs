@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = DeviceLightEvent , typescript_name = DeviceLightEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = DeviceLightEvent , typescript_type = "DeviceLightEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DeviceLightEvent` class.
     ///

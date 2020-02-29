@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = SpeechRecognitionError , typescript_name = SpeechRecognitionError ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = SpeechRecognitionError , typescript_type = "SpeechRecognitionError" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SpeechRecognitionError` class.
     ///

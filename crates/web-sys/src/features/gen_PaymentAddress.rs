@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PaymentAddress , typescript_name = PaymentAddress ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PaymentAddress , typescript_type = "PaymentAddress" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PaymentAddress` class.
     ///

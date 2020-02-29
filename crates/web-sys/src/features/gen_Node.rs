@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = Node , typescript_name = Node ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = Node , typescript_type = "Node" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Node` class.
     ///

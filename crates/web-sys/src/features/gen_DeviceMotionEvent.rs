@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = DeviceMotionEvent , typescript_name = DeviceMotionEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = DeviceMotionEvent , typescript_type = "DeviceMotionEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DeviceMotionEvent` class.
     ///

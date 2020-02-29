@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSGroupingRule , typescript_name = CSSGroupingRule ) ]
+    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSGroupingRule , typescript_type = "CSSGroupingRule" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssGroupingRule` class.
     ///

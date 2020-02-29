@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FileSystemDirectoryReader , typescript_name = FileSystemDirectoryReader ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FileSystemDirectoryReader , typescript_type = "FileSystemDirectoryReader" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `FileSystemDirectoryReader` class.
     ///

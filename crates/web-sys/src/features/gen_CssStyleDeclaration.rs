@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CSSStyleDeclaration , typescript_name = CSSStyleDeclaration ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CSSStyleDeclaration , typescript_type = "CSSStyleDeclaration" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssStyleDeclaration` class.
     ///

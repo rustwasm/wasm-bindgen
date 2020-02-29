@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUComputePipeline , typescript_name = GPUComputePipeline ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUComputePipeline , typescript_type = "GPUComputePipeline" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuComputePipeline` class.
     ///

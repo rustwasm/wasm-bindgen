@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = GamepadEvent , extends = Event , extends = :: js_sys :: Object , js_name = GamepadButtonEvent , typescript_name = GamepadButtonEvent ) ]
+    # [ wasm_bindgen ( extends = GamepadEvent , extends = Event , extends = :: js_sys :: Object , js_name = GamepadButtonEvent , typescript_type = "GamepadButtonEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GamepadButtonEvent` class.
     ///

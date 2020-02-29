@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGLengthList , typescript_name = SVGLengthList ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGLengthList , typescript_type = "SVGLengthList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgLengthList` class.
     ///

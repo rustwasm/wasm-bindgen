@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEColorMatrixElement , typescript_name = SVGFEColorMatrixElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEColorMatrixElement , typescript_type = "SVGFEColorMatrixElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgfeColorMatrixElement` class.
     ///

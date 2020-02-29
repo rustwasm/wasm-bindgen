@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = AbortSignal , typescript_name = AbortSignal ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = AbortSignal , typescript_type = "AbortSignal" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AbortSignal` class.
     ///

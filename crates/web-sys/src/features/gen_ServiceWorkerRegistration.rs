@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = ServiceWorkerRegistration , typescript_name = ServiceWorkerRegistration ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = ServiceWorkerRegistration , typescript_type = "ServiceWorkerRegistration" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ServiceWorkerRegistration` class.
     ///

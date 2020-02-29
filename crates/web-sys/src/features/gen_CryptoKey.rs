@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CryptoKey , typescript_name = CryptoKey ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CryptoKey , typescript_type = "CryptoKey" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CryptoKey` class.
     ///

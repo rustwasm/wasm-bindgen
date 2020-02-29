@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ValidityState , typescript_name = ValidityState ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ValidityState , typescript_type = "ValidityState" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ValidityState` class.
     ///

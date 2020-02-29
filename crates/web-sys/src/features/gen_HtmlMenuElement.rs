@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLMenuElement , typescript_name = HTMLMenuElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLMenuElement , typescript_type = "HTMLMenuElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlMenuElement` class.
     ///

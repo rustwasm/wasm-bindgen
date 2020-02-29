@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Animation , extends = EventTarget , extends = :: js_sys :: Object , js_name = CSSTransition , typescript_name = CSSTransition ) ]
+    # [ wasm_bindgen ( extends = Animation , extends = EventTarget , extends = :: js_sys :: Object , js_name = CSSTransition , typescript_type = "CSSTransition" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssTransition` class.
     ///

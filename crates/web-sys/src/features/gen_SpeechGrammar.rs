@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SpeechGrammar , typescript_name = SpeechGrammar ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SpeechGrammar , typescript_type = "SpeechGrammar" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SpeechGrammar` class.
     ///

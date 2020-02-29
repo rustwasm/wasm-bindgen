@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = WebSocket , typescript_name = WebSocket ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = WebSocket , typescript_type = "WebSocket" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebSocket` class.
     ///

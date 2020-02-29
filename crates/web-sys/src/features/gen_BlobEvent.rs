@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = BlobEvent , typescript_name = BlobEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = BlobEvent , typescript_type = "BlobEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `BlobEvent` class.
     ///

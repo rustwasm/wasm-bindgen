@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFilterElement , typescript_name = SVGFilterElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFilterElement , typescript_type = "SVGFilterElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgFilterElement` class.
     ///

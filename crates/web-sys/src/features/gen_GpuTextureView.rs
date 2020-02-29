@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUTextureView , typescript_name = GPUTextureView ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUTextureView , typescript_type = "GPUTextureView" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuTextureView` class.
     ///

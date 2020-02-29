@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = DomMatrix , extends = DomMatrixReadOnly , extends = :: js_sys :: Object , js_name = WebKitCSSMatrix , typescript_name = WebKitCSSMatrix ) ]
+    # [ wasm_bindgen ( extends = DomMatrix , extends = DomMatrixReadOnly , extends = :: js_sys :: Object , js_name = WebKitCSSMatrix , typescript_type = "WebKitCSSMatrix" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebKitCssMatrix` class.
     ///

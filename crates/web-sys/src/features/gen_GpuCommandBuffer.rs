@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUCommandBuffer , typescript_name = GPUCommandBuffer ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUCommandBuffer , typescript_type = "GPUCommandBuffer" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuCommandBuffer` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = Window , typescript_name = Window ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = Window , typescript_type = "Window" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Window` class.
     ///

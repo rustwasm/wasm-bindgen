@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = DomPointReadOnly , extends = :: js_sys :: Object , js_name = DOMPoint , typescript_name = DOMPoint ) ]
+    # [ wasm_bindgen ( extends = DomPointReadOnly , extends = :: js_sys :: Object , js_name = DOMPoint , typescript_type = "DOMPoint" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomPoint` class.
     ///

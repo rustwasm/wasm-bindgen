@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AnimationEffect , typescript_name = AnimationEffect ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AnimationEffect , typescript_type = "AnimationEffect" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AnimationEffect` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSKeyframesRule , typescript_name = CSSKeyframesRule ) ]
+    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSKeyframesRule , typescript_type = "CSSKeyframesRule" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssKeyframesRule` class.
     ///

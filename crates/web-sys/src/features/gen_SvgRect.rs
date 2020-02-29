@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGRect , typescript_name = SVGRect ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGRect , typescript_type = "SVGRect" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgRect` class.
     ///

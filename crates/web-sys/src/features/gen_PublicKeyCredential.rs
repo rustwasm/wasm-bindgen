@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Credential , extends = :: js_sys :: Object , js_name = PublicKeyCredential , typescript_name = PublicKeyCredential ) ]
+    # [ wasm_bindgen ( extends = Credential , extends = :: js_sys :: Object , js_name = PublicKeyCredential , typescript_type = "PublicKeyCredential" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PublicKeyCredential` class.
     ///

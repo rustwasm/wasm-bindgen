@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ScrollBoxObject , typescript_name = ScrollBoxObject ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ScrollBoxObject , typescript_type = "ScrollBoxObject" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ScrollBoxObject` class.
     ///

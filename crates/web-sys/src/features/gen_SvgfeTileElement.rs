@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFETileElement , typescript_name = SVGFETileElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFETileElement , typescript_type = "SVGFETileElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgfeTileElement` class.
     ///

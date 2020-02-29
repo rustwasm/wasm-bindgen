@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Response , typescript_name = Response ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Response , typescript_type = "Response" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Response` class.
     ///

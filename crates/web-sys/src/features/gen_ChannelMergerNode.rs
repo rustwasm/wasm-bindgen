@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = ChannelMergerNode , typescript_name = ChannelMergerNode ) ]
+    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = ChannelMergerNode , typescript_type = "ChannelMergerNode" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ChannelMergerNode` class.
     ///

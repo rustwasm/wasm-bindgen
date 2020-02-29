@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLSync , typescript_name = WebGLSync ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLSync , typescript_type = "WebGLSync" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlSync` class.
     ///

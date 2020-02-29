@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AuthenticatorResponse , typescript_name = AuthenticatorResponse ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AuthenticatorResponse , typescript_type = "AuthenticatorResponse" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AuthenticatorResponse` class.
     ///

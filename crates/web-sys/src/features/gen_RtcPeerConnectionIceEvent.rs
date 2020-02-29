@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = RTCPeerConnectionIceEvent , typescript_name = RTCPeerConnectionIceEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = RTCPeerConnectionIceEvent , typescript_type = "RTCPeerConnectionIceEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcPeerConnectionIceEvent` class.
     ///

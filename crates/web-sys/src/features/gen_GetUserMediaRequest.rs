@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = GetUserMediaRequest , typescript_name = GetUserMediaRequest ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = GetUserMediaRequest , typescript_type = "GetUserMediaRequest" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GetUserMediaRequest` class.
     ///

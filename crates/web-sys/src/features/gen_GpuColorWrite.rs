@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUColorWrite , typescript_name = GPUColorWrite ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUColorWrite , typescript_type = "GPUColorWrite" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuColorWrite` class.
     ///

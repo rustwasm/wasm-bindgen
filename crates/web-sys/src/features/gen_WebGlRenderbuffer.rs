@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLRenderbuffer , typescript_name = WebGLRenderbuffer ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLRenderbuffer , typescript_type = "WebGLRenderbuffer" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlRenderbuffer` class.
     ///

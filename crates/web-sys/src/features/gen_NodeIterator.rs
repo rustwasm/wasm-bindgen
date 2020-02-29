@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NodeIterator , typescript_name = NodeIterator ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NodeIterator , typescript_type = "NodeIterator" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `NodeIterator` class.
     ///

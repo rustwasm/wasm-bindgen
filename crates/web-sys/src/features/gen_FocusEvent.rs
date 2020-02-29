@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = FocusEvent , typescript_name = FocusEvent ) ]
+    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = FocusEvent , typescript_type = "FocusEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `FocusEvent` class.
     ///

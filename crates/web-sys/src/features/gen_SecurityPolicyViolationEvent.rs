@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = SecurityPolicyViolationEvent , typescript_name = SecurityPolicyViolationEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = SecurityPolicyViolationEvent , typescript_type = "SecurityPolicyViolationEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SecurityPolicyViolationEvent` class.
     ///

@@ -53,7 +53,7 @@ macro_rules! attrgen {
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (start, Start(Span)),
             (skip, Skip(Span)),
-            (typescript_name, TypeScriptName(Span, String, Span)),
+            (typescript_type, TypeScriptType(Span, String, Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -530,8 +530,8 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
-        let typescript_name = attrs
-            .typescript_name()
+        let typescript_type = attrs
+            .typescript_type()
             .map(|s| s.0.to_string());
         let is_type_of = attrs.is_type_of().cloned();
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
@@ -558,7 +558,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             instanceof_shim: shim,
             is_type_of,
             rust_name: self.ident,
-            typescript_name,
+            typescript_type,
             js_name,
             extends,
             vendor_prefixes,

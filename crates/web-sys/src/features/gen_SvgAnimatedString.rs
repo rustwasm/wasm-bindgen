@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAnimatedString , typescript_name = SVGAnimatedString ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAnimatedString , typescript_type = "SVGAnimatedString" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgAnimatedString` class.
     ///

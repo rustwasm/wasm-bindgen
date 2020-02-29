@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = XMLHttpRequestEventTarget , typescript_name = XMLHttpRequestEventTarget ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = XMLHttpRequestEventTarget , typescript_type = "XMLHttpRequestEventTarget" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `XmlHttpRequestEventTarget` class.
     ///

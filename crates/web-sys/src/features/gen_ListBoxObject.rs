@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ListBoxObject , typescript_name = ListBoxObject ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ListBoxObject , typescript_type = "ListBoxObject" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ListBoxObject` class.
     ///

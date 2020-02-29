@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLMapElement , typescript_name = HTMLMapElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLMapElement , typescript_type = "HTMLMapElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlMapElement` class.
     ///

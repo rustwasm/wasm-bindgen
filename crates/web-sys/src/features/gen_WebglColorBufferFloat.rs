@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_color_buffer_float , typescript_name = WEBGL_color_buffer_float ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_color_buffer_float , typescript_type = "WEBGL_color_buffer_float" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebglColorBufferFloat` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = URLSearchParams , typescript_name = URLSearchParams ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = URLSearchParams , typescript_type = "URLSearchParams" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `UrlSearchParams` class.
     ///

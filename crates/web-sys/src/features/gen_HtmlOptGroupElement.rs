@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLOptGroupElement , typescript_name = HTMLOptGroupElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLOptGroupElement , typescript_type = "HTMLOptGroupElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlOptGroupElement` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLActiveInfo , typescript_name = WebGLActiveInfo ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLActiveInfo , typescript_type = "WebGLActiveInfo" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlActiveInfo` class.
     ///

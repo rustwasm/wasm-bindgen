@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRServiceTest , typescript_name = VRServiceTest ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRServiceTest , typescript_type = "VRServiceTest" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VrServiceTest` class.
     ///

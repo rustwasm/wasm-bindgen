@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMStringMap , typescript_name = DOMStringMap ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMStringMap , typescript_type = "DOMStringMap" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomStringMap` class.
     ///

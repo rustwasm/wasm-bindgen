@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGForeignObjectElement , typescript_name = SVGForeignObjectElement ) ]
+    # [ wasm_bindgen ( extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGForeignObjectElement , typescript_type = "SVGForeignObjectElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgForeignObjectElement` class.
     ///

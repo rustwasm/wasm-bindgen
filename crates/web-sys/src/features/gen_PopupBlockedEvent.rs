@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PopupBlockedEvent , typescript_name = PopupBlockedEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PopupBlockedEvent , typescript_type = "PopupBlockedEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PopupBlockedEvent` class.
     ///

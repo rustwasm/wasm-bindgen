@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = SourceBufferList , typescript_name = SourceBufferList ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = SourceBufferList , typescript_type = "SourceBufferList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SourceBufferList` class.
     ///

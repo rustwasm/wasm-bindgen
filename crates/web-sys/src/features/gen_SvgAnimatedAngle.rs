@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAnimatedAngle , typescript_name = SVGAnimatedAngle ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAnimatedAngle , typescript_type = "SVGAnimatedAngle" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgAnimatedAngle` class.
     ///

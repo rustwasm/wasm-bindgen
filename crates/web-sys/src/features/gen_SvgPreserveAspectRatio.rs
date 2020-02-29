@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGPreserveAspectRatio , typescript_name = SVGPreserveAspectRatio ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGPreserveAspectRatio , typescript_type = "SVGPreserveAspectRatio" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgPreserveAspectRatio` class.
     ///

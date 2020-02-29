@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CredentialsContainer , typescript_name = CredentialsContainer ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CredentialsContainer , typescript_type = "CredentialsContainer" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CredentialsContainer` class.
     ///

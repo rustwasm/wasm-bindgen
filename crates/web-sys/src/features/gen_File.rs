@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Blob , extends = :: js_sys :: Object , js_name = File , typescript_name = File ) ]
+    # [ wasm_bindgen ( extends = Blob , extends = :: js_sys :: Object , js_name = File , typescript_type = "File" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `File` class.
     ///

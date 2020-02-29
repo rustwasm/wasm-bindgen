@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = MouseScrollEvent , typescript_name = MouseScrollEvent ) ]
+    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = MouseScrollEvent , typescript_type = "MouseScrollEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MouseScrollEvent` class.
     ///

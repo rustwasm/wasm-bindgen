@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLTransformFeedback , typescript_name = WebGLTransformFeedback ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLTransformFeedback , typescript_type = "WebGLTransformFeedback" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlTransformFeedback` class.
     ///

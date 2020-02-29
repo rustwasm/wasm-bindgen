@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEConvolveMatrixElement , typescript_name = SVGFEConvolveMatrixElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEConvolveMatrixElement , typescript_type = "SVGFEConvolveMatrixElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgfeConvolveMatrixElement` class.
     ///

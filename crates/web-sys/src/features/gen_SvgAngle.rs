@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAngle , typescript_name = SVGAngle ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAngle , typescript_type = "SVGAngle" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgAngle` class.
     ///

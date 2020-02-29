@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGZoomAndPan , typescript_name = SVGZoomAndPan ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGZoomAndPan , typescript_type = "SVGZoomAndPan" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgZoomAndPan` class.
     ///

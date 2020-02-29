@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_standard_derivatives , typescript_name = OES_standard_derivatives ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_standard_derivatives , typescript_type = "OES_standard_derivatives" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `OesStandardDerivatives` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = OffscreenCanvas , typescript_name = OffscreenCanvas ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = OffscreenCanvas , typescript_type = "OffscreenCanvas" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `OffscreenCanvas` class.
     ///

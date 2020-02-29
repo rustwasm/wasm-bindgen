@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = XmlHttpRequestEventTarget , extends = EventTarget , extends = :: js_sys :: Object , js_name = XMLHttpRequestUpload , typescript_name = XMLHttpRequestUpload ) ]
+    # [ wasm_bindgen ( extends = XmlHttpRequestEventTarget , extends = EventTarget , extends = :: js_sys :: Object , js_name = XMLHttpRequestUpload , typescript_type = "XMLHttpRequestUpload" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `XmlHttpRequestUpload` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCIceCandidate , typescript_name = RTCIceCandidate ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCIceCandidate , typescript_type = "RTCIceCandidate" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcIceCandidate` class.
     ///

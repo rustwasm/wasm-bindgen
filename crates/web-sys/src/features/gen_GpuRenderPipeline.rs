@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPURenderPipeline , typescript_name = GPURenderPipeline ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPURenderPipeline , typescript_type = "GPURenderPipeline" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuRenderPipeline` class.
     ///

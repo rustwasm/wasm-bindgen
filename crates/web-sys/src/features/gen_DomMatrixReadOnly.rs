@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMMatrixReadOnly , typescript_name = DOMMatrixReadOnly ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMMatrixReadOnly , typescript_type = "DOMMatrixReadOnly" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomMatrixReadOnly` class.
     ///

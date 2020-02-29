@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = MediaStream , extends = EventTarget , extends = :: js_sys :: Object , js_name = CanvasCaptureMediaStream , typescript_name = CanvasCaptureMediaStream ) ]
+    # [ wasm_bindgen ( extends = MediaStream , extends = EventTarget , extends = :: js_sys :: Object , js_name = CanvasCaptureMediaStream , typescript_type = "CanvasCaptureMediaStream" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CanvasCaptureMediaStream` class.
     ///

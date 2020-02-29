@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = NetworkInformation , typescript_name = NetworkInformation ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = NetworkInformation , typescript_type = "NetworkInformation" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `NetworkInformation` class.
     ///

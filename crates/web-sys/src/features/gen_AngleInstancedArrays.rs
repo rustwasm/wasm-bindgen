@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ANGLE_instanced_arrays , typescript_name = ANGLE_instanced_arrays ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ANGLE_instanced_arrays , typescript_type = "ANGLE_instanced_arrays" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AngleInstancedArrays` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_frag_depth , typescript_name = EXT_frag_depth ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_frag_depth , typescript_type = "EXT_frag_depth" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ExtFragDepth` class.
     ///

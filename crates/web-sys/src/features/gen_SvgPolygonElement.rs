@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgGeometryElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGPolygonElement , typescript_name = SVGPolygonElement ) ]
+    # [ wasm_bindgen ( extends = SvgGeometryElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGPolygonElement , typescript_type = "SVGPolygonElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgPolygonElement` class.
     ///

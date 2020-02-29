@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaList , typescript_name = MediaList ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaList , typescript_type = "MediaList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaList` class.
     ///

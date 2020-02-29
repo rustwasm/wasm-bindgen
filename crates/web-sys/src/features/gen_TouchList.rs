@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TouchList , typescript_name = TouchList ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TouchList , typescript_type = "TouchList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TouchList` class.
     ///

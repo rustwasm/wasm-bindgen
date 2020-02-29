@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Document , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = XMLDocument , typescript_name = XMLDocument ) ]
+    # [ wasm_bindgen ( extends = Document , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = XMLDocument , typescript_type = "XMLDocument" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `XmlDocument` class.
     ///

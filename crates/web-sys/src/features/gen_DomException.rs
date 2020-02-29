@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMException , typescript_name = DOMException ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMException , typescript_type = "DOMException" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomException` class.
     ///

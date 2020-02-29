@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = RTCTrackEvent , typescript_name = RTCTrackEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = RTCTrackEvent , typescript_type = "RTCTrackEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcTrackEvent` class.
     ///

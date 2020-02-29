@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGL2RenderingContext , typescript_name = WebGL2RenderingContext ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGL2RenderingContext , typescript_type = "WebGL2RenderingContext" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGl2RenderingContext` class.
     ///

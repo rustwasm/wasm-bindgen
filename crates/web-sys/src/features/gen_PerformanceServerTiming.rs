@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceServerTiming , typescript_name = PerformanceServerTiming ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceServerTiming , typescript_type = "PerformanceServerTiming" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PerformanceServerTiming` class.
     ///

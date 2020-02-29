@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = ExtendableEvent , extends = Event , extends = :: js_sys :: Object , js_name = FetchEvent , typescript_name = FetchEvent ) ]
+    # [ wasm_bindgen ( extends = ExtendableEvent , extends = Event , extends = :: js_sys :: Object , js_name = FetchEvent , typescript_type = "FetchEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `FetchEvent` class.
     ///

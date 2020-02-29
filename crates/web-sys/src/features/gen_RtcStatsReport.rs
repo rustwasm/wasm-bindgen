@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCStatsReport , typescript_name = RTCStatsReport ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCStatsReport , typescript_type = "RTCStatsReport" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcStatsReport` class.
     ///

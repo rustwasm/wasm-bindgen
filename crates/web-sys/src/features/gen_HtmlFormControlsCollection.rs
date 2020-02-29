@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlCollection , extends = :: js_sys :: Object , js_name = HTMLFormControlsCollection , typescript_name = HTMLFormControlsCollection ) ]
+    # [ wasm_bindgen ( extends = HtmlCollection , extends = :: js_sys :: Object , js_name = HTMLFormControlsCollection , typescript_type = "HTMLFormControlsCollection" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlFormControlsCollection` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_debug_shaders , typescript_name = WEBGL_debug_shaders ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_debug_shaders , typescript_type = "WEBGL_debug_shaders" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebglDebugShaders` class.
     ///

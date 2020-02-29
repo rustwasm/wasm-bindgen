@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLDialogElement , typescript_name = HTMLDialogElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLDialogElement , typescript_type = "HTMLDialogElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlDialogElement` class.
     ///

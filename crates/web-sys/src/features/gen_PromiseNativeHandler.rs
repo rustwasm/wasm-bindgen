@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = PromiseNativeHandler , typescript_name = PromiseNativeHandler ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = PromiseNativeHandler , typescript_type = "PromiseNativeHandler" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PromiseNativeHandler` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = DocumentFragment , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = ShadowRoot , typescript_name = ShadowRoot ) ]
+    # [ wasm_bindgen ( extends = DocumentFragment , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = ShadowRoot , typescript_type = "ShadowRoot" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ShadowRoot` class.
     ///

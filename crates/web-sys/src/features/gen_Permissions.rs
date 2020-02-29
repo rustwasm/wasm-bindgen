@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Permissions , typescript_name = Permissions ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Permissions , typescript_type = "Permissions" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Permissions` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCCertificate , typescript_name = RTCCertificate ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCCertificate , typescript_type = "RTCCertificate" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcCertificate` class.
     ///

@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPURenderPassEncoder , typescript_name = GPURenderPassEncoder ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPURenderPassEncoder , typescript_type = "GPURenderPassEncoder" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuRenderPassEncoder` class.
     ///

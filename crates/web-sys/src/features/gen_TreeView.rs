@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = TreeView , typescript_name = TreeView ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = TreeView , typescript_type = "TreeView" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TreeView` class.
     ///

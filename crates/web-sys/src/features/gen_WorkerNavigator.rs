@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WorkerNavigator , typescript_name = WorkerNavigator ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WorkerNavigator , typescript_type = "WorkerNavigator" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WorkerNavigator` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLVertexArrayObject , typescript_name = WebGLVertexArrayObject ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLVertexArrayObject , typescript_type = "WebGLVertexArrayObject" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlVertexArrayObject` class.
     ///

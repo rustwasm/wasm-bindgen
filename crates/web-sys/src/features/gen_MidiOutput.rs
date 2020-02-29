@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = MidiPort , extends = EventTarget , extends = :: js_sys :: Object , js_name = MIDIOutput , typescript_name = MIDIOutput ) ]
+    # [ wasm_bindgen ( extends = MidiPort , extends = EventTarget , extends = :: js_sys :: Object , js_name = MIDIOutput , typescript_type = "MIDIOutput" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MidiOutput` class.
     ///

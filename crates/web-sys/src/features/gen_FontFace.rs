@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FontFace , typescript_name = FontFace ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FontFace , typescript_type = "FontFace" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `FontFace` class.
     ///

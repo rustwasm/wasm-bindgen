@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = AnimationPlaybackEvent , typescript_name = AnimationPlaybackEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = AnimationPlaybackEvent , typescript_type = "AnimationPlaybackEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AnimationPlaybackEvent` class.
     ///

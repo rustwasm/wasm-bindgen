@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = StyleSheetList , typescript_name = StyleSheetList ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = StyleSheetList , typescript_type = "StyleSheetList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `StyleSheetList` class.
     ///

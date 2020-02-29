@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaError , typescript_name = MediaError ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaError , typescript_type = "MediaError" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaError` class.
     ///

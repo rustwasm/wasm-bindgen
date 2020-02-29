@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLMediaElement , typescript_name = HTMLMediaElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLMediaElement , typescript_type = "HTMLMediaElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlMediaElement` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRSubmitFrameResult , typescript_name = VRSubmitFrameResult ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRSubmitFrameResult , typescript_type = "VRSubmitFrameResult" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VrSubmitFrameResult` class.
     ///

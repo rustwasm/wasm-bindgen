@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = NodeList , extends = :: js_sys :: Object , js_name = RadioNodeList , typescript_name = RadioNodeList ) ]
+    # [ wasm_bindgen ( extends = NodeList , extends = :: js_sys :: Object , js_name = RadioNodeList , typescript_type = "RadioNodeList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RadioNodeList` class.
     ///

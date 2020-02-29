@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TextEncoder , typescript_name = TextEncoder ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TextEncoder , typescript_type = "TextEncoder" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TextEncoder` class.
     ///

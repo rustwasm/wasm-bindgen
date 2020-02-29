@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DataTransfer , typescript_name = DataTransfer ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DataTransfer , typescript_type = "DataTransfer" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DataTransfer` class.
     ///

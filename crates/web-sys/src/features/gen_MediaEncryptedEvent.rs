@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = MediaEncryptedEvent , typescript_name = MediaEncryptedEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = MediaEncryptedEvent , typescript_type = "MediaEncryptedEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaEncryptedEvent` class.
     ///

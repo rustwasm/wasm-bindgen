@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUDeviceLostInfo , typescript_name = GPUDeviceLostInfo ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUDeviceLostInfo , typescript_type = "GPUDeviceLostInfo" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuDeviceLostInfo` class.
     ///

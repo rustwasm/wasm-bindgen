@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Directory , typescript_name = Directory ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Directory , typescript_type = "Directory" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Directory` class.
     ///

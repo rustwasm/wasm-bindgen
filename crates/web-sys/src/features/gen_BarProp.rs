@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BarProp , typescript_name = BarProp ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BarProp , typescript_type = "BarProp" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `BarProp` class.
     ///

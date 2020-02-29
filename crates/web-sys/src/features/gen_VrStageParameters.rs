@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRStageParameters , typescript_name = VRStageParameters ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRStageParameters , typescript_type = "VRStageParameters" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VrStageParameters` class.
     ///

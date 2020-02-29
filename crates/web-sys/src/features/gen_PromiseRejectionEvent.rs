@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PromiseRejectionEvent , typescript_name = PromiseRejectionEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PromiseRejectionEvent , typescript_type = "PromiseRejectionEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PromiseRejectionEvent` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgGeometryElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGEllipseElement , typescript_name = SVGEllipseElement ) ]
+    # [ wasm_bindgen ( extends = SvgGeometryElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGEllipseElement , typescript_type = "SVGEllipseElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgEllipseElement` class.
     ///

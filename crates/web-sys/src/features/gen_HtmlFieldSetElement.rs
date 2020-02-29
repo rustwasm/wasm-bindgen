@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLFieldSetElement , typescript_name = HTMLFieldSetElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLFieldSetElement , typescript_type = "HTMLFieldSetElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlFieldSetElement` class.
     ///

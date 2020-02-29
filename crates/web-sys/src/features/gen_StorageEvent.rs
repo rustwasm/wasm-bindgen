@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = StorageEvent , typescript_name = StorageEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = StorageEvent , typescript_type = "StorageEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `StorageEvent` class.
     ///

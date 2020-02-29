@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CssConditionRule , extends = CssGroupingRule , extends = CssRule , extends = :: js_sys :: Object , js_name = CSSMediaRule , typescript_name = CSSMediaRule ) ]
+    # [ wasm_bindgen ( extends = CssConditionRule , extends = CssGroupingRule , extends = CssRule , extends = :: js_sys :: Object , js_name = CSSMediaRule , typescript_type = "CSSMediaRule" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssMediaRule` class.
     ///

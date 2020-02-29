@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaKeySystemAccess , typescript_name = MediaKeySystemAccess ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaKeySystemAccess , typescript_type = "MediaKeySystemAccess" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaKeySystemAccess` class.
     ///

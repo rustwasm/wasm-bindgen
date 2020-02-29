@@ -187,7 +187,7 @@ pub struct ImportType {
     pub rust_name: Ident,
     pub js_name: String,
     pub attrs: Vec<syn::Attribute>,
-    pub typescript_name: Option<String>,
+    pub typescript_type: Option<String>,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
     pub is_type_of: Option<syn::Expr>,

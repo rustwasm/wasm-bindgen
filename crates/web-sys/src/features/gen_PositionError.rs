@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = PositionError , typescript_name = PositionError ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = PositionError , typescript_type = "PositionError" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PositionError` class.
     ///

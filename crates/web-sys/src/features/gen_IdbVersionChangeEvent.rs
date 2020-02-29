@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = IDBVersionChangeEvent , typescript_name = IDBVersionChangeEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = IDBVersionChangeEvent , typescript_type = "IDBVersionChangeEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `IdbVersionChangeEvent` class.
     ///

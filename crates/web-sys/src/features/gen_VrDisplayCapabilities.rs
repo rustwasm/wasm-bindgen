@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRDisplayCapabilities , typescript_name = VRDisplayCapabilities ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRDisplayCapabilities , typescript_type = "VRDisplayCapabilities" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VrDisplayCapabilities` class.
     ///

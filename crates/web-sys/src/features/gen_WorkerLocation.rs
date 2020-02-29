@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WorkerLocation , typescript_name = WorkerLocation ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WorkerLocation , typescript_type = "WorkerLocation" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WorkerLocation` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NamedNodeMap , typescript_name = NamedNodeMap ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NamedNodeMap , typescript_type = "NamedNodeMap" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `NamedNodeMap` class.
     ///

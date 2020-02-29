@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TimeRanges , typescript_name = TimeRanges ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TimeRanges , typescript_type = "TimeRanges" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TimeRanges` class.
     ///

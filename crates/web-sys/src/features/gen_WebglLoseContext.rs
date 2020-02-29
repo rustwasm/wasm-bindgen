@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_lose_context , typescript_name = WEBGL_lose_context ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_lose_context , typescript_type = "WEBGL_lose_context" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebglLoseContext` class.
     ///

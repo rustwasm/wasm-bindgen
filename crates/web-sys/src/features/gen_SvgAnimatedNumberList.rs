@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAnimatedNumberList , typescript_name = SVGAnimatedNumberList ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGAnimatedNumberList , typescript_type = "SVGAnimatedNumberList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgAnimatedNumberList` class.
     ///

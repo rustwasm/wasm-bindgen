@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = MediaStream , typescript_name = MediaStream ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = MediaStream , typescript_type = "MediaStream" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaStream` class.
     ///

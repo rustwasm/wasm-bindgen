@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CacheStorage , typescript_name = CacheStorage ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CacheStorage , typescript_type = "CacheStorage" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CacheStorage` class.
     ///

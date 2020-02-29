@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PushSubscriptionOptions , typescript_name = PushSubscriptionOptions ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PushSubscriptionOptions , typescript_type = "PushSubscriptionOptions" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PushSubscriptionOptions` class.
     ///

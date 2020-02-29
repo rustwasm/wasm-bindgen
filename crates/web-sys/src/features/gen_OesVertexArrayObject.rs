@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_vertex_array_object , typescript_name = OES_vertex_array_object ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_vertex_array_object , typescript_type = "OES_vertex_array_object" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `OesVertexArrayObject` class.
     ///

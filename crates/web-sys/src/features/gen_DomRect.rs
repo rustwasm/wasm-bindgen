@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = DomRectReadOnly , extends = :: js_sys :: Object , js_name = DOMRect , typescript_name = DOMRect ) ]
+    # [ wasm_bindgen ( extends = DomRectReadOnly , extends = :: js_sys :: Object , js_name = DOMRect , typescript_type = "DOMRect" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomRect` class.
     ///

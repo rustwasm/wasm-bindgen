@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PopStateEvent , typescript_name = PopStateEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PopStateEvent , typescript_type = "PopStateEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PopStateEvent` class.
     ///

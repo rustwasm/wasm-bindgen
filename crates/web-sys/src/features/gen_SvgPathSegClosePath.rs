@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = SvgPathSeg , extends = :: js_sys :: Object , js_name = SVGPathSegClosePath , typescript_name = SVGPathSegClosePath ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = SvgPathSeg , extends = :: js_sys :: Object , js_name = SVGPathSegClosePath , typescript_type = "SVGPathSegClosePath" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgPathSegClosePath` class.
     ///

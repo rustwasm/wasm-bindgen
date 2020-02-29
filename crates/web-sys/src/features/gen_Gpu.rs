@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPU , typescript_name = GPU ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPU , typescript_type = "GPU" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Gpu` class.
     ///

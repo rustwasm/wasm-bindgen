@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CanvasGradient , typescript_name = CanvasGradient ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CanvasGradient , typescript_type = "CanvasGradient" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CanvasGradient` class.
     ///

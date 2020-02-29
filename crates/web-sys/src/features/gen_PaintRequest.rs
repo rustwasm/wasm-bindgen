@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PaintRequest , typescript_name = PaintRequest ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PaintRequest , typescript_type = "PaintRequest" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PaintRequest` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSNamespaceRule , typescript_name = CSSNamespaceRule ) ]
+    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSNamespaceRule , typescript_type = "CSSNamespaceRule" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssNamespaceRule` class.
     ///

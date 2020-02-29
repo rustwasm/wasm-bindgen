@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Path2D , typescript_name = Path2D ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Path2D , typescript_type = "Path2D" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Path2d` class.
     ///

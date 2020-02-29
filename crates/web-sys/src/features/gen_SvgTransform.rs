@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGTransform , typescript_name = SVGTransform ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGTransform , typescript_type = "SVGTransform" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgTransform` class.
     ///

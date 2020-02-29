@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = KeyboardEvent , typescript_name = KeyboardEvent ) ]
+    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = KeyboardEvent , typescript_type = "KeyboardEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `KeyboardEvent` class.
     ///

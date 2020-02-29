@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = TextTrackList , typescript_name = TextTrackList ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = TextTrackList , typescript_type = "TextTrackList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TextTrackList` class.
     ///

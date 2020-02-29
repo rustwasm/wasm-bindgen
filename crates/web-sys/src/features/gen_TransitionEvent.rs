@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = TransitionEvent , typescript_name = TransitionEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = TransitionEvent , typescript_type = "TransitionEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TransitionEvent` class.
     ///

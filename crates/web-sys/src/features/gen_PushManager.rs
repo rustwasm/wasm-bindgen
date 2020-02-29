@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PushManager , typescript_name = PushManager ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PushManager , typescript_type = "PushManager" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PushManager` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MimeType , typescript_name = MimeType ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MimeType , typescript_type = "MimeType" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MimeType` class.
     ///

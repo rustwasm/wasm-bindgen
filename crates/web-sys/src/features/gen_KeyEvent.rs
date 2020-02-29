@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = KeyEvent , typescript_name = KeyEvent ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = KeyEvent , typescript_type = "KeyEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `KeyEvent` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IntersectionObserver , typescript_name = IntersectionObserver ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IntersectionObserver , typescript_type = "IntersectionObserver" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `IntersectionObserver` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTableCellElement , typescript_name = HTMLTableCellElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTableCellElement , typescript_type = "HTMLTableCellElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlTableCellElement` class.
     ///

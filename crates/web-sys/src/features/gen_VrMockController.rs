@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRMockController , typescript_name = VRMockController ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRMockController , typescript_type = "VRMockController" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VrMockController` class.
     ///

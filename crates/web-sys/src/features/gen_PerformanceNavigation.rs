@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceNavigation , typescript_name = PerformanceNavigation ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceNavigation , typescript_type = "PerformanceNavigation" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PerformanceNavigation` class.
     ///

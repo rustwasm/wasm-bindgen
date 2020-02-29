@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBFactory , typescript_name = IDBFactory ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBFactory , typescript_type = "IDBFactory" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `IdbFactory` class.
     ///

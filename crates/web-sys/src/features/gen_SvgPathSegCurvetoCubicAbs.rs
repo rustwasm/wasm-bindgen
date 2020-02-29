@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = SvgPathSeg , extends = :: js_sys :: Object , js_name = SVGPathSegCurvetoCubicAbs , typescript_name = SVGPathSegCurvetoCubicAbs ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = SvgPathSeg , extends = :: js_sys :: Object , js_name = SVGPathSegCurvetoCubicAbs , typescript_type = "SVGPathSegCurvetoCubicAbs" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgPathSegCurvetoCubicAbs` class.
     ///

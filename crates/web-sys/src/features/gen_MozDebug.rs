@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = MOZ_debug , typescript_name = MOZ_debug ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = MOZ_debug , typescript_type = "MOZ_debug" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MozDebug` class.
     ///

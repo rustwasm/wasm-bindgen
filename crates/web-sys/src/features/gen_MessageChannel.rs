@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MessageChannel , typescript_name = MessageChannel ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MessageChannel , typescript_type = "MessageChannel" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MessageChannel` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CSSPseudoElement , typescript_name = CSSPseudoElement ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CSSPseudoElement , typescript_type = "CSSPseudoElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssPseudoElement` class.
     ///

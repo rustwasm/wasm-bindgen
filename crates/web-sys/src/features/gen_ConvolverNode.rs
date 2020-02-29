@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = ConvolverNode , typescript_name = ConvolverNode ) ]
+    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = ConvolverNode , typescript_type = "ConvolverNode" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ConvolverNode` class.
     ///

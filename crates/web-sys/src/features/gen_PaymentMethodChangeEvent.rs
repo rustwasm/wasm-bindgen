@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = PaymentRequestUpdateEvent , extends = Event , extends = :: js_sys :: Object , js_name = PaymentMethodChangeEvent , typescript_name = PaymentMethodChangeEvent ) ]
+    # [ wasm_bindgen ( extends = PaymentRequestUpdateEvent , extends = Event , extends = :: js_sys :: Object , js_name = PaymentMethodChangeEvent , typescript_type = "PaymentMethodChangeEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PaymentMethodChangeEvent` class.
     ///

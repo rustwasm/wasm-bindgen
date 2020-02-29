@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CheckerboardReportService , typescript_name = CheckerboardReportService ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CheckerboardReportService , typescript_type = "CheckerboardReportService" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CheckerboardReportService` class.
     ///

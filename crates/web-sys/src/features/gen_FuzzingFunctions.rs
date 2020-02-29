@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FuzzingFunctions , typescript_name = FuzzingFunctions ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FuzzingFunctions , typescript_type = "FuzzingFunctions" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `FuzzingFunctions` class.
     ///

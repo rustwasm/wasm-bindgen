@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Worklet , typescript_name = Worklet ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Worklet , typescript_type = "Worklet" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Worklet` class.
     ///

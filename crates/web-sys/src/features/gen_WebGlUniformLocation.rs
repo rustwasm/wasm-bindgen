@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLUniformLocation , typescript_name = WebGLUniformLocation ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLUniformLocation , typescript_type = "WebGLUniformLocation" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlUniformLocation` class.
     ///

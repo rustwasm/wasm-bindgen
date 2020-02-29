@@ -577,14 +577,14 @@ impl ToTokens for ast::ImportType {
             }
         };
 
-        let description = if let Some(typescript_name) = &self.typescript_name {
-            let typescript_name_len = typescript_name.len() as u32;
-            let typescript_name_chars = typescript_name.chars().map(|c| c as u32);
+        let description = if let Some(typescript_type) = &self.typescript_type {
+            let typescript_type_len = typescript_type.len() as u32;
+            let typescript_type_chars = typescript_type.chars().map(|c| c as u32);
             quote! {
                 use wasm_bindgen::describe::*;
                 inform(NAMED_ANYREF);
-                inform(#typescript_name_len);
-                #(inform(#typescript_name_chars);)*
+                inform(#typescript_type_len);
+                #(inform(#typescript_type_chars);)*
             }
         } else {
             quote! {

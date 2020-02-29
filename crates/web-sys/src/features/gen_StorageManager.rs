@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = StorageManager , typescript_name = StorageManager ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = StorageManager , typescript_type = "StorageManager" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `StorageManager` class.
     ///

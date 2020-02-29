@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLCanvasElement , typescript_name = HTMLCanvasElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLCanvasElement , typescript_type = "HTMLCanvasElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlCanvasElement` class.
     ///

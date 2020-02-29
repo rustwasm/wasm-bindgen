@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = XMLSerializer , typescript_name = XMLSerializer ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = XMLSerializer , typescript_type = "XMLSerializer" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `XmlSerializer` class.
     ///

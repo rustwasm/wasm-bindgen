@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = TouchEvent , typescript_name = TouchEvent ) ]
+    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = TouchEvent , typescript_type = "TouchEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TouchEvent` class.
     ///

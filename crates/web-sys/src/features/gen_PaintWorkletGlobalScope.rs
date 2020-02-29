@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = WorkletGlobalScope , extends = :: js_sys :: Object , js_name = PaintWorkletGlobalScope , typescript_name = PaintWorkletGlobalScope ) ]
+    # [ wasm_bindgen ( extends = WorkletGlobalScope , extends = :: js_sys :: Object , js_name = PaintWorkletGlobalScope , typescript_type = "PaintWorkletGlobalScope" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PaintWorkletGlobalScope` class.
     ///

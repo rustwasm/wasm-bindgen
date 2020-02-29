@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TextMetrics , typescript_name = TextMetrics ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TextMetrics , typescript_type = "TextMetrics" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TextMetrics` class.
     ///

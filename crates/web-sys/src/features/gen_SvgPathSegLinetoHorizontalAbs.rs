@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = SvgPathSeg , extends = :: js_sys :: Object , js_name = SVGPathSegLinetoHorizontalAbs , typescript_name = SVGPathSegLinetoHorizontalAbs ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = SvgPathSeg , extends = :: js_sys :: Object , js_name = SVGPathSegLinetoHorizontalAbs , typescript_type = "SVGPathSegLinetoHorizontalAbs" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgPathSegLinetoHorizontalAbs` class.
     ///

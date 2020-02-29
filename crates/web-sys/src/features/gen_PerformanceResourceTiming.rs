@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = PerformanceEntry , extends = :: js_sys :: Object , js_name = PerformanceResourceTiming , typescript_name = PerformanceResourceTiming ) ]
+    # [ wasm_bindgen ( extends = PerformanceEntry , extends = :: js_sys :: Object , js_name = PerformanceResourceTiming , typescript_type = "PerformanceResourceTiming" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PerformanceResourceTiming` class.
     ///

@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUSampler , typescript_name = GPUSampler ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUSampler , typescript_type = "GPUSampler" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuSampler` class.
     ///

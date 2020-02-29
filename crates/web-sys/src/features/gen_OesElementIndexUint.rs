@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_element_index_uint , typescript_name = OES_element_index_uint ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_element_index_uint , typescript_type = "OES_element_index_uint" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `OesElementIndexUint` class.
     ///

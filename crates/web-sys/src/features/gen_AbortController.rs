@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AbortController , typescript_name = AbortController ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AbortController , typescript_type = "AbortController" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AbortController` class.
     ///

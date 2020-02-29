@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = DeviceOrientationEvent , typescript_name = DeviceOrientationEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = DeviceOrientationEvent , typescript_type = "DeviceOrientationEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DeviceOrientationEvent` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = U2F , typescript_name = U2F ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = U2F , typescript_type = "U2F" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `U2f` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_texture_half_float_linear , typescript_name = OES_texture_half_float_linear ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = OES_texture_half_float_linear , typescript_type = "OES_texture_half_float_linear" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `OesTextureHalfFloatLinear` class.
     ///

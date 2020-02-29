@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_draw_buffers , typescript_name = WEBGL_draw_buffers ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_draw_buffers , typescript_type = "WEBGL_draw_buffers" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebglDrawBuffers` class.
     ///

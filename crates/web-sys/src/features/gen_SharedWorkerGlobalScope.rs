@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = WorkerGlobalScope , extends = EventTarget , extends = :: js_sys :: Object , js_name = SharedWorkerGlobalScope , typescript_name = SharedWorkerGlobalScope ) ]
+    # [ wasm_bindgen ( extends = WorkerGlobalScope , extends = EventTarget , extends = :: js_sys :: Object , js_name = SharedWorkerGlobalScope , typescript_type = "SharedWorkerGlobalScope" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SharedWorkerGlobalScope` class.
     ///

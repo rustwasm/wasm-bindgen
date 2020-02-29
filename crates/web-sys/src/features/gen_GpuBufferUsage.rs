@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBufferUsage , typescript_name = GPUBufferUsage ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBufferUsage , typescript_type = "GPUBufferUsage" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuBufferUsage` class.
     ///

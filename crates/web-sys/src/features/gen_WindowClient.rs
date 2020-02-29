@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Client , extends = :: js_sys :: Object , js_name = WindowClient , typescript_name = WindowClient ) ]
+    # [ wasm_bindgen ( extends = Client , extends = :: js_sys :: Object , js_name = WindowClient , typescript_type = "WindowClient" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WindowClient` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_compressed_texture_s3tc_srgb , typescript_name = WEBGL_compressed_texture_s3tc_srgb ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_compressed_texture_s3tc_srgb , typescript_type = "WEBGL_compressed_texture_s3tc_srgb" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebglCompressedTextureS3tcSrgb` class.
     ///

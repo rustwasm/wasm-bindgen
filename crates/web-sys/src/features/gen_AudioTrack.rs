@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AudioTrack , typescript_name = AudioTrack ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AudioTrack , typescript_type = "AudioTrack" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AudioTrack` class.
     ///

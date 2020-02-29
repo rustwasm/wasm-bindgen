@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGStopElement , typescript_name = SVGStopElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGStopElement , typescript_type = "SVGStopElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgStopElement` class.
     ///

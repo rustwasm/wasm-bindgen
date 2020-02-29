@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = AudioNode , typescript_name = AudioNode ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = AudioNode , typescript_type = "AudioNode" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AudioNode` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRPose , typescript_name = VRPose ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRPose , typescript_type = "VRPose" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VrPose` class.
     ///

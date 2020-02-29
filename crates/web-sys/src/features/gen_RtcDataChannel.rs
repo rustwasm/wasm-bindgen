@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = RTCDataChannel , typescript_name = RTCDataChannel ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = RTCDataChannel , typescript_type = "RTCDataChannel" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcDataChannel` class.
     ///

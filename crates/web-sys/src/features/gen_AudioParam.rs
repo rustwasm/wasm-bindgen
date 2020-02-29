@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AudioParam , typescript_name = AudioParam ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AudioParam , typescript_type = "AudioParam" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `AudioParam` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = BiquadFilterNode , typescript_name = BiquadFilterNode ) ]
+    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = BiquadFilterNode , typescript_type = "BiquadFilterNode" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `BiquadFilterNode` class.
     ///

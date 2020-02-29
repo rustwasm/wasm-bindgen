@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = WaveShaperNode , typescript_name = WaveShaperNode ) ]
+    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = WaveShaperNode , typescript_type = "WaveShaperNode" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WaveShaperNode` class.
     ///

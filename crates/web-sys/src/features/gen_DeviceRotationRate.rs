@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = DeviceRotationRate , typescript_name = DeviceRotationRate ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = DeviceRotationRate , typescript_type = "DeviceRotationRate" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DeviceRotationRate` class.
     ///

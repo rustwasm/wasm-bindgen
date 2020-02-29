@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = DOMRequest , typescript_name = DOMRequest ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = DOMRequest , typescript_type = "DOMRequest" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomRequest` class.
     ///

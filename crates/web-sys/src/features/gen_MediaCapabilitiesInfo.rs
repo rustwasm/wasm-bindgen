@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaCapabilitiesInfo , typescript_name = MediaCapabilitiesInfo ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MediaCapabilitiesInfo , typescript_type = "MediaCapabilitiesInfo" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaCapabilitiesInfo` class.
     ///

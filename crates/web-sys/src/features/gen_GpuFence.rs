@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUFence , typescript_name = GPUFence ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUFence , typescript_type = "GPUFence" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuFence` class.
     ///

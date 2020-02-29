@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = BroadcastChannel , typescript_name = BroadcastChannel ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = BroadcastChannel , typescript_type = "BroadcastChannel" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `BroadcastChannel` class.
     ///

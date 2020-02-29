@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = UserProximityEvent , typescript_name = UserProximityEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = UserProximityEvent , typescript_type = "UserProximityEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `UserProximityEvent` class.
     ///

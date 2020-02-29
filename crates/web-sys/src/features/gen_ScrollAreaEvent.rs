@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = ScrollAreaEvent , typescript_name = ScrollAreaEvent ) ]
+    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = ScrollAreaEvent , typescript_type = "ScrollAreaEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ScrollAreaEvent` class.
     ///

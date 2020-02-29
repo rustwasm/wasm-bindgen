@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLShaderPrecisionFormat , typescript_name = WebGLShaderPrecisionFormat ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLShaderPrecisionFormat , typescript_type = "WebGLShaderPrecisionFormat" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlShaderPrecisionFormat` class.
     ///

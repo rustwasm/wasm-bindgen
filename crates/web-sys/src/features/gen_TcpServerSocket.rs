@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = TCPServerSocket , typescript_name = TCPServerSocket ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = TCPServerSocket , typescript_type = "TCPServerSocket" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `TcpServerSocket` class.
     ///

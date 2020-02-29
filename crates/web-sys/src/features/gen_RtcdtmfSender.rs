@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = RTCDTMFSender , typescript_name = RTCDTMFSender ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = RTCDTMFSender , typescript_type = "RTCDTMFSender" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcdtmfSender` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMParser , typescript_name = DOMParser ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DOMParser , typescript_type = "DOMParser" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DomParser` class.
     ///

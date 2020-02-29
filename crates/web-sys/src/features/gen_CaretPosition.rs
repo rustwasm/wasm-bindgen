@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CaretPosition , typescript_name = CaretPosition ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CaretPosition , typescript_type = "CaretPosition" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CaretPosition` class.
     ///

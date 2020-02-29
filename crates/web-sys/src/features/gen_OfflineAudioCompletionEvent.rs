@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = OfflineAudioCompletionEvent , typescript_name = OfflineAudioCompletionEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = OfflineAudioCompletionEvent , typescript_type = "OfflineAudioCompletionEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `OfflineAudioCompletionEvent` class.
     ///

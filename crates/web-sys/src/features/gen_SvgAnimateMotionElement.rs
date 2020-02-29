@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgAnimationElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGAnimateMotionElement , typescript_name = SVGAnimateMotionElement ) ]
+    # [ wasm_bindgen ( extends = SvgAnimationElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGAnimateMotionElement , typescript_type = "SVGAnimateMotionElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgAnimateMotionElement` class.
     ///

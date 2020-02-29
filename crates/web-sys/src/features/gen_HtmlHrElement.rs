@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLHRElement , typescript_name = HTMLHRElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLHRElement , typescript_type = "HTMLHRElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlHrElement` class.
     ///

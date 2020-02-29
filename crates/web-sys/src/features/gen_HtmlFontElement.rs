@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLFontElement , typescript_name = HTMLFontElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLFontElement , typescript_type = "HTMLFontElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlFontElement` class.
     ///

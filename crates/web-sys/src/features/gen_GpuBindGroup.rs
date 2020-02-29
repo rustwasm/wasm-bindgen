@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBindGroup , typescript_name = GPUBindGroup ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBindGroup , typescript_type = "GPUBindGroup" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuBindGroup` class.
     ///

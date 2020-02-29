@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = InputEvent , typescript_name = InputEvent ) ]
+    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = InputEvent , typescript_type = "InputEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `InputEvent` class.
     ///

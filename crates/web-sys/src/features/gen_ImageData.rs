@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ImageData , typescript_name = ImageData ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ImageData , typescript_type = "ImageData" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ImageData` class.
     ///

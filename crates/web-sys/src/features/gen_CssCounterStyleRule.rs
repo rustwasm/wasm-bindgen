@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSCounterStyleRule , typescript_name = CSSCounterStyleRule ) ]
+    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSCounterStyleRule , typescript_type = "CSSCounterStyleRule" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssCounterStyleRule` class.
     ///

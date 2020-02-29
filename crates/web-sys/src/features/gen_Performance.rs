@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = Performance , typescript_name = Performance ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = Performance , typescript_type = "Performance" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Performance` class.
     ///

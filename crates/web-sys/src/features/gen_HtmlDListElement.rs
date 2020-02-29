@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLDListElement , typescript_name = HTMLDListElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLDListElement , typescript_type = "HTMLDListElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlDListElement` class.
     ///

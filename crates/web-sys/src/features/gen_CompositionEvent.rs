@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = CompositionEvent , typescript_name = CompositionEvent ) ]
+    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = CompositionEvent , typescript_type = "CompositionEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CompositionEvent` class.
     ///

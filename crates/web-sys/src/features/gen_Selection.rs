@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Selection , typescript_name = Selection ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Selection , typescript_type = "Selection" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Selection` class.
     ///

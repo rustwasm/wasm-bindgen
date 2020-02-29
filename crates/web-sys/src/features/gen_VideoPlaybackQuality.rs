@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VideoPlaybackQuality , typescript_name = VideoPlaybackQuality ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VideoPlaybackQuality , typescript_type = "VideoPlaybackQuality" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VideoPlaybackQuality` class.
     ///

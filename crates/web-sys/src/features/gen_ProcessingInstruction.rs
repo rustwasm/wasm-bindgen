@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = ProcessingInstruction , typescript_name = ProcessingInstruction ) ]
+    # [ wasm_bindgen ( extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = ProcessingInstruction , typescript_type = "ProcessingInstruction" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ProcessingInstruction` class.
     ///

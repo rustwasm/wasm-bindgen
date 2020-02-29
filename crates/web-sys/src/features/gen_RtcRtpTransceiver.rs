@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCRtpTransceiver , typescript_name = RTCRtpTransceiver ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = RTCRtpTransceiver , typescript_type = "RTCRtpTransceiver" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcRtpTransceiver` class.
     ///

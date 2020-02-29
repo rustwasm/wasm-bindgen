@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTextAreaElement , typescript_name = HTMLTextAreaElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTextAreaElement , typescript_type = "HTMLTextAreaElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlTextAreaElement` class.
     ///

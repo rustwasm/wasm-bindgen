@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLSpanElement , typescript_name = HTMLSpanElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLSpanElement , typescript_type = "HTMLSpanElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlSpanElement` class.
     ///

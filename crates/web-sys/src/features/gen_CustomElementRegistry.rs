@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CustomElementRegistry , typescript_name = CustomElementRegistry ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CustomElementRegistry , typescript_type = "CustomElementRegistry" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CustomElementRegistry` class.
     ///

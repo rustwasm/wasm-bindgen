@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRFieldOfView , typescript_name = VRFieldOfView ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = VRFieldOfView , typescript_type = "VRFieldOfView" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VrFieldOfView` class.
     ///

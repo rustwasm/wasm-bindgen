@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = RTCDTMFToneChangeEvent , typescript_name = RTCDTMFToneChangeEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = RTCDTMFToneChangeEvent , typescript_type = "RTCDTMFToneChangeEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `RtcdtmfToneChangeEvent` class.
     ///

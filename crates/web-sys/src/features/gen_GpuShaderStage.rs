@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUShaderStage , typescript_name = GPUShaderStage ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUShaderStage , typescript_type = "GPUShaderStage" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuShaderStage` class.
     ///

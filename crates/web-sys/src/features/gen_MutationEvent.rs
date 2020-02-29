@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = MutationEvent , typescript_name = MutationEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = MutationEvent , typescript_type = "MutationEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MutationEvent` class.
     ///

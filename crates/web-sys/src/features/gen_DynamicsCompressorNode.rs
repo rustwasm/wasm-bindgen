@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = DynamicsCompressorNode , typescript_name = DynamicsCompressorNode ) ]
+    # [ wasm_bindgen ( extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = DynamicsCompressorNode , typescript_type = "DynamicsCompressorNode" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DynamicsCompressorNode` class.
     ///

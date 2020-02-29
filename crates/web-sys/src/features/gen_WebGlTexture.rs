@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLTexture , typescript_name = WebGLTexture ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLTexture , typescript_type = "WebGLTexture" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlTexture` class.
     ///

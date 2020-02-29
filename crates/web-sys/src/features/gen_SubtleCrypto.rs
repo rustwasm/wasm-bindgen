@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SubtleCrypto , typescript_name = SubtleCrypto ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SubtleCrypto , typescript_type = "SubtleCrypto" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SubtleCrypto` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGPoint , typescript_name = SVGPoint ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGPoint , typescript_type = "SVGPoint" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgPoint` class.
     ///

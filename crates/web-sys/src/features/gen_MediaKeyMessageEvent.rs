@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = MediaKeyMessageEvent , typescript_name = MediaKeyMessageEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = MediaKeyMessageEvent , typescript_type = "MediaKeyMessageEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `MediaKeyMessageEvent` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = ImageCaptureErrorEvent , typescript_name = ImageCaptureErrorEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = ImageCaptureErrorEvent , typescript_type = "ImageCaptureErrorEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ImageCaptureErrorEvent` class.
     ///

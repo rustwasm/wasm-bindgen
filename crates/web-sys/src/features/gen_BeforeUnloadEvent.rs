@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = BeforeUnloadEvent , typescript_name = BeforeUnloadEvent ) ]
+    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = BeforeUnloadEvent , typescript_type = "BeforeUnloadEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `BeforeUnloadEvent` class.
     ///

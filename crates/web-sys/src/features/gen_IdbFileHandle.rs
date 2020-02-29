@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = IDBFileHandle , typescript_name = IDBFileHandle ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = IDBFileHandle , typescript_type = "IDBFileHandle" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `IdbFileHandle` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = AnimationTimeline , extends = :: js_sys :: Object , js_name = DocumentTimeline , typescript_name = DocumentTimeline ) ]
+    # [ wasm_bindgen ( extends = AnimationTimeline , extends = :: js_sys :: Object , js_name = DocumentTimeline , typescript_type = "DocumentTimeline" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `DocumentTimeline` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEDiffuseLightingElement , typescript_name = SVGFEDiffuseLightingElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEDiffuseLightingElement , typescript_type = "SVGFEDiffuseLightingElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgfeDiffuseLightingElement` class.
     ///

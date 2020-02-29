@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( vendor_prefix = webkit , extends = BaseAudioContext , extends = EventTarget , extends = :: js_sys :: Object , js_name = OfflineAudioContext , typescript_name = OfflineAudioContext ) ]
+    # [ wasm_bindgen ( vendor_prefix = webkit , extends = BaseAudioContext , extends = EventTarget , extends = :: js_sys :: Object , js_name = OfflineAudioContext , typescript_type = "OfflineAudioContext" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `OfflineAudioContext` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = WheelEvent , typescript_name = WheelEvent ) ]
+    # [ wasm_bindgen ( extends = MouseEvent , extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = WheelEvent , typescript_type = "WheelEvent" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WheelEvent` class.
     ///

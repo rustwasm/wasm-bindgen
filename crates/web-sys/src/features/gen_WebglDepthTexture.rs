@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_depth_texture , typescript_name = WEBGL_depth_texture ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_depth_texture , typescript_type = "WEBGL_depth_texture" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebglDepthTexture` class.
     ///

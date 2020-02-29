@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = FontFaceSetIterator , typescript_name = FontFaceSetIterator ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = FontFaceSetIterator , typescript_type = "FontFaceSetIterator" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `FontFaceSetIterator` class.
     ///

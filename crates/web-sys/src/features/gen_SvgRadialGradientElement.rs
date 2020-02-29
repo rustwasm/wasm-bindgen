@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgGradientElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGRadialGradientElement , typescript_name = SVGRadialGradientElement ) ]
+    # [ wasm_bindgen ( extends = SvgGradientElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGRadialGradientElement , typescript_type = "SVGRadialGradientElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgRadialGradientElement` class.
     ///

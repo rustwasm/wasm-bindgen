@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = SpeechSynthesisUtterance , typescript_name = SpeechSynthesisUtterance ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = SpeechSynthesisUtterance , typescript_type = "SpeechSynthesisUtterance" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SpeechSynthesisUtterance` class.
     ///

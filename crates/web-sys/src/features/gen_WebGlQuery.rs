@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLQuery , typescript_name = WebGLQuery ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = WebGLQuery , typescript_type = "WebGLQuery" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `WebGlQuery` class.
     ///

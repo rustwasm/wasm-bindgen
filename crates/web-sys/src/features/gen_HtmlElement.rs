@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLElement , typescript_name = HTMLElement ) ]
+    # [ wasm_bindgen ( extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLElement , typescript_type = "HTMLElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlElement` class.
     ///

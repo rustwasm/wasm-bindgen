@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = HTMLAllCollection , typescript_name = HTMLAllCollection ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = HTMLAllCollection , typescript_type = "HTMLAllCollection" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlAllCollection` class.
     ///

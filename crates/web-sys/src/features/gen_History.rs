@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = History , typescript_name = History ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = History , typescript_type = "History" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `History` class.
     ///

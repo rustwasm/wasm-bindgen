@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTrackElement , typescript_name = HTMLTrackElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLTrackElement , typescript_type = "HTMLTrackElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlTrackElement` class.
     ///

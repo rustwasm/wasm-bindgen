@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = XSLTProcessor , typescript_name = XSLTProcessor ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = XSLTProcessor , typescript_type = "XSLTProcessor" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `XsltProcessor` class.
     ///

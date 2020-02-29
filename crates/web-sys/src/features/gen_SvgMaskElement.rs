@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGMaskElement , typescript_name = SVGMaskElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGMaskElement , typescript_type = "SVGMaskElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgMaskElement` class.
     ///

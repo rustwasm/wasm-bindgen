@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSPageRule , typescript_name = CSSPageRule ) ]
+    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSPageRule , typescript_type = "CSSPageRule" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssPageRule` class.
     ///

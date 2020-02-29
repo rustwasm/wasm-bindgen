@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = PresentationAvailability , typescript_name = PresentationAvailability ) ]
+    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = PresentationAvailability , typescript_type = "PresentationAvailability" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PresentationAvailability` class.
     ///

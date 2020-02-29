@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ImageBitmap , typescript_name = ImageBitmap ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = ImageBitmap , typescript_type = "ImageBitmap" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ImageBitmap` class.
     ///

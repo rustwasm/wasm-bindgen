@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = MediaStreamTrack , extends = EventTarget , extends = :: js_sys :: Object , js_name = VideoStreamTrack , typescript_name = VideoStreamTrack ) ]
+    # [ wasm_bindgen ( extends = MediaStreamTrack , extends = EventTarget , extends = :: js_sys :: Object , js_name = VideoStreamTrack , typescript_type = "VideoStreamTrack" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `VideoStreamTrack` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLUListElement , typescript_name = HTMLUListElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLUListElement , typescript_type = "HTMLUListElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlUListElement` class.
     ///

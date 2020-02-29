@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLProgressElement , typescript_name = HTMLProgressElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLProgressElement , typescript_type = "HTMLProgressElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlProgressElement` class.
     ///

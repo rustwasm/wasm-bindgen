@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Text , extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = CDATASection , typescript_name = CDATASection ) ]
+    # [ wasm_bindgen ( extends = Text , extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = CDATASection , typescript_type = "CDATASection" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CdataSection` class.
     ///

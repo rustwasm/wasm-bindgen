@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGMetadataElement , typescript_name = SVGMetadataElement ) ]
+    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGMetadataElement , typescript_type = "SVGMetadataElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `SvgMetadataElement` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FormData , typescript_name = FormData ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FormData , typescript_type = "FormData" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `FormData` class.
     ///

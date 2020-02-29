@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSFontFaceRule , typescript_name = CSSFontFaceRule ) ]
+    # [ wasm_bindgen ( extends = CssRule , extends = :: js_sys :: Object , js_name = CSSFontFaceRule , typescript_type = "CSSFontFaceRule" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CssFontFaceRule` class.
     ///

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_shader_texture_lod , typescript_name = EXT_shader_texture_lod ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_shader_texture_lod , typescript_type = "EXT_shader_texture_lod" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `ExtShaderTextureLod` class.
     ///

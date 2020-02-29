@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUOutOfMemoryError , typescript_name = GPUOutOfMemoryError ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUOutOfMemoryError , typescript_type = "GPUOutOfMemoryError" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `GpuOutOfMemoryError` class.
     ///

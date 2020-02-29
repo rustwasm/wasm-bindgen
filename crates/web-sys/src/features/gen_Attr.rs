@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = Attr , typescript_name = Attr ) ]
+    # [ wasm_bindgen ( extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = Attr , typescript_type = "Attr" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Attr` class.
     ///

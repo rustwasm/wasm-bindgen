@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NodeList , typescript_name = NodeList ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NodeList , typescript_type = "NodeList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `NodeList` class.
     ///

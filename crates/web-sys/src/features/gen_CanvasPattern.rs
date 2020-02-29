@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CanvasPattern , typescript_name = CanvasPattern ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CanvasPattern , typescript_type = "CanvasPattern" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `CanvasPattern` class.
     ///

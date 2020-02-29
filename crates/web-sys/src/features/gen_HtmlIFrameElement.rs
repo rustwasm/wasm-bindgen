@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLIFrameElement , typescript_name = HTMLIFrameElement ) ]
+    # [ wasm_bindgen ( extends = HtmlElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = HTMLIFrameElement , typescript_type = "HTMLIFrameElement" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `HtmlIFrameElement` class.
     ///

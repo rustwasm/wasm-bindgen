@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PeriodicWave , typescript_name = PeriodicWave ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PeriodicWave , typescript_type = "PeriodicWave" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `PeriodicWave` class.
     ///

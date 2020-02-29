@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBKeyRange , typescript_name = IDBKeyRange ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBKeyRange , typescript_type = "IDBKeyRange" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `IdbKeyRange` class.
     ///

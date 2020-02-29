@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 extern "C" {
 
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = Geolocation , typescript_name = Geolocation ) ]
+    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = Geolocation , typescript_type = "Geolocation" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
     ///The `Geolocation` class.
     ///
