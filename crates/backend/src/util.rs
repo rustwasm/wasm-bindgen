@@ -157,7 +157,6 @@ impl<T: Hash> fmt::Display for ShortHash<T> {
     }
 }
 
-
 /// Create syn attribute for `#[cfg(web_sys_unstable_apis)]` and a doc comment.
 pub fn unstable_api_attrs() -> proc_macro2::TokenStream {
     quote::quote!(

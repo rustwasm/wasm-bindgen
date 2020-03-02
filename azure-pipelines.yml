@@ -5,6 +5,12 @@ trigger:
       - refs/tags/*
 
 jobs:
+  - job: test_formatting
+    displayName: "Run cargo fmt"
+    steps:
+      - template: ci/azure-install-rust.yml
+      - script: cargo fmt --all -- --check
+
   - job: test_wasm_bindgen
     displayName: "Run wasm-bindgen crate tests (unix)"
     steps:

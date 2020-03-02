@@ -136,10 +136,11 @@ impl WasmBindgenDescriptorsSection {
                     let (id, import_id) =
                         module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
                     module.funcs.get_mut(id).name = Some(import_name);
-                    self.closure_imports.insert(import_id, descriptor.clone().unwrap_closure());
+                    self.closure_imports
+                        .insert(import_id, descriptor.clone().unwrap_closure());
                     self.cached_closures.insert(descriptor, id);
                     id
-                },
+                }
             };
 
             let local = match &mut module.funcs.get_mut(func).kind {
