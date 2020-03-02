@@ -295,7 +295,7 @@ extern "C" {
     ///*This API requires the following crate features to be activated: `XmlHttpRequest`*
     pub fn send_with_opt_u8_array(
         this: &XmlHttpRequest,
-        body: Option<&mut [u8]>,
+        body: Option<&[u8]>,
     ) -> Result<(), JsValue>;
 
     #[cfg(feature = "FormData")]

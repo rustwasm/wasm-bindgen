@@ -174,10 +174,7 @@ extern "C" {
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/send)
     ///
     ///*This API requires the following crate features to be activated: `PresentationConnection`*
-    pub fn send_with_u8_array(
-        this: &PresentationConnection,
-        data: &mut [u8],
-    ) -> Result<(), JsValue>;
+    pub fn send_with_u8_array(this: &PresentationConnection, data: &[u8]) -> Result<(), JsValue>;
 
     # [ wasm_bindgen ( catch , method , structural , js_class = "PresentationConnection" , js_name = terminate ) ]
     ///The `terminate()` method.

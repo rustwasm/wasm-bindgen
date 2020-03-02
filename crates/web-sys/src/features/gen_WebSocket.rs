@@ -236,7 +236,7 @@ extern "C" {
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/send)
     ///
     ///*This API requires the following crate features to be activated: `WebSocket`*
-    pub fn send_with_u8_array(this: &WebSocket, data: &mut [u8]) -> Result<(), JsValue>;
+    pub fn send_with_u8_array(this: &WebSocket, data: &[u8]) -> Result<(), JsValue>;
 
 }
 

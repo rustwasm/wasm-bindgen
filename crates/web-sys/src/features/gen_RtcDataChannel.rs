@@ -230,6 +230,6 @@ extern "C" {
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/send)
     ///
     ///*This API requires the following crate features to be activated: `RtcDataChannel`*
-    pub fn send_with_u8_array(this: &RtcDataChannel, data: &mut [u8]) -> Result<(), JsValue>;
+    pub fn send_with_u8_array(this: &RtcDataChannel, data: &[u8]) -> Result<(), JsValue>;
 
 }
