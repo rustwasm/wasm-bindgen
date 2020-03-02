@@ -121,7 +121,7 @@ jobs:
         parameters:
           toolchain: nightly
       - script: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl webidls src/features
-      - script: git diff-index HEAD
+      - script: git diff --exit-code
 
   - job: test_js_sys
     displayName: "Run js-sys crate tests"
