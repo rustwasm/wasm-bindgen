@@ -4847,8 +4847,9 @@ macro_rules! arrays {
             #[wasm_bindgen(getter, method)]
             pub fn buffer(this: &$name) -> ArrayBuffer;
 
-            /// The `subarray()` method stores multiple values in the typed array,
-            /// reading input values from a specified array.
+            /// The `subarray()` method returns a new `TypedArray` on the same
+            /// `ArrayBuffer` store and with the same element types as for this
+            /// `TypedArray` object.
             #[wasm_bindgen(method)]
             pub fn subarray(this: &$name, begin: u32, end: u32) -> $name;
 
