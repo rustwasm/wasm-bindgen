@@ -1,18 +1,7 @@
-use std::io::Result;
-use std::process::Command;
+use std::env;
+use std::path::PathBuf;
 
-fn main() -> Result<()> {
-    let result = Command::new("cargo")
-        .arg("run")
-        .arg("--release")
-        .arg("--package")
-        .arg("wasm-bindgen-webidl")
-        .arg("webidls")
-        .arg("generated")
-        .arg("--no-features")
-        .status()?;
-
-    assert!(result.success());
-
-    Ok(())
+fn main() {
+    let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+    wasm_bindgen_webidl::generate("webidls".as_ref(), &out_dir, false).unwrap();
 }

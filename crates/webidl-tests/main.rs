@@ -15,7 +15,10 @@ fn keep() {
     noop();
 }
 
-mod generated;
+#[allow(unused_imports, non_snake_case)]
+mod generated {
+    include!(concat!(env!("OUT_DIR"), "/mod.rs"));
+}
 
 pub mod array;
 pub mod array_buffer;

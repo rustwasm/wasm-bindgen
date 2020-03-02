@@ -61,13 +61,11 @@ fn maybe_unstable_docs(unstable: bool) -> Option<proc_macro2::TokenStream> {
 }
 
 fn generate_arguments(arguments: &[(Ident, Type)], variadic: bool) -> Vec<TokenStream> {
-    let last = arguments.len() - 1;
-
     arguments
         .into_iter()
         .enumerate()
         .map(|(i, (name, ty))| {
-            if variadic && i == last {
+            if variadic && i + 1 == arguments.len() {
                 quote!( #name: &::js_sys::Array )
             } else {
                 quote!( #name: #ty )
