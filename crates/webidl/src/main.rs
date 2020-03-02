@@ -1,12 +1,7 @@
 use anyhow::{Context, Result};
-use sourcefile::SourceFile;
-use std::collections::BTreeMap;
-use std::ffi::OsStr;
 use std::fs;
-use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::path::PathBuf;
 use structopt::StructOpt;
-use wasm_bindgen_webidl::Feature;
 
 #[derive(StructOpt, Debug)]
 #[structopt(
