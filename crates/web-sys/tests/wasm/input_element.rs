@@ -7,22 +7,10 @@ extern "C" {
     fn new_input() -> HtmlInputElement;
 }
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_name = location, js_namespace = document)]
-    static LOCATION: Location;
-
-    type Location;
-
-    // FIXME: `href` should be structural in `web_sys`
-    #[wasm_bindgen(getter, method, structural)]
-    fn href(this: &Location) -> String;
-}
-
 #[wasm_bindgen_test]
 fn test_input_element() {
     let element = new_input();
-    let location = LOCATION.href();
+    let location = web_sys::window().unwrap().location().href().unwrap();
     assert_eq!(element.accept(), "", "Shouldn't have an accept");
     element.set_accept("audio/*");
     assert_eq!(element.accept(), "audio/*", "Should have an accept");
