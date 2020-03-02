@@ -20,7 +20,10 @@ use weedle::CallbackInterfaceDefinition;
 use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
 
 use super::Result;
-use crate::{util::{self, camel_case_ident}, ApiStability};
+use crate::{
+    util::{self, camel_case_ident},
+    ApiStability,
+};
 
 /// Collection of constructs that may use partial.
 #[derive(Default)]
@@ -139,7 +142,11 @@ pub(crate) trait FirstPass<'src, Ctx> {
 }
 
 impl<'src> FirstPass<'src, ApiStability> for [weedle::Definition<'src>] {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         for def in self {
             def.first_pass(record, stability)?;
         }
@@ -149,7 +156,11 @@ impl<'src> FirstPass<'src, ApiStability> for [weedle::Definition<'src>] {
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::Definition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         use weedle::Definition::*;
 
         match self {
@@ -172,15 +183,16 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::Definition<'src> {
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::DictionaryDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
 
-        let dictionary_data = record
-            .dictionaries
-            .entry(self.identifier.0)
-            .or_default();
+        let dictionary_data = record.dictionaries.entry(self.identifier.0).or_default();
 
         dictionary_data.definition = Some(self);
         dictionary_data.stability = stability;
@@ -207,7 +219,11 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialDictionaryDefinition<'src> {
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::EnumDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -325,7 +341,11 @@ fn first_pass_operation<'src>(
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::InterfaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -410,7 +430,11 @@ fn process_interface_attribute<'src>(
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::PartialInterfaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -425,7 +449,7 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::PartialInterfaceDefinition<
         for member in &self.members.body {
             member.first_pass(record, (self.identifier.0, stability))?;
         }
-        
+
         Ok(())
     }
 }
@@ -513,7 +537,9 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
     }
 }
 
-impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::AttributeInterfaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::AttributeInterfaceMember<'src>
+{
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
@@ -530,14 +556,18 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Att
             .attributes
             .push(AttributeInterfaceData {
                 definition: self,
-                stability: ctx.1
+                stability: ctx.1,
             });
         Ok(())
     }
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::InterfaceMixinDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -558,7 +588,11 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::InterfaceMixinDefinition<'s
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::PartialInterfaceMixinDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -604,7 +638,9 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::MixinMe
     }
 }
 
-impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::OperationMixinMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::mixin::OperationMixinMember<'src>
+{
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
@@ -629,7 +665,9 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::Operati
     }
 }
 
-impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::AttributeMixinMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::mixin::AttributeMixinMember<'src>
+{
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
@@ -645,7 +683,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::mixin::Attribu
             .attributes
             .push(AttributeMixinData {
                 definition: self,
-                stability: ctx.1
+                stability: ctx.1,
             });
         Ok(())
     }

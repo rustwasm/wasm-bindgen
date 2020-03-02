@@ -26,7 +26,8 @@ fn main() {
         } else {
             (idl, String::new())
         };
-        let mut generated_rust = wasm_bindgen_webidl::compile(&stable_source, &experimental_source, None).unwrap();
+        let mut generated_rust =
+            wasm_bindgen_webidl::compile(&stable_source, &experimental_source, None).unwrap();
 
         generated_rust.insert_str(
             0,

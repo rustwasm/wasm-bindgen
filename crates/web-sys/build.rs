@@ -72,26 +72,27 @@ fn main() -> Result<()> {
     let source = read_source_from_path("webidls/enabled")?;
     let unstable_source = read_source_from_path("webidls/unstable")?;
 
-    let bindings = match wasm_bindgen_webidl::compile(&source.contents, &unstable_source.contents, allowed) {
-        Ok(bindings) => bindings,
-        Err(e) => {
-            if let Some(err) = e.downcast_ref::<wasm_bindgen_webidl::WebIDLParseError>() {
-                if let Some(pos) = source.resolve_offset(err.0) {
-                    let ctx = format!(
-                        "compiling WebIDL into wasm-bindgen bindings in file \
+    let bindings =
+        match wasm_bindgen_webidl::compile(&source.contents, &unstable_source.contents, allowed) {
+            Ok(bindings) => bindings,
+            Err(e) => {
+                if let Some(err) = e.downcast_ref::<wasm_bindgen_webidl::WebIDLParseError>() {
+                    if let Some(pos) = source.resolve_offset(err.0) {
+                        let ctx = format!(
+                            "compiling WebIDL into wasm-bindgen bindings in file \
                          \"{}\", line {} column {}",
-                        pos.filename,
-                        pos.line + 1,
-                        pos.col + 1
-                    );
-                    return Err(e.context(ctx));
-                } else {
-                    return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
+                            pos.filename,
+                            pos.line + 1,
+                            pos.col + 1
+                        );
+                        return Err(e.context(ctx));
+                    } else {
+                        return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
+                    }
                 }
+                return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
             }
-            return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
-        }
-    };
+        };
 
     let out_dir = env::var("OUT_DIR").context("reading OUT_DIR environment variable")?;
     let out_file_path = path::Path::new(&out_dir).join("bindings.rs");

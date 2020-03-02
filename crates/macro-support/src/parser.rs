@@ -187,7 +187,10 @@ impl Default for BindgenAttrs {
         // sanity check that we call `check_used` an appropriate number of
         // times.
         ATTRS.with(|state| state.parsed.set(state.parsed.get() + 1));
-        BindgenAttrs { attrs: Vec::new(), unstable_api_attr: None, }
+        BindgenAttrs {
+            attrs: Vec::new(),
+            unstable_api_attr: None,
+        }
     }
 }
 

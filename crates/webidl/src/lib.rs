@@ -97,7 +97,11 @@ fn parse_source(source: &str) -> Result<Vec<weedle::Definition>> {
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-fn parse(webidl_source: &str, unstable_source: &str, allowed_types: Option<&[&str]>) -> Result<Program> {
+fn parse(
+    webidl_source: &str,
+    unstable_source: &str,
+    allowed_types: Option<&[&str]>,
+) -> Result<Program> {
     let mut first_pass_record: FirstPassRecord = Default::default();
     first_pass_record.builtin_idents = builtin_idents();
     first_pass_record.immutable_slice_whitelist = immutable_slice_whitelist();
@@ -164,7 +168,11 @@ fn parse(webidl_source: &str, unstable_source: &str, allowed_types: Option<&[&st
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile(webidl_source: &str, experimental_source: &str, allowed_types: Option<&[&str]>) -> Result<String> {
+pub fn compile(
+    webidl_source: &str,
+    experimental_source: &str,
+    allowed_types: Option<&[&str]>,
+) -> Result<String> {
     let ast = parse(webidl_source, experimental_source, allowed_types)?;
     Ok(compile_ast(ast))
 }
@@ -785,7 +793,9 @@ impl<'src> FirstPassRecord<'src> {
             OperationId::IndexingDeleter => Some(format!("The indexing deleter\n\n")),
         };
         let attrs = data.definition_attributes;
-        for mut method in self.create_imports(attrs, kind, id, op_data, data.stability.is_unstable()) {
+        for mut method in
+            self.create_imports(attrs, kind, id, op_data, data.stability.is_unstable())
+        {
             let mut doc = doc.clone();
             self.append_required_features_doc(&method, &mut doc, &[]);
             method.doc_comment = doc;

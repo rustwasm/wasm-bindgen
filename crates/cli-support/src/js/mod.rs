@@ -216,10 +216,7 @@ impl<'a> Context<'a> {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
-                footer.push_str(&format!(
-                    "{} = Object.assign(init, __exports);\n",
-                    global
-                ));
+                footer.push_str(&format!("{} = Object.assign(init, __exports);\n", global));
             }
 
             // With normal CommonJS node we need to defer requiring the wasm
@@ -319,7 +316,7 @@ impl<'a> Context<'a> {
         let mut imports = String::new();
 
         if self.config.omit_imports {
-            return Ok(imports)
+            return Ok(imports);
         }
 
         match &self.config.mode {
@@ -759,7 +756,10 @@ impl<'a> Context<'a> {
             return;
         }
         assert!(!self.config.anyref);
-        self.global(&format!("const heap = new Array({}).fill(undefined);", INITIAL_HEAP_OFFSET));
+        self.global(&format!(
+            "const heap = new Array({}).fill(undefined);",
+            INITIAL_HEAP_OFFSET
+        ));
         self.global(&format!("heap.push({});", INITIAL_HEAP_VALUES.join(", ")));
     }
 
@@ -2440,7 +2440,6 @@ impl<'a> Context<'a> {
                         dtor = dtor,
                         call = call,
                     ))
-
                 } else {
                     self.expose_make_closure()?;
 

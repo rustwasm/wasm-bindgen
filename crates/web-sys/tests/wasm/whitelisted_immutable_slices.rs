@@ -10,8 +10,8 @@
 //!
 //! @see https://github.com/rustwasm/wasm-bindgen/issues/1005
 
+use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{WebGl2RenderingContext, WebGlRenderingContext, WebSocket};
-use wasm_bindgen::{JsValue, JsCast};
 
 // Ensure that our whitelisted WebGlRenderingContext methods compile with immutable slices.
 fn test_webgl_rendering_context_immutable_slices() {
@@ -60,9 +60,9 @@ fn test_webgl_rendering_context_immutable_slices() {
 fn test_webgl2_rendering_context_immutable_slices() {
     let gl = JsValue::null().unchecked_into::<WebGl2RenderingContext>();
 
-   gl.tex_image_3d_with_opt_u8_array(0, 0, 0, 0, 0, 0, 0, 0, 0, Some(&[1]));
-   gl.tex_sub_image_3d_with_opt_u8_array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Some(&[1]));
-   gl.compressed_tex_image_3d_with_u8_array(0, 0, 0, 0, 0, 0, 0, &[1]);
+    gl.tex_image_3d_with_opt_u8_array(0, 0, 0, 0, 0, 0, 0, 0, 0, Some(&[1]));
+    gl.tex_sub_image_3d_with_opt_u8_array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Some(&[1]));
+    gl.compressed_tex_image_3d_with_u8_array(0, 0, 0, 0, 0, 0, 0, &[1]);
 }
 
 // Ensure that our whitelisted WebSocket methods compile with immutable slices.
