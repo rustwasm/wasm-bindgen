@@ -151,16 +151,6 @@ export function new_title() {
   return document.createElement("title");
 }
 
-export function new_webgl_rendering_context() {
-  const canvas = document.createElement('canvas');
-  return canvas.getContext('webgl');
-}
-
-export function new_webgl2_rendering_context() {
-  const canvas = document.createElement('canvas');
-  return canvas.getContext('webgl2');
-}
-
 export function new_xpath_result() {
     let xmlDoc = new DOMParser().parseFromString("<root><value>tomato</value></root>", "application/xml");
     let xpathResult = xmlDoc.evaluate("/root//value", xmlDoc, null, XPathResult.ANY_TYPE, null);
