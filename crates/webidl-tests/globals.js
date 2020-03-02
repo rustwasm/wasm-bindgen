@@ -207,6 +207,13 @@ global.NamedConstructor = class NamedConstructor extends NamedConstructorParent 
   }
 };
 
+global.NamedConstructorBar = class NamedConstructorBar extends NamedConstructor {
+  constructor(_value) {
+    super();
+    this._value = _value;
+  }
+};
+
 global.StaticMethod = class StaticMethod {
   static swap(value) {
     const res = StaticMethod.value;
