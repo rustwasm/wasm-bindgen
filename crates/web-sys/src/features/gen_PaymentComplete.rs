@@ -1,11 +1,9 @@
 use wasm_bindgen::prelude::*;
-
 #[wasm_bindgen]
-///The `PaymentComplete` enum.
-///
-///*This API requires the following crate features to be activated: `PaymentComplete`*
+#[doc = "The `PaymentComplete` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PaymentComplete`*"]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-
 pub enum PaymentComplete {
     Success = "success",
     Fail = "fail",

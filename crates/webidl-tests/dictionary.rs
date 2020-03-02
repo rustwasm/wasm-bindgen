@@ -1,6 +1,6 @@
+use crate::generated::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use crate::generated::*;
 
 #[wasm_bindgen]
 extern "C" {

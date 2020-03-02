@@ -1,118 +1,102 @@
 use super::*;
 use wasm_bindgen::prelude::*;
-
 #[wasm_bindgen]
-
 extern "C" {
-
     # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = IDBTransaction , typescript_type = "IDBTransaction" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    ///The `IdbTransaction` class.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "The `IdbTransaction` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub type IdbTransaction;
-
     #[cfg(feature = "IdbTransactionMode")]
     # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBTransaction" , js_name = mode ) ]
-    ///Getter for the `mode` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/mode)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`, `IdbTransactionMode`*
+    #[doc = "Getter for the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/mode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`, `IdbTransactionMode`*"]
     pub fn mode(this: &IdbTransaction) -> Result<IdbTransactionMode, JsValue>;
-
     #[cfg(feature = "IdbDatabase")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "IDBTransaction" , js_name = db ) ]
-    ///Getter for the `db` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/db)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`*
+    #[doc = "Getter for the `db` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/db)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`*"]
     pub fn db(this: &IdbTransaction) -> IdbDatabase;
-
     #[cfg(feature = "DomException")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "IDBTransaction" , js_name = error ) ]
-    ///Getter for the `error` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/error)
-    ///
-    ///*This API requires the following crate features to be activated: `DomException`, `IdbTransaction`*
+    #[doc = "Getter for the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/error)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomException`, `IdbTransaction`*"]
     pub fn error(this: &IdbTransaction) -> Option<DomException>;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "IDBTransaction" , js_name = onabort ) ]
-    ///Getter for the `onabort` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onabort)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "Getter for the `onabort` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onabort)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn onabort(this: &IdbTransaction) -> Option<::js_sys::Function>;
-
     # [ wasm_bindgen ( structural , method , setter , js_class = "IDBTransaction" , js_name = onabort ) ]
-    ///Setter for the `onabort` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onabort)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "Setter for the `onabort` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onabort)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn set_onabort(this: &IdbTransaction, value: Option<&::js_sys::Function>);
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "IDBTransaction" , js_name = oncomplete ) ]
-    ///Getter for the `oncomplete` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "Getter for the `oncomplete` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn oncomplete(this: &IdbTransaction) -> Option<::js_sys::Function>;
-
     # [ wasm_bindgen ( structural , method , setter , js_class = "IDBTransaction" , js_name = oncomplete ) ]
-    ///Setter for the `oncomplete` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "Setter for the `oncomplete` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn set_oncomplete(this: &IdbTransaction, value: Option<&::js_sys::Function>);
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "IDBTransaction" , js_name = onerror ) ]
-    ///Getter for the `onerror` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "Getter for the `onerror` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn onerror(this: &IdbTransaction) -> Option<::js_sys::Function>;
-
     # [ wasm_bindgen ( structural , method , setter , js_class = "IDBTransaction" , js_name = onerror ) ]
-    ///Setter for the `onerror` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "Setter for the `onerror` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn set_onerror(this: &IdbTransaction, value: Option<&::js_sys::Function>);
-
     #[cfg(feature = "DomStringList")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "IDBTransaction" , js_name = objectStoreNames ) ]
-    ///Getter for the `objectStoreNames` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/objectStoreNames)
-    ///
-    ///*This API requires the following crate features to be activated: `DomStringList`, `IdbTransaction`*
+    #[doc = "Getter for the `objectStoreNames` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/objectStoreNames)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomStringList`, `IdbTransaction`*"]
     pub fn object_store_names(this: &IdbTransaction) -> DomStringList;
-
     # [ wasm_bindgen ( catch , method , structural , js_class = "IDBTransaction" , js_name = abort ) ]
-    ///The `abort()` method.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/abort)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbTransaction`*
+    #[doc = "The `abort()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/abort)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn abort(this: &IdbTransaction) -> Result<(), JsValue>;
-
     #[cfg(feature = "IdbObjectStore")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "IDBTransaction" , js_name = objectStore ) ]
-    ///The `objectStore()` method.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/objectStore)
-    ///
-    ///*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbTransaction`*
+    #[doc = "The `objectStore()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/objectStore)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbTransaction`*"]
     pub fn object_store(this: &IdbTransaction, name: &str) -> Result<IdbObjectStore, JsValue>;
-
 }

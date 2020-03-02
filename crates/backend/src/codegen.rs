@@ -39,9 +39,7 @@ impl TryToTokens for ast::Program {
             }
         }
         for i in self.imports.iter() {
-            DescribeImport {
-                kind: &i.kind,
-            }.to_tokens(tokens);
+            DescribeImport { kind: &i.kind }.to_tokens(tokens);
 
             // If there is a js namespace, check that name isn't a type. If it is,
             // this import might be a method on that type.

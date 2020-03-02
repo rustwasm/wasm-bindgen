@@ -1,38 +1,32 @@
 use super::*;
 use wasm_bindgen::prelude::*;
-
 #[wasm_bindgen]
-
 extern "C" {
-
     # [ wasm_bindgen ( extends = HtmlCollection , extends = :: js_sys :: Object , js_name = HTMLFormControlsCollection , typescript_type = "HTMLFormControlsCollection" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    ///The `HtmlFormControlsCollection` class.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormControlsCollection)
-    ///
-    ///*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*
+    #[doc = "The `HtmlFormControlsCollection` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormControlsCollection)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*"]
     pub type HtmlFormControlsCollection;
-
     # [ wasm_bindgen ( method , structural , js_class = "HTMLFormControlsCollection" , js_name = namedItem ) ]
-    ///The `namedItem()` method.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormControlsCollection/namedItem)
-    ///
-    ///*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*
+    #[doc = "The `namedItem()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormControlsCollection/namedItem)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*"]
     pub fn named_item(this: &HtmlFormControlsCollection, name: &str) -> Option<::js_sys::Object>;
-
     #[wasm_bindgen(
         method,
         structural,
         js_class = "HTMLFormControlsCollection",
         indexing_getter
     )]
-    ///Indexing getter.
-    ///
-    ///
-    ///
-    ///*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*
+    #[doc = "Indexing getter."]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*"]
     pub fn get(this: &HtmlFormControlsCollection, name: &str) -> Option<::js_sys::Object>;
-
 }

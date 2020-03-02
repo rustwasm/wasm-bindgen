@@ -1,12 +1,16 @@
 use syn::{Ident, Type};
 
-
 pub trait TraverseType {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident);
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident);
 }
 
 impl TraverseType for Type {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         match self {
             Type::Array(x) => x.traverse_type(f),
             Type::BareFn(x) => x.traverse_type(f),
@@ -17,19 +21,25 @@ impl TraverseType for Type {
             Type::Reference(x) => x.traverse_type(f),
             Type::Slice(x) => x.traverse_type(f),
             Type::Tuple(x) => x.traverse_type(f),
-            _ => {},
+            _ => {}
         }
     }
 }
 
 impl TraverseType for syn::TypeArray {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.elem.traverse_type(f);
     }
 }
 
 impl TraverseType for syn::TypeBareFn {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         for input in self.inputs.iter() {
             input.ty.traverse_type(f);
         }
@@ -39,30 +49,42 @@ impl TraverseType for syn::TypeBareFn {
 }
 
 impl TraverseType for syn::ReturnType {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         match self {
-            Self::Default => {},
+            Self::Default => {}
             Self::Type(_, ty) => {
                 ty.traverse_type(f);
-            },
+            }
         }
     }
 }
 
 impl TraverseType for syn::TypeGroup {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.elem.traverse_type(f);
     }
 }
 
 impl TraverseType for syn::TypeParen {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.elem.traverse_type(f);
     }
 }
 
 impl TraverseType for syn::TypePath {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         if let Some(qself) = self.qself.as_ref() {
             qself.traverse_type(f);
         }
@@ -75,15 +97,21 @@ impl TraverseType for syn::TypePath {
 }
 
 impl TraverseType for syn::QSelf {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.ty.traverse_type(f);
     }
 }
 
 impl TraverseType for syn::PathArguments {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         match self {
-            Self::None => {},
+            Self::None => {}
             Self::AngleBracketed(x) => x.traverse_type(f),
             Self::Parenthesized(x) => x.traverse_type(f),
         }
@@ -91,7 +119,10 @@ impl TraverseType for syn::PathArguments {
 }
 
 impl TraverseType for syn::AngleBracketedGenericArguments {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         for ty in self.args.iter() {
             ty.traverse_type(f);
         }
@@ -99,23 +130,32 @@ impl TraverseType for syn::AngleBracketedGenericArguments {
 }
 
 impl TraverseType for syn::GenericArgument {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         match self {
             Self::Type(x) => x.traverse_type(f),
             Self::Binding(x) => x.traverse_type(f),
-            _ => {},
+            _ => {}
         }
     }
 }
 
 impl TraverseType for syn::Binding {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.ty.traverse_type(f);
     }
 }
 
 impl TraverseType for syn::ParenthesizedGenericArguments {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         for ty in self.inputs.iter() {
             ty.traverse_type(f);
         }
@@ -125,19 +165,28 @@ impl TraverseType for syn::ParenthesizedGenericArguments {
 }
 
 impl TraverseType for syn::TypePtr {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.elem.traverse_type(f);
     }
 }
 
 impl TraverseType for syn::TypeReference {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.elem.traverse_type(f);
     }
 }
 
 impl TraverseType for syn::TypeTuple {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         for ty in self.elems.iter() {
             ty.traverse_type(f);
         }
@@ -145,7 +194,10 @@ impl TraverseType for syn::TypeTuple {
 }
 
 impl TraverseType for syn::TypeSlice {
-    fn traverse_type<F>(&self, f: &mut F) where F: FnMut(&Ident) {
+    fn traverse_type<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident),
+    {
         self.elem.traverse_type(f);
     }
 }

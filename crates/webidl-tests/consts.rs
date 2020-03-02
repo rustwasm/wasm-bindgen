@@ -1,5 +1,5 @@
-use wasm_bindgen_test::*;
 use crate::generated::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn bool() {

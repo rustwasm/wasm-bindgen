@@ -4,7 +4,7 @@ use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
-use crate::{Bindgen, EncodeInto, OutputMode, reset_indentation, PLACEHOLDER_MODULE};
+use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
@@ -208,8 +208,10 @@ impl<'a> Context<'a> {
 
         for (i, module) in imports.iter().enumerate() {
             if module.as_str() == PLACEHOLDER_MODULE {
-                shim.push_str(&format!("imports['{0}'] = module.exports;\n", PLACEHOLDER_MODULE));
-
+                shim.push_str(&format!(
+                    "imports['{0}'] = module.exports;\n",
+                    PLACEHOLDER_MODULE
+                ));
             } else {
                 if self.config.mode.nodejs_experimental_modules() {
                     shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
@@ -253,12 +255,14 @@ impl<'a> Context<'a> {
             ));
         }
 
-        shim.push_str("
+        shim.push_str(
+            "
             const wasmModule = new WebAssembly.Module(bytes);
             const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             wasm = wasmInstance.exports;
             module.exports.__wasm = wasm;
-        ");
+        ",
+        );
 
         reset_indentation(&shim)
     }
@@ -312,7 +316,12 @@ impl<'a> Context<'a> {
                     footer.push_str(";\n");
                 }
 
-                footer.push_str(&self.generate_node_wasm_loading(&Path::new(&format!("./{}_bg.wasm", module_name))));
+                footer.push_str(
+                    &self.generate_node_wasm_loading(&Path::new(&format!(
+                        "./{}_bg.wasm",
+                        module_name
+                    ))),
+                );
 
                 if needs_manual_start {
                     footer.push_str("wasm.__wbindgen_start();\n");

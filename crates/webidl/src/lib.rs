@@ -11,22 +11,22 @@ emitted for the types and methods described in the WebIDL.
 
 mod constants;
 mod first_pass;
+mod generator;
 mod idl_type;
 mod traverse;
-mod generator;
 mod util;
 
 use crate::first_pass::{CallbackInterfaceData, OperationData};
 use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
+use crate::generator::{
+    Dictionary, DictionaryField, Enum, EnumVariant, Function, Interface, InterfaceAttribute,
+    InterfaceAttributeKind, InterfaceConst, InterfaceMethod, Namespace,
+};
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, shouty_snake_case_ident, snake_case_ident,
-    webidl_const_v_to_backend_const_v, is_structural, throws, TypePosition,
-};
-use crate::generator::{
-    Enum, EnumVariant, Dictionary, DictionaryField, Interface, InterfaceMethod,
-    InterfaceAttribute, InterfaceConst, Function, Namespace, InterfaceAttributeKind,
+    camel_case_ident, is_structural, shouty_snake_case_ident, snake_case_ident, throws,
+    webidl_const_v_to_backend_const_v, TypePosition,
 };
 use anyhow::Result;
 use proc_macro2::{Ident, TokenStream};
@@ -39,14 +39,12 @@ use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
 use weedle::Parse;
 
-
 /// Options to configure the conversion process
 #[derive(Debug)]
 pub struct Options {
     /// Whether to generate cfg features or not
     pub features: bool,
 }
-
 
 #[derive(Default)]
 struct Program {
@@ -58,13 +56,11 @@ impl Program {
     fn to_string(&self) -> Option<String> {
         if self.tokens.is_empty() {
             None
-
         } else {
             Some(self.tokens.to_string())
         }
     }
 }
-
 
 /// A parse error indicating where parsing failed
 #[derive(Debug)]
@@ -113,7 +109,11 @@ fn parse_source(source: &str) -> Result<Vec<weedle::Definition>> {
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-fn parse(webidl_source: &str, unstable_source: &str, options: Options) -> Result<BTreeMap<String, Program>> {
+fn parse(
+    webidl_source: &str,
+    unstable_source: &str,
+    options: Options,
+) -> Result<BTreeMap<String, Program>> {
     let mut first_pass_record: FirstPassRecord = Default::default();
 
     let definitions = parse_source(webidl_source)?;
@@ -147,7 +147,13 @@ fn parse(webidl_source: &str, unstable_source: &str, options: Options) -> Result
     for (js_name, d) in first_pass_record.callback_interfaces.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_callback_interface(&options, program, name, js_name.to_string(), d);
+        first_pass_record.append_callback_interface(
+            &options,
+            program,
+            name,
+            js_name.to_string(),
+            d,
+        );
     }
 
     Ok(types)
@@ -165,26 +171,50 @@ pub struct Feature {
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile(webidl_source: &str, experimental_source: &str, options: Options) -> Result<BTreeMap<String, Feature>> {
+pub fn compile(
+    webidl_source: &str,
+    experimental_source: &str,
+    options: Options,
+) -> Result<BTreeMap<String, Feature>> {
     let ast = parse(webidl_source, experimental_source, options)?;
 
-    let features = ast.into_iter().filter_map(|(name, program)| {
-        let code = program.to_string()?;
-        let required_features = program.required_features.into_iter().collect();
-        Some((name, Feature { required_features, code }))
-    }).collect();
+    let features = ast
+        .into_iter()
+        .filter_map(|(name, program)| {
+            let code = program.to_string()?;
+            let required_features = program.required_features.into_iter().collect();
+            Some((
+                name,
+                Feature {
+                    required_features,
+                    code,
+                },
+            ))
+        })
+        .collect();
 
     Ok(features)
 }
 
 impl<'src> FirstPassRecord<'src> {
-    fn append_enum(&self, options: &Options, program: &mut Program, name: Ident, js_name: &str, data: &first_pass::EnumData<'src>) {
+    fn append_enum(
+        &self,
+        options: &Options,
+        program: &mut Program,
+        name: Ident,
+        js_name: &str,
+        data: &first_pass::EnumData<'src>,
+    ) {
         let enum_ = data.definition;
         let unstable = data.stability.is_unstable();
 
         assert_eq!(js_name, enum_.identifier.0);
 
-        let variants = enum_.values.body.list.iter()
+        let variants = enum_
+            .values
+            .body
+            .list
+            .iter()
             .map(|v| {
                 let name = if !v.0.is_empty() {
                     rust_ident(camel_case_ident(&v.0).as_str())
@@ -198,9 +228,13 @@ impl<'src> FirstPassRecord<'src> {
             })
             .collect::<Vec<_>>();
 
-        Enum { name, variants, unstable }
-            .generate(options)
-            .to_tokens(&mut program.tokens);
+        Enum {
+            name,
+            variants,
+            unstable,
+        }
+        .generate(options)
+        .to_tokens(&mut program.tokens);
     }
 
     // tons more data for what's going on here at
@@ -228,16 +262,17 @@ impl<'src> FirstPassRecord<'src> {
             return;
         }
 
-        Dictionary { name, js_name, fields, unstable }
-            .generate(options)
-            .to_tokens(&mut program.tokens);
+        Dictionary {
+            name,
+            js_name,
+            fields,
+            unstable,
+        }
+        .generate(options)
+        .to_tokens(&mut program.tokens);
     }
 
-    fn append_dictionary_members(
-        &self,
-        dict: &'src str,
-        dst: &mut Vec<DictionaryField>,
-    ) -> bool {
+    fn append_dictionary_members(&self, dict: &'src str, dst: &mut Vec<DictionaryField>) -> bool {
         let dict_data = &self.dictionaries[&dict];
         let definition = dict_data.definition.unwrap();
 
@@ -280,10 +315,7 @@ impl<'src> FirstPassRecord<'src> {
         return true;
     }
 
-    fn dictionary_field(
-        &self,
-        field: &'src DictionaryMember<'src>,
-    ) -> Option<DictionaryField> {
+    fn dictionary_field(&self, field: &'src DictionaryMember<'src>) -> Option<DictionaryField> {
         // use argument position now as we're just binding setters
         let ty = field
             .type_
@@ -356,9 +388,13 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         if !functions.is_empty() {
-            Namespace { name, js_name, functions }
-                .generate(options)
-                .to_tokens(&mut program.tokens);
+            Namespace {
+                name,
+                js_name,
+                functions,
+            }
+            .generate(options)
+            .to_tokens(&mut program.tokens);
         }
     }
 
@@ -408,7 +444,13 @@ impl<'src> FirstPassRecord<'src> {
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
         let value = webidl_const_v_to_backend_const_v(&member.const_value);
 
-        consts.push(InterfaceConst { name, js_name: js_name.to_string(), ty, value, unstable });
+        consts.push(InterfaceConst {
+            name,
+            js_name: js_name.to_string(),
+            ty,
+            value,
+            unstable,
+        });
     }
 
     fn append_interface(
@@ -424,7 +466,8 @@ impl<'src> FirstPassRecord<'src> {
 
         let deprecated = data.deprecated.clone();
 
-        let parents = self.all_superclasses(&js_name)
+        let parents = self
+            .all_superclasses(&js_name)
             .map(|parent| {
                 let ident = rust_ident(&camel_case_ident(&parent));
                 program.required_features.insert(parent);
@@ -488,9 +531,19 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        Interface { name, js_name, deprecated, has_interface, parents, consts, attributes, methods, unstable }
-            .generate(options)
-            .to_tokens(&mut program.tokens);
+        Interface {
+            name,
+            js_name,
+            deprecated,
+            has_interface,
+            parents,
+            consts,
+            attributes,
+            methods,
+            unstable,
+        }
+        .generate(options)
+        .to_tokens(&mut program.tokens);
     }
 
     fn member_attribute(
@@ -517,25 +570,45 @@ impl<'src> FirstPassRecord<'src> {
 
         let catch = throws(attrs);
 
-        let ty = type_.type_.to_idl_type(self)
+        let ty = type_
+            .type_
+            .to_idl_type(self)
             .to_syn_type(TypePosition::Return)
             .unwrap_or(None);
 
         // Skip types which can't be converted
         if let Some(ty) = ty {
             let kind = InterfaceAttributeKind::Getter;
-            attributes.push(InterfaceAttribute { is_static, structural, catch, ty, js_name: js_name.clone(), kind, unstable });
+            attributes.push(InterfaceAttribute {
+                is_static,
+                structural,
+                catch,
+                ty,
+                js_name: js_name.clone(),
+                kind,
+                unstable,
+            });
         }
 
         if !readonly {
-            let ty = type_.type_.to_idl_type(self)
+            let ty = type_
+                .type_
+                .to_idl_type(self)
                 .to_syn_type(TypePosition::Argument)
                 .unwrap_or(None);
 
             // Skip types which can't be converted
             if let Some(ty) = ty {
                 let kind = InterfaceAttributeKind::Setter;
-                attributes.push(InterfaceAttribute { is_static, structural, catch, ty, js_name, kind, unstable });
+                attributes.push(InterfaceAttribute {
+                    is_static,
+                    structural,
+                    catch,
+                    ty,
+                    js_name,
+                    kind,
+                    unstable,
+                });
             }
         }
     }
@@ -580,7 +653,10 @@ impl<'src> FirstPassRecord<'src> {
                         required: false,
                         name: rust_ident(&snake_case_ident(identifier)),
                         js_name: identifier.to_string(),
-                        ty: idl_type::IdlType::Callback.to_syn_type(pos).unwrap().unwrap(),
+                        ty: idl_type::IdlType::Callback
+                            .to_syn_type(pos)
+                            .unwrap()
+                            .unwrap(),
                     })
                 }
                 _ => {
@@ -592,8 +668,13 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        Dictionary { name, js_name, fields, unstable: false }
-            .generate(options)
-            .to_tokens(&mut program.tokens);
+        Dictionary {
+            name,
+            js_name,
+            fields,
+            unstable: false,
+        }
+        .generate(options)
+        .to_tokens(&mut program.tokens);
     }
 }

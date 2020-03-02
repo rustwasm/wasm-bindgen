@@ -530,9 +530,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
-        let typescript_type = attrs
-            .typescript_type()
-            .map(|s| s.0.to_string());
+        let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
         let is_type_of = attrs.is_type_of().cloned();
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         let mut extends = Vec::new();
@@ -1008,17 +1006,14 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             )) => {
                 variants.push(v.ident.clone());
                 variant_values.push(str_lit.value());
-            },
+            }
             Some((_, expr)) => bail_span!(
                 expr,
                 "enums with #[wasm_bidngen] cannot mix string and non-string values",
             ),
             None => {
-                bail_span!(
-                    v,
-                    "all variants must have a value"
-                );
-            },
+                bail_span!(v, "all variants must have a value");
+            }
         }
     }
 
@@ -1038,7 +1033,11 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
 }
 
 impl<'a> MacroParse<(&'a mut TokenStream,)> for syn::ItemEnum {
-    fn macro_parse(self, program: &mut ast::Program, (tokens,): (&'a mut TokenStream,)) -> Result<(), Diagnostic> {
+    fn macro_parse(
+        self,
+        program: &mut ast::Program,
+        (tokens,): (&'a mut TokenStream,),
+    ) -> Result<(), Diagnostic> {
         if self.variants.len() == 0 {
             bail_span!(self, "cannot export empty enums to JS");
         }
@@ -1053,8 +1052,8 @@ impl<'a> MacroParse<(&'a mut TokenStream,)> for syn::ItemEnum {
                 }),
             )) => {
                 return import_enum(self, program);
-            },
-            _ => {},
+            }
+            _ => {}
         }
 
         let has_discriminant = self.variants[0].discriminant.is_some();
@@ -1361,12 +1360,10 @@ fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
     }
 
     match path.segments.last() {
-        Some(value) => {
-            Ok(value.ident.clone())
-        },
+        Some(value) => Ok(value.ident.clone()),
         None => {
             bail_span!(path, "empty idents are not supported");
-        },
+        }
     }
 }
 

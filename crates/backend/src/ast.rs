@@ -26,12 +26,12 @@ pub struct Program {
 impl Program {
     /// Returns true if the Program is empty
     pub fn is_empty(&self) -> bool {
-        self.exports.is_empty() &&
-        self.imports.is_empty() &&
-        self.enums.is_empty() &&
-        self.structs.is_empty() &&
-        self.typescript_custom_sections.is_empty() &&
-        self.inline_js.is_empty()
+        self.exports.is_empty()
+            && self.imports.is_empty()
+            && self.enums.is_empty()
+            && self.structs.is_empty()
+            && self.typescript_custom_sections.is_empty()
+            && self.inline_js.is_empty()
     }
 }
 

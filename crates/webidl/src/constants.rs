@@ -1,7 +1,6 @@
+use lazy_static::lazy_static;
 use std::collections::BTreeSet;
 use std::iter::FromIterator;
-use lazy_static::lazy_static;
-
 
 lazy_static! {
     pub(crate) static ref BUILTIN_IDENTS: BTreeSet<&'static str> = BTreeSet::from_iter(vec![

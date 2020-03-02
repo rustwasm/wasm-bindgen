@@ -1,7 +1,7 @@
 #[cfg(web_sys_unstable_apis)]
-use wasm_bindgen_test::*;
-#[cfg(web_sys_unstable_apis)]
 use crate::generated::*;
+#[cfg(web_sys_unstable_apis)]
+use wasm_bindgen_test::*;
 
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen_test]

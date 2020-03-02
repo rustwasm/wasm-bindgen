@@ -1,95 +1,83 @@
 use super::*;
 use wasm_bindgen::prelude::*;
-
 #[wasm_bindgen]
-
 extern "C" {
-
     # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = MediaQueryList , typescript_type = "MediaQueryList" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    ///The `MediaQueryList` class.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList)
-    ///
-    ///*This API requires the following crate features to be activated: `MediaQueryList`*
+    #[doc = "The `MediaQueryList` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub type MediaQueryList;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "MediaQueryList" , js_name = media ) ]
-    ///Getter for the `media` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/media)
-    ///
-    ///*This API requires the following crate features to be activated: `MediaQueryList`*
+    #[doc = "Getter for the `media` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/media)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub fn media(this: &MediaQueryList) -> String;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "MediaQueryList" , js_name = matches ) ]
-    ///Getter for the `matches` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/matches)
-    ///
-    ///*This API requires the following crate features to be activated: `MediaQueryList`*
+    #[doc = "Getter for the `matches` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/matches)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub fn matches(this: &MediaQueryList) -> bool;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "MediaQueryList" , js_name = onchange ) ]
-    ///Getter for the `onchange` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/onchange)
-    ///
-    ///*This API requires the following crate features to be activated: `MediaQueryList`*
+    #[doc = "Getter for the `onchange` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/onchange)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub fn onchange(this: &MediaQueryList) -> Option<::js_sys::Function>;
-
     # [ wasm_bindgen ( structural , method , setter , js_class = "MediaQueryList" , js_name = onchange ) ]
-    ///Setter for the `onchange` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/onchange)
-    ///
-    ///*This API requires the following crate features to be activated: `MediaQueryList`*
+    #[doc = "Setter for the `onchange` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/onchange)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub fn set_onchange(this: &MediaQueryList, value: Option<&::js_sys::Function>);
-
     # [ wasm_bindgen ( catch , method , structural , js_class = "MediaQueryList" , js_name = addListener ) ]
-    ///The `addListener()` method.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener)
-    ///
-    ///*This API requires the following crate features to be activated: `MediaQueryList`*
+    #[doc = "The `addListener()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub fn add_listener_with_opt_callback(
         this: &MediaQueryList,
         listener: Option<&::js_sys::Function>,
     ) -> Result<(), JsValue>;
-
     #[cfg(feature = "EventListener")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "MediaQueryList" , js_name = addListener ) ]
-    ///The `addListener()` method.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener)
-    ///
-    ///*This API requires the following crate features to be activated: `EventListener`, `MediaQueryList`*
+    #[doc = "The `addListener()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EventListener`, `MediaQueryList`*"]
     pub fn add_listener_with_opt_event_listener(
         this: &MediaQueryList,
         listener: Option<&EventListener>,
     ) -> Result<(), JsValue>;
-
     # [ wasm_bindgen ( catch , method , structural , js_class = "MediaQueryList" , js_name = removeListener ) ]
-    ///The `removeListener()` method.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/removeListener)
-    ///
-    ///*This API requires the following crate features to be activated: `MediaQueryList`*
+    #[doc = "The `removeListener()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/removeListener)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     pub fn remove_listener_with_opt_callback(
         this: &MediaQueryList,
         listener: Option<&::js_sys::Function>,
     ) -> Result<(), JsValue>;
-
     #[cfg(feature = "EventListener")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "MediaQueryList" , js_name = removeListener ) ]
-    ///The `removeListener()` method.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/removeListener)
-    ///
-    ///*This API requires the following crate features to be activated: `EventListener`, `MediaQueryList`*
+    #[doc = "The `removeListener()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/removeListener)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EventListener`, `MediaQueryList`*"]
     pub fn remove_listener_with_opt_event_listener(
         this: &MediaQueryList,
         listener: Option<&EventListener>,
     ) -> Result<(), JsValue>;
-
 }

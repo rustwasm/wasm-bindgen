@@ -1,6 +1,6 @@
+use crate::generated::*;
 use js_sys::Function;
 use wasm_bindgen_test::*;
-use crate::generated::*;
 
 #[wasm_bindgen_test]
 fn multi_op_same_name() {

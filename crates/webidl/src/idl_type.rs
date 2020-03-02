@@ -550,7 +550,9 @@ impl<'a> IdlType<'a> {
             IdlType::DataView => Err(TypeError::CannotConvert),
             IdlType::Int8Array { immutable } => Ok(Some(array("i8", pos, *immutable))),
             IdlType::Uint8Array { immutable } => Ok(Some(array("u8", pos, *immutable))),
-            IdlType::Uint8ClampedArray { immutable } => Ok(Some(clamped(array("u8", pos, *immutable)))),
+            IdlType::Uint8ClampedArray { immutable } => {
+                Ok(Some(clamped(array("u8", pos, *immutable))))
+            }
             IdlType::Int16Array { immutable } => Ok(Some(array("i16", pos, *immutable))),
             IdlType::Uint16Array { immutable } => Ok(Some(array("u16", pos, *immutable))),
             IdlType::Int32Array { immutable } => Ok(Some(array("i32", pos, *immutable))),
@@ -592,7 +594,7 @@ impl<'a> IdlType<'a> {
                         }
 
                         Ok(Some(option_ty(inner)))
-                    },
+                    }
                     None => Ok(None),
                 }
             }

@@ -1,94 +1,81 @@
 use super::*;
 use wasm_bindgen::prelude::*;
-
 #[wasm_bindgen]
-
 extern "C" {
-
     # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MutationRecord , typescript_type = "MutationRecord" ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    ///The `MutationRecord` class.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`*
+    #[doc = "The `MutationRecord` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
     pub type MutationRecord;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = type ) ]
-    ///Getter for the `type` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/type)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`*
+    #[doc = "Getter for the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/type)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
     pub fn type_(this: &MutationRecord) -> String;
-
     #[cfg(feature = "Node")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = target ) ]
-    ///Getter for the `target` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/target)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`, `Node`*
+    #[doc = "Getter for the `target` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/target)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`, `Node`*"]
     pub fn target(this: &MutationRecord) -> Option<Node>;
-
     #[cfg(feature = "NodeList")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = addedNodes ) ]
-    ///Getter for the `addedNodes` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/addedNodes)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`, `NodeList`*
+    #[doc = "Getter for the `addedNodes` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/addedNodes)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`, `NodeList`*"]
     pub fn added_nodes(this: &MutationRecord) -> NodeList;
-
     #[cfg(feature = "NodeList")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = removedNodes ) ]
-    ///Getter for the `removedNodes` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/removedNodes)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`, `NodeList`*
+    #[doc = "Getter for the `removedNodes` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/removedNodes)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`, `NodeList`*"]
     pub fn removed_nodes(this: &MutationRecord) -> NodeList;
-
     #[cfg(feature = "Node")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = previousSibling ) ]
-    ///Getter for the `previousSibling` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/previousSibling)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`, `Node`*
+    #[doc = "Getter for the `previousSibling` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/previousSibling)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`, `Node`*"]
     pub fn previous_sibling(this: &MutationRecord) -> Option<Node>;
-
     #[cfg(feature = "Node")]
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = nextSibling ) ]
-    ///Getter for the `nextSibling` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/nextSibling)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`, `Node`*
+    #[doc = "Getter for the `nextSibling` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/nextSibling)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`, `Node`*"]
     pub fn next_sibling(this: &MutationRecord) -> Option<Node>;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = attributeName ) ]
-    ///Getter for the `attributeName` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/attributeName)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`*
+    #[doc = "Getter for the `attributeName` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/attributeName)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
     pub fn attribute_name(this: &MutationRecord) -> Option<String>;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = attributeNamespace ) ]
-    ///Getter for the `attributeNamespace` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/attributeNamespace)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`*
+    #[doc = "Getter for the `attributeNamespace` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/attributeNamespace)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
     pub fn attribute_namespace(this: &MutationRecord) -> Option<String>;
-
     # [ wasm_bindgen ( structural , method , getter , js_class = "MutationRecord" , js_name = oldValue ) ]
-    ///Getter for the `oldValue` field of this object.
-    ///
-    ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/oldValue)
-    ///
-    ///*This API requires the following crate features to be activated: `MutationRecord`*
+    #[doc = "Getter for the `oldValue` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/oldValue)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
     pub fn old_value(this: &MutationRecord) -> Option<String>;
-
 }

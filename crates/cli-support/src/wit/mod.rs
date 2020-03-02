@@ -1,7 +1,7 @@
-use crate::{decode, PLACEHOLDER_MODULE};
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
+use crate::{decode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
 use std::collections::{HashMap, HashSet};
 use std::str;

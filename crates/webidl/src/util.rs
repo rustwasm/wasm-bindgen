@@ -11,11 +11,11 @@ use weedle;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use crate::Options;
-use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
-use crate::idl_type::{IdlType, ToIdlType};
-use crate::generator::{InterfaceConstValue, InterfaceMethodKind, InterfaceMethod};
 use crate::constants::IMMUTABLE_SLICE_WHITELIST;
+use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
+use crate::generator::{InterfaceConstValue, InterfaceMethod, InterfaceMethodKind};
+use crate::idl_type::{IdlType, ToIdlType};
+use crate::Options;
 
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
 /// `operation_name_0`, `operation_name_1`, `operation_name_2`, ..., `operation_name_n` overloads
@@ -90,7 +90,9 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> InterfaceConstValue 
 
     match *v {
         ConstValue::Boolean(b) => InterfaceConstValue::BooleanLiteral(b.0),
-        ConstValue::Float(FloatLit::NegInfinity(_)) => InterfaceConstValue::FloatLiteral(NEG_INFINITY),
+        ConstValue::Float(FloatLit::NegInfinity(_)) => {
+            InterfaceConstValue::FloatLiteral(NEG_INFINITY)
+        }
         ConstValue::Float(FloatLit::Infinity(_)) => InterfaceConstValue::FloatLiteral(INFINITY),
         ConstValue::Float(FloatLit::NaN(_)) => InterfaceConstValue::FloatLiteral(NAN),
         ConstValue::Float(FloatLit::Value(s)) => {
@@ -391,7 +393,9 @@ impl<'src> FirstPassRecord<'src> {
                     .map(|arg| arg.variadic)
                     .unwrap_or(false);
 
-            fn idl_arguments<'a>(args: impl Iterator<Item = (String, &'a IdlType<'a>)>) -> Option<Vec<(Ident, syn::Type)>> {
+            fn idl_arguments<'a>(
+                args: impl Iterator<Item = (String, &'a IdlType<'a>)>,
+            ) -> Option<Vec<(Ident, syn::Type)>> {
                 let mut output = vec![];
 
                 for (name, idl_type) in args {
@@ -399,25 +403,22 @@ impl<'src> FirstPassRecord<'src> {
                         Ok(ty) => ty.unwrap(),
                         Err(_) => {
                             return None;
-                        },
+                        }
                     };
 
-                    output.push((
-                        rust_ident(&snake_case_ident(&name[..])),
-                        ty,
-                    ));
+                    output.push((rust_ident(&snake_case_ident(&name[..])), ty));
                 }
 
                 Some(output)
             }
 
-            let arguments = idl_arguments(signature
-                .args
-                .iter()
-                .zip(&signature.orig.args)
-                .map(|(idl_type, orig_arg)| {
-                    (orig_arg.name.to_string(), idl_type)
-                }));
+            let arguments = idl_arguments(
+                signature
+                    .args
+                    .iter()
+                    .zip(&signature.orig.args)
+                    .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type)),
+            );
 
             if let Some(arguments) = arguments {
                 if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
@@ -442,11 +443,13 @@ impl<'src> FirstPassRecord<'src> {
             let last_idl_type = &signature.args[signature.args.len() - 1];
             let last_name = signature.orig.args[signature.args.len() - 1].name;
             for i in 0..=MAX_VARIADIC_ARGUMENTS_COUNT {
-                let arguments = idl_arguments(signature.args[..signature.args.len() - 1]
-                    .iter()
-                    .zip(&signature.orig.args)
-                    .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
-                    .chain((1..=i).map(|j| (format!("{}_{}", last_name, j), last_idl_type))));
+                let arguments = idl_arguments(
+                    signature.args[..signature.args.len() - 1]
+                        .iter()
+                        .zip(&signature.orig.args)
+                        .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
+                        .chain((1..=i).map(|j| (format!("{}_{}", last_name, j), last_idl_type))),
+                );
 
                 if let Some(arguments) = arguments {
                     if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
@@ -616,16 +619,15 @@ pub fn get_cfg_features(options: &Options, features: &BTreeSet<String>) -> Optio
 
     if !options.features || len == 0 {
         None
-
     } else {
-        let features = features.into_iter()
+        let features = features
+            .into_iter()
             .map(|feature| quote!( feature = #feature, ))
             .collect::<TokenStream>();
 
         // This is technically unneeded but it generates more idiomatic code
         if len == 1 {
             Some(syn::parse_quote!( #[cfg(#features)] ))
-
         } else {
             Some(syn::parse_quote!( #[cfg(all(#features))] ))
         }

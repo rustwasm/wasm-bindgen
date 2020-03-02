@@ -1,11 +1,9 @@
 use wasm_bindgen::prelude::*;
-
 #[wasm_bindgen]
-///The `RtcStatsType` enum.
-///
-///*This API requires the following crate features to be activated: `RtcStatsType`*
+#[doc = "The `RtcStatsType` enum."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcStatsType`*"]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-
 pub enum RtcStatsType {
     InboundRtp = "inbound-rtp",
     OutboundRtp = "outbound-rtp",

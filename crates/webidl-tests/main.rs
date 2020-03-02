@@ -3,7 +3,7 @@ use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "/globals.js")]
 extern "C" {
-	fn noop();
+    fn noop();
 }
 
 #[wasm_bindgen]
@@ -12,7 +12,7 @@ pub fn hello_there() {}
 // This is to ensure that the file is actually loaded
 #[wasm_bindgen_test]
 fn keep() {
-	noop();
+    noop();
 }
 
 mod generated;
