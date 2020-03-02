@@ -101,7 +101,8 @@ pub(crate) struct CallbackInterfaceData<'src> {
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub(crate) enum OperationId<'src> {
-    Constructor(IgnoreTraits<&'src str>),
+    Constructor,
+    NamedConstructor(IgnoreTraits<&'src str>),
     /// The name of a function in crates/web-sys/webidls/enabled/*.webidl
     ///
     /// ex: Operation(Some("vertexAttrib1fv"))
@@ -389,7 +390,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor(IgnoreTraits(self_name))],
+                &[OperationId::Constructor],
                 &list.args.body.list,
                 &return_ty,
                 &None,
@@ -401,7 +402,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor(IgnoreTraits(self_name))],
+                &[OperationId::Constructor],
                 &[],
                 &return_ty,
                 &None,
@@ -413,7 +414,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor(IgnoreTraits(
+                &[OperationId::NamedConstructor(IgnoreTraits(
                     list.rhs_identifier.0,
                 ))],
                 &list.args.body.list,

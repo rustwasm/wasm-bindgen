@@ -14,7 +14,7 @@ extern "C" {
     ///*This API requires the following crate features to be activated: `HtmlAudioElement`*
     pub type HtmlAudioElement;
 
-    #[wasm_bindgen(catch, constructor, js_class = "HTMLAudioElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "Audio")]
     ///The `new HtmlAudioElement(..)` constructor, creating a new instance of `HtmlAudioElement`.
     ///
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/HTMLAudioElement)
@@ -22,7 +22,7 @@ extern "C" {
     ///*This API requires the following crate features to be activated: `HtmlAudioElement`*
     pub fn new() -> Result<HtmlAudioElement, JsValue>;
 
-    #[wasm_bindgen(catch, constructor, js_class = "HTMLAudioElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "Audio")]
     ///The `new HtmlAudioElement(..)` constructor, creating a new instance of `HtmlAudioElement`.
     ///
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/HTMLAudioElement)

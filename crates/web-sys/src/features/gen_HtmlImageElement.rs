@@ -318,7 +318,7 @@ extern "C" {
     ///*This API requires the following crate features to be activated: `HtmlImageElement`*
     pub fn current_src(this: &HtmlImageElement) -> String;
 
-    #[wasm_bindgen(catch, constructor, js_class = "HTMLImageElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "Image")]
     ///The `new HtmlImageElement(..)` constructor, creating a new instance of `HtmlImageElement`.
     ///
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/HTMLImageElement)
@@ -326,7 +326,7 @@ extern "C" {
     ///*This API requires the following crate features to be activated: `HtmlImageElement`*
     pub fn new() -> Result<HtmlImageElement, JsValue>;
 
-    #[wasm_bindgen(catch, constructor, js_class = "HTMLImageElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "Image")]
     ///The `new HtmlImageElement(..)` constructor, creating a new instance of `HtmlImageElement`.
     ///
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/HTMLImageElement)
@@ -334,7 +334,7 @@ extern "C" {
     ///*This API requires the following crate features to be activated: `HtmlImageElement`*
     pub fn new_with_width(width: u32) -> Result<HtmlImageElement, JsValue>;
 
-    #[wasm_bindgen(catch, constructor, js_class = "HTMLImageElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "Image")]
     ///The `new HtmlImageElement(..)` constructor, creating a new instance of `HtmlImageElement`.
     ///
     ///[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/HTMLImageElement)

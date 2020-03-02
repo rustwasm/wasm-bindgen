@@ -370,8 +370,9 @@ impl<'src> FirstPassRecord<'src> {
         data: &OperationData<'src>,
     ) {
         match id {
-            OperationId::Operation(Some(_)) => {},
-            OperationId::Constructor(_)
+            OperationId::Operation(Some(_)) => {}
+            OperationId::Constructor
+            | OperationId::NamedConstructor(_)
             | OperationId::Operation(None)
             | OperationId::IndexingGetter
             | OperationId::IndexingSetter

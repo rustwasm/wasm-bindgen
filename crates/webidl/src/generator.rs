@@ -281,9 +281,9 @@ impl InterfaceAttribute {
 }
 
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum InterfaceMethodKind {
-    Constructor,
+    Constructor(Option<String>),
     Regular,
     IndexingGetter,
     IndexingSetter,
@@ -328,8 +328,11 @@ impl InterfaceMethod {
         ];
 
         let doc_comment = match kind {
-            InterfaceMethodKind::Constructor => {
+            InterfaceMethodKind::Constructor(name) => {
                 is_constructor = true;
+                if let Some(name) = name {
+                    extra_args[0] = quote!( js_class = #name );
+                }
                 format!(
                     "The `new {}(..)` constructor, creating a new \
                      instance of `{0}`.\n\n{}",

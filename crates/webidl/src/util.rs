@@ -278,15 +278,29 @@ impl<'src> FirstPassRecord<'src> {
             // > value of a type corresponding to the interface the
             // > `[Constructor]` extended attribute appears on, **or throw an
             // > exception**.
-            OperationId::Constructor(_) => ("new", InterfaceMethodKind::Constructor, false, true),
+            OperationId::Constructor => {
+                ("new", InterfaceMethodKind::Constructor(None), false, true)
+            }
+            OperationId::NamedConstructor(n) => (
+                "new",
+                InterfaceMethodKind::Constructor(Some(n.0.to_string())),
+                false,
+                true,
+            ),
             OperationId::Operation(Some(s)) => (*s, InterfaceMethodKind::Regular, false, false),
             OperationId::Operation(None) => {
                 log::warn!("unsupported unnamed operation");
                 return Vec::new();
             }
-            OperationId::IndexingGetter => ("get", InterfaceMethodKind::IndexingGetter, true, false),
-            OperationId::IndexingSetter => ("set", InterfaceMethodKind::IndexingSetter, true, false),
-            OperationId::IndexingDeleter => ("delete", InterfaceMethodKind::IndexingDeleter, true, false),
+            OperationId::IndexingGetter => {
+                ("get", InterfaceMethodKind::IndexingGetter, true, false)
+            }
+            OperationId::IndexingSetter => {
+                ("set", InterfaceMethodKind::IndexingSetter, true, false)
+            }
+            OperationId::IndexingDeleter => {
+                ("delete", InterfaceMethodKind::IndexingDeleter, true, false)
+            }
         };
 
         let mut ret = Vec::new();
@@ -412,7 +426,7 @@ impl<'src> FirstPassRecord<'src> {
                         js_name: name.to_string(),
                         arguments,
                         ret_ty,
-                        kind,
+                        kind: kind.clone(),
                         is_static,
                         structural,
                         catch,
@@ -440,7 +454,7 @@ impl<'src> FirstPassRecord<'src> {
                             name: rust_ident(&format!("{}_{}", rust_name, i)),
                             js_name: name.to_string(),
                             arguments,
-                            kind,
+                            kind: kind.clone(),
                             ret_ty,
                             is_static,
                             structural,
