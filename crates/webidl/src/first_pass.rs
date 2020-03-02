@@ -475,6 +475,13 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
                     .push(const_);
                 Ok(())
             }
+            InterfaceMember::Constructor(_) => {
+                log::warn!(
+                    "Unsupported WebIDL Constructor interface member: {:?}",
+                    self
+                );
+                Ok(())
+            }
             InterfaceMember::Iterable(_iterable) => {
                 log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
                 Ok(())
