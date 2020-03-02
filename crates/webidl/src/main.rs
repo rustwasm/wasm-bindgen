@@ -26,11 +26,15 @@ fn main() -> Result<()> {
 
     let features = !opt.no_features;
 
-    let generated_features =
-        wasm_bindgen_webidl::generate(&opt.input_dir, &opt.output_dir, wasm_bindgen_webidl::Options { features })?;
+    let generated_features = wasm_bindgen_webidl::generate(
+        &opt.input_dir,
+        &opt.output_dir,
+        wasm_bindgen_webidl::Options { features },
+    )?;
 
     if features {
-        fs::write(&"features", generated_features).context("writing features to current directory")?;
+        fs::write(&"features", generated_features)
+            .context("writing features to current directory")?;
     }
 
     Ok(())
