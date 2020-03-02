@@ -37,6 +37,7 @@ use wasm_bindgen_backend::TryToTokens;
 use weedle::attribute::ExtendedAttributeList;
 use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
+use weedle::Parse;
 
 struct Program {
     main: ast::Program,
@@ -74,26 +75,19 @@ impl Default for ApiStability {
 }
 
 fn parse_source(source: &str) -> Result<Vec<weedle::Definition>> {
-    weedle::parse(source).map_err(|e| {
-        match &e {
-            weedle::Err::Incomplete(needed) => anyhow::anyhow!("needed {:?} more bytes", needed),
-            weedle::Err::Error(cx) | weedle::Err::Failure(cx) => {
-                // Note that #[allow] here is a workaround for Geal/nom#843
-                // because the `Context` type here comes from `nom` and if
-                // something else in our crate graph enables the
-                // `verbose-errors` feature then we need to still compiled
-                // against the changed enum definition.
-                #[allow(unreachable_patterns)]
-                let remaining = match cx {
-                    weedle::Context::Code(remaining, _) => remaining.len(),
-                    _ => 0,
-                };
-                let pos = source.len() - remaining;
+    match weedle::Definitions::parse(source) {
+        Ok(("", parsed)) => Ok(parsed),
 
-                WebIDLParseError(pos).into()
-            }
+        Ok((remaining, _))
+        | Err(weedle::Err::Error((remaining, _)))
+        | Err(weedle::Err::Failure((remaining, _))) => {
+            Err(WebIDLParseError(source.len() - remaining.len()).into())
         }
-    })
+
+        Err(weedle::Err::Incomplete(needed)) => {
+            Err(anyhow::anyhow!("needed {:?} more bytes", needed))
+        }
+    }
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
