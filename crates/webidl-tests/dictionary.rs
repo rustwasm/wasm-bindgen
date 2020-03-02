@@ -1,7 +1,6 @@
+use crate::generated::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-
-include!(concat!(env!("OUT_DIR"), "/dictionary.rs"));
 
 #[wasm_bindgen]
 extern "C" {

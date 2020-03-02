@@ -17,16 +17,22 @@ pub struct Program {
     pub enums: Vec<Enum>,
     /// rust structs
     pub structs: Vec<Struct>,
-    /// rust consts
-    pub consts: Vec<Const>,
-    /// "dictionaries", generated for WebIDL, which are basically just "typed
-    /// objects" in the sense that they represent a JS object with a particular
-    /// shape in JIT parlance.
-    pub dictionaries: Vec<Dictionary>,
     /// custom typescript sections to be included in the definition file
     pub typescript_custom_sections: Vec<String>,
     /// Inline JS snippets
     pub inline_js: Vec<String>,
+}
+
+impl Program {
+    /// Returns true if the Program is empty
+    pub fn is_empty(&self) -> bool {
+        self.exports.is_empty()
+            && self.imports.is_empty()
+            && self.enums.is_empty()
+            && self.structs.is_empty()
+            && self.typescript_custom_sections.is_empty()
+            && self.inline_js.is_empty()
+    }
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -51,8 +57,6 @@ pub struct Export {
     /// Whether or not this function should be flagged as the wasm start
     /// function.
     pub start: bool,
-    /// Whether the API is unstable. This is only used internally.
-    pub unstable_api: bool,
 }
 
 /// The 3 types variations of `self`.
@@ -73,7 +77,6 @@ pub struct Import {
     pub module: ImportModule,
     pub js_namespace: Option<Ident>,
     pub kind: ImportKind,
-    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
@@ -129,7 +132,6 @@ pub struct ImportFunction {
     pub kind: ImportFunctionKind,
     pub shim: Ident,
     pub doc_comment: Option<String>,
-    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -185,8 +187,7 @@ pub struct ImportType {
     pub rust_name: Ident,
     pub js_name: String,
     pub attrs: Vec<syn::Attribute>,
-    pub typescript_name: Option<String>,
-    pub unstable_api: bool,
+    pub typescript_type: Option<String>,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
     pub is_type_of: Option<syn::Expr>,
@@ -207,8 +208,6 @@ pub struct ImportEnum {
     pub variant_values: Vec<String>,
     /// Attributes to apply to the Rust enum
     pub rust_attrs: Vec<syn::Attribute>,
-    /// Whether the enum is part of an unstable WebIDL
-    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
@@ -244,7 +243,6 @@ pub struct StructField {
     pub getter: Ident,
     pub setter: Ident,
     pub comments: Vec<String>,
-    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -254,7 +252,6 @@ pub struct Enum {
     pub variants: Vec<Variant>,
     pub comments: Vec<String>,
     pub hole: u32,
-    pub unstable_api: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -277,49 +274,6 @@ pub enum TypeLocation {
     ImportRet,
     ExportArgument,
     ExportRet,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
-#[derive(Clone)]
-pub struct Const {
-    pub vis: syn::Visibility,
-    pub name: Ident,
-    pub class: Option<Ident>,
-    pub ty: syn::Type,
-    pub value: ConstValue,
-    pub unstable_api: bool,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
-#[derive(Clone)]
-/// same as webidl::ast::ConstValue
-pub enum ConstValue {
-    BooleanLiteral(bool),
-    FloatLiteral(f64),
-    SignedIntegerLiteral(i64),
-    UnsignedIntegerLiteral(u64),
-    Null,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Clone)]
-pub struct Dictionary {
-    pub name: Ident,
-    pub fields: Vec<DictionaryField>,
-    pub ctor: bool,
-    pub doc_comment: Option<String>,
-    pub ctor_doc_comment: Option<String>,
-    pub unstable_api: bool,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Clone)]
-pub struct DictionaryField {
-    pub rust_name: Ident,
-    pub js_name: String,
-    pub required: bool,
-    pub ty: syn::Type,
-    pub doc_comment: Option<String>,
 }
 
 impl Export {

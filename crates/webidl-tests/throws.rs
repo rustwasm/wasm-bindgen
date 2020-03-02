@@ -1,6 +1,5 @@
+use crate::generated::*;
 use wasm_bindgen_test::*;
-
-include!(concat!(env!("OUT_DIR"), "/throws.rs"));
 
 #[wasm_bindgen_test]
 fn throws() {

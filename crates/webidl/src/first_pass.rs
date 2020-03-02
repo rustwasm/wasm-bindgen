@@ -10,7 +10,6 @@
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 
-use proc_macro2::Ident;
 use weedle;
 use weedle::argument::Argument;
 use weedle::attribute::*;
@@ -28,7 +27,6 @@ use crate::{
 /// Collection of constructs that may use partial.
 #[derive(Default)]
 pub(crate) struct FirstPassRecord<'src> {
-    pub(crate) builtin_idents: BTreeSet<Ident>,
     pub(crate) interfaces: BTreeMap<&'src str, InterfaceData<'src>>,
     pub(crate) enums: BTreeMap<&'src str, EnumData<'src>>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
@@ -39,7 +37,6 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
     pub(crate) callbacks: BTreeSet<&'src str>,
     pub(crate) callback_interfaces: BTreeMap<&'src str, CallbackInterfaceData<'src>>,
-    pub(crate) immutable_slice_whitelist: BTreeSet<&'static str>,
 }
 
 pub(crate) struct AttributeInterfaceData<'src> {
@@ -104,7 +101,8 @@ pub(crate) struct CallbackInterfaceData<'src> {
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub(crate) enum OperationId<'src> {
-    Constructor(IgnoreTraits<&'src str>),
+    Constructor,
+    NamedConstructor(IgnoreTraits<&'src str>),
     /// The name of a function in crates/web-sys/webidls/enabled/*.webidl
     ///
     /// ex: Operation(Some("vertexAttrib1fv"))
@@ -392,7 +390,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor(IgnoreTraits(self_name))],
+                &[OperationId::Constructor],
                 &list.args.body.list,
                 &return_ty,
                 &None,
@@ -404,7 +402,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor(IgnoreTraits(self_name))],
+                &[OperationId::Constructor],
                 &[],
                 &return_ty,
                 &None,
@@ -416,7 +414,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor(IgnoreTraits(
+                &[OperationId::NamedConstructor(IgnoreTraits(
                     list.rhs_identifier.0,
                 ))],
                 &list.args.body.list,

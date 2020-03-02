@@ -1,15 +1,13 @@
-use crate::decode;
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
+use crate::{decode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
 use std::collections::{HashMap, HashSet};
 use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
 use wasm_bindgen_shared::struct_function_export_name;
-
-const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
 
 mod incoming;
 mod nonstandard;

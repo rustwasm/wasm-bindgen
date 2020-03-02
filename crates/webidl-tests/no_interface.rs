@@ -1,6 +1,5 @@
+use crate::generated::*;
 use wasm_bindgen_test::*;
-
-include!(concat!(env!("OUT_DIR"), "/no_interface.rs"));
 
 #[wasm_bindgen_test]
 fn smoke() {

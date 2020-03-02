@@ -4,7 +4,7 @@ use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
-use crate::{Bindgen, EncodeInto, OutputMode};
+use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
@@ -188,6 +188,85 @@ impl<'a> Context<'a> {
         self.finalize_js(module_name, needs_manual_start)
     }
 
+    fn generate_node_imports(&self) -> String {
+        let mut imports = BTreeSet::new();
+        for import in self.module.imports.iter() {
+            imports.insert(&import.module);
+        }
+
+        let mut shim = String::new();
+
+        shim.push_str("let imports = {};\n");
+
+        if self.config.mode.nodejs_experimental_modules() {
+            for (i, module) in imports.iter().enumerate() {
+                if module.as_str() != PLACEHOLDER_MODULE {
+                    shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
+                }
+            }
+        }
+
+        for (i, module) in imports.iter().enumerate() {
+            if module.as_str() == PLACEHOLDER_MODULE {
+                shim.push_str(&format!(
+                    "imports['{0}'] = module.exports;\n",
+                    PLACEHOLDER_MODULE
+                ));
+            } else {
+                if self.config.mode.nodejs_experimental_modules() {
+                    shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
+                } else {
+                    shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+                }
+            }
+        }
+
+        reset_indentation(&shim)
+    }
+
+    fn generate_node_wasm_loading(&self, path: &Path) -> String {
+        let mut shim = String::new();
+
+        if self.config.mode.nodejs_experimental_modules() {
+            // On windows skip the leading `/` which comes out when we parse a
+            // url to use `C:\...` instead of `\C:\...`
+            shim.push_str(&format!(
+                "
+                import * as path from 'path';
+                import * as fs from 'fs';
+                import * as url from 'url';
+                import * as process from 'process';
+
+                let file = path.dirname(url.parse(import.meta.url).pathname);
+                if (process.platform === 'win32') {{
+                    file = file.substring(1);
+                }}
+                const bytes = fs.readFileSync(path.join(file, '{}'));
+            ",
+                path.file_name().unwrap().to_str().unwrap()
+            ));
+        } else {
+            shim.push_str(&format!(
+                "
+                const path = require('path').join(__dirname, '{}');
+                const bytes = require('fs').readFileSync(path);
+            ",
+                path.file_name().unwrap().to_str().unwrap()
+            ));
+        }
+
+        shim.push_str(
+            "
+            const wasmModule = new WebAssembly.Module(bytes);
+            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            wasm = wasmInstance.exports;
+            module.exports.__wasm = wasm;
+        ",
+        );
+
+        reset_indentation(&shim)
+    }
+
     /// Performs the task of actually generating the final JS module, be it
     /// `--target no-modules`, `--target web`, or for bundlers. This is the very
     /// last step performed in `finalize`.
@@ -224,11 +303,12 @@ impl<'a> Context<'a> {
             OutputMode::Node {
                 experimental_modules: false,
             } => {
+                js.push_str(&self.generate_node_imports());
+
                 js.push_str("let wasm;\n");
 
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
-                    import.module = format!("./{}.js", module_name);
                     footer.push_str("\nmodule.exports.");
                     footer.push_str(&import.name);
                     footer.push_str(" = ");
@@ -236,7 +316,13 @@ impl<'a> Context<'a> {
                     footer.push_str(";\n");
                 }
 
-                footer.push_str(&format!("wasm = require('./{}_bg');\n", module_name));
+                footer.push_str(
+                    &self.generate_node_wasm_loading(&Path::new(&format!(
+                        "./{}_bg.wasm",
+                        module_name
+                    ))),
+                );
+
                 if needs_manual_start {
                     footer.push_str("wasm.__wbindgen_start();\n");
                 }

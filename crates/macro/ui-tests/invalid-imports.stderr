@@ -22,18 +22,6 @@ error: first argument of method must be a path
 14 |     fn f3(x: &&u32);
    |              ^^^^^
 
-error: multi-segment paths are not supported yet
-  --> $DIR/invalid-imports.rs:16:15
-   |
-16 |     fn f4(x: &foo::Bar);
-   |               ^^^^^^^^
-
-error: global paths are not supported yet
-  --> $DIR/invalid-imports.rs:18:15
-   |
-18 |     fn f4(x: &::Bar);
-   |               ^^^^^
-
 error: paths with type parameters are not supported yet
   --> $DIR/invalid-imports.rs:20:15
    |
@@ -51,12 +39,6 @@ error: constructor returns must be bare types
    |
 25 |     fn f();
    |     ^^^^^^^
-
-error: global paths are not supported yet
-  --> $DIR/invalid-imports.rs:27:15
-   |
-27 |     fn f() -> ::Bar;
-   |               ^^^^^
 
 error: return value of constructor must be a bare path
   --> $DIR/invalid-imports.rs:29:5

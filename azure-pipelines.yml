@@ -114,6 +114,13 @@ jobs:
         env:
           RUSTFLAGS: --cfg=web_sys_unstable_apis
 
+  - job: check_web_sys
+    displayName: "Verify that web-sys is compiled correctly"
+    steps:
+      - template: ci/azure-install-rust.yml
+      - script: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl webidls src/features
+      - script: git diff --exit-code
+
   - job: test_js_sys
     displayName: "Run js-sys crate tests"
     steps:

@@ -31,7 +31,7 @@ exports.test_wrong_types = function() {
 };
 
 exports.test_other_exports_still_available = function() {
-  require('wasm-bindgen-test_bg').foo(3);
+  require('wasm-bindgen-test').__wasm.foo(3);
 };
 
 exports.test_jsvalue_typeof = function() {

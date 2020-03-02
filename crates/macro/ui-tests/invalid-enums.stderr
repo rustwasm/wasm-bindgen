@@ -1,4 +1,4 @@
-error: only public enums are allowed with #[wasm_bindgen]
+error: cannot export empty enums to JS
  --> $DIR/invalid-enums.rs:4:1
   |
 4 | enum A {}

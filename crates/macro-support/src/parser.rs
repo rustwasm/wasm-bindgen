@@ -22,7 +22,6 @@ struct AttributeParseState {
 pub struct BindgenAttrs {
     /// List of parsed attributes
     pub attrs: Vec<(Cell<bool>, BindgenAttr)>,
-    pub unstable_api_attr: Option<syn::Attribute>,
 }
 
 macro_rules! attrgen {
@@ -54,6 +53,7 @@ macro_rules! attrgen {
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (start, Start(Span)),
             (skip, Skip(Span)),
+            (typescript_type, TypeScriptType(Span, String, Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -187,10 +187,7 @@ impl Default for BindgenAttrs {
         // sanity check that we call `check_used` an appropriate number of
         // times.
         ATTRS.with(|state| state.parsed.set(state.parsed.get() + 1));
-        BindgenAttrs {
-            attrs: Vec::new(),
-            unstable_api_attr: None,
-        }
+        BindgenAttrs { attrs: Vec::new() }
     }
 }
 
@@ -357,7 +354,6 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 getter: Ident::new(&getter, Span::call_site()),
                 setter: Ident::new(&setter, Span::call_site()),
                 comments,
-                unstable_api: false,
             });
             attrs.check_used()?;
         }
@@ -518,7 +514,6 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             rust_name: self.sig.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,
-            unstable_api: false,
         });
         opts.check_used()?;
 
@@ -535,6 +530,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
         let is_type_of = attrs.is_type_of().cloned();
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         let mut extends = Vec::new();
@@ -556,12 +552,11 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
             attrs: self.attrs,
-            unstable_api: false,
             doc_comment: None,
             instanceof_shim: shim,
             is_type_of,
             rust_name: self.ident,
-            typescript_name: None,
+            typescript_type,
             js_name,
             extends,
             vendor_prefixes,
@@ -784,7 +779,6 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     rust_class: None,
                     rust_name,
                     start,
-                    unstable_api: false,
                 });
             }
             syn::Item::Struct(mut s) => {
@@ -808,8 +802,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 if let Some(opts) = opts {
                     opts.check_used()?;
                 }
-                e.to_tokens(tokens);
-                e.macro_parse(program, ())?;
+                e.macro_parse(program, (tokens,))?;
             }
             syn::Item::Const(mut c) => {
                 let opts = match opts {
@@ -862,7 +855,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
             syn::Type::Path(syn::TypePath {
                 qself: None,
                 ref path,
-            }) => extract_path_ident(path)?,
+            }) => path,
             _ => bail_span!(
                 self.self_ty,
                 "unsupported self type in #[wasm_bindgen] impl"
@@ -890,7 +883,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
 // then go for the rest.
 fn prepare_for_impl_recursion(
     item: &mut syn::ImplItem,
-    class: &Ident,
+    class: &syn::Path,
     impl_opts: &BindgenAttrs,
 ) -> Result<(), Diagnostic> {
     let method = match item {
@@ -916,10 +909,12 @@ fn prepare_for_impl_recursion(
         other => bail_span!(other, "failed to parse this item as a known item"),
     };
 
+    let ident = extract_path_ident(class)?;
+
     let js_class = impl_opts
         .js_class()
         .map(|s| s.0.to_string())
-        .unwrap_or(class.to_string());
+        .unwrap_or(ident.to_string());
 
     method.attrs.insert(
         0,
@@ -985,25 +980,88 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
             rust_class: Some(class.clone()),
             rust_name: self.sig.ident.clone(),
             start: false,
-            unstable_api: false,
         });
         opts.check_used()?;
         Ok(())
     }
 }
 
-impl MacroParse<()> for syn::ItemEnum {
-    fn macro_parse(self, program: &mut ast::Program, (): ()) -> Result<(), Diagnostic> {
-        match self.vis {
-            syn::Visibility::Public(_) => {}
-            _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
+fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), Diagnostic> {
+    let mut variants = vec![];
+    let mut variant_values = vec![];
+
+    for v in enum_.variants.iter() {
+        match v.fields {
+            syn::Fields::Unit => (),
+            _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
         }
 
+        match &v.discriminant {
+            Some((
+                _,
+                syn::Expr::Lit(syn::ExprLit {
+                    attrs: _,
+                    lit: syn::Lit::Str(str_lit),
+                }),
+            )) => {
+                variants.push(v.ident.clone());
+                variant_values.push(str_lit.value());
+            }
+            Some((_, expr)) => bail_span!(
+                expr,
+                "enums with #[wasm_bidngen] cannot mix string and non-string values",
+            ),
+            None => {
+                bail_span!(v, "all variants must have a value");
+            }
+        }
+    }
+
+    program.imports.push(ast::Import {
+        module: ast::ImportModule::None,
+        js_namespace: None,
+        kind: ast::ImportKind::Enum(ast::ImportEnum {
+            vis: enum_.vis,
+            name: enum_.ident,
+            variants,
+            variant_values,
+            rust_attrs: enum_.attrs,
+        }),
+    });
+
+    Ok(())
+}
+
+impl<'a> MacroParse<(&'a mut TokenStream,)> for syn::ItemEnum {
+    fn macro_parse(
+        self,
+        program: &mut ast::Program,
+        (tokens,): (&'a mut TokenStream,),
+    ) -> Result<(), Diagnostic> {
         if self.variants.len() == 0 {
             bail_span!(self, "cannot export empty enums to JS");
         }
 
+        // Check if the first value is a string literal
+        match self.variants[0].discriminant {
+            Some((
+                _,
+                syn::Expr::Lit(syn::ExprLit {
+                    attrs: _,
+                    lit: syn::Lit::Str(_),
+                }),
+            )) => {
+                return import_enum(self, program);
+            }
+            _ => {}
+        }
+
         let has_discriminant = self.variants[0].discriminant.is_some();
+
+        match self.vis {
+            syn::Visibility::Public(_) => {}
+            _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
+        }
 
         let variants = self
             .variants
@@ -1075,13 +1133,16 @@ impl MacroParse<()> for syn::ItemEnum {
         }
 
         let comments = extract_doc_comments(&self.attrs);
+
+        self.to_tokens(tokens);
+
         program.enums.push(ast::Enum {
             name: self.ident,
             variants,
             comments,
             hole,
-            unstable_api: false,
         });
+
         Ok(())
     }
 }
@@ -1185,7 +1246,6 @@ impl MacroParse<ast::ImportModule> for syn::ForeignItem {
             module,
             js_namespace,
             kind,
-            unstable_api: false,
         });
 
         Ok(())
@@ -1290,20 +1350,21 @@ fn assert_not_variadic(attrs: &BindgenAttrs) -> Result<(), Diagnostic> {
     Ok(())
 }
 
-/// If the path is a single ident, return it.
+/// Extracts the last ident from the path
 fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
-    if path.leading_colon.is_some() {
-        bail_span!(path, "global paths are not supported yet");
+    for segment in path.segments.iter() {
+        match segment.arguments {
+            syn::PathArguments::None => {}
+            _ => bail_span!(path, "paths with type parameters are not supported yet"),
+        }
     }
-    if path.segments.len() != 1 {
-        bail_span!(path, "multi-segment paths are not supported yet");
+
+    match path.segments.last() {
+        Some(value) => Ok(value.ident.clone()),
+        None => {
+            bail_span!(path, "empty idents are not supported");
+        }
     }
-    let value = &path.segments[0];
-    match value.arguments {
-        syn::PathArguments::None => {}
-        _ => bail_span!(path, "paths with type parameters are not supported yet"),
-    }
-    Ok(value.ident.clone())
 }
 
 pub fn reset_attrs_used() {

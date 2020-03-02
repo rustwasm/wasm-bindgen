@@ -113,12 +113,10 @@ pub fn ident_ty(ident: Ident) -> syn::Type {
 }
 
 pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
-    let unstable_api = function.unstable_api;
     ast::Import {
         module: ast::ImportModule::None,
         js_namespace: None,
         kind: ast::ImportKind::Function(function),
-        unstable_api,
     }
 }
 
@@ -154,21 +152,5 @@ impl<T: Hash> fmt::Display for ShortHash<T> {
         HASH.load(SeqCst).hash(&mut h);
         self.0.hash(&mut h);
         write!(f, "{:016x}", h.finish())
-    }
-}
-
-/// Create syn attribute for `#[cfg(web_sys_unstable_apis)]` and a doc comment.
-pub fn unstable_api_attrs() -> proc_macro2::TokenStream {
-    quote::quote!(
-        #[cfg(web_sys_unstable_apis)]
-        #[doc = "\n\n*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as [described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    )
-}
-
-pub fn maybe_unstable_api_attr(unstable_api: bool) -> Option<proc_macro2::TokenStream> {
-    if unstable_api {
-        Some(unstable_api_attrs())
-    } else {
-        None
     }
 }
