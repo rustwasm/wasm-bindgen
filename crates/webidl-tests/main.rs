@@ -15,7 +15,6 @@ fn keep() {
     noop();
 }
 
-#[allow(unused_imports, non_snake_case)]
 mod generated {
     include!(concat!(env!("OUT_DIR"), "/mod.rs"));
 }

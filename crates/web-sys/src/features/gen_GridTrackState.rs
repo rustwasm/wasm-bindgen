@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 #[doc = "The `GridTrackState` enum."]

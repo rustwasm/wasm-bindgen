@@ -14,7 +14,6 @@
 #![doc(html_root_url = "https://docs.rs/web-sys/0.2")]
 #![allow(deprecated)]
 
-#[allow(unused_imports, non_snake_case)]
 mod features;
 pub use features::*;
 

@@ -23,10 +23,15 @@ fn main() -> Result<()> {
     env_logger::init();
 
     let opt = Opt::from_args();
-    let features =
-        wasm_bindgen_webidl::generate(&opt.input_dir, &opt.output_dir, !opt.no_features)?;
-    if !opt.no_features {
-        fs::write(&"features", features).context("writing features to current directory")?;
+
+    let features = !opt.no_features;
+
+    let generated_features =
+        wasm_bindgen_webidl::generate(&opt.input_dir, &opt.output_dir, wasm_bindgen_webidl::Options { features })?;
+
+    if features {
+        fs::write(&"features", generated_features).context("writing features to current directory")?;
     }
+
     Ok(())
 }

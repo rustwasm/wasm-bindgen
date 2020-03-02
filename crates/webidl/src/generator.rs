@@ -123,6 +123,7 @@ impl Enum {
             .collect::<Vec<_>>();
 
         quote! {
+            #![allow(unused_imports)]
             use wasm_bindgen::prelude::*;
 
             #unstable_attr
@@ -588,6 +589,7 @@ impl Interface {
         let js_ident = raw_ident(js_name);
 
         quote! {
+            #![allow(unused_imports)]
             use super::*;
             use wasm_bindgen::prelude::*;
 
@@ -727,6 +729,7 @@ impl Dictionary {
             .collect::<Vec<_>>();
 
         quote! {
+            #![allow(unused_imports)]
             use super::*;
             use wasm_bindgen::prelude::*;
 
@@ -870,6 +873,7 @@ impl Namespace {
 
         quote! {
             pub mod #name {
+                #![allow(unused_imports)]
                 use super::super::*;
                 use wasm_bindgen::prelude::*;
 

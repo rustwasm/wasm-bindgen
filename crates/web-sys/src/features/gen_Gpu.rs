@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]

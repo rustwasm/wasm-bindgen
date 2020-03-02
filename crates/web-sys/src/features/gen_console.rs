@@ -1,4 +1,5 @@
 pub mod console {
+    #![allow(unused_imports)]
     use super::super::*;
     use wasm_bindgen::prelude::*;
     #[wasm_bindgen]

@@ -689,12 +689,14 @@ impl<'src> FirstPassRecord<'src> {
 ///
 /// * Reads WebIDL files in `from`
 /// * Generates Rust source code in the directory `to`
-/// * `generate_features` indicates whether everything is gated by features or
+/// * `options.features` indicates whether everything is gated by features or
 ///   not
 ///
 /// If features are enabled, returns a string that should be appended to
 /// `Cargo.toml` which lists all the known features.
-pub fn generate(from: &Path, to: &Path, generate_features: bool) -> Result<String> {
+pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
+    let generate_features = options.features;
+
     let source = read_source_from_path(&from.join("enabled"))?;
     let unstable_source = read_source_from_path(&from.join("unstable"))?;
 
@@ -716,9 +718,9 @@ pub fn generate(from: &Path, to: &Path, generate_features: bool) -> Result<Strin
 
     let binding_file = features.keys().map(|name| {
         if generate_features {
-            format!("#[cfg(feature = \"{name}\")] mod gen_{name};\n#[cfg(feature = \"{name}\")] pub use gen_{name}::*;", name = name)
+            format!("#[cfg(feature = \"{name}\")] #[allow(non_snake_case)] mod gen_{name};\n#[cfg(feature = \"{name}\")] pub use gen_{name}::*;", name = name)
         } else {
-            format!("mod gen_{name};\npub use gen_{name}::*;", name = name)
+            format!("#[allow(non_snake_case)] mod gen_{name};\npub use gen_{name}::*;", name = name)
         }
     }).collect::<Vec<_>>().join("\n\n");
 
