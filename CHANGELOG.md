@@ -2,6 +2,86 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.59
+
+Released 2020-03-03.
+
+### Added
+
+* The `js_sys::Number` type now has a number of JS-number associated constants
+  on it now.
+  [#1965](https://github.com/rustwasm/wasm-bindgen/pull/1965)
+
+* The `getTransform` method on `CanvasRenderingContext2D` has been added.
+  [#1966](https://github.com/rustwasm/wasm-bindgen/pull/1966)
+
+* Initial experimental support was added for electron targets with a new
+  `--omit-imports` flag.
+  [#1958](https://github.com/rustwasm/wasm-bindgen/pull/1958)
+
+* Optional struct fields are now reflected idiomatically in TypeScript.
+  [#1990](https://github.com/rustwasm/wasm-bindgen/pull/1990)
+
+* Typed arrays in `js_sys` onw have `get_index` and `set_index` methods.
+  [#2001](https://github.com/rustwasm/wasm-bindgen/pull/2001)
+
+* The `web_sys::Blob` type has been updated with `arrayBuffer` and `text`
+  methods.
+  [#2008](https://github.com/rustwasm/wasm-bindgen/pull/2008)
+
+* Support for unstable browser interfaces has now been added. By compiling
+  `web_sys` with `--cfg web_sys_unstable_apis` (typically via `RUSTFLAGS`)
+  you'll be able to access all bound WebIDL functions, even those like GPU
+  support on the web, which has now also had its WebIDL updated.
+  [#1997](https://github.com/rustwasm/wasm-bindgen/pull/1997)
+
+* The compile time for `web_sys` has been massively reduced by pre-generating
+  Rust code from WebIDL. It is also readable now since it generates
+  `#[wasm_bindgen]` annotations instead of expanded code.
+  [#2012](https://github.com/rustwasm/wasm-bindgen/pull/2012)
+
+* A new `skip_tyepscript` attribute is recognized to skip generating TypeScript
+  bindings for a function or type.
+  [#2016](https://github.com/rustwasm/wasm-bindgen/pull/2016)
+
+### Changed
+
+* More `uniformMatrix*` bindings now are whitelisted take shared slice instead
+  of a mutable slice.
+  [#1957](https://github.com/rustwasm/wasm-bindgen/pull/1957)
+
+* Non-`dependency` keys in `package.json` are now ignored instead of error'd
+  about.
+  [#1969](https://github.com/rustwasm/wasm-bindgen/pull/1969)
+
+* WebGPU has been removed from `web_sys` since it was outdated and didn't work
+  anywhere anyway.
+  [#1972](https://github.com/rustwasm/wasm-bindgen/pull/1972)
+
+* The JS heap of objects managed by wasm-bindgen has had its definition
+  tightended up a bit.
+  [#1987](https://github.com/rustwasm/wasm-bindgen/pull/1987)
+
+* The `self` identifier is no longe used on the `no-modules` target, making it a
+  bit more flexible in more environments.
+  [#1995](https://github.com/rustwasm/wasm-bindgen/pull/1995)
+
+* The wasm-loading logic is now more flexible and can take promises as well.
+  [#1996](https://github.com/rustwasm/wasm-bindgen/pull/1996)
+
+* JS glue for closures is now deduplicated.
+  [#2002](https://github.com/rustwasm/wasm-bindgen/pull/2002)
+
+* The `web_sys` crate now emits more accurate TypeScript definitions using named
+  types instead of `any` everywhere.
+  [#1998](https://github.com/rustwasm/wasm-bindgen/pull/1998)
+
+* The `send_with_u8_array` methods in `web_sys` are whitelisted to take shared
+  slices instead of mutable slices.
+  [#2015](https://github.com/rustwasm/wasm-bindgen/pull/2015)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.58
 
 Released 2020-01-07.
