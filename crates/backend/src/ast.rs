@@ -221,6 +221,7 @@ pub struct Function {
     pub rust_attrs: Vec<syn::Attribute>,
     pub rust_vis: syn::Visibility,
     pub r#async: bool,
+    pub generate_typescript: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -231,6 +232,7 @@ pub struct Struct {
     pub fields: Vec<StructField>,
     pub comments: Vec<String>,
     pub is_inspectable: bool,
+    pub generate_typescript: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -243,6 +245,7 @@ pub struct StructField {
     pub getter: Ident,
     pub setter: Ident,
     pub comments: Vec<String>,
+    pub generate_typescript: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -252,6 +255,7 @@ pub struct Enum {
     pub variants: Vec<Variant>,
     pub comments: Vec<String>,
     pub hole: u32,
+    pub generate_typescript: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

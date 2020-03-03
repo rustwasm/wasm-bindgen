@@ -111,7 +111,7 @@ impl<'a> Context<'a> {
         &mut self,
         export_name: &str,
         contents: &str,
-        comments: Option<String>,
+        comments: Option<&str>,
     ) -> Result<(), Error> {
         let definition_name = generate_identifier(export_name, &mut self.defined_identifiers);
         if contents.starts_with("class") && definition_name != export_name {
@@ -119,9 +119,8 @@ impl<'a> Context<'a> {
         }
 
         let contents = contents.trim();
-        if let Some(ref c) = comments {
+        if let Some(c) = comments {
             self.globals.push_str(c);
-            self.typescript.push_str(c);
         }
         let global = match self.config.mode {
             OutputMode::Node {
@@ -804,7 +803,7 @@ impl<'a> Context<'a> {
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
-        self.export(&name, &dst, Some(class.comments.clone()))?;
+        self.export(&name, &dst, Some(&class.comments))?;
         self.typescript.push_str(&ts_dst);
 
         Ok(())
@@ -2153,15 +2152,23 @@ impl<'a> Context<'a> {
         // on what's being exported.
         match kind {
             Kind::Export(export) => {
+                let ts_sig = match export.generate_typescript {
+                    true => Some(ts_sig.as_str()),
+                    false => None,
+                };
+
                 let docs = format_doc_comments(&export.comments, Some(js_doc));
                 match &export.kind {
                     AuxExportKind::Function(name) => {
-                        self.export(&name, &format!("function{}", code), Some(docs))?;
+                        if let Some(ts_sig) = ts_sig {
+                            self.typescript.push_str(&docs);
+                            self.typescript.push_str("export function ");
+                            self.typescript.push_str(&name);
+                            self.typescript.push_str(ts_sig);
+                            self.typescript.push_str(";\n");
+                        }
+                        self.export(&name, &format!("function{}", code), Some(&docs))?;
                         self.globals.push_str("\n");
-                        self.typescript.push_str("export function ");
-                        self.typescript.push_str(&name);
-                        self.typescript.push_str(&ts_sig);
-                        self.typescript.push_str(";\n");
                     }
                     AuxExportKind::Constructor(class) => {
                         let exported = require_class(&mut self.exported_classes, class);
@@ -2169,25 +2176,34 @@ impl<'a> Context<'a> {
                             bail!("found duplicate constructor for class `{}`", class);
                         }
                         exported.has_constructor = true;
-                        exported.push(&docs, "constructor", "", &code, &ts_sig);
+                        exported.push(&docs, "constructor", "", &code, ts_sig);
                     }
                     AuxExportKind::Getter { class, field } => {
-                        let ret_ty = ts_ret_ty.unwrap();
+                        let ret_ty = match export.generate_typescript {
+                            true => match &ts_ret_ty {
+                                Some(s) => Some(s.as_str()),
+                                _ => None,
+                            },
+                            false => None,
+                        };
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_getter(&docs, field, &code, &ret_ty);
+                        exported.push_getter(&docs, field, &code, ret_ty);
                     }
                     AuxExportKind::Setter { class, field } => {
-                        let arg_ty = ts_arg_tys[0].clone();
+                        let arg_ty = match export.generate_typescript {
+                            true => Some(ts_arg_tys[0].as_str()),
+                            false => None,
+                        };
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_setter(&docs, field, &code, &arg_ty, might_be_optional_field);
+                        exported.push_setter(&docs, field, &code, arg_ty, might_be_optional_field);
                     }
                     AuxExportKind::StaticFunction { class, name } => {
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "static ", &code, &ts_sig);
+                        exported.push(&docs, name, "static ", &code, ts_sig);
                     }
                     AuxExportKind::Method { class, name, .. } => {
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "", &code, &ts_sig);
+                        exported.push(&docs, name, "", &code, ts_sig);
                     }
                 }
             }
@@ -2865,19 +2881,27 @@ impl<'a> Context<'a> {
     }
 
     fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
+        let docs = format_doc_comments(&enum_.comments, None);
         let mut variants = String::new();
 
-        self.typescript
-            .push_str(&format!("export enum {} {{", enum_.name));
+        if enum_.generate_typescript {
+            self.typescript.push_str(&docs);
+            self.typescript
+                .push_str(&format!("export enum {} {{", enum_.name));
+        }
         for (name, value) in enum_.variants.iter() {
             variants.push_str(&format!("{}:{},", name, value));
-            self.typescript.push_str(&format!("\n  {},", name));
+            if enum_.generate_typescript {
+                self.typescript.push_str(&format!("\n  {},", name));
+            }
         }
-        self.typescript.push_str("\n}\n");
+        if enum_.generate_typescript {
+            self.typescript.push_str("\n}\n");
+        }
         self.export(
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
-            Some(format_doc_comments(&enum_.comments, None)),
+            Some(&docs),
         )?;
 
         Ok(())
@@ -3163,24 +3187,36 @@ fn require_class<'a>(
 }
 
 impl ExportedClass {
-    fn push(&mut self, docs: &str, function_name: &str, function_prefix: &str, js: &str, ts: &str) {
+    fn push(
+        &mut self,
+        docs: &str,
+        function_name: &str,
+        function_prefix: &str,
+        js: &str,
+        ts: Option<&str>,
+    ) {
         self.contents.push_str(docs);
         self.contents.push_str(function_prefix);
         self.contents.push_str(function_name);
         self.contents.push_str(js);
         self.contents.push_str("\n");
-        self.typescript.push_str(docs);
-        self.typescript.push_str("  ");
-        self.typescript.push_str(function_prefix);
-        self.typescript.push_str(function_name);
-        self.typescript.push_str(ts);
-        self.typescript.push_str(";\n");
+        if let Some(ts) = ts {
+            self.typescript.push_str(docs);
+            self.typescript.push_str("  ");
+            self.typescript.push_str(function_prefix);
+            self.typescript.push_str(function_name);
+            self.typescript.push_str(ts);
+            self.typescript.push_str(";\n");
+        }
     }
 
     /// Used for adding a getter to a class, mainly to ensure that TypeScript
     /// generation is handled specially.
-    fn push_getter(&mut self, docs: &str, field: &str, js: &str, ret_ty: &str) {
-        self.push_accessor(docs, field, js, "get ", ret_ty);
+    fn push_getter(&mut self, docs: &str, field: &str, js: &str, ret_ty: Option<&str>) {
+        self.push_accessor(docs, field, js, "get ");
+        if let Some(ret_ty) = ret_ty {
+            self.push_accessor_ts(field, ret_ty);
+        }
         self.readable_properties.push(field.to_string());
     }
 
@@ -3191,28 +3227,18 @@ impl ExportedClass {
         docs: &str,
         field: &str,
         js: &str,
-        ret_ty: &str,
+        ret_ty: Option<&str>,
         might_be_optional_field: bool,
     ) {
-        let (has_setter, is_optional) = self.push_accessor(docs, field, js, "set ", ret_ty);
-        *has_setter = true;
-        *is_optional = might_be_optional_field;
+        self.push_accessor(docs, field, js, "set ");
+        if let Some(ret_ty) = ret_ty {
+            let (has_setter, is_optional) = self.push_accessor_ts(field, ret_ty);
+            *has_setter = true;
+            *is_optional = might_be_optional_field;
+        }
     }
 
-    fn push_accessor(
-        &mut self,
-        docs: &str,
-        field: &str,
-        js: &str,
-        prefix: &str,
-        ret_ty: &str,
-    ) -> (&mut bool, &mut bool) {
-        self.contents.push_str(docs);
-        self.contents.push_str(prefix);
-        self.contents.push_str(field);
-        self.contents.push_str(js);
-        self.contents.push_str("\n");
-
+    fn push_accessor_ts(&mut self, field: &str, ret_ty: &str) -> (&mut bool, &mut bool) {
         let (ty, has_setter, is_optional) = self
             .typescript_fields
             .entry(field.to_string())
@@ -3220,6 +3246,14 @@ impl ExportedClass {
 
         *ty = ret_ty.to_string();
         (has_setter, is_optional)
+    }
+
+    fn push_accessor(&mut self, docs: &str, field: &str, js: &str, prefix: &str) {
+        self.contents.push_str(docs);
+        self.contents.push_str(prefix);
+        self.contents.push_str(field);
+        self.contents.push_str(js);
+        self.contents.push_str("\n");
     }
 }
 
