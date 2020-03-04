@@ -22,7 +22,7 @@ Released 2020-03-03.
 * Optional struct fields are now reflected idiomatically in TypeScript.
   [#1990](https://github.com/rustwasm/wasm-bindgen/pull/1990)
 
-* Typed arrays in `js_sys` onw have `get_index` and `set_index` methods.
+* Typed arrays in `js_sys` now have `get_index` and `set_index` methods.
   [#2001](https://github.com/rustwasm/wasm-bindgen/pull/2001)
 
 * The `web_sys::Blob` type has been updated with `arrayBuffer` and `text`
@@ -38,6 +38,12 @@ Released 2020-03-03.
 * The compile time for `web_sys` has been massively reduced by pre-generating
   Rust code from WebIDL. It is also readable now since it generates
   `#[wasm_bindgen]` annotations instead of expanded code.
+  [#2012](https://github.com/rustwasm/wasm-bindgen/pull/2012)
+
+* A new `typescript_type` attribute can be used to specify the TypeScript type
+  for an `extern` type. [#2012](https://github.com/rustwasm/wasm-bindgen/pull/2012)
+
+* It is now possible to use string values with `#[wasm_bindgen]` `enum`s.
   [#2012](https://github.com/rustwasm/wasm-bindgen/pull/2012)
 
 * A new `skip_tyepscript` attribute is recognized to skip generating TypeScript
