@@ -12,6 +12,5 @@ extern "C" {
 fn string_roundtrip() {
     test_string_roundtrip(&Closure::wrap(Box::new(|s| s)));
 
-    // TODO re-enable this when Firefox 70 is released
-    //assert_eq!("\u{feff}bar", &identity("\u{feff}bar"));
+    assert_eq!("\u{feff}bar", &identity("\u{feff}bar"));
 }
