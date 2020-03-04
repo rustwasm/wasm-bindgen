@@ -127,7 +127,7 @@ extern "C" {
 // Array
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = Array::is_array)]
+    #[wasm_bindgen(extends = Object, is_type_of = Array::is_array, typescript_type = "Array<any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Array;
 
@@ -503,7 +503,7 @@ where
 // ArrayBuffer
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "ArrayBuffer")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type ArrayBuffer;
 
@@ -553,7 +553,7 @@ extern "C" {
 // SharedArrayBuffer
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "SharedArrayBuffer")]
     #[derive(Clone, Debug)]
     pub type SharedArrayBuffer;
 
@@ -769,7 +769,7 @@ pub mod Atomics {
 // Boolean
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_bool().is_some())]
+    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_bool().is_some(), typescript_type = "boolean")]
     #[derive(Clone, PartialEq, Eq)]
     pub type Boolean;
 
@@ -817,7 +817,7 @@ impl fmt::Debug for Boolean {
 // DataView
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "DataView")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type DataView;
 
@@ -1049,7 +1049,7 @@ extern "C" {
 // Error
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "Error")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Error;
 
@@ -1088,7 +1088,7 @@ extern "C" {
 // EvalError
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, extends = Error)]
+    #[wasm_bindgen(extends = Object, extends = Error, typescript_type = "EvalError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type EvalError;
 
@@ -1104,7 +1104,7 @@ extern "C" {
 // Function
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = JsValue::is_function)]
+    #[wasm_bindgen(extends = Object, is_type_of = JsValue::is_function, typescript_type = "Function")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Function;
 
@@ -1253,7 +1253,7 @@ impl Function {
 // Generator
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "Generator<any, any, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Generator;
 
@@ -1281,7 +1281,7 @@ extern "C" {
 // Map
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "Map<any, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Map;
 
@@ -1374,7 +1374,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
     #[derive(Clone, Debug)]
-    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator)]
+    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "Iterator<any>")]
     pub type Iterator;
 
     /// The `next()` method always has to return an object with appropriate
@@ -1413,7 +1413,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of)
     #[derive(Clone, Debug)]
-    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator)]
+    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "Iterator<Promise<any>>")]
     pub type AsyncIterator;
 
     /// The `next()` method always has to return a Promise which resolves to an object
@@ -1534,7 +1534,7 @@ extern "C" {
     /// The result of calling `next()` on a JS iterator.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "IteratorResult<any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type IteratorNext;
 
@@ -1806,7 +1806,7 @@ pub mod Math {
 // Number.
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_f64().is_some())]
+    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_f64().is_some(), typescript_type = "number")]
     #[derive(Clone)]
     pub type Number;
 
@@ -1974,7 +1974,7 @@ impl fmt::Debug for Number {
 // Date.
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "Date")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Date;
 
@@ -2416,6 +2416,7 @@ extern "C" {
 // Object.
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "object")]
     #[derive(Clone, Debug)]
     pub type Object;
 
@@ -2683,6 +2684,7 @@ impl Eq for Object {}
 // Proxy
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "ProxyConstructor")]
     #[derive(Clone, Debug)]
     pub type Proxy;
 
@@ -2709,7 +2711,7 @@ extern "C" {
     /// or range of allowed values.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError)
-    #[wasm_bindgen(extends = Error, extends = Object)]
+    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "RangeError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type RangeError;
 
@@ -2728,7 +2730,7 @@ extern "C" {
     /// variable is referenced.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
-    #[wasm_bindgen(extends = Error, extends = Object)]
+    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "ReferenceError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type ReferenceError;
 
@@ -2919,7 +2921,7 @@ pub mod Reflect {
 // RegExp
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "RegExp")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type RegExp;
 
@@ -3096,7 +3098,7 @@ extern "C" {
 // Set
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "Set<any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Set;
 
@@ -3186,7 +3188,7 @@ extern "C" {
     /// parsing code.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError)
-    #[wasm_bindgen(extends = Error, extends = Object)]
+    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "SyntaxError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type SyntaxError;
 
@@ -3206,7 +3208,7 @@ extern "C" {
     /// expected type.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError)
-    #[wasm_bindgen(extends = Error, extends = Object)]
+    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "TypeError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type TypeError;
 
@@ -3225,7 +3227,7 @@ extern "C" {
     /// function was used in a wrong way.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError)
-    #[wasm_bindgen(extends = Error, extends = Object, js_name = URIError)]
+    #[wasm_bindgen(extends = Error, extends = Object, js_name = URIError, typescript_type = "URIError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type UriError;
 
@@ -3240,7 +3242,7 @@ extern "C" {
 // WeakMap
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "WeakMap<object, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type WeakMap;
 
@@ -3284,7 +3286,7 @@ extern "C" {
 // WeakSet
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "WeakSet<object>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type WeakSet;
 
@@ -3371,7 +3373,7 @@ pub mod WebAssembly {
         /// WebAssembly decoding or validation.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/CompileError)
-        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
+        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly, typescript_type = "WebAssembly.CompileError")]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type CompileError;
 
@@ -3393,7 +3395,7 @@ pub mod WebAssembly {
         /// JavaScript.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
-        #[wasm_bindgen(extends = Object, js_namespace = WebAssembly)]
+        #[wasm_bindgen(extends = Object, js_namespace = WebAssembly, typescript_type = "WebAssembly.Instance")]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Instance;
 
@@ -3424,7 +3426,7 @@ pub mod WebAssembly {
         /// instantiation (besides traps from the start function).
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/LinkError)
-        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
+        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly, typescript_type = "WebAssembly.LinkError")]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type LinkError;
 
@@ -3445,7 +3447,7 @@ pub mod WebAssembly {
         /// specifies a trap.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError)
-        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
+        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly, typescript_type = "WebAssembly.RuntimeError")]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type RuntimeError;
 
@@ -3466,7 +3468,7 @@ pub mod WebAssembly {
         /// efficiently shared with Workers, and instantiated multiple times.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module)
-        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
+        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object, typescript_type = "WebAssembly.Module")]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Module;
 
@@ -3508,7 +3510,7 @@ pub mod WebAssembly {
         /// of the given size and element type.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table)
-        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
+        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object, typescript_type = "WebAssembly.Table")]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Table;
 
@@ -3554,7 +3556,7 @@ pub mod WebAssembly {
     #[wasm_bindgen]
     extern "C" {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory)
-        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
+        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object, typescript_type = "WebAssembly.Memory")]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Memory;
 
@@ -3659,7 +3661,7 @@ pub mod JSON {
 // JsString
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = String, extends = Object, is_type_of = JsValue::is_string)]
+    #[wasm_bindgen(js_name = String, extends = Object, is_type_of = JsValue::is_string, typescript_type = "string")]
     #[derive(Clone, PartialEq, Eq)]
     pub type JsString;
 
@@ -4261,7 +4263,7 @@ impl fmt::Debug for JsString {
 // Symbol
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(is_type_of = JsValue::is_symbol)]
+    #[wasm_bindgen(is_type_of = JsValue::is_symbol, typescript_type = "Symbol")]
     #[derive(Clone, Debug)]
     pub type Symbol;
 
@@ -4417,7 +4419,7 @@ pub mod Intl {
         /// that enable language sensitive string comparison.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.Collator")]
         #[derive(Clone, Debug)]
         pub type Collator;
 
@@ -4461,7 +4463,7 @@ pub mod Intl {
         /// that enable language-sensitive date and time formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.DateTimeFormat")]
         #[derive(Clone, Debug)]
         pub type DateTimeFormat;
 
@@ -4512,7 +4514,7 @@ pub mod Intl {
         /// that enable language sensitive number formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.NumberFormat")]
         #[derive(Clone, Debug)]
         pub type NumberFormat;
 
@@ -4562,7 +4564,7 @@ pub mod Intl {
         /// that enable plural sensitive formatting and plural language rules.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.PluralRules")]
         #[derive(Clone, Debug)]
         pub type PluralRules;
 
@@ -4606,7 +4608,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
     #[must_use]
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, typescript_type = "Promise<any>")]
     #[derive(Clone, Debug)]
     pub type Promise;
 
@@ -4784,7 +4786,7 @@ macro_rules! arrays {
     ($(#[doc = $ctor:literal] #[doc = $mdn:literal] $name:ident: $ty:ident,)*) => ($(
         #[wasm_bindgen]
         extern "C" {
-            #[wasm_bindgen(extends = Object)]
+            #[wasm_bindgen(extends = Object, typescript_type = $name)]
             #[derive(Clone, Debug)]
             pub type $name;
 
