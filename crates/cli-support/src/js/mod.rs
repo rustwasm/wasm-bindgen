@@ -461,7 +461,9 @@ impl<'a> Context<'a> {
         Ok(imports)
     }
 
-    fn ts_for_init_fn(has_memory: bool, has_module_or_path_optional: bool) -> String {
+    fn ts_for_init_fn(&self, has_memory: bool, has_module_or_path_optional: bool) -> Result<String, Error> {
+        let output = crate::wasm2es6js::interface(&self.module)?;
+
         let (memory_doc, memory_param) = if has_memory {
             (
                 "* @param {WebAssembly.Memory} maybe_memory\n",
@@ -471,22 +473,28 @@ impl<'a> Context<'a> {
             ("", "")
         };
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
-        format!(
+        Ok(format!(
             "\n\
+            export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
+            \n\
+            export interface InitOutput {{\n\
+            {output}}}\n\
+            \n\
             /**\n\
-            * If `module_or_path` is {{RequestInfo}}, makes a request and\n\
+            * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
             * for everything else, calls `WebAssembly.instantiate` directly.\n\
             *\n\
-            * @param {{RequestInfo | BufferSource | WebAssembly.Module}} module_or_path\n\
+            * @param {{InitInput | Promise<InitInput>}} module_or_path\n\
             {}\
             *\n\
-            * @returns {{Promise<any>}}\n\
+            * @returns {{Promise<InitOutput>}}\n\
             */\n\
             export default function init \
-                (module_or_path{}: RequestInfo | BufferSource | WebAssembly.Module{}): Promise<any>;
+                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
         ",
-            memory_doc, arg_optional, memory_param
-        )
+            memory_doc, arg_optional, memory_param,
+            output = output,
+        ))
     }
 
     fn gen_init(
@@ -541,7 +549,7 @@ impl<'a> Context<'a> {
             _ => "",
         };
 
-        let ts = Self::ts_for_init_fn(has_memory, !default_module_path.is_empty());
+        let ts = self.ts_for_init_fn(has_memory, !default_module_path.is_empty())?;
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
