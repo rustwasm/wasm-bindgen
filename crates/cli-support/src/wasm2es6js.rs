@@ -44,6 +44,49 @@ impl Config {
     }
 }
 
+pub fn interface(module: &Module) -> Result<String, Error> {
+    let mut exports = String::new();
+
+    for entry in module.exports.iter() {
+        let id = match entry.item {
+            walrus::ExportItem::Function(i) => i,
+            walrus::ExportItem::Memory(_) => {
+                exports.push_str(&format!("  readonly {}: WebAssembly.Memory;\n", entry.name,));
+                continue;
+            }
+            walrus::ExportItem::Table(_) => {
+                exports.push_str(&format!("  readonly {}: WebAssembly.Table;\n", entry.name,));
+                continue;
+            }
+            walrus::ExportItem::Global(_) => continue,
+        };
+
+        let func = module.funcs.get(id);
+        let ty = module.types.get(func.ty());
+        let mut args = String::new();
+        for (i, _) in ty.params().iter().enumerate() {
+            if i > 0 {
+                args.push_str(", ");
+            }
+            args.push((b'a' + (i as u8)) as char);
+            args.push_str(": number");
+        }
+
+        exports.push_str(&format!(
+            "  readonly {name}: ({args}) => {ret};\n",
+            name = entry.name,
+            args = args,
+            ret = match ty.results().len() {
+                0 => "void",
+                1 => "number",
+                _ => "Array",
+            },
+        ));
+    }
+
+    Ok(exports)
+}
+
 pub fn typescript(module: &Module) -> Result<String, Error> {
     let mut exports = format!("/* tslint:disable */\n/* eslint-disable */\n");
 
