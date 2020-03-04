@@ -461,7 +461,11 @@ impl<'a> Context<'a> {
         Ok(imports)
     }
 
-    fn ts_for_init_fn(&self, has_memory: bool, has_module_or_path_optional: bool) -> Result<String, Error> {
+    fn ts_for_init_fn(
+        &self,
+        has_memory: bool,
+        has_module_or_path_optional: bool,
+    ) -> Result<String, Error> {
         let output = crate::wasm2es6js::interface(&self.module)?;
 
         let (memory_doc, memory_param) = if has_memory {

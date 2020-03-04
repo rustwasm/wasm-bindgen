@@ -51,17 +51,11 @@ pub fn interface(module: &Module) -> Result<String, Error> {
         let id = match entry.item {
             walrus::ExportItem::Function(i) => i,
             walrus::ExportItem::Memory(_) => {
-                exports.push_str(&format!(
-                    "  readonly {}: WebAssembly.Memory;\n",
-                    entry.name,
-                ));
+                exports.push_str(&format!("  readonly {}: WebAssembly.Memory;\n", entry.name,));
                 continue;
             }
             walrus::ExportItem::Table(_) => {
-                exports.push_str(&format!(
-                    "  readonly {}: WebAssembly.Table;\n",
-                    entry.name,
-                ));
+                exports.push_str(&format!("  readonly {}: WebAssembly.Table;\n", entry.name,));
                 continue;
             }
             walrus::ExportItem::Global(_) => continue,
