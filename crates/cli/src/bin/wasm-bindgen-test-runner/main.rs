@@ -117,7 +117,11 @@ integration test.\
     }
 
     let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
-        .map(|timeout| timeout.parse().expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'"))
+        .map(|timeout| {
+            timeout
+                .parse()
+                .expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'")
+        })
         .unwrap_or(20);
 
     if debug {
