@@ -542,7 +542,7 @@ impl<'a> Context<'a> {
                 "\
                     if (typeof input === 'undefined') {
                         let src;
-                        if (document === undefined) {
+                        if (typeof document === 'undefined') {
                             src = location.href;
                         } else {
                             src = document.currentScript.src;
