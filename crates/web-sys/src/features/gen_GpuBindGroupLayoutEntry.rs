@@ -4,22 +4,22 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBindGroupLayoutBinding ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBindGroupLayoutEntry ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuBindGroupLayoutBinding` dictionary."]
+    #[doc = "The `GpuBindGroupLayoutEntry` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuBindGroupLayoutBinding;
+    pub type GpuBindGroupLayoutEntry;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuBindGroupLayoutBinding {
+impl GpuBindGroupLayoutEntry {
     #[cfg(feature = "GpuBindingType")]
-    #[doc = "Construct a new `GpuBindGroupLayoutBinding`."]
+    #[doc = "Construct a new `GpuBindGroupLayoutEntry`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`, `GpuBindingType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`, `GpuBindingType`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -34,7 +34,7 @@ impl GpuBindGroupLayoutBinding {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `binding` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -55,7 +55,7 @@ impl GpuBindGroupLayoutBinding {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `hasDynamicOffset` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -76,7 +76,7 @@ impl GpuBindGroupLayoutBinding {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `multisampled` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -95,10 +95,32 @@ impl GpuBindGroupLayoutBinding {
         self
     }
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureFormat")]
+    #[doc = "Change the `storageTextureFormat` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn storage_texture_format(&mut self, val: GpuTextureFormat) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("storageTextureFormat"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureComponentType")]
     #[doc = "Change the `textureComponentType` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`, `GpuTextureComponentType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`, `GpuTextureComponentType`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -117,32 +139,10 @@ impl GpuBindGroupLayoutBinding {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuTextureViewDimension")]
-    #[doc = "Change the `textureDimension` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`, `GpuTextureViewDimension`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn texture_dimension(&mut self, val: GpuTextureViewDimension) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("textureDimension"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBindingType")]
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`, `GpuBindingType`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`, `GpuBindingType`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -157,9 +157,31 @@ impl GpuBindGroupLayoutBinding {
         self
     }
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureViewDimension")]
+    #[doc = "Change the `viewDimension` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`, `GpuTextureViewDimension`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn view_dimension(&mut self, val: GpuTextureViewDimension) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("viewDimension"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `visibility` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

@@ -246,7 +246,7 @@ dictionary GPUSamplerDescriptor : GPUObjectDescriptorBase {
     GPUFilterMode mipmapFilter = "nearest";
     float lodMinClamp = 0;
     float lodMaxClamp = 0xffffffff; // TODO: What should this be? Was Number.MAX_VALUE.
-    GPUCompareFunction compare = "never";
+    GPUCompareFunction compare;
 };
 
 enum GPUAddressMode {
@@ -277,17 +277,18 @@ interface GPUBindGroupLayout {
 GPUBindGroupLayout includes GPUObjectBase;
 
 dictionary GPUBindGroupLayoutDescriptor : GPUObjectDescriptorBase {
-    required sequence<GPUBindGroupLayoutBinding> bindings;
+    required sequence<GPUBindGroupLayoutEntry> bindings;
 };
 
-dictionary GPUBindGroupLayoutBinding {
+dictionary GPUBindGroupLayoutEntry {
     required GPUIndex32 binding;
     required GPUShaderStageFlags visibility;
     required GPUBindingType type;
-    GPUTextureViewDimension textureDimension = "2d";
+    GPUTextureViewDimension viewDimension = "2d";
     GPUTextureComponentType textureComponentType = "float";
     boolean multisampled = false;
     boolean hasDynamicOffset = false;
+    GPUTextureFormat storageTextureFormat;
 };
 
 typedef [EnforceRange] unsigned long GPUShaderStageFlags;
@@ -302,8 +303,10 @@ enum GPUBindingType {
     "storage-buffer",
     "readonly-storage-buffer",
     "sampler",
+    "comparison-sampler",
     "sampled-texture",
-    "storage-texture"
+    "readonly-storage-texture",
+    "writeonly-storage-texture"
     // TODO: other binding types
 };
 
@@ -313,12 +316,12 @@ GPUBindGroup includes GPUObjectBase;
 
 dictionary GPUBindGroupDescriptor : GPUObjectDescriptorBase {
     required GPUBindGroupLayout layout;
-    required sequence<GPUBindGroupBinding> bindings;
+    required sequence<GPUBindGroupEntry> bindings;
 };
 
 typedef (GPUSampler or GPUTextureView or GPUBufferBinding) GPUBindingResource;
 
-dictionary GPUBindGroupBinding {
+dictionary GPUBindGroupEntry {
     required GPUIndex32 binding;
     required GPUBindingResource resource;
 };
@@ -342,10 +345,8 @@ interface GPUShaderModule {
 };
 GPUShaderModule includes GPUObjectBase;
 
-typedef (Uint32Array or DOMString) GPUShaderCode;
-
 dictionary GPUShaderModuleDescriptor : GPUObjectDescriptorBase {
-    required GPUShaderCode code;
+    required DOMString code;
 };
 
 dictionary GPUPipelineDescriptorBase : GPUObjectDescriptorBase {
@@ -604,7 +605,7 @@ dictionary GPUBufferCopyView {
     required GPUBuffer buffer;
     GPUSize64 offset = 0;
     required GPUSize32 rowPitch;
-    required GPUSize32 imageHeight;
+    GPUSize32 imageHeight = 0;
 };
 
 dictionary GPUTextureCopyView {

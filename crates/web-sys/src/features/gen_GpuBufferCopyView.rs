@@ -23,11 +23,10 @@ impl GpuBufferCopyView {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(buffer: &GpuBuffer, image_height: u32, row_pitch: u32) -> Self {
+    pub fn new(buffer: &GpuBuffer, row_pitch: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.buffer(buffer);
-        ret.image_height(image_height);
         ret.row_pitch(row_pitch);
         ret
     }
