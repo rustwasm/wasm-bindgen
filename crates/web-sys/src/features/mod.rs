@@ -2104,17 +2104,17 @@ mod gen_GpuBindGroup;
 #[cfg(feature = "GpuBindGroup")]
 pub use gen_GpuBindGroup::*;
 
-#[cfg(feature = "GpuBindGroupBinding")]
-#[allow(non_snake_case)]
-mod gen_GpuBindGroupBinding;
-#[cfg(feature = "GpuBindGroupBinding")]
-pub use gen_GpuBindGroupBinding::*;
-
 #[cfg(feature = "GpuBindGroupDescriptor")]
 #[allow(non_snake_case)]
 mod gen_GpuBindGroupDescriptor;
 #[cfg(feature = "GpuBindGroupDescriptor")]
 pub use gen_GpuBindGroupDescriptor::*;
+
+#[cfg(feature = "GpuBindGroupEntry")]
+#[allow(non_snake_case)]
+mod gen_GpuBindGroupEntry;
+#[cfg(feature = "GpuBindGroupEntry")]
+pub use gen_GpuBindGroupEntry::*;
 
 #[cfg(feature = "GpuBindGroupLayout")]
 #[allow(non_snake_case)]
@@ -2122,17 +2122,17 @@ mod gen_GpuBindGroupLayout;
 #[cfg(feature = "GpuBindGroupLayout")]
 pub use gen_GpuBindGroupLayout::*;
 
-#[cfg(feature = "GpuBindGroupLayoutBinding")]
-#[allow(non_snake_case)]
-mod gen_GpuBindGroupLayoutBinding;
-#[cfg(feature = "GpuBindGroupLayoutBinding")]
-pub use gen_GpuBindGroupLayoutBinding::*;
-
 #[cfg(feature = "GpuBindGroupLayoutDescriptor")]
 #[allow(non_snake_case)]
 mod gen_GpuBindGroupLayoutDescriptor;
 #[cfg(feature = "GpuBindGroupLayoutDescriptor")]
 pub use gen_GpuBindGroupLayoutDescriptor::*;
+
+#[cfg(feature = "GpuBindGroupLayoutEntry")]
+#[allow(non_snake_case)]
+mod gen_GpuBindGroupLayoutEntry;
+#[cfg(feature = "GpuBindGroupLayoutEntry")]
+pub use gen_GpuBindGroupLayoutEntry::*;
 
 #[cfg(feature = "GpuBindingType")]
 #[allow(non_snake_case)]

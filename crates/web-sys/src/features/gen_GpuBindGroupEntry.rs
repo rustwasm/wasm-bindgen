@@ -4,21 +4,21 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBindGroupBinding ) ]
+    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBindGroupEntry ) ]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuBindGroupBinding` dictionary."]
+    #[doc = "The `GpuBindGroupEntry` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuBindGroupBinding;
+    pub type GpuBindGroupEntry;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuBindGroupBinding {
-    #[doc = "Construct a new `GpuBindGroupBinding`."]
+impl GpuBindGroupEntry {
+    #[doc = "Construct a new `GpuBindGroupEntry`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -32,7 +32,7 @@ impl GpuBindGroupBinding {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `binding` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -53,7 +53,7 @@ impl GpuBindGroupBinding {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `resource` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupBinding`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupEntry`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
