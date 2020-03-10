@@ -116,6 +116,18 @@ integration test.\
         }
     }
 
+    let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
+        .map(|timeout| {
+            timeout
+                .parse()
+                .expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'")
+        })
+        .unwrap_or(20);
+
+    if debug {
+        println!("Set timeout to {} seconds...", timeout);
+    }
+
     // Make the generated bindings available for the tests to execute against.
     shell.status("Executing bindgen...");
     let mut b = Bindgen::new();
@@ -167,6 +179,6 @@ integration test.\
     }
 
     thread::spawn(|| srv.run());
-    headless::run(&addr, &shell)?;
+    headless::run(&addr, &shell, timeout)?;
     Ok(())
 }
