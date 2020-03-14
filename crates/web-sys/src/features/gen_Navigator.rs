@@ -72,6 +72,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     pub fn active_vr_displays(this: &Navigator) -> ::js_sys::Array;
+    #[cfg(feature = "Xr")]
+    # [ wasm_bindgen ( structural , method , getter , js_class = "Navigator" , js_name = xr ) ]
+    #[doc = "Getter for the `xr` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/xr)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `Xr`*"]
+    pub fn xr(this: &Navigator) -> Xr;
     #[cfg(feature = "MediaDevices")]
     # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Navigator" , js_name = mediaDevices ) ]
     #[doc = "Getter for the `mediaDevices` field of this object."]
