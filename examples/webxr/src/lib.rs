@@ -128,6 +128,7 @@ impl XrApp {
     pub fn init(&self) -> Promise {
         log!("Starting WebXR...");
         let navigator: web_sys::Navigator = web_sys::window().unwrap().navigator();
+        let gpu = navigator.gpu();
         let xr = navigator.xr();
         let session_mode = XrSessionMode::Inline;
         let session_supported_promise = xr.is_session_supported(session_mode);        

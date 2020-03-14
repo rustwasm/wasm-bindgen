@@ -6,10 +6,9 @@
  * https://www.w3.org/TR/2019/WD-webxr-20191010/
  */
 
-// Moved to Navigator.webidl
-//partial interface Navigator {
-//  [SecureContext, SameObject] readonly attribute XR xr;
-//};
+partial interface Navigator {
+  [SecureContext, SameObject] readonly attribute XR xr;
+};
 
 [SecureContext, Exposed=Window] interface XR : EventTarget {
   // Methods
@@ -193,26 +192,27 @@ dictionary XRWebGLLayerInit {
   double framebufferScaleFactor = 1.0;
 };
 
-// TODO: Change constructor back to original webidl and re-add commented properties
-//[SecureContext, Exposed=Window]
-[SecureContext, Exposed=Window, Constructor(XRSession session, XRWebGLRenderingContext context)]
+// TODO: Change constructor back to original webidl
+// [SecureContext, Exposed=Window]
+[SecureContext, Exposed=Window, Constructor(XRSession session, XRWebGLRenderingContext context, optional XRWebGLLayerInit layerInit = {})]
 interface XRWebGLLayer {
   //constructor(XRSession session,
-  //           XRWebGLRenderingContext context,
-  //           optional XRWebGLLayerInit layerInit = {});
+  //  XRWebGLRenderingContext context,
+  //  optional XRWebGLLayerInit layerInit = {});
+
   // Attributes
-  //readonly attribute boolean antialias;
-  //readonly attribute boolean ignoreDepthValues;
+  readonly attribute boolean antialias;
+  readonly attribute boolean ignoreDepthValues;
 
   [SameObject] readonly attribute WebGLFramebuffer framebuffer;
-  //readonly attribute unsigned long framebufferWidth;
-  //readonly attribute unsigned long framebufferHeight;
+  readonly attribute unsigned long framebufferWidth;
+  readonly attribute unsigned long framebufferHeight;
 
   // Methods
-  //XRViewport? getViewport(XRView view);
+  XRViewport? getViewport(XRView view);
 
   // Static Methods
-  //static double getNativeFramebufferScaleFactor(XRSession session);
+  static double getNativeFramebufferScaleFactor(XRSession session);
 };
 
 partial dictionary WebGLContextAttributes {
