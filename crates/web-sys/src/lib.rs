@@ -14,8 +14,8 @@
 #![doc(html_root_url = "https://docs.rs/web-sys/0.2")]
 #![allow(deprecated)]
 
-#[allow(unused_imports)]
-use js_sys::Object;
+mod features;
+pub use features::*;
 
 /// Getter for the `Window` object
 ///
@@ -30,5 +30,3 @@ pub fn window() -> Option<Window> {
 
     js_sys::global().dyn_into::<Window>().ok()
 }
-
-include!(env!("BINDINGS"));

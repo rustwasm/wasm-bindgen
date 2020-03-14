@@ -10,6 +10,5 @@ mod error;
 
 pub mod ast;
 mod codegen;
-pub mod defined;
 mod encode;
 pub mod util;

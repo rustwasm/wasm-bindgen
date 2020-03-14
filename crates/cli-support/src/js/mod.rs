@@ -4,7 +4,7 @@ use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
-use crate::{Bindgen, EncodeInto, OutputMode};
+use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
@@ -67,7 +67,8 @@ pub struct ExportedClass {
     /// All readable properties of the class
     readable_properties: Vec<String>,
     /// Map from field name to type as a string plus whether it has a setter
-    typescript_fields: HashMap<String, (String, bool)>,
+    /// and it is optional
+    typescript_fields: HashMap<String, (String, bool, bool)>,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -110,7 +111,7 @@ impl<'a> Context<'a> {
         &mut self,
         export_name: &str,
         contents: &str,
-        comments: Option<String>,
+        comments: Option<&str>,
     ) -> Result<(), Error> {
         let definition_name = generate_identifier(export_name, &mut self.defined_identifiers);
         if contents.starts_with("class") && definition_name != export_name {
@@ -118,9 +119,8 @@ impl<'a> Context<'a> {
         }
 
         let contents = contents.trim();
-        if let Some(ref c) = comments {
+        if let Some(c) = comments {
             self.globals.push_str(c);
-            self.typescript.push_str(c);
         }
         let global = match self.config.mode {
             OutputMode::Node {
@@ -187,6 +187,85 @@ impl<'a> Context<'a> {
         self.finalize_js(module_name, needs_manual_start)
     }
 
+    fn generate_node_imports(&self) -> String {
+        let mut imports = BTreeSet::new();
+        for import in self.module.imports.iter() {
+            imports.insert(&import.module);
+        }
+
+        let mut shim = String::new();
+
+        shim.push_str("let imports = {};\n");
+
+        if self.config.mode.nodejs_experimental_modules() {
+            for (i, module) in imports.iter().enumerate() {
+                if module.as_str() != PLACEHOLDER_MODULE {
+                    shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
+                }
+            }
+        }
+
+        for (i, module) in imports.iter().enumerate() {
+            if module.as_str() == PLACEHOLDER_MODULE {
+                shim.push_str(&format!(
+                    "imports['{0}'] = module.exports;\n",
+                    PLACEHOLDER_MODULE
+                ));
+            } else {
+                if self.config.mode.nodejs_experimental_modules() {
+                    shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
+                } else {
+                    shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+                }
+            }
+        }
+
+        reset_indentation(&shim)
+    }
+
+    fn generate_node_wasm_loading(&self, path: &Path) -> String {
+        let mut shim = String::new();
+
+        if self.config.mode.nodejs_experimental_modules() {
+            // On windows skip the leading `/` which comes out when we parse a
+            // url to use `C:\...` instead of `\C:\...`
+            shim.push_str(&format!(
+                "
+                import * as path from 'path';
+                import * as fs from 'fs';
+                import * as url from 'url';
+                import * as process from 'process';
+
+                let file = path.dirname(url.parse(import.meta.url).pathname);
+                if (process.platform === 'win32') {{
+                    file = file.substring(1);
+                }}
+                const bytes = fs.readFileSync(path.join(file, '{}'));
+            ",
+                path.file_name().unwrap().to_str().unwrap()
+            ));
+        } else {
+            shim.push_str(&format!(
+                "
+                const path = require('path').join(__dirname, '{}');
+                const bytes = require('fs').readFileSync(path);
+            ",
+                path.file_name().unwrap().to_str().unwrap()
+            ));
+        }
+
+        shim.push_str(
+            "
+            const wasmModule = new WebAssembly.Module(bytes);
+            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            wasm = wasmInstance.exports;
+            module.exports.__wasm = wasm;
+        ",
+        );
+
+        reset_indentation(&shim)
+    }
+
     /// Performs the task of actually generating the final JS module, be it
     /// `--target no-modules`, `--target web`, or for bundlers. This is the very
     /// last step performed in `finalize`.
@@ -197,8 +276,9 @@ impl<'a> Context<'a> {
     ) -> Result<(String, String), Error> {
         let mut ts = self.typescript.clone();
         let mut js = String::new();
-        if self.config.mode.no_modules() {
-            js.push_str("(function() {\n");
+
+        if let OutputMode::NoModules { global } = &self.config.mode {
+            js.push_str(&format!("let {};\n(function() {{\n", global));
         }
 
         // Depending on the output mode, generate necessary glue to actually
@@ -214,10 +294,7 @@ impl<'a> Context<'a> {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
-                footer.push_str(&format!(
-                    "self.{} = Object.assign(init, __exports);\n",
-                    global
-                ));
+                footer.push_str(&format!("{} = Object.assign(init, __exports);\n", global));
             }
 
             // With normal CommonJS node we need to defer requiring the wasm
@@ -225,11 +302,12 @@ impl<'a> Context<'a> {
             OutputMode::Node {
                 experimental_modules: false,
             } => {
+                js.push_str(&self.generate_node_imports());
+
                 js.push_str("let wasm;\n");
 
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
-                    import.module = format!("./{}.js", module_name);
                     footer.push_str("\nmodule.exports.");
                     footer.push_str(&import.name);
                     footer.push_str(" = ");
@@ -237,7 +315,13 @@ impl<'a> Context<'a> {
                     footer.push_str(";\n");
                 }
 
-                footer.push_str(&format!("wasm = require('./{}_bg');\n", module_name));
+                footer.push_str(
+                    &self.generate_node_wasm_loading(&Path::new(&format!(
+                        "./{}_bg.wasm",
+                        module_name
+                    ))),
+                );
+
                 if needs_manual_start {
                     footer.push_str("wasm.__wbindgen_start();\n");
                 }
@@ -315,6 +399,11 @@ impl<'a> Context<'a> {
 
     fn js_import_header(&self) -> Result<String, Error> {
         let mut imports = String::new();
+
+        if self.config.omit_imports {
+            return Ok(imports);
+        }
+
         match &self.config.mode {
             OutputMode::NoModules { .. } => {
                 for (module, _items) in self.js_imports.iter() {
@@ -372,7 +461,13 @@ impl<'a> Context<'a> {
         Ok(imports)
     }
 
-    fn ts_for_init_fn(has_memory: bool, has_module_or_path_optional: bool) -> String {
+    fn ts_for_init_fn(
+        &self,
+        has_memory: bool,
+        has_module_or_path_optional: bool,
+    ) -> Result<String, Error> {
+        let output = crate::wasm2es6js::interface(&self.module)?;
+
         let (memory_doc, memory_param) = if has_memory {
             (
                 "* @param {WebAssembly.Memory} maybe_memory\n",
@@ -382,22 +477,28 @@ impl<'a> Context<'a> {
             ("", "")
         };
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
-        format!(
+        Ok(format!(
             "\n\
+            export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
+            \n\
+            export interface InitOutput {{\n\
+            {output}}}\n\
+            \n\
             /**\n\
-            * If `module_or_path` is {{RequestInfo}}, makes a request and\n\
+            * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
             * for everything else, calls `WebAssembly.instantiate` directly.\n\
             *\n\
-            * @param {{RequestInfo | BufferSource | WebAssembly.Module}} module_or_path\n\
+            * @param {{InitInput | Promise<InitInput>}} module_or_path\n\
             {}\
             *\n\
-            * @returns {{Promise<any>}}\n\
+            * @returns {{Promise<InitOutput>}}\n\
             */\n\
             export default function init \
-                (module_or_path{}: RequestInfo | BufferSource | WebAssembly.Module{}): Promise<any>;
+                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
         ",
-            memory_doc, arg_optional, memory_param
-        )
+            memory_doc, arg_optional, memory_param,
+            output = output,
+        ))
     }
 
     fn gen_init(
@@ -433,26 +534,26 @@ impl<'a> Context<'a> {
         let default_module_path = match self.config.mode {
             OutputMode::Web => {
                 "\
-                    if (typeof module === 'undefined') {
-                        module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
+                    if (typeof input === 'undefined') {
+                        input = import.meta.url.replace(/\\.js$/, '_bg.wasm');
                     }"
             }
             OutputMode::NoModules { .. } => {
                 "\
-                    if (typeof module === 'undefined') {
+                    if (typeof input === 'undefined') {
                         let src;
-                        if (self.document === undefined) {
-                            src = self.location.href;
+                        if (typeof document === 'undefined') {
+                            src = location.href;
                         } else {
-                            src = self.document.currentScript.src;
+                            src = document.currentScript.src;
                         }
-                        module = src.replace(/\\.js$/, '_bg.wasm');
+                        input = src.replace(/\\.js$/, '_bg.wasm');
                     }"
             }
             _ => "",
         };
 
-        let ts = Self::ts_for_init_fn(has_memory, !default_module_path.is_empty());
+        let ts = self.ts_for_init_fn(has_memory, !default_module_path.is_empty())?;
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
@@ -503,54 +604,58 @@ impl<'a> Context<'a> {
 
         let js = format!(
             "\
-                function init(module{init_memory_arg}) {{
-                    {default_module_path}
-                    let result;
-                    const imports = {{}};
-                    {imports_init}
-                    if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {{
+                async function load(module, imports{init_memory_arg}) {{
+                    if (typeof Response === 'function' && module instanceof Response) {{
                         {init_memory2}
-                        const response = fetch(module);
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
-                            result = WebAssembly.instantiateStreaming(response, imports)
-                                .catch(e => {{
-                                    return response
-                                        .then(r => {{
-                                            if (r.headers.get('Content-Type') != 'application/wasm') {{
-                                                console.warn(\"`WebAssembly.instantiateStreaming` failed \
-                                                                because your server does not serve wasm with \
-                                                                `application/wasm` MIME type. Falling back to \
-                                                                `WebAssembly.instantiate` which is slower. Original \
-                                                                error:\\n\", e);
-                                                return r.arrayBuffer();
-                                            }} else {{
-                                                throw e;
-                                            }}
-                                        }})
-                                        .then(bytes => WebAssembly.instantiate(bytes, imports));
-                                }});
-                        }} else {{
-                            result = response
-                                .then(r => r.arrayBuffer())
-                                .then(bytes => WebAssembly.instantiate(bytes, imports));
+                            try {{
+                                return await WebAssembly.instantiateStreaming(module, imports);
+
+                            }} catch (e) {{
+                                if (module.headers.get('Content-Type') != 'application/wasm') {{
+                                    console.warn(\"`WebAssembly.instantiateStreaming` failed \
+                                                    because your server does not serve wasm with \
+                                                    `application/wasm` MIME type. Falling back to \
+                                                    `WebAssembly.instantiate` which is slower. Original \
+                                                    error:\\n\", e);
+
+                                }} else {{
+                                    throw e;
+                                }}
+                            }}
                         }}
+
+                        const bytes = await module.arrayBuffer();
+                        return await WebAssembly.instantiate(bytes, imports);
+
                     }} else {{
                         {init_memory1}
-                        result = WebAssembly.instantiate(module, imports)
-                            .then(result => {{
-                                if (result instanceof WebAssembly.Instance) {{
-                                    return {{ instance: result, module }};
-                                }} else {{
-                                    return result;
-                                }}
-                            }});
+                        const instance = await WebAssembly.instantiate(module, imports);
+
+                        if (instance instanceof WebAssembly.Instance) {{
+                            return {{ instance, module }};
+
+                        }} else {{
+                            return instance;
+                        }}
                     }}
-                    return result.then(({{instance, module}}) => {{
-                        wasm = instance.exports;
-                        init.__wbindgen_wasm_module = module;
-                        {start}
-                        return wasm;
-                    }});
+                }}
+
+                async function init(input{init_memory_arg}) {{
+                    {default_module_path}
+                    const imports = {{}};
+                    {imports_init}
+
+                    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
+                        input = fetch(input);
+                    }}
+
+                    const {{ instance, module }} = await load(await input, imports{init_memory_arg});
+
+                    wasm = instance.exports;
+                    init.__wbindgen_wasm_module = module;
+                    {start}
+                    return wasm;
                 }}
             ",
             init_memory_arg = init_memory_arg,
@@ -693,20 +798,24 @@ impl<'a> Context<'a> {
         let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
         fields.sort(); // make sure we have deterministic output
         for name in fields {
-            let (ty, has_setter) = &class.typescript_fields[name];
+            let (ty, has_setter, is_optional) = &class.typescript_fields[name];
             ts_dst.push_str("  ");
             if !has_setter {
                 ts_dst.push_str("readonly ");
             }
             ts_dst.push_str(name);
-            ts_dst.push_str(": ");
-            ts_dst.push_str(ty);
+            if *is_optional {
+                ts_dst.push_str("?: ");
+            } else {
+                ts_dst.push_str(": ");
+            }
+            ts_dst.push_str(&ty);
             ts_dst.push_str(";\n");
         }
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
-        self.export(&name, &dst, Some(class.comments.clone()))?;
+        self.export(&name, &dst, Some(&class.comments))?;
         self.typescript.push_str(&ts_dst);
 
         Ok(())
@@ -744,8 +853,10 @@ impl<'a> Context<'a> {
             return;
         }
         assert!(!self.config.anyref);
-        self.global(&format!("const heap = new Array({});", INITIAL_HEAP_OFFSET));
-        self.global("heap.fill(undefined);");
+        self.global(&format!(
+            "const heap = new Array({}).fill(undefined);",
+            INITIAL_HEAP_OFFSET
+        ));
         self.global(&format!("heap.push({});", INITIAL_HEAP_VALUES.join(", ")));
     }
 
@@ -772,9 +883,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("not_defined") {
             return;
         }
-        self.global(
-            "function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }"
-        );
+        self.global("function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }");
     }
 
     fn expose_assert_num(&mut self) {
@@ -1715,6 +1824,86 @@ impl<'a> Context<'a> {
         );
     }
 
+    fn expose_make_mut_closure(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("make_mut_closure") {
+            return Ok(());
+        }
+
+        let table = self.export_function_table()?;
+
+        // For mutable closures they can't be invoked recursively.
+        // To handle that we swap out the `this.a` pointer with zero
+        // while we invoke it. If we finish and the closure wasn't
+        // destroyed, then we put back the pointer so a future
+        // invocation can succeed.
+        self.global(&format!(
+            "
+            function makeMutClosure(arg0, arg1, dtor, f) {{
+                const state = {{ a: arg0, b: arg1, cnt: 1 }};
+                const real = (...args) => {{
+                    // First up with a closure we increment the internal reference
+                    // count. This ensures that the Rust closure environment won't
+                    // be deallocated while we're invoking it.
+                    state.cnt++;
+                    const a = state.a;
+                    state.a = 0;
+                    try {{
+                        return f(a, state.b, ...args);
+                    }} finally {{
+                        if (--state.cnt === 0) wasm.{}.get(dtor)(a, state.b);
+                        else state.a = a;
+                    }}
+                }};
+                real.original = state;
+                return real;
+            }}
+            ",
+            table
+        ));
+
+        Ok(())
+    }
+
+    fn expose_make_closure(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("make_closure") {
+            return Ok(());
+        }
+
+        let table = self.export_function_table()?;
+
+        // For shared closures they can be invoked recursively so we
+        // just immediately pass through `this.a`. If we end up
+        // executing the destructor, however, we clear out the
+        // `this.a` pointer to prevent it being used again the
+        // future.
+        self.global(&format!(
+            "
+            function makeClosure(arg0, arg1, dtor, f) {{
+                const state = {{ a: arg0, b: arg1, cnt: 1 }};
+                const real = (...args) => {{
+                    // First up with a closure we increment the internal reference
+                    // count. This ensures that the Rust closure environment won't
+                    // be deallocated while we're invoking it.
+                    state.cnt++;
+                    try {{
+                        return f(state.a, state.b, ...args);
+                    }} finally {{
+                        if (--state.cnt === 0) {{
+                            wasm.{}.get(dtor)(state.a, state.b);
+                            state.a = 0;
+                        }}
+                    }}
+                }};
+                real.original = state;
+                return real;
+            }}
+            ",
+            table
+        ));
+
+        Ok(())
+    }
+
     fn global(&mut self, s: &str) {
         let s = s.trim();
 
@@ -1956,6 +2145,7 @@ impl<'a> Context<'a> {
             ts_ret_ty,
             js_doc,
             code,
+            might_be_optional_field,
         } = builder
             .process(&adapter, instrs, arg_names)
             .with_context(|| match kind {
@@ -1974,15 +2164,23 @@ impl<'a> Context<'a> {
         // on what's being exported.
         match kind {
             Kind::Export(export) => {
+                let ts_sig = match export.generate_typescript {
+                    true => Some(ts_sig.as_str()),
+                    false => None,
+                };
+
                 let docs = format_doc_comments(&export.comments, Some(js_doc));
                 match &export.kind {
                     AuxExportKind::Function(name) => {
-                        self.export(&name, &format!("function{}", code), Some(docs))?;
+                        if let Some(ts_sig) = ts_sig {
+                            self.typescript.push_str(&docs);
+                            self.typescript.push_str("export function ");
+                            self.typescript.push_str(&name);
+                            self.typescript.push_str(ts_sig);
+                            self.typescript.push_str(";\n");
+                        }
+                        self.export(&name, &format!("function{}", code), Some(&docs))?;
                         self.globals.push_str("\n");
-                        self.typescript.push_str("export function ");
-                        self.typescript.push_str(&name);
-                        self.typescript.push_str(&ts_sig);
-                        self.typescript.push_str(";\n");
                     }
                     AuxExportKind::Constructor(class) => {
                         let exported = require_class(&mut self.exported_classes, class);
@@ -1990,25 +2188,34 @@ impl<'a> Context<'a> {
                             bail!("found duplicate constructor for class `{}`", class);
                         }
                         exported.has_constructor = true;
-                        exported.push(&docs, "constructor", "", &code, &ts_sig);
+                        exported.push(&docs, "constructor", "", &code, ts_sig);
                     }
                     AuxExportKind::Getter { class, field } => {
-                        let ret_ty = ts_ret_ty.unwrap();
+                        let ret_ty = match export.generate_typescript {
+                            true => match &ts_ret_ty {
+                                Some(s) => Some(s.as_str()),
+                                _ => None,
+                            },
+                            false => None,
+                        };
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_getter(&docs, field, &code, &ret_ty);
+                        exported.push_getter(&docs, field, &code, ret_ty);
                     }
                     AuxExportKind::Setter { class, field } => {
-                        let arg_ty = ts_arg_tys[0].clone();
+                        let arg_ty = match export.generate_typescript {
+                            true => Some(ts_arg_tys[0].as_str()),
+                            false => None,
+                        };
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_setter(&docs, field, &code, &arg_ty);
+                        exported.push_setter(&docs, field, &code, arg_ty, might_be_optional_field);
                     }
                     AuxExportKind::StaticFunction { class, name } => {
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "static ", &code, &ts_sig);
+                        exported.push(&docs, name, "static ", &code, ts_sig);
                     }
                     AuxExportKind::Method { class, name, .. } => {
                         let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "", &code, &ts_sig);
+                        exported.push(&docs, name, "", &code, ts_sig);
                     }
                 }
             }
@@ -2329,73 +2536,35 @@ impl<'a> Context<'a> {
                 dtor,
                 mutable,
                 adapter,
-                nargs,
+                nargs: _,
             } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 3);
-                let arg_names = (0..*nargs)
-                    .map(|i| format!("arg{}", i))
-                    .collect::<Vec<_>>()
-                    .join(", ");
-                let mut js = format!("({}) => {{\n", arg_names);
-                // First up with a closure we increment the internal reference
-                // count. This ensures that the Rust closure environment won't
-                // be deallocated while we're invoking it.
-                js.push_str("state.cnt++;\n");
 
-                let table = self.export_function_table()?;
-                let dtor = format!("wasm.{}.get({})", table, dtor);
                 let call = self.adapter_name(*adapter);
 
                 if *mutable {
-                    // For mutable closures they can't be invoked recursively.
-                    // To handle that we swap out the `this.a` pointer with zero
-                    // while we invoke it. If we finish and the closure wasn't
-                    // destroyed, then we put back the pointer so a future
-                    // invocation can succeed.
-                    js.push_str("const a = state.a;\n");
-                    js.push_str("state.a = 0;\n");
-                    js.push_str("try {\n");
-                    js.push_str(&format!("return {}(a, state.b, {});\n", call, arg_names));
-                    js.push_str("} finally {\n");
-                    js.push_str("if (--state.cnt === 0) ");
-                    js.push_str(&dtor);
-                    js.push_str("(a, state.b);\n");
-                    js.push_str("else state.a = a;\n");
-                    js.push_str("}\n");
-                } else {
-                    // For shared closures they can be invoked recursively so we
-                    // just immediately pass through `this.a`. If we end up
-                    // executing the destructor, however, we clear out the
-                    // `this.a` pointer to prevent it being used again the
-                    // future.
-                    js.push_str("try {\n");
-                    js.push_str(&format!(
-                        "return {}(state.a, state.b, {});\n",
-                        call, arg_names
-                    ));
-                    js.push_str("} finally {\n");
-                    js.push_str("if (--state.cnt === 0) {\n");
-                    js.push_str(&dtor);
-                    js.push_str("(state.a, state.b);\n");
-                    js.push_str("state.a = 0;\n");
-                    js.push_str("}\n");
-                    js.push_str("}\n");
-                }
-                js.push_str("}\n");
+                    self.expose_make_mut_closure()?;
 
-                prelude.push_str(&format!(
-                    "
-                        const state = {{ a: {arg0}, b: {arg1}, cnt: 1 }};
-                        const real = {body};
-                        real.original = state;
-                    ",
-                    body = js,
-                    arg0 = &args[0],
-                    arg1 = &args[1],
-                ));
-                Ok("real".to_string())
+                    Ok(format!(
+                        "makeMutClosure({arg0}, {arg1}, {dtor}, {call})",
+                        arg0 = &args[0],
+                        arg1 = &args[1],
+                        dtor = dtor,
+                        call = call,
+                    ))
+                } else {
+                    self.expose_make_closure()?;
+
+                    Ok(format!(
+                        "makeClosure({arg0}, {arg1}, {dtor}, {call})",
+                        arg0 = &args[0],
+                        arg1 = &args[1],
+                        dtor = dtor,
+                        call = call,
+                    ))
+                }
             }
 
             AuxImport::StructuralMethod(name) => {
@@ -2724,19 +2893,27 @@ impl<'a> Context<'a> {
     }
 
     fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
+        let docs = format_doc_comments(&enum_.comments, None);
         let mut variants = String::new();
 
-        self.typescript
-            .push_str(&format!("export enum {} {{", enum_.name));
+        if enum_.generate_typescript {
+            self.typescript.push_str(&docs);
+            self.typescript
+                .push_str(&format!("export enum {} {{", enum_.name));
+        }
         for (name, value) in enum_.variants.iter() {
             variants.push_str(&format!("{}:{},", name, value));
-            self.typescript.push_str(&format!("\n  {},", name));
+            if enum_.generate_typescript {
+                self.typescript.push_str(&format!("\n  {},", name));
+            }
         }
-        self.typescript.push_str("\n}\n");
+        if enum_.generate_typescript {
+            self.typescript.push_str("\n}\n");
+        }
         self.export(
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
-            Some(format_doc_comments(&enum_.comments, None)),
+            Some(&docs),
         )?;
 
         Ok(())
@@ -3022,53 +3199,73 @@ fn require_class<'a>(
 }
 
 impl ExportedClass {
-    fn push(&mut self, docs: &str, function_name: &str, function_prefix: &str, js: &str, ts: &str) {
+    fn push(
+        &mut self,
+        docs: &str,
+        function_name: &str,
+        function_prefix: &str,
+        js: &str,
+        ts: Option<&str>,
+    ) {
         self.contents.push_str(docs);
         self.contents.push_str(function_prefix);
         self.contents.push_str(function_name);
         self.contents.push_str(js);
         self.contents.push_str("\n");
-        self.typescript.push_str(docs);
-        self.typescript.push_str("  ");
-        self.typescript.push_str(function_prefix);
-        self.typescript.push_str(function_name);
-        self.typescript.push_str(ts);
-        self.typescript.push_str(";\n");
+        if let Some(ts) = ts {
+            self.typescript.push_str(docs);
+            self.typescript.push_str("  ");
+            self.typescript.push_str(function_prefix);
+            self.typescript.push_str(function_name);
+            self.typescript.push_str(ts);
+            self.typescript.push_str(";\n");
+        }
     }
 
     /// Used for adding a getter to a class, mainly to ensure that TypeScript
     /// generation is handled specially.
-    fn push_getter(&mut self, docs: &str, field: &str, js: &str, ret_ty: &str) {
-        self.push_accessor(docs, field, js, "get ", ret_ty);
+    fn push_getter(&mut self, docs: &str, field: &str, js: &str, ret_ty: Option<&str>) {
+        self.push_accessor(docs, field, js, "get ");
+        if let Some(ret_ty) = ret_ty {
+            self.push_accessor_ts(field, ret_ty);
+        }
         self.readable_properties.push(field.to_string());
     }
 
     /// Used for adding a setter to a class, mainly to ensure that TypeScript
     /// generation is handled specially.
-    fn push_setter(&mut self, docs: &str, field: &str, js: &str, ret_ty: &str) {
-        let has_setter = self.push_accessor(docs, field, js, "set ", ret_ty);
-        *has_setter = true;
-    }
-
-    fn push_accessor(
+    fn push_setter(
         &mut self,
         docs: &str,
         field: &str,
         js: &str,
-        prefix: &str,
-        ret_ty: &str,
-    ) -> &mut bool {
+        ret_ty: Option<&str>,
+        might_be_optional_field: bool,
+    ) {
+        self.push_accessor(docs, field, js, "set ");
+        if let Some(ret_ty) = ret_ty {
+            let (has_setter, is_optional) = self.push_accessor_ts(field, ret_ty);
+            *has_setter = true;
+            *is_optional = might_be_optional_field;
+        }
+    }
+
+    fn push_accessor_ts(&mut self, field: &str, ret_ty: &str) -> (&mut bool, &mut bool) {
+        let (ty, has_setter, is_optional) = self
+            .typescript_fields
+            .entry(field.to_string())
+            .or_insert_with(Default::default);
+
+        *ty = ret_ty.to_string();
+        (has_setter, is_optional)
+    }
+
+    fn push_accessor(&mut self, docs: &str, field: &str, js: &str, prefix: &str) {
         self.contents.push_str(docs);
         self.contents.push_str(prefix);
         self.contents.push_str(field);
         self.contents.push_str(js);
         self.contents.push_str("\n");
-        let (ty, has_setter) = self
-            .typescript_fields
-            .entry(field.to_string())
-            .or_insert_with(Default::default);
-        *ty = ret_ty.to_string();
-        has_setter
     }
 }
 

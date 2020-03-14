@@ -408,6 +408,11 @@ terms_to_idl_type_maybe_immutable! {
     Uint8ClampedArray => Uint8ClampedArray
 }
 
+#[derive(Debug, Clone)]
+pub enum TypeError {
+    CannotConvert,
+}
+
 impl<'a> IdlType<'a> {
     /// Generates a snake case type name.
     pub(crate) fn push_snake_case_name(&self, dst: &mut String) {
@@ -490,7 +495,7 @@ impl<'a> IdlType<'a> {
     }
 
     /// Converts to syn type if possible.
-    pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Option<syn::Type> {
+    pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<Option<syn::Type>, TypeError> {
         let anyref = |ty| {
             Some(match pos {
                 TypePosition::Argument => shared_ref(ty, false),
@@ -507,13 +512,13 @@ impl<'a> IdlType<'a> {
             anyref(leading_colon_path_ty(path))
         };
         match self {
-            IdlType::Boolean => Some(ident_ty(raw_ident("bool"))),
-            IdlType::Byte => Some(ident_ty(raw_ident("i8"))),
-            IdlType::Octet => Some(ident_ty(raw_ident("u8"))),
-            IdlType::Short => Some(ident_ty(raw_ident("i16"))),
-            IdlType::UnsignedShort => Some(ident_ty(raw_ident("u16"))),
-            IdlType::Long => Some(ident_ty(raw_ident("i32"))),
-            IdlType::UnsignedLong => Some(ident_ty(raw_ident("u32"))),
+            IdlType::Boolean => Ok(Some(ident_ty(raw_ident("bool")))),
+            IdlType::Byte => Ok(Some(ident_ty(raw_ident("i8")))),
+            IdlType::Octet => Ok(Some(ident_ty(raw_ident("u8")))),
+            IdlType::Short => Ok(Some(ident_ty(raw_ident("i16")))),
+            IdlType::UnsignedShort => Ok(Some(ident_ty(raw_ident("u16")))),
+            IdlType::Long => Ok(Some(ident_ty(raw_ident("i32")))),
+            IdlType::UnsignedLong => Ok(Some(ident_ty(raw_ident("u32")))),
 
             // Technically these are 64-bit numbers, but we're binding web
             // APIs that don't actually have return the corresponding 64-bit
@@ -527,74 +532,81 @@ impl<'a> IdlType<'a> {
             //
             // Perhaps one day we'll bind to u64/i64 here, but we need `BigInt`
             // to see more usage!
-            IdlType::LongLong | IdlType::UnsignedLongLong => Some(ident_ty(raw_ident("f64"))),
+            IdlType::LongLong | IdlType::UnsignedLongLong => Ok(Some(ident_ty(raw_ident("f64")))),
 
-            IdlType::Float => Some(ident_ty(raw_ident("f32"))),
-            IdlType::UnrestrictedFloat => Some(ident_ty(raw_ident("f32"))),
-            IdlType::Double => Some(ident_ty(raw_ident("f64"))),
-            IdlType::UnrestrictedDouble => Some(ident_ty(raw_ident("f64"))),
+            IdlType::Float => Ok(Some(ident_ty(raw_ident("f32")))),
+            IdlType::UnrestrictedFloat => Ok(Some(ident_ty(raw_ident("f32")))),
+            IdlType::Double => Ok(Some(ident_ty(raw_ident("f64")))),
+            IdlType::UnrestrictedDouble => Ok(Some(ident_ty(raw_ident("f64")))),
             IdlType::DomString | IdlType::ByteString | IdlType::UsvString => match pos {
-                TypePosition::Argument => Some(shared_ref(ident_ty(raw_ident("str")), false)),
-                TypePosition::Return => Some(ident_ty(raw_ident("String"))),
+                TypePosition::Argument => Ok(Some(shared_ref(ident_ty(raw_ident("str")), false))),
+                TypePosition::Return => Ok(Some(ident_ty(raw_ident("String")))),
             },
-            IdlType::Object => js_sys("Object"),
-            IdlType::Symbol => None,
-            IdlType::Error => None,
+            IdlType::Object => Ok(js_sys("Object")),
+            IdlType::Symbol => Err(TypeError::CannotConvert),
+            IdlType::Error => Err(TypeError::CannotConvert),
 
-            IdlType::ArrayBuffer => js_sys("ArrayBuffer"),
-            IdlType::DataView => None,
-            IdlType::Int8Array { immutable } => Some(array("i8", pos, *immutable)),
-            IdlType::Uint8Array { immutable } => Some(array("u8", pos, *immutable)),
-            IdlType::Uint8ClampedArray { immutable } => Some(clamped(array("u8", pos, *immutable))),
-            IdlType::Int16Array { immutable } => Some(array("i16", pos, *immutable)),
-            IdlType::Uint16Array { immutable } => Some(array("u16", pos, *immutable)),
-            IdlType::Int32Array { immutable } => Some(array("i32", pos, *immutable)),
-            IdlType::Uint32Array { immutable } => Some(array("u32", pos, *immutable)),
-            IdlType::Float32Array { immutable } => Some(array("f32", pos, *immutable)),
-            IdlType::Float64Array { immutable } => Some(array("f64", pos, *immutable)),
+            IdlType::ArrayBuffer => Ok(js_sys("ArrayBuffer")),
+            IdlType::DataView => Err(TypeError::CannotConvert),
+            IdlType::Int8Array { immutable } => Ok(Some(array("i8", pos, *immutable))),
+            IdlType::Uint8Array { immutable } => Ok(Some(array("u8", pos, *immutable))),
+            IdlType::Uint8ClampedArray { immutable } => {
+                Ok(Some(clamped(array("u8", pos, *immutable))))
+            }
+            IdlType::Int16Array { immutable } => Ok(Some(array("i16", pos, *immutable))),
+            IdlType::Uint16Array { immutable } => Ok(Some(array("u16", pos, *immutable))),
+            IdlType::Int32Array { immutable } => Ok(Some(array("i32", pos, *immutable))),
+            IdlType::Uint32Array { immutable } => Ok(Some(array("u32", pos, *immutable))),
+            IdlType::Float32Array { immutable } => Ok(Some(array("f32", pos, *immutable))),
+            IdlType::Float64Array { immutable } => Ok(Some(array("f64", pos, *immutable))),
 
-            IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => js_sys("Object"),
+            IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => Ok(js_sys("Object")),
             IdlType::Interface(name)
             | IdlType::Dictionary(name)
             | IdlType::CallbackInterface { name, .. } => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
-                anyref(ty)
+                Ok(anyref(ty))
             }
-            IdlType::Enum(name) => Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))),
+            IdlType::Enum(name) => Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str())))),
 
             IdlType::Nullable(idl_type) => {
                 let inner = idl_type.to_syn_type(pos)?;
 
-                // TODO: this is a bit of a hack, but `Option<JsValue>` isn't
-                // supported right now. As a result if we see `JsValue` for our
-                // inner type, leave that as the same when we create a nullable
-                // version of that. That way `any?` just becomes `JsValue` and
-                // it's up to users to dispatch and/or create instances
-                // appropriately.
-                if let syn::Type::Path(path) = &inner {
-                    if path.qself.is_none()
-                        && path
-                            .path
-                            .segments
-                            .last()
-                            .map(|p| p.ident == "JsValue")
-                            .unwrap_or(false)
-                    {
-                        return Some(inner.clone());
-                    }
-                }
+                match inner {
+                    Some(inner) => {
+                        // TODO: this is a bit of a hack, but `Option<JsValue>` isn't
+                        // supported right now. As a result if we see `JsValue` for our
+                        // inner type, leave that as the same when we create a nullable
+                        // version of that. That way `any?` just becomes `JsValue` and
+                        // it's up to users to dispatch and/or create instances
+                        // appropriately.
+                        if let syn::Type::Path(path) = &inner {
+                            if path.qself.is_none()
+                                && path
+                                    .path
+                                    .segments
+                                    .last()
+                                    .map(|p| p.ident == "JsValue")
+                                    .unwrap_or(false)
+                            {
+                                return Ok(Some(inner.clone()));
+                            }
+                        }
 
-                Some(option_ty(inner))
+                        Ok(Some(option_ty(inner)))
+                    }
+                    None => Ok(None),
+                }
             }
-            IdlType::FrozenArray(_idl_type) => None,
+            IdlType::FrozenArray(_idl_type) => Err(TypeError::CannotConvert),
             // webidl sequences must always be returned as javascript `Array`s. They may accept
             // anything implementing the @@iterable interface.
             IdlType::Sequence(_idl_type) => match pos {
-                TypePosition::Argument => js_value,
-                TypePosition::Return => js_sys("Array"),
+                TypePosition::Argument => Ok(js_value),
+                TypePosition::Return => Ok(js_sys("Array")),
             },
-            IdlType::Promise(_idl_type) => js_sys("Promise"),
-            IdlType::Record(_idl_type_from, _idl_type_to) => None,
+            IdlType::Promise(_idl_type) => Ok(js_sys("Promise")),
+            IdlType::Record(_idl_type_from, _idl_type_to) => Err(TypeError::CannotConvert),
             IdlType::Union(idl_types) => {
                 // Note that most union types have already been expanded to
                 // their components via `flatten`. Unions in a return position
@@ -629,10 +641,10 @@ impl<'a> IdlType<'a> {
                 }
             }
 
-            IdlType::Any => js_value,
-            IdlType::Void => None,
-            IdlType::Callback => js_sys("Function"),
-            IdlType::UnknownInterface(_) => None,
+            IdlType::Any => Ok(js_value),
+            IdlType::Void => Ok(None),
+            IdlType::Callback => Ok(js_sys("Function")),
+            IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
         }
     }
 

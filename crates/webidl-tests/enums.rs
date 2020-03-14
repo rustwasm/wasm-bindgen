@@ -1,6 +1,5 @@
+use crate::generated::*;
 use wasm_bindgen_test::*;
-
-include!(concat!(env!("OUT_DIR"), "/enums.rs"));
 
 #[wasm_bindgen_test]
 fn top_level_enum() {

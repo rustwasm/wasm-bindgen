@@ -31,6 +31,7 @@ tys! {
     SLICE
     VECTOR
     ANYREF
+    NAMED_ANYREF
     ENUM
     RUST_STRUCT
     CHAR
@@ -39,7 +40,7 @@ tys! {
     CLAMPED
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Descriptor {
     I8,
     U8,
@@ -62,6 +63,7 @@ pub enum Descriptor {
     CachedString,
     String,
     Anyref,
+    NamedAnyref(String),
     Enum { hole: u32 },
     RustStruct(String),
     Char,
@@ -69,14 +71,14 @@ pub enum Descriptor {
     Unit,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Function {
     pub arguments: Vec<Descriptor>,
     pub shim_idx: u32,
     pub ret: Descriptor,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Closure {
     pub shim_idx: u32,
     pub dtor_idx: u32,
@@ -134,10 +136,12 @@ impl Descriptor {
             ANYREF => Descriptor::Anyref,
             ENUM => Descriptor::Enum { hole: get(data) },
             RUST_STRUCT => {
-                let name = (0..get(data))
-                    .map(|_| char::from_u32(get(data)).unwrap())
-                    .collect();
+                let name = get_string(data);
                 Descriptor::RustStruct(name)
+            }
+            NAMED_ANYREF => {
+                let name = get_string(data);
+                Descriptor::NamedAnyref(name)
             }
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
@@ -198,6 +202,12 @@ fn get(a: &mut &[u32]) -> u32 {
     let ret = a[0];
     *a = &a[1..];
     ret
+}
+
+fn get_string(data: &mut &[u32]) -> String {
+    (0..get(data))
+        .map(|_| char::from_u32(get(data)).unwrap())
+        .collect()
 }
 
 impl Closure {

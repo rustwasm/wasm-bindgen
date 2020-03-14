@@ -1,6 +1,5 @@
+use crate::generated::*;
 use wasm_bindgen_test::*;
-
-include!(concat!(env!("OUT_DIR"), "/consts.rs"));
 
 #[wasm_bindgen_test]
 fn bool() {

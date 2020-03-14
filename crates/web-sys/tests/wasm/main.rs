@@ -5,6 +5,7 @@ use wasm_bindgen_test::*;
 wasm_bindgen_test_configure!(run_in_browser);
 
 pub mod anchor_element;
+pub mod blob;
 pub mod body_element;
 pub mod br_element;
 pub mod button_element;

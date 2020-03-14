@@ -40,10 +40,7 @@ pub async fn run(repo: String) -> Result<JsValue, JsValue> {
 
     let url = format!("https://api.github.com/repos/{}/branches/master", repo);
 
-    let request = Request::new_with_str_and_init(
-        &url,
-        &opts,
-    )?;
+    let request = Request::new_with_str_and_init(&url, &opts)?;
 
     request
         .headers()

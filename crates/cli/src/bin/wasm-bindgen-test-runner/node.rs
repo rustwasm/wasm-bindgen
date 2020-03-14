@@ -41,15 +41,14 @@ pub fn execute(
         global.__wbg_test_invoke = f => f();
 
         async function main(tests) {{
-            const support = require("./{0}");
-            const wasm = require("./{0}_bg");
+            const wasm = require("./{0}");
 
-            cx = new support.WasmBindgenTestContext();
-            handlers.on_console_debug = support.__wbgtest_console_debug;
-            handlers.on_console_log = support.__wbgtest_console_log;
-            handlers.on_console_info = support.__wbgtest_console_info;
-            handlers.on_console_warn = support.__wbgtest_console_warn;
-            handlers.on_console_error = support.__wbgtest_console_error;
+            cx = new wasm.WasmBindgenTestContext();
+            handlers.on_console_debug = wasm.__wbgtest_console_debug;
+            handlers.on_console_log = wasm.__wbgtest_console_log;
+            handlers.on_console_info = wasm.__wbgtest_console_info;
+            handlers.on_console_warn = wasm.__wbgtest_console_warn;
+            handlers.on_console_error = wasm.__wbgtest_console_error;
 
             // Forward runtime arguments. These arguments are also arguments to the
             // `wasm-bindgen-test-runner` which forwards them to node which we
@@ -57,7 +56,7 @@ pub fn execute(
             // filters for now.
             cx.args(process.argv.slice(2));
 
-            const ok = await cx.run(tests.map(n => wasm[n]));
+            const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
             if (!ok)
                 exit(1);
         }}

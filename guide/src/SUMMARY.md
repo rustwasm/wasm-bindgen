@@ -81,6 +81,8 @@
       - [`typescript_custom_section`](./reference/attributes/on-rust-exports/typescript_custom_section.md)
       - [`getter` and `setter`](./reference/attributes/on-rust-exports/getter-and-setter.md)
       - [`inspectable`](./reference/attributes/on-rust-exports/inspectable.md)
+      - [`skip_typescript`](./reference/attributes/on-rust-exports/skip_typescript.md)
+      - [`typescript_type`](./reference/attributes/on-rust-exports/typescript_type.md)
 
 - [`web-sys`](./web-sys/index.md)
   - [Using `web-sys`](./web-sys/using-web-sys.md)
@@ -88,6 +90,7 @@
   - [Function Overloads](./web-sys/function-overloads.md)
   - [Type Translations](./web-sys/type-translations.md)
   - [Inheritance](./web-sys/inheritance.md)
+  - [Unstable APIs](./web-sys/unstable-apis.md)
 
 - [Testing with `wasm-bindgen-test`](./wasm-bindgen-test/index.md)
   - [Usage](./wasm-bindgen-test/usage.md)

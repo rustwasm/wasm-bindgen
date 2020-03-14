@@ -64,6 +64,7 @@ pub struct JsFunction {
     pub js_doc: String,
     pub ts_arg_tys: Vec<String>,
     pub ts_ret_ty: Option<String>,
+    pub might_be_optional_field: bool,
 }
 
 impl<'a, 'b> Builder<'a, 'b> {
@@ -215,16 +216,25 @@ impl<'a, 'b> Builder<'a, 'b> {
         code.push_str(&call);
         code.push_str("}");
 
-        let (ts_sig, ts_arg_tys, ts_ret_ty) =
-            self.typescript_signature(&function_args, &arg_tys, &adapter.results);
+        // Rust Structs' fields converted into Getter and Setter functions before
+        // we decode them from webassembly, finding if a function is a field
+        // should start from here. Struct fields(Getter) only have one arg, and
+        // this is the clue we can infer if a function might be a field.
+        let mut might_be_optional_field = false;
+        let (ts_sig, ts_arg_tys, ts_ret_ty) = self.typescript_signature(
+            &function_args,
+            &arg_tys,
+            &adapter.results,
+            &mut might_be_optional_field,
+        );
         let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
-
         Ok(JsFunction {
             code,
             ts_sig,
             js_doc,
             ts_arg_tys,
             ts_ret_ty,
+            might_be_optional_field,
         })
     }
 
@@ -238,6 +248,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_names: &[String],
         arg_tys: &[&AdapterType],
         result_tys: &[AdapterType],
+        might_be_optional_field: &mut bool,
     ) -> (String, Vec<String>, Option<String>) {
         // Build up the typescript signature as well
         let mut omittable = true;
@@ -269,6 +280,12 @@ impl<'a, 'b> Builder<'a, 'b> {
         ts_args.reverse();
         ts_arg_tys.reverse();
         let mut ts = format!("({})", ts_args.join(", "));
+
+        // If this function is an optional field's setter, it should have only
+        // one arg, and omittable should be `true`.
+        if ts_args.len() == 1 && omittable {
+            *might_be_optional_field = true;
+        }
 
         // Constructors have no listed return type in typescript
         let mut ts_ret = None;
@@ -1221,6 +1238,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
             adapter2ts(ty, dst);
             dst.push_str(" | undefined");
         }
+        AdapterType::NamedAnyref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
     }

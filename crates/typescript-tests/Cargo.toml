@@ -6,6 +6,8 @@ edition = "2018"
 
 [dependencies]
 wasm-bindgen = { path = '../..' }
+web-sys = { path = '../web-sys', features = [ 'HtmlElement', 'Node', 'Document' ] }
+js-sys = { path = '../js-sys' }
 
 [lib]
 crate-type = ['cdylib']

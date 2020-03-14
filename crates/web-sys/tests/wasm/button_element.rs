@@ -8,22 +8,10 @@ extern "C" {
     fn new_form() -> HtmlFormElement;
 }
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_name = location, js_namespace = document)]
-    static LOCATION: Location;
-
-    type Location;
-
-    // FIXME: `href` should be structural in `web_sys`
-    #[wasm_bindgen(getter, method, structural)]
-    fn href(this: &Location) -> String;
-}
-
 #[wasm_bindgen_test]
 fn test_button_element() {
     let element = new_button();
-    let location = LOCATION.href();
+    let location = web_sys::window().unwrap().location().href().unwrap();
     assert!(!element.autofocus(), "Shouldn't have autofocus");
     element.set_autofocus(true);
     assert!(element.autofocus(), "Should have autofocus");

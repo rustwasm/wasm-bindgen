@@ -3,19 +3,21 @@ name = "webidl-tests"
 version = "0.1.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2018"
+publish = false
 
 [lib]
 test = false
 doctest = false
 path = 'lib.rs'
 
-[build-dependencies]
-wasm-bindgen-webidl = { path = '../webidl' }
-env_logger = "0.7"
-
-[dev-dependencies]
+[dependencies]
 js-sys = { path = '../js-sys' }
 wasm-bindgen = { path = '../..' }
+
+[build-dependencies]
+wasm-bindgen-webidl = { path = "../webidl" }
+
+[dev-dependencies]
 wasm-bindgen-test = { path = '../test' }
 
 [[test]]

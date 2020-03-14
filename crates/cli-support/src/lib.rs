@@ -1,13 +1,15 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 use anyhow::{bail, Context, Error};
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::env;
 use std::fs;
 use std::mem;
 use std::path::{Path, PathBuf};
 use std::str;
 use walrus::Module;
+
+pub(crate) const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
 
 mod anyref;
 mod decode;
@@ -26,6 +28,7 @@ pub struct Bindgen {
     mode: OutputMode,
     debug: bool,
     typescript: bool,
+    omit_imports: bool,
     demangle: bool,
     keep_debug: bool,
     remove_name_section: bool,
@@ -97,6 +100,7 @@ impl Bindgen {
             },
             debug: false,
             typescript: false,
+            omit_imports: false,
             demangle: true,
             keep_debug: false,
             remove_name_section: false,
@@ -219,6 +223,11 @@ impl Bindgen {
 
     pub fn typescript(&mut self, typescript: bool) -> &mut Bindgen {
         self.typescript = typescript;
+        self
+    }
+
+    pub fn omit_imports(&mut self, omit_imports: bool) -> &mut Bindgen {
+        self.omit_imports = omit_imports;
         self
     }
 
@@ -660,13 +669,6 @@ impl Output {
                 .with_context(|| format!("failed to write `{}`", ts_path.display()))?;
         }
 
-        if gen.mode.nodejs() {
-            let js_path = wasm_path.with_extension(extension);
-            let shim = gen.generate_node_wasm_import(&self.module, &wasm_path);
-            fs::write(&js_path, shim)
-                .with_context(|| format!("failed to write `{}`", js_path.display()))?;
-        }
-
         if gen.typescript {
             let ts_path = wasm_path.with_extension("d.ts");
             let ts = wasm2es6js::typescript(&self.module)?;
@@ -675,77 +677,6 @@ impl Output {
         }
 
         Ok(())
-    }
-}
-
-impl JsGenerated {
-    fn generate_node_wasm_import(&self, m: &Module, path: &Path) -> String {
-        let mut imports = BTreeSet::new();
-        for import in m.imports.iter() {
-            imports.insert(&import.module);
-        }
-
-        let mut shim = String::new();
-
-        if self.mode.nodejs_experimental_modules() {
-            for (i, module) in imports.iter().enumerate() {
-                shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
-            }
-            // On windows skip the leading `/` which comes out when we parse a
-            // url to use `C:\...` instead of `\C:\...`
-            shim.push_str(&format!(
-                "
-                import * as path from 'path';
-                import * as fs from 'fs';
-                import * as url from 'url';
-                import * as process from 'process';
-
-                let file = path.dirname(url.parse(import.meta.url).pathname);
-                if (process.platform === 'win32') {{
-                    file = file.substring(1);
-                }}
-                const bytes = fs.readFileSync(path.join(file, '{}'));
-            ",
-                path.file_name().unwrap().to_str().unwrap()
-            ));
-        } else {
-            shim.push_str(&format!(
-                "
-                const path = require('path').join(__dirname, '{}');
-                const bytes = require('fs').readFileSync(path);
-            ",
-                path.file_name().unwrap().to_str().unwrap()
-            ));
-        }
-        shim.push_str("let imports = {};\n");
-        for (i, module) in imports.iter().enumerate() {
-            if self.mode.nodejs_experimental_modules() {
-                shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
-            } else {
-                shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
-            }
-        }
-
-        shim.push_str(&format!(
-            "
-                const wasmModule = new WebAssembly.Module(bytes);
-                const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-            ",
-        ));
-
-        if self.mode.nodejs_experimental_modules() {
-            for entry in m.exports.iter() {
-                shim.push_str("export const ");
-                shim.push_str(&entry.name);
-                shim.push_str(" = wasmInstance.exports.");
-                shim.push_str(&entry.name);
-                shim.push_str(";\n");
-            }
-        } else {
-            shim.push_str("module.exports = wasmInstance.exports;\n");
-        }
-
-        reset_indentation(&shim)
     }
 }
 

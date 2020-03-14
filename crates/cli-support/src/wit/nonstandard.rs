@@ -73,6 +73,8 @@ pub struct AuxExport {
     pub arg_names: Option<Vec<String>>,
     /// What kind of function this is and where it shows up
     pub kind: AuxExportKind,
+    /// Whether typescript bindings should be generated for this export.
+    pub generate_typescript: bool,
 }
 
 /// All possible kinds of exports from a wasm module.
@@ -131,7 +133,10 @@ pub struct AuxEnum {
     /// The copied Rust comments to forward to JS
     pub comments: String,
     /// A list of variants with their name and value
+    /// and whether typescript bindings should be generated for each variant
     pub variants: Vec<(String, u32)>,
+    /// Whether typescript bindings should be generated for this enum.
+    pub generate_typescript: bool,
 }
 
 #[derive(Debug)]
@@ -142,6 +147,8 @@ pub struct AuxStruct {
     pub comments: String,
     /// Whether to generate helper methods for inspecting the class
     pub is_inspectable: bool,
+    /// Whether typescript bindings should be generated for this struct.
+    pub generate_typescript: bool,
 }
 
 /// All possible types of imports that can be imported by a wasm module.

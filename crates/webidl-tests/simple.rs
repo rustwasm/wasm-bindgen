@@ -1,9 +1,8 @@
+use crate::generated::*;
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_test::*;
-
-include!(concat!(env!("OUT_DIR"), "/simple.rs"));
 
 #[wasm_bindgen_test]
 fn interfaces_inherit_from_object() {
