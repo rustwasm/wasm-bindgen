@@ -53,3 +53,24 @@ test_script:
   - set GECKODRIVER=C:\Tools\WebDriver\geckodriver.exe
   - cargo test --target wasm32-unknown-unknown
 ```
+
+## GitHub Actions
+
+```yaml
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jetli/wasm-pack-action@v0.2.0
+
+      - name: Cargo test
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: test
+
+      - name: Wasm test
+        run: wasm-pack test --headless --chrome
+```
