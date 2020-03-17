@@ -1,18 +1,18 @@
-#[macro_use] mod utils;
+#[macro_use]
+mod utils;
 
 use futures::{future, Future};
 use js_sys::Promise;
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
+use utils::set_panic_hook;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::future_to_promise;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::*;
-use std::cell::RefCell;
-use std::collections::HashMap;
-use std::rc::Rc;
-use utils::set_panic_hook;
-
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
 macro_rules! log {
@@ -21,54 +21,50 @@ macro_rules! log {
     }
 }
 
-
 fn request_animation_frame(session: &XrSession, f: &Closure<dyn FnMut(f64, XrFrame)>) -> i32 {
     // This turns the Closure into a js_sys::Function
     // See https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/closure/struct.Closure.html#casting-a-closure-to-a-js_sysfunction
-    session
-        .request_animation_frame(f.as_ref().unchecked_ref())
+    session.request_animation_frame(f.as_ref().unchecked_ref())
 }
-
 
 pub fn create_webgl_context(xr_mode: bool) -> Result<WebGl2RenderingContext, JsValue> {
     let canvas = web_sys::window()
-                .unwrap()
-                .document()
-                .unwrap()
-                .get_element_by_id("canvas")
-                .unwrap()
-                .dyn_into::<HtmlCanvasElement>()
-                .unwrap(); 
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("canvas")
+        .unwrap()
+        .dyn_into::<HtmlCanvasElement>()
+        .unwrap();
 
     let gl: WebGl2RenderingContext = if xr_mode {
         let mut gl_attribs = HashMap::new();
         gl_attribs.insert(String::from("xrCompatible"), true);
         let js_gl_attribs = JsValue::from_serde(&gl_attribs).unwrap();
 
-        canvas.get_context_with_context_options("webgl2", &js_gl_attribs)?.unwrap().dyn_into()?
-    }
-    else {
+        canvas
+            .get_context_with_context_options("webgl2", &js_gl_attribs)?
+            .unwrap()
+            .dyn_into()?
+    } else {
         canvas.get_context("webgl2")?.unwrap().dyn_into()?
     };
 
     Ok(gl)
 }
 
-
 #[wasm_bindgen]
 pub struct XrApp {
     session: Rc<RefCell<Option<XrSession>>>,
-    gl: Rc<WebGl2RenderingContext>
+    gl: Rc<WebGl2RenderingContext>,
 }
-
 
 #[wasm_bindgen]
 impl XrApp {
-
     #[wasm_bindgen(constructor)]
     pub fn new() -> XrApp {
         set_panic_hook();
-        
+
         let session = Rc::new(RefCell::new(None));
 
         let xr_mode = true;
@@ -83,7 +79,7 @@ impl XrApp {
         let gpu = navigator.gpu();
         let xr = navigator.xr();
         let session_mode = XrSessionMode::Inline;
-        let session_supported_promise = xr.is_session_supported(session_mode);        
+        let session_supported_promise = xr.is_session_supported(session_mode);
 
         // Note: &self is on the stack so we can't use it in a future (which will
         // run after the &self reference is out or scope). Clone ref to the parts
@@ -93,17 +89,18 @@ impl XrApp {
         let gl = self.gl.clone();
 
         let future_ = async move {
-            let supports_session = wasm_bindgen_futures::JsFuture::from(session_supported_promise).await;
+            let supports_session =
+                wasm_bindgen_futures::JsFuture::from(session_supported_promise).await;
             let supports_session = supports_session.unwrap();
             if supports_session == false {
                 log!("XR session not supported");
                 return Ok(JsValue::from("XR session not supported"));
             }
-            
+
             let xr_session_promise = xr.request_session(session_mode);
             let xr_session = wasm_bindgen_futures::JsFuture::from(xr_session_promise).await;
             let xr_session: XrSession = xr_session.unwrap().into();
-            
+
             let xr_gl_layer = XrWebGlLayer::new_with_web_gl2_rendering_context(&xr_session, &gl)?;
             let mut render_state_init = XrRenderStateInit::new();
             render_state_init.base_layer(Some(&xr_gl_layer));
@@ -140,11 +137,14 @@ impl XrApp {
             // Schedule ourself for another requestAnimationFrame callback.
             // TODO: WebXR Samples call this at top of request_animation_frame - should this be moved?
             request_animation_frame(&sess, f.borrow().as_ref().unwrap());
-            
         }) as Box<dyn FnMut(f64, XrFrame)>));
 
         let session: &Option<XrSession> = &self.session.borrow();
-        let sess: &XrSession = if let Some(sess) = session { sess } else { return () };
+        let sess: &XrSession = if let Some(sess) = session {
+            sess
+        } else {
+            return ();
+        };
 
         request_animation_frame(sess, g.borrow().as_ref().unwrap());
     }
