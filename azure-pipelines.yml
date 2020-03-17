@@ -165,7 +165,7 @@ jobs:
       - script: mv _package.json package.json && npm install && rm package.json
         displayName: "run npm install"
       - script: |
-          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v websockets`; do
+          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v websockets | grep -v webxr`; do
             (cd examples/$dir &&
             ln -fs ../../node_modules . &&
             npm run build -- --output-path $BUILD_ARTIFACTSTAGINGDIRECTORY/exbuild/$dir) || exit 1;
