@@ -82,6 +82,7 @@ members = [
   "examples/webaudio",
   "examples/webgl",
   "examples/websockets",
+  "examples/webxr",
   "examples/without-a-bundler",
   "examples/without-a-bundler-no-modules",
   "tests/no-std",

@@ -148,4 +148,21 @@ impl WebGlContextAttributes {
         let _ = r;
         self
     }
+    #[doc = "Change the `xrCompatible` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    pub fn xr_compatible(&mut self, val: bool) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("xrCompatible"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
 }
