@@ -53,3 +53,22 @@ test_script:
   - set GECKODRIVER=C:\Tools\WebDriver\geckodriver.exe
   - cargo test --target wasm32-unknown-unknown
 ```
+
+## GitHub Actions
+
+```yaml
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - run: cargo test
+      - run: wasm-pack test --headless --chrome
+      - run: wasm-pack test --headless --firefox
+```
