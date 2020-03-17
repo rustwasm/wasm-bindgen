@@ -232,7 +232,7 @@ jobs:
   - job: dist_darwin
     displayName: "Dist Darwin binary"
     pool:
-      vmImage: macOS-10.13
+      vmImage: macOS-10.15
     steps:
       - template: ci/azure-install-rust.yml
       - script: cargo build --manifest-path crates/cli/Cargo.toml --release
