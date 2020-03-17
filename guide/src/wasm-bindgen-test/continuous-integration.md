@@ -64,13 +64,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: jetli/wasm-pack-action@v0.2.0
 
-      - name: Cargo test
-        uses: actions-rs/cargo@v1.0.1
-        with:
-          command: test
+      - name: Install
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Wasm test
-        run: wasm-pack test --headless --chrome
+      - run: cargo test
+      - run: wasm-pack test --headless --chrome
+      - run: wasm-pack test --headless --firefox
 ```
