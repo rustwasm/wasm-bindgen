@@ -2,6 +2,29 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.60
+
+Released 2020-03-25.
+
+### Added
+
+* The `js_sys` types are now more accurately reflected in TypeScript.
+  [#2028](https://github.com/rustwasm/wasm-bindgen/pull/2028)
+
+* The timeout in `wasm-bindgen-test-runner`'s timeout can now be configured via
+  `WASM_BINDGEN_TEST_TIMEOUT`.
+  [#2036](https://github.com/rustwasm/wasm-bindgen/pull/2036)
+
+* WebIDL for WebXR has been added.
+  [#2000](https://github.com/rustwasm/wasm-bindgen/pull/2000)
+
+### Changed
+
+* The WebIDL for WebGPU has been updated.
+  [#2037](https://github.com/rustwasm/wasm-bindgen/pull/2037)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.59
 
 Released 2020-03-03.
