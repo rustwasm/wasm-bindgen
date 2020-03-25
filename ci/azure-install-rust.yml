@@ -5,7 +5,7 @@ steps:
   - bash: |
       set -e
       if command -v rustup; then
-        rustup config set profile minimal
+        rustup set profile minimal
         rustup update $TOOLCHAIN
         rustup default $TOOLCHAIN
       else
