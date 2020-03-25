@@ -9,9 +9,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 futures = "0.3.4"
-js-sys = "0.3.36"
-wasm-bindgen = {version = "0.2.59", features = ["serde-serialize"]}
-wasm-bindgen-futures = "0.4.9"
+js-sys = "0.3.37"
+wasm-bindgen = {version = "0.2.60", features = ["serde-serialize"]}
+wasm-bindgen-futures = "0.4.10"
 serde = { version = "1.0.80", features = ["derive"] }
 serde_derive = "^1.0.59"
 
@@ -63,10 +63,3 @@ features = [
   'XrWebGlLayerInit',
   'console'
 ]
-
-
-[patch.crates-io]
-wasm-bindgen = { path = '../../wasm-bindgen' }
-wasm-bindgen-futures = { path = '../../wasm-bindgen/crates/futures' }
-js-sys = { path = '../../wasm-bindgen/crates/js-sys' }
-web-sys = { path = '../../wasm-bindgen/crates/web-sys' }
