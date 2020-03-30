@@ -42,6 +42,7 @@ pub struct Context<'a> {
     /// the number of times they've been used, used to generate new
     /// identifiers.
     defined_identifiers: HashMap<String, usize>,
+    global_defined_import_identifiers: HashMap<String, usize>,
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
@@ -90,6 +91,7 @@ impl<'a> Context<'a> {
             imported_names: Default::default(),
             js_imports: Default::default(),
             defined_identifiers: Default::default(),
+            global_defined_import_identifiers: Default::default(),
             wasm_import_definitions: Default::default(),
             exported_classes: Some(Default::default()),
             config,
@@ -113,7 +115,7 @@ impl<'a> Context<'a> {
         contents: &str,
         comments: Option<&str>,
     ) -> Result<(), Error> {
-        let definition_name = generate_identifier(export_name, &mut self.defined_identifiers);
+        let definition_name = generate_identifier(export_name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers);
         if contents.starts_with("class") && definition_name != export_name {
             bail!("cannot shadow already defined class `{}`", export_name);
         }
@@ -1945,13 +1947,13 @@ impl<'a> Context<'a> {
 
         let mut name = match &import.name {
             JsImportName::Module { module, name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                let unique_name = generate_identifier(name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers);
                 add_module_import(module.clone(), name, &unique_name);
                 unique_name
             }
 
             JsImportName::LocalModule { module, name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                let unique_name = generate_identifier(name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers);
                 let module = self.config.local_module_name(module);
                 add_module_import(module, name, &unique_name);
                 unique_name
@@ -1965,7 +1967,7 @@ impl<'a> Context<'a> {
                 let module = self
                     .config
                     .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                let unique_name = generate_identifier(name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers);
                 add_module_import(module, name, &unique_name);
                 unique_name
             }
@@ -1996,11 +1998,7 @@ impl<'a> Context<'a> {
             }
 
             JsImportName::Global { name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
-                if unique_name != *name {
-                    bail!("cannot import `{}` from two locations", name);
-                }
-                unique_name
+                if name == "default"  { format!("{}{}", name, 1) } else { name.clone() }
             }
         };
         self.imported_names
@@ -2053,6 +2051,7 @@ impl<'a> Context<'a> {
     }
 
     pub fn generate(&mut self) -> Result<(), Error> {
+        self.precache_global_import_identifiers()?;
         for (id, adapter) in crate::sorted_iter(&self.wit.adapters) {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,
@@ -2079,6 +2078,53 @@ impl<'a> Context<'a> {
             self.process_package_json(path)?;
         }
 
+        Ok(())
+    }
+
+    fn precache_global_import_identifiers(&mut self) -> Result<(), Error> {
+        for (_id, adapter) in crate::sorted_iter(&self.wit.adapters) {
+            let instrs = match &adapter.kind {
+                AdapterKind::Import { .. } => continue,
+                AdapterKind::Local { instructions } => instructions,
+            };
+            let mut call = None;
+            for instr in instrs {
+                match instr.instr {
+                    Instruction::CallAdapter(id) => {
+                        if call.is_some() {
+                            continue
+                        } else {
+                            call = Some(id);
+                        }
+                    }
+                    Instruction::CallExport(_)
+                    | Instruction::CallTableElement(_)
+                    | Instruction::Standard(wit_walrus::Instruction::CallCore(_))
+                    | Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => {
+                        continue
+                    }
+                    _ => {}
+                }
+            }
+            if let Some(id) = call {
+                let js = match &self.aux.import_map[&id] {
+                    AuxImport::Value(AuxValue::Bare(js)) => Some(js),
+                    _ => None,
+                };
+                if let Some(js) = js {
+                    match &js.name {
+                        JsImportName::Global { name } => {
+                            let cnt = self.global_defined_import_identifiers.entry(name.clone()).or_insert(0);
+                            if *cnt == 1 {
+                                bail!("cannot import `{}` from two locations", name);
+                            }
+                            *cnt += 1;
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
         Ok(())
     }
 
@@ -3165,9 +3211,14 @@ fn check_duplicated_getter_and_setter_names(
     Ok(())
 }
 
-fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
+fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>, global_names: &mut HashMap<String, usize>) -> String {
     let cnt = used_names.entry(name.to_string()).or_insert(0);
     *cnt += 1;
+    let global_cnt = (*global_names.entry(name.to_string()).or_insert(0)).clone();
+    // leave index for global import
+    if *cnt == 1 && global_cnt != 0 {
+        *cnt += 1;
+    }
     // We want to mangle `default` at once, so we can support default exports and don't generate
     // invalid glue code like this: `import { default } from './module';`.
     if *cnt == 1 && name != "default" {
@@ -3272,20 +3323,21 @@ impl ExportedClass {
 #[test]
 fn test_generate_identifier() {
     let mut used_names: HashMap<String, usize> = HashMap::new();
+    let mut global_used_names: HashMap<String, usize> = HashMap::new();
     assert_eq!(
-        generate_identifier("someVar", &mut used_names),
+        generate_identifier("someVar", &mut used_names, &mut global_used_names),
         "someVar".to_string()
     );
     assert_eq!(
-        generate_identifier("someVar", &mut used_names),
+        generate_identifier("someVar", &mut used_names, &mut global_used_names),
         "someVar2".to_string()
     );
     assert_eq!(
-        generate_identifier("default", &mut used_names),
+        generate_identifier("default", &mut used_names, &mut global_used_names),
         "default1".to_string()
     );
     assert_eq!(
-        generate_identifier("default", &mut used_names),
+        generate_identifier("default", &mut used_names, &mut global_used_names),
         "default2".to_string()
     );
 }
