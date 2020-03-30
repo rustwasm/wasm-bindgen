@@ -115,7 +115,12 @@ impl<'a> Context<'a> {
         contents: &str,
         comments: Option<&str>,
     ) -> Result<(), Error> {
-        let definition_name = generate_identifier(export_name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers, false);
+        let definition_name = generate_identifier(
+            export_name,
+            &mut self.defined_identifiers,
+            &mut self.global_defined_import_identifiers,
+            false,
+        );
         if contents.starts_with("class") && definition_name != export_name {
             bail!("cannot shadow already defined class `{}`", export_name);
         }
@@ -1947,13 +1952,23 @@ impl<'a> Context<'a> {
 
         let mut name = match &import.name {
             JsImportName::Module { module, name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers, false);
+                let unique_name = generate_identifier(
+                    name,
+                    &mut self.defined_identifiers,
+                    &mut self.global_defined_import_identifiers,
+                    false,
+                );
                 add_module_import(module.clone(), name, &unique_name);
                 unique_name
             }
 
             JsImportName::LocalModule { module, name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers, false);
+                let unique_name = generate_identifier(
+                    name,
+                    &mut self.defined_identifiers,
+                    &mut self.global_defined_import_identifiers,
+                    false,
+                );
                 let module = self.config.local_module_name(module);
                 add_module_import(module, name, &unique_name);
                 unique_name
@@ -1967,7 +1982,12 @@ impl<'a> Context<'a> {
                 let module = self
                     .config
                     .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers, false);
+                let unique_name = generate_identifier(
+                    name,
+                    &mut self.defined_identifiers,
+                    &mut self.global_defined_import_identifiers,
+                    false,
+                );
                 add_module_import(module, name, &unique_name);
                 unique_name
             }
@@ -1998,7 +2018,12 @@ impl<'a> Context<'a> {
             }
 
             JsImportName::Global { name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers, &mut self.global_defined_import_identifiers, true);
+                let unique_name = generate_identifier(
+                    name,
+                    &mut self.defined_identifiers,
+                    &mut self.global_defined_import_identifiers,
+                    true,
+                );
                 if unique_name != *name {
                     bail!("cannot import `{}` from two locations", name);
                 }
@@ -2096,7 +2121,7 @@ impl<'a> Context<'a> {
                 match instr.instr {
                     Instruction::CallAdapter(id) => {
                         if call.is_some() {
-                            continue
+                            continue;
                         } else {
                             call = Some(id);
                         }
@@ -2104,9 +2129,7 @@ impl<'a> Context<'a> {
                     Instruction::CallExport(_)
                     | Instruction::CallTableElement(_)
                     | Instruction::Standard(wit_walrus::Instruction::CallCore(_))
-                    | Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => {
-                        continue
-                    }
+                    | Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => continue,
                     _ => {}
                 }
             }
@@ -2118,7 +2141,9 @@ impl<'a> Context<'a> {
                 if let Some(js) = js {
                     match &js.name {
                         JsImportName::Global { name } => {
-                            self.global_defined_import_identifiers.entry(name.clone()).or_insert(1);
+                            self.global_defined_import_identifiers
+                                .entry(name.clone())
+                                .or_insert(1);
                         }
                         _ => {}
                     }
@@ -3211,7 +3236,12 @@ fn check_duplicated_getter_and_setter_names(
     Ok(())
 }
 
-fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>, global_names: &mut HashMap<String, usize>, global_import: bool) -> String {
+fn generate_identifier(
+    name: &str,
+    used_names: &mut HashMap<String, usize>,
+    global_names: &mut HashMap<String, usize>,
+    global_import: bool,
+) -> String {
     let cnt = used_names.entry(name.to_string()).or_insert(0);
     let global_cnt = global_names.entry(name.to_string()).or_insert(0);
     if global_import {
