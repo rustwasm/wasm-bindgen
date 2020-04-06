@@ -251,7 +251,8 @@ pub struct StructField {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct Enum {
-    pub name: Ident,
+    pub rust_name: Ident,
+    pub js_name: String,
     pub variants: Vec<Variant>,
     pub comments: Vec<String>,
     pub hole: u32,

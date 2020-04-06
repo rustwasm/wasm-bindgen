@@ -212,7 +212,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
 
 fn shared_enum<'a>(e: &'a ast::Enum, intern: &'a Interner) -> Enum<'a> {
     Enum {
-        name: intern.intern(&e.name),
+        name: &e.js_name,
         variants: e
             .variants
             .iter()

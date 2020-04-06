@@ -1048,7 +1048,6 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             bail_span!(self, "cannot export empty enums to JS");
         }
         let generate_typescript = opts.skip_typescript().is_none();
-        opts.check_used()?;
 
         // Check if the first value is a string literal
         match self.variants[0].discriminant {
@@ -1059,10 +1058,16 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                     lit: syn::Lit::Str(_),
                 }),
             )) => {
+                opts.check_used()?;
                 return import_enum(self, program);
             }
             _ => {}
         }
+        let js_name = opts
+            .js_name()
+            .map(|s| s.0)
+            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        opts.check_used()?;
 
         let has_discriminant = self.variants[0].discriminant.is_some();
 
@@ -1145,7 +1150,8 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         self.to_tokens(tokens);
 
         program.enums.push(ast::Enum {
-            name: self.ident,
+            rust_name: self.ident,
+            js_name,
             variants,
             comments,
             hole,

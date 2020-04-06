@@ -1113,7 +1113,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
 
 impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut TokenStream) {
-        let enum_name = &self.name;
+        let enum_name = &self.rust_name;
         let hole = &self.hole;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
