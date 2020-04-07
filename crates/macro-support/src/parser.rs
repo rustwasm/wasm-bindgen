@@ -1,5 +1,6 @@
 use std::cell::Cell;
 
+use ast::OperationKind;
 use backend::ast;
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
@@ -710,7 +711,16 @@ fn function_from_decl(
 
     let (name, name_span, renamed_via_js_name) =
         if let Some((js_name, js_name_span)) = opts.js_name() {
-            (js_name.to_string(), js_name_span, true)
+            let kind = operation_kind(&opts);
+            let prefix = match kind {
+                OperationKind::Setter(_) => "set_",
+                _ => "",
+            };
+            (
+                format!("{}{}", prefix, js_name.to_string()),
+                js_name_span,
+                true,
+            )
         } else {
             (decl_name.to_string(), decl_name.span(), false)
         };

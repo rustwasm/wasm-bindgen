@@ -330,12 +330,6 @@ impl Function {
     pub fn infer_setter_property(&self) -> Result<String, Diagnostic> {
         let name = self.name.to_string();
 
-        // if `#[wasm_bindgen(js_name = "...")]` is used then that explicitly
-        // because it was hand-written anyway.
-        if self.renamed_via_js_name {
-            return Ok(name);
-        }
-
         // Otherwise we infer names based on the Rust function name.
         if !name.starts_with("set_") {
             bail_span!(
