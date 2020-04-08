@@ -477,7 +477,8 @@ fn reset_indentation(s: &str) -> String {
             dst.push_str(line);
         }
         dst.push_str("\n");
-        if line.ends_with('{') {
+        // Ignore { inside of comments and if it's an exported enum
+        if line.ends_with('{') && !line.starts_with('*') && !line.ends_with("Object.freeze({") {
             indent += 1;
         }
     }

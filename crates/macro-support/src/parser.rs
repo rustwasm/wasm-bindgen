@@ -1116,9 +1116,11 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                     ),
                 };
 
+                let comments = extract_doc_comments(&v.attrs);
                 Ok(ast::Variant {
                     name: v.ident.clone(),
                     value,
+                    comments,
                 })
             })
             .collect::<Result<Vec<_>, Diagnostic>>()?;

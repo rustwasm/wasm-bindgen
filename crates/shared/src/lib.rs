@@ -106,6 +106,7 @@ macro_rules! shared_api {
         struct EnumVariant<'a> {
             name: &'a str,
             value: u32,
+            comments: Vec<&'a str>,
         }
 
         struct Function<'a> {

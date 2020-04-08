@@ -263,6 +263,7 @@ pub struct Enum {
 pub struct Variant {
     pub name: Ident,
     pub value: u32,
+    pub comments: Vec<String>,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
