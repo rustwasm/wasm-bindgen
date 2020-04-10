@@ -1,6 +1,6 @@
 [package]
 name = "web-sys"
-version = "0.3.37"
+version = "0.3.38"
 authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
 homepage = "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html"
