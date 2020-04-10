@@ -9,6 +9,16 @@ always be listed via `wasm-bindgen --help`.
 
 [wasm-pack]: https://github.com/rustwasm/wasm-pack
 
+## Installation
+
+The recommend way to install the `wasm-bindgen` command line tool is with the
+`wasm-pack` installer described
+[here](https://rustwasm.github.io/wasm-pack/installer/). After installing
+`wasm-pack`, run `wasm-pack build` to install the command line tool. (Although
+the command line tool is available through its own crate, `wasm-bindgen-cli`,
+`wasm-pack build` will ensure the version installed matches the version of
+`wasm-bindgen` in `Cargo.lock`.)
+
 ## Usage
 
 ```
