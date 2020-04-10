@@ -49,6 +49,48 @@ exports._7_js = (rules) => {
     return rules;
 }
 
+exports._8_js = (rules) => {
+    let value = rules.new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name;
+    assert.equal(value, 8);
+    rules.new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name = value * 2;
+    return rules;
+}
+
+exports._9_js = (rules) => {
+    let value = rules.new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name;
+    assert.equal(value, 9);
+    rules.new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name = value * 2;
+    return rules;
+}
+
+exports._10_js = (rules) => {
+    let value = rules.new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name;
+    assert.equal(value, 10);
+    rules.new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name = value * 2;
+    return rules;
+}
+
+exports._11_js = (rules) => {
+    let value = rules.new_js_name__getter_with_name__no_getter_without_name_for_field__same_getter_setter_name;
+    assert.equal(value, 11);
+    rules.new_js_name__setter_with_name__no_setter_without_name_for_field__same_getter_setter_name = value * 2;
+    return rules;
+}
+
+exports._12_js = (rules) => {
+    let value = rules.new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name;
+    assert.equal(value, 12);
+    rules.new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name = value * 2;
+    return rules;
+}
+
+exports._13_js = (rules) => {
+    let value = rules.new_js_name__getter_with_name__no_getter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name;
+    assert.equal(value, 13);
+    rules.new_js_name__setter_with_name__no_setter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name = value * 2;
+    return rules;
+}
+
 exports.test_getter_compute = x => {
   assert.equal(x.foo, 3)
 };
