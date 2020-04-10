@@ -11,15 +11,13 @@ always be listed via `wasm-bindgen --help`.
 
 ## Installation
 
-Although the command line tool is available through its own crate, `wasm-bindgen-cli`, the recommended way to install it is through installing the `wasm-pack` crate:
-
-```
-# Recommended:
-cargo install wasm-pack
-
-# OR
-cargo install wasm-bindgen-cli
-```
+The recommend way to install the `wasm-bindgen` command line tool is with the
+`wasm-pack` installer described
+[here](https://rustwasm.github.io/wasm-pack/installer/). After installing
+`wasm-pack`, run `wasm-pack build` to install the command line tool. (Although
+the command line tool is available through its own crate, `wasm-bindgen-cli`,
+`wasm-pack build` will ensure the version installed matches the version of
+`wasm-bindgen` in `Cargo.lock`.)
 
 ## Usage
 
