@@ -23,10 +23,10 @@ impl GpuBindGroupDescriptor {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(bindings: &::wasm_bindgen::JsValue, layout: &GpuBindGroupLayout) -> Self {
+    pub fn new(entries: &::wasm_bindgen::JsValue, layout: &GpuBindGroupLayout) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.bindings(bindings);
+        ret.entries(entries);
         ret.layout(layout);
         ret
     }
@@ -48,17 +48,17 @@ impl GpuBindGroupDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `bindings` field of this object."]
+    #[doc = "Change the `entries` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn bindings(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn entries(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("bindings"),
+            &JsValue::from("entries"),
             &JsValue::from(val),
         );
         debug_assert!(

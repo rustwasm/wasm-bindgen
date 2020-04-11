@@ -404,4 +404,42 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn push_debug_group(this: &GpuCommandEncoder, group_label: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "GpuBuffer", feature = "GpuQuerySet",))]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = resolveQuerySet ) ]
+    #[doc = "The `resolveQuerySet()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/resolveQuerySet)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`, `GpuQuerySet`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn resolve_query_set_with_u32(
+        this: &GpuCommandEncoder,
+        query_set: &GpuQuerySet,
+        first_query: u32,
+        query_count: u32,
+        destination: &GpuBuffer,
+        destination_offset: u32,
+    );
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "GpuBuffer", feature = "GpuQuerySet",))]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUCommandEncoder" , js_name = resolveQuerySet ) ]
+    #[doc = "The `resolveQuerySet()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/resolveQuerySet)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuCommandEncoder`, `GpuQuerySet`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn resolve_query_set_with_f64(
+        this: &GpuCommandEncoder,
+        query_set: &GpuQuerySet,
+        first_query: u32,
+        query_count: u32,
+        destination: &GpuBuffer,
+        destination_offset: f64,
+    );
 }
