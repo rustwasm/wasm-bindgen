@@ -39,7 +39,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/globalCompositeOperation)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
-    pub fn global_composite_operation(this: &OffscreenCanvasRenderingContext2d) -> Result<String, JsValue>;
+    pub fn global_composite_operation(
+        this: &OffscreenCanvasRenderingContext2d,
+    ) -> Result<String, JsValue>;
     # [ wasm_bindgen ( structural , catch , method , setter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = globalCompositeOperation ) ]
     #[doc = "Setter for the `globalCompositeOperation` field of this object."]
     #[doc = ""]
@@ -63,7 +65,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/strokeStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
-    pub fn set_stroke_style(this: &OffscreenCanvasRenderingContext2d, value: &::wasm_bindgen::JsValue);
+    pub fn set_stroke_style(
+        this: &OffscreenCanvasRenderingContext2d,
+        value: &::wasm_bindgen::JsValue,
+    );
     # [ wasm_bindgen ( structural , method , getter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = fillStyle ) ]
     #[doc = "Getter for the `fillStyle` field of this object."]
     #[doc = ""]
@@ -77,7 +82,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/fillStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
-    pub fn set_fill_style(this: &OffscreenCanvasRenderingContext2d, value: &::wasm_bindgen::JsValue);
+    pub fn set_fill_style(
+        this: &OffscreenCanvasRenderingContext2d,
+        value: &::wasm_bindgen::JsValue,
+    );
     # [ wasm_bindgen ( structural , method , getter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = filter ) ]
     #[doc = "Getter for the `filter` field of this object."]
     #[doc = ""]
@@ -598,7 +606,11 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/isPointInPath)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
-    pub fn is_point_in_path_with_f64(this: &OffscreenCanvasRenderingContext2d, x: f64, y: f64) -> bool;
+    pub fn is_point_in_path_with_f64(
+        this: &OffscreenCanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+    ) -> bool;
     #[cfg(feature = "CanvasWindingRule")]
     # [ wasm_bindgen ( method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = isPointInPath ) ]
     #[doc = "The `isPointInPath()` method."]
@@ -645,8 +657,11 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/isPointInStroke)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
-    pub fn is_point_in_stroke_with_x_and_y(this: &OffscreenCanvasRenderingContext2d, x: f64, y: f64)
-                                           -> bool;
+    pub fn is_point_in_stroke_with_x_and_y(
+        this: &OffscreenCanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+    ) -> bool;
     #[cfg(feature = "Path2d")]
     # [ wasm_bindgen ( method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = isPointInStroke ) ]
     #[doc = "The `isPointInStroke()` method."]
@@ -999,7 +1014,13 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/quadraticCurveTo)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
-    pub fn quadratic_curve_to(this: &OffscreenCanvasRenderingContext2d, cpx: f64, cpy: f64, x: f64, y: f64);
+    pub fn quadratic_curve_to(
+        this: &OffscreenCanvasRenderingContext2d,
+        cpx: f64,
+        cpy: f64,
+        x: f64,
+        y: f64,
+    );
     # [ wasm_bindgen ( method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = rect ) ]
     #[doc = "The `rect()` method."]
     #[doc = ""]
@@ -1168,7 +1189,11 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/translate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
-    pub fn translate(this: &OffscreenCanvasRenderingContext2d, x: f64, y: f64) -> Result<(), JsValue>;
+    pub fn translate(
+        this: &OffscreenCanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+    ) -> Result<(), JsValue>;
     #[cfg(feature = "Element")]
     # [ wasm_bindgen ( method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = drawCustomFocusRing ) ]
     #[doc = "The `drawCustomFocusRing()` method."]
@@ -1176,7 +1201,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/drawCustomFocusRing)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`, `Element`*"]
-    pub fn draw_custom_focus_ring(this: &OffscreenCanvasRenderingContext2d, element: &Element) -> bool;
+    pub fn draw_custom_focus_ring(
+        this: &OffscreenCanvasRenderingContext2d,
+        element: &Element,
+    ) -> bool;
     #[cfg(feature = "Element")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = drawFocusIfNeeded ) ]
     #[doc = "The `drawFocusIfNeeded()` method."]
