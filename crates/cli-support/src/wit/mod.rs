@@ -766,7 +766,13 @@ impl<'a> Context<'a> {
             variants: enum_
                 .variants
                 .iter()
-                .map(|v| (v.name.to_string(), v.value))
+                .map(|v| {
+                    (
+                        v.name.to_string(),
+                        v.value,
+                        concatenate_comments(&v.comments),
+                    )
+                })
                 .collect(),
             generate_typescript: enum_.generate_typescript,
         };
@@ -1511,9 +1517,5 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
 }
 
 fn concatenate_comments(comments: &[&str]) -> String {
-    comments
-        .iter()
-        .map(|s| s.trim_matches('"'))
-        .collect::<Vec<_>>()
-        .join("\n")
+    comments.iter().map(|&s| s).collect::<Vec<_>>().join("\n")
 }

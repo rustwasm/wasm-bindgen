@@ -227,6 +227,7 @@ fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<
     EnumVariant {
         name: intern.intern(&v.name),
         value: v.value,
+        comments: v.comments.iter().map(|s| &**s).collect(),
     }
 }
 
