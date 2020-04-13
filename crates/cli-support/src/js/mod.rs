@@ -1928,7 +1928,7 @@ impl<'a> Context<'a> {
         } else {
             Some(actual.to_string())
         };
-        (&mut self.js_imports)
+        self.js_imports
             .entry(module)
             .or_insert(Vec::new())
             .push((name.to_string(), rename));
@@ -3165,7 +3165,8 @@ impl<'a> Context<'a> {
     }
 
     fn generate_identifier(&mut self, name: &str, global_import: bool) -> String {
-        let cnt = (&mut self.defined_identifiers)
+        let cnt = self
+            .defined_identifiers
             .entry(name.to_string())
             .or_insert(0);
         let global_cnt = (&mut self.global_defined_import_identifiers)
