@@ -81,6 +81,8 @@ interface GPUDevice : EventTarget {
 
     GPUCommandEncoder createCommandEncoder(optional GPUCommandEncoderDescriptor descriptor = {});
     GPURenderBundleEncoder createRenderBundleEncoder(GPURenderBundleEncoderDescriptor descriptor);
+
+    GPUQuerySet createQuerySet(GPUQuerySetDescriptor descriptor);
 };
 GPUDevice includes GPUObjectBase;
 
@@ -101,15 +103,16 @@ dictionary GPUBufferDescriptor : GPUObjectDescriptorBase {
 
 typedef [EnforceRange] unsigned long GPUBufferUsageFlags;
 interface GPUBufferUsage {
-    const GPUBufferUsageFlags MAP_READ  = 0x0001;
-    const GPUBufferUsageFlags MAP_WRITE = 0x0002;
-    const GPUBufferUsageFlags COPY_SRC  = 0x0004;
-    const GPUBufferUsageFlags COPY_DST  = 0x0008;
-    const GPUBufferUsageFlags INDEX     = 0x0010;
-    const GPUBufferUsageFlags VERTEX    = 0x0020;
-    const GPUBufferUsageFlags UNIFORM   = 0x0040;
-    const GPUBufferUsageFlags STORAGE   = 0x0080;
-    const GPUBufferUsageFlags INDIRECT  = 0x0100;
+    const GPUBufferUsageFlags MAP_READ      = 0x0001;
+    const GPUBufferUsageFlags MAP_WRITE     = 0x0002;
+    const GPUBufferUsageFlags COPY_SRC      = 0x0004;
+    const GPUBufferUsageFlags COPY_DST      = 0x0008;
+    const GPUBufferUsageFlags INDEX         = 0x0010;
+    const GPUBufferUsageFlags VERTEX        = 0x0020;
+    const GPUBufferUsageFlags UNIFORM       = 0x0040;
+    const GPUBufferUsageFlags STORAGE       = 0x0080;
+    const GPUBufferUsageFlags INDIRECT      = 0x0100;
+    const GPUBufferUsageFlags QUERY_RESOLVE = 0x0200;
 };
 
 [Serializable]
@@ -122,7 +125,6 @@ GPUTexture includes GPUObjectBase;
 
 dictionary GPUTextureDescriptor : GPUObjectDescriptorBase {
     required GPUExtent3D size;
-    GPUIntegerCoordinate arrayLayerCount = 1;
     GPUIntegerCoordinate mipLevelCount = 1;
     GPUSize32 sampleCount = 1;
     GPUTextureDimension dimension = "2d";
@@ -277,7 +279,7 @@ interface GPUBindGroupLayout {
 GPUBindGroupLayout includes GPUObjectBase;
 
 dictionary GPUBindGroupLayoutDescriptor : GPUObjectDescriptorBase {
-    required sequence<GPUBindGroupLayoutEntry> bindings;
+    required sequence<GPUBindGroupLayoutEntry> entries;
 };
 
 dictionary GPUBindGroupLayoutEntry {
@@ -286,9 +288,9 @@ dictionary GPUBindGroupLayoutEntry {
     required GPUBindingType type;
     GPUTextureViewDimension viewDimension = "2d";
     GPUTextureComponentType textureComponentType = "float";
+    GPUTextureFormat storageTextureFormat;
     boolean multisampled = false;
     boolean hasDynamicOffset = false;
-    GPUTextureFormat storageTextureFormat;
 };
 
 typedef [EnforceRange] unsigned long GPUShaderStageFlags;
@@ -316,7 +318,7 @@ GPUBindGroup includes GPUObjectBase;
 
 dictionary GPUBindGroupDescriptor : GPUObjectDescriptorBase {
     required GPUBindGroupLayout layout;
-    required sequence<GPUBindGroupEntry> bindings;
+    required sequence<GPUBindGroupEntry> entries;
 };
 
 typedef (GPUSampler or GPUTextureView or GPUBufferBinding) GPUBindingResource;
@@ -345,8 +347,10 @@ interface GPUShaderModule {
 };
 GPUShaderModule includes GPUObjectBase;
 
+typedef (DOMString or Uint32Array) GPUCode;
+
 dictionary GPUShaderModuleDescriptor : GPUObjectDescriptorBase {
-    required DOMString code;
+    required GPUCode code;
 };
 
 dictionary GPUPipelineDescriptorBase : GPUObjectDescriptorBase {
@@ -593,6 +597,13 @@ interface GPUCommandEncoder {
     void popDebugGroup();
     void insertDebugMarker(DOMString markerLabel);
 
+    void resolveQuerySet(
+        GPUQuerySet querySet,
+        GPUSize32 firstQuery,
+        GPUSize32 queryCount,
+        GPUBuffer destination,
+        GPUSize64 destinationOffset);
+
     GPUCommandBuffer finish(optional GPUCommandBufferDescriptor descriptor = {});
 };
 GPUCommandEncoder includes GPUObjectBase;
@@ -604,8 +615,8 @@ dictionary GPUCommandEncoderDescriptor : GPUObjectDescriptorBase {
 dictionary GPUBufferCopyView {
     required GPUBuffer buffer;
     GPUSize64 offset = 0;
-    required GPUSize32 rowPitch;
-    GPUSize32 imageHeight = 0;
+    required GPUSize32 bytesPerRow;
+    GPUSize32 rowsPerImage = 0;
 };
 
 dictionary GPUTextureCopyView {
@@ -650,13 +661,15 @@ dictionary GPUComputePassDescriptor : GPUObjectDescriptorBase {
 interface mixin GPURenderEncoderBase {
     void setPipeline(GPURenderPipeline pipeline);
 
-    void setIndexBuffer(GPUBuffer buffer, optional GPUSize64 offset = 0);
-    void setVertexBuffer(GPUIndex32 slot, GPUBuffer buffer, optional GPUSize64 offset = 0);
+    void setIndexBuffer(GPUBuffer buffer, optional GPUSize64 offset = 0, optional GPUSize64 size = 0);
+    void setVertexBuffer(GPUIndex32 slot, GPUBuffer buffer, optional GPUSize64 offset = 0, optional GPUSize64 size = 0);
 
-    void draw(GPUSize32 vertexCount, GPUSize32 instanceCount,
-              GPUSize32 firstVertex, GPUSize32 firstInstance);
-    void drawIndexed(GPUSize32 indexCount, GPUSize32 instanceCount,
-                     GPUSize32 firstIndex, GPUSignedOffset32 baseVertex, GPUSize32 firstInstance);
+    void draw(GPUSize32 vertexCount, optional GPUSize32 instanceCount = 1,
+              optional GPUSize32 firstVertex = 0, optional GPUSize32 firstInstance = 0);
+    void drawIndexed(GPUSize32 indexCount, optional GPUSize32 instanceCount = 1,
+                     optional GPUSize32 firstIndex = 0,
+                     optional GPUSignedOffset32 baseVertex = 0,
+                     optional GPUSize32 firstInstance = 0);
 
     void drawIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
     void drawIndexedIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
@@ -673,6 +686,9 @@ interface GPURenderPassEncoder {
     void setBlendColor(GPUColor color);
     void setStencilReference(GPUStencilValue reference);
 
+    void beginOcclusionQuery(GPUSize32 queryIndex);
+    void endOcclusionQuery(GPUSize32 queryIndex);
+
     void executeBundles(sequence<GPURenderBundle> bundles);
     void endPass();
 };
@@ -683,6 +699,7 @@ GPURenderPassEncoder includes GPURenderEncoderBase;
 dictionary GPURenderPassDescriptor : GPUObjectDescriptorBase {
     required sequence<GPURenderPassColorAttachmentDescriptor> colorAttachments;
     GPURenderPassDepthStencilAttachmentDescriptor depthStencilAttachment;
+    GPUQuerySet occlusionQuerySet;
 };
 
 dictionary GPURenderPassColorAttachmentDescriptor {
@@ -753,6 +770,20 @@ GPUFence includes GPUObjectBase;
 
 dictionary GPUFenceDescriptor : GPUObjectDescriptorBase {
     GPUFenceValue initialValue = 0;
+};
+
+interface GPUQuerySet {
+    void destroy();
+};
+GPUQuerySet includes GPUObjectBase;
+
+dictionary GPUQuerySetDescriptor : GPUObjectDescriptorBase {
+    required GPUQueryType type;
+    required GPUSize32 count;
+};
+
+enum GPUQueryType {
+    "occlusion"
 };
 
 interface GPUCanvasContext {

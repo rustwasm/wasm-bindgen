@@ -2428,6 +2428,24 @@ mod gen_GpuProgrammableStageDescriptor;
 #[cfg(feature = "GpuProgrammableStageDescriptor")]
 pub use gen_GpuProgrammableStageDescriptor::*;
 
+#[cfg(feature = "GpuQuerySet")]
+#[allow(non_snake_case)]
+mod gen_GpuQuerySet;
+#[cfg(feature = "GpuQuerySet")]
+pub use gen_GpuQuerySet::*;
+
+#[cfg(feature = "GpuQuerySetDescriptor")]
+#[allow(non_snake_case)]
+mod gen_GpuQuerySetDescriptor;
+#[cfg(feature = "GpuQuerySetDescriptor")]
+pub use gen_GpuQuerySetDescriptor::*;
+
+#[cfg(feature = "GpuQueryType")]
+#[allow(non_snake_case)]
+mod gen_GpuQueryType;
+#[cfg(feature = "GpuQueryType")]
+pub use gen_GpuQueryType::*;
+
 #[cfg(feature = "GpuQueue")]
 #[allow(non_snake_case)]
 mod gen_GpuQueue;
