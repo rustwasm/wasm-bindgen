@@ -1,4 +1,6 @@
 use std::cell::Cell;
+use std::char;
+use std::str::Chars;
 
 use backend::ast;
 use backend::util::{ident_ty, ShortHash};
@@ -1310,9 +1312,8 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
                     // We want to filter out any Puncts so just grab the Literals
                     a.tokens.clone().into_iter().filter_map(|t| match t {
                         TokenTree::Literal(lit) => {
-                            // this will always return the quoted string, we deal with
-                            // that in the cli when we read in the comments
-                            Some(lit.to_string())
+                            let quoted = lit.to_string();
+                            Some(try_unescape(&quoted).unwrap_or_else(|| quoted))
                         }
                         _ => None,
                     }),
@@ -1326,6 +1327,76 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
             acc.extend(a);
             acc
         })
+}
+
+// Unescapes a quoted string. char::escape_debug() was used to escape the text.
+fn try_unescape(s: &str) -> Option<String> {
+    if s.is_empty() {
+        return Some(String::new());
+    }
+    let mut result = String::with_capacity(s.len());
+    let mut chars = s.chars();
+    for i in 0.. {
+        let c = match chars.next() {
+            Some(c) => c,
+            None => {
+                if result.ends_with('"') {
+                    result.pop();
+                }
+                return Some(result);
+            }
+        };
+        if i == 0 && c == '"' {
+            // ignore it
+        } else if c == '\\' {
+            let c = chars.next()?;
+            match c {
+                't' => result.push('\t'),
+                'r' => result.push('\r'),
+                'n' => result.push('\n'),
+                '\\' | '\'' | '"' => result.push(c),
+                'u' => {
+                    if chars.next() != Some('{') {
+                        return None;
+                    }
+                    let (c, next) = unescape_unicode(&mut chars)?;
+                    result.push(c);
+                    if next != '}' {
+                        return None;
+                    }
+                }
+                _ => return None,
+            }
+        } else {
+            result.push(c);
+        }
+    }
+    None
+}
+
+fn unescape_unicode(chars: &mut Chars) -> Option<(char, char)> {
+    let mut value = 0;
+    for i in 0..7 {
+        let c = chars.next()?;
+        let num = if c >= '0' && c <= '9' {
+            c as u32 - '0' as u32
+        } else if c >= 'a' && c <= 'f' {
+            c as u32 - 'a' as u32 + 10
+        } else if c >= 'A' && c <= 'F' {
+            c as u32 - 'A' as u32 + 10
+        } else {
+            if i == 0 {
+                return None;
+            }
+            let decoded = char::from_u32(value)?;
+            return Some((decoded, c));
+        };
+        if i >= 6 {
+            return None;
+        }
+        value = (value << 4) | num;
+    }
+    None
 }
 
 /// Check there are no lifetimes on the function.

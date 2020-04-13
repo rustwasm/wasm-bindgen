@@ -3,9 +3,8 @@ use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
 use crate::{decode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
-use std::char;
 use std::collections::{HashMap, HashSet};
-use std::str::{self, Chars};
+use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
 use wasm_bindgen_shared::struct_function_export_name;
@@ -1518,79 +1517,5 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
 }
 
 fn concatenate_comments(comments: &[&str]) -> String {
-    comments
-        .iter()
-        .map(|&s| try_unescape(s).unwrap_or_else(|| s.to_owned()))
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-
-// Unescapes a quoted string. char::escape_debug() was used to escape the text.
-fn try_unescape(s: &str) -> Option<String> {
-    if s.is_empty() {
-        return Some(String::new());
-    }
-    let mut result = String::with_capacity(s.len());
-    let mut chars = s.chars();
-    for i in 0.. {
-        let c = match chars.next() {
-            Some(c) => c,
-            None => {
-                if result.ends_with('"') {
-                    result.pop();
-                }
-                return Some(result);
-            }
-        };
-        if i == 0 && c == '"' {
-            // ignore it
-        } else if c == '\\' {
-            let c = chars.next()?;
-            match c {
-                't' => result.push('\t'),
-                'r' => result.push('\r'),
-                'n' => result.push('\n'),
-                '\\' | '\'' | '"' => result.push(c),
-                'u' => {
-                    if chars.next() != Some('{') {
-                        return None;
-                    }
-                    let (c, next) = unescape_unicode(&mut chars)?;
-                    result.push(c);
-                    if next != '}' {
-                        return None;
-                    }
-                }
-                _ => return None,
-            }
-        } else {
-            result.push(c);
-        }
-    }
-    None
-}
-
-fn unescape_unicode(chars: &mut Chars) -> Option<(char, char)> {
-    let mut value = 0;
-    for i in 0..7 {
-        let c = chars.next()?;
-        let num = if c >= '0' && c <= '9' {
-            c as u32 - '0' as u32
-        } else if c >= 'a' && c <= 'f' {
-            c as u32 - 'a' as u32 + 10
-        } else if c >= 'A' && c <= 'F' {
-            c as u32 - 'A' as u32 + 10
-        } else {
-            if i == 0 {
-                return None;
-            }
-            let decoded = char::from_u32(value)?;
-            return Some((decoded, c));
-        };
-        if i >= 6 {
-            return None;
-        }
-        value = (value << 4) | num;
-    }
-    None
+    comments.iter().map(|&s| s).collect::<Vec<_>>().join("\n")
 }
