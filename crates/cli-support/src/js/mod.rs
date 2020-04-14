@@ -42,7 +42,6 @@ pub struct Context<'a> {
     /// the number of times they've been used, used to generate new
     /// identifiers.
     defined_identifiers: HashMap<String, usize>,
-    global_defined_import_identifiers: HashMap<String, usize>,
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
@@ -91,7 +90,6 @@ impl<'a> Context<'a> {
             imported_names: Default::default(),
             js_imports: Default::default(),
             defined_identifiers: Default::default(),
-            global_defined_import_identifiers: Default::default(),
             wasm_import_definitions: Default::default(),
             exported_classes: Some(Default::default()),
             config,
@@ -115,7 +113,7 @@ impl<'a> Context<'a> {
         contents: &str,
         comments: Option<&str>,
     ) -> Result<(), Error> {
-        let definition_name = self.generate_identifier(export_name, false);
+        let definition_name = self.generate_identifier(export_name);
         if contents.starts_with("class") && definition_name != export_name {
             bail!("cannot shadow already defined class `{}`", export_name);
         }
@@ -1946,13 +1944,13 @@ impl<'a> Context<'a> {
 
         let mut name = match &import.name {
             JsImportName::Module { module, name } => {
-                let unique_name = self.generate_identifier(name, false);
+                let unique_name = self.generate_identifier(name);
                 self.add_module_import(module.clone(), name, &unique_name);
                 unique_name
             }
 
             JsImportName::LocalModule { module, name } => {
-                let unique_name = self.generate_identifier(name, false);
+                let unique_name = self.generate_identifier(name);
                 let module = self.config.local_module_name(module);
                 self.add_module_import(module, name, &unique_name);
                 unique_name
@@ -1966,7 +1964,7 @@ impl<'a> Context<'a> {
                 let module = self
                     .config
                     .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
-                let unique_name = self.generate_identifier(name, false);
+                let unique_name = self.generate_identifier(name);
                 self.add_module_import(module, name, &unique_name);
                 unique_name
             }
@@ -1996,13 +1994,7 @@ impl<'a> Context<'a> {
                 format!("l{}", name)
             }
 
-            JsImportName::Global { name } => {
-                let unique_name = self.generate_identifier(name, true);
-                if unique_name != *name {
-                    bail!("cannot import `{}` from two locations", name);
-                }
-                unique_name
-            }
+            JsImportName::Global { name } => name.to_string(),
         };
         self.imported_names
             .insert(import.name.clone(), name.clone());
@@ -2115,9 +2107,7 @@ impl<'a> Context<'a> {
                 if let Some(js) = js {
                     match &js.name {
                         JsImportName::Global { name } => {
-                            self.global_defined_import_identifiers
-                                .entry(name.clone())
-                                .or_insert(1);
+                            self.generate_identifier(name);
                         }
                         _ => {}
                     }
@@ -3164,32 +3154,15 @@ impl<'a> Context<'a> {
         format!("__wbg_adapter_{}", id.0)
     }
 
-    fn generate_identifier(&mut self, name: &str, global_import: bool) -> String {
+    fn generate_identifier(&mut self, name: &str) -> String {
         let cnt = self
             .defined_identifiers
             .entry(name.to_string())
             .or_insert(0);
-        let global_cnt = (&mut self.global_defined_import_identifiers)
-            .entry(name.to_string())
-            .or_insert(0);
-        if global_import {
-            *global_cnt += 1;
-        } else {
-            *cnt += 1;
-            // in this case, we encounter a non-global import name, which conflicts with a pre-stored global one,
-            // for the first time (*cnt == 1). So leave space for global name and start with `some_import_name_1`
-            if *cnt == 1 && *global_cnt != 0 {
-                *cnt += 1;
-            }
-        }
+        *cnt += 1;
         // We want to mangle `default` at once, so we can support default exports and don't generate
         // invalid glue code like this: `import { default } from './module';`.
-        // for non-global import, rename is required when `*cnt > 1`
-        // for global import, since we use `*cnt = 1` for pre-store before entering this function,
-        // rename is required when `*cnt > 2`
-        if ((!global_import && *cnt == 1) || (global_import && *global_cnt <= 2))
-            && name != "default"
-        {
+        if *cnt == 1 && name != "default" {
             name.to_string()
         } else {
             format!("{}{}", name, cnt)
