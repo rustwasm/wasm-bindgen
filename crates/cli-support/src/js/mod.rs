@@ -1994,7 +1994,7 @@ impl<'a> Context<'a> {
                 format!("l{}", name)
             }
 
-            JsImportName::Global { name } => name.to_string(),
+            JsImportName::Global { name } => self.generate_identifier(name),
         };
         self.imported_names
             .insert(import.name.clone(), name.clone());
@@ -2106,8 +2106,8 @@ impl<'a> Context<'a> {
                 };
                 if let Some(js) = js {
                     match &js.name {
-                        JsImportName::Global { name } => {
-                            self.generate_identifier(name);
+                        JsImportName::Global { .. } => {
+                            self.import_name(js)?;
                         }
                         _ => {}
                     }
