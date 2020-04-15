@@ -1994,7 +1994,13 @@ impl<'a> Context<'a> {
                 format!("l{}", name)
             }
 
-            JsImportName::Global { name } => self.generate_identifier(name),
+            JsImportName::Global { name } => {
+                let unique_name = self.generate_identifier(name);
+                if unique_name != *name {
+                    bail!("cannot import `{}` from two locations", name);
+                }
+                unique_name
+            }
         };
         self.imported_names
             .insert(import.name.clone(), name.clone());
@@ -2076,42 +2082,24 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
+    /// Registers import names for all `Global` imports first before we actually
+    /// process any adapters.
+    ///
+    /// `Global` names must be imported as their exact name, so if the same name
+    /// from a global is also imported from a module we have to be sure to
+    /// import the global first to ensure we don't shadow the actual global
+    /// value. Otherwise we have no way of accessing the global value!
+    ///
+    /// This function will iterate through the import map up-front and generate
+    /// a cache entry for each import name which is a `Global`.
     fn prestore_global_import_identifiers(&mut self) -> Result<(), Error> {
-        for (_id, adapter) in crate::sorted_iter(&self.wit.adapters) {
-            let instrs = match &adapter.kind {
-                AdapterKind::Import { .. } => continue,
-                AdapterKind::Local { instructions } => instructions,
+        for import in self.aux.import_map.values() {
+            let js = match import {
+                AuxImport::Value(AuxValue::Bare(js)) => js,
+                _ => continue,
             };
-            let mut call = None;
-            for instr in instrs {
-                match instr.instr {
-                    Instruction::CallAdapter(id) => {
-                        if call.is_some() {
-                            continue;
-                        } else {
-                            call = Some(id);
-                        }
-                    }
-                    Instruction::CallExport(_)
-                    | Instruction::CallTableElement(_)
-                    | Instruction::Standard(wit_walrus::Instruction::CallCore(_))
-                    | Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => continue,
-                    _ => {}
-                }
-            }
-            if let Some(id) = call {
-                let js = match &self.aux.import_map[&id] {
-                    AuxImport::Value(AuxValue::Bare(js)) => Some(js),
-                    _ => None,
-                };
-                if let Some(js) = js {
-                    match &js.name {
-                        JsImportName::Global { .. } => {
-                            self.import_name(js)?;
-                        }
-                        _ => {}
-                    }
-                }
+            if let JsImportName::Global { .. } = js.name {
+                self.import_name(js)?;
             }
         }
         Ok(())
