@@ -113,7 +113,7 @@ impl<'a> Context<'a> {
         contents: &str,
         comments: Option<&str>,
     ) -> Result<(), Error> {
-        let definition_name = generate_identifier(export_name, &mut self.defined_identifiers);
+        let definition_name = self.generate_identifier(export_name);
         if contents.starts_with("class") && definition_name != export_name {
             bail!("cannot shadow already defined class `{}`", export_name);
         }
@@ -1922,6 +1922,18 @@ impl<'a> Context<'a> {
         require_class(&mut self.exported_classes, name).wrap_needed = true;
     }
 
+    fn add_module_import(&mut self, module: String, name: &str, actual: &str) {
+        let rename = if name == actual {
+            None
+        } else {
+            Some(actual.to_string())
+        };
+        self.js_imports
+            .entry(module)
+            .or_insert(Vec::new())
+            .push((name.to_string(), rename));
+    }
+
     fn import_name(&mut self, import: &JsImport) -> Result<String, Error> {
         if let Some(name) = self.imported_names.get(&import.name) {
             let mut name = name.clone();
@@ -1932,30 +1944,17 @@ impl<'a> Context<'a> {
             return Ok(name.clone());
         }
 
-        let js_imports = &mut self.js_imports;
-        let mut add_module_import = |module: String, name: &str, actual: &str| {
-            let rename = if name == actual {
-                None
-            } else {
-                Some(actual.to_string())
-            };
-            js_imports
-                .entry(module)
-                .or_insert(Vec::new())
-                .push((name.to_string(), rename));
-        };
-
         let mut name = match &import.name {
             JsImportName::Module { module, name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
-                add_module_import(module.clone(), name, &unique_name);
+                let unique_name = self.generate_identifier(name);
+                self.add_module_import(module.clone(), name, &unique_name);
                 unique_name
             }
 
             JsImportName::LocalModule { module, name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                let unique_name = self.generate_identifier(name);
                 let module = self.config.local_module_name(module);
-                add_module_import(module, name, &unique_name);
+                self.add_module_import(module, name, &unique_name);
                 unique_name
             }
 
@@ -1967,8 +1966,8 @@ impl<'a> Context<'a> {
                 let module = self
                     .config
                     .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
-                add_module_import(module, name, &unique_name);
+                let unique_name = self.generate_identifier(name);
+                self.add_module_import(module, name, &unique_name);
                 unique_name
             }
 
@@ -1998,7 +1997,7 @@ impl<'a> Context<'a> {
             }
 
             JsImportName::Global { name } => {
-                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                let unique_name = self.generate_identifier(name);
                 if unique_name != *name {
                     bail!("cannot import `{}` from two locations", name);
                 }
@@ -2055,6 +2054,7 @@ impl<'a> Context<'a> {
     }
 
     pub fn generate(&mut self) -> Result<(), Error> {
+        self.prestore_global_import_identifiers()?;
         for (id, adapter) in crate::sorted_iter(&self.wit.adapters) {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,
@@ -2081,6 +2081,29 @@ impl<'a> Context<'a> {
             self.process_package_json(path)?;
         }
 
+        Ok(())
+    }
+
+    /// Registers import names for all `Global` imports first before we actually
+    /// process any adapters.
+    ///
+    /// `Global` names must be imported as their exact name, so if the same name
+    /// from a global is also imported from a module we have to be sure to
+    /// import the global first to ensure we don't shadow the actual global
+    /// value. Otherwise we have no way of accessing the global value!
+    ///
+    /// This function will iterate through the import map up-front and generate
+    /// a cache entry for each import name which is a `Global`.
+    fn prestore_global_import_identifiers(&mut self) -> Result<(), Error> {
+        for import in self.aux.import_map.values() {
+            let js = match import {
+                AuxImport::Value(AuxValue::Bare(js)) => js,
+                _ => continue,
+            };
+            if let JsImportName::Global { .. } = js.name {
+                self.import_name(js)?;
+            }
+        }
         Ok(())
     }
 
@@ -3133,6 +3156,21 @@ impl<'a> Context<'a> {
     fn adapter_name(&self, id: AdapterId) -> String {
         format!("__wbg_adapter_{}", id.0)
     }
+
+    fn generate_identifier(&mut self, name: &str) -> String {
+        let cnt = self
+            .defined_identifiers
+            .entry(name.to_string())
+            .or_insert(0);
+        *cnt += 1;
+        // We want to mangle `default` at once, so we can support default exports and don't generate
+        // invalid glue code like this: `import { default } from './module';`.
+        if *cnt == 1 && name != "default" {
+            name.to_string()
+        } else {
+            format!("{}{}", name, cnt)
+        }
+    }
 }
 
 fn check_duplicated_getter_and_setter_names(
@@ -3178,18 +3216,6 @@ fn check_duplicated_getter_and_setter_names(
         }
     }
     Ok(())
-}
-
-fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
-    let cnt = used_names.entry(name.to_string()).or_insert(0);
-    *cnt += 1;
-    // We want to mangle `default` at once, so we can support default exports and don't generate
-    // invalid glue code like this: `import { default } from './module';`.
-    if *cnt == 1 && name != "default" {
-        name.to_string()
-    } else {
-        format!("{}{}", name, cnt)
-    }
 }
 
 fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> String {
@@ -3292,27 +3318,6 @@ impl ExportedClass {
         self.contents.push_str(js);
         self.contents.push_str("\n");
     }
-}
-
-#[test]
-fn test_generate_identifier() {
-    let mut used_names: HashMap<String, usize> = HashMap::new();
-    assert_eq!(
-        generate_identifier("someVar", &mut used_names),
-        "someVar".to_string()
-    );
-    assert_eq!(
-        generate_identifier("someVar", &mut used_names),
-        "someVar2".to_string()
-    );
-    assert_eq!(
-        generate_identifier("default", &mut used_names),
-        "default1".to_string()
-    );
-    assert_eq!(
-        generate_identifier("default", &mut used_names),
-        "default2".to_string()
-    );
 }
 
 struct MemView {

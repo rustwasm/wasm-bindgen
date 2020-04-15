@@ -127,3 +127,13 @@ exports.receive_some = val => {
 };
 
 exports.get_some_val = () => VAL;
+
+exports.Math = {
+  func_from_module_math: (a) => a * 2
+}
+
+exports.same_name_from_import = (a) => a * 3;
+
+exports.same_js_namespace_from_module = {
+  func_from_module_1_same_js_namespace: (a) => a * 5
+}
