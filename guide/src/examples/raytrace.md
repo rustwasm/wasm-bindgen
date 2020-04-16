@@ -6,15 +6,13 @@
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/raytrace-parallel
 
 **This is an unstable and experimental example** of using threads with
-WebAssembly and Rust, culminating in a parallel raytracer demo. Current
-requirements for viewing this demo are:
+WebAssembly and Rust, culminating in a parallel raytracer demo. The browser requirements are:
 
-* Firefox Nightly - other browsers haven't implemented the proposed WebAssembly
-  features yet.
-* `SharedArrayBuffer` is enabled in `about:config` in Firefox
-
-This demo may also break over time as Firefox updates, but we'll try to keep it
-working!
+* Firefox Nightly 
+  - `SharedArrayBuffer` is enabled in `about:config` in Firefox
+* Google Chrome
+  - No flags required on recent versions of Chrome
+* other browsers haven't implemented the proposed WebAssembly features yet.
 
 Locally to build this demo you'll need `xargo` and the `rust-src` rustup
 component, and afterwards `./build.sh` like other examples should build the
