@@ -136,12 +136,15 @@ impl<T: Hash> fmt::Display for ShortHash<T> {
         // hashing for a lot of symbols.
         if !HASHED.load(SeqCst) {
             let mut h = DefaultHasher::new();
+
+            // If the environment variables cannot be found, use defaults.
             env::var("CARGO_PKG_NAME")
-                .expect("should have CARGO_PKG_NAME env var")
+                .unwrap_or_else(|_| "UNKNOWN".to_string())
                 .hash(&mut h);
             env::var("CARGO_PKG_VERSION")
-                .expect("should have CARGO_PKG_VERSION env var")
+                .unwrap_or_else(|_| "0.0.0".to_string())
                 .hash(&mut h);
+
             // This may chop off 32 bits on 32-bit platforms, but that's ok, we
             // just want something to mix in below anyway.
             HASH.store(h.finish() as usize, SeqCst);
