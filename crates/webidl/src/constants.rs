@@ -81,6 +81,8 @@ lazy_static! {
         "clearBufferuiv",
         // WebSocket
         "send",
+        // WebGPU
+        "setBindGroup",
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ]);
 }
