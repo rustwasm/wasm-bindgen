@@ -2097,7 +2097,19 @@ impl<'a> Context<'a> {
     fn prestore_global_import_identifiers(&mut self) -> Result<(), Error> {
         for import in self.aux.import_map.values() {
             let js = match import {
-                AuxImport::Value(AuxValue::Bare(js)) => js,
+                AuxImport::Value(AuxValue::Bare(js))
+                | AuxImport::Value(AuxValue::ClassGetter(js, ..))
+                | AuxImport::Value(AuxValue::Getter(js, ..))
+                | AuxImport::Value(AuxValue::ClassSetter(js, ..))
+                | AuxImport::Value(AuxValue::Setter(js, ..))
+                | AuxImport::ValueWithThis(js, ..)
+                | AuxImport::Instanceof(js)
+                | AuxImport::Static(js)
+                | AuxImport::StructuralClassGetter(js, ..)
+                | AuxImport::StructuralClassSetter(js, ..)
+                | AuxImport::IndexingGetterOfClass(js)
+                | AuxImport::IndexingSetterOfClass(js)
+                | AuxImport::IndexingDeleterOfClass(js) => js,
                 _ => continue,
             };
             if let JsImportName::Global { .. } = js.name {

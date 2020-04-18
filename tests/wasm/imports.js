@@ -132,6 +132,10 @@ exports.Math = {
   func_from_module_math: (a) => a * 2
 }
 
+exports.Number = {
+  func_from_module_number: () => 3.0
+}
+
 exports.same_name_from_import = (a) => a * 3;
 
 exports.same_js_namespace_from_module = {
