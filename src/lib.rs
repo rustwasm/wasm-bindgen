@@ -1130,14 +1130,17 @@ pub mod __rt {
 
     pub fn take_last_exception() -> Option<super::JsValue> {
         unsafe {
-            let ret = if GLOBAL_EXNDATA[0] == 1 {
-                Some(super::JsValue::_new(GLOBAL_EXNDATA[1]))
+            if GLOBAL_EXNDATA[0] == 1 {
+                let err = super::JsValue::_new(GLOBAL_EXNDATA[1]);
+                GLOBAL_EXNDATA[0] = 0;
+                GLOBAL_EXNDATA[1] = 0;
+                Some(err)
+
             } else {
+                debug_assert_eq!(GLOBAL_EXNDATA[0], 0);
+                debug_assert_eq!(GLOBAL_EXNDATA[1], 0);
                 None
-            };
-            GLOBAL_EXNDATA[0] = 0;
-            GLOBAL_EXNDATA[1] = 0;
-            return ret;
+            }
         }
     }
 
