@@ -71,6 +71,8 @@ if_std! {
 
     mod cache;
     pub use cache::intern::{intern, unintern};
+
+    pub use __rt::try_catch;
 }
 
 /// Representation of an object owned by JS.
@@ -963,7 +965,11 @@ pub mod __rt {
 
     if_std! {
         use std::alloc::{alloc, dealloc, realloc, Layout};
-        use std::mem;
+        use std::{thread_local, mem};
+        use std::boxed::Box;
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        use std::panic::UnwindSafe;
 
         #[no_mangle]
         pub extern "C" fn __wbindgen_malloc(size: usize) -> *mut u8 {
@@ -1018,6 +1024,62 @@ pub mod __rt {
             let layout = Layout::from_size_align_unchecked(size, align);
             dealloc(ptr, layout);
         }
+
+        thread_local! {
+            static EXCEPTION_HANDLER: RefCell<Box<dyn FnMut(JsValue)>> = RefCell::new(Box::new(|err| {
+                panic!("Uncaught JS exception occured: {:?}", err);
+            }));
+        }
+
+        pub fn handle_exception() {
+            if let Some(err) = take_last_exception() {
+                EXCEPTION_HANDLER.with(|handler| {
+                    let callback = &mut *handler.borrow_mut();
+                    callback(err);
+                })
+            }
+        }
+
+        pub fn try_catch<A, F>(f: F) -> Result<A, JsValue>
+            where F: FnOnce() -> A + UnwindSafe {
+
+            EXCEPTION_HANDLER.with(move |handler| {
+                struct Handler<'a> {
+                    handler: &'a RefCell<Box<dyn FnMut(JsValue)>>,
+                    old_handler: Option<Box<dyn FnMut(JsValue)>>,
+                }
+
+                impl<'a> Drop for Handler<'a> {
+                    fn drop(&mut self) {
+                        *self.handler.borrow_mut() = self.old_handler.take().unwrap();
+                    }
+                }
+
+                let exception = Rc::new(RefCell::new(None));
+
+                let value = {
+                    let exception = exception.clone();
+
+                    let new_handler = Box::new(move |err| {
+                        *exception.borrow_mut() = Some(err);
+                    });
+
+                    let old_handler = Some(std::mem::replace(&mut *handler.borrow_mut(), new_handler));
+
+                    // This will swap in the old handler no matter what, even if `f` panics
+                    let _handler = Handler { handler, old_handler };
+
+                    f()
+                };
+
+                let mut exception = exception.borrow_mut();
+
+                match exception.take() {
+                    Some(exception) => Err(exception),
+                    None => Ok(value),
+                }
+            })
+        }
     }
 
     /// This is a curious function necessary to get wasm-bindgen working today,
@@ -1066,12 +1128,12 @@ pub mod __rt {
         GLOBAL_EXNDATA[1] = idx;
     }
 
-    pub fn take_last_exception() -> Result<(), super::JsValue> {
+    pub fn take_last_exception() -> Option<super::JsValue> {
         unsafe {
             let ret = if GLOBAL_EXNDATA[0] == 1 {
-                Err(super::JsValue::_new(GLOBAL_EXNDATA[1]))
+                Some(super::JsValue::_new(GLOBAL_EXNDATA[1]))
             } else {
-                Ok(())
+                None
             };
             GLOBAL_EXNDATA[0] = 0;
             GLOBAL_EXNDATA[1] = 0;

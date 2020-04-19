@@ -959,7 +959,8 @@ impl TryToTokens for ast::ImportFunction {
             });
         }
         let abi_ret;
-        let mut convert_ret;
+        let convert_ret;
+
         match &self.js_ret {
             Some(syn::Type::Reference(_)) => {
                 bail_span!(
@@ -982,12 +983,14 @@ impl TryToTokens for ast::ImportFunction {
             }
         }
 
-        let mut exceptional_ret = quote!();
+        let exceptional_ret;
+
         if self.catch {
-            convert_ret = quote! { Ok(#convert_ret) };
             exceptional_ret = quote! {
-                wasm_bindgen::__rt::take_last_exception()?;
+                wasm_bindgen::__rt::handle_exception();
             };
+        } else {
+            exceptional_ret = quote!();
         }
 
         let rust_name = &self.rust_name;
