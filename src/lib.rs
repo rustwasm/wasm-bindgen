@@ -1031,12 +1031,16 @@ pub mod __rt {
             }));
         }
 
+        pub fn call_exception_handler(err: JsValue) {
+            EXCEPTION_HANDLER.with(|handler| {
+                let callback = &mut *handler.borrow_mut();
+                callback(err);
+            })
+        }
+
         pub fn handle_exception() {
             if let Some(err) = take_last_exception() {
-                EXCEPTION_HANDLER.with(|handler| {
-                    let callback = &mut *handler.borrow_mut();
-                    callback(err);
-                })
+                call_exception_handler(err);
             }
         }
 
