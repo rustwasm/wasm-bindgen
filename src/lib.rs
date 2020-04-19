@@ -1123,21 +1123,19 @@ pub mod __rt {
         crate::anyref::link_intrinsics();
     }
 
-    static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];
+    static mut GLOBAL_EXNDATA: [u32; 2] = [0, 0];
 
     #[no_mangle]
     pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
         debug_assert_eq!(GLOBAL_EXNDATA[0], 0);
-        GLOBAL_EXNDATA[0] = 1;
-        GLOBAL_EXNDATA[1] = idx;
+        GLOBAL_EXNDATA = [1, idx];
     }
 
     pub fn take_last_exception() -> Option<super::JsValue> {
         unsafe {
             if GLOBAL_EXNDATA[0] == 1 {
                 let err = super::JsValue::_new(GLOBAL_EXNDATA[1]);
-                GLOBAL_EXNDATA[0] = 0;
-                GLOBAL_EXNDATA[1] = 0;
+                GLOBAL_EXNDATA = [0, 0];
                 Some(err)
 
             } else {
