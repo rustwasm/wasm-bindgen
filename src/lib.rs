@@ -1128,6 +1128,7 @@ pub mod __rt {
     #[no_mangle]
     pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
         debug_assert_eq!(GLOBAL_EXNDATA[0], 0);
+        debug_assert_eq!(GLOBAL_EXNDATA[1], 0);
         GLOBAL_EXNDATA = [1, idx];
     }
 
