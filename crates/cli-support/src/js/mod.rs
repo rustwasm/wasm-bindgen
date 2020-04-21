@@ -2285,16 +2285,13 @@ impl<'a> Context<'a> {
             Kind::Import(core) => {
                 let code = if catch {
                     format!("handleError(function{})", code)
-
                 } else if log_error {
                     format!("logError(function{})", code)
-
                 } else {
                     format!("function{}", code)
                 };
 
-                self.wasm_import_definitions
-                    .insert(core, code);
+                self.wasm_import_definitions.insert(core, code);
             }
             Kind::Adapter => {
                 assert_eq!(catch, false);
