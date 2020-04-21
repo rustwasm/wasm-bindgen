@@ -65,6 +65,8 @@ pub struct JsFunction {
     pub ts_arg_tys: Vec<String>,
     pub ts_ret_ty: Option<String>,
     pub might_be_optional_field: bool,
+    pub catch: bool,
+    pub log_error: bool,
 }
 
 impl<'a, 'b> Builder<'a, 'b> {
@@ -201,7 +203,6 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         if self.catch {
             js.cx.expose_handle_error()?;
-            call = format!("try {{\n{}}} catch (e) {{\n handleError(e)\n}}\n", call);
         }
 
         // Generate a try/catch block in debug mode which handles unexpected and
@@ -210,7 +211,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         // elsewhere.
         if self.log_error {
             js.cx.expose_log_error();
-            call = format!("try {{\n{}}} catch (e) {{\n logError(e)\n}}\n", call);
         }
 
         code.push_str(&call);
@@ -235,6 +235,8 @@ impl<'a, 'b> Builder<'a, 'b> {
             ts_arg_tys,
             ts_ret_ty,
             might_be_optional_field,
+            catch: self.catch,
+            log_error: self.log_error,
         })
     }
 
