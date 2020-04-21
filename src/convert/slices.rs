@@ -202,6 +202,14 @@ if_std! {
         #[inline]
         fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
+
+    impl std::convert::TryFrom<JsValue> for String {
+        type Error = JsValue;
+
+        fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+            value.as_string().ok_or(value)
+        }
+    }
 }
 
 impl<'a> IntoWasmAbi for &'a str {

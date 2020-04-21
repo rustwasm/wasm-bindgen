@@ -58,7 +58,7 @@ pub struct WasmOptional64 {
 unsafe impl WasmAbi for WasmOptional64 {}
 
 macro_rules! type_wasm_native {
-    ($($t:tt as $c:tt => $r:tt)*) => ($(
+    ($($t:tt as $c:tt => $r:tt ($f:expr))*) => ($(
         impl IntoWasmAbi for $t {
             type Abi = $c;
 
@@ -71,6 +71,26 @@ macro_rules! type_wasm_native {
 
             #[inline]
             unsafe fn from_abi(js: $c) -> Self { js as $t }
+        }
+
+        impl std::convert::TryFrom<JsValue> for $t {
+            type Error = JsValue;
+
+            fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+                match value.as_f64() {
+                    Some(number) => {
+                        let f = $f;
+
+                        if f(number) {
+                            Ok(number as $t)
+
+                        } else {
+                            Err(value)
+                        }
+                    },
+                    None => Err(value),
+                }
+            }
         }
 
         impl IntoWasmAbi for Option<$t> {
@@ -106,13 +126,21 @@ macro_rules! type_wasm_native {
     )*)
 }
 
+
+macro_rules! is_safe_f64 {
+    ($value:ident, $min:expr, $max:expr) => {
+        $value.round() == $value && $value >= $min && $value <= $max
+    };
+}
+
+
 type_wasm_native!(
-    i32 as i32 => WasmOptionalI32
-    isize as i32 => WasmOptionalI32
-    u32 as u32 => WasmOptionalU32
-    usize as u32 => WasmOptionalU32
-    f32 as f32 => WasmOptionalF32
-    f64 as f64 => WasmOptionalF64
+    i32 as i32 => WasmOptionalI32 (|value: f64| is_safe_f64!(value, std::i32::MIN as f64, std::i32::MAX as f64))
+    isize as i32 => WasmOptionalI32 (|value: f64| is_safe_f64!(value, std::isize::MIN as f64, std::isize::MAX as f64))
+    u32 as u32 => WasmOptionalU32 (|value: f64| is_safe_f64!(value, std::u32::MIN as f64, std::u32::MAX as f64))
+    usize as u32 => WasmOptionalU32 (|value: f64| is_safe_f64!(value, std::usize::MIN as f64, std::usize::MAX as f64))
+    f32 as f32 => WasmOptionalF32 (|_value| true)
+    f64 as f64 => WasmOptionalF64 (|_value| true)
 );
 
 macro_rules! type_abi_as_u32 {
@@ -131,6 +159,24 @@ macro_rules! type_abi_as_u32 {
             unsafe fn from_abi(js: u32) -> Self { js as $t }
         }
 
+        impl std::convert::TryFrom<JsValue> for $t {
+            type Error = JsValue;
+
+            fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+                match value.as_f64() {
+                    Some(number) => {
+                        if is_safe_f64!(number, std::$t::MIN as f64, std::$t::MAX as f64) {
+                            Ok(number as $t)
+
+                        } else {
+                            Err(value)
+                        }
+                    },
+                    None => Err(value),
+                }
+            }
+        }
+
         impl OptionIntoWasmAbi for $t {
             #[inline]
             fn none() -> u32 { 0x00FF_FFFFu32 }
@@ -146,7 +192,7 @@ macro_rules! type_abi_as_u32 {
 type_abi_as_u32!(i8 u8 i16 u16);
 
 macro_rules! type_64 {
-    ($($t:tt)*) => ($(
+    ($($t:tt => $min:expr, $max:expr;)*) => ($(
         impl IntoWasmAbi for $t {
             type Abi = Wasm64;
 
@@ -165,6 +211,24 @@ macro_rules! type_64 {
             #[inline]
             unsafe fn from_abi(js: Wasm64) -> $t {
                 $t::from(js.low) | ($t::from(js.high) << 32)
+            }
+        }
+
+        impl std::convert::TryFrom<JsValue> for $t {
+            type Error = JsValue;
+
+            fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+                match value.as_f64() {
+                    Some(number) => {
+                        if is_safe_f64!(number, $min, $max) {
+                            Ok(number as $t)
+
+                        } else {
+                            Err(value)
+                        }
+                    },
+                    None => Err(value),
+                }
             }
         }
 
@@ -203,7 +267,11 @@ macro_rules! type_64 {
     )*)
 }
 
-type_64!(i64 u64);
+// Number.MIN_SAFE_INTEGER and Number.MAX_SAFE_INTEGER
+type_64!(
+    i64 => -9007199254740991f64, 9007199254740991f64;
+    u64 => 0f64, 9007199254740991f64;
+);
 
 impl IntoWasmAbi for bool {
     type Abi = u32;
@@ -220,6 +288,14 @@ impl FromWasmAbi for bool {
     #[inline]
     unsafe fn from_abi(js: u32) -> bool {
         js != 0
+    }
+}
+
+impl std::convert::TryFrom<JsValue> for bool {
+    type Error = JsValue;
+
+    fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+        value.as_bool().ok_or(value)
     }
 }
 
@@ -384,6 +460,14 @@ impl<T: FromWasmAbi> FromWasmAbi for Clamped<T> {
     #[inline]
     unsafe fn from_abi(js: T::Abi) -> Self {
         Clamped(T::from_abi(js))
+    }
+}
+
+impl<A> std::convert::TryFrom<JsValue> for Clamped<A> where A: std::convert::TryFrom<JsValue, Error = JsValue> {
+    type Error = JsValue;
+
+    fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+        Ok(Clamped(std::convert::TryFrom::try_from(value)?))
     }
 }
 

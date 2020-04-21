@@ -722,6 +722,14 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                impl std::convert::TryFrom<JsValue> for #rust_name {
+                    type Error = JsValue;
+
+                    fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+                        value.dyn_into()
+                    }
+                }
+
                 impl JsCast for #rust_name {
                     fn instanceof(val: &JsValue) -> bool {
                         #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -891,6 +899,14 @@ impl ToTokens for ast::ImportEnum {
             impl From<#name> for wasm_bindgen::JsValue {
                 fn from(obj: #name) -> wasm_bindgen::JsValue {
                     wasm_bindgen::JsValue::from(obj.to_str())
+                }
+            }
+
+            impl std::convert::TryFrom<wasm_bindgen::JsValue> for #name {
+                type Error = wasm_bindgen::JsValue;
+
+                fn try_from(value: wasm_bindgen::JsValue) -> Result<Self, Self::Error> {
+                    #name::from_js_value(&value).ok_or(value)
                 }
             }
         }).to_tokens(tokens);
@@ -1123,6 +1139,16 @@ impl ToTokens for ast::Enum {
                 }
             }
         });
+
+        let try_from_clauses = self.variants.iter().map(|variant| {
+            let variant_name = &variant.name;
+            quote! {
+                if number == #enum_name::#variant_name as f64 {
+                    Ok(#enum_name::#variant_name)
+                }
+            }
+        });
+
         (quote! {
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::IntoWasmAbi for #enum_name {
@@ -1164,6 +1190,21 @@ impl ToTokens for ast::Enum {
                     use wasm_bindgen::describe::*;
                     inform(ENUM);
                     inform(#hole);
+                }
+            }
+
+            impl std::convert::TryFrom<wasm_bindgen::JsValue> for #enum_name {
+                type Error = wasm_bindgen::JsValue;
+
+                fn try_from(value: wasm_bindgen::JsValue) -> Result<Self, Self::Error> {
+                    match value.as_f64() {
+                        Some(number) => {
+                            #(#try_from_clauses else)* {
+                                Err(value)
+                            }
+                        },
+                        None => Err(value),
+                    }
                 }
             }
         })
