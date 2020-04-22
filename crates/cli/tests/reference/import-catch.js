@@ -45,13 +45,13 @@ export function exported() {
     wasm.exported();
 }
 
-export const __wbg_foo_8d66ddef0ff279d6 = handleError(function() {
-    foo();
-});
-
 export const __wbindgen_object_drop_ref = function(arg0) {
     takeObject(arg0);
 };
+
+export const __wbg_foo_8d66ddef0ff279d6 = handleError(function() {
+    foo();
+});
 
 export const __wbindgen_rethrow = function(arg0) {
     throw takeObject(arg0);
