@@ -24,9 +24,16 @@ function addToAnyrefTable0(obj) {
     return idx;
 }
 
-function handleError(e) {
-    const idx = addToAnyrefTable0(e);
-    wasm.__wbindgen_exn_store(idx);
+function handleError(f) {
+    return function () {
+        try {
+            return f.apply(this, arguments);
+
+        } catch (e) {
+            const idx = addToAnyrefTable0(e);
+            wasm.__wbindgen_exn_store(idx);
+        }
+    };
 }
 /**
 */
@@ -34,13 +41,9 @@ export function exported() {
     wasm.exported();
 }
 
-export const __wbg_foo_8d66ddef0ff279d6 = function() {
-    try {
-        foo();
-    } catch (e) {
-        handleError(e)
-    }
-};
+export const __wbg_foo_8d66ddef0ff279d6 = handleError(function() {
+    foo();
+});
 
 export const __wbindgen_throw = function(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));

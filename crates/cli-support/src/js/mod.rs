@@ -1666,9 +1666,16 @@ impl<'a> Context<'a> {
                 let add = self.expose_add_to_anyref_table(table, alloc)?;
                 self.global(&format!(
                     "
-                    function handleError(e) {{
-                        const idx = {}(e);
-                        wasm.{}(idx);
+                    function handleError(f) {{
+                        return function () {{
+                            try {{
+                                return f.apply(this, arguments);
+
+                            }} catch (e) {{
+                                const idx = {}(e);
+                                wasm.{}(idx);
+                            }}
+                        }};
                     }}
                     ",
                     add, store,
@@ -1678,8 +1685,15 @@ impl<'a> Context<'a> {
                 self.expose_add_heap_object();
                 self.global(&format!(
                     "
-                    function handleError(e) {{
-                        wasm.{}(addHeapObject(e));
+                    function handleError(f) {{
+                        return function () {{
+                            try {{
+                                return f.apply(this, arguments);
+
+                            }} catch (e) {{
+                                wasm.{}(addHeapObject(e));
+                            }}
+                        }};
                     }}
                     ",
                     store,
@@ -1695,20 +1709,27 @@ impl<'a> Context<'a> {
         }
         self.global(
             "\
-            function logError(e) {
-                let error = (function () {
+            function logError(f) {
+                return function () {
                     try {
-                        return e instanceof Error \
-                            ? `${e.message}\\n\\nStack:\\n${e.stack}` \
-                            : e.toString();
-                    } catch(_) {
-                        return \"<failed to stringify thrown value>\";
+                        return f.apply(this, arguments);
+
+                    } catch (e) {
+                        let error = (function () {
+                            try {
+                                return e instanceof Error \
+                                    ? `${e.message}\\n\\nStack:\\n${e.stack}` \
+                                    : e.toString();
+                            } catch(_) {
+                                return \"<failed to stringify thrown value>\";
+                            }
+                        }());
+                        console.error(\"wasm-bindgen: imported JS function that \
+                                        was not marked as `catch` threw an error:\", \
+                                        error);
+                        throw e;
                     }
-                }());
-                console.error(\"wasm-bindgen: imported JS function that \
-                                was not marked as `catch` threw an error:\", \
-                                error);
-                throw e;
+                };
             }
             ",
         );
@@ -2183,6 +2204,8 @@ impl<'a> Context<'a> {
             js_doc,
             code,
             might_be_optional_field,
+            catch,
+            log_error,
         } = builder
             .process(&adapter, instrs, arg_names)
             .with_context(|| match kind {
@@ -2201,6 +2224,9 @@ impl<'a> Context<'a> {
         // on what's being exported.
         match kind {
             Kind::Export(export) => {
+                assert_eq!(catch, false);
+                assert_eq!(log_error, false);
+
                 let ts_sig = match export.generate_typescript {
                     true => Some(ts_sig.as_str()),
                     false => None,
@@ -2257,10 +2283,20 @@ impl<'a> Context<'a> {
                 }
             }
             Kind::Import(core) => {
-                self.wasm_import_definitions
-                    .insert(core, format!("function{}", code));
+                let code = if catch {
+                    format!("handleError(function{})", code)
+                } else if log_error {
+                    format!("logError(function{})", code)
+                } else {
+                    format!("function{}", code)
+                };
+
+                self.wasm_import_definitions.insert(core, code);
             }
             Kind::Adapter => {
+                assert_eq!(catch, false);
+                assert_eq!(log_error, false);
+
                 self.globals.push_str("function ");
                 self.globals.push_str(&self.adapter_name(id));
                 self.globals.push_str(&code);
