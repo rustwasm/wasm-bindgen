@@ -25,8 +25,8 @@ use crate::generator::{
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, is_structural, shouty_snake_case_ident, snake_case_ident, throws,
-    webidl_const_v_to_backend_const_v, TypePosition, read_dir,
+    camel_case_ident, is_structural, read_dir, shouty_snake_case_ident, snake_case_ident, throws,
+    webidl_const_v_to_backend_const_v, TypePosition,
 };
 use anyhow::Context;
 use anyhow::Result;

@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
-use std::iter::FromIterator;
-use std::ptr;
-use std::path::{PathBuf, Path};
 use std::fs;
+use std::iter::FromIterator;
+use std::path::{Path, PathBuf};
+use std::ptr;
 
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, TokenStream};
@@ -27,7 +27,10 @@ const MAX_VARIADIC_ARGUMENTS_COUNT: usize = 7;
 
 /// Similar to std::fs::read_dir except it returns a sorted Vec,
 /// which is important to make the code generation deterministic.
-pub(crate) fn read_dir<P>(path: P) -> std::io::Result<Vec<PathBuf>> where P: AsRef<Path> {
+pub(crate) fn read_dir<P>(path: P) -> std::io::Result<Vec<PathBuf>>
+where
+    P: AsRef<Path>,
+{
     let mut entries = fs::read_dir(path)?
         .map(|entry| Ok(entry?.path()))
         .collect::<std::io::Result<Vec<_>>>()?;
