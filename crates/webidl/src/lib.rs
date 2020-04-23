@@ -25,7 +25,7 @@ use crate::generator::{
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, is_structural, shouty_snake_case_ident, snake_case_ident, throws,
+    camel_case_ident, is_structural, read_dir, shouty_snake_case_ident, snake_case_ident, throws,
     webidl_const_v_to_backend_const_v, TypePosition,
 };
 use anyhow::Context;
@@ -749,11 +749,9 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
 
     /// Read all WebIDL files in a directory into a single `SourceFile`
     fn read_source_from_path(dir: &Path) -> Result<SourceFile> {
-        let entries = fs::read_dir(dir).context("reading webidls directory")?;
+        let entries = read_dir(dir).context("reading webidls directory")?;
         let mut source = SourceFile::default();
-        for entry in entries {
-            let entry = entry.context(format!("getting {}/*.webidl entry", dir.display()))?;
-            let path = entry.path();
+        for path in entries {
             if path.extension() != Some(OsStr::new("webidl")) {
                 continue;
             }
