@@ -75,7 +75,7 @@ pub enum MethodSelf {
 #[derive(Clone)]
 pub struct Import {
     pub module: ImportModule,
-    pub js_namespace: Option<Ident>,
+    pub js_namespace: Option<String>,
     pub kind: ImportKind,
 }
 

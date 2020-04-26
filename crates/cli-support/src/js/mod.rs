@@ -423,7 +423,7 @@ impl<'a> Context<'a> {
                         if i > 0 {
                             imports.push_str(", ");
                         }
-                        imports.push_str(item);
+                        imports.push_str(item.split('.').next().unwrap());
                         if let Some(other) = rename {
                             imports.push_str(": ");
                             imports.push_str(other)

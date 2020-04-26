@@ -34,7 +34,7 @@ macro_rules! attrgen {
             (constructor, Constructor(Span)),
             (method, Method(Span)),
             (static_method_of, StaticMethodOf(Span, Ident)),
-            (js_namespace, JsNamespace(Span, Ident)),
+            (js_namespace, JsNamespace(Span, String, Span)),
             (module, Module(Span, String, Span)),
             (raw_module, RawModule(Span, String, Span)),
             (inline_js, InlineJs(Span, String, Span)),
@@ -1262,7 +1262,7 @@ impl MacroParse<ast::ImportModule> for syn::ForeignItem {
             };
             BindgenAttrs::find(attrs)?
         };
-        let js_namespace = item_opts.js_namespace().cloned();
+        let js_namespace = item_opts.js_namespace().map(|(s, _)| s.to_owned());
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
             syn::ForeignItem::Type(t) => t.convert(item_opts)?,

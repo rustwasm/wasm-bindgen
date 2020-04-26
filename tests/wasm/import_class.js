@@ -140,3 +140,31 @@ exports.StaticStructural = class {
     return x + 3;
   }
 };
+
+class InnerClass {
+  static inner_static_function(x) {
+    return x + 5;
+  }
+
+  static create_inner_instance() {
+    const ret = new InnerClass();
+    ret.internal_int = 3;
+    return ret;
+  }
+
+  get_internal_int() {
+    return this.internal_int;
+  }
+
+  append_to_internal_int(i) {
+    this.internal_int += i;
+  }
+
+  assert_internal_int(i) {
+    assert.strictEqual(this.internal_int, i);
+  }
+}
+
+exports.nestedNamespace = {
+  InnerClass: InnerClass
+}
