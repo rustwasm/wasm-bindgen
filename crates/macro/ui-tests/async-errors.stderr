@@ -8,6 +8,7 @@ error[E0277]: the trait bound `std::result::Result<(), ()>: wasm_bindgen::__rt::
              <std::result::Result<(), E> as wasm_bindgen::__rt::IntoJsResult>
              <std::result::Result<T, E> as wasm_bindgen::__rt::IntoJsResult>
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `std::result::Result<(), BadType>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
   --> $DIR/async-errors.rs:32:1
@@ -19,6 +20,7 @@ error[E0277]: the trait bound `std::result::Result<(), BadType>: wasm_bindgen::_
              <std::result::Result<(), E> as wasm_bindgen::__rt::IntoJsResult>
              <std::result::Result<T, E> as wasm_bindgen::__rt::IntoJsResult>
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `wasm_bindgen::JsValue: std::convert::From<BadType>` is not satisfied
   --> $DIR/async-errors.rs:34:1
@@ -35,6 +37,7 @@ error[E0277]: the trait bound `wasm_bindgen::JsValue: std::convert::From<BadType
    = note: required because of the requirements on the impl of `std::convert::Into<wasm_bindgen::JsValue>` for `BadType`
    = note: required because of the requirements on the impl of `wasm_bindgen::__rt::IntoJsResult` for `BadType`
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `std::result::Result<BadType, wasm_bindgen::JsValue>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
   --> $DIR/async-errors.rs:36:1
@@ -46,3 +49,4 @@ error[E0277]: the trait bound `std::result::Result<BadType, wasm_bindgen::JsValu
              <std::result::Result<(), E> as wasm_bindgen::__rt::IntoJsResult>
              <std::result::Result<T, E> as wasm_bindgen::__rt::IntoJsResult>
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
