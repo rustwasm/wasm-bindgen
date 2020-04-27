@@ -3013,10 +3013,10 @@ impl<'a> Context<'a> {
     }
 
     fn process_package_json(&mut self, path: &Path) -> Result<(), Error> {
-        if !self.config.mode.nodejs() && !self.config.mode.bundler() {
+        if self.config.mode.no_modules() {
             bail!(
                 "NPM dependencies have been specified in `{}` but \
-                 this is only compatible with the `bundler` and `nodejs` targets",
+                 this is incompatible with the `no-modules` target",
                 path.display(),
             );
         }
