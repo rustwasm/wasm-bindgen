@@ -10,4 +10,14 @@ You can build the example locally with:
 $ wasm-pack build --target web
 ```
 
-and then opening `index.html` in a browser should run the example!
+Then serve this directory in your favourite webserver and navigate to `host:port`
+to open the index.html in your browser:
+
+```
+# static server from https://crates.io/crates/https
+http
+
+# or use python
+python2 -m SimpleHTTPServer
+python3 -m http.server
+```
