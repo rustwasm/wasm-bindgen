@@ -570,6 +570,16 @@ impl OutputMode {
             _ => false,
         }
     }
+
+    fn esm_integration(&self) -> bool {
+        match self {
+            OutputMode::Bundler { .. }
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => true,
+            _ => false,
+        }
+    }
 }
 
 /// Remove a number of internal exports that are synthesized by Rust's linker,
@@ -674,22 +684,22 @@ impl Output {
 
         let js_path = out_dir.join(&self.stem).with_extension(extension);
 
-        match gen.start {
-            Some(ref start) => {
-                let js_name = format!("{}_bg.{}", self.stem, extension);
+        if gen.mode.esm_integration() {
+            let js_name = format!("{}_bg.{}", self.stem, extension);
 
-                write(
-                    &js_path,
-                    format!(
-                        "import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}",
-                        wasm_name, js_name, start
-                    ),
-                )?;
-                write(&out_dir.join(&js_name), reset_indentation(&gen.js))?;
-            }
-            None => {
-                write(&js_path, reset_indentation(&gen.js))?;
-            }
+            let start = gen.start.as_deref().unwrap_or("");
+
+            write(
+                &js_path,
+                format!(
+                    "import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}",
+                    wasm_name, js_name, start
+                ),
+            )?;
+
+            write(&out_dir.join(&js_name), reset_indentation(&gen.js))?;
+        } else {
+            write(&js_path, reset_indentation(&gen.js))?;
         }
 
         if gen.typescript {

@@ -112,7 +112,7 @@ fn runtest(test: &Path) -> Result<()> {
         let wat = sanitize_wasm(&wasm)?;
         assert_same(&wat, &test.with_extension("wat"))?;
     } else {
-        let js = fs::read_to_string(td.path().join("reference_test.js"))?;
+        let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
         assert_same(&js, &test.with_extension("js"))?;
         let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
         assert_same(&wat, &test.with_extension("wat"))?;

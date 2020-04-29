@@ -2,7 +2,7 @@
   (type (;0;) (func))
   (type (;1;) (func (result i32)))
   (type (;2;) (func (param i32)))
-  (import "./reference_test.js" "__wbindgen_init_anyref_table" (func (;0;) (type 0)))
+  (import "./reference_test_bg.js" "__wbindgen_init_anyref_table" (func (;0;) (type 0)))
   (func $__wbindgen_exn_store (type 2) (param i32))
   (func $__anyref_table_alloc (type 1) (result i32))
   (func $exported (type 0))
