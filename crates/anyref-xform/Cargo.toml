@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-anyref-xform"
-version = "0.2.60"
+version = "0.2.61"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/anyref-xform"
