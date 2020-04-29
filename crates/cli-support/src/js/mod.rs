@@ -1247,7 +1247,7 @@ impl<'a> Context<'a> {
             self.global(&format!(
                 "
                     const l{0} = typeof {0} === 'undefined' ? \
-                        require('util').{0} : {0};\
+                        module.require('util').{0} : {0};\
                 ",
                 s
             ));

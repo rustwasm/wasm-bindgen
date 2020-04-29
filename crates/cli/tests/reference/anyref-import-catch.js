@@ -1,6 +1,6 @@
 import * as wasm from './reference_test_bg.wasm';
 
-const lTextDecoder = typeof TextDecoder === 'undefined' ? require('util').TextDecoder : TextDecoder;
+const lTextDecoder = typeof TextDecoder === 'undefined' ? module.require('util').TextDecoder : TextDecoder;
 
 let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
 
