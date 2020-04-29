@@ -167,7 +167,10 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+    pub fn finalize(
+        &mut self,
+        module_name: &str,
+    ) -> Result<(String, String, Option<String>), Error> {
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
@@ -273,9 +276,10 @@ impl<'a> Context<'a> {
         &mut self,
         module_name: &str,
         needs_manual_start: bool,
-    ) -> Result<(String, String), Error> {
+    ) -> Result<(String, String, Option<String>), Error> {
         let mut ts = self.typescript.clone();
         let mut js = String::new();
+        let mut start = None;
 
         if let OutputMode::NoModules { global } = &self.config.mode {
             js.push_str(&format!("let {};\n(function() {{\n", global));
@@ -340,7 +344,7 @@ impl<'a> Context<'a> {
                 ));
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
-                    import.module = format!("./{}.js", module_name);
+                    import.module = format!("./{}_bg.js", module_name);
                     footer.push_str("\nexport const ");
                     footer.push_str(&import.name);
                     footer.push_str(" = ");
@@ -348,7 +352,7 @@ impl<'a> Context<'a> {
                     footer.push_str(";\n");
                 }
                 if needs_manual_start {
-                    footer.push_str("\nwasm.__wbindgen_start();\n");
+                    start = Some("\nwasm.__wbindgen_start();\n".to_string());
                 }
             }
 
@@ -394,7 +398,7 @@ impl<'a> Context<'a> {
             js = js.replace("\n\n\n", "\n\n");
         }
 
-        Ok((js, ts))
+        Ok((js, ts, start))
     }
 
     fn js_import_header(&self) -> Result<String, Error> {

@@ -61,6 +61,7 @@ struct JsGenerated {
     mode: OutputMode,
     js: String,
     ts: String,
+    start: Option<String>,
     snippets: HashMap<String, Vec<String>>,
     local_modules: HashMap<String, String>,
     npm_dependencies: HashMap<String, (PathBuf, String)>,
@@ -421,7 +422,7 @@ impl Bindgen {
                 .unwrap();
             let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
             cx.generate()?;
-            let (js, ts) = cx.finalize(stem)?;
+            let (js, ts, start) = cx.finalize(stem)?;
             Generated::Js(JsGenerated {
                 snippets: aux.snippets.clone(),
                 local_modules: aux.local_modules.clone(),
@@ -430,6 +431,7 @@ impl Bindgen {
                 npm_dependencies: cx.npm_dependencies.clone(),
                 js,
                 ts,
+                start,
             })
         };
 
@@ -568,6 +570,16 @@ impl OutputMode {
             _ => false,
         }
     }
+
+    fn esm_integration(&self) -> bool {
+        match self {
+            OutputMode::Bundler { .. }
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => true,
+            _ => false,
+        }
+    }
 }
 
 /// Remove a number of internal exports that are synthesized by Rust's linker,
@@ -613,7 +625,7 @@ impl Output {
             Generated::InterfaceTypes => self.stem.clone(),
             Generated::Js(_) => format!("{}_bg", self.stem),
         };
-        let wasm_path = out_dir.join(wasm_name).with_extension("wasm");
+        let wasm_path = out_dir.join(&wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
         let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
@@ -660,9 +672,35 @@ impl Output {
         } else {
             "js"
         };
+
+        fn write<P, C>(path: P, contents: C) -> Result<(), anyhow::Error>
+        where
+            P: AsRef<Path>,
+            C: AsRef<[u8]>,
+        {
+            fs::write(&path, contents)
+                .with_context(|| format!("failed to write `{}`", path.as_ref().display()))
+        }
+
         let js_path = out_dir.join(&self.stem).with_extension(extension);
-        fs::write(&js_path, reset_indentation(&gen.js))
-            .with_context(|| format!("failed to write `{}`", js_path.display()))?;
+
+        if gen.mode.esm_integration() {
+            let js_name = format!("{}_bg.{}", self.stem, extension);
+
+            let start = gen.start.as_deref().unwrap_or("");
+
+            write(
+                &js_path,
+                format!(
+                    "import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}",
+                    wasm_name, js_name, start
+                ),
+            )?;
+
+            write(&out_dir.join(&js_name), reset_indentation(&gen.js))?;
+        } else {
+            write(&js_path, reset_indentation(&gen.js))?;
+        }
 
         if gen.typescript {
             let ts_path = js_path.with_extension("d.ts");

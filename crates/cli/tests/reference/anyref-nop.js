@@ -17,5 +17,3 @@ export const __wbindgen_init_anyref_table = function() {
     ;
 };
 
-wasm.__wbindgen_start();
-
