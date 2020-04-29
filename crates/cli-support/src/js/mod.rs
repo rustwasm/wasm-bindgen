@@ -167,7 +167,10 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    pub fn finalize(&mut self, module_name: &str) -> Result<(String, String, Option<String>), Error> {
+    pub fn finalize(
+        &mut self,
+        module_name: &str,
+    ) -> Result<(String, String, Option<String>), Error> {
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.

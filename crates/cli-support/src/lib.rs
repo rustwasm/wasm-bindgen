@@ -663,8 +663,13 @@ impl Output {
             "js"
         };
 
-        fn write<P, C>(path: P, contents: C) -> Result<(), anyhow::Error> where P: AsRef<Path>, C: AsRef<[u8]> {
-            fs::write(&path, contents).with_context(|| format!("failed to write `{}`", path.as_ref().display()))
+        fn write<P, C>(path: P, contents: C) -> Result<(), anyhow::Error>
+        where
+            P: AsRef<Path>,
+            C: AsRef<[u8]>,
+        {
+            fs::write(&path, contents)
+                .with_context(|| format!("failed to write `{}`", path.as_ref().display()))
         }
 
         let js_path = out_dir.join(&self.stem).with_extension(extension);
@@ -673,12 +678,18 @@ impl Output {
             Some(ref start) => {
                 let js_name = format!("{}_bg.{}", self.stem, extension);
 
-                write(&js_path, format!("import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}", wasm_name, js_name, start))?;
+                write(
+                    &js_path,
+                    format!(
+                        "import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}",
+                        wasm_name, js_name, start
+                    ),
+                )?;
                 write(&out_dir.join(&js_name), reset_indentation(&gen.js))?;
-            },
+            }
             None => {
                 write(&js_path, reset_indentation(&gen.js))?;
-            },
+            }
         }
 
         if gen.typescript {
