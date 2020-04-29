@@ -2,6 +2,56 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.61
+
+Released 2020-04-29.
+
+### Added
+
+* Exported Rust `enum` types can now be renamed with `js_name`.
+  [#2071](https://github.com/rustwasm/wasm-bindgen/pull/2071)
+
+* More comments are copied to JS/TS files, and comments should no longer
+  accidentally have escape sequences in them.
+  [#2070](https://github.com/rustwasm/wasm-bindgen/pull/2070)
+
+* Experimental bindings for the Clipboard browser APIs have been added.
+  [#2100](https://github.com/rustwasm/wasm-bindgen/pull/2100)
+
+### Changed
+
+* WebGPU bindings have been updated.
+  [#2080](https://github.com/rustwasm/wasm-bindgen/pull/2080)
+
+* `setBindGroup` methods for WebIDL now take immutable slices instead of mutable
+  slices.
+  [#2087](https://github.com/rustwasm/wasm-bindgen/pull/2087)
+
+* JS code generation for `catch` functions has been improved.
+  [#2098](https://github.com/rustwasm/wasm-bindgen/pull/2098)
+
+* Usage of NPM dependencies with the `web` target is no longer an error.
+  [#2103](https://github.com/rustwasm/wasm-bindgen/pull/2103)
+
+### Fixed
+
+* Combining `js_name` with `getter` and `setter` has now been fixed.
+  [#2074](https://github.com/rustwasm/wasm-bindgen/pull/2074)
+
+* Importing global names which conflict with other namespaces should now work
+  correctly.
+  [#2057](https://github.com/rustwasm/wasm-bindgen/pull/2057)
+
+* Acquiring the global JS object has been fixed for Firefox extension content
+  scripts.
+  [#2099](https://github.com/rustwasm/wasm-bindgen/pull/2099)
+
+* The output of `wasm-bindgen` is now compatible with Webpack 5 and the updated
+  version of the wasm ESM integration specification.
+  [#2110](https://github.com/rustwasm/wasm-bindgen/pull/2099)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.60
 
 Released 2020-03-25.
