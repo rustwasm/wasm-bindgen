@@ -63,7 +63,7 @@ fn main() -> anyhow::Result<()> {
     let mut tests = Vec::new();
 
     for export in wasm.exports.iter() {
-        if !export.name.starts_with("__wbg_test") {
+        if !export.name.starts_with("__wbgt_") {
             continue;
         }
         tests.push(export.name.to_string());
