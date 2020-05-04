@@ -31,6 +31,7 @@ struct Context<'a> {
     anyref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
+    import_alias_name_map: HashMap<String, String>,
 }
 
 struct InstructionBuilder<'a, 'b> {
@@ -64,8 +65,23 @@ pub fn process(
         anyref_enabled,
         wasm_interface_types,
         support_start,
+        import_alias_name_map: Default::default(),
     };
     cx.init()?;
+
+    for program in &programs {
+        let decode::Program { imports, .. } = &program;
+        for import in imports {
+            match &import.kind {
+                decode::ImportKind::Type(t) if t.rust_name_str != t.name => {
+                    cx.import_alias_name_map
+                        .entry(t.rust_name_str.to_string())
+                        .or_insert(t.name.to_string());
+                }
+                _ => {}
+            }
+        }
+    }
 
     for program in programs {
         cx.program(program)?;
@@ -530,7 +546,17 @@ impl<'a> Context<'a> {
         // to the WebAssembly instance.
         let (id, import) = match method {
             Some(data) => {
-                let class = self.determine_import(import, &data.class)?;
+                let rust_class_name = data.rust_class_str.to_string();
+                let class_name = data.class.to_string();
+                let class_name_from_type = self
+                    .import_alias_name_map
+                    .get(&rust_class_name)
+                    .unwrap_or(&class_name)
+                    .clone();
+                if class_name != class_name_from_type {
+                    bail!("js_class of method: {:?} of {:?} is {:?}, not same as js_name: {:?} of {:?}", function.name, data.rust_class_str, data.class, class_name_from_type, data.rust_class_str);
+                }
+                let class = self.determine_import(import, class_name_from_type.as_str())?;
                 match &data.kind {
                     // NB: `structural` is ignored for constructors since the
                     // js type isn't expected to change anyway.

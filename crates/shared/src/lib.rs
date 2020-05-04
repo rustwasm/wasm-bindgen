@@ -52,6 +52,7 @@ macro_rules! shared_api {
 
         struct MethodData<'a> {
             class: &'a str,
+            rust_class_str: &'a str,
             kind: MethodKind<'a>,
         }
 
@@ -81,6 +82,7 @@ macro_rules! shared_api {
 
         struct ImportType<'a> {
             name: &'a str,
+            rust_name_str: &'a str,
             instanceof_shim: &'a str,
             vendor_prefixes: Vec<&'a str>,
         }

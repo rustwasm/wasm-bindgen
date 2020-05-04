@@ -443,8 +443,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 kind: operation_kind,
             });
 
+            let rust_class_str = class_name.to_string();
             ast::ImportFunctionKind::Method {
                 class: class_name,
+                rust_class_str,
                 ty: class.clone(),
                 kind,
             }
@@ -460,7 +462,12 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 kind: operation_kind,
             });
 
-            ast::ImportFunctionKind::Method { class, ty, kind }
+            ast::ImportFunctionKind::Method {
+                class,
+                rust_class_str: cls.to_string(),
+                ty,
+                kind,
+            }
         } else if opts.constructor().is_some() {
             let class = match js_ret {
                 Some(ref ty) => ty,
@@ -481,6 +488,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
 
             ast::ImportFunctionKind::Method {
                 class: class_name.to_string(),
+                rust_class_str: class_name.to_string(),
                 ty: class.clone(),
                 kind: ast::MethodKind::Constructor,
             }
@@ -562,6 +570,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             doc_comment: None,
             instanceof_shim: shim,
             is_type_of,
+            rust_name_str: self.ident.to_string(),
             rust_name: self.ident,
             typescript_type,
             js_name,
