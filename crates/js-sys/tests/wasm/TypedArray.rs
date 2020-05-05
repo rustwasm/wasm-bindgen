@@ -246,6 +246,7 @@ fn test_js_array_copy_to_mem_raw<ElemT: std::cmp::PartialEq + std::fmt::Debug, J
     let end: u8 = start + len as u8;
     let expected: Vec<ElemT> = (start..end).map(u8ToElem).collect();
 
+    // create typed js array with values
     let js_arr: JsArrT = sliceToJsArray(expected.as_slice());
 
     // allocate uninitialized Vec instance
@@ -253,10 +254,11 @@ fn test_js_array_copy_to_mem_raw<ElemT: std::cmp::PartialEq + std::fmt::Debug, J
     unsafe {
         vec.set_len(len);
     }
-    
+
     // call the function under test
-    sut(&js_arr, vec.as_mut_ptr() as *mut ElemT, len);
-    
+    sut(&js_arr, vec.as_mut_ptr(), len);
+
+    // make sure js_arr values copied into vec
     assert_eq!(vec, expected);
 }
 
