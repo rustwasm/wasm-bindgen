@@ -124,7 +124,18 @@ class StaticMethodCheck {
   }
 }
 
+class StaticMethodCheck2 {
+  constructor(val) {
+    this.inner_value = val * 7;
+  }
+
+  get getter_for_type_alias() {
+    return this.inner_value;
+  }
+}
+
 exports.StaticMethodCheck = StaticMethodCheck;
+exports.StaticMethodCheck2 = StaticMethodCheck2;
 
 exports.receive_undefined = val => {
   assert.strictEqual(val, undefined);

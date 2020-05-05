@@ -82,6 +82,16 @@ pub fn process(
                             .or_insert(t.name.to_string());
                     }
                 }
+                decode::ImportKind::Function(f) => {
+                    let decode::ImportFunction { method, .. } = f;
+                    if let Some(data) = method {
+                        if data.aliased_by_js_class {
+                            cx.import_alias_name_map
+                                .entry(data.rust_class_str.to_string())
+                                .or_insert(data.class.to_string());
+                        }
+                    }
+                }
                 _ => {}
             }
         }
@@ -550,25 +560,12 @@ impl<'a> Context<'a> {
         // to the WebAssembly instance.
         let (id, import) = match method {
             Some(data) => {
-                let rust_class_name = data.rust_class_str.to_string();
-                let class_name = data.class.to_string();
-                let class_name_from_type = self
+                let class_name = self
                     .import_alias_name_map
-                    .get(&rust_class_name)
-                    .unwrap_or(&class_name)
+                    .get(&data.rust_class_str.to_string())
+                    .unwrap_or(&data.class.to_string())
                     .clone();
-                // when both js_class of method and js_name of type defined, check if they are same.
-                if data.aliased_by_js_class && class_name != class_name_from_type {
-                    bail!(
-                        "js_class of {:?}'s method {:?} is {:?}, not same as {:?}'s js_name: {:?}",
-                        function.name,
-                        class_name,
-                        rust_class_name,
-                        rust_class_name,
-                        class_name_from_type
-                    );
-                }
-                let class = self.determine_import(import, class_name_from_type.as_str())?;
+                let class = self.determine_import(import, class_name.as_str())?;
                 match &data.kind {
                     // NB: `structural` is ignored for constructors since the
                     // js type isn't expected to change anyway.

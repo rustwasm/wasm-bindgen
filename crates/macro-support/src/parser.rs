@@ -433,9 +433,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 _ => bail_span!(class, "first argument of method must be a path"),
             };
             let class_name = extract_path_ident(class_name)?;
+            let rust_class_str = class_name.to_string();
             let (class_name, aliased_by_js_class) = match opts.js_class().map(|p| p.0.into()) {
                 Some(p) => (p, true),
-                _ => (class_name.to_string(), false),
+                _ => (rust_class_str.clone(), false),
             };
 
             let kind = ast::MethodKind::Operation(ast::Operation {
@@ -443,7 +444,6 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 kind: operation_kind,
             });
 
-            let rust_class_str = class_name.to_string();
             ast::ImportFunctionKind::Method {
                 class: class_name,
                 rust_class_str,
@@ -483,14 +483,15 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 _ => bail_span!(self, "return value of constructor must be a bare path"),
             };
             let class_name = extract_path_ident(class_name)?;
+            let rust_class_str = class_name.to_string();
             let (class_name, aliased_by_js_class) = match opts.js_class().map(|p| p.0.into()) {
                 Some(p) => (p, true),
-                _ => (class_name.to_string(), false),
+                _ => (rust_class_str.clone(), false),
             };
 
             ast::ImportFunctionKind::Method {
                 class: class_name.to_string(),
-                rust_class_str: class_name.to_string(),
+                rust_class_str,
                 aliased_by_js_class,
                 ty: class.clone(),
                 kind: ast::MethodKind::Constructor,
