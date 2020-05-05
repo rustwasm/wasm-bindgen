@@ -4978,21 +4978,23 @@ macro_rules! arrays {
                 self.raw_copy_to(dst);
             }
 
-            /// Copy the contents of this JS typed array into the destination
-            /// Rust slice, that might be unitialized.
+            /// Copy the contents of this JS typed array into the raw destination
+            /// memory, that might be unitialized.
             ///
             /// This function will efficiently copy the memory from a typed
-            /// array into this wasm module's own linear memory, initializing
-            /// the memory destination provided.
+            /// array into this wasm module's own linear memory.
             ///
             /// # Panics
             ///
             /// This function will panic if this typed array's length is
-            /// different than the length of the provided `dst` array.
-            pub unsafe fn copy_to_unsafe(&self, dst: &mut mem::MaybeUninit<&mut [$ty]>) {
-                let arr: &mut [$ty] = *dst.as_mut_ptr();
-                assert_eq!(self.length() as usize, arr.len());
-                self.raw_copy_to(arr);
+            /// different than the length argument passed into the function.
+            pub fn copy_to_mem_raw(&self, dst: *mut $ty, length: usize) {
+                assert_eq!(self.length() as usize, length);
+                let buf = wasm_bindgen::memory();
+                let mem = buf.unchecked_ref::<WebAssembly::Memory>();
+                let all_wasm_memory = $name::new(&mem.buffer());
+                let offset = dst as usize / mem::size_of::<$ty>();
+                all_wasm_memory.set(self, offset as u32);
             }
 
             /// Efficiently copies the contents of this JS typed array into a new Vec.
