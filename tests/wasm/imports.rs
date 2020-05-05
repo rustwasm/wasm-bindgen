@@ -81,6 +81,18 @@ extern "C" {
 
     #[wasm_bindgen(js_namespace = same_js_namespace_from_module)]
     fn func_from_module_1_same_js_namespace(s: i32) -> i32;
+
+    #[wasm_bindgen(js_name = "StaticMethodCheck")]
+    type StaticClassAliasedFromType;
+
+    #[wasm_bindgen(static_method_of = StaticClassAliasedFromType)]
+    fn static_method_for_type_alias(s: i32) -> i32;
+
+    #[wasm_bindgen(constructor)]
+    fn new_for_type_alias(s: i32) -> StaticClassAliasedFromType;
+
+    #[wasm_bindgen(method, getter)]
+    fn getter_for_type_alias(this: &StaticClassAliasedFromType) -> i32;
 }
 
 #[wasm_bindgen(module = "tests/wasm/imports_2.js")]
@@ -323,4 +335,18 @@ fn func_from_two_modules_same_js_name() {
 fn func_from_two_modules_same_js_namespace() {
     assert_eq!(func_from_module_1_same_js_namespace(2), 10);
     assert_eq!(func_from_module_2_same_js_namespace(2), 12);
+}
+
+#[wasm_bindgen_test]
+fn func_test_for_static_method_for_type_alias() {
+    assert_eq!(
+        StaticClassAliasedFromType::static_method_for_type_alias(3),
+        18
+    );
+}
+
+#[wasm_bindgen_test]
+fn func_test_for_new_and_method_for_type_alias() {
+    let instance = StaticClassAliasedFromType::new_for_type_alias(4);
+    assert_eq!(instance.getter_for_type_alias(), 28);
 }

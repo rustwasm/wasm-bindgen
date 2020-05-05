@@ -267,6 +267,7 @@ fn shared_import_function<'a>(
             class,
             rust_class_str,
             kind,
+            aliased_by_js_class,
             ..
         } => {
             let kind = from_ast_method_kind(&i.function, intern, kind)?;
@@ -274,6 +275,7 @@ fn shared_import_function<'a>(
                 class,
                 kind,
                 rust_class_str,
+                aliased_by_js_class: *aliased_by_js_class,
             })
         }
         ast::ImportFunctionKind::Normal => None,
@@ -301,6 +303,7 @@ fn shared_import_type<'a>(i: &'a ast::ImportType, intern: &'a Interner) -> Impor
     ImportType {
         name: &i.js_name,
         rust_name_str: &i.rust_name_str,
+        aliased_by_js_name: i.aliased_by_js_name,
         instanceof_shim: &i.instanceof_shim,
         vendor_prefixes: i.vendor_prefixes.iter().map(|x| intern.intern(x)).collect(),
     }

@@ -69,14 +69,18 @@ pub fn process(
     };
     cx.init()?;
 
+    // collect name alias from js_name of imported types.
     for program in &programs {
         let decode::Program { imports, .. } = &program;
         for import in imports {
             match &import.kind {
-                decode::ImportKind::Type(t) if t.rust_name_str != t.name => {
-                    cx.import_alias_name_map
-                        .entry(t.rust_name_str.to_string())
-                        .or_insert(t.name.to_string());
+                decode::ImportKind::Type(t) => {
+                    // we don't insert new items into HashMap if imported type is not aliased
+                    if t.aliased_by_js_name {
+                        cx.import_alias_name_map
+                            .entry(t.rust_name_str.to_string())
+                            .or_insert(t.name.to_string());
+                    }
                 }
                 _ => {}
             }
@@ -553,7 +557,8 @@ impl<'a> Context<'a> {
                     .get(&rust_class_name)
                     .unwrap_or(&class_name)
                     .clone();
-                if rust_class_name != class_name && class_name != class_name_from_type {
+                // when both js_class of method and js_name of type defined, check if they are same.
+                if data.aliased_by_js_class && class_name != class_name_from_type {
                     bail!(
                         "js_class of {:?}'s method {:?} is {:?}, not same as {:?}'s js_name: {:?}",
                         function.name,

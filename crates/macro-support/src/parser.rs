@@ -433,10 +433,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 _ => bail_span!(class, "first argument of method must be a path"),
             };
             let class_name = extract_path_ident(class_name)?;
-            let class_name = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| class_name.to_string());
+            let (class_name, aliased_by_js_class) = match opts.js_class().map(|p| p.0.into()) {
+                Some(p) => (p, true),
+                _ => (class_name.to_string(), false),
+            };
 
             let kind = ast::MethodKind::Operation(ast::Operation {
                 is_static: false,
@@ -447,14 +447,15 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             ast::ImportFunctionKind::Method {
                 class: class_name,
                 rust_class_str,
+                aliased_by_js_class,
                 ty: class.clone(),
                 kind,
             }
         } else if let Some(cls) = opts.static_method_of() {
-            let class = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| cls.to_string());
+            let (class, aliased_by_js_class) = match opts.js_class().map(|p| p.0.into()) {
+                Some(p) => (p, true),
+                _ => (cls.to_string(), false),
+            };
             let ty = ident_ty(cls.clone());
 
             let kind = ast::MethodKind::Operation(ast::Operation {
@@ -465,6 +466,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             ast::ImportFunctionKind::Method {
                 class,
                 rust_class_str: cls.to_string(),
+                aliased_by_js_class,
                 ty,
                 kind,
             }
@@ -481,14 +483,15 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 _ => bail_span!(self, "return value of constructor must be a bare path"),
             };
             let class_name = extract_path_ident(class_name)?;
-            let class_name = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| class_name.to_string());
+            let (class_name, aliased_by_js_class) = match opts.js_class().map(|p| p.0.into()) {
+                Some(p) => (p, true),
+                _ => (class_name.to_string(), false),
+            };
 
             ast::ImportFunctionKind::Method {
                 class: class_name.to_string(),
                 rust_class_str: class_name.to_string(),
+                aliased_by_js_class,
                 ty: class.clone(),
                 kind: ast::MethodKind::Constructor,
             }
@@ -541,10 +544,10 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         assert_not_variadic(&attrs)?;
-        let js_name = attrs
-            .js_name()
-            .map(|s| s.0)
-            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        let (js_name, aliased_by_js_name) = match attrs.js_name().map(|s| (s.0)) {
+            Some(s) => (s.to_string(), true),
+            _ => (self.ident.to_string(), false),
+        };
         let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
         let is_type_of = attrs.is_type_of().cloned();
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
@@ -572,6 +575,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             is_type_of,
             rust_name_str: self.ident.to_string(),
             rust_name: self.ident,
+            aliased_by_js_name,
             typescript_type,
             js_name,
             extends,
