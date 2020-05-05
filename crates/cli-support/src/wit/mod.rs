@@ -553,8 +553,15 @@ impl<'a> Context<'a> {
                     .get(&rust_class_name)
                     .unwrap_or(&class_name)
                     .clone();
-                if class_name != class_name_from_type {
-                    bail!("js_class of method: {:?} of {:?} is {:?}, not same as js_name: {:?} of {:?}", function.name, data.rust_class_str, data.class, class_name_from_type, data.rust_class_str);
+                if rust_class_name != class_name && class_name != class_name_from_type {
+                    bail!(
+                        "js_class of {:?}'s method {:?} is {:?}, not same as {:?}'s js_name: {:?}",
+                        function.name,
+                        class_name,
+                        rust_class_name,
+                        rust_class_name,
+                        class_name_from_type
+                    );
                 }
                 let class = self.determine_import(import, class_name_from_type.as_str())?;
                 match &data.kind {
