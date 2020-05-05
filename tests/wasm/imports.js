@@ -115,13 +115,6 @@ class StaticMethodCheck {
   static static_method_for_type_alias(val) {
     return val * 6;
   }
-  constructor(val) {
-    this.inner_value = val * 7;
-  }
-
-  get getter_for_type_alias() {
-    return this.inner_value;
-  }
 }
 
 class StaticMethodCheck2 {
