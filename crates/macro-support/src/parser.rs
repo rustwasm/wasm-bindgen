@@ -452,9 +452,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 kind,
             }
         } else if let Some(cls) = opts.static_method_of() {
+            let rust_class_str = cls.to_string();
             let (class, aliased_by_js_class) = match opts.js_class().map(|p| p.0.into()) {
                 Some(p) => (p, true),
-                _ => (cls.to_string(), false),
+                _ => (rust_class_str.clone(), false),
             };
             let ty = ident_ty(cls.clone());
 
@@ -465,7 +466,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
 
             ast::ImportFunctionKind::Method {
                 class,
-                rust_class_str: cls.to_string(),
+                rust_class_str,
                 aliased_by_js_class,
                 ty,
                 kind,

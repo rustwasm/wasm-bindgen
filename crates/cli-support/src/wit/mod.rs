@@ -85,6 +85,7 @@ pub fn process(
                 decode::ImportKind::Function(f) => {
                     let decode::ImportFunction { method, .. } = f;
                     if let Some(data) = method {
+                        // same as above, not insert if class_name is not aliased
                         if data.aliased_by_js_class {
                             cx.import_alias_name_map
                                 .entry(data.rust_class_str.to_string())
