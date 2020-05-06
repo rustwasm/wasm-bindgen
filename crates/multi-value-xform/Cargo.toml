@@ -13,12 +13,12 @@ edition = "2018"
 
 [dependencies]
 anyhow = "1.0"
-walrus = "0.14.0"
+walrus = "0.16.0"
 
 [dev-dependencies]
 rayon = "1.0"
 wasmprinter = "0.2"
-wast = "3.0"
+wast = "15.0"
 wat = "1.0"
 
 [[test]]

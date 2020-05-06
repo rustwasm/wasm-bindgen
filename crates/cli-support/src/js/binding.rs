@@ -1145,18 +1145,9 @@ impl Invocation {
             // The function table never changes right now, so we can statically
             // look up the desired function.
             CallTableElement(idx) => {
-                let table = module
-                    .tables
-                    .main_function_table()?
-                    .ok_or_else(|| anyhow!("no function table found"))?;
-                let functions = match &module.tables.get(table).kind {
-                    walrus::TableKind::Function(f) => f,
-                    _ => bail!("should have found a function table"),
-                };
-                let id = functions
-                    .elements
-                    .get(*idx as usize)
-                    .and_then(|id| *id)
+                let entry = wasm_bindgen_wasm_conventions::get_function_table_entry(module, *idx)?;
+                let id = entry
+                    .func
                     .ok_or_else(|| anyhow!("function table wasn't filled in a {}", idx))?;
                 Invocation::Core { id, defer: false }
             }

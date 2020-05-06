@@ -18,8 +18,9 @@
 use anyhow::{anyhow, bail, Error};
 use std::cmp;
 use std::collections::{BTreeMap, HashMap, HashSet};
+use std::mem;
 use walrus::ir::*;
-use walrus::{ExportId, ImportId, InstrLocId, TypeId};
+use walrus::{ElementId, ExportId, ImportId, InstrLocId, TypeId};
 use walrus::{FunctionId, GlobalId, InitExpr, Module, TableId, ValType};
 
 // must be kept in sync with src/lib.rs and ANYREF_HEAP_START
@@ -34,11 +35,19 @@ pub struct Context {
     // values in the function signature should turn into anyref.
     imports: HashMap<ImportId, Function>,
     exports: HashMap<ExportId, Function>,
-    elements: BTreeMap<u32, (u32, Function)>,
+
+    // List of functions we're transforming that are present in the function
+    // table. Each index here is an index into the function table, and the
+    // `Function` describes how we're transforming it.
+    new_elements: Vec<(u32, Function)>,
 
     // When wrapping closures with new shims, this is the index of the next
     // table entry that we'll be handing out.
-    next_element: u32,
+    new_element_offset: u32,
+
+    // Map of the existing function table, keyed by offset and contains the
+    // final offset plus the element segment used to initialized that range.
+    elements: BTreeMap<u32, ElementId>,
 
     // The anyref table we'll be using, injected after construction
     table: Option<TableId>,
@@ -93,22 +102,27 @@ impl Context {
         // Figure out what the maximum index of functions pointers are. We'll
         // be adding new entries to the function table later (maybe) so
         // precalculate this ahead of time.
-        let mut tables = module.tables.iter().filter_map(|t| match &t.kind {
-            walrus::TableKind::Function(f) => Some(f),
-            _ => None,
-        });
-        if let Some(t) = tables.next() {
-            if tables.next().is_some() {
-                bail!("more than one function table present")
+        if let Some(t) = module.tables.main_function_table()? {
+            let t = module.tables.get(t);
+            for id in t.elem_segments.iter() {
+                let elem = module.elements.get(*id);
+                let offset = match &elem.kind {
+                    walrus::ElementKind::Active { offset, .. } => offset,
+                    _ => continue,
+                };
+                let offset = match offset {
+                    walrus::InitExpr::Value(Value::I32(n)) => *n as u32,
+                    other => bail!("invalid offset for segment of function table {:?}", other),
+                };
+                let max = offset + elem.members.len() as u32;
+                self.new_element_offset = cmp::max(self.new_element_offset, max);
+                self.elements.insert(offset, *id);
             }
-            self.next_element = t.elements.len() as u32;
         }
-        drop(tables);
 
         // Add in an anyref table to the module, which we'll be using for
         // our transform below.
-        let kind = walrus::TableKind::Anyref(Default::default());
-        self.table = Some(module.tables.add_local(DEFAULT_MIN, None, kind));
+        self.table = Some(module.tables.add_local(DEFAULT_MIN, None, ValType::Anyref));
 
         Ok(())
     }
@@ -151,10 +165,8 @@ impl Context {
         ret_anyref: bool,
     ) -> Option<u32> {
         self.function(anyref, ret_anyref).map(|f| {
-            let ret = self.next_element;
-            self.next_element += 1;
-            self.elements.insert(ret, (idx, f));
-            ret
+            self.new_elements.push((idx, f));
+            self.new_elements.len() as u32 + self.new_element_offset - 1
         })
     }
 
@@ -265,7 +277,7 @@ impl Transform<'_> {
         self.process_exports(module)?;
         assert!(self.cx.exports.is_empty());
         self.process_elements(module)?;
-        assert!(self.cx.elements.is_empty());
+        assert!(self.cx.new_elements.is_empty());
 
         // If we didn't actually transform anything, no need to inject or
         // rewrite anything from below.
@@ -394,18 +406,20 @@ impl Transform<'_> {
             None => return Ok(()),
         };
         let table = module.tables.get_mut(table);
-        let kind = match &mut table.kind {
-            walrus::TableKind::Function(f) => f,
-            _ => unreachable!(),
-        };
-        if kind.relative_elements.len() > 0 {
-            bail!("not compatible with relative element initializers yet");
-        }
 
         // Create shims for all our functions and append them all to the segment
         // which places elements at the end.
-        while let Some((idx, function)) = self.cx.elements.remove(&(kind.elements.len() as u32)) {
-            let target = kind.elements[idx as usize].unwrap();
+        let mut new_segment = Vec::new();
+        for (idx, function) in mem::replace(&mut self.cx.new_elements, Vec::new()) {
+            let (&offset, &orig_element) = self
+                .cx
+                .elements
+                .range(..=idx)
+                .next_back()
+                .ok_or(anyhow!("failed to find segment defining index {}", idx))?;
+            let target = module.elements.get(orig_element).members[(idx - offset) as usize].ok_or(
+                anyhow!("function index {} not present in element segment", idx),
+            )?;
             let (shim, _anyref_ty) = self.append_shim(
                 target,
                 &format!("closure{}", idx),
@@ -414,14 +428,21 @@ impl Transform<'_> {
                 &mut module.funcs,
                 &mut module.locals,
             )?;
-            kind.elements.push(Some(shim));
+            new_segment.push(Some(shim));
         }
 
         // ... and next update the limits of the table in case any are listed.
-        table.initial = cmp::max(table.initial, kind.elements.len() as u32);
+        let new_max = self.cx.new_element_offset + new_segment.len() as u32;
+        table.initial = cmp::max(table.initial, new_max);
         if let Some(max) = table.maximum {
-            table.maximum = Some(cmp::max(max, kind.elements.len() as u32));
+            table.maximum = Some(cmp::max(max, new_max));
         }
+        let kind = walrus::ElementKind::Active {
+            table: table.id(),
+            offset: InitExpr::Value(Value::I32(self.cx.new_element_offset as i32)),
+        };
+        let segment = module.elements.add(kind, ValType::Funcref, new_segment);
+        table.elem_segments.insert(segment);
 
         Ok(())
     }

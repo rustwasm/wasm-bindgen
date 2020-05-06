@@ -152,6 +152,13 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     for mem in module.memories.iter_mut() {
         mem.data_segments.drain();
     }
+    let ids = module.elements.iter().map(|d| d.id()).collect::<Vec<_>>();
+    for id in ids {
+        module.elements.delete(id);
+    }
+    for table in module.tables.iter_mut() {
+        table.elem_segments.drain();
+    }
     let ids = module
         .exports
         .iter()

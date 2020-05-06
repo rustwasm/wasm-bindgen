@@ -3,12 +3,12 @@ use crate::intrinsic::Intrinsic;
 use crate::wit::AuxImport;
 use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
 use crate::wit::{AdapterType, InstructionData, StackChange, WasmBindgenAux};
-use anyhow::Error;
+use anyhow::Result;
 use std::collections::HashMap;
-use walrus::Module;
+use walrus::{ir::Value, ElementKind, InitExpr, Module};
 use wasm_bindgen_anyref_xform::Context;
 
-pub fn process(module: &mut Module) -> Result<(), Error> {
+pub fn process(module: &mut Module) -> Result<()> {
     let mut cfg = Context::default();
     cfg.prepare(module)?;
     let section = module
@@ -381,4 +381,87 @@ fn module_needs_anyref_metadata(aux: &WasmBindgenAux, section: &NonstandardWitSe
             _ => false,
         })
     })
+}
+
+/// In MVP wasm all element segments must be contiguous lists of function
+/// indices. Post-MVP with reference types element segments can have holes.
+/// While `walrus` will select the encoding that fits, this function forces the
+/// listing of segments to be MVP-compatible.
+pub fn force_contiguous_elements(module: &mut Module) -> Result<()> {
+    // List of new element segments we're going to be adding.
+    let mut new_segments = Vec::new();
+
+    // Here we take a look at all element segments in the module to see if we
+    // need to split them.
+    for segment in module.elements.iter_mut() {
+        // If this segment has all-`Some` members then it's alrady contiguous
+        // and we can skip it.
+        if segment.members.iter().all(|m| m.is_some()) {
+            continue;
+        }
+
+        // For now active segments are all we're interested in since
+        // passive/declared have no hope of being MVP-compatible anyway.
+        // Additionally we only handle active segments with i32 offsets, since
+        // global offsets get funky since we'd need to add an offset.
+        let (table, offset) = match &segment.kind {
+            ElementKind::Active {
+                table,
+                offset: InitExpr::Value(Value::I32(n)),
+            } => (*table, *n),
+            _ => continue,
+        };
+
+        // `block` keeps track of a block of contiguous segment of functions
+        let mut block = None;
+        // This keeps track of where we're going to truncate the current segment
+        // after we split out all the blocks.
+        let mut truncate = 0;
+        // This commits a block of contiguous functions into the `new_segments`
+        // list, accounting for the new offset which is relative to the old
+        // offset.
+        let mut commit = |last_idx: usize, block: Vec<_>| {
+            let new_offset = offset + (last_idx - block.len()) as i32;
+            let new_offset = InitExpr::Value(Value::I32(new_offset));
+            new_segments.push((table, new_offset, segment.ty, block));
+        };
+        for (i, id) in segment.members.iter().enumerate() {
+            match id {
+                // If we find a function, then we either start a new block or
+                // push it onto the existing block.
+                Some(id) => block.get_or_insert(Vec::new()).push(Some(*id)),
+                None => {
+                    let block = match block.take() {
+                        Some(b) => b,
+                        None => continue,
+                    };
+                    // If this is the first block (truncate isn't set and the
+                    // length of the block means it starts from the beginning),
+                    // then we leave it in the original list and don't commit
+                    // anything, we'll just edit where to truncate later.
+                    // Otherwise we commit this block to the new segment list.
+                    if truncate == 0 && block.len() == i {
+                        truncate = i;
+                    } else {
+                        commit(i, block);
+                    }
+                }
+            }
+        }
+
+        // If there's no trailing empty slots then we commit the last block onto
+        // the new segment list.
+        if let Some(block) = block {
+            commit(segment.members.len(), block);
+        }
+        segment.members.truncate(truncate);
+    }
+
+    for (table, offset, ty, members) in new_segments {
+        let id = module
+            .elements
+            .add(ElementKind::Active { table, offset }, ty, members);
+        module.tables.get_mut(table).elem_segments.insert(id);
+    }
+    Ok(())
 }
