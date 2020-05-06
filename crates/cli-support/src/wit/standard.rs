@@ -313,7 +313,9 @@ impl AdapterType {
             walrus::ValType::F32 => AdapterType::F32,
             walrus::ValType::F64 => AdapterType::F64,
             walrus::ValType::Anyref => AdapterType::Anyref,
-            walrus::ValType::V128 => return None,
+            walrus::ValType::Funcref | walrus::ValType::Nullref | walrus::ValType::V128 => {
+                return None
+            }
         })
     }
 

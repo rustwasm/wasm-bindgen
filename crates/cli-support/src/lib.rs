@@ -373,6 +373,11 @@ impl Bindgen {
             for id in ids {
                 module.exports.delete(id);
             }
+            // Clean up element segments as well if they have holes in them
+            // after some of our transformations, because non-anyref engines
+            // only support contiguous arrays of function references in element
+            // segments.
+            anyref::force_contiguous_elements(&mut module)?;
         }
 
         // If wasm interface types are enabled then the `__wbindgen_throw`
@@ -560,13 +565,6 @@ impl OutputMode {
     fn web(&self) -> bool {
         match self {
             OutputMode::Web => true,
-            _ => false,
-        }
-    }
-
-    fn bundler(&self) -> bool {
-        match self {
-            OutputMode::Bundler { .. } => true,
             _ => false,
         }
     }
