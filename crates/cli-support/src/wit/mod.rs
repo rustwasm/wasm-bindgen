@@ -561,11 +561,16 @@ impl<'a> Context<'a> {
         // to the WebAssembly instance.
         let (id, import) = match method {
             Some(data) => {
-                let class_name = self
-                    .import_alias_name_map
-                    .get(&data.rust_class_str.to_string())
-                    .unwrap_or(&data.class.to_string())
-                    .clone();
+                // if js_class is set explicitly, ignoire other aliases.
+                // if js_namespace is set, imports would be determined by js_namespace
+                let class_name = if data.aliased_by_js_class || (&import.js_namespace).is_some() {
+                    data.class.to_string()
+                } else {
+                    self.import_alias_name_map
+                        .get(&data.rust_class_str.to_string())
+                        .unwrap_or(&data.class.to_string())
+                        .clone()
+                };
                 let class = self.determine_import(import, class_name.as_str())?;
                 match &data.kind {
                     // NB: `structural` is ignored for constructors since the
