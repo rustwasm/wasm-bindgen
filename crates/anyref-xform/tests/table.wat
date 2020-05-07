@@ -28,5 +28,6 @@
   (table (;0;) 2 funcref)
   (table (;1;) 32 anyref)
   (export "func" (table 0))
-  (elem (;0;) (i32.const 0) func $foo $closure0 anyref shim))
+  (elem (;0;) (i32.const 0) func $foo)
+  (elem (;1;) (i32.const 1) func $closure0 anyref shim))
 ;)

@@ -220,18 +220,11 @@ fn translate_instruction(
             _ => bail!("can only call exported functions"),
         },
         CallTableElement(e) => {
-            let table = module
-                .tables
-                .main_function_table()?
-                .ok_or_else(|| anyhow!("no function table found in module"))?;
-            let functions = match &module.tables.get(table).kind {
-                walrus::TableKind::Function(f) => f,
-                _ => unreachable!(),
-            };
-            match functions.elements.get(*e as usize) {
-                Some(Some(f)) => Ok(wit_walrus::Instruction::CallCore(*f)),
-                _ => bail!("expected to find an element of the function table"),
-            }
+            let entry = wasm_bindgen_wasm_conventions::get_function_table_entry(module, *e)?;
+            let id = entry
+                .func
+                .ok_or_else(|| anyhow!("function table wasn't filled in a {}", e))?;
+            Ok(wit_walrus::Instruction::CallCore(id))
         }
         StringToMemory {
             mem,

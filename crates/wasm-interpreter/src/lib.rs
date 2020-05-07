@@ -20,7 +20,7 @@
 
 use std::collections::{BTreeMap, HashMap, HashSet};
 use walrus::ir::Instr;
-use walrus::{FunctionId, LocalId, Module, TableId};
+use walrus::{ElementId, FunctionId, LocalId, Module, TableId};
 
 /// A ready-to-go interpreter of a wasm module.
 ///
@@ -159,7 +159,7 @@ impl Interpreter {
         &mut self,
         id: FunctionId,
         module: &Module,
-        entry_removal_list: &mut HashSet<usize>,
+        entry_removal_list: &mut HashSet<(ElementId, usize)>,
     ) -> Option<&[u32]> {
         // Call the `id` function. This is an internal `#[inline(never)]`
         // whose code is completely controlled by the `wasm-bindgen` crate, so
@@ -184,28 +184,19 @@ impl Interpreter {
 
         let args = vec![0; num_params];
         self.call(id, module, &args);
-        let descriptor_table_idx =
-            self.descriptor_table_idx
-                .take()
-                .expect("descriptor function should return index") as usize;
+        let descriptor_table_idx = self
+            .descriptor_table_idx
+            .take()
+            .expect("descriptor function should return index");
 
         // After we've got the table index of the descriptor function we're
         // interested go take a look in the function table to find what the
         // actual index of the function is.
-        let functions = self.functions.expect("function table should be present");
-        let functions = match &module.tables.get(functions).kind {
-            walrus::TableKind::Function(f) => f,
-            _ => unreachable!(),
-        };
-        let descriptor_id = functions
-            .elements
-            .get(descriptor_table_idx)
-            .expect("out of bounds read of function table")
-            .expect("attempting to execute null function");
-
-        // This is used later to actually remove the entry from the table, but
-        // we don't do the removal just yet
-        entry_removal_list.insert(descriptor_table_idx);
+        let entry =
+            wasm_bindgen_wasm_conventions::get_function_table_entry(module, descriptor_table_idx)
+                .expect("failed to find entry in function table");
+        let descriptor_id = entry.func.expect("element segment slot wasn't set");
+        entry_removal_list.insert((entry.element, entry.idx));
 
         // And now execute the descriptor!
         self.interpret_descriptor(descriptor_id, module)
