@@ -11,9 +11,7 @@ function in Rust.
 
 ## `Cargo.toml`
 
-The `Cargo.toml` enables depends on the `wasm-bindgen` crate. Here we're using
-a `path` dependency because this example lives in the `wasm-bindgen` repository
-itself, but you'd use the commented out version beneath it instead.
+The `Cargo.toml` lists the `wasm-bindgen` crate as a dependency.
 
 Also of note is the `crate-type = ["cdylib"]` which is largely used for wasm
 final artifacts today.
