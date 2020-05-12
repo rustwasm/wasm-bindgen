@@ -9,16 +9,7 @@ online][compiled]
 You can build the example locally with:
 
 ```
-$ wasm-pack build --target web
+$ npm run serve
 ```
 
-Then serve the statics and navigate to `host:port`
-
-```
-# static server from https://crates.io/crates/https
-http
-
-# or use python
-python2 -m SimpleHTTPServer
-python3 -m http.server
-```
+and then visiting http://localhost:8080 in a browser should run the example!
