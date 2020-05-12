@@ -81,6 +81,7 @@ members = [
   "examples/wasm2js",
   "examples/webaudio",
   "examples/webgl",
+  "examples/webrtc_datachannel",
   "examples/websockets",
   "examples/webxr",
   "examples/without-a-bundler",
