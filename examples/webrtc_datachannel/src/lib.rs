@@ -49,7 +49,7 @@ pub async fn start() -> Result<(), JsValue> {
                 Some(message) => {
                     console_warn!("{:?}", message);
                     dc1_clone.send_with_str("Pong from pc1.dc!").unwrap();
-                },
+                }
                 None => {}
             }) as Box<dyn FnMut(MessageEvent)>,
         );
