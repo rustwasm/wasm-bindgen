@@ -858,6 +858,15 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
+            #[allow(clippy::all)]
+            impl ::core::str::FromStr for #name {
+                type Err = ();
+
+                fn from_str(s: &str) -> ::core::result::Result<#name, ()> {
+                    #name::from_str(s).ok_or(())
+                }
+            }
+
             // It should really be using &str for all of these, but that requires some major changes to cli-support
             #[allow(clippy::all)]
             impl wasm_bindgen::describe::WasmDescribe for #name {
