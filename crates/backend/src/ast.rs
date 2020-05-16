@@ -202,10 +202,8 @@ pub struct ImportEnum {
     pub vis: syn::Visibility,
     /// The Rust enum's identifiers
     pub name: Ident,
-    /// The Rust identifiers for the variants
-    pub variants: Vec<Ident>,
-    /// The JS string values of the variants
-    pub variant_values: Vec<String>,
+    /// The variants along with their JS string values
+    pub variants: Vec<Variant<String>>,
     /// Attributes to apply to the Rust enum
     pub rust_attrs: Vec<syn::Attribute>,
 }
@@ -261,9 +259,9 @@ pub struct Enum {
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
-pub struct Variant {
+pub struct Variant<Val = u32> {
     pub name: Ident,
-    pub value: u32,
+    pub value: Val,
     pub comments: Vec<String>,
 }
 

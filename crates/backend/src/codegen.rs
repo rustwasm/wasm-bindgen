@@ -792,12 +792,13 @@ impl ToTokens for ast::ImportEnum {
         let vis = &self.vis;
         let name = &self.name;
         let expect_string = format!("attempted to convert invalid {} into JSValue", name);
-        let variants = &self.variants;
-        let variant_strings = &self.variant_values;
+        let variant_strings = self.variants.iter().map(|v| &v.value);
+        let variant_names = self.variants.iter().map(|v| &v.name);
         let attrs = &self.rust_attrs;
 
         let mut current_idx: usize = 0;
-        let variant_indexes: Vec<Literal> = variants
+        let variant_indexes: Vec<Literal> = self
+            .variants
             .iter()
             .map(|_| {
                 let this_index = current_idx;
@@ -813,18 +814,24 @@ impl ToTokens for ast::ImportEnum {
         let variant_paths: Vec<TokenStream> = self
             .variants
             .iter()
-            .map(|v| quote!(#name::#v).into_token_stream())
+            .map(|v| {
+                let v = &v.name;
+                quote!(#name::#v).into_token_stream()
+            })
             .collect();
 
         // Borrow variant_paths because we need to use it multiple times inside the quote! macro
         let variant_paths_ref = &variant_paths;
+
+        // Since variant_strings is used twice, make a copy of the iterator:
+        let variant_strings_cpy = variant_strings.clone();
 
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
             #[allow(clippy::all)]
             #vis enum #name {
-                #(#variants = #variant_indexes_ref,)*
+                #(#variant_names = #variant_indexes_ref,)*
                 #[doc(hidden)]
                 __Nonexhaustive,
             }
@@ -833,7 +840,7 @@ impl ToTokens for ast::ImportEnum {
             impl #name {
                 fn from_str(s: &str) -> Option<#name> {
                     match s {
-                        #(#variant_strings => Some(#variant_paths_ref),)*
+                        #(#variant_strings_cpy => Some(#variant_paths_ref),)*
                         _ => None,
                     }
                 }

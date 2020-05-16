@@ -1060,7 +1060,6 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
 
 fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), Diagnostic> {
     let mut variants = vec![];
-    let mut variant_values = vec![];
 
     for v in enum_.variants.iter() {
         match v.fields {
@@ -1068,7 +1067,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
         }
 
-        match &v.discriminant {
+        let (name, value) = match &v.discriminant {
             Some((
                 _,
                 syn::Expr::Lit(syn::ExprLit {
@@ -1076,8 +1075,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
                     lit: syn::Lit::Str(str_lit),
                 }),
             )) => {
-                variants.push(v.ident.clone());
-                variant_values.push(str_lit.value());
+                (v.ident.clone(), str_lit.value())
             }
             Some((_, expr)) => bail_span!(
                 expr,
@@ -1086,7 +1084,14 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             None => {
                 bail_span!(v, "all variants must have a value");
             }
-        }
+        };
+
+        let comments = extract_doc_comments(&v.attrs);
+        variants.push(ast::Variant {
+            name,
+            value,
+            comments
+        })
     }
 
     program.imports.push(ast::Import {
@@ -1096,7 +1101,6 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             vis: enum_.vis,
             name: enum_.ident,
             variants,
-            variant_values,
             rust_attrs: enum_.attrs,
         }),
     });
