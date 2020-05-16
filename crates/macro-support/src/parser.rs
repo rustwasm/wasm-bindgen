@@ -1081,7 +1081,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             }
             Some((_, expr)) => bail_span!(
                 expr,
-                "enums with #[wasm_bidngen] cannot mix string and non-string values",
+                "enums with #[wasm_bindgen] cannot mix string and non-string values",
             ),
             None => {
                 bail_span!(v, "all variants must have a value");
@@ -1182,7 +1182,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                     None => i as u32,
                     Some((_, expr)) => bail_span!(
                         expr,
-                        "enums with #[wasm_bidngen] may only have \
+                        "enums with #[wasm_bindgen] may only have \
                          number literal values",
                     ),
                 };
