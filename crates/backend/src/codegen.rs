@@ -43,9 +43,9 @@ impl TryToTokens for ast::Program {
 
             // If there is a js namespace, check that name isn't a type. If it is,
             // this import might be a method on that type.
-            if let Some(ns_str) = &i.js_namespace {
+            if let Some(nss) = &i.js_namespace {
                 // When the namespace is `A.B`, the type name should be `B`.
-                if let Some(ns) = types.get(ns_str.split('.').last().unwrap()) {
+                if let Some(ns) = nss.last().and_then(|t| types.get(t)) {
                     if i.kind.fits_on_impl() {
                         let kind = match i.kind.try_to_token_stream() {
                             Ok(kind) => kind,

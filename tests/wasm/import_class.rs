@@ -99,9 +99,9 @@ extern "C" {
 
     #[derive(Clone)]
     type InnerClass;
-    #[wasm_bindgen(js_namespace = "nestedNamespace.InnerClass")]
+    #[wasm_bindgen(js_namespace = ["nestedNamespace", "InnerClass"])]
     fn inner_static_function(a: u32) -> u32;
-    #[wasm_bindgen(js_namespace = "nestedNamespace.InnerClass")]
+    #[wasm_bindgen(js_namespace = ["nestedNamespace", "InnerClass"])]
     fn create_inner_instance() -> InnerClass;
     #[wasm_bindgen(method)]
     fn get_internal_int(this: &InnerClass) -> u32;

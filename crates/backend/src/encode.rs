@@ -241,7 +241,7 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
             ast::ImportModule::Inline(idx, _) => ImportModule::Inline(*idx as u32),
             ast::ImportModule::None => ImportModule::None,
         },
-        js_namespace: i.js_namespace.as_ref().map(|s| intern.intern_str(s)),
+        js_namespace: i.js_namespace.clone(),
         kind: shared_import_kind(&i.kind, intern)?,
     })
 }

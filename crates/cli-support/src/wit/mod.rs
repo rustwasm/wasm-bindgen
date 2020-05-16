@@ -898,7 +898,7 @@ impl<'a> Context<'a> {
                     "import of `{}` through js namespace `{}` isn't supported \
                      right now when it lists a polyfill",
                     item,
-                    ns
+                    ns.join(".")
                 );
             }
             return Ok(JsImport {
@@ -911,8 +911,12 @@ impl<'a> Context<'a> {
         }
 
         let (name, fields) = match import.js_namespace {
-            Some(ns) => (ns, vec![item.to_string()]),
-            None => (item, Vec::new()),
+            Some(ref ns) => {
+                let mut tail = (&ns[1..]).to_owned();
+                tail.push(item.to_string());
+                (ns[0].to_owned(), tail)
+            }
+            None => (item.to_owned(), Vec::new()),
         };
 
         let name = match import.module {

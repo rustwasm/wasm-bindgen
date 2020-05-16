@@ -423,7 +423,7 @@ impl<'a> Context<'a> {
                         if i > 0 {
                             imports.push_str(", ");
                         }
-                        imports.push_str(item.split('.').next().unwrap());
+                        imports.push_str(item);
                         if let Some(other) = rename {
                             imports.push_str(": ");
                             imports.push_str(other)
@@ -1994,7 +1994,7 @@ impl<'a> Context<'a> {
 
             JsImportName::VendorPrefixed { name, prefixes } => {
                 self.imports_post.push_str("const l");
-                self.imports_post.push_str(&name);
+                self.imports_post.push_str(name);
                 self.imports_post.push_str(" = ");
                 switch(&mut self.imports_post, name, "", prefixes);
                 self.imports_post.push_str(";\n");

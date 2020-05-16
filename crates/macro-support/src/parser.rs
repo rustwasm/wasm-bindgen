@@ -11,6 +11,7 @@ use quote::ToTokens;
 use shared;
 use syn;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
+use syn::spanned::Spanned;
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
@@ -34,7 +35,7 @@ macro_rules! attrgen {
             (constructor, Constructor(Span)),
             (method, Method(Span)),
             (static_method_of, StaticMethodOf(Span, Ident)),
-            (js_namespace, JsNamespace(Span, String, Span)),
+            (js_namespace, JsNamespace(Span, Vec<String>, Vec<Span>)),
             (module, Module(Span, String, Span)),
             (raw_module, RawModule(Span, String, Span)),
             (inline_js, InlineJs(Span, String, Span)),
@@ -109,6 +110,21 @@ macro_rules! methods {
                     BindgenAttr::$variant(_, s, span) => {
                         a.0.set(true);
                         Some((&s[..], *span))
+                    }
+                    _ => None,
+                })
+                .next()
+        }
+    };
+
+    (@method $name:ident, $variant:ident(Span, Vec<String>, Vec<Span>)) => {
+        fn $name(&self) -> Option<(&[String], &[Span])> {
+            self.attrs
+                .iter()
+                .filter_map(|a| match &a.1 {
+                    BindgenAttr::$variant(_, ss, spans) => {
+                        a.0.set(true);
+                        Some((&ss[..], &spans[..]))
                     }
                     _ => None,
                 })
@@ -279,6 +295,36 @@ impl Parse for BindgenAttr {
                     }
                 };
                 return Ok(BindgenAttr::$variant(attr_span, val, span))
+            });
+
+            (@parser $variant:ident(Span, Vec<String>, Vec<Span>)) => ({
+                input.parse::<Token![=]>()?;
+                let input_before_parse = input.fork();
+                let (vals, spans) = match input.parse::<syn::ExprArray>() {
+                    Ok(exprs) => {
+                        let mut vals = vec![];
+                        let mut spans = vec![];
+
+                        for expr in exprs.elems.iter() {
+                            if let syn::Expr::Lit(syn::ExprLit {
+                                lit: syn::Lit::Str(ref str),
+                                ..
+                            }) = expr {
+                                vals.push(str.value());
+                                spans.push(str.span());
+                            } else {
+                                return Err(syn::Error::new(expr.span(), "expected string literals"));
+                            }
+                        }
+
+                        (vals, spans)
+                    },
+                    Err(_) => {
+                        let ident = input_before_parse.parse::<AnyIdent>()?.0;
+                        (vec![ident.to_string()], vec![ident.span()])
+                    }
+                };
+                return Ok(BindgenAttr::$variant(attr_span, vals, spans))
             });
         }
 
