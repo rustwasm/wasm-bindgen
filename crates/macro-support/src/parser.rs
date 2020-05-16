@@ -1074,9 +1074,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
                     attrs: _,
                     lit: syn::Lit::Str(str_lit),
                 }),
-            )) => {
-                (v.ident.clone(), str_lit.value())
-            }
+            )) => (v.ident.clone(), str_lit.value()),
             Some((_, expr)) => bail_span!(
                 expr,
                 "enums with #[wasm_bindgen] cannot mix string and non-string values",
@@ -1091,7 +1089,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             ast::Variant {
                 name,
                 value,
-                comments
+                comments,
             },
             v.attrs.clone(),
         ))
