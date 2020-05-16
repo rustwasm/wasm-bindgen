@@ -202,8 +202,8 @@ pub struct ImportEnum {
     pub vis: syn::Visibility,
     /// The Rust enum's identifiers
     pub name: Ident,
-    /// The variants along with their JS string values
-    pub variants: Vec<Variant<String>>,
+    /// The variants along with their JS string values and attributes
+    pub variants: Vec<(Variant<String>, Vec<syn::Attribute>)>,
     /// Attributes to apply to the Rust enum
     pub rust_attrs: Vec<syn::Attribute>,
 }

@@ -792,8 +792,9 @@ impl ToTokens for ast::ImportEnum {
         let vis = &self.vis;
         let name = &self.name;
         let expect_string = format!("attempted to convert invalid {} into JSValue", name);
-        let variant_strings = self.variants.iter().map(|v| &v.value);
-        let variant_names = self.variants.iter().map(|v| &v.name);
+        let variant_strings = self.variants.iter().map(|v| &v.0.value);
+        let variant_names = self.variants.iter().map(|v| &v.0.name);
+        let variant_attrs = self.variants.iter().map(|v| &v.1);
         let attrs = &self.rust_attrs;
 
         let mut current_idx: usize = 0;
@@ -815,7 +816,7 @@ impl ToTokens for ast::ImportEnum {
             .variants
             .iter()
             .map(|v| {
-                let v = &v.name;
+                let v = &v.0.name;
                 quote!(#name::#v).into_token_stream()
             })
             .collect();
@@ -831,7 +832,7 @@ impl ToTokens for ast::ImportEnum {
             #(#attrs)*
             #[allow(clippy::all)]
             #vis enum #name {
-                #(#variant_names = #variant_indexes_ref,)*
+                #(#(#variant_attrs)* #variant_names = #variant_indexes_ref,)*
                 #[doc(hidden)]
                 __Nonexhaustive,
             }

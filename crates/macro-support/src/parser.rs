@@ -1087,11 +1087,14 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
         };
 
         let comments = extract_doc_comments(&v.attrs);
-        variants.push(ast::Variant {
-            name,
-            value,
-            comments
-        })
+        variants.push((
+            ast::Variant {
+                name,
+                value,
+                comments
+            },
+            v.attrs.clone(),
+        ))
     }
 
     program.imports.push(ast::Import {
