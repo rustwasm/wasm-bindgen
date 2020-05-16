@@ -837,7 +837,7 @@ impl ToTokens for ast::ImportEnum {
                 __Nonexhaustive,
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, deprecated, missing_docs)]
             impl #name {
                 fn from_str(s: &str) -> Option<#name> {
                     match s {
