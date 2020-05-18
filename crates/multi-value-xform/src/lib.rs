@@ -162,12 +162,10 @@ fn xform_one(
                 round_up_to_alignment(results_size, 8) + 8
             }
             walrus::ValType::V128 => round_up_to_alignment(results_size, 16) + 16,
-            walrus::ValType::Anyref | walrus::ValType::Funcref | walrus::ValType::Nullref => {
-                anyhow::bail!(
-                    "cannot multi-value transform functions that return \
+            walrus::ValType::Externref | walrus::ValType::Funcref => anyhow::bail!(
+                "cannot multi-value transform functions that return \
                      reference types, since they can't go into linear memory"
-                )
-            }
+            ),
         };
     }
     // Round up to 16-byte alignment, since that's what LLVM's emitted Wasm code
@@ -286,9 +284,7 @@ fn xform_one(
                 );
                 offset += 16;
             }
-            walrus::ValType::Anyref | walrus::ValType::Funcref | walrus::ValType::Nullref => {
-                unreachable!()
-            }
+            walrus::ValType::Externref | walrus::ValType::Funcref => unreachable!(),
         }
     }
 

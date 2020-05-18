@@ -496,7 +496,7 @@ impl<'a> IdlType<'a> {
 
     /// Converts to syn type if possible.
     pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<Option<syn::Type>, TypeError> {
-        let anyref = |ty| {
+        let externref = |ty| {
             Some(match pos {
                 TypePosition::Argument => shared_ref(ty, false),
                 TypePosition::Return => ty,
@@ -505,11 +505,11 @@ impl<'a> IdlType<'a> {
         let js_sys = |name: &str| {
             let path = vec![rust_ident("js_sys"), rust_ident(name)];
             let ty = leading_colon_path_ty(path);
-            anyref(ty)
+            externref(ty)
         };
         let js_value = {
             let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
-            anyref(leading_colon_path_ty(path))
+            externref(leading_colon_path_ty(path))
         };
         match self {
             IdlType::Boolean => Ok(Some(ident_ty(raw_ident("bool")))),
@@ -565,7 +565,7 @@ impl<'a> IdlType<'a> {
             | IdlType::Dictionary(name)
             | IdlType::CallbackInterface { name, .. } => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
-                Ok(anyref(ty))
+                Ok(externref(ty))
             }
             IdlType::Enum(name) => Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str())))),
 

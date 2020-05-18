@@ -9,7 +9,7 @@ use walrus::Module;
 ///
 /// This pass is executed as part of the wasm interface types support. This is
 /// done to support debug mode executables with wasm interface types. Debug mode
-/// executables will use malloc as well as anyref intrinsics. These intrinsics
+/// executables will use malloc as well as externref intrinsics. These intrinsics
 /// internally, when they fail, abort the instance. This abort is done through
 /// the `__wbindgen_throw` intrinsic in debug mode to provide a hopefully
 /// useful error message. In release mode it's simply an `unreachable`

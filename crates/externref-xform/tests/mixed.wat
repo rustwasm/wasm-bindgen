@@ -1,4 +1,4 @@
-;; @xform import "" "a" (other anyref_borrowed other anyref_owned other)
+;; @xform import "" "a" (other externref_borrowed other externref_owned other)
 
 (module
   (import "" "a" (func $a (param f32 i32 i64 i32 i32)))
@@ -9,9 +9,9 @@
     i32.const 4
     i32.const 5
     call $a)
-  (func $alloc (export "__anyref_table_alloc") (result i32)
+  (func $alloc (export "__externref_table_alloc") (result i32)
     i32.const 0)
-  (func $dealloc (export "__anyref_table_dealloc") (param i32))
+  (func $dealloc (export "__externref_table_dealloc") (param i32))
 )
 
 (; CHECK-ALL:
@@ -19,9 +19,9 @@
   (type (;0;) (func))
   (type (;1;) (func (param i32)))
   (type (;2;) (func (param f32 i32 i64 i32 i32)))
-  (type (;3;) (func (param f32 anyref i64 anyref i32)))
+  (type (;3;) (func (param f32 externref i64 externref i32)))
   (import "" "a" (func $a (type 3)))
-  (func $a anyref shim (type 2) (param f32 i32 i64 i32 i32)
+  (func $a externref shim (type 2) (param f32 i32 i64 i32 i32)
     local.get 0
     local.get 1
     table.get 0
@@ -38,8 +38,8 @@
     i64.const 3
     i32.const 4
     i32.const 5
-    call $a anyref shim)
+    call $a externref shim)
   (func $dealloc (type 1) (param i32))
-  (table (;0;) 32 anyref)
+  (table (;0;) 32 externref)
   (export "foo" (func 2)))
 ;)

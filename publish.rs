@@ -29,7 +29,7 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-wasm-conventions",
     "wasm-bindgen-threads-xform",
     "wasm-bindgen-multi-value-xform",
-    "wasm-bindgen-anyref-xform",
+    "wasm-bindgen-externref-xform",
     "wasm-bindgen-cli-support",
     "wasm-bindgen-cli",
     "wasm-bindgen",

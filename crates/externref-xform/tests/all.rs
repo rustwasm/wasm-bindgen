@@ -20,7 +20,7 @@ fn main() {
 fn runtest(test: &Test) -> Result<String> {
     let wasm = wat::parse_file(&test.file)?;
     let mut walrus = walrus::Module::from_buffer(&wasm)?;
-    let mut cx = wasm_bindgen_anyref_xform::Context::default();
+    let mut cx = wasm_bindgen_externref_xform::Context::default();
     cx.prepare(&mut walrus)?;
     for directive in test.directives.iter() {
         match &directive.kind {
@@ -30,7 +30,7 @@ fn runtest(test: &Test) -> Result<String> {
                     .iter()
                     .find(|e| e.name == *name)
                     .ok_or_else(|| anyhow!("failed to find export"))?;
-                cx.export_xform(export.id(), &directive.args, directive.ret_anyref);
+                cx.export_xform(export.id(), &directive.args, directive.ret_externref);
             }
             DirectiveKind::Import(module, field) => {
                 let import = walrus
@@ -38,10 +38,10 @@ fn runtest(test: &Test) -> Result<String> {
                     .iter()
                     .find(|e| e.module == *module && e.name == *field)
                     .ok_or_else(|| anyhow!("failed to find export"))?;
-                cx.import_xform(import.id(), &directive.args, directive.ret_anyref);
+                cx.import_xform(import.id(), &directive.args, directive.ret_externref);
             }
             DirectiveKind::Table(idx) => {
-                cx.table_element_xform(*idx, &directive.args, directive.ret_anyref);
+                cx.table_element_xform(*idx, &directive.args, directive.ret_externref);
             }
         }
     }
@@ -123,7 +123,7 @@ struct Test {
 
 struct Directive {
     args: Vec<(usize, bool)>,
-    ret_anyref: bool,
+    ret_externref: bool,
     kind: DirectiveKind,
 }
 
@@ -216,8 +216,8 @@ fn update_output(path: &Path, output: &str) -> Result<()> {
 impl<'a> Parse<'a> for Directive {
     fn parse(parser: Parser<'a>) -> wast::parser::Result<Self> {
         use wast::kw;
-        wast::custom_keyword!(anyref_owned);
-        wast::custom_keyword!(anyref_borrowed);
+        wast::custom_keyword!(externref_owned);
+        wast::custom_keyword!(externref_borrowed);
         wast::custom_keyword!(other);
 
         let kind = if parser.peek::<kw::import>() {
@@ -234,11 +234,11 @@ impl<'a> Parse<'a> for Directive {
         parser.parens(|p| {
             let mut i = 0;
             while !p.is_empty() {
-                if parser.peek::<anyref_owned>() {
-                    parser.parse::<anyref_owned>()?;
+                if parser.peek::<externref_owned>() {
+                    parser.parse::<externref_owned>()?;
                     args.push((i, true));
-                } else if parser.peek::<anyref_borrowed>() {
-                    parser.parse::<anyref_borrowed>()?;
+                } else if parser.peek::<externref_borrowed>() {
+                    parser.parse::<externref_borrowed>()?;
                     args.push((i, false));
                 } else {
                     parser.parse::<other>()?;
@@ -248,10 +248,10 @@ impl<'a> Parse<'a> for Directive {
             Ok(())
         })?;
 
-        let ret_anyref = parser.parse::<Option<anyref_owned>>()?.is_some();
+        let ret_externref = parser.parse::<Option<externref_owned>>()?.is_some();
         Ok(Directive {
             args,
-            ret_anyref,
+            ret_externref,
             kind,
         })
     }

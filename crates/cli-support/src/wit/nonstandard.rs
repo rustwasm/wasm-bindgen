@@ -47,12 +47,12 @@ pub struct WasmBindgenAux {
     /// exported structs from Rust and their fields they've got exported.
     pub structs: Vec<AuxStruct>,
 
-    /// Information about various internal functions used to manage the `anyref`
+    /// Information about various internal functions used to manage the `externref`
     /// table, later used to process JS bindings.
-    pub anyref_table: Option<walrus::TableId>,
+    pub externref_table: Option<walrus::TableId>,
     pub function_table: Option<walrus::TableId>,
-    pub anyref_alloc: Option<walrus::FunctionId>,
-    pub anyref_drop_slice: Option<walrus::FunctionId>,
+    pub externref_alloc: Option<walrus::FunctionId>,
+    pub externref_drop_slice: Option<walrus::FunctionId>,
 
     /// Various intrinsics used for JS glue generation
     pub exn_store: Option<walrus::FunctionId>,
@@ -89,7 +89,7 @@ pub struct AuxExport {
 /// sort of an "export map" saying how to wire up all the free functions from
 /// the wasm module into the output expected JS module. All our functions here
 /// currently take integer parameters and require a JS wrapper, but ideally
-/// we'd change them one day to taking/receiving `anyref` which then use some
+/// we'd change them one day to taking/receiving `externref` which then use some
 /// sort of webidl import to customize behavior or something like that. In any
 /// case this doesn't feel quite right in terms of priviledge separation, so
 /// we'll want to work on this. For now though it works.
@@ -175,7 +175,7 @@ pub enum AuxImport {
     /// function call is expected to always be the class.
     ValueWithThis(JsImport, String),
 
-    /// This import is expected to be a function that takes an `anyref` and
+    /// This import is expected to be a function that takes an `externref` and
     /// returns a `bool`. It's expected that it tests if the argument is an
     /// instance of (using `instanceof`) the name specified.
     ///
@@ -290,7 +290,7 @@ pub enum AuxImport {
     /// is one that is exported from the Rust/wasm.
     ///
     /// TODO: sort of like the export map below we should ideally create the
-    /// `anyref` from within Rust itself and then return it directly rather than
+    /// `externref` from within Rust itself and then return it directly rather than
     /// requiring an intrinsic here to do so.
     WrapInExportedClass(String),
 
@@ -371,16 +371,16 @@ impl walrus::CustomSection for WasmBindgenAux {
     }
 
     fn add_gc_roots(&self, roots: &mut walrus::passes::Roots) {
-        if let Some(id) = self.anyref_table {
+        if let Some(id) = self.externref_table {
             roots.push_table(id);
         }
         if let Some(id) = self.function_table {
             roots.push_table(id);
         }
-        if let Some(id) = self.anyref_alloc {
+        if let Some(id) = self.externref_alloc {
             roots.push_func(id);
         }
-        if let Some(id) = self.anyref_drop_slice {
+        if let Some(id) = self.externref_drop_slice {
             roots.push_func(id);
         }
         if let Some(id) = self.exn_store {

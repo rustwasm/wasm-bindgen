@@ -1,18 +1,18 @@
-;; @xform export "a" (other anyref_borrowed other anyref_owned other)
+;; @xform export "a" (other externref_borrowed other externref_owned other)
 
 (module
   (func $a (export "a") (param f32 i32 i64 i32 i32))
-  (func $alloc (export "__anyref_table_alloc") (result i32)
+  (func $alloc (export "__externref_table_alloc") (result i32)
     i32.const 0)
-  (func $dealloc (export "__anyref_table_dealloc") (param i32))
+  (func $dealloc (export "__externref_table_dealloc") (param i32))
 )
 
 (; CHECK-ALL:
 (module
   (type (;0;) (func (result i32)))
   (type (;1;) (func (param f32 i32 i64 i32 i32)))
-  (type (;2;) (func (param f32 anyref i64 anyref i32)))
-  (func $a anyref shim (type 2) (param f32 anyref i64 anyref i32)
+  (type (;2;) (func (param f32 externref i64 externref i32)))
+  (func $a externref shim (type 2) (param f32 externref i64 externref i32)
     (local i32 i32)
     global.get 0
     i32.const 1
@@ -33,7 +33,7 @@
     local.get 4
     call $a
     local.get 5
-    ref.null
+    ref.nullextern
     table.set 0
     local.get 5
     i32.const 1
@@ -42,7 +42,7 @@
   (func $alloc (type 0) (result i32)
     i32.const 0)
   (func $a (type 1) (param f32 i32 i64 i32 i32))
-  (table (;0;) 32 anyref)
+  (table (;0;) 32 externref)
   (global (;0;) (mut i32) (i32.const 32))
-  (export "a" (func $a anyref shim)))
+  (export "a" (func $a externref shim)))
 ;)

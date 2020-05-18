@@ -1,11 +1,11 @@
-//! Transformation for wasm-bindgen to enable usage of `anyref` in a wasm
+//! Transformation for wasm-bindgen to enable usage of `externref` in a wasm
 //! module.
 //!
 //! This crate is in charge of enabling code using `wasm-bindgen` to use the
-//! `anyref` type inside of the wasm module. This transformation pass primarily
-//! wraps exports and imports in shims which use `anyref`, but quickly turn them
+//! `externref` type inside of the wasm module. This transformation pass primarily
+//! wraps exports and imports in shims which use `externref`, but quickly turn them
 //! into `i32` value types. This is all largely a stopgap until Rust has
-//! first-class support for the `anyref` type, but that's thought to be in the
+//! first-class support for the `externref` type, but that's thought to be in the
 //! far future and will take quite some time to implement. In the meantime, we
 //! have this!
 //!
@@ -13,7 +13,7 @@
 //! about imports and exports. Afterwards this pass runs in one go against a
 //! wasm module, updating exports, imports, calls to these functions, etc. The
 //! goal at least is to have valid wasm modules coming in that don't use
-//! `anyref` and valid wasm modules going out which use `anyref` at the fringes.
+//! `externref` and valid wasm modules going out which use `externref` at the fringes.
 
 use anyhow::{anyhow, bail, Error};
 use std::cmp;
@@ -23,16 +23,16 @@ use walrus::ir::*;
 use walrus::{ElementId, ExportId, ImportId, InstrLocId, TypeId};
 use walrus::{FunctionId, GlobalId, InitExpr, Module, TableId, ValType};
 
-// must be kept in sync with src/lib.rs and ANYREF_HEAP_START
+// must be kept in sync with src/lib.rs and EXTERNREF_HEAP_START
 const DEFAULT_MIN: u32 = 32;
 
-/// State of the anyref pass, used to collect information while bindings are
+/// State of the externref pass, used to collect information while bindings are
 /// generated and used eventually to actually execute the entire pass.
 #[derive(Default)]
 pub struct Context {
     // Functions within the module that we're gonna be wrapping, organized by
     // type. The `Function` contains information about what arguments/return
-    // values in the function signature should turn into anyref.
+    // values in the function signature should turn into externref.
     imports: HashMap<ImportId, Function>,
     exports: HashMap<ExportId, Function>,
 
@@ -49,7 +49,7 @@ pub struct Context {
     // final offset plus the element segment used to initialized that range.
     elements: BTreeMap<u32, ElementId>,
 
-    // The anyref table we'll be using, injected after construction
+    // The externref table we'll be using, injected after construction
     table: Option<TableId>,
 }
 
@@ -81,10 +81,10 @@ struct Transform<'a> {
 }
 
 struct Function {
-    // A map of argument index to whether it's an owned or borrowed anyref
+    // A map of argument index to whether it's an owned or borrowed externref
     // (owned = true)
     args: HashMap<usize, bool>,
-    ret_anyref: bool,
+    ret_externref: bool,
 }
 
 enum Intrinsic {
@@ -120,9 +120,13 @@ impl Context {
             }
         }
 
-        // Add in an anyref table to the module, which we'll be using for
+        // Add in an externref table to the module, which we'll be using for
         // our transform below.
-        self.table = Some(module.tables.add_local(DEFAULT_MIN, None, ValType::Anyref));
+        self.table = Some(
+            module
+                .tables
+                .add_local(DEFAULT_MIN, None, ValType::Externref),
+        );
 
         Ok(())
     }
@@ -132,10 +136,10 @@ impl Context {
     pub fn import_xform(
         &mut self,
         id: ImportId,
-        anyref: &[(usize, bool)],
-        ret_anyref: bool,
+        externref: &[(usize, bool)],
+        ret_externref: bool,
     ) -> &mut Self {
-        if let Some(f) = self.function(anyref, ret_anyref) {
+        if let Some(f) = self.function(externref, ret_externref) {
             self.imports.insert(id, f);
         }
         self
@@ -146,10 +150,10 @@ impl Context {
     pub fn export_xform(
         &mut self,
         id: ExportId,
-        anyref: &[(usize, bool)],
-        ret_anyref: bool,
+        externref: &[(usize, bool)],
+        ret_externref: bool,
     ) -> &mut Self {
-        if let Some(f) = self.function(anyref, ret_anyref) {
+        if let Some(f) = self.function(externref, ret_externref) {
             self.exports.insert(id, f);
         }
         self
@@ -161,22 +165,22 @@ impl Context {
     pub fn table_element_xform(
         &mut self,
         idx: u32,
-        anyref: &[(usize, bool)],
-        ret_anyref: bool,
+        externref: &[(usize, bool)],
+        ret_externref: bool,
     ) -> Option<u32> {
-        self.function(anyref, ret_anyref).map(|f| {
+        self.function(externref, ret_externref).map(|f| {
             self.new_elements.push((idx, f));
             self.new_elements.len() as u32 + self.new_element_offset - 1
         })
     }
 
-    fn function(&self, anyref: &[(usize, bool)], ret_anyref: bool) -> Option<Function> {
-        if !ret_anyref && anyref.len() == 0 {
+    fn function(&self, externref: &[(usize, bool)], ret_externref: bool) -> Option<Function> {
+        if !ret_externref && externref.len() == 0 {
             return None;
         }
         Some(Function {
-            args: anyref.iter().cloned().collect(),
-            ret_anyref,
+            args: externref.iter().cloned().collect(),
+            ret_externref,
         })
     }
 
@@ -184,7 +188,7 @@ impl Context {
         let table = self.table.unwrap();
 
         // Inject a stack pointer global which will be used for managing the
-        // stack on the anyref table.
+        // stack on the externref table.
         let init = InitExpr::Value(Value::I32(DEFAULT_MIN as i32));
         let stack_pointer = module.globals.add_local(ValType::I32, true, init);
 
@@ -202,10 +206,10 @@ impl Context {
                 _ => continue,
             };
             match export.name.as_str() {
-                "__anyref_table_alloc" => heap_alloc = Some(f),
-                "__anyref_table_dealloc" => heap_dealloc = Some(f),
-                "__anyref_drop_slice" => drop_slice = Some(f),
-                "__anyref_heap_live_count" => live_count = Some(f),
+                "__externref_table_alloc" => heap_alloc = Some(f),
+                "__externref_table_dealloc" => heap_dealloc = Some(f),
+                "__externref_drop_slice" => drop_slice = Some(f),
+                "__externref_heap_live_count" => live_count = Some(f),
                 _ => continue,
             }
             to_delete.push(export.id());
@@ -268,7 +272,7 @@ impl Context {
 impl Transform<'_> {
     fn run(&mut self, module: &mut Module) -> Result<(), Error> {
         // Detect all the various intrinsics and such. This will also along the
-        // way inject an intrinsic for cloning an anyref.
+        // way inject an intrinsic for cloning an externref.
         self.find_intrinsics(module)?;
 
         // Perform transformations of imports, exports, and function pointers.
@@ -300,12 +304,12 @@ impl Transform<'_> {
                 walrus::ImportKind::Function(f) => f,
                 _ => continue,
             };
-            if import.module == "__wbindgen_anyref_xform__" {
+            if import.module == "__wbindgen_externref_xform__" {
                 match import.name.as_str() {
-                    "__wbindgen_anyref_table_grow" => {
+                    "__wbindgen_externref_table_grow" => {
                         self.intrinsic_map.insert(f, Intrinsic::TableGrow);
                     }
-                    "__wbindgen_anyref_table_set_null" => {
+                    "__wbindgen_externref_table_set_null" => {
                         self.intrinsic_map.insert(f, Intrinsic::TableSetNull);
                     }
                     n => bail!("unknown intrinsic: {}", n),
@@ -334,8 +338,9 @@ impl Transform<'_> {
     }
 
     fn heap_alloc(&self) -> Result<FunctionId, Error> {
-        self.heap_alloc
-            .ok_or_else(|| anyhow!("failed to find the `__wbindgen_anyref_table_alloc` function"))
+        self.heap_alloc.ok_or_else(|| {
+            anyhow!("failed to find the `__wbindgen_externref_table_alloc` function")
+        })
     }
 
     fn clone_ref(&self) -> Result<FunctionId, Error> {
@@ -344,8 +349,9 @@ impl Transform<'_> {
     }
 
     fn heap_dealloc(&self) -> Result<FunctionId, Error> {
-        self.heap_dealloc
-            .ok_or_else(|| anyhow!("failed to find the `__wbindgen_anyref_table_dealloc` function"))
+        self.heap_dealloc.ok_or_else(|| {
+            anyhow!("failed to find the `__wbindgen_externref_table_dealloc` function")
+        })
     }
 
     fn process_imports(&mut self, module: &mut Module) -> Result<(), Error> {
@@ -359,7 +365,7 @@ impl Transform<'_> {
                 None => continue,
             };
 
-            let (shim, anyref_ty) = self.append_shim(
+            let (shim, externref_ty) = self.append_shim(
                 f,
                 &import.name,
                 func,
@@ -369,7 +375,7 @@ impl Transform<'_> {
             )?;
             self.import_map.insert(f, shim);
             match &mut module.funcs.get_mut(f).kind {
-                walrus::FunctionKind::Import(f) => f.ty = anyref_ty,
+                walrus::FunctionKind::Import(f) => f.ty = externref_ty,
                 _ => unreachable!(),
             }
         }
@@ -387,7 +393,7 @@ impl Transform<'_> {
                 Some(s) => s,
                 None => continue,
             };
-            let (shim, _anyref_ty) = self.append_shim(
+            let (shim, _externref_ty) = self.append_shim(
                 f,
                 &export.name,
                 function,
@@ -420,7 +426,7 @@ impl Transform<'_> {
             let target = module.elements.get(orig_element).members[(idx - offset) as usize].ok_or(
                 anyhow!("function index {} not present in element segment", idx),
             )?;
-            let (shim, _anyref_ty) = self.append_shim(
+            let (shim, _externref_ty) = self.append_shim(
                 target,
                 &format!("closure{}", idx),
                 function,
@@ -477,24 +483,24 @@ impl Transform<'_> {
         }
         let mut param_tys = Vec::new();
         let mut param_convert = Vec::new();
-        let mut anyref_stack = 0;
+        let mut externref_stack = 0;
 
         for (i, old_ty) in target_ty.params().iter().enumerate() {
             let is_owned = func.args.remove(&i);
             let new_ty = is_owned
-                .map(|_which| ValType::Anyref)
+                .map(|_which| ValType::Externref)
                 .unwrap_or(old_ty.clone());
             param_tys.push(new_ty.clone());
             if new_ty == *old_ty {
                 param_convert.push(Convert::None);
             } else if is_export {
-                // We're calling an export, so we need to push this anyref into
+                // We're calling an export, so we need to push this externref into
                 // a table somehow.
                 param_convert.push(Convert::Store {
                     owned: is_owned.unwrap(),
                 });
                 if is_owned == Some(false) {
-                    anyref_stack += 1;
+                    externref_stack += 1;
                 }
             } else {
                 // We're calling an import, so we just need to fetch our table
@@ -505,21 +511,21 @@ impl Transform<'_> {
             }
         }
 
-        let new_ret = if func.ret_anyref {
+        let new_ret = if func.ret_externref {
             assert_eq!(target_ty.results(), &[ValType::I32]);
-            vec![ValType::Anyref]
+            vec![ValType::Externref]
         } else {
             target_ty.results().to_vec()
         };
-        let anyref_ty = types.add(&param_tys, &new_ret);
+        let externref_ty = types.add(&param_tys, &new_ret);
 
         // If we're an export then our shim is what's actually going to get
-        // exported, and it's going to have the anyref signature.
+        // exported, and it's going to have the externref signature.
         //
         // If we're an import, then our shim is what the Rust code calls, which
         // means it'll have the original signature. The existing import's
-        // signature, however, is transformed to be an anyref signature.
-        let shim_ty = if is_export { anyref_ty } else { ty };
+        // signature, however, is transformed to be an externref signature.
+        let shim_ty = if is_export { externref_ty } else { ty };
 
         let mut builder = walrus::FunctionBuilder::new(
             types,
@@ -547,12 +553,12 @@ impl Transform<'_> {
         // gc passes if we don't actually end up using them.
         let fp = locals.add(ValType::I32);
         let scratch_i32 = locals.add(ValType::I32);
-        let scratch_anyref = locals.add(ValType::Anyref);
+        let scratch_externref = locals.add(ValType::Externref);
 
-        // Update our stack pointer if there's any borrowed anyref objects.
-        if anyref_stack > 0 {
+        // Update our stack pointer if there's any borrowed externref objects.
+        if externref_stack > 0 {
             body.global_get(self.stack_pointer)
-                .const_(Value::I32(anyref_stack))
+                .const_(Value::I32(externref_stack))
                 .binop(BinaryOp::I32Sub)
                 .local_tee(fp)
                 .global_set(self.stack_pointer);
@@ -565,8 +571,8 @@ impl Transform<'_> {
                     body.local_get(params[i]);
                 }
                 Convert::Load { owned: true } => {
-                    // load the anyref onto the stack, then afterwards
-                    // deallocate our index, leaving the anyref on the stack.
+                    // load the externref onto the stack, then afterwards
+                    // deallocate our index, leaving the externref on the stack.
                     body.local_get(params[i])
                         .table_get(self.table)
                         .local_get(params[i])
@@ -576,8 +582,8 @@ impl Transform<'_> {
                     body.local_get(params[i]).table_get(self.table);
                 }
                 Convert::Store { owned: true } => {
-                    // Allocate space for the anyref, store it, and then leave
-                    // the index of the allocated anyref on the stack.
+                    // Allocate space for the externref, store it, and then leave
+                    // the index of the allocated externref on the stack.
                     body.call(self.heap_alloc()?)
                         .local_tee(scratch_i32)
                         .local_get(params[i])
@@ -585,7 +591,7 @@ impl Transform<'_> {
                         .local_get(scratch_i32);
                 }
                 Convert::Store { owned: false } => {
-                    // Store an anyref at an offset from our function's stack
+                    // Store an externref at an offset from our function's stack
                     // pointer frame.
                     body.local_get(fp);
                     let idx_local = if next_stack_offset == 0 {
@@ -609,33 +615,33 @@ impl Transform<'_> {
         // wrapping.
         body.call(shim_target);
 
-        // If an anyref value is returned, then we need to be sure to apply
+        // If an externref value is returned, then we need to be sure to apply
         // special treatment to convert it to an i32 as well. Note that only
-        // owned anyref values can be returned, so that's all that's handled
+        // owned externref values can be returned, so that's all that's handled
         // here.
-        if func.ret_anyref {
+        if func.ret_externref {
             if is_export {
                 // We're an export so we have an i32 on the stack and need to
-                // convert it to an anyref, basically by doing the same as an
+                // convert it to an externref, basically by doing the same as an
                 // owned load above: get the value then deallocate our slot.
                 body.local_tee(scratch_i32)
                     .table_get(self.table)
                     .local_get(scratch_i32)
                     .call(self.heap_dealloc()?);
             } else {
-                // Imports are the opposite, we have any anyref on the stack
+                // Imports are the opposite, we have any externref on the stack
                 // and convert it to an i32 by allocating space for it and
                 // storing it there.
-                body.local_set(scratch_anyref)
+                body.local_set(scratch_externref)
                     .call(self.heap_alloc()?)
                     .local_tee(scratch_i32)
-                    .local_get(scratch_anyref)
+                    .local_get(scratch_externref)
                     .table_set(self.table)
                     .local_get(scratch_i32);
             }
         }
 
-        // On function exit restore our anyref stack pointer if we decremented
+        // On function exit restore our externref stack pointer if we decremented
         // it to start off.
         //
         // Note that we pave over all our stack slots with `ref.null` to ensure
@@ -643,18 +649,18 @@ impl Transform<'_> {
         // no longer in use by our wasm instance.
         //
         // TODO: use `table.fill` once that's spec'd
-        if anyref_stack > 0 {
-            for i in 0..anyref_stack {
+        if externref_stack > 0 {
+            for i in 0..externref_stack {
                 body.local_get(fp);
                 if i > 0 {
                     body.i32_const(i).binop(BinaryOp::I32Add);
                 }
-                body.ref_null();
+                body.ref_null(ValType::Externref);
                 body.table_set(self.table);
             }
 
             body.local_get(fp)
-                .i32_const(anyref_stack)
+                .i32_const(externref_stack)
                 .binop(BinaryOp::I32Add)
                 .global_set(self.stack_pointer);
         }
@@ -663,10 +669,10 @@ impl Transform<'_> {
         // with a fresh type we've been calculating so far. Give the function a
         // nice name for debugging and then we're good to go!
         let id = builder.finish(params, funcs);
-        let name = format!("{} anyref shim", name);
+        let name = format!("{} externref shim", name);
         funcs.get_mut(id).name = Some(name);
         self.shims.insert(id);
-        Ok((id, anyref_ty))
+        Ok((id, externref_ty))
     }
 
     fn rewrite_calls(&mut self, module: &mut Module) -> Result<(), Error> {
@@ -714,6 +720,7 @@ impl Transform<'_> {
                         }
                     };
 
+                    let ty = ValType::Externref;
                     match intrinsic {
                         Intrinsic::TableGrow => {
                             // Switch this to a `table.grow` instruction...
@@ -725,7 +732,7 @@ impl Transform<'_> {
                             // preceding instruction as the value to grow the
                             // table with.
                             seq.instrs
-                                .insert(i - 1, (RefNull {}.into(), InstrLocId::default()));
+                                .insert(i - 1, (RefNull { ty }.into(), InstrLocId::default()));
                         }
                         Intrinsic::TableSetNull => {
                             // Switch this to a `table.set` instruction...
@@ -736,7 +743,7 @@ impl Transform<'_> {
                             // ... and then insert a `ref.null` as the
                             // preceding instruction
                             seq.instrs
-                                .insert(i, (RefNull {}.into(), InstrLocId::default()));
+                                .insert(i, (RefNull { ty }.into(), InstrLocId::default()));
                         }
                         Intrinsic::DropRef => call.func = self.heap_dealloc,
                         Intrinsic::CloneRef => call.func = self.clone_ref,

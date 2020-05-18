@@ -18,13 +18,13 @@ log = "0.4"
 rustc-demangle = "0.1.13"
 serde_json = "1.0"
 tempfile = "3.0"
-walrus = "0.16.1"
-wasm-bindgen-anyref-xform = { path = '../anyref-xform', version = '=0.2.62' }
+walrus = "0.17.0"
+wasm-bindgen-externref-xform = { path = '../externref-xform', version = '=0.2.62' }
 wasm-bindgen-multi-value-xform = { path = '../multi-value-xform', version = '=0.2.62' }
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.62' }
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.62' }
 wasm-bindgen-wasm-conventions = { path = '../wasm-conventions', version = '=0.2.62' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.62' }
-wit-text = "0.6.0"
-wit-walrus = "0.2.0"
-wit-validator = "0.1.0"
+wit-text = "0.7.0"
+wit-walrus = "0.4.0"
+wit-validator = "0.2.0"
