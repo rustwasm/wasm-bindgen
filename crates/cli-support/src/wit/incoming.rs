@@ -60,24 +60,24 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::Anyref => {
+            Descriptor::Externref => {
                 self.instruction(
-                    &[AdapterType::Anyref],
-                    Instruction::I32FromAnyrefOwned,
+                    &[AdapterType::Externref],
+                    Instruction::I32FromExternrefOwned,
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::NamedAnyref(name) => {
+            Descriptor::NamedExternref(name) => {
                 self.instruction(
-                    &[AdapterType::NamedAnyref(name.clone())],
-                    Instruction::I32FromAnyrefOwned,
+                    &[AdapterType::NamedExternref(name.clone())],
+                    Instruction::I32FromExternrefOwned,
                     &[AdapterType::I32]
                 )
             }
             Descriptor::RustStruct(class) => {
                 self.instruction(
                     &[AdapterType::Struct(class.clone())],
-                    Instruction::I32FromAnyrefRustOwned {
+                    Instruction::I32FromExternrefRustOwned {
                         class: class.clone(),
                     },
                     &[AdapterType::I32],
@@ -155,23 +155,23 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::RustStruct(class) => {
                 self.instruction(
                     &[AdapterType::Struct(class.clone())],
-                    Instruction::I32FromAnyrefRustBorrow {
+                    Instruction::I32FromExternrefRustBorrow {
                         class: class.clone(),
                     },
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::Anyref => {
+            Descriptor::Externref => {
                 self.instruction(
-                    &[AdapterType::Anyref],
-                    Instruction::I32FromAnyrefBorrow,
+                    &[AdapterType::Externref],
+                    Instruction::I32FromExternrefBorrow,
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::NamedAnyref(name) => {
+            Descriptor::NamedExternref(name) => {
                 self.instruction(
-                    &[AdapterType::NamedAnyref(name.clone())],
-                    Instruction::I32FromAnyrefBorrow,
+                    &[AdapterType::NamedExternref(name.clone())],
+                    Instruction::I32FromExternrefBorrow,
                     &[AdapterType::I32],
                 );
             }
@@ -229,19 +229,19 @@ impl InstructionBuilder<'_, '_> {
 
     fn incoming_option(&mut self, arg: &Descriptor) -> Result<(), Error> {
         match arg {
-            Descriptor::Anyref => {
+            Descriptor::Externref => {
                 self.instruction(
-                    &[AdapterType::Anyref.option()],
-                    Instruction::I32FromOptionAnyref {
+                    &[AdapterType::Externref.option()],
+                    Instruction::I32FromOptionExternref {
                         table_and_alloc: None,
                     },
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::NamedAnyref(name) => {
+            Descriptor::NamedExternref(name) => {
                 self.instruction(
-                    &[AdapterType::NamedAnyref(name.clone()).option()],
-                    Instruction::I32FromOptionAnyref {
+                    &[AdapterType::NamedExternref(name.clone()).option()],
+                    Instruction::I32FromOptionExternref {
                         table_and_alloc: None,
                     },
                     &[AdapterType::I32],

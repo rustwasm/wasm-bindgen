@@ -55,7 +55,7 @@ pub enum StackChange {
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum AdapterJsImportKind {
-    /// The first argument is an `anyref` which is the `this` of the function
+    /// The first argument is an `externref` which is the `this` of the function
     /// call
     Method,
     /// The value imported should be invoked as `new`
@@ -77,14 +77,14 @@ pub enum AdapterType {
     F32,
     F64,
     String,
-    Anyref,
+    Externref,
     Bool,
     I32,
     I64,
     Vector(VectorKind),
     Option(Box<AdapterType>),
     Struct(String),
-    NamedAnyref(String),
+    NamedExternref(String),
     Function,
 }
 
@@ -120,24 +120,24 @@ pub enum Instruction {
     I32FromBool,
     /// Pops a `string` from the stack and pushes the first character as `i32`
     I32FromStringFirstChar,
-    /// Pops an `anyref` from the stack, allocates space in the anyref table,
+    /// Pops an `externref` from the stack, allocates space in the externref table,
     /// returns the index it was stored at.
-    I32FromAnyrefOwned,
-    /// Pops an `anyref` from the stack, pushes it onto the anyref wasm table
+    I32FromExternrefOwned,
+    /// Pops an `externref` from the stack, pushes it onto the externref wasm table
     /// stack, and returns the index it was stored at.
-    I32FromAnyrefBorrow,
-    /// Pops an `anyref` from the stack, assumes it's a Rust class given, and
+    I32FromExternrefBorrow,
+    /// Pops an `externref` from the stack, assumes it's a Rust class given, and
     /// deallocates the JS object and returns the i32 Rust pointer.
-    I32FromAnyrefRustOwned {
+    I32FromExternrefRustOwned {
         class: String,
     },
-    /// Pops an `anyref` from the stack, assumes it's a Rust class given, and
+    /// Pops an `externref` from the stack, assumes it's a Rust class given, and
     /// passes the pointer to Rust which will be borrowed for the duration of a
     /// call
-    I32FromAnyrefRustBorrow {
+    I32FromExternrefRustBorrow {
         class: String,
     },
-    /// Pops an `anyref` from the stack, pushes 0 if it's "none" or the
+    /// Pops an `externref` from the stack, pushes 0 if it's "none" or the
     /// consumed pointer value if it's "some".
     I32FromOptionRust {
         class: String,
@@ -152,28 +152,28 @@ pub enum Instruction {
     I32SplitOption64 {
         signed: bool,
     },
-    /// Pops an `anyref` from the stack, pushes either 0 if it's "none" or and
+    /// Pops an `externref` from the stack, pushes either 0 if it's "none" or and
     /// index into the owned wasm table it was stored at if it's "some"
-    I32FromOptionAnyref {
-        /// Set to `Some` by the anyref pass of where to put it in the wasm
+    I32FromOptionExternref {
+        /// Set to `Some` by the externref pass of where to put it in the wasm
         /// module, otherwise it's shoved into the JS shim.
         table_and_alloc: Option<(walrus::TableId, walrus::FunctionId)>,
     },
-    /// Pops an `anyref` from the stack, pushes either a sentinel value if it's
+    /// Pops an `externref` from the stack, pushes either a sentinel value if it's
     /// "none" or the integer value of it if it's "some"
     I32FromOptionU32Sentinel,
-    /// Pops an `anyref` from the stack, pushes 0 for "none", 1 for
+    /// Pops an `externref` from the stack, pushes 0 for "none", 1 for
     /// "some(false)', and 2 for "some(true)"
     I32FromOptionBool,
-    /// Pops an `anyref` from the stack, pushes a sentinel for "none" or the
+    /// Pops an `externref` from the stack, pushes a sentinel for "none" or the
     /// value if it's "some"
     I32FromOptionChar,
-    /// Pops an `anyref` from the stack, pushes `hole` for "none" or the
+    /// Pops an `externref` from the stack, pushes `hole` for "none" or the
     /// value if it's "some"
     I32FromOptionEnum {
         hole: u32,
     },
-    /// Pops any anyref from the stack and then pushes two values. First is a
+    /// Pops any externref from the stack and then pushes two values. First is a
     /// 0/1 if it's none/some and second is `ty` value if it was there or 0 if
     /// it wasn't there.
     FromOptionNative {
@@ -208,7 +208,7 @@ pub enum Instruction {
         realloc: Option<walrus::FunctionId>,
     },
 
-    /// Pops an anyref, pushes pointer/length or all zeros
+    /// Pops an externref, pushes pointer/length or all zeros
     OptionVector {
         kind: VectorKind,
         malloc: walrus::FunctionId,
@@ -217,15 +217,15 @@ pub enum Instruction {
 
     /// pops a `i32`, pushes `bool`
     BoolFromI32,
-    /// pops `i32`, loads anyref at that slot, dealloates anyref, pushes `anyref`
-    AnyrefLoadOwned,
+    /// pops `i32`, loads externref at that slot, dealloates externref, pushes `externref`
+    ExternrefLoadOwned,
     /// pops `i32`, pushes string from that `char`
     StringFromChar,
     /// pops two `i32`, pushes a 64-bit number
     I64FromLoHi {
         signed: bool,
     },
-    /// pops `i32`, pushes an anyref for the wrapped rust class
+    /// pops `i32`, pushes an externref for the wrapped rust class
     RustFromI32 {
         class: String,
     },
@@ -251,9 +251,9 @@ pub enum Instruction {
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
     },
-    /// pops i32, loads anyref from anyref table
+    /// pops i32, loads externref from externref table
     TableGet,
-    /// pops two i32 data pointers, pushes an anyref closure
+    /// pops two i32 data pointers, pushes an externref closure
     StackClosure {
         adapter: AdapterId,
         nargs: usize,
@@ -271,7 +271,7 @@ pub enum Instruction {
     },
     /// pops i32, pushes it viewed as an optional value with a known sentinel
     OptionU32Sentinel,
-    /// pops an i32, then `ty`, then pushes anyref
+    /// pops an i32, then `ty`, then pushes externref
     ToOptionNative {
         ty: walrus::ValType,
         signed: bool,
@@ -300,7 +300,7 @@ impl AdapterType {
             wit_walrus::ValType::F32 => AdapterType::F32,
             wit_walrus::ValType::F64 => AdapterType::F64,
             wit_walrus::ValType::String => AdapterType::String,
-            wit_walrus::ValType::Anyref => AdapterType::Anyref,
+            wit_walrus::ValType::Externref => AdapterType::Externref,
             wit_walrus::ValType::I32 => AdapterType::I32,
             wit_walrus::ValType::I64 => AdapterType::I64,
         }
@@ -312,10 +312,8 @@ impl AdapterType {
             walrus::ValType::I64 => AdapterType::I64,
             walrus::ValType::F32 => AdapterType::F32,
             walrus::ValType::F64 => AdapterType::F64,
-            walrus::ValType::Anyref => AdapterType::Anyref,
-            walrus::ValType::Funcref | walrus::ValType::Nullref | walrus::ValType::V128 => {
-                return None
-            }
+            walrus::ValType::Externref => AdapterType::Externref,
+            walrus::ValType::Funcref | walrus::ValType::V128 => return None,
         })
     }
 
@@ -325,7 +323,7 @@ impl AdapterType {
             AdapterType::I64 => walrus::ValType::I64,
             AdapterType::F32 => walrus::ValType::F32,
             AdapterType::F64 => walrus::ValType::F64,
-            AdapterType::Anyref | AdapterType::NamedAnyref(_) => walrus::ValType::Anyref,
+            AdapterType::Externref | AdapterType::NamedExternref(_) => walrus::ValType::Externref,
             _ => return None,
         })
     }
@@ -343,7 +341,9 @@ impl AdapterType {
             AdapterType::F32 => wit_walrus::ValType::F32,
             AdapterType::F64 => wit_walrus::ValType::F64,
             AdapterType::String => wit_walrus::ValType::String,
-            AdapterType::Anyref | AdapterType::NamedAnyref(_) => wit_walrus::ValType::Anyref,
+            AdapterType::Externref | AdapterType::NamedExternref(_) => {
+                wit_walrus::ValType::Externref
+            }
 
             AdapterType::I32 => wit_walrus::ValType::I32,
             AdapterType::I64 => wit_walrus::ValType::I64,
@@ -492,7 +492,7 @@ impl walrus::CustomSection for NonstandardWitSection {
                             roots.push_func(id);
                         }
                     }
-                    I32FromOptionAnyref { table_and_alloc } => {
+                    I32FromOptionExternref { table_and_alloc } => {
                         if let Some((table, alloc)) = table_and_alloc {
                             roots.push_table(table);
                             roots.push_func(alloc);

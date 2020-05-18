@@ -1,1 +1,1 @@
-// enable-anyref
+// enable-externref

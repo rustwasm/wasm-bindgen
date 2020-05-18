@@ -1,16 +1,16 @@
+use crate::JsValue;
 use std::alloc::{self, Layout};
+use std::cell::Cell;
 use std::mem;
 use std::ptr;
 use std::slice;
 use std::vec::Vec;
-use std::cell::Cell;
-use crate::JsValue;
 
 externs! {
-    #[link(wasm_import_module = "__wbindgen_anyref_xform__")]
+    #[link(wasm_import_module = "__wbindgen_externref_xform__")]
     extern "C" {
-        fn __wbindgen_anyref_table_grow(delta: usize) -> i32;
-        fn __wbindgen_anyref_table_set_null(idx: usize) -> ();
+        fn __wbindgen_externref_table_grow(delta: usize) -> i32;
+        fn __wbindgen_externref_table_set_null(idx: usize) -> ();
     }
 }
 
@@ -34,7 +34,7 @@ impl Slab {
         if ret == self.data.len() {
             if self.data.len() == self.data.capacity() {
                 let extra = 128;
-                let r = unsafe { __wbindgen_anyref_table_grow(extra) };
+                let r = unsafe { __wbindgen_externref_table_grow(extra) };
                 if r == -1 {
                     internal_error("table grow failure")
                 }
@@ -121,12 +121,12 @@ fn internal_error(msg: &str) -> ! {
     }
 }
 
-// Management of `anyref` is always thread local since an `anyref` value can't
-// cross threads in wasm. Indices as a result are always thread-local.
+// Management of `externref` is always thread local since an `externref` value
+// can't cross threads in wasm. Indices as a result are always thread-local.
 std::thread_local!(pub static HEAP_SLAB: Cell<Slab> = Cell::new(Slab::new()));
 
 #[no_mangle]
-pub extern "C" fn __anyref_table_alloc() -> usize {
+pub extern "C" fn __externref_table_alloc() -> usize {
     HEAP_SLAB
         .try_with(|slot| {
             let mut slab = slot.replace(Slab::new());
@@ -138,14 +138,14 @@ pub extern "C" fn __anyref_table_alloc() -> usize {
 }
 
 #[no_mangle]
-pub extern "C" fn __anyref_table_dealloc(idx: usize) {
+pub extern "C" fn __externref_table_dealloc(idx: usize) {
     if idx < super::JSIDX_RESERVED as usize {
         return;
     }
     // clear this value from the table so while the table slot is un-allocated
     // we don't keep around a strong reference to a potentially large object
     unsafe {
-        __wbindgen_anyref_table_set_null(idx);
+        __wbindgen_externref_table_set_null(idx);
     }
     HEAP_SLAB
         .try_with(|slot| {
@@ -157,16 +157,16 @@ pub extern "C" fn __anyref_table_dealloc(idx: usize) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn __anyref_drop_slice(ptr: *mut JsValue, len: usize) {
+pub unsafe extern "C" fn __externref_drop_slice(ptr: *mut JsValue, len: usize) {
     for slot in slice::from_raw_parts_mut(ptr, len) {
-        __anyref_table_dealloc(slot.idx as usize);
+        __externref_table_dealloc(slot.idx as usize);
     }
 }
 
-// Implementation of `__wbindgen_anyref_heap_live_count` for when we are using
-// `anyref` instead of the JS `heap`.
+// Implementation of `__wbindgen_externref_heap_live_count` for when we are using
+// `externref` instead of the JS `heap`.
 #[no_mangle]
-pub unsafe extern "C" fn __anyref_heap_live_count() -> u32 {
+pub unsafe extern "C" fn __externref_heap_live_count() -> u32 {
     HEAP_SLAB
         .try_with(|slot| {
             let slab = slot.replace(Slab::new());

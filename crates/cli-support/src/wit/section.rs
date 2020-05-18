@@ -45,9 +45,9 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         structs,
 
         // irrelevant ids used to track various internal intrinsics and such
-        anyref_table: _,
-        anyref_alloc: _,
-        anyref_drop_slice: _,
+        externref_table: _,
+        externref_alloc: _,
+        externref_drop_slice: _,
         exn_store: _,
         shadow_stack_pointer: _,
         function_table: _,
@@ -243,17 +243,19 @@ fn translate_instruction(
         I32FromStringFirstChar | StringFromChar => {
             bail!("chars aren't supported in wasm interface types");
         }
-        I32FromAnyrefOwned | I32FromAnyrefBorrow | AnyrefLoadOwned | TableGet => {
-            bail!("anyref pass failed to sink into wasm module");
+        I32FromExternrefOwned | I32FromExternrefBorrow | ExternrefLoadOwned | TableGet => {
+            bail!("externref pass failed to sink into wasm module");
         }
-        I32FromAnyrefRustOwned { .. } | I32FromAnyrefRustBorrow { .. } | RustFromI32 { .. } => {
+        I32FromExternrefRustOwned { .. }
+        | I32FromExternrefRustBorrow { .. }
+        | RustFromI32 { .. } => {
             bail!("rust types aren't supported in wasm interface types");
         }
         I32Split64 { .. } | I64FromLoHi { .. } => {
             bail!("64-bit integers aren't supported in wasm-bindgen");
         }
         I32SplitOption64 { .. }
-        | I32FromOptionAnyref { .. }
+        | I32FromOptionExternref { .. }
         | I32FromOptionU32Sentinel
         | I32FromOptionRust { .. }
         | I32FromOptionBool

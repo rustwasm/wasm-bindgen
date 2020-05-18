@@ -11,10 +11,10 @@ use walrus::Module;
 
 pub(crate) const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
 
-mod anyref;
 mod decode;
 mod descriptor;
 mod descriptors;
+mod externref;
 mod intrinsic;
 mod js;
 mod multivalue;
@@ -40,7 +40,7 @@ pub struct Bindgen {
     // Support for the wasm threads proposal, transforms the wasm module to be
     // "ready to be instantiated on any thread"
     threads: wasm_bindgen_threads_xform::Config,
-    anyref: bool,
+    externref: bool,
     multi_value: bool,
     wasm_interface_types: bool,
     encode_into: EncodeInto,
@@ -90,7 +90,8 @@ pub enum EncodeInto {
 
 impl Bindgen {
     pub fn new() -> Bindgen {
-        let anyref = env::var("WASM_BINDGEN_ANYREF").is_ok();
+        let externref =
+            env::var("WASM_BINDGEN_ANYREF").is_ok() || env::var("WASM_BINDGEN_EXTERNREF").is_ok();
         let wasm_interface_types = env::var("WASM_INTERFACE_TYPES").is_ok();
         let multi_value = env::var("WASM_BINDGEN_MULTI_VALUE").is_ok();
         Bindgen {
@@ -109,7 +110,7 @@ impl Bindgen {
             emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
-            anyref: anyref || wasm_interface_types,
+            externref: externref || wasm_interface_types,
             multi_value: multi_value || wasm_interface_types,
             wasm_interface_types,
             encode_into: EncodeInto::Test,
@@ -347,37 +348,37 @@ impl Bindgen {
         // interface types.
         wit::process(
             &mut module,
-            self.anyref,
+            self.externref,
             self.wasm_interface_types,
             self.emit_start,
         )?;
 
         // Now that we've got type information from the webidl processing pass,
-        // touch up the output of rustc to insert anyref shims where necessary.
-        // This is only done if the anyref pass is enabled, which it's
-        // currently off-by-default since `anyref` is still in development in
+        // touch up the output of rustc to insert externref shims where necessary.
+        // This is only done if the externref pass is enabled, which it's
+        // currently off-by-default since `externref` is still in development in
         // engines.
         //
-        // If the anyref pass isn't necessary, then we blanket delete the
-        // export of all our anyref intrinsics which will get cleaned up in the
+        // If the externref pass isn't necessary, then we blanket delete the
+        // export of all our externref intrinsics which will get cleaned up in the
         // GC pass before JS generation.
-        if self.anyref {
-            anyref::process(&mut module)?;
+        if self.externref {
+            externref::process(&mut module)?;
         } else {
             let ids = module
                 .exports
                 .iter()
-                .filter(|e| e.name.starts_with("__anyref"))
+                .filter(|e| e.name.starts_with("__externref"))
                 .map(|e| e.id())
                 .collect::<Vec<_>>();
             for id in ids {
                 module.exports.delete(id);
             }
             // Clean up element segments as well if they have holes in them
-            // after some of our transformations, because non-anyref engines
+            // after some of our transformations, because non-externref engines
             // only support contiguous arrays of function references in element
             // segments.
-            anyref::force_contiguous_elements(&mut module)?;
+            externref::force_contiguous_elements(&mut module)?;
         }
 
         // If wasm interface types are enabled then the `__wbindgen_throw`

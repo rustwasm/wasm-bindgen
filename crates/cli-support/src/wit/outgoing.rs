@@ -32,18 +32,18 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Bool],
                 );
             }
-            Descriptor::Anyref => {
+            Descriptor::Externref => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::AnyrefLoadOwned,
-                    &[AdapterType::Anyref],
+                    Instruction::ExternrefLoadOwned,
+                    &[AdapterType::Externref],
                 );
             }
-            Descriptor::NamedAnyref(name) => {
+            Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::AnyrefLoadOwned,
-                    &[AdapterType::NamedAnyref(name.clone())],
+                    Instruction::ExternrefLoadOwned,
+                    &[AdapterType::NamedExternref(name.clone())],
                 );
             }
             Descriptor::I8 => self.outgoing_i32(AdapterType::S8),
@@ -162,18 +162,18 @@ impl InstructionBuilder<'_, '_> {
 
     fn outgoing_ref(&mut self, mutable: bool, arg: &Descriptor) -> Result<(), Error> {
         match arg {
-            Descriptor::Anyref => {
+            Descriptor::Externref => {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::TableGet,
-                    &[AdapterType::Anyref],
+                    &[AdapterType::Externref],
                 );
             }
-            Descriptor::NamedAnyref(name) => {
+            Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::TableGet,
-                    &[AdapterType::NamedAnyref(name.clone())],
+                    &[AdapterType::NamedExternref(name.clone())],
                 );
             }
             Descriptor::CachedString => self.cached_string(false, false)?,
@@ -232,20 +232,20 @@ impl InstructionBuilder<'_, '_> {
 
     fn outgoing_option(&mut self, arg: &Descriptor) -> Result<(), Error> {
         match arg {
-            Descriptor::Anyref => {
+            Descriptor::Externref => {
                 // This is set to `undefined` in the `None` case and otherwise
                 // is the valid owned index.
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::AnyrefLoadOwned,
-                    &[AdapterType::Anyref.option()],
+                    Instruction::ExternrefLoadOwned,
+                    &[AdapterType::Externref.option()],
                 );
             }
-            Descriptor::NamedAnyref(name) => {
+            Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::AnyrefLoadOwned,
-                    &[AdapterType::NamedAnyref(name.clone()).option()],
+                    Instruction::ExternrefLoadOwned,
+                    &[AdapterType::NamedExternref(name.clone()).option()],
                 );
             }
             Descriptor::I8 => self.out_option_sentinel(AdapterType::S8),
@@ -328,20 +328,20 @@ impl InstructionBuilder<'_, '_> {
 
     fn outgoing_option_ref(&mut self, _mutable: bool, arg: &Descriptor) -> Result<(), Error> {
         match arg {
-            Descriptor::Anyref => {
+            Descriptor::Externref => {
                 // If this is `Some` then it's the index, otherwise if it's
                 // `None` then it's the index pointing to undefined.
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::TableGet,
-                    &[AdapterType::Anyref.option()],
+                    &[AdapterType::Externref.option()],
                 );
             }
-            Descriptor::NamedAnyref(name) => {
+            Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::TableGet,
-                    &[AdapterType::NamedAnyref(name.clone()).option()],
+                    &[AdapterType::NamedExternref(name.clone()).option()],
                 );
             }
             Descriptor::CachedString => self.cached_string(true, false)?,

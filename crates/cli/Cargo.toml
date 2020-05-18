@@ -24,7 +24,7 @@ rouille = { version = "3.0.0", default-features = false }
 serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
-walrus = { version = "0.16.0", features = ['parallel'] }
+walrus = { version = "0.17.0", features = ['parallel'] }
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.62" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.62" }
 
@@ -34,11 +34,11 @@ diff = "0.1"
 predicates = "1.0.0"
 rayon = "1.0"
 tempfile = "3.0"
-walrus = "0.16"
-wit-printer = "0.1"
-wit-text = "0.6"
-wit-validator = "0.1"
-wit-walrus = "0.2"
+walrus = "0.17"
+wit-printer = "0.2"
+wit-text = "0.7"
+wit-validator = "0.2"
+wit-walrus = "0.4"
 
 [[test]]
 name = "reference"
