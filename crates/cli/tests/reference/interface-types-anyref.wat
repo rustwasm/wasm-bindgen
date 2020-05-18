@@ -1,6 +1,6 @@
 (module
-  (type (;0;) (func (param anyref anyref) (result anyref)))
-  (func $anyref_in_out anyref shim (type 0) (param anyref anyref) (result anyref))
+  (type (;0;) (func (param externref externref) (result externref)))
+  (func $anyref_in_out anyref shim (type 0) (param externref externref) (result externref))
   (memory (;0;) 17)
   (export "memory" (memory 0))
   (export "anyref_in_out" (func $anyref_in_out anyref shim))

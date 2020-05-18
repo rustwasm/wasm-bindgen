@@ -6,7 +6,7 @@
   (func $__wbindgen_exn_store (type 2) (param i32))
   (func $__anyref_table_alloc (type 1) (result i32))
   (func $exported (type 0))
-  (table (;0;) 32 anyref)
+  (table (;0;) 32 externref)
   (memory (;0;) 17)
   (export "memory" (memory 0))
   (export "exported" (func $exported))

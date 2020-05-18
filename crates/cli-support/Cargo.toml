@@ -25,6 +25,6 @@ wasm-bindgen-shared = { path = "../shared", version = '=0.2.62' }
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.62' }
 wasm-bindgen-wasm-conventions = { path = '../wasm-conventions', version = '=0.2.62' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.62' }
-wit-text = "0.1.1"
+wit-text = "0.6.0"
 wit-walrus = "0.2.0"
 wit-validator = "0.1.0"
