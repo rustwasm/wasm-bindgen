@@ -213,7 +213,7 @@ impl ToTokens for ast::Struct {
             #[doc(hidden)]
             #[allow(clippy::all)]
             pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                <#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr);
+                drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
             }
 
             #[allow(clippy::all)]
