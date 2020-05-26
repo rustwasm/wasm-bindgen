@@ -45,11 +45,9 @@ pub fn wasm_bindgen_test(
     }
     let ident = match body.next() {
         Some(TokenTree::Ident(token)) => token,
-        Some(TokenTree::Group(g)) => {
-            match g.stream().into_iter().next() {
-                Some(TokenTree::Ident(token)) => token,
-                _ => panic!("expected a function name"),
-            }
+        Some(TokenTree::Group(g)) => match g.stream().into_iter().next() {
+            Some(TokenTree::Ident(token)) => token,
+            _ => panic!("expected a function name"),
         },
         _ => panic!("expected a function name"),
     };
