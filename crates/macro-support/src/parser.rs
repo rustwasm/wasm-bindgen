@@ -875,7 +875,11 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
                 "#[wasm_bindgen] generic impls aren't supported"
             );
         }
-        let name = match *self.self_ty {
+        let self_ty = match &*self.self_ty {
+            syn::Type::Group(syn::TypeGroup { elem, .. }) => &**elem,
+            otherwise => &otherwise,
+        };
+        let name = match self_ty {
             syn::Type::Path(syn::TypePath {
                 qself: None,
                 ref path,
