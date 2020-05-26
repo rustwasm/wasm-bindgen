@@ -414,7 +414,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             let class = wasm.arguments.get(0).ok_or_else(|| {
                 err_span!(self, "imported methods must have at least one argument")
             })?;
-            let class = match &*class.ty {
+            let mut class = match &*class.ty {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: None,
                     elem,
@@ -425,6 +425,9 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                     "first argument of method must be a shared reference"
                 ),
             };
+            if let syn::Type::Group(syn::TypeGroup { elem, .. }) = class {
+                class = elem;
+            }
             let class_name = match *class {
                 syn::Type::Path(syn::TypePath {
                     qself: None,
@@ -462,10 +465,13 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
 
             ast::ImportFunctionKind::Method { class, ty, kind }
         } else if opts.constructor().is_some() {
-            let class = match js_ret {
+            let mut class = match js_ret {
                 Some(ref ty) => ty,
                 _ => bail_span!(self, "constructor returns must be bare types"),
             };
+            if let syn::Type::Group(syn::TypeGroup { elem, .. }) = class {
+                class = elem;
+            }
             let class_name = match *class {
                 syn::Type::Path(syn::TypePath {
                     qself: None,
