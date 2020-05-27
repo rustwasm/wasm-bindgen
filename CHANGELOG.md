@@ -2,6 +2,38 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.63
+
+Released 2020-05-27.
+
+### Added
+
+* A new example about using WebRTC has been added.
+  [#2131](https://github.com/rustwasm/wasm-bindgen/pull/2131)
+
+* The `Blob.stream()` method has been added.
+  [#2140](https://github.com/rustwasm/wasm-bindgen/pull/2140)
+  [#2142](https://github.com/rustwasm/wasm-bindgen/pull/2142)
+
+### Changed
+
+* The encoding and implementation of WebAssembly reference types has been sync'd
+  with the latest upstream specification.
+  [#2125](https://github.com/rustwasm/wasm-bindgen/pull/2125)
+
+### Fixed
+
+* Test functions names will no longer collide with test intrinsic names.
+  [#2123](https://github.com/rustwasm/wasm-bindgen/pull/2123)
+
+* Fixed warnings with `#[must_use]` types in generated code.
+  [#2144](https://github.com/rustwasm/wasm-bindgen/pull/2144)
+
+* Fixed compatibility with latest Rust nightlies.
+  [#2159](https://github.com/rustwasm/wasm-bindgen/pull/2159)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.62
 
 Released 2020-05-01.
