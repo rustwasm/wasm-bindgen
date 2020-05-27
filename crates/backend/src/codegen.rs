@@ -216,7 +216,7 @@ impl ToTokens for ast::Struct {
             #[doc(hidden)]
             #[allow(clippy::all)]
             pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                <#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr);
+                drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
             }
 
             #[allow(clippy::all)]
@@ -583,7 +583,7 @@ impl ToTokens for ast::ImportType {
             let typescript_type_chars = typescript_type.chars().map(|c| c as u32);
             quote! {
                 use wasm_bindgen::describe::*;
-                inform(NAMED_ANYREF);
+                inform(NAMED_EXTERNREF);
                 inform(#typescript_type_len);
                 #(inform(#typescript_type_chars);)*
             }

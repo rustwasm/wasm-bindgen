@@ -212,6 +212,14 @@ extern "C" {
         end: f64,
         content_type: &str,
     ) -> Result<Blob, JsValue>;
+    #[cfg(feature = "ReadableStream")]
+    # [ wasm_bindgen ( method , structural , js_class = "Blob" , js_name = stream ) ]
+    #[doc = "The `stream()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/stream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Blob`, `ReadableStream`*"]
+    pub fn stream(this: &Blob) -> ReadableStream;
     # [ wasm_bindgen ( method , structural , js_class = "Blob" , js_name = text ) ]
     #[doc = "The `text()` method."]
     #[doc = ""]

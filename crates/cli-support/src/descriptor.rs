@@ -30,8 +30,8 @@ tys! {
     REFMUT
     SLICE
     VECTOR
-    ANYREF
-    NAMED_ANYREF
+    EXTERNREF
+    NAMED_EXTERNREF
     ENUM
     RUST_STRUCT
     CHAR
@@ -62,8 +62,8 @@ pub enum Descriptor {
     Vector(Box<Descriptor>),
     CachedString,
     String,
-    Anyref,
-    NamedAnyref(String),
+    Externref,
+    NamedExternref(String),
     Enum { hole: u32 },
     RustStruct(String),
     Char,
@@ -100,7 +100,7 @@ pub enum VectorKind {
     F32,
     F64,
     String,
-    Anyref,
+    Externref,
 }
 
 impl Descriptor {
@@ -133,15 +133,15 @@ impl Descriptor {
             OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data, clamped))),
             CACHED_STRING => Descriptor::CachedString,
             STRING => Descriptor::String,
-            ANYREF => Descriptor::Anyref,
+            EXTERNREF => Descriptor::Externref,
             ENUM => Descriptor::Enum { hole: get(data) },
             RUST_STRUCT => {
                 let name = get_string(data);
                 Descriptor::RustStruct(name)
             }
-            NAMED_ANYREF => {
+            NAMED_EXTERNREF => {
                 let name = get_string(data);
-                Descriptor::NamedAnyref(name)
+                Descriptor::NamedExternref(name)
             }
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
@@ -192,7 +192,7 @@ impl Descriptor {
             Descriptor::U64 => Some(VectorKind::U64),
             Descriptor::F32 => Some(VectorKind::F32),
             Descriptor::F64 => Some(VectorKind::F64),
-            Descriptor::Anyref => Some(VectorKind::Anyref),
+            Descriptor::Externref => Some(VectorKind::Externref),
             _ => None,
         }
     }
@@ -254,7 +254,7 @@ impl VectorKind {
             VectorKind::U64 => "BigUint64Array",
             VectorKind::F32 => "Float32Array",
             VectorKind::F64 => "Float64Array",
-            VectorKind::Anyref => "any[]",
+            VectorKind::Externref => "any[]",
         }
     }
 
@@ -272,7 +272,7 @@ impl VectorKind {
             VectorKind::U64 => 8,
             VectorKind::F32 => 4,
             VectorKind::F64 => 8,
-            VectorKind::Anyref => 4,
+            VectorKind::Externref => 4,
         }
     }
 }

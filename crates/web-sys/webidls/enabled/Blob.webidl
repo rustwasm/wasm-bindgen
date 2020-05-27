@@ -29,6 +29,8 @@ interface Blob {
              [Clamp] optional long long end,
              optional DOMString contentType);
 
+  // read from the Blob.
+  [NewObject] ReadableStream stream();
   [NewObject] Promise<DOMString> text();
   [NewObject] Promise<ArrayBuffer> arrayBuffer();
 };

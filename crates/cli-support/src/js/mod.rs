@@ -167,7 +167,10 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+    pub fn finalize(
+        &mut self,
+        module_name: &str,
+    ) -> Result<(String, String, Option<String>), Error> {
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
@@ -273,9 +276,10 @@ impl<'a> Context<'a> {
         &mut self,
         module_name: &str,
         needs_manual_start: bool,
-    ) -> Result<(String, String), Error> {
+    ) -> Result<(String, String, Option<String>), Error> {
         let mut ts = self.typescript.clone();
         let mut js = String::new();
+        let mut start = None;
 
         if let OutputMode::NoModules { global } = &self.config.mode {
             js.push_str(&format!("let {};\n(function() {{\n", global));
@@ -340,7 +344,7 @@ impl<'a> Context<'a> {
                 ));
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
-                    import.module = format!("./{}.js", module_name);
+                    import.module = format!("./{}_bg.js", module_name);
                     footer.push_str("\nexport const ");
                     footer.push_str(&import.name);
                     footer.push_str(" = ");
@@ -348,7 +352,7 @@ impl<'a> Context<'a> {
                     footer.push_str(";\n");
                 }
                 if needs_manual_start {
-                    footer.push_str("\nwasm.__wbindgen_start();\n");
+                    start = Some("\nwasm.__wbindgen_start();\n".to_string());
                 }
             }
 
@@ -394,7 +398,7 @@ impl<'a> Context<'a> {
             js = js.replace("\n\n\n", "\n\n");
         }
 
-        Ok((js, ts))
+        Ok((js, ts, start))
     }
 
     fn js_import_header(&self) -> Result<String, Error> {
@@ -854,7 +858,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("heap") {
             return;
         }
-        assert!(!self.config.anyref);
+        assert!(!self.config.externref);
         self.global(&format!(
             "const heap = new Array({}).fill(undefined);",
             INITIAL_HEAP_OFFSET
@@ -1139,11 +1143,11 @@ impl<'a> Context<'a> {
             return Ok(ret);
         }
         self.expose_wasm_vector_len();
-        match (self.aux.anyref_table, self.aux.anyref_alloc) {
+        match (self.aux.externref_table, self.aux.externref_alloc) {
             (Some(table), Some(alloc)) => {
-                // TODO: using `addToAnyrefTable` goes back and forth between wasm
+                // TODO: using `addToExternrefTable` goes back and forth between wasm
                 // and JS a lot, we should have a bulk operation for this.
-                let add = self.expose_add_to_anyref_table(table, alloc)?;
+                let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
                     "
                         function {}(array, malloc) {{
@@ -1247,7 +1251,7 @@ impl<'a> Context<'a> {
             self.global(&format!(
                 "
                     const l{0} = typeof {0} === 'undefined' ? \
-                        require('util').{0} : {0};\
+                        (0, module.require)('util').{0} : {0};\
                 ",
                 s
             ));
@@ -1337,7 +1341,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global(ret.to_string()) {
             return Ok(ret);
         }
-        match (self.aux.anyref_table, self.aux.anyref_drop_slice) {
+        match (self.aux.externref_table, self.aux.externref_drop_slice) {
             (Some(table), Some(drop)) => {
                 let table = self.export_name_of(table);
                 let drop = self.export_name_of(drop);
@@ -1516,7 +1520,7 @@ impl<'a> Context<'a> {
             VectorKind::U64 => self.expose_uint64_memory(memory),
             VectorKind::F32 => self.expose_f32_memory(memory),
             VectorKind::F64 => self.expose_f64_memory(memory),
-            VectorKind::Anyref => self.expose_uint32_memory(memory),
+            VectorKind::Externref => self.expose_uint32_memory(memory),
         }
     }
 
@@ -1661,9 +1665,9 @@ impl<'a> Context<'a> {
             .exn_store
             .ok_or_else(|| anyhow!("failed to find `__wbindgen_exn_store` intrinsic"))?;
         let store = self.export_name_of(store);
-        match (self.aux.anyref_table, self.aux.anyref_alloc) {
+        match (self.aux.externref_table, self.aux.externref_alloc) {
             (Some(table), Some(alloc)) => {
-                let add = self.expose_add_to_anyref_table(table, alloc)?;
+                let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
                     "
                     function handleError(f) {{
@@ -1746,7 +1750,7 @@ impl<'a> Context<'a> {
             VectorKind::I64 | VectorKind::U64 => self.expose_pass_array64_to_wasm(memory),
             VectorKind::F32 => self.expose_pass_array_f32_to_wasm(memory),
             VectorKind::F64 => self.expose_pass_array_f64_to_wasm(memory),
-            VectorKind::Anyref => self.expose_pass_array_jsvalue_to_wasm(memory),
+            VectorKind::Externref => self.expose_pass_array_jsvalue_to_wasm(memory),
         }
     }
 
@@ -1768,7 +1772,7 @@ impl<'a> Context<'a> {
             VectorKind::U64 => self.expose_get_array_u64_from_wasm(memory),
             VectorKind::F32 => self.expose_get_array_f32_from_wasm(memory),
             VectorKind::F64 => self.expose_get_array_f64_from_wasm(memory),
-            VectorKind::Anyref => self.expose_get_array_js_value_from_wasm(memory)?,
+            VectorKind::Externref => self.expose_get_array_js_value_from_wasm(memory)?,
         })
     }
 
@@ -2048,13 +2052,13 @@ impl<'a> Context<'a> {
         true
     }
 
-    fn expose_add_to_anyref_table(
+    fn expose_add_to_externref_table(
         &mut self,
         table: TableId,
         alloc: FunctionId,
     ) -> Result<MemView, Error> {
-        let view = self.memview_table("addToAnyrefTable", table);
-        assert!(self.config.anyref);
+        let view = self.memview_table("addToExternrefTable", table);
+        assert!(self.config.externref);
         if !self.should_write_global(view.to_string()) {
             return Ok(view);
         }
@@ -2917,7 +2921,7 @@ impl<'a> Context<'a> {
                 "JSON.stringify(obj === undefined ? null : obj)".to_string()
             }
 
-            Intrinsic::AnyrefHeapLiveCount => {
+            Intrinsic::ExternrefHeapLiveCount => {
                 assert_eq!(args.len(), 0);
                 self.expose_global_heap();
                 prelude.push_str(
@@ -2937,11 +2941,11 @@ impl<'a> Context<'a> {
                 )
             }
 
-            Intrinsic::InitAnyrefTable => {
+            Intrinsic::InitExternrefTable => {
                 let table = self
                     .aux
-                    .anyref_table
-                    .ok_or_else(|| anyhow!("must enable anyref to use anyref intrinsic"))?;
+                    .externref_table
+                    .ok_or_else(|| anyhow!("must enable externref to use externref intrinsic"))?;
                 let name = self.export_name_of(table);
                 // Grow the table to insert our initial values, and then also
                 // set the 0th slot to `undefined` since that's what we've
@@ -3013,10 +3017,10 @@ impl<'a> Context<'a> {
     }
 
     fn process_package_json(&mut self, path: &Path) -> Result<(), Error> {
-        if !self.config.mode.nodejs() && !self.config.mode.bundler() {
+        if self.config.mode.no_modules() {
             bail!(
                 "NPM dependencies have been specified in `{}` but \
-                 this is only compatible with the `bundler` and `nodejs` targets",
+                 this is incompatible with the `no-modules` target",
                 path.display(),
             );
         }

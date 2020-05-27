@@ -422,6 +422,14 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     }
 }
 
+fn get_ty(mut ty: &syn::Type) -> &syn::Type {
+    while let syn::Type::Group(g) = ty {
+        ty = &g.elem;
+    }
+
+    ty
+}
+
 impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
@@ -460,7 +468,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             let class = wasm.arguments.get(0).ok_or_else(|| {
                 err_span!(self, "imported methods must have at least one argument")
             })?;
-            let class = match &*class.ty {
+            let class = match get_ty(&class.ty) {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: None,
                     elem,
@@ -471,7 +479,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                     "first argument of method must be a shared reference"
                 ),
             };
-            let class_name = match *class {
+            let class_name = match get_ty(class) {
                 syn::Type::Path(syn::TypePath {
                     qself: None,
                     ref path,
@@ -512,7 +520,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 Some(ref ty) => ty,
                 _ => bail_span!(self, "constructor returns must be bare types"),
             };
-            let class_name = match *class {
+            let class_name = match get_ty(class) {
                 syn::Type::Path(syn::TypePath {
                     qself: None,
                     ref path,
@@ -712,9 +720,9 @@ fn function_from_decl(
             Some(i) => i,
             None => return t,
         };
-        let path = match t {
-            syn::Type::Path(syn::TypePath { qself: None, path }) => path,
-            other => return other,
+        let path = match get_ty(&t) {
+            syn::Type::Path(syn::TypePath { qself: None, path }) => path.clone(),
+            other => return other.clone(),
         };
         let new_path = if path.segments.len() == 1 && path.segments[0].ident == "Self" {
             self_ty.clone().into()
@@ -915,7 +923,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
                 "#[wasm_bindgen] generic impls aren't supported"
             );
         }
-        let name = match *self.self_ty {
+        let name = match get_ty(&self.self_ty) {
             syn::Type::Path(syn::TypePath {
                 qself: None,
                 ref path,
@@ -1332,7 +1340,7 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, D
         Some(t) => t,
         None => return Ok(None),
     };
-    let path = match *t {
+    let path = match *get_ty(&t) {
         syn::Type::Path(syn::TypePath {
             qself: None,
             ref path,
@@ -1355,7 +1363,7 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, D
         syn::GenericArgument::Type(t) => t,
         other => bail_span!(other, "must be a type parameter"),
     };
-    match ty {
+    match get_ty(&ty) {
         syn::Type::Tuple(t) if t.elems.len() == 0 => return Ok(None),
         _ => {}
     }

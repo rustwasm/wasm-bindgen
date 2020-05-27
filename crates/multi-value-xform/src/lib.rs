@@ -162,9 +162,9 @@ fn xform_one(
                 round_up_to_alignment(results_size, 8) + 8
             }
             walrus::ValType::V128 => round_up_to_alignment(results_size, 16) + 16,
-            walrus::ValType::Anyref => anyhow::bail!(
+            walrus::ValType::Externref | walrus::ValType::Funcref => anyhow::bail!(
                 "cannot multi-value transform functions that return \
-                 anyref, since they can't go into linear memory"
+                     reference types, since they can't go into linear memory"
             ),
         };
     }
@@ -284,7 +284,7 @@ fn xform_one(
                 );
                 offset += 16;
             }
-            walrus::ValType::Anyref => unreachable!(),
+            walrus::ValType::Externref | walrus::ValType::Funcref => unreachable!(),
         }
     }
 

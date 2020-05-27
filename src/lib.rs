@@ -6,6 +6,7 @@
 //! interface.
 
 #![no_std]
+#![allow(coherence_leak_check)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 #![cfg_attr(feature = "nightly", feature(unsize))]
 
@@ -67,7 +68,7 @@ if_std! {
     extern crate std;
     use std::prelude::v1::*;
     pub mod closure;
-    mod anyref;
+    mod externref;
 
     mod cache;
     pub use cache::intern::{intern, unintern};
@@ -494,7 +495,7 @@ externs! {
         fn __wbindgen_symbol_named_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_symbol_anonymous_new() -> u32;
 
-        fn __wbindgen_anyref_heap_live_count() -> u32;
+        fn __wbindgen_externref_heap_live_count() -> u32;
 
         fn __wbindgen_is_null(idx: u32) -> u32;
         fn __wbindgen_is_undefined(idx: u32) -> u32;
@@ -658,7 +659,7 @@ pub fn throw_val(s: JsValue) -> ! {
     }
 }
 
-/// Get the count of live `anyref`s / `JsValue`s in `wasm-bindgen`'s heap.
+/// Get the count of live `externref`s / `JsValue`s in `wasm-bindgen`'s heap.
 ///
 /// ## Usage
 ///
@@ -670,7 +671,7 @@ pub fn throw_val(s: JsValue) -> ! {
 /// * get an initial live count,
 ///
 /// * perform some series of operations or function calls that should clean up
-///   after themselves, and should not keep holding onto `anyref`s / `JsValue`s
+///   after themselves, and should not keep holding onto `externref`s / `JsValue`s
 ///   after completion,
 ///
 /// * get the final live count,
@@ -679,8 +680,8 @@ pub fn throw_val(s: JsValue) -> ! {
 ///
 /// ## What is Counted
 ///
-/// Note that this only counts the *owned* `anyref`s / `JsValue`s that end up in
-/// `wasm-bindgen`'s heap. It does not count borrowed `anyref`s / `JsValue`s
+/// Note that this only counts the *owned* `externref`s / `JsValue`s that end up in
+/// `wasm-bindgen`'s heap. It does not count borrowed `externref`s / `JsValue`s
 /// that are on its stack.
 ///
 /// For example, these `JsValue`s are accounted for:
@@ -689,7 +690,7 @@ pub fn throw_val(s: JsValue) -> ! {
 /// #[wasm_bindgen]
 /// pub fn my_function(this_is_counted: JsValue) {
 ///     let also_counted = JsValue::from_str("hi");
-///     assert!(wasm_bindgen::anyref_heap_live_count() >= 2);
+///     assert!(wasm_bindgen::externref_heap_live_count() >= 2);
 /// }
 /// ```
 ///
@@ -702,8 +703,13 @@ pub fn throw_val(s: JsValue) -> ! {
 ///     // ...
 /// }
 /// ```
+pub fn externref_heap_live_count() -> u32 {
+    unsafe { __wbindgen_externref_heap_live_count() }
+}
+
+#[doc(hidden)]
 pub fn anyref_heap_live_count() -> u32 {
-    unsafe { __wbindgen_anyref_heap_live_count() }
+    externref_heap_live_count()
 }
 
 /// An extension trait for `Option<T>` and `Result<T, E>` for unwraping the `T`
@@ -1054,7 +1060,7 @@ pub mod __rt {
     ///
     /// Ideas for how to improve this are most welcome!
     pub fn link_mem_intrinsics() {
-        crate::anyref::link_intrinsics();
+        crate::externref::link_intrinsics();
     }
 
     static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];

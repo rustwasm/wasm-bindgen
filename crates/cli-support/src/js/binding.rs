@@ -616,13 +616,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("{}.codePointAt(0)", val));
         }
 
-        Instruction::I32FromAnyrefOwned => {
+        Instruction::I32FromExternrefOwned => {
             js.cx.expose_add_heap_object();
             let val = js.pop();
             js.push(format!("addHeapObject({})", val));
         }
 
-        Instruction::I32FromAnyrefBorrow => {
+        Instruction::I32FromExternrefBorrow => {
             js.cx.expose_borrowed_objects();
             js.cx.expose_global_stack_pointer();
             let val = js.pop();
@@ -630,7 +630,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.finally("heap[stack_pointer++] = undefined;");
         }
 
-        Instruction::I32FromAnyrefRustOwned { class } => {
+        Instruction::I32FromExternrefRustOwned { class } => {
             let val = js.pop();
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
@@ -640,7 +640,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("ptr{}", i));
         }
 
-        Instruction::I32FromAnyrefRustBorrow { class } => {
+        Instruction::I32FromExternrefRustBorrow { class } => {
             let val = js.pop();
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
@@ -707,12 +707,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("high{}", i));
         }
 
-        Instruction::I32FromOptionAnyref { table_and_alloc } => {
+        Instruction::I32FromOptionExternref { table_and_alloc } => {
             let val = js.pop();
             js.cx.expose_is_like_none();
             match table_and_alloc {
                 Some((table, alloc)) => {
-                    let alloc = js.cx.expose_add_to_anyref_table(*table, *alloc)?;
+                    let alloc = js.cx.expose_add_to_externref_table(*table, *alloc)?;
                     js.push(format!("isLikeNone({0}) ? 0 : {1}({0})", val, alloc));
                 }
                 None => {
@@ -869,7 +869,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("{} !== 0", val));
         }
 
-        Instruction::AnyrefLoadOwned => {
+        Instruction::ExternrefLoadOwned => {
             js.cx.expose_take_object();
             let val = js.pop();
             js.push(format!("takeObject({})", val));
@@ -1145,18 +1145,9 @@ impl Invocation {
             // The function table never changes right now, so we can statically
             // look up the desired function.
             CallTableElement(idx) => {
-                let table = module
-                    .tables
-                    .main_function_table()?
-                    .ok_or_else(|| anyhow!("no function table found"))?;
-                let functions = match &module.tables.get(table).kind {
-                    walrus::TableKind::Function(f) => f,
-                    _ => bail!("should have found a function table"),
-                };
-                let id = functions
-                    .elements
-                    .get(*idx as usize)
-                    .and_then(|id| *id)
+                let entry = wasm_bindgen_wasm_conventions::get_function_table_entry(module, *idx)?;
+                let id = entry
+                    .func
                     .ok_or_else(|| anyhow!("function table wasn't filled in a {}", idx))?;
                 Invocation::Core { id, defer: false }
             }
@@ -1233,14 +1224,14 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         | AdapterType::F64 => dst.push_str("number"),
         AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("BigInt"),
         AdapterType::String => dst.push_str("string"),
-        AdapterType::Anyref => dst.push_str("any"),
+        AdapterType::Externref => dst.push_str("any"),
         AdapterType::Bool => dst.push_str("boolean"),
         AdapterType::Vector(kind) => dst.push_str(kind.js_ty()),
         AdapterType::Option(ty) => {
             adapter2ts(ty, dst);
             dst.push_str(" | undefined");
         }
-        AdapterType::NamedAnyref(name) => dst.push_str(name),
+        AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
     }

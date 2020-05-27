@@ -45,9 +45,9 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         structs,
 
         // irrelevant ids used to track various internal intrinsics and such
-        anyref_table: _,
-        anyref_alloc: _,
-        anyref_drop_slice: _,
+        externref_table: _,
+        externref_alloc: _,
+        externref_drop_slice: _,
         exn_store: _,
         shadow_stack_pointer: _,
         function_table: _,
@@ -220,18 +220,11 @@ fn translate_instruction(
             _ => bail!("can only call exported functions"),
         },
         CallTableElement(e) => {
-            let table = module
-                .tables
-                .main_function_table()?
-                .ok_or_else(|| anyhow!("no function table found in module"))?;
-            let functions = match &module.tables.get(table).kind {
-                walrus::TableKind::Function(f) => f,
-                _ => unreachable!(),
-            };
-            match functions.elements.get(*e as usize) {
-                Some(Some(f)) => Ok(wit_walrus::Instruction::CallCore(*f)),
-                _ => bail!("expected to find an element of the function table"),
-            }
+            let entry = wasm_bindgen_wasm_conventions::get_function_table_entry(module, *e)?;
+            let id = entry
+                .func
+                .ok_or_else(|| anyhow!("function table wasn't filled in a {}", e))?;
+            Ok(wit_walrus::Instruction::CallCore(id))
         }
         StringToMemory {
             mem,
@@ -250,17 +243,19 @@ fn translate_instruction(
         I32FromStringFirstChar | StringFromChar => {
             bail!("chars aren't supported in wasm interface types");
         }
-        I32FromAnyrefOwned | I32FromAnyrefBorrow | AnyrefLoadOwned | TableGet => {
-            bail!("anyref pass failed to sink into wasm module");
+        I32FromExternrefOwned | I32FromExternrefBorrow | ExternrefLoadOwned | TableGet => {
+            bail!("externref pass failed to sink into wasm module");
         }
-        I32FromAnyrefRustOwned { .. } | I32FromAnyrefRustBorrow { .. } | RustFromI32 { .. } => {
+        I32FromExternrefRustOwned { .. }
+        | I32FromExternrefRustBorrow { .. }
+        | RustFromI32 { .. } => {
             bail!("rust types aren't supported in wasm interface types");
         }
         I32Split64 { .. } | I64FromLoHi { .. } => {
             bail!("64-bit integers aren't supported in wasm-bindgen");
         }
         I32SplitOption64 { .. }
-        | I32FromOptionAnyref { .. }
+        | I32FromOptionExternref { .. }
         | I32FromOptionU32Sentinel
         | I32FromOptionRust { .. }
         | I32FromOptionBool

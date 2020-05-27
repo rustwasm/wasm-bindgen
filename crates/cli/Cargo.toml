@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-cli"
-version = "0.2.60"
+version = "0.2.63"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cli"
@@ -24,9 +24,9 @@ rouille = { version = "3.0.0", default-features = false }
 serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
-walrus = { version = "0.14.0", features = ['parallel'] }
-wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.60" }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.60" }
+walrus = { version = "0.17.0", features = ['parallel'] }
+wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.63" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.63" }
 
 [dev-dependencies]
 assert_cmd = "0.11"
@@ -34,11 +34,11 @@ diff = "0.1"
 predicates = "1.0.0"
 rayon = "1.0"
 tempfile = "3.0"
-walrus = "0.14"
-wit-printer = "0.1"
-wit-text = "0.1"
-wit-validator = "0.1"
-wit-walrus = "0.1"
+walrus = "0.17"
+wit-printer = "0.2"
+wit-text = "0.7"
+wit-validator = "0.2"
+wit-walrus = "0.4"
 
 [[test]]
 name = "reference"

@@ -11,10 +11,10 @@ use walrus::Module;
 
 pub(crate) const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
 
-mod anyref;
 mod decode;
 mod descriptor;
 mod descriptors;
+mod externref;
 mod intrinsic;
 mod js;
 mod multivalue;
@@ -40,7 +40,7 @@ pub struct Bindgen {
     // Support for the wasm threads proposal, transforms the wasm module to be
     // "ready to be instantiated on any thread"
     threads: wasm_bindgen_threads_xform::Config,
-    anyref: bool,
+    externref: bool,
     multi_value: bool,
     wasm_interface_types: bool,
     encode_into: EncodeInto,
@@ -61,6 +61,7 @@ struct JsGenerated {
     mode: OutputMode,
     js: String,
     ts: String,
+    start: Option<String>,
     snippets: HashMap<String, Vec<String>>,
     local_modules: HashMap<String, String>,
     npm_dependencies: HashMap<String, (PathBuf, String)>,
@@ -89,7 +90,8 @@ pub enum EncodeInto {
 
 impl Bindgen {
     pub fn new() -> Bindgen {
-        let anyref = env::var("WASM_BINDGEN_ANYREF").is_ok();
+        let externref =
+            env::var("WASM_BINDGEN_ANYREF").is_ok() || env::var("WASM_BINDGEN_EXTERNREF").is_ok();
         let wasm_interface_types = env::var("WASM_INTERFACE_TYPES").is_ok();
         let multi_value = env::var("WASM_BINDGEN_MULTI_VALUE").is_ok();
         Bindgen {
@@ -108,7 +110,7 @@ impl Bindgen {
             emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
-            anyref: anyref || wasm_interface_types,
+            externref: externref || wasm_interface_types,
             multi_value: multi_value || wasm_interface_types,
             wasm_interface_types,
             encode_into: EncodeInto::Test,
@@ -346,32 +348,37 @@ impl Bindgen {
         // interface types.
         wit::process(
             &mut module,
-            self.anyref,
+            self.externref,
             self.wasm_interface_types,
             self.emit_start,
         )?;
 
         // Now that we've got type information from the webidl processing pass,
-        // touch up the output of rustc to insert anyref shims where necessary.
-        // This is only done if the anyref pass is enabled, which it's
-        // currently off-by-default since `anyref` is still in development in
+        // touch up the output of rustc to insert externref shims where necessary.
+        // This is only done if the externref pass is enabled, which it's
+        // currently off-by-default since `externref` is still in development in
         // engines.
         //
-        // If the anyref pass isn't necessary, then we blanket delete the
-        // export of all our anyref intrinsics which will get cleaned up in the
+        // If the externref pass isn't necessary, then we blanket delete the
+        // export of all our externref intrinsics which will get cleaned up in the
         // GC pass before JS generation.
-        if self.anyref {
-            anyref::process(&mut module)?;
+        if self.externref {
+            externref::process(&mut module)?;
         } else {
             let ids = module
                 .exports
                 .iter()
-                .filter(|e| e.name.starts_with("__anyref"))
+                .filter(|e| e.name.starts_with("__externref"))
                 .map(|e| e.id())
                 .collect::<Vec<_>>();
             for id in ids {
                 module.exports.delete(id);
             }
+            // Clean up element segments as well if they have holes in them
+            // after some of our transformations, because non-externref engines
+            // only support contiguous arrays of function references in element
+            // segments.
+            externref::force_contiguous_elements(&mut module)?;
         }
 
         // If wasm interface types are enabled then the `__wbindgen_throw`
@@ -421,7 +428,7 @@ impl Bindgen {
                 .unwrap();
             let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
             cx.generate()?;
-            let (js, ts) = cx.finalize(stem)?;
+            let (js, ts, start) = cx.finalize(stem)?;
             Generated::Js(JsGenerated {
                 snippets: aux.snippets.clone(),
                 local_modules: aux.local_modules.clone(),
@@ -430,6 +437,7 @@ impl Bindgen {
                 npm_dependencies: cx.npm_dependencies.clone(),
                 js,
                 ts,
+                start,
             })
         };
 
@@ -562,9 +570,12 @@ impl OutputMode {
         }
     }
 
-    fn bundler(&self) -> bool {
+    fn esm_integration(&self) -> bool {
         match self {
-            OutputMode::Bundler { .. } => true,
+            OutputMode::Bundler { .. }
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => true,
             _ => false,
         }
     }
@@ -613,7 +624,7 @@ impl Output {
             Generated::InterfaceTypes => self.stem.clone(),
             Generated::Js(_) => format!("{}_bg", self.stem),
         };
-        let wasm_path = out_dir.join(wasm_name).with_extension("wasm");
+        let wasm_path = out_dir.join(&wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
         let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
@@ -660,9 +671,35 @@ impl Output {
         } else {
             "js"
         };
+
+        fn write<P, C>(path: P, contents: C) -> Result<(), anyhow::Error>
+        where
+            P: AsRef<Path>,
+            C: AsRef<[u8]>,
+        {
+            fs::write(&path, contents)
+                .with_context(|| format!("failed to write `{}`", path.as_ref().display()))
+        }
+
         let js_path = out_dir.join(&self.stem).with_extension(extension);
-        fs::write(&js_path, reset_indentation(&gen.js))
-            .with_context(|| format!("failed to write `{}`", js_path.display()))?;
+
+        if gen.mode.esm_integration() {
+            let js_name = format!("{}_bg.{}", self.stem, extension);
+
+            let start = gen.start.as_deref().unwrap_or("");
+
+            write(
+                &js_path,
+                format!(
+                    "import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}",
+                    wasm_name, js_name, start
+                ),
+            )?;
+
+            write(&out_dir.join(&js_name), reset_indentation(&gen.js))?;
+        } else {
+            write(&js_path, reset_indentation(&gen.js))?;
+        }
 
         if gen.typescript {
             let ts_path = js_path.with_extension("d.ts");

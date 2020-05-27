@@ -18,7 +18,7 @@ set -ex
 #   and put it in PATH
 
 RUSTFLAGS='-C target-feature=+atomics,+bulk-memory' \
-  cargo build -v --target wasm32-unknown-unknown --release -Z build-std=std,panic_abort
+  cargo build --target wasm32-unknown-unknown --release -Z build-std=std,panic_abort
 
 # Note the usage of `--no-modules` here which is used to create an output which
 # is usable from Web Workers. We notably can't use `--target bundler` since

@@ -464,7 +464,7 @@ where
     T: WasmClosure + ?Sized,
 {
     fn describe() {
-        inform(ANYREF);
+        inform(EXTERNREF);
     }
 }
 
@@ -713,8 +713,9 @@ doit! {
 // duplicate.
 
 unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi + 'static,
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi + 'static,
 {
     fn describe() {
         #[allow(non_snake_case)]
@@ -730,8 +731,7 @@ unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
             // convert `ret` as it may throw (for `Result`, for
             // example)
             let ret = {
-                let f: *const dyn Fn(&A) -> R =
-                    FatPtr { fields: (a, b) }.ptr;
+                let f: *const dyn Fn(&A) -> R = FatPtr { fields: (a, b) }.ptr;
                 let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
                 (*f)(&*arg)
             };
@@ -740,17 +740,14 @@ unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
 
         inform(invoke::<A, R> as u32);
 
-        unsafe extern fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(
-            a: usize,
-            b: usize,
-        ) {
+        unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
             if a == 0 {
                 return;
             }
-            drop(Box::from_raw(FatPtr::<dyn Fn(&A) -> R> {
-                fields: (a, b)
-            }.ptr));
+            drop(Box::from_raw(
+                FatPtr::<dyn Fn(&A) -> R> { fields: (a, b) }.ptr,
+            ));
         }
         inform(destroy::<A, R> as u32);
 
@@ -759,8 +756,9 @@ unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
 }
 
 unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi + 'static,
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi + 'static,
 {
     fn describe() {
         #[allow(non_snake_case)]
@@ -776,8 +774,7 @@ unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
             // convert `ret` as it may throw (for `Result`, for
             // example)
             let ret = {
-                let f: *const dyn FnMut(&A) -> R =
-                    FatPtr { fields: (a, b) }.ptr;
+                let f: *const dyn FnMut(&A) -> R = FatPtr { fields: (a, b) }.ptr;
                 let f = f as *mut dyn FnMut(&A) -> R;
                 let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
                 (*f)(&*arg)
@@ -787,17 +784,14 @@ unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
 
         inform(invoke::<A, R> as u32);
 
-        unsafe extern fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(
-            a: usize,
-            b: usize,
-        ) {
+        unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
             if a == 0 {
                 return;
             }
-            drop(Box::from_raw(FatPtr::<dyn FnMut(&A) -> R> {
-                fields: (a, b)
-            }.ptr));
+            drop(Box::from_raw(
+                FatPtr::<dyn FnMut(&A) -> R> { fields: (a, b) }.ptr,
+            ));
         }
         inform(destroy::<A, R> as u32);
 
@@ -807,9 +801,10 @@ unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
 
 #[allow(non_snake_case)]
 impl<T, A, R> WasmClosureFnOnce<(&A,), R> for T
-    where T: 'static + FnOnce(&A) -> R,
-          A: RefFromWasmAbi + 'static,
-          R: ReturnWasmAbi + 'static
+where
+    T: 'static + FnOnce(&A) -> R,
+    A: RefFromWasmAbi + 'static,
+    R: ReturnWasmAbi + 'static,
 {
     type FnMut = dyn FnMut(&A) -> R;
 
@@ -822,8 +817,8 @@ impl<T, A, R> WasmClosureFnOnce<(&A,), R> for T
     }
 
     fn into_js_function(self) -> JsValue {
-        use std::rc::Rc;
         use crate::__rt::WasmRefCell;
+        use std::rc::Rc;
 
         let mut me = Some(self);
 

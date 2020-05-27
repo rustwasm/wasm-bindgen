@@ -1,6 +1,6 @@
 import * as wasm from './reference_test_bg.wasm';
 
-export const __wbindgen_init_anyref_table = function() {
+export const __wbindgen_init_externref_table = function() {
     const table = wasm.__wbindgen_export_0;
     const offset = table.grow(4);
     table.set(0, undefined);
@@ -10,6 +10,4 @@ export const __wbindgen_init_anyref_table = function() {
     table.set(offset + 3, false);
     ;
 };
-
-wasm.__wbindgen_start();
 

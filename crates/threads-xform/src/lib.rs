@@ -401,6 +401,9 @@ fn inject_start(
                         match segment.offset {
                             InitExpr::Global(id) => body.global_get(id),
                             InitExpr::Value(v) => body.const_(v),
+                            InitExpr::RefNull(_) | InitExpr::RefFunc(_) => {
+                                panic!("not a valid i32 initializer")
+                            }
                         };
                         body.i32_const(0)
                             .i32_const(segment.len as i32)

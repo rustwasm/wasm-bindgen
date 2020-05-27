@@ -35,17 +35,19 @@ jobs:
         displayName: "Futures test suite on wasm"
       - script: cargo test -p wasm-bindgen-multi-value-xform
         displayName: "multi-value xform tests on native"
-      - script: |
-          set -e
-          echo "##vso[task.setvariable variable=NODE_ARGS]--experimental-wasm-anyref"
-          echo "##vso[task.setvariable variable=WASM_BINDGEN_ANYREF]1"
-        displayName: "Configure anyref passes"
-      - script: cargo test --target wasm32-unknown-unknown --test wasm
-        displayName: "(anyref) Crate test suite"
-      - script: WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown --test wasm
-        displayName: "(anyref) Crate test suite (no debug)"
-      - script: cargo test --target wasm32-unknown-unknown --features serde-serialize --test wasm
-        displayName: "(anyref) Crate test suite (with serde)"
+      # TODO: re-enable when binary decoding for reference types is updated in
+      # Node.
+      # - script: |
+      #     set -e
+      #     echo "##vso[task.setvariable variable=NODE_ARGS]--experimental-wasm-anyref"
+      #     echo "##vso[task.setvariable variable=WASM_BINDGEN_ANYREF]1"
+      #   displayName: "Configure anyref passes"
+      # - script: cargo test --target wasm32-unknown-unknown --test wasm
+      #   displayName: "(anyref) Crate test suite"
+      # - script: WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown --test wasm
+      #   displayName: "(anyref) Crate test suite (no debug)"
+      # - script: cargo test --target wasm32-unknown-unknown --features serde-serialize --test wasm
+      #   displayName: "(anyref) Crate test suite (with serde)"
 
   - job: test_wasm_bindgen_windows
     displayName: "Run wasm-bindgen crate tests (Windows)"
@@ -91,8 +93,8 @@ jobs:
         displayName: "wasm-bindgen-cli-support tests"
       - script: cargo test -p wasm-bindgen-cli
         displayName: "wasm-bindgen-cli tests"
-      - script: cargo test -p wasm-bindgen-anyref-xform
-        displayName: "wasm-bindgen-anyref-xform tests"
+      - script: cargo test -p wasm-bindgen-externref-xform
+        displayName: "wasm-bindgen-externref-xform tests"
       - script: cargo test -p wasm-bindgen-multi-value-xform
         displayName: "wasm-bindgen-multi-value-xform tests"
       - script: cargo test -p wasm-bindgen-wasm-interpreter

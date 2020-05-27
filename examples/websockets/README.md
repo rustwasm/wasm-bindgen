@@ -19,5 +19,6 @@ Then serve the statics and navigate to `host:port`
 http
 
 # or use python
-python -m SimpleHTTPServer
+python2 -m SimpleHTTPServer
+python3 -m http.server
 ```

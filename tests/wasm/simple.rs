@@ -218,10 +218,10 @@ pub fn do_string_roundtrip(s: String) -> String {
 }
 
 #[wasm_bindgen_test]
-fn anyref_heap_live_count() {
-    let x = wasm_bindgen::anyref_heap_live_count();
+fn externref_heap_live_count() {
+    let x = wasm_bindgen::externref_heap_live_count();
     let y = JsValue::null().clone();
-    assert!(wasm_bindgen::anyref_heap_live_count() > x);
+    assert!(wasm_bindgen::externref_heap_live_count() > x);
     drop(y);
-    assert_eq!(x, wasm_bindgen::anyref_heap_live_count());
+    assert_eq!(x, wasm_bindgen::externref_heap_live_count());
 }
