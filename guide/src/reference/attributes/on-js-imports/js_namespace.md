@@ -19,3 +19,18 @@ log("hello, console!");
 This is an example of how to bind `console.log` in Rust. The `log` function will
 be available in the Rust module and will be invoked as `console.log` in
 JavaScript.
+
+It is also possible to access the JavaScript object under the nested namespace.
+`js_namespace` also accepts the array of the string to specify the namespace.
+
+```rust
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = ["window", "document"])]
+    fn write(s: &str);
+}
+
+write("hello, document!");
+```
+
+This example shows how to bind `window.document.write` in Rust.
