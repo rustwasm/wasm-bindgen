@@ -24,3 +24,18 @@ Foo::new();
 This is an example of how to bind namespaced items in Rust. The `log` and `Foo::new` functions will
 be available in the Rust module and will be invoked as `console.log` and `new Bar.Foo` in
 JavaScript.
+
+It is also possible to access the JavaScript object under the nested namespace.
+`js_namespace` also accepts the array of the string to specify the namespace.
+
+```rust
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = ["window", "document"])]
+    fn write(s: &str);
+}
+
+write("hello, document!");
+```
+
+This example shows how to bind `window.document.write` in Rust.

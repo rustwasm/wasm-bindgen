@@ -22,7 +22,7 @@ macro_rules! shared_api {
 
         struct Import<'a> {
             module: ImportModule<'a>,
-            js_namespace: Option<&'a str>,
+            js_namespace: Option<Vec<String>>,
             kind: ImportKind<'a>,
         }
 

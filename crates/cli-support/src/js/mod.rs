@@ -1998,7 +1998,7 @@ impl<'a> Context<'a> {
 
             JsImportName::VendorPrefixed { name, prefixes } => {
                 self.imports_post.push_str("const l");
-                self.imports_post.push_str(&name);
+                self.imports_post.push_str(name);
                 self.imports_post.push_str(" = ");
                 switch(&mut self.imports_post, name, "", prefixes);
                 self.imports_post.push_str(";\n");

@@ -4,7 +4,7 @@ use crate::util::ShortHash;
 use crate::Diagnostic;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::{quote, ToTokens};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 use syn;
@@ -32,10 +32,10 @@ impl TryToTokens for ast::Program {
         for s in self.structs.iter() {
             s.to_tokens(tokens);
         }
-        let mut types = HashSet::new();
+        let mut types = HashMap::new();
         for i in self.imports.iter() {
             if let ast::ImportKind::Type(t) = &i.kind {
-                types.insert(t.rust_name.clone());
+                types.insert(t.rust_name.to_string(), t.rust_name.clone());
             }
         }
         for i in self.imports.iter() {
@@ -43,17 +43,20 @@ impl TryToTokens for ast::Program {
 
             // If there is a js namespace, check that name isn't a type. If it is,
             // this import might be a method on that type.
-            if let Some(ns) = &i.js_namespace {
-                if types.contains(ns) && i.kind.fits_on_impl() {
-                    let kind = match i.kind.try_to_token_stream() {
-                        Ok(kind) => kind,
-                        Err(e) => {
-                            errors.push(e);
-                            continue;
-                        }
-                    };
-                    (quote! { impl #ns { #kind } }).to_tokens(tokens);
-                    continue;
+            if let Some(nss) = &i.js_namespace {
+                // When the namespace is `A.B`, the type name should be `B`.
+                if let Some(ns) = nss.last().and_then(|t| types.get(t)) {
+                    if i.kind.fits_on_impl() {
+                        let kind = match i.kind.try_to_token_stream() {
+                            Ok(kind) => kind,
+                            Err(e) => {
+                                errors.push(e);
+                                continue;
+                            }
+                        };
+                        (quote! { impl #ns { #kind } }).to_tokens(tokens);
+                        continue;
+                    }
                 }
             }
 
