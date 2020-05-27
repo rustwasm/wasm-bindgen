@@ -11,11 +11,16 @@ name (like a class or function name) it'll be accessed through this namespace.
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
+    
+    type Foo;
+    #[wasm_bindgen(constructor, js_namespace = Bar)]
+    fn new() -> Foo;
 }
 
 log("hello, console!");
+Foo::new();
 ```
 
-This is an example of how to bind `console.log` in Rust. The `log` function will
-be available in the Rust module and will be invoked as `console.log` in
+This is an example of how to bind namespaced items in Rust. The `log` and `Foo::new` functions will
+be available in the Rust module and will be invoked as `console.log` and `new Bar.Foo` in
 JavaScript.
