@@ -105,12 +105,22 @@ pub enum AuxExportKind {
     /// This function is intended to be a getter for a field on a class. The
     /// first argument is the internal pointer and the returned value is
     /// expected to be the field.
-    Getter { class: String, field: String },
+    Getter {
+        class: String,
+        field: String,
+        // same as `consumed` in `Method`
+        consumed: bool,
+    },
 
     /// This function is intended to be a setter for a field on a class. The
     /// first argument is the internal pointer and the second argument is
     /// expected to be the field's new value.
-    Setter { class: String, field: String },
+    Setter {
+        class: String,
+        field: String,
+        // same as `consumed` in `Method`
+        consumed: bool,
+    },
 
     /// This is a free function (ish) but scoped inside of a class name.
     StaticFunction { class: String, name: String },

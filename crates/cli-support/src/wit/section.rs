@@ -369,7 +369,7 @@ fn check_standard_export(export: &AuxExport) -> Result<(), Error> {
                 name,
             );
         }
-        AuxExportKind::Getter { class, field } => {
+        AuxExportKind::Getter { class, field, .. } => {
             bail!(
                 "cannot export `{}::{}` getter function when generating \
                  a standalone WebAssembly module with no JS glue",
@@ -377,7 +377,7 @@ fn check_standard_export(export: &AuxExport) -> Result<(), Error> {
                 field,
             );
         }
-        AuxExportKind::Setter { class, field } => {
+        AuxExportKind::Setter { class, field, .. } => {
             bail!(
                 "cannot export `{}::{}` setter function when generating \
                  a standalone WebAssembly module with no JS glue",

@@ -2190,10 +2190,9 @@ impl<'a> Context<'a> {
                     AuxExportKind::Function(_) => {}
                     AuxExportKind::StaticFunction { .. } => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
-                    AuxExportKind::Getter { .. } | AuxExportKind::Setter { .. } => {
-                        builder.method(false)
-                    }
-                    AuxExportKind::Method { consumed, .. } => builder.method(*consumed),
+                    AuxExportKind::Getter { consumed, .. }
+                    | AuxExportKind::Setter { consumed, .. }
+                    | AuxExportKind::Method { consumed, .. } => builder.method(*consumed),
                 }
             }
             Kind::Import(_) => {}
@@ -2257,7 +2256,7 @@ impl<'a> Context<'a> {
                         exported.has_constructor = true;
                         exported.push(&docs, "constructor", "", &code, ts_sig);
                     }
-                    AuxExportKind::Getter { class, field } => {
+                    AuxExportKind::Getter { class, field, .. } => {
                         let ret_ty = match export.generate_typescript {
                             true => match &ts_ret_ty {
                                 Some(s) => Some(s.as_str()),
@@ -2268,7 +2267,7 @@ impl<'a> Context<'a> {
                         let exported = require_class(&mut self.exported_classes, class);
                         exported.push_getter(&docs, field, &code, ret_ty);
                     }
-                    AuxExportKind::Setter { class, field } => {
+                    AuxExportKind::Setter { class, field, .. } => {
                         let arg_ty = match export.generate_typescript {
                             true => Some(ts_arg_tys[0].as_str()),
                             false => None,
@@ -3247,20 +3246,24 @@ fn check_duplicated_getter_and_setter_names(
                     AuxExportKind::Getter {
                         class: first_class,
                         field: first_field,
+                        consumed: _,
                     },
                     AuxExportKind::Getter {
                         class: second_class,
                         field: second_field,
+                        consumed: _,
                     },
                 ) => verify_exports(first_class, first_field, second_class, second_field)?,
                 (
                     AuxExportKind::Setter {
                         class: first_class,
                         field: first_field,
+                        consumed: _,
                     },
                     AuxExportKind::Setter {
                         class: second_class,
                         field: second_field,
+                        consumed: _,
                     },
                 ) => verify_exports(first_class, first_field, second_class, second_field)?,
                 _ => {}
