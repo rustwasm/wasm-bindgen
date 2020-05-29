@@ -419,6 +419,7 @@ impl<'a> Context<'a> {
                             AuxExportKind::Getter {
                                 class,
                                 field: f.to_string(),
+                                consumed: export.consumed,
                             }
                         }
                         decode::OperationKind::Setter(f) => {
@@ -426,6 +427,7 @@ impl<'a> Context<'a> {
                             AuxExportKind::Setter {
                                 class,
                                 field: f.to_string(),
+                                consumed: export.consumed,
                             }
                         }
                         _ if op.is_static => AuxExportKind::StaticFunction {
@@ -806,6 +808,7 @@ impl<'a> Context<'a> {
                     kind: AuxExportKind::Getter {
                         class: struct_.name.to_string(),
                         field: field.name.to_string(),
+                        consumed: false,
                     },
                     generate_typescript: field.generate_typescript,
                 },
@@ -832,6 +835,7 @@ impl<'a> Context<'a> {
                     kind: AuxExportKind::Setter {
                         class: struct_.name.to_string(),
                         field: field.name.to_string(),
+                        consumed: false,
                     },
                     generate_typescript: field.generate_typescript,
                 },
