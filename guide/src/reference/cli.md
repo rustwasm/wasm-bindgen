@@ -13,11 +13,25 @@ always be listed via `wasm-bindgen --help`.
 
 The recommend way to install the `wasm-bindgen` command line tool is with the
 `wasm-pack` installer described
-[here](https://rustwasm.github.io/wasm-pack/installer/). After installing
-`wasm-pack`, run `wasm-pack build` to install the command line tool. (Although
-the command line tool is available through its own crate, `wasm-bindgen-cli`,
-`wasm-pack build` will ensure the version installed matches the version of
-`wasm-bindgen` in `Cargo.lock`.)
+[here](https://rustwasm.github.io/wasm-pack/installer/). After installing 
+`wasm-pack`, you are ready to build project invoking `wasm-pack build`.
+This command installs apropriate version of the `wasm-bindgen` command-line
+tool. The version of `wasm-bindgen` installed by `wasm-pack` is not available
+ to be used directly via command line.
+
+It is not recommended to install `wasm-bindgen-cli` as its version must match 
+_exactly_ the version of `wasm-bindgen` that is specified in the project's 
+cargo.lock file. Using `wasm-pack` for building simplifies the build process 
+as `wasm-pack` ensures that the proper version of `wasm-bindgen` command-line 
+tool is used. That means that `wasm-pack` may install many different versions 
+of `wasm-bindgen`, but during the build `wasm-pack` will always make sure to 
+use the correct one.
+
+Note: if, for any reason, you decide to use wasm-bindgen directly (this is 
+not recommended!) you will have to manually take care of using exactly the 
+same version of wasm-bindgen command-line tool (wasm-bindgen-cli) that 
+matches the version of wasm-bingden in cargo.lock.
+
 
 ## Usage
 
