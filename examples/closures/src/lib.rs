@@ -55,7 +55,7 @@ pub fn run() -> Result<(), JsValue> {
 //
 // Note the usage of `Closure` here because the closure is "long lived",
 // basically meaning it has to persist beyond the call to this one function.
-// Also of note here is the `.as_ref().unchecked_ref()` chain, which is who
+// Also of note here is the `.as_ref().unchecked_ref()` chain, which is how
 // you can extract `&Function`, what `web-sys` expects, from a `Closure`
 // which only hands you `&JsValue` via `AsRef`.
 fn setup_clock(window: &Window, document: &Document) -> Result<(), JsValue> {
