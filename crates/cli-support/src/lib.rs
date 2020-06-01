@@ -74,6 +74,7 @@ enum OutputMode {
     Web,
     NoModules { global: String },
     Node { experimental_modules: bool },
+    Deno,
 }
 
 enum Input {
@@ -206,6 +207,14 @@ impl Bindgen {
                 OutputMode::Bundler { browser_only } => *browser_only = true,
                 _ => bail!("cannot specify `--browser` with other output types"),
             }
+        }
+        Ok(self)
+    }
+
+    pub fn deno(&mut self, deno: bool) -> Result<&mut Bindgen, Error> {
+        if deno {
+            self.switch_mode(OutputMode::Deno, "--target deno")?;
+            self.encode_into(EncodeInto::Always);
         }
         Ok(self)
     }
@@ -526,7 +535,8 @@ impl OutputMode {
             | OutputMode::Web
             | OutputMode::Node {
                 experimental_modules: true,
-            } => true,
+            }
+            | OutputMode::Deno => true,
             _ => false,
         }
     }
@@ -566,6 +576,13 @@ impl OutputMode {
     fn web(&self) -> bool {
         match self {
             OutputMode::Web => true,
+            _ => false,
+        }
+    }
+
+    fn deno(&self) -> bool {
+        match self {
+            OutputMode::Deno { .. } => true,
             _ => false,
         }
     }

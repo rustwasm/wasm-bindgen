@@ -143,7 +143,8 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             }
-            | OutputMode::Web => {
+            | OutputMode::Web
+            | OutputMode::Deno => {
                 if contents.starts_with("function") {
                     let body = &contents[8..];
                     if export_name == definition_name {
@@ -269,6 +270,40 @@ impl<'a> Context<'a> {
         reset_indentation(&shim)
     }
 
+    // generates somthing like
+    // ```js
+    // const imports = {
+    //   __wbindgen_placeholder__: {
+    //     __wbindgen_throw: function(..) { .. },
+    //     ..
+    //   }
+    // }
+    // ```
+    fn generate_deno_imports(&self) -> String {
+        let mut imports = "const imports = {\n".to_string();
+        imports.push_str(&format!("  {}: {{\n", crate::PLACEHOLDER_MODULE));
+
+        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+            let import = self.module.imports.get(*id);
+            imports.push_str(&format!("{}: {},\n", &import.name, js.trim()));
+        }
+
+        imports.push_str("\t}\n};\n\n");
+
+        imports
+    }
+
+    fn generate_deno_wasm_loading(&self, module_name: &str) -> String {
+        format!(
+            "const file = new URL(import.meta.url).pathname;
+            const wasmFile = file.substring(0, file.lastIndexOf(Deno.build.os === 'windows' ? '\\\\' : '/') + 1) + '{}_bg.wasm';
+            const wasmModule = new WebAssembly.Module(Deno.readFileSync(wasmFile));
+            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            const wasm = wasmInstance.exports;",
+            module_name
+        )
+    }
+
     /// Performs the task of actually generating the final JS module, be it
     /// `--target no-modules`, `--target web`, or for bundlers. This is the very
     /// last step performed in `finalize`.
@@ -325,6 +360,15 @@ impl<'a> Context<'a> {
                         module_name
                     ))),
                 );
+
+                if needs_manual_start {
+                    footer.push_str("wasm.__wbindgen_start();\n");
+                }
+            }
+
+            OutputMode::Deno => {
+                footer.push_str(&self.generate_deno_imports());
+                footer.push_str(&self.generate_deno_wasm_loading(module_name));
 
                 if needs_manual_start {
                     footer.push_str("wasm.__wbindgen_start();\n");
@@ -443,7 +487,8 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             }
-            | OutputMode::Web => {
+            | OutputMode::Web
+            | OutputMode::Deno => {
                 for (module, items) in crate::sorted_iter(&self.js_imports) {
                     imports.push_str("import { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
@@ -1247,7 +1292,7 @@ impl<'a> Context<'a> {
                 fields: Vec::new(),
             })?;
             self.global(&format!("let cached{} = new {}{};", s, name, args));
-        } else if !self.config.mode.always_run_in_browser() {
+        } else if !self.config.mode.always_run_in_browser() && !self.config.mode.deno() {
             self.global(&format!(
                 "
                     const l{0} = typeof {0} === 'undefined' ? \
