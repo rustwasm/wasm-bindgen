@@ -564,25 +564,9 @@ impl OutputMode {
         }
     }
 
-    fn always_run_in_browser(&self) -> bool {
-        match self {
-            OutputMode::Web => true,
-            OutputMode::NoModules { .. } => true,
-            OutputMode::Bundler { browser_only } => *browser_only,
-            _ => false,
-        }
-    }
-
     fn web(&self) -> bool {
         match self {
             OutputMode::Web => true,
-            _ => false,
-        }
-    }
-
-    fn deno(&self) -> bool {
-        match self {
-            OutputMode::Deno { .. } => true,
             _ => false,
         }
     }

@@ -65,6 +65,7 @@ members = [
   "examples/char",
   "examples/closures",
   "examples/console_log",
+  "examples/deno",
   "examples/dom",
   "examples/duck-typed-interfaces",
   "examples/fetch",

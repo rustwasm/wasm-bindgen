@@ -294,6 +294,8 @@ impl<'a> Context<'a> {
     }
 
     fn generate_deno_wasm_loading(&self, module_name: &str) -> String {
+        // Deno removed support for .wasm imports in https://github.com/denoland/deno/pull/5135
+        // the issue for bringing it back is https://github.com/denoland/deno/issues/5609.
         format!(
             "const file = new URL(import.meta.url).pathname;
             const wasmFile = file.substring(0, file.lastIndexOf(Deno.build.os === 'windows' ? '\\\\' : '/') + 1) + '{}_bg.wasm';
@@ -1283,27 +1285,36 @@ impl<'a> Context<'a> {
     }
 
     fn expose_text_processor(&mut self, s: &str, args: &str) -> Result<(), Error> {
-        if self.config.mode.nodejs() {
-            let name = self.import_name(&JsImport {
-                name: JsImportName::Module {
-                    module: "util".to_string(),
-                    name: s.to_string(),
-                },
-                fields: Vec::new(),
-            })?;
-            self.global(&format!("let cached{} = new {}{};", s, name, args));
-        } else if !self.config.mode.always_run_in_browser() && !self.config.mode.deno() {
-            self.global(&format!(
-                "
+        match &self.config.mode {
+            OutputMode::Node { .. } => {
+                let name = self.import_name(&JsImport {
+                    name: JsImportName::Module {
+                        module: "util".to_string(),
+                        name: s.to_string(),
+                    },
+                    fields: Vec::new(),
+                })?;
+                self.global(&format!("let cached{} = new {}{};", s, name, args));
+            }
+            OutputMode::Bundler {
+                browser_only: false,
+            } => {
+                self.global(&format!(
+                    "
                     const l{0} = typeof {0} === 'undefined' ? \
                         (0, module.require)('util').{0} : {0};\
                 ",
-                s
-            ));
-            self.global(&format!("let cached{0} = new l{0}{1};", s, args));
-        } else {
-            self.global(&format!("let cached{0} = new {0}{1};", s, args));
-        }
+                    s
+                ));
+                self.global(&format!("let cached{0} = new l{0}{1};", s, args));
+            }
+            OutputMode::Deno
+            | OutputMode::Web
+            | OutputMode::NoModules { .. }
+            | OutputMode::Bundler { browser_only: true } => {
+                self.global(&format!("let cached{0} = new {0}{1};", s, args))
+            }
+        };
 
         Ok(())
     }

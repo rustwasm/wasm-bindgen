@@ -167,7 +167,7 @@ jobs:
       - script: mv _package.json package.json && npm install && rm package.json
         displayName: "run npm install"
       - script: |
-          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v websockets | grep -v webxr`; do
+          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v websockets | grep -v webxr | grep -v deno`; do
             (cd examples/$dir &&
             ln -fs ../../node_modules . &&
             npm run build -- --output-path $BUILD_ARTIFACTSTAGINGDIRECTORY/exbuild/$dir) || exit 1;
@@ -177,6 +177,16 @@ jobs:
         inputs:
           artifactName: examples1
           targetPath: '$(Build.ArtifactStagingDirectory)'
+
+  - job: test_deno
+    displayName: "Build and test the deno example"
+    steps:
+      - template: ci/azure-install-rust.yml
+      - script: rustup target add wasm32-unknown-unknown
+        displayName: "install wasm target"
+      - template: ci/azure-install-deno.yml
+      - script: cd examples/deno && ./build.sh && $HOME/.deno/bin/deno run --allow-read test.ts
+        displayName: "build and run deno example"
 
   - job: build_raytrace
     displayName: "Build raytrace examples"
