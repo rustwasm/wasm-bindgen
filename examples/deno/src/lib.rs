@@ -26,6 +26,10 @@ extern "C" {
 extern "C" {
     fn add(a: u32, b: u32) -> u32;
 }
+#[wasm_bindgen(inline_js = "export function test() {}")]
+extern "C" {
+    fn test();
+}
 
 #[wasm_bindgen]
 pub fn greet(name: String) {
@@ -33,5 +37,6 @@ pub fn greet(name: String) {
 
     let x = MyClass::new();
     assert_eq!(x.number(), add(40, 2));
+    test();
     log(&x.render());
 }

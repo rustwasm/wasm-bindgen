@@ -272,25 +272,46 @@ impl<'a> Context<'a> {
 
     // generates somthing like
     // ```js
+    // import * as import0 from './snippets/.../inline1.js';
+    // ```,
+    //
+    // ```js
     // const imports = {
     //   __wbindgen_placeholder__: {
     //     __wbindgen_throw: function(..) { .. },
     //     ..
-    //   }
+    //   },
+    //   './snippets/deno-65e2634a84cc3c14/inline1.js': import0,
     // }
     // ```
-    fn generate_deno_imports(&self) -> String {
-        let mut imports = "const imports = {\n".to_string();
-        imports.push_str(&format!("  {}: {{\n", crate::PLACEHOLDER_MODULE));
+    fn generate_deno_imports(&self) -> (String, String) {
+        let mut imports = String::new();
+        let mut wasm_import_object = "const imports = {\n".to_string();
+
+        wasm_import_object.push_str(&format!("  {}: {{\n", crate::PLACEHOLDER_MODULE));
 
         for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
             let import = self.module.imports.get(*id);
-            imports.push_str(&format!("{}: {},\n", &import.name, js.trim()));
+            wasm_import_object.push_str(&format!("{}: {},\n", &import.name, js.trim()));
         }
 
-        imports.push_str("\t}\n};\n\n");
+        wasm_import_object.push_str("\t},\n");
 
-        imports
+        // e.g. snippets without parameters
+        let import_modules = self
+            .module
+            .imports
+            .iter()
+            .map(|import| &import.module)
+            .filter(|module| module.as_str() != PLACEHOLDER_MODULE);
+        for (i, module) in import_modules.enumerate() {
+            imports.push_str(&format!("import * as import{} from '{}'\n", i, module));
+            wasm_import_object.push_str(&format!("  '{}': import{},", module, i))
+        }
+
+        wasm_import_object.push_str("\n};\n\n");
+
+        (imports, wasm_import_object)
     }
 
     fn generate_deno_wasm_loading(&self, module_name: &str) -> String {
@@ -369,7 +390,10 @@ impl<'a> Context<'a> {
             }
 
             OutputMode::Deno => {
-                footer.push_str(&self.generate_deno_imports());
+                let (js_imports, wasm_import_object) = self.generate_deno_imports();
+                imports.push_str(&js_imports);
+                footer.push_str(&wasm_import_object);
+
                 footer.push_str(&self.generate_deno_wasm_loading(module_name));
 
                 if needs_manual_start {
