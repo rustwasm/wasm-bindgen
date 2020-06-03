@@ -11,7 +11,7 @@ untyped values.
 
 ## Reading Properties with `js_sys::Reflect::get`
 
-[API documentation for `js_sys::Reflect::get`.](https://rustwasm.github.io/wasm-bindgen/api/js_sys/struct.Reflect.html#method.get)
+[API documentation for `js_sys::Reflect::get`.](https://docs.rs/js-sys/0.3.39/js_sys/Reflect/fn.get.html)
 
 A function that returns the value of a property.
 
@@ -29,7 +29,7 @@ let value = target[property_key];
 
 ## Writing Properties with `js_sys::Reflect::set`
 
-[API documentation for `js_sys::Reflect::set`.](https://rustwasm.github.io/wasm-bindgen/api/js_sys/struct.Reflect.html#method.set)
+[API documentation for `js_sys::Reflect::set`.](https://docs.rs/js-sys/0.3.39/js_sys/Reflect/fn.set.html)
 
 A function that assigns a value to a property. Returns a boolean that is true if
 the update was successful.
@@ -48,7 +48,7 @@ target[property_key] = value;
 
 ## Determining if a Property Exists with `js_sys::Reflect::has`
 
-[API documentation for `js_sys::Reflect::has`.](https://rustwasm.github.io/wasm-bindgen/api/js_sys/struct.Reflect.html#method.has)
+[API documentation for `js_sys::Reflect::has`.](https://docs.rs/js-sys/0.3.39/js_sys/Reflect/fn.has.html)
 
 The JavaScript `in` operator as function. Returns a boolean indicating whether
 an own or inherited property exists on the target.
