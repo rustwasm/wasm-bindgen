@@ -22,6 +22,7 @@ use wasm_bindgen_cli_support::Bindgen;
 #[global_allocator]
 static ALLOC: std::alloc::System = std::alloc::System;
 
+mod deno;
 mod headless;
 mod node;
 mod server;
@@ -30,6 +31,7 @@ mod shell;
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 enum TestMode {
     Node,
+    Deno,
     Browser,
 }
 
@@ -92,6 +94,7 @@ fn main() -> anyhow::Result<()> {
     let test_mode = match custom_section {
         Some(section) if section.data.contains(&0x01) => TestMode::Browser,
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
+        None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
         None => TestMode::Node,
     };
 
@@ -145,6 +148,7 @@ integration test.\
     let mut b = Bindgen::new();
     match test_mode {
         TestMode::Node => b.nodejs(true)?,
+        TestMode::Deno => b.deno(true)?,
         TestMode::Browser => b.web(true)?,
     };
 
@@ -160,6 +164,7 @@ integration test.\
 
     match test_mode {
         TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
+        TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
         TestMode::Browser => {
             let srv = server::spawn(
                 &if headless {

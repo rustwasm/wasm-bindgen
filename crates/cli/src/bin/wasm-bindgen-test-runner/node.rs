@@ -6,6 +6,38 @@ use std::process::Command;
 
 use anyhow::{Context, Error};
 
+// depends on the variable 'wasm' and initializes te WasmBindgenTestContext cx
+pub const SHARED_SETUP: &str = r#"
+const handlers = {};
+
+const wrap = method => {
+    const og = console[method];
+    const on_method = `on_console_${method}`;
+    console[method] = function (...args) {
+        og.apply(this, args);
+        if (handlers[on_method]) {
+            handlers[on_method](args);
+        }
+    };
+};
+
+// override `console.log` and `console.error` etc... before we import tests to
+// ensure they're bound correctly in wasm. This'll allow us to intercept
+// all these calls and capture the output of tests
+wrap("debug");
+wrap("log");
+wrap("info");
+wrap("warn");
+wrap("error");
+
+cx = new wasm.WasmBindgenTestContext();
+handlers.on_console_debug = wasm.__wbgtest_console_debug;
+handlers.on_console_log = wasm.__wbgtest_console_log;
+handlers.on_console_info = wasm.__wbgtest_console_info;
+handlers.on_console_warn = wasm.__wbgtest_console_warn;
+handlers.on_console_error = wasm.__wbgtest_console_error;
+"#;
+
 pub fn execute(
     module: &str,
     tmpdir: &Path,
@@ -15,41 +47,13 @@ pub fn execute(
     let mut js_to_execute = format!(
         r#"
         const {{ exit }} = require('process');
+        const wasm = require("./{0}");
 
-        const handlers = {{}};
-
-        const wrap = method => {{
-            const og = console[method];
-            const on_method = `on_console_${{method}}`;
-            console[method] = function (...args) {{
-                og.apply(this, args);
-                if (handlers[on_method]) {{
-                    handlers[on_method](args);
-                }}
-            }};
-        }};
-
-        // override `console.log` and `console.error` etc... before we import tests to
-        // ensure they're bound correctly in wasm. This'll allow us to intercept
-        // all these calls and capture the output of tests
-        wrap("debug");
-        wrap("log");
-        wrap("info");
-        wrap("warn");
-        wrap("error");
+        {console_override}
 
         global.__wbg_test_invoke = f => f();
 
         async function main(tests) {{
-            const wasm = require("./{0}");
-
-            cx = new wasm.WasmBindgenTestContext();
-            handlers.on_console_debug = wasm.__wbgtest_console_debug;
-            handlers.on_console_log = wasm.__wbgtest_console_log;
-            handlers.on_console_info = wasm.__wbgtest_console_info;
-            handlers.on_console_warn = wasm.__wbgtest_console_warn;
-            handlers.on_console_error = wasm.__wbgtest_console_error;
-
             // Forward runtime arguments. These arguments are also arguments to the
             // `wasm-bindgen-test-runner` which forwards them to node which we
             // forward to the test harness. this is basically only used for test
@@ -63,7 +67,8 @@ pub fn execute(
 
         const tests = [];
     "#,
-        module
+        module,
+        console_override = SHARED_SETUP,
     );
 
     // Note that we're collecting *JS objects* that represent the functions to
@@ -109,7 +114,7 @@ pub fn execute(
 }
 
 #[cfg(unix)]
-fn exec(cmd: &mut Command) -> Result<(), Error> {
+pub fn exec(cmd: &mut Command) -> Result<(), Error> {
     use std::os::unix::prelude::*;
     Err(Error::from(cmd.exec())
         .context("failed to execute `node`")
@@ -117,7 +122,7 @@ fn exec(cmd: &mut Command) -> Result<(), Error> {
 }
 
 #[cfg(windows)]
-fn exec(cmd: &mut Command) -> Result<(), Error> {
+pub fn exec(cmd: &mut Command) -> Result<(), Error> {
     use std::process;
     let status = cmd.status()?;
     process::exit(status.code().unwrap_or(3));
