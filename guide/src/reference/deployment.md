@@ -14,12 +14,14 @@ should behave the same way in this respect. The values possible here are:
 | [`bundler`]     | Suitable for loading in bundlers like Webpack              |
 | [`web`]         | Directly loadable in a web browser                         |
 | [`nodejs`]      | Loadable via `require` as a Node.js module                 |
+| [`deno`]        | Loadable using imports from Deno modules                   |
 | [`no-modules`]  | Like `web`, but older and doesn't use ES modules           |
 
 [`bundler`]: #bundlers
 [`web`]: #without-a-bundler
 [`no-modules`]: #without-a-bundler
 [`nodejs`]: #nodejs
+[`deno`]: #Deno
 
 ## Bundlers
 
@@ -69,7 +71,7 @@ documentation, but the highlights of this output are:
 The CLI also supports an output mode called `--target no-modules` which is
 similar to the `web` target in that it requires manual initialization of the
 wasm and is intended to be included in web pages without any further
-postprocessing.  See the [without a bundler example][nomex] for some more
+postprocessing. See the [without a bundler example][nomex] for some more
 information about `--target no-modules`.
 
 ## Node.js
@@ -87,6 +89,18 @@ as it has a JS shim generated as well).
 
 Note that this method requires a version of Node.js with WebAssembly support,
 which is currently Node 8 and above.
+
+## Deno
+
+**`--target deno`**
+
+To deploy WebAssembly to Deno, use the `--target deno` flag.
+To then import your module inside deno, use
+
+```ts
+// @deno-types="./out/crate_name.d.ts"
+import { yourFunction } from "./out/crate_name.js";
+```
 
 ## NPM
 

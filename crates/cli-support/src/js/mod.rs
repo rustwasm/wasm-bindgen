@@ -143,7 +143,8 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             }
-            | OutputMode::Web => {
+            | OutputMode::Web
+            | OutputMode::Deno => {
                 if contents.starts_with("function") {
                     let body = &contents[8..];
                     if export_name == definition_name {
@@ -269,6 +270,63 @@ impl<'a> Context<'a> {
         reset_indentation(&shim)
     }
 
+    // generates somthing like
+    // ```js
+    // import * as import0 from './snippets/.../inline1.js';
+    // ```,
+    //
+    // ```js
+    // const imports = {
+    //   __wbindgen_placeholder__: {
+    //     __wbindgen_throw: function(..) { .. },
+    //     ..
+    //   },
+    //   './snippets/deno-65e2634a84cc3c14/inline1.js': import0,
+    // }
+    // ```
+    fn generate_deno_imports(&self) -> (String, String) {
+        let mut imports = String::new();
+        let mut wasm_import_object = "const imports = {\n".to_string();
+
+        wasm_import_object.push_str(&format!("  {}: {{\n", crate::PLACEHOLDER_MODULE));
+
+        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+            let import = self.module.imports.get(*id);
+            wasm_import_object.push_str(&format!("{}: {},\n", &import.name, js.trim()));
+        }
+
+        wasm_import_object.push_str("\t},\n");
+
+        // e.g. snippets without parameters
+        let import_modules = self
+            .module
+            .imports
+            .iter()
+            .map(|import| &import.module)
+            .filter(|module| module.as_str() != PLACEHOLDER_MODULE);
+        for (i, module) in import_modules.enumerate() {
+            imports.push_str(&format!("import * as import{} from '{}'\n", i, module));
+            wasm_import_object.push_str(&format!("  '{}': import{},", module, i))
+        }
+
+        wasm_import_object.push_str("\n};\n\n");
+
+        (imports, wasm_import_object)
+    }
+
+    fn generate_deno_wasm_loading(&self, module_name: &str) -> String {
+        // Deno removed support for .wasm imports in https://github.com/denoland/deno/pull/5135
+        // the issue for bringing it back is https://github.com/denoland/deno/issues/5609.
+        format!(
+            "const file = new URL(import.meta.url).pathname;
+            const wasmFile = file.substring(0, file.lastIndexOf(Deno.build.os === 'windows' ? '\\\\' : '/') + 1) + '{}_bg.wasm';
+            const wasmModule = new WebAssembly.Module(Deno.readFileSync(wasmFile));
+            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            const wasm = wasmInstance.exports;",
+            module_name
+        )
+    }
+
     /// Performs the task of actually generating the final JS module, be it
     /// `--target no-modules`, `--target web`, or for bundlers. This is the very
     /// last step performed in `finalize`.
@@ -325,6 +383,18 @@ impl<'a> Context<'a> {
                         module_name
                     ))),
                 );
+
+                if needs_manual_start {
+                    footer.push_str("wasm.__wbindgen_start();\n");
+                }
+            }
+
+            OutputMode::Deno => {
+                let (js_imports, wasm_import_object) = self.generate_deno_imports();
+                imports.push_str(&js_imports);
+                footer.push_str(&wasm_import_object);
+
+                footer.push_str(&self.generate_deno_wasm_loading(module_name));
 
                 if needs_manual_start {
                     footer.push_str("wasm.__wbindgen_start();\n");
@@ -443,7 +513,8 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             }
-            | OutputMode::Web => {
+            | OutputMode::Web
+            | OutputMode::Deno => {
                 for (module, items) in crate::sorted_iter(&self.js_imports) {
                     imports.push_str("import { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
@@ -1238,27 +1309,36 @@ impl<'a> Context<'a> {
     }
 
     fn expose_text_processor(&mut self, s: &str, args: &str) -> Result<(), Error> {
-        if self.config.mode.nodejs() {
-            let name = self.import_name(&JsImport {
-                name: JsImportName::Module {
-                    module: "util".to_string(),
-                    name: s.to_string(),
-                },
-                fields: Vec::new(),
-            })?;
-            self.global(&format!("let cached{} = new {}{};", s, name, args));
-        } else if !self.config.mode.always_run_in_browser() {
-            self.global(&format!(
-                "
+        match &self.config.mode {
+            OutputMode::Node { .. } => {
+                let name = self.import_name(&JsImport {
+                    name: JsImportName::Module {
+                        module: "util".to_string(),
+                        name: s.to_string(),
+                    },
+                    fields: Vec::new(),
+                })?;
+                self.global(&format!("let cached{} = new {}{};", s, name, args));
+            }
+            OutputMode::Bundler {
+                browser_only: false,
+            } => {
+                self.global(&format!(
+                    "
                     const l{0} = typeof {0} === 'undefined' ? \
                         (0, module.require)('util').{0} : {0};\
                 ",
-                s
-            ));
-            self.global(&format!("let cached{0} = new l{0}{1};", s, args));
-        } else {
-            self.global(&format!("let cached{0} = new {0}{1};", s, args));
-        }
+                    s
+                ));
+                self.global(&format!("let cached{0} = new l{0}{1};", s, args));
+            }
+            OutputMode::Deno
+            | OutputMode::Web
+            | OutputMode::NoModules { .. }
+            | OutputMode::Bundler { browser_only: true } => {
+                self.global(&format!("let cached{0} = new {0}{1};", s, args))
+            }
+        };
 
         Ok(())
     }
