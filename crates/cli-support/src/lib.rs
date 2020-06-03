@@ -301,23 +301,6 @@ impl Bindgen {
             }
         };
 
-        // This isn't the hardest thing in the world too support but we
-        // basically don't know how to rationalize #[wasm_bindgen(start)] and
-        // the actual `start` function if present. Figure this out later if it
-        // comes up, but otherwise we should continue to be compatible with
-        // LLVM's output today.
-        //
-        // Note that start function handling in `js/mod.rs` will need to be
-        // updated as well, because `#[wasm_bindgen(start)]` is inserted *after*
-        // a module's start function, if any, because we assume start functions
-        // only show up when injected on behalf of wasm-bindgen's passes.
-        if module.start.is_some() {
-            bail!(
-                "wasm-bindgen is currently incompatible with modules that \
-                 already have a start function"
-            );
-        }
-
         self.threads
             .run(&mut module)
             .with_context(|| "failed to prepare module for threading")?;
