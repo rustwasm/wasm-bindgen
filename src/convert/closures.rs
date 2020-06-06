@@ -136,12 +136,11 @@ where
     }
 }
 
-impl<'a, 'b, A, R> OptionIntoWasmAbi for Option<&'a (dyn Fn(&A) -> R + 'b)>
+impl<'a, 'b, A, R> OptionIntoWasmAbi for &'a (dyn Fn(&A) -> R + 'b)
 where
     A: RefFromWasmAbi,
     R: ReturnWasmAbi,
 {
-    type Abi = WasmSlice;
     fn none() -> Self::Abi {
         WasmSlice { ptr: 0, len: 0 }
     }
