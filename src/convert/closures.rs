@@ -143,17 +143,15 @@ where
 {
     type Abi = WasmSlice;
     fn into_abi(self) -> Self::Abi {
-        unsafe {
-            match self {
-                Some(some_closure) => {
-                    let (a, b): (usize, usize) = mem::transmute(some_closure);
-                    WasmSlice {
-                        ptr: a as u32,
-                        len: b as u32,
-                    }
+        match self {
+            Some(some_closure) => unsafe {
+                let (a, b): (usize, usize) = mem::transmute(some_closure);
+                WasmSlice {
+                    ptr: a as u32,
+                    len: b as u32,
                 }
-                None => WasmSlice { ptr: 0, len: 0 },
-            }
+            },
+            None => WasmSlice { ptr: 0, len: 0 },
         }
     }
 }
