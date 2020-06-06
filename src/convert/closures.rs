@@ -136,6 +136,28 @@ where
     }
 }
 
+impl<'a, 'b, A, R> IntoWasmAbi for Option<&'a (dyn Fn(&A) -> R + 'b)>
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi,
+{
+    type Abi = WasmSlice;
+    fn into_abi(self) -> Self::Abi {
+        unsafe {
+            match self {
+                Some(some_closure) => {
+                    let (a, b): (usize, usize) = mem::transmute(some_closure);
+                    WasmSlice {
+                        ptr: a as u32,
+                        len: b as u32,
+                    }
+                }
+                None => WasmSlice { ptr: 0, len: 0 },
+            }
+        }
+    }
+}
+
 #[allow(non_snake_case)]
 unsafe extern "C" fn invoke1_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     a: usize,
