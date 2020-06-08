@@ -449,18 +449,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
         .0;
         let catch = opts.catch().is_some();
         let variadic = opts.variadic().is_some();
-        let js_ret = if catch {
-            // TODO: this assumes a whole bunch:
-            //
-            // * The outer type is actually a `Result`
-            // * The error type is a `JsValue`
-            // * The actual type is the first type parameter
-            //
-            // should probably fix this one day...
-            extract_first_ty_param(wasm.ret.as_ref())?
-        } else {
-            wasm.ret.clone()
-        };
+        let js_ret = wasm.ret.clone();
 
         let operation_kind = operation_kind(&opts);
 
@@ -569,7 +558,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             assert_no_shim,
             kind,
             js_ret,
-            catch,
+            catch: true,
             variadic,
             structural: opts.structural().is_some() || opts.r#final().is_none(),
             rust_name: self.sig.ident.clone(),
