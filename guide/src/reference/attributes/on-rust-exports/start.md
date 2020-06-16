@@ -6,7 +6,7 @@ soon as the wasm module is instantiated.
 
 ```rust
 #[wasm_bindgen(start)]
-pub fn main() {
+pub fn main_js() {
     // executed automatically ...
 }
 ```
@@ -21,6 +21,7 @@ There's a few caveats to be aware of when using the `start` attribute:
 
 * The `start` function must take no arguments and must either return `()` or
   `Result<(), JsValue>`
+* The name of the annotated function can't be `main`
 * Only one `start` function can be placed into a module, including its
   dependencies. If more than one is specified then `wasm-bindgen` will fail when
   the CLI is run. It's recommended that only applications use this attribute.
