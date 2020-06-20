@@ -31,7 +31,7 @@ error: paths with type parameters are not supported yet
 error: paths with type parameters are not supported yet
   --> $DIR/invalid-imports.rs:22:15
    |
-22 |     fn f4(x: &Fn(T));
+22 |     fn f4(x: &dyn Fn(T));
    |               ^^^^^
 
 error: constructor returns must be bare types

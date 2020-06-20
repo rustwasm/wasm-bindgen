@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method)]
     fn f4(x: &Bar<T>);
     #[wasm_bindgen(method)]
-    fn f4(x: &Fn(T));
+    fn f4(x: &dyn Fn(T));
 
     #[wasm_bindgen(constructor)]
     fn f();
