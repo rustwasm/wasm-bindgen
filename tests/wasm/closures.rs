@@ -111,6 +111,8 @@ extern "C" {
 
     fn js_store_forgotten_closure(closure: &Closure<Fn()>);
     fn js_call_forgotten_closure();
+
+    fn option_works(a: Option<&Closure<FnMut(u32) -> u32>>) -> u32;
 }
 
 #[wasm_bindgen_test]
@@ -583,4 +585,11 @@ fn forget_works() {
     js_store_forgotten_closure(&a);
     a.forget();
     js_call_forgotten_closure();
+}
+
+#[wasm_bindgen_test]
+fn test_option_works() {
+    let a = Closure::wrap(Box::new(move |a| a + 1u32) as Box<FnMut(u32) -> u32>);
+    assert_eq!(option_works(None), 1u32);
+    assert_eq!(option_works(Some(&a)), 3u32);
 }
