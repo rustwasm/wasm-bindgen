@@ -12,7 +12,7 @@ JavaScript in two variants:
 ## Stack-Lifetime Closures
 
 Closures with a stack lifetime are passed to JavaScript as either `&dyn Fn` or `&mut
-FnMut` trait objects:
+dyn FnMut` trait objects:
 
 ```rust
 // Import JS functions that take closures
