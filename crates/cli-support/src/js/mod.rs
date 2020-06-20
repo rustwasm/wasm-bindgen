@@ -3356,7 +3356,7 @@ fn check_duplicated_getter_and_setter_names(
 fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> String {
     let body: String = comments.lines().map(|c| format!("*{}\n", c)).collect();
     let doc = if let Some(docs) = js_doc_comments {
-        docs.lines().map(|l| format!("* {} \n", l)).collect()
+        docs.lines().map(|l| format!("* {}\n", l)).collect()
     } else {
         String::new()
     };
