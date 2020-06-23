@@ -11,17 +11,17 @@ JavaScript in two variants:
 
 ## Stack-Lifetime Closures
 
-Closures with a stack lifetime are passed to JavaScript as either `&Fn` or `&mut
-FnMut` trait objects:
+Closures with a stack lifetime are passed to JavaScript as either `&dyn Fn` or `&mut
+dyn FnMut` trait objects:
 
 ```rust
 // Import JS functions that take closures
 
 #[wasm_bindgen]
 extern "C" {
-    fn takes_immutable_closure(f: &Fn());
+    fn takes_immutable_closure(f: &dyn Fn());
 
-    fn takes_mutable_closure(f: &mut FnMut());
+    fn takes_mutable_closure(f: &mut dyn FnMut());
 }
 
 // Usage
@@ -45,7 +45,7 @@ Closures also support arguments and return values like exports do, for example:
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    fn takes_closure_that_takes_int_and_returns_string(x: &Fn(u32) -> String);
+    fn takes_closure_that_takes_int_and_returns_string(x: &dyn Fn(u32) -> String);
 }
 
 takes_closure_that_takes_int_and_returns_string(&|x: u32| -> String {
@@ -81,7 +81,7 @@ as arguments and returns.
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    fn setInterval(closure: &Closure<FnMut()>, millis: u32) -> f64;
+    fn setInterval(closure: &Closure<dyn FnMut()>, millis: u32) -> f64;
     fn cancelInterval(token: f64);
 
     #[wasm_bindgen(js_namespace = console)]
@@ -90,7 +90,7 @@ extern "C" {
 
 #[wasm_bindgen]
 pub struct Interval {
-    closure: Closure<FnMut()>,
+    closure: Closure<dyn FnMut()>,
     token: f64,
 }
 

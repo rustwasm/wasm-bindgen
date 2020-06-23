@@ -86,7 +86,7 @@ functions imported into Rust.
 Mentioned above not all Rust types will fit within 32 bits. While we can
 communicate an `f64` we don't necessarily have the ability to use all the bits.
 Types like `&str` need to communicate two items, a pointer and a length (64
-bits). Other types like `&Closure<Fn()>` have even more information to
+bits). Other types like `&Closure<dyn Fn()>` have even more information to
 transmit.
 
 As a result we need a method of communicating more data through the signatures
