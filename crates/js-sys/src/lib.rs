@@ -4794,7 +4794,7 @@ macro_rules! arrays {
 
             /// The
             #[doc = $ctor]
-            /// constructor creates an array of unsigned 8-bit integers.
+            /// constructor creates a new array.
             ///
             /// [MDN documentation](
             #[doc = $mdn]
