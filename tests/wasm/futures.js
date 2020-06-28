@@ -14,3 +14,26 @@ exports.call_exports = async function() {
   assert.strictEqual(8, (await wasm.async_return_8()).val);
   await assert.rejects(wasm.async_throw(), /async message/);
 };
+
+exports.call_promise = async function() {
+    return "ok";
+}
+
+exports.call_promise_ok = async function() {
+    return "ok";
+}
+
+exports.call_promise_err = async function() {
+    throw "error";
+}
+
+exports.call_promise_unit = async function() {
+    console.log("asdfasdf");
+}
+
+exports.call_promise_ok_unit = async function() {
+}
+
+exports.call_promise_err_unit = async function() {
+    throw "error";
+}
