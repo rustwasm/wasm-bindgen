@@ -972,7 +972,8 @@ impl TryToTokens for ast::ImportFunction {
             }
             Some(ref ty) => {
                 if self.function.r#async {
-                    abi_ret = quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
+                    abi_ret =
+                        quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
                     let future = quote! {
                         wasm_bindgen_futures::JsFuture::from(
                             <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>
@@ -996,7 +997,8 @@ impl TryToTokens for ast::ImportFunction {
             }
             None => {
                 if self.function.r#async {
-                    abi_ret = quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
+                    abi_ret =
+                        quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
                     let future = quote! {
                         wasm_bindgen_futures::JsFuture::from(
                             <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>
@@ -1076,7 +1078,7 @@ impl TryToTokens for ast::ImportFunction {
         );
 
         let maybe_async = if self.function.r#async {
-            Some(quote!{async})
+            Some(quote! {async})
         } else {
             None
         };

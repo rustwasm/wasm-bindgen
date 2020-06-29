@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
+#[rustfmt::skip]
 #[wasm_bindgen(module = "tests/wasm/futures.js")]
 extern "C" {
     #[wasm_bindgen(catch)]
