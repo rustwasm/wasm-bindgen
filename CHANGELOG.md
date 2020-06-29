@@ -2,6 +2,32 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.64
+
+Released 2020-06-29.
+
+### Added
+
+* Nested namespaces for imports can now be specified.
+  [#2105](https://github.com/rustwasm/wasm-bindgen/pull/2105)
+
+* A `deno` target has been added.
+  [#2176](https://github.com/rustwasm/wasm-bindgen/pull/2176)
+
+### Fixed
+
+* Getters/setters that consume the original object have been fixed to invalidate
+  the object correctly.
+  [#2172](https://github.com/rustwasm/wasm-bindgen/pull/2172)
+
+* Compatibility with nightly threading in LLVM has been fixed.
+  [#2183](https://github.com/rustwasm/wasm-bindgen/pull/2183)
+
+* Trailing space in generated doc comments is now removed.
+  [#2210](https://github.com/rustwasm/wasm-bindgen/pull/2210)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.63
 
 Released 2020-05-27.
