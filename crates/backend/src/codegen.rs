@@ -971,22 +971,54 @@ impl TryToTokens for ast::ImportFunction {
                 );
             }
             Some(ref ty) => {
-                abi_ret = quote! {
-                    <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi
-                };
-                convert_ret = quote! {
-                    <#ty as wasm_bindgen::convert::FromWasmAbi>
-                        ::from_abi(#ret_ident)
-                };
+                if self.function.r#async {
+                    abi_ret =
+                        quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
+                    let future = quote! {
+                        wasm_bindgen_futures::JsFuture::from(
+                            <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>
+                                ::from_abi(#ret_ident)
+                        ).await
+                    };
+                    convert_ret = if self.catch {
+                        quote! { Ok(#future?) }
+                    } else {
+                        quote! { #future.expect("unexpected exception") }
+                    };
+                } else {
+                    abi_ret = quote! {
+                        <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi
+                    };
+                    convert_ret = quote! {
+                        <#ty as wasm_bindgen::convert::FromWasmAbi>
+                            ::from_abi(#ret_ident)
+                    };
+                }
             }
             None => {
-                abi_ret = quote! { () };
-                convert_ret = quote! { () };
+                if self.function.r#async {
+                    abi_ret =
+                        quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
+                    let future = quote! {
+                        wasm_bindgen_futures::JsFuture::from(
+                            <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>
+                                ::from_abi(#ret_ident)
+                        ).await
+                    };
+                    convert_ret = if self.catch {
+                        quote! { #future?; Ok(()) }
+                    } else {
+                        quote! { #future.expect("uncaught exception"); }
+                    };
+                } else {
+                    abi_ret = quote! { () };
+                    convert_ret = quote! { () };
+                }
             }
         }
 
         let mut exceptional_ret = quote!();
-        if self.catch {
+        if self.catch && !self.function.r#async {
             convert_ret = quote! { Ok(#convert_ret) };
             exceptional_ret = quote! {
                 wasm_bindgen::__rt::take_last_exception()?;
@@ -1045,12 +1077,17 @@ impl TryToTokens for ast::ImportFunction {
             &self.rust_name,
         );
 
+        let maybe_async = if self.function.r#async {
+            Some(quote! {async})
+        } else {
+            None
+        };
         let invocation = quote! {
             #(#attrs)*
             #[allow(bad_style)]
             #[doc = #doc_comment]
             #[allow(clippy::all)]
-            #vis fn #rust_name(#me #(#arguments),*) #ret {
+            #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
                 #extern_fn
 
                 unsafe {
@@ -1096,6 +1133,8 @@ impl<'a> ToTokens for DescribeImport<'a> {
         let nargs = f.function.arguments.len() as u32;
         let inform_ret = match &f.js_ret {
             Some(ref t) => quote! { <#t as WasmDescribe>::describe(); },
+            // async functions always return a JsValue, even if they say to return ()
+            None if f.function.r#async => quote! { <JsValue as WasmDescribe>::describe(); },
             None => quote! { <() as WasmDescribe>::describe(); },
         };
 

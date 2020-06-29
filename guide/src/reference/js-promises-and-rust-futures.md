@@ -25,6 +25,31 @@ Here we can see how converting a `Promise` to Rust creates a `impl Future<Output
 = Result<JsValue, JsValue>>`. This corresponds to `then` and `catch` in JS where
 a successful promise becomes `Ok` and an erroneous promise becomes `Err`.
 
+You can also import a JS async function directly with a `extern "C"` block, and
+the promise will be converted to a future automatically. For now the return type
+must be `JsValue` or no return at all:
+
+```rust
+#[wasm_bindgen]
+extern "C" {
+    async fn async_func_1() -> JsValue;
+    async fn async_func_2();
+}
+```
+
+The `async` can be combined with the `catch` attribute to manage errors from the
+JS promise:
+
+```rust
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(catch)]
+    async fn async_func_3() -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(catch)]
+    async fn async_func_4() -> Result<(), JsValue>;
+}
+```
+
 Next up you'll probably want to export a Rust function to JS that returns a
 promise. To do this you can use an `async` function and `#[wasm_bindgen]`:
 
