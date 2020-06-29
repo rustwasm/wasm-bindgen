@@ -10,7 +10,7 @@ error: only C-Style enums allowed with #[wasm_bindgen]
 8 |     D(u32),
   |      ^^^^^
 
-error: enums with #[wasm_bidngen] may only have number literal values
+error: enums with #[wasm_bindgen] may only have number literal values
   --> $DIR/invalid-enums.rs:13:9
    |
 13 |     X = 1 + 3,

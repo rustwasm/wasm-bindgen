@@ -170,7 +170,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = u32;
 
@@ -186,7 +186,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             impl wasm_bindgen::__rt::core::convert::From<#name> for
                 wasm_bindgen::JsValue
             {
@@ -214,12 +214,12 @@ impl ToTokens for ast::Struct {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[no_mangle]
             #[doc(hidden)]
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             pub unsafe extern "C" fn #free_fn(ptr: u32) {
                 drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             impl wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
@@ -231,7 +231,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             impl wasm_bindgen::convert::RefMutFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = wasm_bindgen::__rt::RefMut<'static, #name>;
@@ -274,7 +274,7 @@ impl ToTokens for ast::StructField {
         let assert_copy = respan(assert_copy, ty);
         (quote! {
             #[doc(hidden)]
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
             pub unsafe extern "C" fn #getter(js: u32)
                 -> <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
@@ -310,7 +310,7 @@ impl ToTokens for ast::StructField {
             #[no_mangle]
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             pub unsafe extern "C" fn #setter(
                 js: u32,
                 val: <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi,
@@ -494,7 +494,7 @@ impl TryToTokens for ast::Export {
                 all(target_arch = "wasm32", not(target_os = "emscripten")),
                 export_name = #export_name,
             )]
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             pub extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
                 #start_check
                 // Scope all local variables to be destroyed after we call the
@@ -614,7 +614,7 @@ impl ToTokens for ast::ImportType {
             }
 
             #[allow(bad_style)]
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
@@ -792,12 +792,14 @@ impl ToTokens for ast::ImportEnum {
         let vis = &self.vis;
         let name = &self.name;
         let expect_string = format!("attempted to convert invalid {} into JSValue", name);
-        let variants = &self.variants;
-        let variant_strings = &self.variant_values;
+        let variant_strings = self.variants.iter().map(|v| &v.0.value);
+        let variant_names = self.variants.iter().map(|v| &v.0.name);
+        let variant_attrs = self.variants.iter().map(|v| &v.1);
         let attrs = &self.rust_attrs;
 
         let mut current_idx: usize = 0;
-        let variant_indexes: Vec<Literal> = variants
+        let variant_indexes: Vec<Literal> = self
+            .variants
             .iter()
             .map(|_| {
                 let this_index = current_idx;
@@ -813,27 +815,33 @@ impl ToTokens for ast::ImportEnum {
         let variant_paths: Vec<TokenStream> = self
             .variants
             .iter()
-            .map(|v| quote!(#name::#v).into_token_stream())
+            .map(|v| {
+                let v = &v.0.name;
+                quote!(#name::#v).into_token_stream()
+            })
             .collect();
 
         // Borrow variant_paths because we need to use it multiple times inside the quote! macro
         let variant_paths_ref = &variant_paths;
+
+        // Since variant_strings is used twice, make a copy of the iterator:
+        let variant_strings_cpy = variant_strings.clone();
 
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
             #[allow(clippy::all)]
             #vis enum #name {
-                #(#variants = #variant_indexes_ref,)*
+                #(#(#variant_attrs)* #variant_names = #variant_indexes_ref,)*
                 #[doc(hidden)]
                 __Nonexhaustive,
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, deprecated, missing_docs)]
             impl #name {
                 fn from_str(s: &str) -> Option<#name> {
                     match s {
-                        #(#variant_strings => Some(#variant_paths_ref),)*
+                        #(#variant_strings_cpy => Some(#variant_paths_ref),)*
                         _ => None,
                     }
                 }
@@ -847,6 +855,15 @@ impl ToTokens for ast::ImportEnum {
 
                 #vis fn from_js_value(obj: &wasm_bindgen::JsValue) -> Option<#name> {
                     obj.as_string().and_then(|obj_str| Self::from_str(obj_str.as_str()))
+                }
+            }
+
+            #[allow(clippy::all)]
+            impl ::core::str::FromStr for #name {
+                type Err = ();
+
+                fn from_str(s: &str) -> ::core::result::Result<#name, ()> {
+                    #name::from_str(s).ok_or(())
                 }
             }
 
@@ -868,7 +885,7 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = <wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>::Abi;
 
@@ -1049,7 +1066,7 @@ impl TryToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style)]
             #[doc = #doc_comment]
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
                 #extern_fn
 
@@ -1137,7 +1154,7 @@ impl ToTokens for ast::Enum {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             impl wasm_bindgen::convert::FromWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1182,7 +1199,7 @@ impl ToTokens for ast::ImportStatic {
         let vis = &self.vis;
         (quote! {
             #[allow(bad_style)]
-            #[allow(clippy::all)]
+            #[allow(clippy::all, unsafe_code)]
             #vis static #name: wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
