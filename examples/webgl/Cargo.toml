@@ -8,8 +8,8 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-js-sys = "0.3.40"
-wasm-bindgen = "0.2.63"
+js-sys = "0.3.41"
+wasm-bindgen = "0.2.64"
 
 [dependencies.web-sys]
 version = "0.3.4"

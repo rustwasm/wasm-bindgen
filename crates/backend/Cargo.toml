@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-backend"
-version = "0.2.63"
+version = "0.2.64"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/backend"
@@ -22,4 +22,4 @@ log = "0.4"
 proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '1.0', features = ['full'] }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.63" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.64" }

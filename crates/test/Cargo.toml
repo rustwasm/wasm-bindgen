@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-test"
-version = "0.3.13"
+version = "0.3.14"
 authors = ["The wasm-bindgen Developers"]
 description = "Internal testing crate for wasm-bindgen"
 license = "MIT/Apache-2.0"
@@ -9,11 +9,11 @@ edition = "2018"
 
 [dependencies]
 console_error_panic_hook = '0.1'
-js-sys = { path = '../js-sys', version = '0.3.40' }
+js-sys = { path = '../js-sys', version = '0.3.41' }
 scoped-tls = "1.0"
-wasm-bindgen = { path = '../..', version = '0.2.63' }
-wasm-bindgen-futures = { path = '../futures', version = '0.4.13' }
-wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.13' }
+wasm-bindgen = { path = '../..', version = '0.2.64' }
+wasm-bindgen-futures = { path = '../futures', version = '0.4.14' }
+wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.14' }
 
 [lib]
 test = false

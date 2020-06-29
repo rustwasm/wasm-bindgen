@@ -7,13 +7,13 @@ license = "MIT/Apache-2.0"
 name = "wasm-bindgen-futures"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/futures"
 readme = "./README.md"
-version = "0.4.13"
+version = "0.4.14"
 edition = "2018"
 
 [dependencies]
 cfg-if = "0.1.9"
-js-sys = { path = "../js-sys", version = '0.3.40' }
-wasm-bindgen = { path = "../..", version = '0.2.63' }
+js-sys = { path = "../js-sys", version = '0.3.41' }
+wasm-bindgen = { path = "../..", version = '0.2.64' }
 
 [target.'cfg(target_feature = "atomics")'.dependencies.web-sys]
 path = "../web-sys"
@@ -24,5 +24,5 @@ features = [
 ]
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test', version = '0.3.13' }
+wasm-bindgen-test = { path = '../test', version = '0.3.14' }
 futures-channel-preview = { version = "0.3.0-alpha.18" }
