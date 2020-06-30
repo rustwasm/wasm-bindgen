@@ -346,6 +346,19 @@ extern "C" {
         dx: f64,
         dy: f64,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "OffscreenCanvas")]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = drawImage ) ]
+    #[doc = "The `drawImage()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `OffscreenCanvas`*"]
+    pub fn draw_image_with_offscreen_canvas_element(
+        this: &CanvasRenderingContext2d,
+        image: &OffscreenCanvas,
+        dx: f64,
+        dy: f64,
+    ) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlVideoElement")]
     # [ wasm_bindgen ( catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = drawImage ) ]
     #[doc = "The `drawImage()` method."]
@@ -412,6 +425,21 @@ extern "C" {
     pub fn draw_image_with_html_canvas_element_and_dw_and_dh(
         this: &CanvasRenderingContext2d,
         image: &HtmlCanvasElement,
+        dx: f64,
+        dy: f64,
+        dw: f64,
+        dh: f64,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "OffscreenCanvas")]
+    # [ wasm_bindgen ( catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = drawImage ) ]
+    #[doc = "The `drawImage()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `OffscreenCanvas`*"]
+    pub fn draw_image_with_offscreen_canvas_element_and_dw_and_dh(
+        this: &CanvasRenderingContext2d,
+        image: &OffscreenCanvas,
         dx: f64,
         dy: f64,
         dw: f64,
