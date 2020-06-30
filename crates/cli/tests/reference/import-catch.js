@@ -29,8 +29,15 @@ function addHeapObject(obj) {
     return idx;
 }
 
-function handleError(e) {
-    wasm.__wbindgen_exn_store(addHeapObject(e));
+function handleError(f) {
+    return function () {
+        try {
+            return f.apply(this, arguments);
+
+        } catch (e) {
+            wasm.__wbindgen_exn_store(addHeapObject(e));
+        }
+    };
 }
 /**
 */
@@ -42,13 +49,9 @@ export const __wbindgen_object_drop_ref = function(arg0) {
     takeObject(arg0);
 };
 
-export const __wbg_foo_8d66ddef0ff279d6 = function() {
-    try {
-        foo();
-    } catch (e) {
-        handleError(e)
-    }
-};
+export const __wbg_foo_8d66ddef0ff279d6 = handleError(function() {
+    foo();
+});
 
 export const __wbindgen_rethrow = function(arg0) {
     throw takeObject(arg0);

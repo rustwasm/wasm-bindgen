@@ -16,7 +16,7 @@ all Web APIs)][webidl] have relatively straightforward translations into
 * Callbacks are all represented as `js_sys::Function`. This means that all
   callbacks going through `web-sys` are a raw JS value. You can work with this
   by either juggling actual `js_sys::Function` instances or you can create a
-  `Closure<FnMut(...)>`, extract the underlying `JsValue` with `as_ref`, and
+  `Closure<dyn FnMut(...)>`, extract the underlying `JsValue` with `as_ref`, and
   then use `JsCast::unchecked_ref` to convert it to a `js_sys::Function`.
 
 [webidl]: https://heycam.github.io/webidl/

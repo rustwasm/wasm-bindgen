@@ -36,8 +36,8 @@ tys! {
     REFMUT
     SLICE
     VECTOR
-    ANYREF
-    NAMED_ANYREF
+    EXTERNREF
+    NAMED_EXTERNREF
     ENUM
     RUST_STRUCT
     CHAR
@@ -78,7 +78,7 @@ simple! {
     f64 => F64
     bool => BOOLEAN
     char => CHAR
-    JsValue => ANYREF
+    JsValue => EXTERNREF
 }
 
 cfg_if! {

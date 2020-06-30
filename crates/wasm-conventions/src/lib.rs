@@ -6,13 +6,13 @@
 //! * The shadow stack pointer
 //! * The canonical linear memory that contains the shadow stack
 
-#![deny(missing_docs, missing_debug_implementations)]
-
-use anyhow::{anyhow, bail, Error};
-use walrus::{ir::Value, GlobalId, GlobalKind, InitExpr, MemoryId, Module, ValType};
+use anyhow::{anyhow, bail, Result};
+use walrus::{
+    ir::Value, ElementId, FunctionId, GlobalId, GlobalKind, InitExpr, MemoryId, Module, ValType,
+};
 
 /// Get a Wasm module's canonical linear memory.
-pub fn get_memory(module: &Module) -> Result<MemoryId, Error> {
+pub fn get_memory(module: &Module) -> Result<MemoryId> {
     let mut memories = module.memories.iter().map(|m| m.id());
     let memory = memories.next();
     if memories.next().is_some() {
@@ -54,4 +54,41 @@ pub fn get_shadow_stack_pointer(module: &Module) -> Option<GlobalId> {
         1 => Some(candidates[0].id()),
         _ => None,
     }
+}
+
+pub struct FunctionTableEntry {
+    pub element: ElementId,
+    pub idx: usize,
+    pub func: Option<FunctionId>,
+}
+
+/// Looks up a function table entry by index in the main function table.
+pub fn get_function_table_entry(module: &Module, idx: u32) -> Result<FunctionTableEntry> {
+    let table = module
+        .tables
+        .main_function_table()?
+        .ok_or_else(|| anyhow!("no function table found in module"))?;
+    let table = module.tables.get(table);
+    for &segment in table.elem_segments.iter() {
+        let segment = module.elements.get(segment);
+        let offset = match &segment.kind {
+            walrus::ElementKind::Active {
+                offset: InitExpr::Value(Value::I32(n)),
+                ..
+            } => *n as u32,
+            _ => continue,
+        };
+        let idx = (idx - offset) as usize;
+        match segment.members.get(idx) {
+            Some(slot) => {
+                return Ok(FunctionTableEntry {
+                    element: segment.id(),
+                    idx,
+                    func: slot.clone(),
+                })
+            }
+            None => continue,
+        }
+    }
+    bail!("failed to find `{}` in function table", idx);
 }

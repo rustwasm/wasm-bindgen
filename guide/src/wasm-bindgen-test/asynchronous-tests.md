@@ -19,7 +19,7 @@ async fn my_async_test() {
     let promise = js_sys::Promise::resolve(&JsValue::from(42));
 
     // Convert that promise into a future and make the test wait on it.
-    let x = JsFuture::from(promise).await.unwrap();:
+    let x = JsFuture::from(promise).await.unwrap();
     assert_eq!(x, 42);
 }
 ```

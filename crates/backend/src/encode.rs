@@ -212,7 +212,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
 
 fn shared_enum<'a>(e: &'a ast::Enum, intern: &'a Interner) -> Enum<'a> {
     Enum {
-        name: intern.intern(&e.name),
+        name: &e.js_name,
         variants: e
             .variants
             .iter()
@@ -227,6 +227,7 @@ fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<
     EnumVariant {
         name: intern.intern(&v.name),
         value: v.value,
+        comments: v.comments.iter().map(|s| &**s).collect(),
     }
 }
 
@@ -240,7 +241,7 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
             ast::ImportModule::Inline(idx, _) => ImportModule::Inline(*idx as u32),
             ast::ImportModule::None => ImportModule::None,
         },
-        js_namespace: i.js_namespace.as_ref().map(|s| intern.intern(s)),
+        js_namespace: i.js_namespace.clone(),
         kind: shared_import_kind(&i.kind, intern)?,
     })
 }

@@ -107,19 +107,9 @@ impl WasmBindgenDescriptorsSection {
         // For all indirect functions that were closure descriptors, delete them
         // from the function table since we've executed them and they're not
         // necessary in the final binary.
-        let table_id = match interpreter.function_table_id() {
-            Some(id) => id,
-            None => return Ok(()),
-        };
-        let table = module.tables.get_mut(table_id);
-        let table = match &mut table.kind {
-            walrus::TableKind::Function(f) => f,
-            _ => unreachable!(),
-        };
-        for idx in element_removal_list {
+        for (segment, idx) in element_removal_list {
             log::trace!("delete element {}", idx);
-            assert!(table.elements[idx].is_some());
-            table.elements[idx] = None;
+            module.elements.get_mut(segment).members[idx] = None;
         }
 
         // And finally replace all calls of `wbindgen_describe_closure` with a

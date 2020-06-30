@@ -25,8 +25,8 @@ fn no_modules_rejects_npm() {
         .stderr(
             str::is_match(
                 "\
-error: NPM dependencies have been specified in `.*` but this is only \
-compatible with the `bundler` and `nodejs` targets
+error: NPM dependencies have been specified in `.*` but \
+this is incompatible with the `no-modules` target
 ",
             )
             .unwrap(),

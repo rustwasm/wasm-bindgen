@@ -28,7 +28,7 @@ struct Context<'a> {
     vendor_prefixes: HashMap<String, Vec<String>>,
     unique_crate_identifier: &'a str,
     descriptors: HashMap<String, Descriptor>,
-    anyref_enabled: bool,
+    externref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
 }
@@ -43,7 +43,7 @@ struct InstructionBuilder<'a, 'b> {
 
 pub fn process(
     module: &mut Module,
-    anyref_enabled: bool,
+    externref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
@@ -61,7 +61,7 @@ pub fn process(
         memory: wasm_bindgen_wasm_conventions::get_memory(module).ok(),
         module,
         start_found: false,
-        anyref_enabled,
+        externref_enabled,
         wasm_interface_types,
         support_start,
     };
@@ -147,7 +147,7 @@ impl<'a> Context<'a> {
         }
         self.handle_duplicate_imports(&duplicate_import_map);
 
-        self.inject_anyref_initialization()?;
+        self.inject_externref_initialization()?;
 
         if let Some(custom) = self
             .module
@@ -187,7 +187,7 @@ impl<'a> Context<'a> {
                 let signature = Function {
                     shim_idx: 0,
                     arguments: vec![Descriptor::I32; 3],
-                    ret: Descriptor::Anyref,
+                    ret: Descriptor::Externref,
                 };
                 let id = self.import_adapter(id, signature, AdapterJsImportKind::Normal)?;
                 // Synthesize the two integer pointers we pass through which
@@ -284,22 +284,22 @@ impl<'a> Context<'a> {
     }
 
     // Ensure that the `start` function for this module calls the
-    // `__wbindgen_init_anyref_table` function. This'll ensure that all
-    // instances of this module have the initial slots of the anyref table
+    // `__wbindgen_init_externref_table` function. This'll ensure that all
+    // instances of this module have the initial slots of the externref table
     // initialized correctly.
     //
     // Note that this is disabled if WebAssembly interface types are enabled
     // since that's a slightly different environment for now which doesn't have
     // quite the same initialization.
-    fn inject_anyref_initialization(&mut self) -> Result<(), Error> {
-        if !self.anyref_enabled || self.wasm_interface_types {
+    fn inject_externref_initialization(&mut self) -> Result<(), Error> {
+        if !self.externref_enabled || self.wasm_interface_types {
             return Ok(());
         }
 
         let ty = self.module.types.add(&[], &[]);
         let (import, import_id) =
             self.module
-                .add_import_func(PLACEHOLDER_MODULE, "__wbindgen_init_anyref_table", ty);
+                .add_import_func(PLACEHOLDER_MODULE, "__wbindgen_init_externref_table", ty);
 
         self.module.start = Some(match self.module.start {
             Some(prev_start) => {
@@ -309,7 +309,7 @@ impl<'a> Context<'a> {
             }
             None => import,
         });
-        self.bind_intrinsic(import_id, Intrinsic::InitAnyrefTable)?;
+        self.bind_intrinsic(import_id, Intrinsic::InitExternrefTable)?;
 
         Ok(())
     }
@@ -419,6 +419,7 @@ impl<'a> Context<'a> {
                             AuxExportKind::Getter {
                                 class,
                                 field: f.to_string(),
+                                consumed: export.consumed,
                             }
                         }
                         decode::OperationKind::Setter(f) => {
@@ -426,6 +427,7 @@ impl<'a> Context<'a> {
                             AuxExportKind::Setter {
                                 class,
                                 field: f.to_string(),
+                                consumed: export.consumed,
                             }
                         }
                         _ if op.is_static => AuxExportKind::StaticFunction {
@@ -481,8 +483,8 @@ impl<'a> Context<'a> {
 
         // Note that we call the previous start function, if any, first. This is
         // because the start function currently only shows up when it's injected
-        // through thread/anyref transforms. These injected start functions need
-        // to happen before user code, so we always schedule them first.
+        // through thread/externref transforms. These injected start functions
+        // need to happen before user code, so we always schedule them first.
         let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
         builder.func_body().call(prev_start).call(id);
         let new_start = builder.finish(Vec::new(), &mut self.module.funcs);
@@ -743,7 +745,7 @@ impl<'a> Context<'a> {
         let id = self.import_adapter(
             import_id,
             Function {
-                arguments: vec![Descriptor::Ref(Box::new(Descriptor::Anyref))],
+                arguments: vec![Descriptor::Ref(Box::new(Descriptor::Externref))],
                 shim_idx: 0,
                 ret: Descriptor::Boolean,
             },
@@ -766,7 +768,13 @@ impl<'a> Context<'a> {
             variants: enum_
                 .variants
                 .iter()
-                .map(|v| (v.name.to_string(), v.value))
+                .map(|v| {
+                    (
+                        v.name.to_string(),
+                        v.value,
+                        concatenate_comments(&v.comments),
+                    )
+                })
                 .collect(),
             generate_typescript: enum_.generate_typescript,
         };
@@ -800,6 +808,7 @@ impl<'a> Context<'a> {
                     kind: AuxExportKind::Getter {
                         class: struct_.name.to_string(),
                         field: field.name.to_string(),
+                        consumed: false,
                     },
                     generate_typescript: field.generate_typescript,
                 },
@@ -826,6 +835,7 @@ impl<'a> Context<'a> {
                     kind: AuxExportKind::Setter {
                         class: struct_.name.to_string(),
                         field: field.name.to_string(),
+                        consumed: false,
                     },
                     generate_typescript: field.generate_typescript,
                 },
@@ -844,7 +854,7 @@ impl<'a> Context<'a> {
             let signature = Function {
                 shim_idx: 0,
                 arguments: vec![Descriptor::I32],
-                ret: Descriptor::Anyref,
+                ret: Descriptor::Externref,
             };
             let id = self.import_adapter(import_id, signature, AdapterJsImportKind::Normal)?;
             self.aux
@@ -892,7 +902,7 @@ impl<'a> Context<'a> {
                     "import of `{}` through js namespace `{}` isn't supported \
                      right now when it lists a polyfill",
                     item,
-                    ns
+                    ns.join(".")
                 );
             }
             return Ok(JsImport {
@@ -905,8 +915,12 @@ impl<'a> Context<'a> {
         }
 
         let (name, fields) = match import.js_namespace {
-            Some(ns) => (ns, vec![item.to_string()]),
-            None => (item, Vec::new()),
+            Some(ref ns) => {
+                let mut tail = (&ns[1..]).to_owned();
+                tail.push(item.to_string());
+                (ns[0].to_owned(), tail)
+            }
+            None => (item.to_owned(), Vec::new()),
         };
 
         let name = match import.module {
@@ -1511,9 +1525,5 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
 }
 
 fn concatenate_comments(comments: &[&str]) -> String {
-    comments
-        .iter()
-        .map(|s| s.trim_matches('"'))
-        .collect::<Vec<_>>()
-        .join("\n")
+    comments.iter().map(|&s| s).collect::<Vec<_>>().join("\n")
 }

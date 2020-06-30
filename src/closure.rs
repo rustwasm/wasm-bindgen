@@ -48,7 +48,7 @@ use crate::UnwrapThrowExt;
 ///
 /// #[wasm_bindgen]
 /// extern "C" {
-///     fn setInterval(closure: &Closure<FnMut()>, time: u32) -> i32;
+///     fn setInterval(closure: &Closure<dyn FnMut()>, time: u32) -> i32;
 ///     fn clearInterval(id: i32);
 ///
 ///     #[wasm_bindgen(js_namespace = console)]
@@ -58,7 +58,7 @@ use crate::UnwrapThrowExt;
 /// #[wasm_bindgen]
 /// pub struct IntervalHandle {
 ///     interval_id: i32,
-///     _closure: Closure<FnMut()>,
+///     _closure: Closure<dyn FnMut()>,
 /// }
 ///
 /// impl Drop for IntervalHandle {
@@ -73,7 +73,7 @@ use crate::UnwrapThrowExt;
 ///     // a JS closure.
 ///     let cb = Closure::wrap(Box::new(|| {
 ///         log("interval elapsed!");
-///     }) as Box<FnMut()>);
+///     }) as Box<dyn FnMut()>);
 ///
 ///     // Next we pass this via reference to the `setInterval` function, and
 ///     // `setInterval` gets a handle to the corresponding JS closure.
@@ -101,7 +101,7 @@ use crate::UnwrapThrowExt;
 /// #[wasm_bindgen]
 /// pub struct IntervalHandle {
 ///     interval_id: i32,
-///     _closure: Closure<FnMut()>,
+///     _closure: Closure<dyn FnMut()>,
 /// }
 ///
 /// impl Drop for IntervalHandle {
@@ -115,7 +115,7 @@ use crate::UnwrapThrowExt;
 /// pub fn run() -> Result<IntervalHandle, JsValue> {
 ///     let cb = Closure::wrap(Box::new(|| {
 ///         web_sys::console::log_1(&"inverval elapsed!".into());
-///     }) as Box<FnMut()>);
+///     }) as Box<dyn FnMut()>);
 ///
 ///     let window = web_sys::window().unwrap();
 ///     let interval_id = window.set_interval_with_callback_and_timeout_and_arguments_0(
@@ -144,7 +144,7 @@ use crate::UnwrapThrowExt;
 ///
 /// #[wasm_bindgen]
 /// extern "C" {
-///     fn requestAnimationFrame(closure: &Closure<FnMut()>) -> u32;
+///     fn requestAnimationFrame(closure: &Closure<dyn FnMut()>) -> u32;
 ///     fn cancelAnimationFrame(id: u32);
 ///
 ///     #[wasm_bindgen(js_namespace = console)]
@@ -154,7 +154,7 @@ use crate::UnwrapThrowExt;
 /// #[wasm_bindgen]
 /// pub struct AnimationFrameHandle {
 ///     animation_id: u32,
-///     _closure: Closure<FnMut()>,
+///     _closure: Closure<dyn FnMut()>,
 /// }
 ///
 /// impl Drop for AnimationFrameHandle {
@@ -377,12 +377,12 @@ where
 
 // NB: we use a specific `T` for this `Closure<T>` impl block to avoid every
 // call site having to provide an explicit, turbo-fished type like
-// `Closure::<FnOnce()>::once(...)`.
+// `Closure::<dyn FnOnce()>::once(...)`.
 impl Closure<dyn FnOnce()> {
     /// Create a `Closure` from a function that can only be called once.
     ///
     /// Since we have no way of enforcing that JS cannot attempt to call this
-    /// `FnOne(A...) -> R` more than once, this produces a `Closure<FnMut(A...)
+    /// `FnOne(A...) -> R` more than once, this produces a `Closure<dyn FnMut(A...)
     /// -> R>` that will dynamically throw a JavaScript error if called more
     /// than once.
     ///
@@ -404,7 +404,7 @@ impl Closure<dyn FnOnce()> {
     ///
     /// // Create a `Closure` from `f`. Note that the `Closure`'s type parameter
     /// // is `FnMut`, even though `f` is `FnOnce`.
-    /// let closure: Closure<FnMut() -> String> = Closure::once(f);
+    /// let closure: Closure<dyn FnMut() -> String> = Closure::once(f);
     /// ```
     pub fn once<F, A, R>(fn_once: F) -> Closure<F::FnMut>
     where
@@ -464,7 +464,7 @@ where
     T: WasmClosure + ?Sized,
 {
     fn describe() {
-        inform(ANYREF);
+        inform(EXTERNREF);
     }
 }
 
@@ -713,8 +713,9 @@ doit! {
 // duplicate.
 
 unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi + 'static,
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi + 'static,
 {
     fn describe() {
         #[allow(non_snake_case)]
@@ -730,8 +731,7 @@ unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
             // convert `ret` as it may throw (for `Result`, for
             // example)
             let ret = {
-                let f: *const dyn Fn(&A) -> R =
-                    FatPtr { fields: (a, b) }.ptr;
+                let f: *const dyn Fn(&A) -> R = FatPtr { fields: (a, b) }.ptr;
                 let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
                 (*f)(&*arg)
             };
@@ -740,17 +740,14 @@ unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
 
         inform(invoke::<A, R> as u32);
 
-        unsafe extern fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(
-            a: usize,
-            b: usize,
-        ) {
+        unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
             if a == 0 {
                 return;
             }
-            drop(Box::from_raw(FatPtr::<dyn Fn(&A) -> R> {
-                fields: (a, b)
-            }.ptr));
+            drop(Box::from_raw(
+                FatPtr::<dyn Fn(&A) -> R> { fields: (a, b) }.ptr,
+            ));
         }
         inform(destroy::<A, R> as u32);
 
@@ -759,8 +756,9 @@ unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
 }
 
 unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi + 'static,
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi + 'static,
 {
     fn describe() {
         #[allow(non_snake_case)]
@@ -776,8 +774,7 @@ unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
             // convert `ret` as it may throw (for `Result`, for
             // example)
             let ret = {
-                let f: *const dyn FnMut(&A) -> R =
-                    FatPtr { fields: (a, b) }.ptr;
+                let f: *const dyn FnMut(&A) -> R = FatPtr { fields: (a, b) }.ptr;
                 let f = f as *mut dyn FnMut(&A) -> R;
                 let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
                 (*f)(&*arg)
@@ -787,17 +784,14 @@ unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
 
         inform(invoke::<A, R> as u32);
 
-        unsafe extern fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(
-            a: usize,
-            b: usize,
-        ) {
+        unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
             if a == 0 {
                 return;
             }
-            drop(Box::from_raw(FatPtr::<dyn FnMut(&A) -> R> {
-                fields: (a, b)
-            }.ptr));
+            drop(Box::from_raw(
+                FatPtr::<dyn FnMut(&A) -> R> { fields: (a, b) }.ptr,
+            ));
         }
         inform(destroy::<A, R> as u32);
 
@@ -807,9 +801,10 @@ unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
 
 #[allow(non_snake_case)]
 impl<T, A, R> WasmClosureFnOnce<(&A,), R> for T
-    where T: 'static + FnOnce(&A) -> R,
-          A: RefFromWasmAbi + 'static,
-          R: ReturnWasmAbi + 'static
+where
+    T: 'static + FnOnce(&A) -> R,
+    A: RefFromWasmAbi + 'static,
+    R: ReturnWasmAbi + 'static,
 {
     type FnMut = dyn FnMut(&A) -> R;
 
@@ -822,8 +817,8 @@ impl<T, A, R> WasmClosureFnOnce<(&A,), R> for T
     }
 
     fn into_js_function(self) -> JsValue {
-        use std::rc::Rc;
         use crate::__rt::WasmRefCell;
+        use std::rc::Rc;
 
         let mut me = Some(self);
 

@@ -4,7 +4,7 @@ use crate::util::ShortHash;
 use crate::Diagnostic;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::{quote, ToTokens};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 use syn;
@@ -32,10 +32,10 @@ impl TryToTokens for ast::Program {
         for s in self.structs.iter() {
             s.to_tokens(tokens);
         }
-        let mut types = HashSet::new();
+        let mut types = HashMap::new();
         for i in self.imports.iter() {
             if let ast::ImportKind::Type(t) = &i.kind {
-                types.insert(t.rust_name.clone());
+                types.insert(t.rust_name.to_string(), t.rust_name.clone());
             }
         }
         for i in self.imports.iter() {
@@ -43,17 +43,20 @@ impl TryToTokens for ast::Program {
 
             // If there is a js namespace, check that name isn't a type. If it is,
             // this import might be a method on that type.
-            if let Some(ns) = &i.js_namespace {
-                if types.contains(ns) && i.kind.fits_on_impl() {
-                    let kind = match i.kind.try_to_token_stream() {
-                        Ok(kind) => kind,
-                        Err(e) => {
-                            errors.push(e);
-                            continue;
-                        }
-                    };
-                    (quote! { impl #ns { #kind } }).to_tokens(tokens);
-                    continue;
+            if let Some(nss) = &i.js_namespace {
+                // When the namespace is `A.B`, the type name should be `B`.
+                if let Some(ns) = nss.last().and_then(|t| types.get(t)) {
+                    if i.kind.fits_on_impl() {
+                        let kind = match i.kind.try_to_token_stream() {
+                            Ok(kind) => kind,
+                            Err(e) => {
+                                errors.push(e);
+                                continue;
+                            }
+                        };
+                        (quote! { impl #ns { #kind } }).to_tokens(tokens);
+                        continue;
+                    }
                 }
             }
 
@@ -213,7 +216,7 @@ impl ToTokens for ast::Struct {
             #[doc(hidden)]
             #[allow(clippy::all)]
             pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                <#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr);
+                drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
             }
 
             #[allow(clippy::all)]
@@ -580,7 +583,7 @@ impl ToTokens for ast::ImportType {
             let typescript_type_chars = typescript_type.chars().map(|c| c as u32);
             quote! {
                 use wasm_bindgen::describe::*;
-                inform(NAMED_ANYREF);
+                inform(NAMED_EXTERNREF);
                 inform(#typescript_type_len);
                 #(inform(#typescript_type_chars);)*
             }
@@ -968,22 +971,54 @@ impl TryToTokens for ast::ImportFunction {
                 );
             }
             Some(ref ty) => {
-                abi_ret = quote! {
-                    <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi
-                };
-                convert_ret = quote! {
-                    <#ty as wasm_bindgen::convert::FromWasmAbi>
-                        ::from_abi(#ret_ident)
-                };
+                if self.function.r#async {
+                    abi_ret =
+                        quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
+                    let future = quote! {
+                        wasm_bindgen_futures::JsFuture::from(
+                            <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>
+                                ::from_abi(#ret_ident)
+                        ).await
+                    };
+                    convert_ret = if self.catch {
+                        quote! { Ok(#future?) }
+                    } else {
+                        quote! { #future.expect("unexpected exception") }
+                    };
+                } else {
+                    abi_ret = quote! {
+                        <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi
+                    };
+                    convert_ret = quote! {
+                        <#ty as wasm_bindgen::convert::FromWasmAbi>
+                            ::from_abi(#ret_ident)
+                    };
+                }
             }
             None => {
-                abi_ret = quote! { () };
-                convert_ret = quote! { () };
+                if self.function.r#async {
+                    abi_ret =
+                        quote! { <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>::Abi };
+                    let future = quote! {
+                        wasm_bindgen_futures::JsFuture::from(
+                            <js_sys::Promise as wasm_bindgen::convert::FromWasmAbi>
+                                ::from_abi(#ret_ident)
+                        ).await
+                    };
+                    convert_ret = if self.catch {
+                        quote! { #future?; Ok(()) }
+                    } else {
+                        quote! { #future.expect("uncaught exception"); }
+                    };
+                } else {
+                    abi_ret = quote! { () };
+                    convert_ret = quote! { () };
+                }
             }
         }
 
         let mut exceptional_ret = quote!();
-        if self.catch {
+        if self.catch && !self.function.r#async {
             convert_ret = quote! { Ok(#convert_ret) };
             exceptional_ret = quote! {
                 wasm_bindgen::__rt::take_last_exception()?;
@@ -1042,12 +1077,17 @@ impl TryToTokens for ast::ImportFunction {
             &self.rust_name,
         );
 
+        let maybe_async = if self.function.r#async {
+            Some(quote! {async})
+        } else {
+            None
+        };
         let invocation = quote! {
             #(#attrs)*
             #[allow(bad_style)]
             #[doc = #doc_comment]
             #[allow(clippy::all)]
-            #vis fn #rust_name(#me #(#arguments),*) #ret {
+            #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
                 #extern_fn
 
                 unsafe {
@@ -1093,6 +1133,8 @@ impl<'a> ToTokens for DescribeImport<'a> {
         let nargs = f.function.arguments.len() as u32;
         let inform_ret = match &f.js_ret {
             Some(ref t) => quote! { <#t as WasmDescribe>::describe(); },
+            // async functions always return a JsValue, even if they say to return ()
+            None if f.function.r#async => quote! { <JsValue as WasmDescribe>::describe(); },
             None => quote! { <() as WasmDescribe>::describe(); },
         };
 
@@ -1113,7 +1155,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
 
 impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut TokenStream) {
-        let enum_name = &self.name;
+        let enum_name = &self.rust_name;
         let hole = &self.hole;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;

@@ -1,5 +1,7 @@
 use std::collections::BTreeSet;
+use std::fs;
 use std::iter::FromIterator;
+use std::path::{Path, PathBuf};
 use std::ptr;
 
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
@@ -22,6 +24,21 @@ use crate::Options;
 /// which have the count of arguments for passing values to the variadic argument
 /// in their names, where `n` is this constant.
 const MAX_VARIADIC_ARGUMENTS_COUNT: usize = 7;
+
+/// Similar to std::fs::read_dir except it returns a sorted Vec,
+/// which is important to make the code generation deterministic.
+pub(crate) fn read_dir<P>(path: P) -> std::io::Result<Vec<PathBuf>>
+where
+    P: AsRef<Path>,
+{
+    let mut entries = fs::read_dir(path)?
+        .map(|entry| Ok(entry?.path()))
+        .collect::<std::io::Result<Vec<_>>>()?;
+
+    entries.sort();
+
+    Ok(entries)
+}
 
 /// Take a type and create an immutable shared reference to that type.
 pub(crate) fn shared_ref(ty: syn::Type, mutable: bool) -> syn::Type {

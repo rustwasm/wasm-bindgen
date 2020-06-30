@@ -43,10 +43,7 @@ pub fn wasm_bindgen_test(
             }
         }
     }
-    let ident = match body.next() {
-        Some(TokenTree::Ident(token)) => token,
-        _ => panic!("expected a function name"),
-    };
+    let ident = find_ident(&mut body).expect("expected a function name");
 
     let mut tokens = Vec::<TokenTree>::new();
 
@@ -59,11 +56,7 @@ pub fn wasm_bindgen_test(
     // We generate a `#[no_mangle]` with a known prefix so the test harness can
     // later slurp up all of these functions and pass them as arguments to the
     // main test harness. This is the entry point for all tests.
-    let name = format!(
-        "__wbg_test_{}_{}",
-        ident,
-        CNT.fetch_add(1, Ordering::SeqCst)
-    );
+    let name = format!("__wbgt_{}_{}", ident, CNT.fetch_add(1, Ordering::SeqCst));
     let name = Ident::new(&name, Span::call_site());
     tokens.extend(
         (quote! {
@@ -81,4 +74,14 @@ pub fn wasm_bindgen_test(
     tokens.extend(body);
 
     tokens.into_iter().collect::<TokenStream>().into()
+}
+
+fn find_ident(iter: &mut token_stream::IntoIter) -> Option<Ident> {
+    match iter.next()? {
+        TokenTree::Ident(i) => Some(i),
+        TokenTree::Group(g) if g.delimiter() == Delimiter::None => {
+            find_ident(&mut g.stream().into_iter())
+        }
+        _ => None,
+    }
 }

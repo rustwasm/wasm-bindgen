@@ -724,6 +724,12 @@ mod gen_Clients;
 #[cfg(feature = "Clients")]
 pub use gen_Clients::*;
 
+#[cfg(feature = "Clipboard")]
+#[allow(non_snake_case)]
+mod gen_Clipboard;
+#[cfg(feature = "Clipboard")]
+pub use gen_Clipboard::*;
+
 #[cfg(feature = "ClipboardEvent")]
 #[allow(non_snake_case)]
 mod gen_ClipboardEvent;
@@ -735,6 +741,24 @@ pub use gen_ClipboardEvent::*;
 mod gen_ClipboardEventInit;
 #[cfg(feature = "ClipboardEventInit")]
 pub use gen_ClipboardEventInit::*;
+
+#[cfg(feature = "ClipboardItem")]
+#[allow(non_snake_case)]
+mod gen_ClipboardItem;
+#[cfg(feature = "ClipboardItem")]
+pub use gen_ClipboardItem::*;
+
+#[cfg(feature = "ClipboardItemOptions")]
+#[allow(non_snake_case)]
+mod gen_ClipboardItemOptions;
+#[cfg(feature = "ClipboardItemOptions")]
+pub use gen_ClipboardItemOptions::*;
+
+#[cfg(feature = "ClipboardPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_ClipboardPermissionDescriptor;
+#[cfg(feature = "ClipboardPermissionDescriptor")]
+pub use gen_ClipboardPermissionDescriptor::*;
 
 #[cfg(feature = "CloseEvent")]
 #[allow(non_snake_case)]
@@ -2427,6 +2451,24 @@ pub use gen_GpuPrimitiveTopology::*;
 mod gen_GpuProgrammableStageDescriptor;
 #[cfg(feature = "GpuProgrammableStageDescriptor")]
 pub use gen_GpuProgrammableStageDescriptor::*;
+
+#[cfg(feature = "GpuQuerySet")]
+#[allow(non_snake_case)]
+mod gen_GpuQuerySet;
+#[cfg(feature = "GpuQuerySet")]
+pub use gen_GpuQuerySet::*;
+
+#[cfg(feature = "GpuQuerySetDescriptor")]
+#[allow(non_snake_case)]
+mod gen_GpuQuerySetDescriptor;
+#[cfg(feature = "GpuQuerySetDescriptor")]
+pub use gen_GpuQuerySetDescriptor::*;
+
+#[cfg(feature = "GpuQueryType")]
+#[allow(non_snake_case)]
+mod gen_GpuQueryType;
+#[cfg(feature = "GpuQueryType")]
+pub use gen_GpuQueryType::*;
 
 #[cfg(feature = "GpuQueue")]
 #[allow(non_snake_case)]
@@ -4809,6 +4851,12 @@ pub use gen_PresentationReceiver::*;
 mod gen_PresentationRequest;
 #[cfg(feature = "PresentationRequest")]
 pub use gen_PresentationRequest::*;
+
+#[cfg(feature = "PresentationStyle")]
+#[allow(non_snake_case)]
+mod gen_PresentationStyle;
+#[cfg(feature = "PresentationStyle")]
+pub use gen_PresentationStyle::*;
 
 #[cfg(feature = "ProcessingInstruction")]
 #[allow(non_snake_case)]

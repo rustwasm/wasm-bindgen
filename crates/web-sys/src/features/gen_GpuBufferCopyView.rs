@@ -23,11 +23,11 @@ impl GpuBufferCopyView {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(buffer: &GpuBuffer, row_pitch: u32) -> Self {
+    pub fn new(buffer: &GpuBuffer, bytes_per_row: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.buffer(buffer);
-        ret.row_pitch(row_pitch);
+        ret.bytes_per_row(bytes_per_row);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
@@ -50,17 +50,17 @@ impl GpuBufferCopyView {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `imageHeight` field of this object."]
+    #[doc = "Change the `bytesPerRow` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn image_height(&mut self, val: u32) -> &mut Self {
+    pub fn bytes_per_row(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("imageHeight"),
+            &JsValue::from("bytesPerRow"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -89,17 +89,17 @@ impl GpuBufferCopyView {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `rowPitch` field of this object."]
+    #[doc = "Change the `rowsPerImage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn row_pitch(&mut self, val: u32) -> &mut Self {
+    pub fn rows_per_image(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("rowPitch"),
+            &JsValue::from("rowsPerImage"),
             &JsValue::from(val),
         );
         debug_assert!(

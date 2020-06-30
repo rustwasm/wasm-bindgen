@@ -25,6 +25,14 @@ impl Fruit {
     pub fn rot(self) {
         drop(self);
     }
+
+    #[wasm_bindgen(getter)]
+    pub fn prop(self) -> u32 {
+        0
+    }
+
+    #[wasm_bindgen(setter)]
+    pub fn set_prop(self, _val: u32) {}
 }
 
 #[wasm_bindgen]

@@ -135,6 +135,34 @@ fn works_on_empty_project() {
     cmd.assert().success();
 }
 
+#[test]
+fn namespace_global_and_noglobal_works() {
+    let (mut cmd, _out_dir) = Project::new("namespace_global_and_noglobal_works")
+        .file(
+            "src/lib.rs",
+            r#"
+                use wasm_bindgen::prelude::*;
+                #[wasm_bindgen(module = "fs")]
+                extern "C" {
+                    #[wasm_bindgen(js_namespace = window)]
+                    fn t1();
+                }
+                #[wasm_bindgen]
+                extern "C" {
+                    #[wasm_bindgen(js_namespace = window)]
+                    fn t2();
+                }
+                #[wasm_bindgen]
+                pub fn test() {
+                    t1();
+                    t2();
+                }
+            "#,
+        )
+        .wasm_bindgen("");
+    cmd.assert().success();
+}
+
 mod npm;
 
 #[test]

@@ -28,3 +28,7 @@ exports.js_expect_enum = (a, b) => {
 exports.js_expect_enum_none = a => {
   assert.strictEqual(a, undefined);
 };
+
+exports.js_renamed_enum = b => {
+  assert.strictEqual(wasm.JsRenamedEnum.B, b);
+};

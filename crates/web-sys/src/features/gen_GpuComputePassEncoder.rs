@@ -202,7 +202,7 @@ extern "C" {
         this: &GpuComputePassEncoder,
         index: u32,
         bind_group: &GpuBindGroup,
-        dynamic_offsets_data: &mut [u32],
+        dynamic_offsets_data: &[u32],
         dynamic_offsets_data_start: u32,
         dynamic_offsets_data_length: u32,
     );
@@ -221,7 +221,7 @@ extern "C" {
         this: &GpuComputePassEncoder,
         index: u32,
         bind_group: &GpuBindGroup,
-        dynamic_offsets_data: &mut [u32],
+        dynamic_offsets_data: &[u32],
         dynamic_offsets_data_start: f64,
         dynamic_offsets_data_length: u32,
     );

@@ -4747,9 +4747,11 @@ pub fn global() -> Object {
             fn get_global() -> Result<Object, JsValue>;
         }
 
-        let static_object = Global::get_global_this()
-            .or_else(|_| Global::get_self())
+        // The order is important: in Firefox Extension Content Scripts `globalThis`
+        // is a Sandbox (not Window), so `globalThis` must be checked after `window`.
+        let static_object = Global::get_self()
             .or_else(|_| Global::get_window())
+            .or_else(|_| Global::get_global_this())
             .or_else(|_| Global::get_global());
         if let Ok(obj) = static_object {
             if !obj.is_undefined() {
@@ -4792,7 +4794,7 @@ macro_rules! arrays {
 
             /// The
             #[doc = $ctor]
-            /// constructor creates an array of unsigned 8-bit integers.
+            /// constructor creates a new array.
             ///
             /// [MDN documentation](
             #[doc = $mdn]

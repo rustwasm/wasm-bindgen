@@ -75,7 +75,7 @@ pub enum MethodSelf {
 #[derive(Clone)]
 pub struct Import {
     pub module: ImportModule,
-    pub js_namespace: Option<Ident>,
+    pub js_namespace: Option<Vec<String>>,
     pub kind: ImportKind,
 }
 
@@ -251,7 +251,8 @@ pub struct StructField {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct Enum {
-    pub name: Ident,
+    pub rust_name: Ident,
+    pub js_name: String,
     pub variants: Vec<Variant>,
     pub comments: Vec<String>,
     pub hole: u32,
@@ -263,6 +264,7 @@ pub struct Enum {
 pub struct Variant {
     pub name: Ident,
     pub value: u32,
+    pub comments: Vec<String>,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -329,12 +331,6 @@ impl Function {
     /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
     pub fn infer_setter_property(&self) -> Result<String, Diagnostic> {
         let name = self.name.to_string();
-
-        // if `#[wasm_bindgen(js_name = "...")]` is used then that explicitly
-        // because it was hand-written anyway.
-        if self.renamed_via_js_name {
-            return Ok(name);
-        }
 
         // Otherwise we infer names based on the Rust function name.
         if !name.starts_with("set_") {

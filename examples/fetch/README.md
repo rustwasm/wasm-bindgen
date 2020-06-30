@@ -6,6 +6,14 @@ online][compiled]
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/fetch/
 [dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/fetch.html
 
+You have to use: 
+
+```
+$ npm install 
+```
+
+before running an `npm` package.
+
 You can build the example locally with:
 
 ```

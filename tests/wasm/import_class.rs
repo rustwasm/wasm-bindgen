@@ -96,6 +96,19 @@ extern "C" {
     type StaticStructural;
     #[wasm_bindgen(static_method_of = StaticStructural, structural)]
     fn static_structural(a: u32) -> u32;
+
+    #[derive(Clone)]
+    type InnerClass;
+    #[wasm_bindgen(js_namespace = ["nestedNamespace", "InnerClass"])]
+    fn inner_static_function(a: u32) -> u32;
+    #[wasm_bindgen(js_namespace = ["nestedNamespace", "InnerClass"])]
+    fn create_inner_instance() -> InnerClass;
+    #[wasm_bindgen(method)]
+    fn get_internal_int(this: &InnerClass) -> u32;
+    #[wasm_bindgen(method)]
+    fn append_to_internal_int(this: &InnerClass, i: u32);
+    #[wasm_bindgen(method)]
+    fn assert_internal_int(this: &InnerClass, i: u32);
 }
 
 #[wasm_bindgen]
@@ -236,4 +249,15 @@ fn catch_constructors() {
 #[wasm_bindgen_test]
 fn static_structural() {
     assert_eq!(StaticStructural::static_structural(30), 33);
+}
+
+#[wasm_bindgen_test]
+fn nested_namespace() {
+    assert_eq!(InnerClass::inner_static_function(15), 20);
+
+    let f = InnerClass::create_inner_instance();
+    assert_eq!(f.get_internal_int(), 3);
+    assert_eq!(f.clone().get_internal_int(), 3);
+    f.append_to_internal_int(5);
+    f.assert_internal_int(8);
 }

@@ -22,10 +22,18 @@ use wasm_bindgen_cli_support::Bindgen;
 #[global_allocator]
 static ALLOC: std::alloc::System = std::alloc::System;
 
+mod deno;
 mod headless;
 mod node;
 mod server;
 mod shell;
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum TestMode {
+    Node,
+    Deno,
+    Browser,
+}
 
 fn main() -> anyhow::Result<()> {
     env_logger::init();
@@ -63,7 +71,7 @@ fn main() -> anyhow::Result<()> {
     let mut tests = Vec::new();
 
     for export in wasm.exports.iter() {
-        if !export.name.starts_with("__wbg_test") {
+        if !export.name.starts_with("__wbgt_") {
             continue;
         }
         tests.push(export.name.to_string());
@@ -81,14 +89,21 @@ fn main() -> anyhow::Result<()> {
     // That's done on a per-test-binary basis with the
     // `wasm_bindgen_test_configure` macro, which emits a custom section for us
     // to read later on.
-    let mut node = true;
-    if let Some(section) = wasm.customs.remove_raw("__wasm_bindgen_test_unstable") {
-        node = !section.data.contains(&0x01);
-    }
+
+    let custom_section = wasm.customs.remove_raw("__wasm_bindgen_test_unstable");
+    let test_mode = match custom_section {
+        Some(section) if section.data.contains(&0x01) => TestMode::Browser,
+        Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
+        None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
+        None => TestMode::Node,
+    };
+
     let headless = env::var("NO_HEADLESS").is_err();
     let debug = env::var("WASM_BINDGEN_NO_DEBUG").is_err();
 
     // Gracefully handle requests to execute only node or only web tests.
+    let node = test_mode == TestMode::Node;
+
     if env::var_os("WASM_BINDGEN_TEST_ONLY_NODE").is_some() {
         if !node {
             println!(
@@ -131,9 +146,13 @@ integration test.\
     // Make the generated bindings available for the tests to execute against.
     shell.status("Executing bindgen...");
     let mut b = Bindgen::new();
+    match test_mode {
+        TestMode::Node => b.nodejs(true)?,
+        TestMode::Deno => b.deno(true)?,
+        TestMode::Browser => b.web(true)?,
+    };
+
     b.debug(debug)
-        .nodejs(node)?
-        .web(!node)?
         .input_module(module, wasm)
         .keep_debug(false)
         .emit_start(false)
@@ -141,44 +160,45 @@ integration test.\
         .context("executing `wasm-bindgen` over the wasm file")?;
     shell.clear();
 
-    // If we're executing in node.js, that module will take it from here.
-    if node {
-        return node::execute(&module, &tmpdir, &args.collect::<Vec<_>>(), &tests);
+    let args: Vec<_> = args.collect();
+
+    match test_mode {
+        TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
+        TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
+        TestMode::Browser => {
+            let srv = server::spawn(
+                &if headless {
+                    "127.0.0.1:0".parse().unwrap()
+                } else {
+                    "127.0.0.1:8000".parse().unwrap()
+                },
+                headless,
+                &module,
+                &tmpdir,
+                &args,
+                &tests,
+            )
+            .context("failed to spawn server")?;
+            let addr = srv.server_addr();
+
+            // TODO: eventually we should provide the ability to exit at some point
+            // (gracefully) here, but for now this just runs forever.
+            if !headless {
+                println!(
+                    "Interactive browsers tests are now available at http://{}",
+                    addr
+                );
+                println!("");
+                println!("Note that interactive mode is enabled because `NO_HEADLESS`");
+                println!("is specified in the environment of this process. Once you're");
+                println!("done with testing you'll need to kill this server with");
+                println!("Ctrl-C.");
+                return Ok(srv.run());
+            }
+
+            thread::spawn(|| srv.run());
+            headless::run(&addr, &shell, timeout)?;
+        }
     }
-
-    // Otherwise we're executing in a browser. Spawn a server which serves up
-    // the local generated files over an HTTP server.
-    let srv = server::spawn(
-        &if headless {
-            "127.0.0.1:0".parse().unwrap()
-        } else {
-            "127.0.0.1:8000".parse().unwrap()
-        },
-        headless,
-        &module,
-        &tmpdir,
-        &args.collect::<Vec<_>>(),
-        &tests,
-    )
-    .context("failed to spawn server")?;
-    let addr = srv.server_addr();
-
-    // TODO: eventually we should provide the ability to exit at some point
-    // (gracefully) here, but for now this just runs forever.
-    if !headless {
-        println!(
-            "Interactive browsers tests are now available at http://{}",
-            addr
-        );
-        println!("");
-        println!("Note that interactive mode is enabled because `NO_HEADLESS`");
-        println!("is specified in the environment of this process. Once you're");
-        println!("done with testing you'll need to kill this server with");
-        println!("Ctrl-C.");
-        return Ok(srv.run());
-    }
-
-    thread::spawn(|| srv.run());
-    headless::run(&addr, &shell, timeout)?;
     Ok(())
 }

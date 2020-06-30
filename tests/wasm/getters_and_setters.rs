@@ -12,6 +12,12 @@ extern "C" {
     fn _5_js(rules: Rules) -> Rules;
     fn _6_js(rules: Rules) -> Rules;
     fn _7_js(rules: Rules) -> Rules;
+    fn _8_js(rules: Rules) -> Rules;
+    fn _9_js(rules: Rules) -> Rules;
+    fn _10_js(rules: Rules) -> Rules;
+    fn _11_js(rules: Rules) -> Rules;
+    fn _12_js(rules: Rules) -> Rules;
+    fn _13_js(rules: Rules) -> Rules;
 
     fn test_getter_compute(x: GetterCompute);
     fn test_setter_compute(x: SetterCompute);
@@ -86,6 +92,106 @@ impl Rules {
     pub fn set_js_name__setter_with_name__no_setter_without_name_for_field(&mut self, field: i32) {
         self.field = field;
     }
+
+    #[wasm_bindgen(getter, js_name = new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name)]
+    pub fn js_name__no_getter_with_name__getter_without_name__same_getter_setter_name(
+        &self,
+    ) -> i32 {
+        self.field
+    }
+    #[wasm_bindgen(js_name = new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name, setter)]
+    pub fn set_js_name__no_setter_with_name__setter_without_name__same_getter_setter_name(
+        &mut self,
+        field: i32,
+    ) {
+        self.field = field;
+    }
+
+    #[wasm_bindgen(getter, js_name = new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name)]
+    pub fn js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name(
+        &self,
+    ) -> i32 {
+        self.field
+    }
+    #[wasm_bindgen(js_name = new_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name, setter)]
+    pub fn set_js_name__no_getter_setter_with_name__getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name(
+        &mut self,
+        field: i32,
+    ) {
+        self.field = field;
+    }
+
+    #[wasm_bindgen(
+        getter = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name,
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name)]
+    pub fn js_name__getter_with_name__no_getter_without_name__same_getter_setter_name(
+        &self,
+    ) -> i32 {
+        self.field
+    }
+    #[wasm_bindgen(
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name,
+        setter = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name)]
+    pub fn set_js_name__setter_with_name__no_setter_without_name__same_getter_setter_name(
+        &mut self,
+        field: i32,
+    ) {
+        self.field = field;
+    }
+
+    #[wasm_bindgen(
+        getter = new_js_name__getter_with_name__no_getter_without_name_for_field__same_getter_setter_name,
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name__no_same_field_name)]
+    pub fn js_name__getter_with_name__no_getter_without_name__same_getter_setter_name__no_same_field_name(
+        &self,
+    ) -> i32 {
+        self.field
+    }
+    #[wasm_bindgen(
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name__no_same_field_name,
+        setter = new_js_name__setter_with_name__no_setter_without_name_for_field__same_getter_setter_name)]
+    pub fn set_js_name__setter_with_name__no_setter_without_name__same_getter_setter_name__no_same_field_name(
+        &mut self,
+        field: i32,
+    ) {
+        self.field = field;
+    }
+
+    #[wasm_bindgen(
+        getter = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name,
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name__same_getter_setter_origin_name)]
+    pub fn js_name__getter_setter_with_name__no_getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name(
+        &self,
+    ) -> i32 {
+        self.field
+    }
+    #[wasm_bindgen(
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name__same_getter_setter_origin_name,
+        setter = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name)]
+    pub fn set_js_name__getter_setter_with_name__no_getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name(
+        &mut self,
+        field: i32,
+    ) {
+        self.field = field;
+    }
+
+    #[wasm_bindgen(
+        getter = new_js_name__getter_with_name__no_getter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name,
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name__same_getter_setter_origin_name__no_same_field_name)]
+    pub fn js_name__getter_setter_with_name__no_getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name__no_same_field_name(
+        &self,
+    ) -> i32 {
+        self.field
+    }
+    #[wasm_bindgen(
+        js_name = new_js_name__getter_setter_with_name__no_getter_setter_without_name_for_method__same_getter_setter_name__same_getter_setter_origin_name__no_same_field_name,
+        setter = new_js_name__setter_with_name__no_setter_without_name_for_field__same_getter_setter_name__same_getter_setter_origin_name)]
+    pub fn set_js_name__getter_setter_with_name__no_getter_setter_without_name__same_getter_setter_name__same_getter_setter_origin_name__no_same_field_name(
+        &mut self,
+        field: i32,
+    ) {
+        self.field = field;
+    }
 }
 
 #[wasm_bindgen_test]
@@ -128,6 +234,42 @@ fn _6_rust() {
 fn _7_rust() {
     let rules = _7_js(Rules { field: 7 });
     assert_eq!(rules.field, 14);
+}
+
+#[wasm_bindgen_test]
+fn _8_rust() {
+    let rules = _8_js(Rules { field: 8 });
+    assert_eq!(rules.field, 16);
+}
+
+#[wasm_bindgen_test]
+fn _9_rust() {
+    let rules = _9_js(Rules { field: 9 });
+    assert_eq!(rules.field, 18);
+}
+
+#[wasm_bindgen_test]
+fn _10_rust() {
+    let rules = _10_js(Rules { field: 10 });
+    assert_eq!(rules.field, 20);
+}
+
+#[wasm_bindgen_test]
+fn _11_rust() {
+    let rules = _11_js(Rules { field: 11 });
+    assert_eq!(rules.field, 22);
+}
+
+#[wasm_bindgen_test]
+fn _12_rust() {
+    let rules = _12_js(Rules { field: 12 });
+    assert_eq!(rules.field, 24);
+}
+
+#[wasm_bindgen_test]
+fn _13_rust() {
+    let rules = _13_js(Rules { field: 13 });
+    assert_eq!(rules.field, 26);
 }
 
 #[wasm_bindgen]

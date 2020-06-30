@@ -39,7 +39,7 @@ use wasm_bindgen_test::*;
         return 42;
     };
 
-    module.exports.works_when_anyref_support_is_enabled = function (v) {
+    module.exports.works_when_externref_support_is_enabled = function (v) {
         assert_eq(v, 'hello');
         return v;
     };
@@ -94,11 +94,11 @@ extern "C" {
     #[wasm_bindgen(assert_no_shim, js_namespace = MyNamespace)]
     fn outgoing_namespaced(x: f64);
 
-    // Note that this should only skip the JS shim if we have anyref support
+    // Note that this should only skip the JS shim if we have externref support
     // enabled.
     //
     // #[wasm_bindgen(assert_no_shim)]
-    fn works_when_anyref_support_is_enabled(v: JsValue) -> JsValue;
+    fn works_when_externref_support_is_enabled(v: JsValue) -> JsValue;
 }
 
 #[wasm_bindgen_test]
@@ -147,6 +147,6 @@ fn no_shims() {
     assert!(b);
 
     let v = JsValue::from("hello");
-    let vv = works_when_anyref_support_is_enabled(v.clone());
+    let vv = works_when_externref_support_is_enabled(v.clone());
     assert_eq!(v, vv);
 }
