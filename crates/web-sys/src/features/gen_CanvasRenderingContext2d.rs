@@ -353,7 +353,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `OffscreenCanvas`*"]
-    pub fn draw_image_with_offscreen_canvas_element(
+    pub fn draw_image_with_offscreen_canvas(
         this: &CanvasRenderingContext2d,
         image: &OffscreenCanvas,
         dx: f64,
@@ -437,7 +437,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `OffscreenCanvas`*"]
-    pub fn draw_image_with_offscreen_canvas_element_and_dw_and_dh(
+    pub fn draw_image_with_offscreen_canvas_and_dw_and_dh(
         this: &CanvasRenderingContext2d,
         image: &OffscreenCanvas,
         dx: f64,
