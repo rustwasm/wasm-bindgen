@@ -27,7 +27,6 @@ typedef (HTMLImageElement or
          Blob or
          ImageData or
          CanvasRenderingContext2D or
-         OffscreenCanvasRenderingContext2D or
          ImageBitmap or
          BufferSource) ImageBitmapSource;
 
