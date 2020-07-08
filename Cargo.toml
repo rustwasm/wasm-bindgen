@@ -79,6 +79,7 @@ members = [
   "examples/request-animation-frame",
   "examples/todomvc",
   "examples/wasm-in-wasm",
+  "examples/wasm-in-wasm-imports",
   "examples/wasm2js",
   "examples/webaudio",
   "examples/webgl",
