@@ -1,6 +1,6 @@
 [package]
 name = "web-sys"
-version = "0.3.41"
+version = "0.3.42"
 authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
 homepage = "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html"
@@ -761,6 +761,7 @@ OfflineAudioContext = ["BaseAudioContext", "EventTarget"]
 OfflineAudioContextOptions = []
 OfflineResourceList = ["EventTarget"]
 OffscreenCanvas = ["EventTarget"]
+OffscreenCanvasRenderingContext2d = []
 OpenWindowEventDetail = []
 OptionalEffectTiming = []
 OrientationLockType = []
