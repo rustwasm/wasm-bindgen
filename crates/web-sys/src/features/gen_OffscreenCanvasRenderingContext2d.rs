@@ -1189,7 +1189,7 @@ extern "C" {
         element: &Element,
     ) -> Result<(), JsValue>;
 }
-impl OffscreenCanvasRenderingContext2D {
+impl OffscreenCanvasRenderingContext2d {
     #[doc = "The `OffscreenCanvasRenderingContext2D.DRAWWINDOW_DRAW_CARET` const."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2D`*"]
