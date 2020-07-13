@@ -16,7 +16,6 @@ older compilers use the `0.2.*` track of `wasm-bindgen-test`.
 Create a `$MY_CRATE/tests/wasm.rs` file:
 
 ```rust
-extern crate wasm_bindgen_test;
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]

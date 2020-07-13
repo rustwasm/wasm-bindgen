@@ -19,8 +19,6 @@ time how long they take to execute with [`Date.now()`][mdn-date-now], and we
 don't need to write any JS imports ourselves:
 
 ```rust
-extern crate js_sys;
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

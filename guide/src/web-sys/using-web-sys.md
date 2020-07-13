@@ -37,9 +37,6 @@ features = [
 ## Call the method!
 
 ```rust
-extern crate web_sys;
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 use web_sys::Window;
 
