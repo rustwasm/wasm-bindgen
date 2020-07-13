@@ -27,8 +27,6 @@ Rust iterator will yield items of type `Result<JsValue>`. If it yields an
 `Err(...)`, then the JS iterator protocol threw an exception.
 
 ```rust
-extern crate js_sys;
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -67,8 +65,6 @@ For example, we can write a function that collects the numbers from any JS
 iterable and returns them as an `Array`:
 
 ```rust
-extern crate js_sys;
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

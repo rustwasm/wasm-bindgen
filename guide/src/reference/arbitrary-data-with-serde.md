@@ -14,22 +14,8 @@ To enable the `"serde-serialize"` feature, do two things in `Cargo.toml`:
 
 ```toml
 [dependencies]
-serde = "^1.0.59"
-serde_derive = "^1.0.59"
-
-[dependencies.wasm-bindgen]
-version = "^0.2"
-features = ["serde-serialize"]
-```
-
-## Import Serde's Custom-Derive Macros
-
-In your top-level Rust file (e.g. `lib.rs` or `main.rs`), enable the `Serialize`
-and `Deserialize` custom-derive macros:
-
-```rust
-#[macro_use]
-extern crate serde_derive;
+serde = { version = "1.0", features = ["derive"] }
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 ```
 
 ## Derive the `Serialize` and `Deserialize` Traits
@@ -46,7 +32,9 @@ ABI naively, but all of them implement Serde's `Serialize` and `Deserialize`.
 Note that we do not need to use the `#[wasm_bindgen]` macro.
 
 ```rust
-#[derive(Serialize)]
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct Example {
     pub field1: HashMap<u32, String>,
     pub field2: Vec<Vec<f32>>,
@@ -100,7 +88,7 @@ import { send_example_to_js, receive_example_from_js } from "example";
 let example = send_example_to_js();
 
 // Add another "Vec" element to the end of the "Vec<Vec<f32>>"
-example.field2.push([5,6]);
+example.field2.push([5, 6]);
 
 // Send the example object back to wasm.
 receive_example_from_js(example);
