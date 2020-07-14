@@ -33,7 +33,7 @@
     local.get 4
     call $a
     local.get 5
-    ref.nullextern
+    ref.null extern
     table.set 0
     local.get 5
     i32.const 1

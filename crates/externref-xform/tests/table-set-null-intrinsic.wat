@@ -26,7 +26,7 @@
     call $foo)
   (func $foo (type 1) (param i32)
     local.get 0
-    ref.nullextern
+    ref.null extern
     table.set 0)
   (func $alloc (type 0) (result i32)
     i32.const 0)
