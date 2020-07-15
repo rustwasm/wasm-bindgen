@@ -2,6 +2,24 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.65
+
+Released 2020-07-15.
+
+### Added
+
+* Functions from JS can now be natively imported as `async` and will use
+  promises under the hood.
+  [#2196](https://github.com/rustwasm/wasm-bindgen/pull/2196)
+
+### Changed
+
+* Encoding for the reference types proposal has been updated to the latest
+  version of the spec.
+  [#2234](https://github.com/rustwasm/wasm-bindgen/pull/2234)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.64
 
 Released 2020-06-29.
