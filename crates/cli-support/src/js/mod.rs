@@ -3068,6 +3068,7 @@ impl<'a> Context<'a> {
                 variants.push_str(&variant_docs);
             }
             variants.push_str(&format!("{}:{},", name, value));
+            variants.push_str(&format!("\"{}\":\"{}\",", value, name));
             if enum_.generate_typescript {
                 self.typescript.push_str("\n");
                 if !variant_docs.is_empty() {
