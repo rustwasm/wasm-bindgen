@@ -38,7 +38,7 @@ walrus = "0.17"
 wit-printer = "0.2"
 wit-text = "0.7"
 wit-validator = "0.2"
-wit-walrus = "0.4"
+wit-walrus = "0.5"
 
 [[test]]
 name = "reference"
