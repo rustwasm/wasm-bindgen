@@ -26,7 +26,7 @@
     local.get 1
     call $foo)
   (func $foo (type 1) (param i32)
-    ref.nullextern
+    ref.null extern
     i32.const 0
     table.grow 0
     drop)

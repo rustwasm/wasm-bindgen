@@ -200,7 +200,7 @@ exports.js_test_inspectable_classes = () => {
     assert.deepStrictEqual(inspectable.toJSON(), { a: inspectable.a });
     assert.strictEqual(inspectable.toString(), `{"a":${inspectable.a}}`);
     // Inspectable classes in Node.js have improved console.log formatting as well
-    assert.strictEqual(console_log_to_string(inspectable), `Inspectable { a: ${inspectable.a} }`);
+    assert(console_log_to_string(inspectable).endsWith(`{ a: ${inspectable.a} }`));
     // Non-inspectable classes do not have a toJSON or toString generated
     assert.strictEqual(not_inspectable.toJSON, undefined);
     assert.strictEqual(not_inspectable.toString(), '[object Object]');

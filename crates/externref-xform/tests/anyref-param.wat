@@ -24,7 +24,7 @@
     local.get 1
     call $foo
     local.get 1
-    ref.nullextern
+    ref.null extern
     table.set 0
     local.get 1
     i32.const 1
