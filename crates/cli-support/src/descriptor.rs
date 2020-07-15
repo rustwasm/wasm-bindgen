@@ -64,7 +64,7 @@ pub enum Descriptor {
     String,
     Externref,
     NamedExternref(String),
-    Enum { hole: u32 },
+    Enum { name: String, hole: u32 },
     RustStruct(String),
     Char,
     Option(Box<Descriptor>),
@@ -134,7 +134,11 @@ impl Descriptor {
             CACHED_STRING => Descriptor::CachedString,
             STRING => Descriptor::String,
             EXTERNREF => Descriptor::Externref,
-            ENUM => Descriptor::Enum { hole: get(data) },
+            ENUM => {
+                let name = get_string(data);
+                let hole = get(data);
+                Descriptor::Enum { name, hole }
+            }
             RUST_STRUCT => {
                 let name = get_string(data);
                 Descriptor::RustStruct(name)

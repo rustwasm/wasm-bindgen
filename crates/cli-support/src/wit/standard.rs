@@ -84,6 +84,7 @@ pub enum AdapterType {
     Vector(VectorKind),
     Option(Box<AdapterType>),
     Struct(String),
+    Enum(String),
     NamedExternref(String),
     Function,
 }
@@ -347,6 +348,7 @@ impl AdapterType {
 
             AdapterType::I32 => wit_walrus::ValType::I32,
             AdapterType::I64 => wit_walrus::ValType::I64,
+            AdapterType::Enum(_) => wit_walrus::ValType::U32,
             AdapterType::Option(_)
             | AdapterType::Function
             | AdapterType::Struct(_)
