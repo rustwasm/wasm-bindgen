@@ -24,9 +24,11 @@
 typedef (HTMLImageElement or
          HTMLVideoElement or
          HTMLCanvasElement or
+         OffscreenCanvas or
          Blob or
          ImageData or
          CanvasRenderingContext2D or
+         OffscreenCanvasRenderingContext2D or
          ImageBitmap or
          BufferSource) ImageBitmapSource;
 
