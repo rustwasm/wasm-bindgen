@@ -27,7 +27,10 @@ exports.test_works = function() {
   assert.strictEqual(wasm.Color.Green, 0);
   assert.strictEqual(wasm.Color.Yellow, 1);
   assert.strictEqual(wasm.Color.Red, 2);
-  assert.strictEqual(Object.keys(wasm.Color).length, 3);
+  assert.strictEqual(wasm.Color[0], 'Green');
+  assert.strictEqual(wasm.Color[1], 'Yellow');
+  assert.strictEqual(wasm.Color[2], 'Red');
+  assert.strictEqual(Object.keys(wasm.Color).length, 6);
   assert.strictEqual(wasm.cycle(wasm.Color.Green), wasm.Color.Yellow);
 
   wasm.node_math(1.0, 2.0);
