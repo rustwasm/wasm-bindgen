@@ -234,7 +234,7 @@ fn translate_instruction(
             mem: *mem,
             malloc: *malloc,
         }),
-        StoreRetptr { .. } | LoadRetptr { .. } | Retptr => {
+        StoreRetptr { .. } | LoadRetptr { .. } | Retptr { .. } => {
             bail!("return pointers aren't supported in wasm interface types");
         }
         I32FromBool | BoolFromI32 => {
