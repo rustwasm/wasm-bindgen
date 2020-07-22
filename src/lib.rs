@@ -515,7 +515,6 @@ externs! {
         fn __wbindgen_rethrow(a: u32) -> !;
 
         fn __wbindgen_cb_drop(idx: u32) -> u32;
-        fn __wbindgen_cb_forget(idx: u32) -> ();
 
         fn __wbindgen_describe(v: u32) -> ();
         fn __wbindgen_describe_closure(a: u32, b: u32, c: u32) -> u32;

@@ -114,9 +114,6 @@ intrinsics! {
         #[symbol = "__wbindgen_cb_drop"]
         #[signature = fn(Externref) -> Boolean]
         CallbackDrop,
-        #[symbol = "__wbindgen_cb_forget"]
-        #[signature = fn(Externref) -> Unit]
-        CallbackForget,
         #[symbol = "__wbindgen_number_new"]
         #[signature = fn(F64) -> Externref]
         NumberNew,

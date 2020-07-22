@@ -778,6 +778,7 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
     #[wasm_bindgen(constructor)]
     #[deprecated(note = "recommended to use `Boolean::from` instead")]
+    #[allow(deprecated)]
     pub fn new(value: &JsValue) -> Boolean;
 
     /// The `valueOf()` method returns the primitive value of a `Boolean` object.
@@ -1843,6 +1844,7 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
     #[wasm_bindgen(constructor)]
     #[deprecated(note = "recommended to use `Number::from` instead")]
+    #[allow(deprecated)]
     pub fn new(value: &JsValue) -> Number;
 
     /// The `Number.parseInt()` method parses a string argument and returns an
