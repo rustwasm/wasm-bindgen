@@ -41,6 +41,7 @@
   - [Optimizing for Size](./reference/optimize-size.md)
   - [Supported Rust Targets](./reference/rust-targets.md)
   - [Supported Browsers](./reference/browser-support.md)
+  - [Support for Weak References](./reference/weak-references.md)
   - [Supported Types](./reference/types.md)
     - [Imported JavaScript Types](./reference/types/imported-js-types.md)
     - [Exported Rust Types](./reference/types/exported-rust-types.md)
