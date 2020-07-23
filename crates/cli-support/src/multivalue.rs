@@ -64,7 +64,7 @@ fn extract_xform<'a>(
     // If the first instruction is a `Retptr`, then this must be an exported
     // adapter which calls a wasm-defined function. Something we'd like to
     // adapt to multi-value!
-    if let Some(Instruction::Retptr) = instructions.first().map(|e| &e.instr) {
+    if let Some(Instruction::Retptr { .. }) = instructions.first().map(|e| &e.instr) {
         instructions.remove(0);
         let mut types = Vec::new();
         instructions.retain(|instruction| match &instruction.instr {

@@ -211,11 +211,12 @@ jobs:
     displayName: "Build benchmarks"
     steps:
       - template: ci/azure-install-rust.yml
-      - template: ci/azure-install-wasm-pack.yml
-      - script: wasm-pack build --target web benchmarks
+      - script: rustup target add wasm32-unknown-unknown
+        displayName: "add target"
+      - script: cargo build --manifest-path benchmarks/Cargo.toml --release --target wasm32-unknown-unknown
         displayName: "build benchmarks"
-      - script: rm -f benchmarks/pkg/.gitignore
-        displayName: "remove stray gitignore"
+      - script: cargo run -p wasm-bindgen-cli target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm --out-dir benchmarks/pkg --target web
+        displayName: "run wasm-bindgen"
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: benchmarks

@@ -463,13 +463,6 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
 }
 
 fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) -> Result<(), Error> {
-    // Here first properly aligned nonzero address is chosen to be the
-    // out-pointer. We use the address for a BigInt64Array sometimes which
-    // means it needs to be 8-byte aligned. Otherwise valid code is
-    // unlikely to ever be working around address 8, so this should be a
-    // safe address to use for returning data through.
-    let retptr_val = 8;
-
     match instr {
         Instruction::Standard(wit_walrus::Instruction::ArgGet(n)) => {
             let arg = js.arg(*n).to_string();
@@ -566,7 +559,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.string_to_memory(*mem, *malloc, *realloc)?;
         }
 
-        Instruction::Retptr => js.stack.push(retptr_val.to_string()),
+        Instruction::Retptr { size } => {
+            let sp = match js.cx.aux.shadow_stack_pointer {
+                Some(s) => js.cx.export_name_of(s),
+                // In theory this shouldn't happen since malloc is included in
+                // most wasm binaries (and may be gc'd out) and that almost
+                // always pulls in a stack pointer. We can try to synthesize
+                // something here later if necessary.
+                None => bail!("failed to find shadow stack pointer"),
+            };
+            js.prelude(&format!("const retptr = wasm.{}.value - {};", sp, size));
+            js.prelude(&format!("wasm.{}.value = retptr;", sp));
+            js.finally(&format!("wasm.{}.value += {};", sp, size));
+            js.stack.push("retptr".to_string());
+        }
 
         Instruction::StoreRetptr { ty, offset, mem } => {
             let (mem, size) = match ty {
@@ -599,7 +605,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
             // here
-            let expr = format!("{}()[{} / {} + {}]", mem, retptr_val, size, offset);
+            let expr = format!("{}()[retptr / {} + {}]", mem, size, offset);
             js.prelude(&format!("var r{} = {};", offset, expr));
             js.push(format!("r{}", offset));
         }

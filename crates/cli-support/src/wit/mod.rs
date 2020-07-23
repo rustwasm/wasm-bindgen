@@ -1292,8 +1292,23 @@ impl<'a> Context<'a> {
         // everything into the outgoing arguments.
         let mut instructions = Vec::new();
         if uses_retptr {
+            let size = ret.input.iter().fold(0, |sum, ty| {
+                let size = match ty {
+                    AdapterType::I32 => 4,
+                    AdapterType::I64 => 8,
+                    AdapterType::F32 => 4,
+                    AdapterType::F64 => 8,
+                    _ => panic!("unsupported type in retptr {:?}", ty),
+                };
+                let sum_rounded_up = (sum + (size - 1)) & (!(size - 1));
+                sum_rounded_up + size
+            });
+            // Round the number of bytes up to a 16-byte alignment to ensure the
+            // stack pointer is always 16-byte aligned (which LLVM currently
+            // requires).
+            let size = (size + 15) & (!15);
             instructions.push(InstructionData {
-                instr: Instruction::Retptr,
+                instr: Instruction::Retptr { size },
                 stack_change: StackChange::Modified {
                     pushed: 1,
                     popped: 0,

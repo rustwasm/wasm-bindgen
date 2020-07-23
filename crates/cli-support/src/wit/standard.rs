@@ -113,8 +113,11 @@ pub enum Instruction {
         offset: usize,
         mem: walrus::MemoryId,
     },
-    /// An instruction which pushes the return pointer onto the stack.
-    Retptr,
+    /// An instruction which pushes the return pointer onto the stack, reserving
+    /// `size` bytes of space.
+    Retptr {
+        size: u32,
+    },
 
     /// Pops a `bool` from the stack and pushes an `i32` equivalent
     I32FromBool,
