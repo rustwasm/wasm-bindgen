@@ -48,6 +48,17 @@ jobs:
       #   displayName: "(anyref) Crate test suite (no debug)"
       # - script: cargo test --target wasm32-unknown-unknown --features serde-serialize --test wasm
       #   displayName: "(anyref) Crate test suite (with serde)"
+      - script: |
+          set -e
+          echo "##vso[task.setvariable variable=NODE_ARGS]--harmony-weak-refs"
+          echo "##vso[task.setvariable variable=WASM_BINDGEN_WEAKREF]1"
+        displayName: "Configure anyref passes"
+      - script: cargo test --target wasm32-unknown-unknown --test wasm
+        displayName: "(weakref) Crate test suite"
+      - script: WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown --test wasm
+        displayName: "(weakref) Crate test suite (no debug)"
+      - script: cargo test --target wasm32-unknown-unknown --features serde-serialize --test wasm
+        displayName: "(weakref) Crate test suite (with serde)"
 
   - job: test_wasm_bindgen_windows
     displayName: "Run wasm-bindgen crate tests (Windows)"

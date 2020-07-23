@@ -356,22 +356,28 @@ where
         }
     }
 
-    /// Leaks this `Closure` to ensure it remains valid for the duration of the
-    /// entire program.
+    /// Release memory management of this closure from Rust to the JS GC.
     ///
-    /// > **Note**: this function will leak memory. It should be used sparingly
-    /// > to ensure the memory leak doesn't affect the program too much.
+    /// When a `Closure` is dropped it will release the Rust memory and
+    /// invalidate the associated JS closure, but this isn't always desired.
+    /// Some callbacks are alive for the entire duration of the program or for a
+    /// lifetime dynamically managed by the JS GC. This function can be used
+    /// to drop this `Closure` while keeping the associated JS function still
+    /// valid.
     ///
-    /// When a `Closure` is dropped it will invalidate the associated JS
-    /// closure, but this isn't always desired. Some callbacks are alive for
-    /// the entire duration of the program, so this can be used to conveniently
-    /// leak this instance of `Closure` while performing as much internal
-    /// cleanup as it can.
-    pub fn forget(self) {
-        unsafe {
-            super::__wbindgen_cb_forget(self.js.idx);
-            mem::forget(self);
-        }
+    /// By default this function will leak memory. This can be dangerous if this
+    /// function is called many times in an application because the memory leak
+    /// will overwhelm the page quickly and crash the wasm.
+    ///
+    /// If the browser, however, supports weak references, then this function
+    /// will not leak memory. Instead the Rust memory will be reclaimed when the
+    /// JS closure is GC'd. Weak references are not enabled by default since
+    /// they're still a proposal for the JS standard. They can be enabled with
+    /// `WASM_BINDGEN_WEAKREF=1` when running `wasm-bindgen`, however.
+    pub fn forget(self) -> JsValue {
+        let idx = self.js.idx;
+        mem::forget(self);
+        JsValue::_new(idx)
     }
 }
 

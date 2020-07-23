@@ -781,7 +781,7 @@ impl<'a> Context<'a> {
                 ",
                 name,
                 if self.config.weak_refs {
-                    format!("{}FinalizationGroup.register(obj, obj.ptr, obj.ptr);", name)
+                    format!("{}Finalization.register(obj, obj.ptr, obj);", name)
                 } else {
                     String::new()
                 },
@@ -790,13 +790,7 @@ impl<'a> Context<'a> {
 
         if self.config.weak_refs {
             self.global(&format!(
-                "
-                const {}FinalizationGroup = new FinalizationGroup((items) => {{
-                    for (const ptr of items) {{
-                        wasm.{}(ptr);
-                    }}
-                }});
-                ",
+                "const {}Finalization = new FinalizationRegistry(ptr => wasm.{}(ptr));",
                 name,
                 wasm_bindgen_shared::free_function(&name),
             ));
@@ -860,7 +854,7 @@ impl<'a> Context<'a> {
             }}
             ",
             if self.config.weak_refs {
-                format!("{}FinalizationGroup.unregister(ptr);", name)
+                format!("{}Finalization.unregister(this);", name)
             } else {
                 String::new()
             },
@@ -1938,6 +1932,16 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
+        let (register, unregister) = if self.config.weak_refs {
+            self.expose_closure_finalization()?;
+            (
+                "CLOSURE_DTORS.register(real, state, state);",
+                "CLOSURE_DTORS.unregister(state)",
+            )
+        } else {
+            ("", "")
+        };
+
         // For mutable closures they can't be invoked recursively.
         // To handle that we swap out the `this.a` pointer with zero
         // while we invoke it. If we finish and the closure wasn't
@@ -1946,7 +1950,7 @@ impl<'a> Context<'a> {
         self.global(&format!(
             "
             function makeMutClosure(arg0, arg1, dtor, f) {{
-                const state = {{ a: arg0, b: arg1, cnt: 1 }};
+                const state = {{ a: arg0, b: arg1, cnt: 1, dtor }};
                 const real = (...args) => {{
                     // First up with a closure we increment the internal reference
                     // count. This ensures that the Rust closure environment won't
@@ -1957,15 +1961,22 @@ impl<'a> Context<'a> {
                     try {{
                         return f(a, state.b, ...args);
                     }} finally {{
-                        if (--state.cnt === 0) wasm.{}.get(dtor)(a, state.b);
-                        else state.a = a;
+                        if (--state.cnt === 0) {{
+                            wasm.{table}.get(state.dtor)(a, state.b);
+                            {unregister}
+                        }} else {{
+                            state.a = a;
+                        }}
                     }}
                 }};
                 real.original = state;
+                {register}
                 return real;
             }}
             ",
-            table
+            table = table,
+            register = register,
+            unregister = unregister,
         ));
 
         Ok(())
@@ -1978,6 +1989,16 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
+        let (register, unregister) = if self.config.weak_refs {
+            self.expose_closure_finalization()?;
+            (
+                "CLOSURE_DTORS.register(real, state, state);",
+                "CLOSURE_DTORS.unregister(state)",
+            )
+        } else {
+            ("", "")
+        };
+
         // For shared closures they can be invoked recursively so we
         // just immediately pass through `this.a`. If we end up
         // executing the destructor, however, we clear out the
@@ -1986,7 +2007,7 @@ impl<'a> Context<'a> {
         self.global(&format!(
             "
             function makeClosure(arg0, arg1, dtor, f) {{
-                const state = {{ a: arg0, b: arg1, cnt: 1 }};
+                const state = {{ a: arg0, b: arg1, cnt: 1, dtor }};
                 const real = (...args) => {{
                     // First up with a closure we increment the internal reference
                     // count. This ensures that the Rust closure environment won't
@@ -1996,21 +2017,42 @@ impl<'a> Context<'a> {
                         return f(state.a, state.b, ...args);
                     }} finally {{
                         if (--state.cnt === 0) {{
-                            wasm.{}.get(dtor)(state.a, state.b);
+                            wasm.{table}.get(state.dtor)(state.a, state.b);
                             state.a = 0;
+                            {unregister}
                         }}
                     }}
                 }};
                 real.original = state;
+                {register}
                 return real;
             }}
+            ",
+            table = table,
+            register = register,
+            unregister = unregister,
+        ));
+
+        Ok(())
+    }
+
+    fn expose_closure_finalization(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("closure_finalization") {
+            return Ok(());
+        }
+        assert!(self.config.weak_refs);
+        let table = self.export_function_table()?;
+        self.global(&format!(
+            "
+            const CLOSURE_DTORS = new FinalizationRegistry(state => {{
+                wasm.{}.get(state.dtor)(state.a, state.b)
+            }});
             ",
             table
         ));
 
         Ok(())
     }
-
     fn global(&mut self, s: &str) {
         let s = s.trim();
 
@@ -2891,11 +2933,6 @@ impl<'a> Context<'a> {
                 prelude.push_str("return true;\n");
                 prelude.push_str("}\n");
                 "false".to_string()
-            }
-
-            Intrinsic::CallbackForget => {
-                assert_eq!(args.len(), 1);
-                args[0].clone()
             }
 
             Intrinsic::NumberNew => {

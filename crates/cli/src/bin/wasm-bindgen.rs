@@ -39,6 +39,7 @@ Options:
     --nodejs                     Deprecated, use `--target nodejs`
     --web                        Deprecated, use `--target web`
     --no-modules                 Deprecated, use `--target no-modules`
+    --weak-refs                  Enable usage of the JS weak references proposal
     -V --version                 Print the version number of wasm-bindgen
 ";
 
@@ -59,6 +60,7 @@ struct Args {
     flag_no_modules_global: Option<String>,
     flag_remove_name_section: bool,
     flag_remove_producers_section: bool,
+    flag_weak_refs: Option<bool>,
     flag_keep_debug: bool,
     flag_encode_into: Option<String>,
     flag_target: Option<String>,
@@ -114,6 +116,9 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .remove_producers_section(args.flag_remove_producers_section)
         .typescript(typescript)
         .omit_imports(args.flag_omit_imports);
+    if flags.flag_weak_refs {
+        b.weak_refs(true);
+    }
     if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name)?;
     }
