@@ -40,6 +40,7 @@ Options:
     --web                        Deprecated, use `--target web`
     --no-modules                 Deprecated, use `--target no-modules`
     --weak-refs                  Enable usage of the JS weak references proposal
+    --reference-types            Enable usage of WebAssembly reference types
     -V --version                 Print the version number of wasm-bindgen
 ";
 
@@ -61,6 +62,7 @@ struct Args {
     flag_remove_name_section: bool,
     flag_remove_producers_section: bool,
     flag_weak_refs: Option<bool>,
+    flag_reference_types: Option<bool>,
     flag_keep_debug: bool,
     flag_encode_into: Option<String>,
     flag_target: Option<String>,
@@ -118,6 +120,9 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .omit_imports(args.flag_omit_imports);
     if let Some(true) = args.flag_weak_refs {
         b.weak_refs(true);
+    }
+    if let Some(true) = args.flag_reference_types {
+        b.reference_types(true);
     }
     if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name)?;

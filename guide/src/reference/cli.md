@@ -110,3 +110,11 @@ memory is eventually deallocated regardless of whether you're calling `free` or
 not. This is off-by-default while we're waiting for support to percolate into
 all major browsers. For more information see the [documentation about weak
 references](./weak-references.md).
+
+### `--reference-types`
+
+Enables usage of the [WebAssembly References Types
+proposal](https://github.com/webassembly/reference-types) proposal, meaning that
+the WebAssembly binary will use `externref` when importing and exporting
+functions that work with `JsValue`. For more information see the [documentation
+about reference types](./reference-types.md).
