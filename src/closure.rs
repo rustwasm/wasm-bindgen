@@ -374,10 +374,15 @@ where
     /// JS closure is GC'd. Weak references are not enabled by default since
     /// they're still a proposal for the JS standard. They can be enabled with
     /// `WASM_BINDGEN_WEAKREF=1` when running `wasm-bindgen`, however.
-    pub fn forget(self) -> JsValue {
+    pub fn into_js_value(self) -> JsValue {
         let idx = self.js.idx;
         mem::forget(self);
         JsValue::_new(idx)
+    }
+
+    /// Same as `into_js_value`, but doesn't return a value.
+    pub fn forget(self) {
+        drop(self.into_js_value());
     }
 }
 
