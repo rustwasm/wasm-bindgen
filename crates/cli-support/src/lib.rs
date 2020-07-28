@@ -133,6 +133,11 @@ impl Bindgen {
         self
     }
 
+    pub fn reference_types(&mut self, enable: bool) -> &mut Bindgen {
+        self.externref = enable;
+        self
+    }
+
     /// Explicitly specify the already parsed input module.
     pub fn input_module(&mut self, name: &str, module: Module) -> &mut Bindgen {
         let name = name.to_string();
