@@ -2,6 +2,27 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.66
+
+Released 2020-07-28.
+
+### Added
+
+* Reverse mappings from value to name are now available in JS bindings of enums.
+  [#2240](https://github.com/rustwasm/wasm-bindgen/pull/2240)
+
+### Fixed
+
+* Functions using a return pointer in threaded programs now correctly load and
+  store return values in a way that doesn't interfere with other threads.
+  [#2249](https://github.com/rustwasm/wasm-bindgen/pull/2249)
+
+* Support for weak references has been updated and a `--weak-refs` flag is now
+  available in the CLI for enabling weak references.
+  [#2248](https://github.com/rustwasm/wasm-bindgen/pull/2248)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.65
 
 Released 2020-07-15.

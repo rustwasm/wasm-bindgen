@@ -116,7 +116,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .remove_producers_section(args.flag_remove_producers_section)
         .typescript(typescript)
         .omit_imports(args.flag_omit_imports);
-    if flags.flag_weak_refs {
+    if let Some(true) = args.flag_weak_refs {
         b.weak_refs(true);
     }
     if let Some(ref name) = args.flag_no_modules_global {
