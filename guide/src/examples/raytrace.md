@@ -2,13 +2,13 @@
 
 [View full source code][code] or [view the compiled example online][online]
 
-[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/raytrace-parallel/
+[online]: https://wasm-bindgen.netlify.app/exbuild/raytrace-parallel/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/raytrace-parallel
 
 **This is an unstable and experimental example** of using threads with
 WebAssembly and Rust, culminating in a parallel raytracer demo. The browser requirements are:
 
-* Firefox Nightly 
+* Firefox Nightly
   - `SharedArrayBuffer` is enabled in `about:config` in Firefox
 * Google Chrome
   - No flags required on recent versions of Chrome
