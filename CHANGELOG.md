@@ -2,6 +2,22 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.67
+
+Released 2020-07-28.
+
+### Added
+
+* A `--reference-types` flag was added to the CLI.
+  [#2257](https://github.com/rustwasm/wasm-bindgen/pull/2257)
+
+### Fixed
+
+* Breakage with `Closure::forget` in 0.2.66 was fixed.
+  [#2258](https://github.com/rustwasm/wasm-bindgen/pull/2258)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.66
 
 Released 2020-07-28.
