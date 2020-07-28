@@ -12,8 +12,8 @@ in Rust, for example:
   allocated.
 * Rust closures converted to JS values (the `Closure` type) may not be executed
   and cleaned up.
-* Rust closures have a `Closure::forget` method which explicitly doesn't free
-  the underlying memory.
+* Rust closures have `Closure::{into_js_value,forget}` methods which explicitly
+  do not free the underlying memory.
 
 These issues are all solved with the weak references proposal in JS. The
 `--weak-refs` flag to the `wasm-bindgen` CLI will enable usage of
