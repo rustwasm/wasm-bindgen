@@ -149,7 +149,7 @@ impl Task {
             // * `AWAKE` - the Promise will immediately be resolved and
             //   we'll execute the work on the next microtask queue.
             Poll::Pending => {
-                wait_async(&self.atomic.state, SLEEPING).then(&inner.closure);
+                drop(wait_async(&self.atomic.state, SLEEPING).then(&inner.closure));
             }
         }
     }

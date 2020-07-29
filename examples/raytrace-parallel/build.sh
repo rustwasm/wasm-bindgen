@@ -20,12 +20,11 @@ set -ex
 RUSTFLAGS='-C target-feature=+atomics,+bulk-memory' \
   cargo build --target wasm32-unknown-unknown --release -Z build-std=std,panic_abort
 
-# Note the usage of `--no-modules` here which is used to create an output which
-# is usable from Web Workers. We notably can't use `--target bundler` since
-# Webpack doesn't have support for atomics yet.
-cargo run --manifest-path ../../crates/cli/Cargo.toml \
-  --bin wasm-bindgen -- \
-  ../../target/wasm32-unknown-unknown/release/raytrace_parallel.wasm --out-dir . \
-  --no-modules
+# Note the usage of `--target no-modules` here which is required for passing
+# the memory import to each wasm module.
+cargo run -p wasm-bindgen-cli -- \
+  ../../target/wasm32-unknown-unknown/release/raytrace_parallel.wasm \
+  --out-dir . \
+  --target no-modules
 
-python3 -m http.server
+python3 server.py
