@@ -1300,7 +1300,14 @@ extern "C" {
 
     /// The `forEach()` method executes a provided function once per each
     /// key/value pair in the Map object, in insertion order.
-    ///
+    /// Note that the `Key` and `Value` are reversed compared to normal expectations:
+    /// # Examples
+    /// ```
+    /// let js_map = Map::new();
+    /// js_map.for_each(&mut |value, key| {
+    ///     // Do something here...
+    /// })
+    /// ```
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Map, callback: &mut dyn FnMut(JsValue, JsValue));
