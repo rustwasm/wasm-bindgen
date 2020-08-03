@@ -1300,7 +1300,7 @@ extern "C" {
 
     /// The `forEach()` method executes a provided function once per each
     /// key/value pair in the Map object, in insertion order.
-    /// Note that the `Key` and `Value` are reversed compared to normal expectations:
+    /// Note that in Javascript land the `Key` and `Value` are reversed compared to normal expectations:
     /// # Examples
     /// ```
     /// let js_map = Map::new();
