@@ -38,6 +38,22 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_label(this: &GpuComputePassEncoder, value: Option<&str>);
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuQuerySet")]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUComputePassEncoder" , js_name = beginPipelineStatisticsQuery ) ]
+    #[doc = "The `beginPipelineStatisticsQuery()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUComputePassEncoder/beginPipelineStatisticsQuery)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePassEncoder`, `GpuQuerySet`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn begin_pipeline_statistics_query(
+        this: &GpuComputePassEncoder,
+        query_set: &GpuQuerySet,
+        query_index: u32,
+    );
+    #[cfg(web_sys_unstable_apis)]
     # [ wasm_bindgen ( method , structural , js_class = "GPUComputePassEncoder" , js_name = dispatch ) ]
     #[doc = "The `dispatch()` method."]
     #[doc = ""]
@@ -114,6 +130,17 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn end_pass(this: &GpuComputePassEncoder);
     #[cfg(web_sys_unstable_apis)]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUComputePassEncoder" , js_name = endPipelineStatisticsQuery ) ]
+    #[doc = "The `endPipelineStatisticsQuery()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUComputePassEncoder/endPipelineStatisticsQuery)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePassEncoder`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn end_pipeline_statistics_query(this: &GpuComputePassEncoder);
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuComputePipeline")]
     # [ wasm_bindgen ( method , structural , js_class = "GPUComputePassEncoder" , js_name = setPipeline ) ]
     #[doc = "The `setPipeline()` method."]
@@ -125,6 +152,18 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_pipeline(this: &GpuComputePassEncoder, pipeline: &GpuComputePipeline);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuQuerySet")]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUComputePassEncoder" , js_name = writeTimestamp ) ]
+    #[doc = "The `writeTimestamp()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUComputePassEncoder/writeTimestamp)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePassEncoder`, `GpuQuerySet`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn write_timestamp(this: &GpuComputePassEncoder, query_set: &GpuQuerySet, query_index: u32);
     #[cfg(web_sys_unstable_apis)]
     # [ wasm_bindgen ( method , structural , js_class = "GPUComputePassEncoder" , js_name = insertDebugMarker ) ]
     #[doc = "The `insertDebugMarker()` method."]

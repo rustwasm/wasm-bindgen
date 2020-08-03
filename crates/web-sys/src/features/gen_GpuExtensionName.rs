@@ -11,4 +11,7 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GpuExtensionName {
     TextureCompressionBc = "texture-compression-bc",
+    PipelineStatisticsQuery = "pipeline-statistics-query",
+    TimestampQuery = "timestamp-query",
+    DepthClamping = "depth-clamping",
 }

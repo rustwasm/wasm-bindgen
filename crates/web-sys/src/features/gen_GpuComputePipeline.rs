@@ -37,4 +37,16 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_label(this: &GpuComputePipeline, value: Option<&str>);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuBindGroupLayout")]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUComputePipeline" , js_name = getBindGroupLayout ) ]
+    #[doc = "The `getBindGroupLayout()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUComputePipeline/getBindGroupLayout)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayout`, `GpuComputePipeline`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_bind_group_layout(this: &GpuComputePipeline, index: u32) -> GpuBindGroupLayout;
 }

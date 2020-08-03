@@ -2266,6 +2266,24 @@ mod gen_GpuCompareFunction;
 #[cfg(feature = "GpuCompareFunction")]
 pub use gen_GpuCompareFunction::*;
 
+#[cfg(feature = "GpuCompilationInfo")]
+#[allow(non_snake_case)]
+mod gen_GpuCompilationInfo;
+#[cfg(feature = "GpuCompilationInfo")]
+pub use gen_GpuCompilationInfo::*;
+
+#[cfg(feature = "GpuCompilationMessage")]
+#[allow(non_snake_case)]
+mod gen_GpuCompilationMessage;
+#[cfg(feature = "GpuCompilationMessage")]
+pub use gen_GpuCompilationMessage::*;
+
+#[cfg(feature = "GpuCompilationMessageType")]
+#[allow(non_snake_case)]
+mod gen_GpuCompilationMessageType;
+#[cfg(feature = "GpuCompilationMessageType")]
+pub use gen_GpuCompilationMessageType::*;
+
 #[cfg(feature = "GpuComputePassDescriptor")]
 #[allow(non_snake_case)]
 mod gen_GpuComputePassDescriptor;
@@ -2433,6 +2451,12 @@ pub use gen_GpuPipelineLayout::*;
 mod gen_GpuPipelineLayoutDescriptor;
 #[cfg(feature = "GpuPipelineLayoutDescriptor")]
 pub use gen_GpuPipelineLayoutDescriptor::*;
+
+#[cfg(feature = "GpuPipelineStatisticName")]
+#[allow(non_snake_case)]
+mod gen_GpuPipelineStatisticName;
+#[cfg(feature = "GpuPipelineStatisticName")]
+pub use gen_GpuPipelineStatisticName::*;
 
 #[cfg(feature = "GpuPowerPreference")]
 #[allow(non_snake_case)]
@@ -2631,6 +2655,12 @@ pub use gen_GpuTextureComponentType::*;
 mod gen_GpuTextureCopyView;
 #[cfg(feature = "GpuTextureCopyView")]
 pub use gen_GpuTextureCopyView::*;
+
+#[cfg(feature = "GpuTextureDataLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuTextureDataLayout;
+#[cfg(feature = "GpuTextureDataLayout")]
+pub use gen_GpuTextureDataLayout::*;
 
 #[cfg(feature = "GpuTextureDescriptor")]
 #[allow(non_snake_case)]

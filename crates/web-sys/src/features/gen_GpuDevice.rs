@@ -236,6 +236,36 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn create_query_set(this: &GpuDevice, descriptor: &GpuQuerySetDescriptor) -> GpuQuerySet;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuComputePipelineDescriptor")]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUDevice" , js_name = createReadyComputePipeline ) ]
+    #[doc = "The `createReadyComputePipeline()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createReadyComputePipeline)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePipelineDescriptor`, `GpuDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn create_ready_compute_pipeline(
+        this: &GpuDevice,
+        descriptor: &GpuComputePipelineDescriptor,
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuRenderPipelineDescriptor")]
+    # [ wasm_bindgen ( method , structural , js_class = "GPUDevice" , js_name = createReadyRenderPipeline ) ]
+    #[doc = "The `createReadyRenderPipeline()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createReadyRenderPipeline)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuDevice`, `GpuRenderPipelineDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn create_ready_render_pipeline(
+        this: &GpuDevice,
+        descriptor: &GpuRenderPipelineDescriptor,
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuRenderBundleEncoder",
         feature = "GpuRenderBundleEncoderDescriptor",
