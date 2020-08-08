@@ -52,7 +52,7 @@ over the test process!
 The test runner is currently pretty simple, executing a few steps:
 
 * First, it runs the equivalent of `wasm-bindgen`. This'll generate wasm-bindgen
-  output in a temoprary directory.
+  output in a temporary directory.
 * Next, it generates a small shim JS file which imports these
   wasm-bindgen-generated files and executes the test harness.
 * Finally, it executes `node` over the generated JS file, executing all of your
