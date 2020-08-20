@@ -702,7 +702,7 @@ impl Output {
         }
 
         if gen.typescript {
-            let ts_path = wasm_path.with_extension("d.ts");
+            let ts_path = wasm_path.with_extension("wasm.d.ts");
             let ts = wasm2es6js::typescript(&self.module)?;
             fs::write(&ts_path, ts)
                 .with_context(|| format!("failed to write `{}`", ts_path.display()))?;
