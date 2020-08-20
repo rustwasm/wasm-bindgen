@@ -8,7 +8,7 @@
 */
 
 dictionary PushSubscriptionOptionsInit {
-  // boolean userVisibleOnly = false;
+  boolean userVisibleOnly = false;
   (BufferSource or DOMString)? applicationServerKey = null;
 };
 
