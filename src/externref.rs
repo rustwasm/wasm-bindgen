@@ -5,6 +5,7 @@ use std::mem;
 use std::ptr;
 use std::slice;
 use std::vec::Vec;
+use std::cmp::max;
 
 externs! {
     #[link(wasm_import_module = "__wbindgen_externref_xform__")]
@@ -32,8 +33,9 @@ impl Slab {
     fn alloc(&mut self) -> usize {
         let ret = self.head;
         if ret == self.data.len() {
-            if self.data.len() == self.data.capacity() {
-                let extra = 128;
+            let curr_len = self.data.len();
+            if curr_len == self.data.capacity() {
+                let extra = max(128, curr_len);
                 let r = unsafe { __wbindgen_externref_table_grow(extra) };
                 if r == -1 {
                     internal_error("table grow failure")
