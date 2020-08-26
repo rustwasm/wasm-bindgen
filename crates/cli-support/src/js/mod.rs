@@ -318,8 +318,10 @@ impl<'a> Context<'a> {
         // Deno removed support for .wasm imports in https://github.com/denoland/deno/pull/5135
         // the issue for bringing it back is https://github.com/denoland/deno/issues/5609.
         format!(
-            "const file = new URL(import.meta.url).pathname;
-            const wasmFile = file.substring(0, file.lastIndexOf(Deno.build.os === 'windows' ? '\\\\' : '/') + 1) + '{}_bg.wasm';
+            "let file = new URL(import.meta.url).pathname;
+            if (Deno.build.os === 'windows' && file.startsWith('/'))
+                file = file.substr(1)
+            const wasmFile = file.substring(0, file.lastIndexOf(file.lastIndexOf('/') !== -1 ? '/' : '\\') + 1) + '{}_bg.wasm';
             const wasmModule = new WebAssembly.Module(Deno.readFileSync(wasmFile));
             const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             const wasm = wasmInstance.exports;",
