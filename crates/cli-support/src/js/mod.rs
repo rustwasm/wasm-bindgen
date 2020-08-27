@@ -321,7 +321,7 @@ impl<'a> Context<'a> {
             "let file = new URL(import.meta.url).pathname;
             if (Deno.build.os === 'windows' && file.startsWith('/'))
                 file = file.substr(1)
-            const wasmFile = file.substring(0, file.lastIndexOf(file.lastIndexOf('/') !== -1 ? '/' : '\\') + 1) + '{}_bg.wasm';
+            const wasmFile = file.substring(0, file.lastIndexOf(file.lastIndexOf('/') !== -1 ? '/' : '\\\\') + 1) + '{}_bg.wasm';
             const wasmModule = new WebAssembly.Module(Deno.readFileSync(wasmFile));
             const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             const wasm = wasmInstance.exports;",
