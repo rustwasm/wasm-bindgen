@@ -323,10 +323,12 @@ impl<'a> Context<'a> {
             let wasmCode = ''
             if (url.protocol.includes('file')) {{
                 let file = new URL(import.meta.url).pathname;
-                if (Deno.build.os === 'windows' && file.startsWith('/'))
-                    file = file.substr(1)
-                file = Deno.realPathSync(file + '/../{module_name}_bg.wasm')
-                wasmCode = Deno.readFileSync(file)
+                if (Deno.build.os === 'windows') {{
+                    if (file.startsWith('/')) file = file.substr(1)
+                    file = Deno.realPathSync(file + '/../{module_name}_bg.wasm')
+                }} else {{
+                    file = file.substring(0, file.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
+                }}
             }} else if (url.protocol.includes('http')) {{
                 const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
                 wasmCode = await (await fetch(wasm_url)).arrayBuffer()
