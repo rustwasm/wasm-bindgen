@@ -325,7 +325,7 @@ impl<'a> Context<'a> {
                 let file = new URL(import.meta.url).pathname;
                 if (Deno.build.os === 'windows' && file.startsWith('/'))
                     file = file.substr(1)
-                file = Deno.realPathSync(file + '/../{module_name}.wasm')
+                file = Deno.realPathSync(file + '/../{module_name}_bg.wasm')
                 wasmCode = Deno.readFileSync(file)
             }} else if (url.protocol.includes('http')) {{
                 const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
