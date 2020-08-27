@@ -321,23 +321,23 @@ impl<'a> Context<'a> {
             "const url = new URL(import.meta.url)
 
             let wasmCode = ''
-            if (url.protocol.includes('file')){
+            if (url.protocol.includes('file')) {{
                 let file = new URL(import.meta.url).pathname;
                 if (Deno.build.os === 'windows' && file.startsWith('/'))
                     file = file.substr(1)
-                file = Deno.realPathSync(file + '/../deno_bincode_bg.wasm')
+                file = Deno.realPathSync(file + '/../{module_name}.wasm')
                 wasmCode = Deno.readFileSync(file)
-            } else if (url.protocol.includes('http')) {
-                const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + 'deno_bincode_bg.wasm'
+            }} else if (url.protocol.includes('http')) {{
+                const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
                 wasmCode = await (await fetch(wasm_url)).arrayBuffer()
-            } else {
-                console.error(`Unsupported protocol: ${url.protocol}`)
+            }} else {{
+                console.error(`Unsupported protocol: ${{url.protocol}}`)
                 Deno.exit(0)
-            }
+            }}
             const wasmModule = new WebAssembly.Module(wasmCode);
             const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             const wasm = wasmInstance.exports;",
-            module_name
+            module_name = module_name
         )
     }
 
