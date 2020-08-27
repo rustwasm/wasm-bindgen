@@ -329,6 +329,7 @@ impl<'a> Context<'a> {
                 }} else {{
                     file = file.substring(0, file.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
                 }}
+                wasmCode = Deno.readFileSync(file)
             }} else if (url.protocol.includes('http')) {{
                 const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
                 wasmCode = await (await fetch(wasm_url)).arrayBuffer()
