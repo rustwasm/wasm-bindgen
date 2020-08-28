@@ -36,7 +36,7 @@ impl AtomicWaker {
         // the corresponding `waitAsync` that was waiting for the transition
         // from SLEEPING to AWAKE.
         unsafe {
-            core::arch::wasm32::atomic_notify(
+            core::arch::wasm32::memory_atomic_notify(
                 &self.state as *const AtomicI32 as *mut i32,
                 1, // Number of threads to notify
             );
