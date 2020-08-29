@@ -204,7 +204,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2020-06-03
+          toolchain: nightly-2020-08-27
       - script: rustup component add rust-src
         displayName: "install rust-src"
       - script: |
