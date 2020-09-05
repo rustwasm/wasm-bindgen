@@ -1,6 +1,6 @@
 use crate::shell::Shell;
 use anyhow::{bail, format_err, Context, Error};
-use curl::easy::Easy;
+use curl::easy::{Easy, List};
 use log::{debug, warn};
 use rouille::url::Url;
 use serde::{Deserialize, Serialize};
@@ -522,6 +522,8 @@ impl Client {
         match method {
             Method::Post(data) => {
                 self.handle.post(true)?;
+                self.handle
+                    .http_headers(build_headers(&["Content-Type: application/json"]))?;
                 self.handle.post_fields_copy(data.as_bytes())?;
             }
             Method::Delete => self.handle.custom_request("DELETE")?,
@@ -559,6 +561,14 @@ impl Drop for Client {
             warn!("failed to close window {:?}", e);
         }
     }
+}
+
+fn build_headers(headers: &[&str]) -> List {
+    let mut list = List::new();
+    for header in headers {
+        list.append(header).unwrap();
+    }
+    list
 }
 
 fn read<R: Read>(r: &mut R) -> io::Result<Vec<u8>> {
