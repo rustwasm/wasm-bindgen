@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = ClipboardEvent , typescript_type = "ClipboardEvent" ) ]
+    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = ClipboardEvent , typescript_type = "ClipboardEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ClipboardEvent` class."]
     #[doc = ""]
@@ -17,7 +17,7 @@ extern "C" {
     pub type ClipboardEvent;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DataTransfer")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ClipboardEvent" , js_name = clipboardData ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "ClipboardEvent" , js_name = clipboardData)]
     #[doc = "Getter for the `clipboardData` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent/clipboardData)"]

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGNumberList , typescript_type = "SVGNumberList" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = SVGNumberList , typescript_type = "SVGNumberList")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgNumberList` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgNumberList`*"]
     pub type SvgNumberList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGNumberList" , js_name = numberOfItems ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGNumberList" , js_name = numberOfItems)]
     #[doc = "Getter for the `numberOfItems` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/numberOfItems)"]
@@ -19,14 +19,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgNumberList`*"]
     pub fn number_of_items(this: &SvgNumberList) -> u32;
     #[cfg(feature = "SvgNumber")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGNumberList" , js_name = appendItem ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGNumberList" , js_name = appendItem)]
     #[doc = "The `appendItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/appendItem)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgNumber`, `SvgNumberList`*"]
     pub fn append_item(this: &SvgNumberList, new_item: &SvgNumber) -> Result<SvgNumber, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGNumberList" , js_name = clear ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGNumberList" , js_name = clear)]
     #[doc = "The `clear()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/clear)"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgNumberList`*"]
     pub fn clear(this: &SvgNumberList) -> Result<(), JsValue>;
     #[cfg(feature = "SvgNumber")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGNumberList" , js_name = getItem ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGNumberList" , js_name = getItem)]
     #[doc = "The `getItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/getItem)"]
@@ -42,7 +42,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgNumber`, `SvgNumberList`*"]
     pub fn get_item(this: &SvgNumberList, index: u32) -> Result<SvgNumber, JsValue>;
     #[cfg(feature = "SvgNumber")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGNumberList" , js_name = initialize ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGNumberList" , js_name = initialize)]
     #[doc = "The `initialize()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/initialize)"]
@@ -50,7 +50,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgNumber`, `SvgNumberList`*"]
     pub fn initialize(this: &SvgNumberList, new_item: &SvgNumber) -> Result<SvgNumber, JsValue>;
     #[cfg(feature = "SvgNumber")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGNumberList" , js_name = insertItemBefore ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGNumberList" , js_name = insertItemBefore)]
     #[doc = "The `insertItemBefore()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/insertItemBefore)"]
@@ -62,7 +62,7 @@ extern "C" {
         index: u32,
     ) -> Result<SvgNumber, JsValue>;
     #[cfg(feature = "SvgNumber")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGNumberList" , js_name = removeItem ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGNumberList" , js_name = removeItem)]
     #[doc = "The `removeItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/removeItem)"]
@@ -70,7 +70,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgNumber`, `SvgNumberList`*"]
     pub fn remove_item(this: &SvgNumberList, index: u32) -> Result<SvgNumber, JsValue>;
     #[cfg(feature = "SvgNumber")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGNumberList" , js_name = replaceItem ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGNumberList" , js_name = replaceItem)]
     #[doc = "The `replaceItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumberList/replaceItem)"]

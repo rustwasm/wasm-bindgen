@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = BrowserElementExecuteScriptOptions ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = BrowserElementExecuteScriptOptions)]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `BrowserElementExecuteScriptOptions` dictionary."]
     #[doc = ""]

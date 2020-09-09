@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Worklet , extends = :: js_sys :: Object , js_name = AudioWorklet , typescript_type = "AudioWorklet" ) ]
+    # [wasm_bindgen (extends = Worklet , extends = :: js_sys :: Object , js_name = AudioWorklet , typescript_type = "AudioWorklet")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AudioWorklet` class."]
     #[doc = ""]

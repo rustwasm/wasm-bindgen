@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = GamepadEvent , extends = Event , extends = :: js_sys :: Object , js_name = GamepadAxisMoveEvent , typescript_type = "GamepadAxisMoveEvent" ) ]
+    # [wasm_bindgen (extends = GamepadEvent , extends = Event , extends = :: js_sys :: Object , js_name = GamepadAxisMoveEvent , typescript_type = "GamepadAxisMoveEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GamepadAxisMoveEvent` class."]
     #[doc = ""]
@@ -11,14 +11,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadAxisMoveEvent`*"]
     pub type GamepadAxisMoveEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "GamepadAxisMoveEvent" , js_name = axis ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "GamepadAxisMoveEvent" , js_name = axis)]
     #[doc = "Getter for the `axis` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadAxisMoveEvent/axis)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadAxisMoveEvent`*"]
     pub fn axis(this: &GamepadAxisMoveEvent) -> u32;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "GamepadAxisMoveEvent" , js_name = value ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "GamepadAxisMoveEvent" , js_name = value)]
     #[doc = "Getter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadAxisMoveEvent/value)"]

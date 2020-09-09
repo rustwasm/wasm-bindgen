@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CanvasGradient , typescript_type = "CanvasGradient" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = CanvasGradient , typescript_type = "CanvasGradient")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `CanvasGradient` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasGradient`*"]
     pub type CanvasGradient;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "CanvasGradient" , js_name = addColorStop ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "CanvasGradient" , js_name = addColorStop)]
     #[doc = "The `addColorStop()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient/addColorStop)"]

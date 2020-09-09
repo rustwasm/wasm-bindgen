@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = SvgGeometryElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGPolygonElement , typescript_type = "SVGPolygonElement" ) ]
+    # [wasm_bindgen (extends = SvgGeometryElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGPolygonElement , typescript_type = "SVGPolygonElement")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgPolygonElement` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgPolygonElement`*"]
     pub type SvgPolygonElement;
     #[cfg(feature = "SvgPointList")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolygonElement" , js_name = points ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGPolygonElement" , js_name = points)]
     #[doc = "Getter for the `points` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPolygonElement/points)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgPointList`, `SvgPolygonElement`*"]
     pub fn points(this: &SvgPolygonElement) -> SvgPointList;
     #[cfg(feature = "SvgPointList")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPolygonElement" , js_name = animatedPoints ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGPolygonElement" , js_name = animatedPoints)]
     #[doc = "Getter for the `animatedPoints` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPolygonElement/animatedPoints)"]

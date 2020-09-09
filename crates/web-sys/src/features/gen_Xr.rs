@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = XR , typescript_type = "XR" ) ]
+    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = XR , typescript_type = "XR")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Xr` class."]
     #[doc = ""]
@@ -16,7 +16,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type Xr;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XR" , js_name = ondevicechange ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XR" , js_name = ondevicechange)]
     #[doc = "Getter for the `ondevicechange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XR/ondevicechange)"]
@@ -27,7 +27,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn ondevicechange(this: &Xr) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XR" , js_name = ondevicechange ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "XR" , js_name = ondevicechange)]
     #[doc = "Setter for the `ondevicechange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XR/ondevicechange)"]
@@ -39,7 +39,7 @@ extern "C" {
     pub fn set_ondevicechange(this: &Xr, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrSessionMode")]
-    # [ wasm_bindgen ( method , structural , js_class = "XR" , js_name = isSessionSupported ) ]
+    # [wasm_bindgen (method , structural , js_class = "XR" , js_name = isSessionSupported)]
     #[doc = "The `isSessionSupported()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XR/isSessionSupported)"]
@@ -51,7 +51,7 @@ extern "C" {
     pub fn is_session_supported(this: &Xr, mode: XrSessionMode) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrSessionMode")]
-    # [ wasm_bindgen ( method , structural , js_class = "XR" , js_name = requestSession ) ]
+    # [wasm_bindgen (method , structural , js_class = "XR" , js_name = requestSession)]
     #[doc = "The `requestSession()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XR/requestSession)"]
@@ -63,7 +63,7 @@ extern "C" {
     pub fn request_session(this: &Xr, mode: XrSessionMode) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "XrSessionInit", feature = "XrSessionMode",))]
-    # [ wasm_bindgen ( method , structural , js_class = "XR" , js_name = requestSession ) ]
+    # [wasm_bindgen (method , structural , js_class = "XR" , js_name = requestSession)]
     #[doc = "The `requestSession()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XR/requestSession)"]

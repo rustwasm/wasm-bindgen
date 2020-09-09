@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = HTMLAllCollection , typescript_type = "HTMLAllCollection" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = HTMLAllCollection , typescript_type = "HTMLAllCollection")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `HtmlAllCollection` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAllCollection`*"]
     pub type HtmlAllCollection;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLAllCollection" , js_name = length ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "HTMLAllCollection" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAllCollection/length)"]
@@ -19,21 +19,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HtmlAllCollection`*"]
     pub fn length(this: &HtmlAllCollection) -> u32;
     #[cfg(feature = "Node")]
-    # [ wasm_bindgen ( method , structural , js_class = "HTMLAllCollection" , js_name = item ) ]
+    # [wasm_bindgen (method , structural , js_class = "HTMLAllCollection" , js_name = item)]
     #[doc = "The `item()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAllCollection/item)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAllCollection`, `Node`*"]
     pub fn item_with_index(this: &HtmlAllCollection, index: u32) -> Option<Node>;
-    # [ wasm_bindgen ( method , structural , js_class = "HTMLAllCollection" , js_name = item ) ]
+    # [wasm_bindgen (method , structural , js_class = "HTMLAllCollection" , js_name = item)]
     #[doc = "The `item()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAllCollection/item)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAllCollection`*"]
     pub fn item_with_name(this: &HtmlAllCollection, name: &str) -> Option<::js_sys::Object>;
-    # [ wasm_bindgen ( method , structural , js_class = "HTMLAllCollection" , js_name = namedItem ) ]
+    # [wasm_bindgen (method , structural , js_class = "HTMLAllCollection" , js_name = namedItem)]
     #[doc = "The `namedItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAllCollection/namedItem)"]

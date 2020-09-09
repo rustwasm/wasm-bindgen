@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBKeyRange , typescript_type = "IDBKeyRange" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = IDBKeyRange , typescript_type = "IDBKeyRange")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `IdbKeyRange` class."]
     #[doc = ""]
@@ -11,35 +11,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub type IdbKeyRange;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBKeyRange" , js_name = lower ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "IDBKeyRange" , js_name = lower)]
     #[doc = "Getter for the `lower` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/lower)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn lower(this: &IdbKeyRange) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBKeyRange" , js_name = upper ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "IDBKeyRange" , js_name = upper)]
     #[doc = "Getter for the `upper` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/upper)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn upper(this: &IdbKeyRange) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBKeyRange" , js_name = lowerOpen ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBKeyRange" , js_name = lowerOpen)]
     #[doc = "Getter for the `lowerOpen` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/lowerOpen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn lower_open(this: &IdbKeyRange) -> bool;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBKeyRange" , js_name = upperOpen ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBKeyRange" , js_name = upperOpen)]
     #[doc = "Getter for the `upperOpen` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/upperOpen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn upper_open(this: &IdbKeyRange) -> bool;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = bound ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = bound)]
     #[doc = "The `bound()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/bound)"]
@@ -49,7 +49,7 @@ extern "C" {
         lower: &::wasm_bindgen::JsValue,
         upper: &::wasm_bindgen::JsValue,
     ) -> Result<IdbKeyRange, JsValue>;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = bound ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = bound)]
     #[doc = "The `bound()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/bound)"]
@@ -60,7 +60,7 @@ extern "C" {
         upper: &::wasm_bindgen::JsValue,
         lower_open: bool,
     ) -> Result<IdbKeyRange, JsValue>;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = bound ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = bound)]
     #[doc = "The `bound()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/bound)"]
@@ -72,21 +72,21 @@ extern "C" {
         lower_open: bool,
         upper_open: bool,
     ) -> Result<IdbKeyRange, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBKeyRange" , js_name = includes ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBKeyRange" , js_name = includes)]
     #[doc = "The `includes()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/includes)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn includes(this: &IdbKeyRange, key: &::wasm_bindgen::JsValue) -> Result<bool, JsValue>;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = lowerBound ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = lowerBound)]
     #[doc = "The `lowerBound()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/lowerBound)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn lower_bound(lower: &::wasm_bindgen::JsValue) -> Result<IdbKeyRange, JsValue>;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = lowerBound ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = lowerBound)]
     #[doc = "The `lowerBound()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/lowerBound)"]
@@ -96,21 +96,21 @@ extern "C" {
         lower: &::wasm_bindgen::JsValue,
         open: bool,
     ) -> Result<IdbKeyRange, JsValue>;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = only ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = only)]
     #[doc = "The `only()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/only)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn only(value: &::wasm_bindgen::JsValue) -> Result<IdbKeyRange, JsValue>;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = upperBound ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = upperBound)]
     #[doc = "The `upperBound()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/upperBound)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbKeyRange`*"]
     pub fn upper_bound(upper: &::wasm_bindgen::JsValue) -> Result<IdbKeyRange, JsValue>;
-    # [ wasm_bindgen ( catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = upperBound ) ]
+    # [wasm_bindgen (catch , static_method_of = IdbKeyRange , js_class = "IDBKeyRange" , js_name = upperBound)]
     #[doc = "The `upperBound()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange/upperBound)"]

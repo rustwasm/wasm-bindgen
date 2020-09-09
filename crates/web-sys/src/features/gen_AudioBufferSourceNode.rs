@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = AudioScheduledSourceNode , extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = AudioBufferSourceNode , typescript_type = "AudioBufferSourceNode" ) ]
+    # [wasm_bindgen (extends = AudioScheduledSourceNode , extends = AudioNode , extends = EventTarget , extends = :: js_sys :: Object , js_name = AudioBufferSourceNode , typescript_type = "AudioBufferSourceNode")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AudioBufferSourceNode` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub type AudioBufferSourceNode;
     #[cfg(feature = "AudioBuffer")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = buffer ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = buffer)]
     #[doc = "Getter for the `buffer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/buffer)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `AudioBufferSourceNode`*"]
     pub fn buffer(this: &AudioBufferSourceNode) -> Option<AudioBuffer>;
     #[cfg(feature = "AudioBuffer")]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = buffer ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = buffer)]
     #[doc = "Setter for the `buffer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/buffer)"]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `AudioBufferSourceNode`*"]
     pub fn set_buffer(this: &AudioBufferSourceNode, value: Option<&AudioBuffer>);
     #[cfg(feature = "AudioParam")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = playbackRate ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = playbackRate)]
     #[doc = "Getter for the `playbackRate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/playbackRate)"]
@@ -36,63 +36,63 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`, `AudioParam`*"]
     pub fn playback_rate(this: &AudioBufferSourceNode) -> AudioParam;
     #[cfg(feature = "AudioParam")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = detune ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = detune)]
     #[doc = "Getter for the `detune` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`, `AudioParam`*"]
     pub fn detune(this: &AudioBufferSourceNode) -> AudioParam;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = loop ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = loop)]
     #[doc = "Getter for the `loop` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/loop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn loop_(this: &AudioBufferSourceNode) -> bool;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = loop ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = loop)]
     #[doc = "Setter for the `loop` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/loop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn set_loop(this: &AudioBufferSourceNode, value: bool);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = loopStart ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = loopStart)]
     #[doc = "Getter for the `loopStart` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/loopStart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn loop_start(this: &AudioBufferSourceNode) -> f64;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = loopStart ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = loopStart)]
     #[doc = "Setter for the `loopStart` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/loopStart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn set_loop_start(this: &AudioBufferSourceNode, value: f64);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = loopEnd ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = loopEnd)]
     #[doc = "Getter for the `loopEnd` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/loopEnd)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn loop_end(this: &AudioBufferSourceNode) -> f64;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = loopEnd ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = loopEnd)]
     #[doc = "Setter for the `loopEnd` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/loopEnd)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn set_loop_end(this: &AudioBufferSourceNode, value: f64);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = onended ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioBufferSourceNode" , js_name = onended)]
     #[doc = "Getter for the `onended` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/onended)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn onended(this: &AudioBufferSourceNode) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = onended ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "AudioBufferSourceNode" , js_name = onended)]
     #[doc = "Setter for the `onended` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/onended)"]
@@ -118,21 +118,21 @@ extern "C" {
         context: &BaseAudioContext,
         options: &AudioBufferSourceOptions,
     ) -> Result<AudioBufferSourceNode, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start)]
     #[doc = "The `start()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn start(this: &AudioBufferSourceNode) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start)]
     #[doc = "The `start()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn start_with_when(this: &AudioBufferSourceNode, when: f64) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start)]
     #[doc = "The `start()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start)"]
@@ -143,7 +143,7 @@ extern "C" {
         when: f64,
         grain_offset: f64,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = start)]
     #[doc = "The `start()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start)"]
@@ -155,14 +155,14 @@ extern "C" {
         grain_offset: f64,
         grain_duration: f64,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = stop ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = stop)]
     #[doc = "The `stop()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/stop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceNode`*"]
     pub fn stop(this: &AudioBufferSourceNode) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = stop ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioBufferSourceNode" , js_name = stop)]
     #[doc = "The `stop()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/stop)"]

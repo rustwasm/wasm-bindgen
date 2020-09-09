@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = Text , typescript_type = "Text" ) ]
+    # [wasm_bindgen (extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = Text , typescript_type = "Text")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Text` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
     pub type Text;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "Text" , js_name = wholeText ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "Text" , js_name = wholeText)]
     #[doc = "Getter for the `wholeText` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/wholeText)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
     pub fn whole_text(this: &Text) -> Result<String, JsValue>;
     #[cfg(feature = "HtmlSlotElement")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Text" , js_name = assignedSlot ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "Text" , js_name = assignedSlot)]
     #[doc = "Getter for the `assignedSlot` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/assignedSlot)"]
@@ -40,7 +40,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
     pub fn new_with_data(data: &str) -> Result<Text, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = splitText ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = splitText)]
     #[doc = "The `splitText()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/splitText)"]
@@ -48,7 +48,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
     pub fn split_text(this: &Text, offset: u32) -> Result<Text, JsValue>;
     #[cfg(all(feature = "DomPoint", feature = "DomPointInit",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertPointFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertPointFromNode)]
     #[doc = "The `convertPointFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertPointFromNode)"]
@@ -60,7 +60,7 @@ extern "C" {
         from: &Text,
     ) -> Result<DomPoint, JsValue>;
     #[cfg(all(feature = "DomPoint", feature = "DomPointInit", feature = "Element",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertPointFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertPointFromNode)]
     #[doc = "The `convertPointFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertPointFromNode)"]
@@ -72,7 +72,7 @@ extern "C" {
         from: &Element,
     ) -> Result<DomPoint, JsValue>;
     #[cfg(all(feature = "Document", feature = "DomPoint", feature = "DomPointInit",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertPointFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertPointFromNode)]
     #[doc = "The `convertPointFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertPointFromNode)"]
@@ -88,7 +88,7 @@ extern "C" {
         feature = "DomPoint",
         feature = "DomPointInit",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertPointFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertPointFromNode)]
     #[doc = "The `convertPointFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertPointFromNode)"]
@@ -106,7 +106,7 @@ extern "C" {
         feature = "DomPointInit",
         feature = "Element",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertPointFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertPointFromNode)]
     #[doc = "The `convertPointFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertPointFromNode)"]
@@ -124,7 +124,7 @@ extern "C" {
         feature = "DomPoint",
         feature = "DomPointInit",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertPointFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertPointFromNode)]
     #[doc = "The `convertPointFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertPointFromNode)"]
@@ -137,7 +137,7 @@ extern "C" {
         options: &ConvertCoordinateOptions,
     ) -> Result<DomPoint, JsValue>;
     #[cfg(feature = "DomQuad")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode)]
     #[doc = "The `convertQuadFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertQuadFromNode)"]
@@ -149,7 +149,7 @@ extern "C" {
         from: &Text,
     ) -> Result<DomQuad, JsValue>;
     #[cfg(all(feature = "DomQuad", feature = "Element",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode)]
     #[doc = "The `convertQuadFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertQuadFromNode)"]
@@ -161,7 +161,7 @@ extern "C" {
         from: &Element,
     ) -> Result<DomQuad, JsValue>;
     #[cfg(all(feature = "Document", feature = "DomQuad",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode)]
     #[doc = "The `convertQuadFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertQuadFromNode)"]
@@ -173,7 +173,7 @@ extern "C" {
         from: &Document,
     ) -> Result<DomQuad, JsValue>;
     #[cfg(all(feature = "ConvertCoordinateOptions", feature = "DomQuad",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode)]
     #[doc = "The `convertQuadFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertQuadFromNode)"]
@@ -190,7 +190,7 @@ extern "C" {
         feature = "DomQuad",
         feature = "Element",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode)]
     #[doc = "The `convertQuadFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertQuadFromNode)"]
@@ -207,7 +207,7 @@ extern "C" {
         feature = "Document",
         feature = "DomQuad",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertQuadFromNode)]
     #[doc = "The `convertQuadFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertQuadFromNode)"]
@@ -220,7 +220,7 @@ extern "C" {
         options: &ConvertCoordinateOptions,
     ) -> Result<DomQuad, JsValue>;
     #[cfg(all(feature = "DomQuad", feature = "DomRectReadOnly",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertRectFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertRectFromNode)]
     #[doc = "The `convertRectFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertRectFromNode)"]
@@ -232,7 +232,7 @@ extern "C" {
         from: &Text,
     ) -> Result<DomQuad, JsValue>;
     #[cfg(all(feature = "DomQuad", feature = "DomRectReadOnly", feature = "Element",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertRectFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertRectFromNode)]
     #[doc = "The `convertRectFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertRectFromNode)"]
@@ -244,7 +244,7 @@ extern "C" {
         from: &Element,
     ) -> Result<DomQuad, JsValue>;
     #[cfg(all(feature = "Document", feature = "DomQuad", feature = "DomRectReadOnly",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertRectFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertRectFromNode)]
     #[doc = "The `convertRectFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertRectFromNode)"]
@@ -260,7 +260,7 @@ extern "C" {
         feature = "DomQuad",
         feature = "DomRectReadOnly",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertRectFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertRectFromNode)]
     #[doc = "The `convertRectFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertRectFromNode)"]
@@ -278,7 +278,7 @@ extern "C" {
         feature = "DomRectReadOnly",
         feature = "Element",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertRectFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertRectFromNode)]
     #[doc = "The `convertRectFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertRectFromNode)"]
@@ -296,7 +296,7 @@ extern "C" {
         feature = "DomQuad",
         feature = "DomRectReadOnly",
     ))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = convertRectFromNode ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = convertRectFromNode)]
     #[doc = "The `convertRectFromNode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/convertRectFromNode)"]
@@ -308,7 +308,7 @@ extern "C" {
         from: &Document,
         options: &ConvertCoordinateOptions,
     ) -> Result<DomQuad, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = getBoxQuads ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = getBoxQuads)]
     #[doc = "The `getBoxQuads()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/getBoxQuads)"]
@@ -316,7 +316,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
     pub fn get_box_quads(this: &Text) -> Result<::js_sys::Array, JsValue>;
     #[cfg(feature = "BoxQuadOptions")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Text" , js_name = getBoxQuads ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Text" , js_name = getBoxQuads)]
     #[doc = "The `getBoxQuads()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/getBoxQuads)"]

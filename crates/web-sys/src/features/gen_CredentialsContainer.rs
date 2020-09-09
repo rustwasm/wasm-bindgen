@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = CredentialsContainer , typescript_type = "CredentialsContainer" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = CredentialsContainer , typescript_type = "CredentialsContainer")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `CredentialsContainer` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`*"]
     pub type CredentialsContainer;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "CredentialsContainer" , js_name = create ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = create)]
     #[doc = "The `create()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/create)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`*"]
     pub fn create(this: &CredentialsContainer) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "CredentialCreationOptions")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "CredentialsContainer" , js_name = create ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = create)]
     #[doc = "The `create()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/create)"]
@@ -29,7 +29,7 @@ extern "C" {
         this: &CredentialsContainer,
         options: &CredentialCreationOptions,
     ) -> Result<::js_sys::Promise, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "CredentialsContainer" , js_name = get ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = get)]
     #[doc = "The `get()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get)"]
@@ -37,7 +37,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`*"]
     pub fn get(this: &CredentialsContainer) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "CredentialRequestOptions")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "CredentialsContainer" , js_name = get ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = get)]
     #[doc = "The `get()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get)"]
@@ -47,7 +47,7 @@ extern "C" {
         this: &CredentialsContainer,
         options: &CredentialRequestOptions,
     ) -> Result<::js_sys::Promise, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "CredentialsContainer" , js_name = preventSilentAccess ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = preventSilentAccess)]
     #[doc = "The `preventSilentAccess()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/preventSilentAccess)"]
@@ -56,7 +56,7 @@ extern "C" {
     pub fn prevent_silent_access(this: &CredentialsContainer)
         -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "Credential")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "CredentialsContainer" , js_name = store ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = store)]
     #[doc = "The `store()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/store)"]

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = AbortController , typescript_type = "AbortController" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = AbortController , typescript_type = "AbortController")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AbortController` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AbortController`*"]
     pub type AbortController;
     #[cfg(feature = "AbortSignal")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "AbortController" , js_name = signal ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "AbortController" , js_name = signal)]
     #[doc = "Getter for the `signal` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/signal)"]
@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortController`*"]
     pub fn new() -> Result<AbortController, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_class = "AbortController" , js_name = abort ) ]
+    # [wasm_bindgen (method , structural , js_class = "AbortController" , js_name = abort)]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort)"]

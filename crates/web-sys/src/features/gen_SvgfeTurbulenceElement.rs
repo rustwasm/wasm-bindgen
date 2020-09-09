@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFETurbulenceElement , typescript_type = "SVGFETurbulenceElement" ) ]
+    # [wasm_bindgen (extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFETurbulenceElement , typescript_type = "SVGFETurbulenceElement")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgfeTurbulenceElement` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgfeTurbulenceElement`*"]
     pub type SvgfeTurbulenceElement;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = baseFrequencyX ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = baseFrequencyX)]
     #[doc = "Getter for the `baseFrequencyX` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/baseFrequencyX)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeTurbulenceElement`*"]
     pub fn base_frequency_x(this: &SvgfeTurbulenceElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = baseFrequencyY ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = baseFrequencyY)]
     #[doc = "Getter for the `baseFrequencyY` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/baseFrequencyY)"]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeTurbulenceElement`*"]
     pub fn base_frequency_y(this: &SvgfeTurbulenceElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedInteger")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = numOctaves ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = numOctaves)]
     #[doc = "Getter for the `numOctaves` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/numOctaves)"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedInteger`, `SvgfeTurbulenceElement`*"]
     pub fn num_octaves(this: &SvgfeTurbulenceElement) -> SvgAnimatedInteger;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = seed ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = seed)]
     #[doc = "Getter for the `seed` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/seed)"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeTurbulenceElement`*"]
     pub fn seed(this: &SvgfeTurbulenceElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedEnumeration")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = stitchTiles ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = stitchTiles)]
     #[doc = "Getter for the `stitchTiles` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/stitchTiles)"]
@@ -52,7 +52,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedEnumeration`, `SvgfeTurbulenceElement`*"]
     pub fn stitch_tiles(this: &SvgfeTurbulenceElement) -> SvgAnimatedEnumeration;
     #[cfg(feature = "SvgAnimatedEnumeration")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = type ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/type)"]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedEnumeration`, `SvgfeTurbulenceElement`*"]
     pub fn type_(this: &SvgfeTurbulenceElement) -> SvgAnimatedEnumeration;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = x ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = x)]
     #[doc = "Getter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/x)"]
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeTurbulenceElement`*"]
     pub fn x(this: &SvgfeTurbulenceElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = y ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = y)]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/y)"]
@@ -76,7 +76,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeTurbulenceElement`*"]
     pub fn y(this: &SvgfeTurbulenceElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = width ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = width)]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/width)"]
@@ -84,7 +84,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeTurbulenceElement`*"]
     pub fn width(this: &SvgfeTurbulenceElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = height ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/height)"]
@@ -92,7 +92,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeTurbulenceElement`*"]
     pub fn height(this: &SvgfeTurbulenceElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedString")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = result ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFETurbulenceElement" , js_name = result)]
     #[doc = "Getter for the `result` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFETurbulenceElement/result)"]

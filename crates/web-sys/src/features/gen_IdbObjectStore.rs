@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = IDBObjectStore , typescript_type = "IDBObjectStore" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = IDBObjectStore , typescript_type = "IDBObjectStore")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `IdbObjectStore` class."]
     #[doc = ""]
@@ -11,21 +11,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub type IdbObjectStore;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = name ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBObjectStore" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub fn name(this: &IdbObjectStore) -> String;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "IDBObjectStore" , js_name = name ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "IDBObjectStore" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub fn set_name(this: &IdbObjectStore, value: &str);
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "IDBObjectStore" , js_name = keyPath ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "IDBObjectStore" , js_name = keyPath)]
     #[doc = "Getter for the `keyPath` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/keyPath)"]
@@ -33,7 +33,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub fn key_path(this: &IdbObjectStore) -> Result<::wasm_bindgen::JsValue, JsValue>;
     #[cfg(feature = "DomStringList")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = indexNames ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBObjectStore" , js_name = indexNames)]
     #[doc = "Getter for the `indexNames` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/indexNames)"]
@@ -41,14 +41,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DomStringList`, `IdbObjectStore`*"]
     pub fn index_names(this: &IdbObjectStore) -> DomStringList;
     #[cfg(feature = "IdbTransaction")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = transaction ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBObjectStore" , js_name = transaction)]
     #[doc = "Getter for the `transaction` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/transaction)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbTransaction`*"]
     pub fn transaction(this: &IdbObjectStore) -> IdbTransaction;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBObjectStore" , js_name = autoIncrement ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBObjectStore" , js_name = autoIncrement)]
     #[doc = "Getter for the `autoIncrement` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/autoIncrement)"]
@@ -56,7 +56,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub fn auto_increment(this: &IdbObjectStore) -> bool;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/add)"]
@@ -67,7 +67,7 @@ extern "C" {
         value: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/add)"]
@@ -79,7 +79,7 @@ extern "C" {
         key: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = clear ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = clear)]
     #[doc = "The `clear()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/clear)"]
@@ -87,7 +87,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbRequest`*"]
     pub fn clear(this: &IdbObjectStore) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = count ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = count)]
     #[doc = "The `count()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/count)"]
@@ -95,7 +95,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbRequest`*"]
     pub fn count(this: &IdbObjectStore) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = count ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = count)]
     #[doc = "The `count()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/count)"]
@@ -106,7 +106,7 @@ extern "C" {
         key: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbIndex")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex)]
     #[doc = "The `createIndex()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/createIndex)"]
@@ -118,7 +118,7 @@ extern "C" {
         key_path: &str,
     ) -> Result<IdbIndex, JsValue>;
     #[cfg(feature = "IdbIndex")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex)]
     #[doc = "The `createIndex()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/createIndex)"]
@@ -130,7 +130,7 @@ extern "C" {
         key_path: &::wasm_bindgen::JsValue,
     ) -> Result<IdbIndex, JsValue>;
     #[cfg(all(feature = "IdbIndex", feature = "IdbIndexParameters",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex)]
     #[doc = "The `createIndex()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/createIndex)"]
@@ -143,7 +143,7 @@ extern "C" {
         optional_parameters: &IdbIndexParameters,
     ) -> Result<IdbIndex, JsValue>;
     #[cfg(all(feature = "IdbIndex", feature = "IdbIndexParameters",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = createIndex)]
     #[doc = "The `createIndex()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/createIndex)"]
@@ -156,7 +156,7 @@ extern "C" {
         optional_parameters: &IdbIndexParameters,
     ) -> Result<IdbIndex, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = delete ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = delete)]
     #[doc = "The `delete()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/delete)"]
@@ -166,7 +166,7 @@ extern "C" {
         this: &IdbObjectStore,
         key: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = deleteIndex ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = deleteIndex)]
     #[doc = "The `deleteIndex()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/deleteIndex)"]
@@ -174,7 +174,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`*"]
     pub fn delete_index(this: &IdbObjectStore, index_name: &str) -> Result<(), JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = get ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = get)]
     #[doc = "The `get()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/get)"]
@@ -183,7 +183,7 @@ extern "C" {
     pub fn get(this: &IdbObjectStore, key: &::wasm_bindgen::JsValue)
         -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = getAll ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = getAll)]
     #[doc = "The `getAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getAll)"]
@@ -191,7 +191,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbRequest`*"]
     pub fn get_all(this: &IdbObjectStore) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = getAll ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = getAll)]
     #[doc = "The `getAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getAll)"]
@@ -202,7 +202,7 @@ extern "C" {
         key: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = getAll ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = getAll)]
     #[doc = "The `getAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getAll)"]
@@ -214,7 +214,7 @@ extern "C" {
         limit: u32,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = getAllKeys ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = getAllKeys)]
     #[doc = "The `getAllKeys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getAllKeys)"]
@@ -222,7 +222,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbRequest`*"]
     pub fn get_all_keys(this: &IdbObjectStore) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = getAllKeys ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = getAllKeys)]
     #[doc = "The `getAllKeys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getAllKeys)"]
@@ -233,7 +233,7 @@ extern "C" {
         key: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = getAllKeys ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = getAllKeys)]
     #[doc = "The `getAllKeys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getAllKeys)"]
@@ -245,7 +245,7 @@ extern "C" {
         limit: u32,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = getKey ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = getKey)]
     #[doc = "The `getKey()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getKey)"]
@@ -256,7 +256,7 @@ extern "C" {
         key: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbIndex")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = index ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = index)]
     #[doc = "The `index()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/index)"]
@@ -264,7 +264,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`, `IdbObjectStore`*"]
     pub fn index(this: &IdbObjectStore, name: &str) -> Result<IdbIndex, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = openCursor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = openCursor)]
     #[doc = "The `openCursor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/openCursor)"]
@@ -272,7 +272,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbRequest`*"]
     pub fn open_cursor(this: &IdbObjectStore) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = openCursor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = openCursor)]
     #[doc = "The `openCursor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/openCursor)"]
@@ -283,7 +283,7 @@ extern "C" {
         range: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(all(feature = "IdbCursorDirection", feature = "IdbRequest",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = openCursor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = openCursor)]
     #[doc = "The `openCursor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/openCursor)"]
@@ -295,7 +295,7 @@ extern "C" {
         direction: IdbCursorDirection,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = openKeyCursor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = openKeyCursor)]
     #[doc = "The `openKeyCursor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/openKeyCursor)"]
@@ -303,7 +303,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStore`, `IdbRequest`*"]
     pub fn open_key_cursor(this: &IdbObjectStore) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = openKeyCursor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = openKeyCursor)]
     #[doc = "The `openKeyCursor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/openKeyCursor)"]
@@ -314,7 +314,7 @@ extern "C" {
         range: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(all(feature = "IdbCursorDirection", feature = "IdbRequest",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = openKeyCursor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = openKeyCursor)]
     #[doc = "The `openKeyCursor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/openKeyCursor)"]
@@ -326,7 +326,7 @@ extern "C" {
         direction: IdbCursorDirection,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = put ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = put)]
     #[doc = "The `put()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/put)"]
@@ -337,7 +337,7 @@ extern "C" {
         value: &::wasm_bindgen::JsValue,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBObjectStore" , js_name = put ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBObjectStore" , js_name = put)]
     #[doc = "The `put()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/put)"]

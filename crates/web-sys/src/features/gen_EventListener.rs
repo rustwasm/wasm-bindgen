@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = EventListener ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = EventListener)]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `EventListener` dictionary."]
     #[doc = ""]

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = TextTrackCueList , typescript_type = "TextTrackCueList" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = TextTrackCueList , typescript_type = "TextTrackCueList")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `TextTrackCueList` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCueList`*"]
     pub type TextTrackCueList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "TextTrackCueList" , js_name = length ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "TextTrackCueList" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCueList/length)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCueList`*"]
     pub fn length(this: &TextTrackCueList) -> u32;
     #[cfg(feature = "VttCue")]
-    # [ wasm_bindgen ( method , structural , js_class = "TextTrackCueList" , js_name = getCueById ) ]
+    # [wasm_bindgen (method , structural , js_class = "TextTrackCueList" , js_name = getCueById)]
     #[doc = "The `getCueById()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCueList/getCueById)"]

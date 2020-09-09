@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Client , typescript_type = "Client" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = Client , typescript_type = "Client")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Client` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
     pub type Client;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = url ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "Client" , js_name = url)]
     #[doc = "Getter for the `url` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/url)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
     pub fn url(this: &Client) -> String;
     #[cfg(feature = "FrameType")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = frameType ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "Client" , js_name = frameType)]
     #[doc = "Getter for the `frameType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/frameType)"]
@@ -27,28 +27,28 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Client`, `FrameType`*"]
     pub fn frame_type(this: &Client) -> FrameType;
     #[cfg(feature = "ClientType")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = type ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "Client" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`, `ClientType`*"]
     pub fn type_(this: &Client) -> ClientType;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Client" , js_name = id ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "Client" , js_name = id)]
     #[doc = "Getter for the `id` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
     pub fn id(this: &Client) -> String;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Client" , js_name = postMessage ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Client" , js_name = postMessage)]
     #[doc = "The `postMessage()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/postMessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
     pub fn post_message(this: &Client, message: &::wasm_bindgen::JsValue) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Client" , js_name = postMessage ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Client" , js_name = postMessage)]
     #[doc = "The `postMessage()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/postMessage)"]

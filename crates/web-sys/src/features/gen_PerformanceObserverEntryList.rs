@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceObserverEntryList , typescript_type = "PerformanceObserverEntryList" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = PerformanceObserverEntryList , typescript_type = "PerformanceObserverEntryList")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PerformanceObserverEntryList` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverEntryList`*"]
     pub type PerformanceObserverEntryList;
-    # [ wasm_bindgen ( method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntries ) ]
+    # [wasm_bindgen (method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntries)]
     #[doc = "The `getEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserverEntryList/getEntries)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverEntryList`*"]
     pub fn get_entries(this: &PerformanceObserverEntryList) -> ::js_sys::Array;
     #[cfg(feature = "PerformanceEntryFilterOptions")]
-    # [ wasm_bindgen ( method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntries ) ]
+    # [wasm_bindgen (method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntries)]
     #[doc = "The `getEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserverEntryList/getEntries)"]
@@ -29,14 +29,14 @@ extern "C" {
         this: &PerformanceObserverEntryList,
         filter: &PerformanceEntryFilterOptions,
     ) -> ::js_sys::Array;
-    # [ wasm_bindgen ( method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntriesByName ) ]
+    # [wasm_bindgen (method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntriesByName)]
     #[doc = "The `getEntriesByName()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserverEntryList/getEntriesByName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverEntryList`*"]
     pub fn get_entries_by_name(this: &PerformanceObserverEntryList, name: &str) -> ::js_sys::Array;
-    # [ wasm_bindgen ( method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntriesByName ) ]
+    # [wasm_bindgen (method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntriesByName)]
     #[doc = "The `getEntriesByName()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserverEntryList/getEntriesByName)"]
@@ -47,7 +47,7 @@ extern "C" {
         name: &str,
         entry_type: &str,
     ) -> ::js_sys::Array;
-    # [ wasm_bindgen ( method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntriesByType ) ]
+    # [wasm_bindgen (method , structural , js_class = "PerformanceObserverEntryList" , js_name = getEntriesByType)]
     #[doc = "The `getEntriesByType()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserverEntryList/getEntriesByType)"]

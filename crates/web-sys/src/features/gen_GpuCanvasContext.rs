@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUCanvasContext , typescript_type = "GPUCanvasContext" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUCanvasContext , typescript_type = "GPUCanvasContext")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuCanvasContext` class."]
     #[doc = ""]
@@ -17,7 +17,7 @@ extern "C" {
     pub type GpuCanvasContext;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuSwapChain", feature = "GpuSwapChainDescriptor",))]
-    # [ wasm_bindgen ( method , structural , js_class = "GPUCanvasContext" , js_name = configureSwapChain ) ]
+    # [wasm_bindgen (method , structural , js_class = "GPUCanvasContext" , js_name = configureSwapChain)]
     #[doc = "The `configureSwapChain()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCanvasContext/configureSwapChain)"]
@@ -32,7 +32,7 @@ extern "C" {
     ) -> GpuSwapChain;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuDevice")]
-    # [ wasm_bindgen ( method , structural , js_class = "GPUCanvasContext" , js_name = getSwapChainPreferredFormat ) ]
+    # [wasm_bindgen (method , structural , js_class = "GPUCanvasContext" , js_name = getSwapChainPreferredFormat)]
     #[doc = "The `getSwapChainPreferredFormat()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCanvasContext/getSwapChainPreferredFormat)"]

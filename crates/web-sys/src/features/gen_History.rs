@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = History , typescript_type = "History" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = History , typescript_type = "History")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `History` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub type History;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "History" , js_name = length ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "History" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/length)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub fn length(this: &History) -> Result<u32, JsValue>;
     #[cfg(feature = "ScrollRestoration")]
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "History" , js_name = scrollRestoration ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "History" , js_name = scrollRestoration)]
     #[doc = "Getter for the `scrollRestoration` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/scrollRestoration)"]
@@ -27,49 +27,49 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `History`, `ScrollRestoration`*"]
     pub fn scroll_restoration(this: &History) -> Result<ScrollRestoration, JsValue>;
     #[cfg(feature = "ScrollRestoration")]
-    # [ wasm_bindgen ( structural , catch , method , setter , js_class = "History" , js_name = scrollRestoration ) ]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "History" , js_name = scrollRestoration)]
     #[doc = "Setter for the `scrollRestoration` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/scrollRestoration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`, `ScrollRestoration`*"]
     pub fn set_scroll_restoration(this: &History, value: ScrollRestoration) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "History" , js_name = state ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "History" , js_name = state)]
     #[doc = "Getter for the `state` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/state)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub fn state(this: &History) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = back ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = back)]
     #[doc = "The `back()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/back)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub fn back(this: &History) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = forward ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = forward)]
     #[doc = "The `forward()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/forward)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub fn forward(this: &History) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = go ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = go)]
     #[doc = "The `go()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/go)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub fn go(this: &History) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = go ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = go)]
     #[doc = "The `go()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/go)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `History`*"]
     pub fn go_with_delta(this: &History, delta: i32) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = pushState ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = pushState)]
     #[doc = "The `pushState()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)"]
@@ -80,7 +80,7 @@ extern "C" {
         data: &::wasm_bindgen::JsValue,
         title: &str,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = pushState ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = pushState)]
     #[doc = "The `pushState()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)"]
@@ -92,7 +92,7 @@ extern "C" {
         title: &str,
         url: Option<&str>,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = replaceState ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = replaceState)]
     #[doc = "The `replaceState()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState)"]
@@ -103,7 +103,7 @@ extern "C" {
         data: &::wasm_bindgen::JsValue,
         title: &str,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "History" , js_name = replaceState ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "History" , js_name = replaceState)]
     #[doc = "The `replaceState()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState)"]

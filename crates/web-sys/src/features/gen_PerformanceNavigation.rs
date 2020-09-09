@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PerformanceNavigation , typescript_type = "PerformanceNavigation" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = PerformanceNavigation , typescript_type = "PerformanceNavigation")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PerformanceNavigation` class."]
     #[doc = ""]
@@ -11,21 +11,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
     pub type PerformanceNavigation;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceNavigation" , js_name = type ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "PerformanceNavigation" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
     pub fn type_(this: &PerformanceNavigation) -> u16;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PerformanceNavigation" , js_name = redirectCount ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "PerformanceNavigation" , js_name = redirectCount)]
     #[doc = "Getter for the `redirectCount` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/redirectCount)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceNavigation`*"]
     pub fn redirect_count(this: &PerformanceNavigation) -> u16;
-    # [ wasm_bindgen ( method , structural , js_class = "PerformanceNavigation" , js_name = toJSON ) ]
+    # [wasm_bindgen (method , structural , js_class = "PerformanceNavigation" , js_name = toJSON)]
     #[doc = "The `toJSON()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation/toJSON)"]

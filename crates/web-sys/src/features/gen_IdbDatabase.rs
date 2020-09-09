@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = IDBDatabase , typescript_type = "IDBDatabase" ) ]
+    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = IDBDatabase , typescript_type = "IDBDatabase")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `IdbDatabase` class."]
     #[doc = ""]
@@ -11,14 +11,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub type IdbDatabase;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = name ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn name(this: &IdbDatabase) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = version ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = version)]
     #[doc = "Getter for the `version` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/version)"]
@@ -26,63 +26,63 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn version(this: &IdbDatabase) -> f64;
     #[cfg(feature = "DomStringList")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = objectStoreNames ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = objectStoreNames)]
     #[doc = "Getter for the `objectStoreNames` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/objectStoreNames)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomStringList`, `IdbDatabase`*"]
     pub fn object_store_names(this: &IdbDatabase) -> DomStringList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = onabort ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = onabort)]
     #[doc = "Getter for the `onabort` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn onabort(this: &IdbDatabase) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "IDBDatabase" , js_name = onabort ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn set_onabort(this: &IdbDatabase, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = onclose ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn onclose(this: &IdbDatabase) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "IDBDatabase" , js_name = onclose ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn set_onclose(this: &IdbDatabase, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = onerror ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn onerror(this: &IdbDatabase) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "IDBDatabase" , js_name = onerror ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn set_onerror(this: &IdbDatabase, value: Option<&::js_sys::Function>);
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = onversionchange ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = onversionchange)]
     #[doc = "Getter for the `onversionchange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onversionchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn onversionchange(this: &IdbDatabase) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "IDBDatabase" , js_name = onversionchange ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onversionchange)]
     #[doc = "Setter for the `onversionchange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onversionchange)"]
@@ -90,14 +90,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn set_onversionchange(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     #[cfg(feature = "StorageType")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "IDBDatabase" , js_name = storage ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = storage)]
     #[doc = "Getter for the `storage` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/storage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `StorageType`*"]
     pub fn storage(this: &IdbDatabase) -> StorageType;
-    # [ wasm_bindgen ( method , structural , js_class = "IDBDatabase" , js_name = close ) ]
+    # [wasm_bindgen (method , structural , js_class = "IDBDatabase" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/close)"]
@@ -105,7 +105,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn close(this: &IdbDatabase);
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = createMutableFile ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = createMutableFile)]
     #[doc = "The `createMutableFile()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/createMutableFile)"]
@@ -113,7 +113,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbRequest`*"]
     pub fn create_mutable_file(this: &IdbDatabase, name: &str) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = createMutableFile ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = createMutableFile)]
     #[doc = "The `createMutableFile()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/createMutableFile)"]
@@ -125,7 +125,7 @@ extern "C" {
         type_: &str,
     ) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbObjectStore")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = createObjectStore ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = createObjectStore)]
     #[doc = "The `createObjectStore()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/createObjectStore)"]
@@ -133,7 +133,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbObjectStore`*"]
     pub fn create_object_store(this: &IdbDatabase, name: &str) -> Result<IdbObjectStore, JsValue>;
     #[cfg(all(feature = "IdbObjectStore", feature = "IdbObjectStoreParameters",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = createObjectStore ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = createObjectStore)]
     #[doc = "The `createObjectStore()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/createObjectStore)"]
@@ -144,7 +144,7 @@ extern "C" {
         name: &str,
         optional_parameters: &IdbObjectStoreParameters,
     ) -> Result<IdbObjectStore, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = deleteObjectStore ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = deleteObjectStore)]
     #[doc = "The `deleteObjectStore()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/deleteObjectStore)"]
@@ -152,7 +152,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
     pub fn delete_object_store(this: &IdbDatabase, name: &str) -> Result<(), JsValue>;
     #[cfg(feature = "IdbTransaction")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = transaction ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = transaction)]
     #[doc = "The `transaction()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]
@@ -163,7 +163,7 @@ extern "C" {
         store_names: &str,
     ) -> Result<IdbTransaction, JsValue>;
     #[cfg(feature = "IdbTransaction")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = transaction ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = transaction)]
     #[doc = "The `transaction()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]
@@ -174,7 +174,7 @@ extern "C" {
         store_names: &::wasm_bindgen::JsValue,
     ) -> Result<IdbTransaction, JsValue>;
     #[cfg(all(feature = "IdbTransaction", feature = "IdbTransactionMode",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = transaction ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = transaction)]
     #[doc = "The `transaction()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]
@@ -186,7 +186,7 @@ extern "C" {
         mode: IdbTransactionMode,
     ) -> Result<IdbTransaction, JsValue>;
     #[cfg(all(feature = "IdbTransaction", feature = "IdbTransactionMode",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "IDBDatabase" , js_name = transaction ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = transaction)]
     #[doc = "The `transaction()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]

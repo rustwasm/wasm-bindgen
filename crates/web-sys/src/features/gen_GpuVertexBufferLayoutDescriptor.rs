@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUVertexBufferLayoutDescriptor ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUVertexBufferLayoutDescriptor)]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuVertexBufferLayoutDescriptor` dictionary."]
     #[doc = ""]

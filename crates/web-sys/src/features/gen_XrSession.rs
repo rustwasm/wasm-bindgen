@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = XRSession , typescript_type = "XRSession" ) ]
+    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = XRSession , typescript_type = "XRSession")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `XrSession` class."]
     #[doc = ""]
@@ -17,7 +17,7 @@ extern "C" {
     pub type XrSession;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrVisibilityState")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = visibilityState ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = visibilityState)]
     #[doc = "Getter for the `visibilityState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/visibilityState)"]
@@ -29,7 +29,7 @@ extern "C" {
     pub fn visibility_state(this: &XrSession) -> XrVisibilityState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrRenderState")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = renderState ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = renderState)]
     #[doc = "Getter for the `renderState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/renderState)"]
@@ -41,7 +41,7 @@ extern "C" {
     pub fn render_state(this: &XrSession) -> XrRenderState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrInputSourceArray")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = inputSources ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = inputSources)]
     #[doc = "Getter for the `inputSources` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/inputSources)"]
@@ -52,7 +52,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn input_sources(this: &XrSession) -> XrInputSourceArray;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = onend ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = onend)]
     #[doc = "Getter for the `onend` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onend)"]
@@ -63,7 +63,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onend(this: &XrSession) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XRSession" , js_name = onend ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "XRSession" , js_name = onend)]
     #[doc = "Setter for the `onend` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onend)"]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onend(this: &XrSession, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = onselect ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = onselect)]
     #[doc = "Getter for the `onselect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onselect)"]
@@ -85,7 +85,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onselect(this: &XrSession) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XRSession" , js_name = onselect ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "XRSession" , js_name = onselect)]
     #[doc = "Setter for the `onselect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onselect)"]
@@ -96,7 +96,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onselect(this: &XrSession, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = oninputsourceschange ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = oninputsourceschange)]
     #[doc = "Getter for the `oninputsourceschange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/oninputsourceschange)"]
@@ -107,7 +107,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn oninputsourceschange(this: &XrSession) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XRSession" , js_name = oninputsourceschange ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "XRSession" , js_name = oninputsourceschange)]
     #[doc = "Setter for the `oninputsourceschange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/oninputsourceschange)"]
@@ -118,7 +118,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_oninputsourceschange(this: &XrSession, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = onselectstart ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = onselectstart)]
     #[doc = "Getter for the `onselectstart` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onselectstart)"]
@@ -129,7 +129,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onselectstart(this: &XrSession) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XRSession" , js_name = onselectstart ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "XRSession" , js_name = onselectstart)]
     #[doc = "Setter for the `onselectstart` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onselectstart)"]
@@ -140,7 +140,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onselectstart(this: &XrSession, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = onselectend ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = onselectend)]
     #[doc = "Getter for the `onselectend` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onselectend)"]
@@ -151,7 +151,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onselectend(this: &XrSession) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XRSession" , js_name = onselectend ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "XRSession" , js_name = onselectend)]
     #[doc = "Setter for the `onselectend` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onselectend)"]
@@ -162,7 +162,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onselectend(this: &XrSession, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRSession" , js_name = onvisibilitychange ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRSession" , js_name = onvisibilitychange)]
     #[doc = "Getter for the `onvisibilitychange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onvisibilitychange)"]
@@ -173,7 +173,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onvisibilitychange(this: &XrSession) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "XRSession" , js_name = onvisibilitychange ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "XRSession" , js_name = onvisibilitychange)]
     #[doc = "Setter for the `onvisibilitychange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/onvisibilitychange)"]
@@ -184,7 +184,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onvisibilitychange(this: &XrSession, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( method , structural , js_class = "XRSession" , js_name = cancelAnimationFrame ) ]
+    # [wasm_bindgen (method , structural , js_class = "XRSession" , js_name = cancelAnimationFrame)]
     #[doc = "The `cancelAnimationFrame()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/cancelAnimationFrame)"]
@@ -195,7 +195,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn cancel_animation_frame(this: &XrSession, handle: i32);
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( method , structural , js_class = "XRSession" , js_name = end ) ]
+    # [wasm_bindgen (method , structural , js_class = "XRSession" , js_name = end)]
     #[doc = "The `end()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/end)"]
@@ -206,7 +206,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn end(this: &XrSession) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( method , structural , js_class = "XRSession" , js_name = requestAnimationFrame ) ]
+    # [wasm_bindgen (method , structural , js_class = "XRSession" , js_name = requestAnimationFrame)]
     #[doc = "The `requestAnimationFrame()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestAnimationFrame)"]
@@ -218,7 +218,7 @@ extern "C" {
     pub fn request_animation_frame(this: &XrSession, callback: &::js_sys::Function) -> i32;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrReferenceSpaceType")]
-    # [ wasm_bindgen ( method , structural , js_class = "XRSession" , js_name = requestReferenceSpace ) ]
+    # [wasm_bindgen (method , structural , js_class = "XRSession" , js_name = requestReferenceSpace)]
     #[doc = "The `requestReferenceSpace()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestReferenceSpace)"]
@@ -232,7 +232,7 @@ extern "C" {
         type_: XrReferenceSpaceType,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( method , structural , js_class = "XRSession" , js_name = updateRenderState ) ]
+    # [wasm_bindgen (method , structural , js_class = "XRSession" , js_name = updateRenderState)]
     #[doc = "The `updateRenderState()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/updateRenderState)"]
@@ -244,7 +244,7 @@ extern "C" {
     pub fn update_render_state(this: &XrSession);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrRenderStateInit")]
-    # [ wasm_bindgen ( method , structural , js_class = "XRSession" , js_name = updateRenderState ) ]
+    # [wasm_bindgen (method , structural , js_class = "XRSession" , js_name = updateRenderState)]
     #[doc = "The `updateRenderState()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSession/updateRenderState)"]

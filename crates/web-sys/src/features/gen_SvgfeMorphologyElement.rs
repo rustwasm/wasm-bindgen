@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEMorphologyElement , typescript_type = "SVGFEMorphologyElement" ) ]
+    # [wasm_bindgen (extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEMorphologyElement , typescript_type = "SVGFEMorphologyElement")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgfeMorphologyElement` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgfeMorphologyElement`*"]
     pub type SvgfeMorphologyElement;
     #[cfg(feature = "SvgAnimatedString")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = in1 ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = in1)]
     #[doc = "Getter for the `in1` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/in1)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedString`, `SvgfeMorphologyElement`*"]
     pub fn in1(this: &SvgfeMorphologyElement) -> SvgAnimatedString;
     #[cfg(feature = "SvgAnimatedEnumeration")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = operator ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = operator)]
     #[doc = "Getter for the `operator` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/operator)"]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedEnumeration`, `SvgfeMorphologyElement`*"]
     pub fn operator(this: &SvgfeMorphologyElement) -> SvgAnimatedEnumeration;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = radiusX ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = radiusX)]
     #[doc = "Getter for the `radiusX` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/radiusX)"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeMorphologyElement`*"]
     pub fn radius_x(this: &SvgfeMorphologyElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = radiusY ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = radiusY)]
     #[doc = "Getter for the `radiusY` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/radiusY)"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeMorphologyElement`*"]
     pub fn radius_y(this: &SvgfeMorphologyElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = x ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = x)]
     #[doc = "Getter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/x)"]
@@ -52,7 +52,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeMorphologyElement`*"]
     pub fn x(this: &SvgfeMorphologyElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = y ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = y)]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/y)"]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeMorphologyElement`*"]
     pub fn y(this: &SvgfeMorphologyElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = width ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = width)]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/width)"]
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeMorphologyElement`*"]
     pub fn width(this: &SvgfeMorphologyElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = height ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/height)"]
@@ -76,7 +76,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeMorphologyElement`*"]
     pub fn height(this: &SvgfeMorphologyElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedString")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = result ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEMorphologyElement" , js_name = result)]
     #[doc = "Getter for the `result` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEMorphologyElement/result)"]
