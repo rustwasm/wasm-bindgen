@@ -2,6 +2,37 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.68
+
+Released 2020-09-08.
+
+### Added
+
+* Add userVisibleOnly property to PushSubscriptionOptionsInit.
+  [#2288](https://github.com/rustwasm/wasm-bindgen/pull/2288)
+
+### Fixed
+
+* TypeScript files now import `*.wasm` instead of bare files.
+  [#2283](https://github.com/rustwasm/wasm-bindgen/pull/2283)
+
+* Usage of `externref` now appropriately resizes the table by using 2x the
+  previous capacity, fixing a performance issue with lots of externref objects.
+  [#2294](https://github.com/rustwasm/wasm-bindgen/pull/2294)
+
+* Compatibility with the latest Firefox WebDriver has been fixed.
+  [#2301](https://github.com/rustwasm/wasm-bindgen/pull/2301)
+
+* Non deterministic output with closures has been fixed.
+  [#2304](https://github.com/rustwasm/wasm-bindgen/pull/2304)
+
+### Updated
+
+* The WebGPU WebIDL was updated.
+  [#2267](https://github.com/rustwasm/wasm-bindgen/pull/2267)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.67
 
 Released 2020-07-28.
