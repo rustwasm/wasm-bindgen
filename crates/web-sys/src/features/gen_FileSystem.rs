@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FileSystem , typescript_type = "FileSystem" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = FileSystem , typescript_type = "FileSystem")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `FileSystem` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystem`*"]
     pub type FileSystem;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FileSystem" , js_name = name ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "FileSystem" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystem/name)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FileSystem`*"]
     pub fn name(this: &FileSystem) -> String;
     #[cfg(feature = "FileSystemDirectoryEntry")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FileSystem" , js_name = root ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "FileSystem" , js_name = root)]
     #[doc = "Getter for the `root` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystem/root)"]

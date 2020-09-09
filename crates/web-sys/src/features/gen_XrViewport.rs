@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = XRViewport , typescript_type = "XRViewport" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = XRViewport , typescript_type = "XRViewport")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `XrViewport` class."]
     #[doc = ""]
@@ -16,7 +16,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type XrViewport;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRViewport" , js_name = x ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRViewport" , js_name = x)]
     #[doc = "Getter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRViewport/x)"]
@@ -27,7 +27,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn x(this: &XrViewport) -> i32;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRViewport" , js_name = y ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRViewport" , js_name = y)]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRViewport/y)"]
@@ -38,7 +38,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn y(this: &XrViewport) -> i32;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRViewport" , js_name = width ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRViewport" , js_name = width)]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRViewport/width)"]
@@ -49,7 +49,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn width(this: &XrViewport) -> i32;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRViewport" , js_name = height ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRViewport" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRViewport/height)"]

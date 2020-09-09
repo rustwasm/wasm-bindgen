@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = KeyEvent , typescript_type = "KeyEvent" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = KeyEvent , typescript_type = "KeyEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `KeyEvent` class."]
     #[doc = ""]
@@ -11,21 +11,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyEvent`*"]
     pub type KeyEvent;
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyEvent`*"]
     pub fn init_key_event(this: &KeyEvent, type_: &str);
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyEvent`*"]
     pub fn init_key_event_with_can_bubble(this: &KeyEvent, type_: &str, can_bubble: bool);
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
@@ -38,7 +38,7 @@ extern "C" {
         cancelable: bool,
     );
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
@@ -52,7 +52,7 @@ extern "C" {
         view: Option<&Window>,
     );
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
@@ -67,7 +67,7 @@ extern "C" {
         ctrl_key: bool,
     );
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
@@ -83,7 +83,7 @@ extern "C" {
         alt_key: bool,
     );
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
@@ -100,7 +100,7 @@ extern "C" {
         shift_key: bool,
     );
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
@@ -118,7 +118,7 @@ extern "C" {
         meta_key: bool,
     );
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]
@@ -137,7 +137,7 @@ extern "C" {
         key_code: u32,
     );
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( method , structural , js_class = "KeyEvent" , js_name = initKeyEvent ) ]
+    # [wasm_bindgen (method , structural , js_class = "KeyEvent" , js_name = initKeyEvent)]
     #[doc = "The `initKeyEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyEvent/initKeyEvent)"]

@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUBufferUsage , typescript_type = "GPUBufferUsage" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUBufferUsage , typescript_type = "GPUBufferUsage")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuBufferUsage` class."]
     #[doc = ""]

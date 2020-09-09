@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = NamedNodeMap , typescript_type = "NamedNodeMap" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = NamedNodeMap , typescript_type = "NamedNodeMap")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `NamedNodeMap` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NamedNodeMap`*"]
     pub type NamedNodeMap;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "NamedNodeMap" , js_name = length ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "NamedNodeMap" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/length)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NamedNodeMap`*"]
     pub fn length(this: &NamedNodeMap) -> u32;
     #[cfg(feature = "Attr")]
-    # [ wasm_bindgen ( method , structural , js_class = "NamedNodeMap" , js_name = getNamedItem ) ]
+    # [wasm_bindgen (method , structural , js_class = "NamedNodeMap" , js_name = getNamedItem)]
     #[doc = "The `getNamedItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/getNamedItem)"]
@@ -27,7 +27,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Attr`, `NamedNodeMap`*"]
     pub fn get_named_item(this: &NamedNodeMap, name: &str) -> Option<Attr>;
     #[cfg(feature = "Attr")]
-    # [ wasm_bindgen ( method , structural , js_class = "NamedNodeMap" , js_name = getNamedItemNS ) ]
+    # [wasm_bindgen (method , structural , js_class = "NamedNodeMap" , js_name = getNamedItemNS)]
     #[doc = "The `getNamedItemNS()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/getNamedItemNS)"]
@@ -39,7 +39,7 @@ extern "C" {
         local_name: &str,
     ) -> Option<Attr>;
     #[cfg(feature = "Attr")]
-    # [ wasm_bindgen ( method , structural , js_class = "NamedNodeMap" , js_name = item ) ]
+    # [wasm_bindgen (method , structural , js_class = "NamedNodeMap" , js_name = item)]
     #[doc = "The `item()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/item)"]
@@ -47,7 +47,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Attr`, `NamedNodeMap`*"]
     pub fn item(this: &NamedNodeMap, index: u32) -> Option<Attr>;
     #[cfg(feature = "Attr")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "NamedNodeMap" , js_name = removeNamedItem ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "NamedNodeMap" , js_name = removeNamedItem)]
     #[doc = "The `removeNamedItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/removeNamedItem)"]
@@ -55,7 +55,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Attr`, `NamedNodeMap`*"]
     pub fn remove_named_item(this: &NamedNodeMap, name: &str) -> Result<Attr, JsValue>;
     #[cfg(feature = "Attr")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "NamedNodeMap" , js_name = removeNamedItemNS ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "NamedNodeMap" , js_name = removeNamedItemNS)]
     #[doc = "The `removeNamedItemNS()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/removeNamedItemNS)"]
@@ -67,7 +67,7 @@ extern "C" {
         local_name: &str,
     ) -> Result<Attr, JsValue>;
     #[cfg(feature = "Attr")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "NamedNodeMap" , js_name = setNamedItem ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "NamedNodeMap" , js_name = setNamedItem)]
     #[doc = "The `setNamedItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/setNamedItem)"]
@@ -75,7 +75,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Attr`, `NamedNodeMap`*"]
     pub fn set_named_item(this: &NamedNodeMap, arg: &Attr) -> Result<Option<Attr>, JsValue>;
     #[cfg(feature = "Attr")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "NamedNodeMap" , js_name = setNamedItemNS ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "NamedNodeMap" , js_name = setNamedItemNS)]
     #[doc = "The `setNamedItemNS()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap/setNamedItemNS)"]

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = SpeechRecognitionEvent , typescript_type = "SpeechRecognitionEvent" ) ]
+    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = SpeechRecognitionEvent , typescript_type = "SpeechRecognitionEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SpeechRecognitionEvent` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`*"]
     pub type SpeechRecognitionEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = resultIndex ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = resultIndex)]
     #[doc = "Getter for the `resultIndex` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/resultIndex)"]
@@ -19,14 +19,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`*"]
     pub fn result_index(this: &SpeechRecognitionEvent) -> u32;
     #[cfg(feature = "SpeechRecognitionResultList")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = results ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = results)]
     #[doc = "Getter for the `results` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/results)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`, `SpeechRecognitionResultList`*"]
     pub fn results(this: &SpeechRecognitionEvent) -> Option<SpeechRecognitionResultList>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = interpretation ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = interpretation)]
     #[doc = "Getter for the `interpretation` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/interpretation)"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEvent`*"]
     pub fn interpretation(this: &SpeechRecognitionEvent) -> ::wasm_bindgen::JsValue;
     #[cfg(feature = "Document")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = emma ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognitionEvent" , js_name = emma)]
     #[doc = "Getter for the `emma` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionEvent/emma)"]

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = ServiceWorkerRegistration , typescript_type = "ServiceWorkerRegistration" ) ]
+    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = ServiceWorkerRegistration , typescript_type = "ServiceWorkerRegistration")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ServiceWorkerRegistration` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
     pub type ServiceWorkerRegistration;
     #[cfg(feature = "ServiceWorker")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = installing ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = installing)]
     #[doc = "Getter for the `installing` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/installing)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`, `ServiceWorkerRegistration`*"]
     pub fn installing(this: &ServiceWorkerRegistration) -> Option<ServiceWorker>;
     #[cfg(feature = "ServiceWorker")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = waiting ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = waiting)]
     #[doc = "Getter for the `waiting` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/waiting)"]
@@ -28,14 +28,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`, `ServiceWorkerRegistration`*"]
     pub fn waiting(this: &ServiceWorkerRegistration) -> Option<ServiceWorker>;
     #[cfg(feature = "ServiceWorker")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = active ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = active)]
     #[doc = "Getter for the `active` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/active)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`, `ServiceWorkerRegistration`*"]
     pub fn active(this: &ServiceWorkerRegistration) -> Option<ServiceWorker>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = scope ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = scope)]
     #[doc = "Getter for the `scope` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/scope)"]
@@ -43,7 +43,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
     pub fn scope(this: &ServiceWorkerRegistration) -> String;
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "ServiceWorkerRegistration" , js_name = updateViaCache ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "ServiceWorkerRegistration" , js_name = updateViaCache)]
     #[doc = "Getter for the `updateViaCache` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/updateViaCache)"]
@@ -52,14 +52,14 @@ extern "C" {
     pub fn update_via_cache(
         this: &ServiceWorkerRegistration,
     ) -> Result<ServiceWorkerUpdateViaCache, JsValue>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = onupdatefound ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorkerRegistration" , js_name = onupdatefound)]
     #[doc = "Getter for the `onupdatefound` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/onupdatefound)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
     pub fn onupdatefound(this: &ServiceWorkerRegistration) -> Option<::js_sys::Function>;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "ServiceWorkerRegistration" , js_name = onupdatefound ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "ServiceWorkerRegistration" , js_name = onupdatefound)]
     #[doc = "Setter for the `onupdatefound` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/onupdatefound)"]
@@ -67,14 +67,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
     pub fn set_onupdatefound(this: &ServiceWorkerRegistration, value: Option<&::js_sys::Function>);
     #[cfg(feature = "PushManager")]
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "ServiceWorkerRegistration" , js_name = pushManager ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "ServiceWorkerRegistration" , js_name = pushManager)]
     #[doc = "Getter for the `pushManager` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/pushManager)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushManager`, `ServiceWorkerRegistration`*"]
     pub fn push_manager(this: &ServiceWorkerRegistration) -> Result<PushManager, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = getNotifications ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = getNotifications)]
     #[doc = "The `getNotifications()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/getNotifications)"]
@@ -84,7 +84,7 @@ extern "C" {
         this: &ServiceWorkerRegistration,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "GetNotificationOptions")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = getNotifications ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = getNotifications)]
     #[doc = "The `getNotifications()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/getNotifications)"]
@@ -94,7 +94,7 @@ extern "C" {
         this: &ServiceWorkerRegistration,
         filter: &GetNotificationOptions,
     ) -> Result<::js_sys::Promise, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = showNotification ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = showNotification)]
     #[doc = "The `showNotification()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification)"]
@@ -105,7 +105,7 @@ extern "C" {
         title: &str,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "NotificationOptions")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = showNotification ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = showNotification)]
     #[doc = "The `showNotification()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification)"]
@@ -116,14 +116,14 @@ extern "C" {
         title: &str,
         options: &NotificationOptions,
     ) -> Result<::js_sys::Promise, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = unregister ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = unregister)]
     #[doc = "The `unregister()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/unregister)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
     pub fn unregister(this: &ServiceWorkerRegistration) -> Result<::js_sys::Promise, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = update ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = update)]
     #[doc = "The `update()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update)"]

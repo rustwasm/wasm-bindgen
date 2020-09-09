@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = EventTarget , extends = :: js_sys :: Object , js_name = BaseAudioContext , typescript_type = "BaseAudioContext" ) ]
+    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = BaseAudioContext , typescript_type = "BaseAudioContext")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `BaseAudioContext` class."]
     #[doc = ""]
@@ -14,7 +14,7 @@ extern "C" {
     pub type BaseAudioContext;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AudioDestinationNode")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = destination ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "BaseAudioContext" , js_name = destination)]
     #[doc = "Getter for the `destination` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/destination)"]
@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioDestinationNode`, `BaseAudioContext`*"]
     pub fn destination(this: &BaseAudioContext) -> AudioDestinationNode;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = sampleRate ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "BaseAudioContext" , js_name = sampleRate)]
     #[doc = "Getter for the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/sampleRate)"]
@@ -30,7 +30,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
     pub fn sample_rate(this: &BaseAudioContext) -> f32;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = currentTime ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "BaseAudioContext" , js_name = currentTime)]
     #[doc = "Getter for the `currentTime` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime)"]
@@ -39,7 +39,7 @@ extern "C" {
     pub fn current_time(this: &BaseAudioContext) -> f64;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AudioListener")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = listener ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "BaseAudioContext" , js_name = listener)]
     #[doc = "Getter for the `listener` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/listener)"]
@@ -48,7 +48,7 @@ extern "C" {
     pub fn listener(this: &BaseAudioContext) -> AudioListener;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AudioContextState")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = state ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "BaseAudioContext" , js_name = state)]
     #[doc = "Getter for the `state` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/state)"]
@@ -57,7 +57,7 @@ extern "C" {
     pub fn state(this: &BaseAudioContext) -> AudioContextState;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AudioWorklet")]
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "BaseAudioContext" , js_name = audioWorklet ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "BaseAudioContext" , js_name = audioWorklet)]
     #[doc = "Getter for the `audioWorklet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/audioWorklet)"]
@@ -65,7 +65,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioWorklet`, `BaseAudioContext`*"]
     pub fn audio_worklet(this: &BaseAudioContext) -> Result<AudioWorklet, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "BaseAudioContext" , js_name = onstatechange ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "BaseAudioContext" , js_name = onstatechange)]
     #[doc = "Getter for the `onstatechange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/onstatechange)"]
@@ -73,7 +73,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
     pub fn onstatechange(this: &BaseAudioContext) -> Option<::js_sys::Function>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( structural , method , setter , js_class = "BaseAudioContext" , js_name = onstatechange ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "BaseAudioContext" , js_name = onstatechange)]
     #[doc = "Setter for the `onstatechange` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/onstatechange)"]
@@ -82,7 +82,7 @@ extern "C" {
     pub fn set_onstatechange(this: &BaseAudioContext, value: Option<&::js_sys::Function>);
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AnalyserNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createAnalyser ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createAnalyser)]
     #[doc = "The `createAnalyser()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createAnalyser)"]
@@ -91,7 +91,7 @@ extern "C" {
     pub fn create_analyser(this: &BaseAudioContext) -> Result<AnalyserNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "BiquadFilterNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createBiquadFilter ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createBiquadFilter)]
     #[doc = "The `createBiquadFilter()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createBiquadFilter)"]
@@ -100,7 +100,7 @@ extern "C" {
     pub fn create_biquad_filter(this: &BaseAudioContext) -> Result<BiquadFilterNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AudioBuffer")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createBuffer ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createBuffer)]
     #[doc = "The `createBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createBuffer)"]
@@ -114,7 +114,7 @@ extern "C" {
     ) -> Result<AudioBuffer, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AudioBufferSourceNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createBufferSource ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createBufferSource)]
     #[doc = "The `createBufferSource()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createBufferSource)"]
@@ -123,7 +123,7 @@ extern "C" {
     pub fn create_buffer_source(this: &BaseAudioContext) -> Result<AudioBufferSourceNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ChannelMergerNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelMerger ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelMerger)]
     #[doc = "The `createChannelMerger()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelMerger)"]
@@ -132,7 +132,7 @@ extern "C" {
     pub fn create_channel_merger(this: &BaseAudioContext) -> Result<ChannelMergerNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ChannelMergerNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelMerger ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelMerger)]
     #[doc = "The `createChannelMerger()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelMerger)"]
@@ -144,7 +144,7 @@ extern "C" {
     ) -> Result<ChannelMergerNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ChannelSplitterNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelSplitter ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelSplitter)]
     #[doc = "The `createChannelSplitter()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelSplitter)"]
@@ -154,7 +154,7 @@ extern "C" {
         -> Result<ChannelSplitterNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ChannelSplitterNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelSplitter ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createChannelSplitter)]
     #[doc = "The `createChannelSplitter()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelSplitter)"]
@@ -166,7 +166,7 @@ extern "C" {
     ) -> Result<ChannelSplitterNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ConstantSourceNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createConstantSource ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createConstantSource)]
     #[doc = "The `createConstantSource()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createConstantSource)"]
@@ -175,7 +175,7 @@ extern "C" {
     pub fn create_constant_source(this: &BaseAudioContext) -> Result<ConstantSourceNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ConvolverNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createConvolver ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createConvolver)]
     #[doc = "The `createConvolver()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createConvolver)"]
@@ -184,7 +184,7 @@ extern "C" {
     pub fn create_convolver(this: &BaseAudioContext) -> Result<ConvolverNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "DelayNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createDelay ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createDelay)]
     #[doc = "The `createDelay()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createDelay)"]
@@ -193,7 +193,7 @@ extern "C" {
     pub fn create_delay(this: &BaseAudioContext) -> Result<DelayNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "DelayNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createDelay ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createDelay)]
     #[doc = "The `createDelay()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createDelay)"]
@@ -205,7 +205,7 @@ extern "C" {
     ) -> Result<DelayNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "DynamicsCompressorNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createDynamicsCompressor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createDynamicsCompressor)]
     #[doc = "The `createDynamicsCompressor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createDynamicsCompressor)"]
@@ -216,7 +216,7 @@ extern "C" {
     ) -> Result<DynamicsCompressorNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "GainNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createGain ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createGain)]
     #[doc = "The `createGain()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain)"]
@@ -225,7 +225,7 @@ extern "C" {
     pub fn create_gain(this: &BaseAudioContext) -> Result<GainNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "IirFilterNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createIIRFilter ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createIIRFilter)]
     #[doc = "The `createIIRFilter()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createIIRFilter)"]
@@ -238,7 +238,7 @@ extern "C" {
     ) -> Result<IirFilterNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "OscillatorNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createOscillator ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createOscillator)]
     #[doc = "The `createOscillator()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createOscillator)"]
@@ -247,7 +247,7 @@ extern "C" {
     pub fn create_oscillator(this: &BaseAudioContext) -> Result<OscillatorNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "PannerNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createPanner ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPanner)]
     #[doc = "The `createPanner()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPanner)"]
@@ -256,7 +256,7 @@ extern "C" {
     pub fn create_panner(this: &BaseAudioContext) -> Result<PannerNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "PeriodicWave")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
@@ -269,7 +269,7 @@ extern "C" {
     ) -> Result<PeriodicWave, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(all(feature = "PeriodicWave", feature = "PeriodicWaveConstraints",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
@@ -283,7 +283,7 @@ extern "C" {
     ) -> Result<PeriodicWave, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ScriptProcessorNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor)]
     #[doc = "The `createScriptProcessor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createScriptProcessor)"]
@@ -293,7 +293,7 @@ extern "C" {
         -> Result<ScriptProcessorNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ScriptProcessorNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor)]
     #[doc = "The `createScriptProcessor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createScriptProcessor)"]
@@ -305,7 +305,7 @@ extern "C" {
     ) -> Result<ScriptProcessorNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ScriptProcessorNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor)]
     #[doc = "The `createScriptProcessor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createScriptProcessor)"]
@@ -318,7 +318,7 @@ extern "C" {
     ) -> Result<ScriptProcessorNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "ScriptProcessorNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createScriptProcessor)]
     #[doc = "The `createScriptProcessor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createScriptProcessor)"]
@@ -332,7 +332,7 @@ extern "C" {
     ) -> Result<ScriptProcessorNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "StereoPannerNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createStereoPanner ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createStereoPanner)]
     #[doc = "The `createStereoPanner()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createStereoPanner)"]
@@ -341,7 +341,7 @@ extern "C" {
     pub fn create_stereo_panner(this: &BaseAudioContext) -> Result<StereoPannerNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "WaveShaperNode")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = createWaveShaper ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createWaveShaper)]
     #[doc = "The `createWaveShaper()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createWaveShaper)"]
@@ -349,7 +349,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `WaveShaperNode`*"]
     pub fn create_wave_shaper(this: &BaseAudioContext) -> Result<WaveShaperNode, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = decodeAudioData ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = decodeAudioData)]
     #[doc = "The `decodeAudioData()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData)"]
@@ -360,7 +360,7 @@ extern "C" {
         audio_data: &::js_sys::ArrayBuffer,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = decodeAudioData ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = decodeAudioData)]
     #[doc = "The `decodeAudioData()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData)"]
@@ -372,7 +372,7 @@ extern "C" {
         success_callback: &::js_sys::Function,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = decodeAudioData ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = decodeAudioData)]
     #[doc = "The `decodeAudioData()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData)"]
@@ -385,7 +385,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "BaseAudioContext" , js_name = resume ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = resume)]
     #[doc = "The `resume()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/resume)"]

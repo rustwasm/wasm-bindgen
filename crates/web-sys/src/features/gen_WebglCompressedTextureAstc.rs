@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_compressed_texture_astc , typescript_type = "WEBGL_compressed_texture_astc" ) ]
+    # [wasm_bindgen (is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = WEBGL_compressed_texture_astc , typescript_type = "WEBGL_compressed_texture_astc")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `WebglCompressedTextureAstc` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebglCompressedTextureAstc`*"]
     pub type WebglCompressedTextureAstc;
-    # [ wasm_bindgen ( method , structural , js_class = "WEBGL_compressed_texture_astc" , js_name = getSupportedProfiles ) ]
+    # [wasm_bindgen (method , structural , js_class = "WEBGL_compressed_texture_astc" , js_name = getSupportedProfiles)]
     #[doc = "The `getSupportedProfiles()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_compressed_texture_astc/getSupportedProfiles)"]

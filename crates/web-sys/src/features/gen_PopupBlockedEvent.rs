@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PopupBlockedEvent , typescript_type = "PopupBlockedEvent" ) ]
+    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = PopupBlockedEvent , typescript_type = "PopupBlockedEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PopupBlockedEvent` class."]
     #[doc = ""]
@@ -12,21 +12,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`*"]
     pub type PopupBlockedEvent;
     #[cfg(feature = "Window")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PopupBlockedEvent" , js_name = requestingWindow ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "PopupBlockedEvent" , js_name = requestingWindow)]
     #[doc = "Getter for the `requestingWindow` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/requestingWindow)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`, `Window`*"]
     pub fn requesting_window(this: &PopupBlockedEvent) -> Option<Window>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PopupBlockedEvent" , js_name = popupWindowName ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "PopupBlockedEvent" , js_name = popupWindowName)]
     #[doc = "Getter for the `popupWindowName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/popupWindowName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`*"]
     pub fn popup_window_name(this: &PopupBlockedEvent) -> Option<String>;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PopupBlockedEvent" , js_name = popupWindowFeatures ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "PopupBlockedEvent" , js_name = popupWindowFeatures)]
     #[doc = "Getter for the `popupWindowFeatures` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/popupWindowFeatures)"]

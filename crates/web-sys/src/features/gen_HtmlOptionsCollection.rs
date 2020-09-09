@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = HtmlCollection , extends = :: js_sys :: Object , js_name = HTMLOptionsCollection , typescript_type = "HTMLOptionsCollection" ) ]
+    # [wasm_bindgen (extends = HtmlCollection , extends = :: js_sys :: Object , js_name = HTMLOptionsCollection , typescript_type = "HTMLOptionsCollection")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `HtmlOptionsCollection` class."]
     #[doc = ""]
@@ -11,28 +11,28 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
     pub type HtmlOptionsCollection;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "HTMLOptionsCollection" , js_name = length ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "HTMLOptionsCollection" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/length)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
     pub fn length(this: &HtmlOptionsCollection) -> u32;
-    # [ wasm_bindgen ( structural , method , setter , js_class = "HTMLOptionsCollection" , js_name = length ) ]
+    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionsCollection" , js_name = length)]
     #[doc = "Setter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/length)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
     pub fn set_length(this: &HtmlOptionsCollection, value: u32);
-    # [ wasm_bindgen ( structural , catch , method , getter , js_class = "HTMLOptionsCollection" , js_name = selectedIndex ) ]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "HTMLOptionsCollection" , js_name = selectedIndex)]
     #[doc = "Getter for the `selectedIndex` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/selectedIndex)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
     pub fn selected_index(this: &HtmlOptionsCollection) -> Result<i32, JsValue>;
-    # [ wasm_bindgen ( structural , catch , method , setter , js_class = "HTMLOptionsCollection" , js_name = selectedIndex ) ]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOptionsCollection" , js_name = selectedIndex)]
     #[doc = "Setter for the `selectedIndex` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/selectedIndex)"]
@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
     pub fn set_selected_index(this: &HtmlOptionsCollection, value: i32) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlOptionElement")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/add)"]
@@ -51,7 +51,7 @@ extern "C" {
         element: &HtmlOptionElement,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlOptGroupElement")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/add)"]
@@ -62,7 +62,7 @@ extern "C" {
         element: &HtmlOptGroupElement,
     ) -> Result<(), JsValue>;
     #[cfg(all(feature = "HtmlElement", feature = "HtmlOptionElement",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/add)"]
@@ -74,7 +74,7 @@ extern "C" {
         before: Option<&HtmlElement>,
     ) -> Result<(), JsValue>;
     #[cfg(all(feature = "HtmlElement", feature = "HtmlOptGroupElement",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/add)"]
@@ -86,7 +86,7 @@ extern "C" {
         before: Option<&HtmlElement>,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlOptionElement")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/add)"]
@@ -98,7 +98,7 @@ extern "C" {
         before: Option<i32>,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlOptGroupElement")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/add)"]
@@ -109,7 +109,7 @@ extern "C" {
         element: &HtmlOptGroupElement,
         before: Option<i32>,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = remove ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLOptionsCollection" , js_name = remove)]
     #[doc = "The `remove()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/remove)"]

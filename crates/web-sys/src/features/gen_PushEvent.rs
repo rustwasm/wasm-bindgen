@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = ExtendableEvent , extends = Event , extends = :: js_sys :: Object , js_name = PushEvent , typescript_type = "PushEvent" ) ]
+    # [wasm_bindgen (extends = ExtendableEvent , extends = Event , extends = :: js_sys :: Object , js_name = PushEvent , typescript_type = "PushEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PushEvent` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PushEvent`*"]
     pub type PushEvent;
     #[cfg(feature = "PushMessageData")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PushEvent" , js_name = data ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "PushEvent" , js_name = data)]
     #[doc = "Getter for the `data` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushEvent/data)"]

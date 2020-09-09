@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MimeTypeArray , typescript_type = "MimeTypeArray" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = MimeTypeArray , typescript_type = "MimeTypeArray")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `MimeTypeArray` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MimeTypeArray`*"]
     pub type MimeTypeArray;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MimeTypeArray" , js_name = length ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "MimeTypeArray" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/length)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MimeTypeArray`*"]
     pub fn length(this: &MimeTypeArray) -> u32;
     #[cfg(feature = "MimeType")]
-    # [ wasm_bindgen ( method , structural , js_class = "MimeTypeArray" , js_name = item ) ]
+    # [wasm_bindgen (method , structural , js_class = "MimeTypeArray" , js_name = item)]
     #[doc = "The `item()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/item)"]
@@ -27,7 +27,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MimeType`, `MimeTypeArray`*"]
     pub fn item(this: &MimeTypeArray, index: u32) -> Option<MimeType>;
     #[cfg(feature = "MimeType")]
-    # [ wasm_bindgen ( method , structural , js_class = "MimeTypeArray" , js_name = namedItem ) ]
+    # [wasm_bindgen (method , structural , js_class = "MimeTypeArray" , js_name = namedItem)]
     #[doc = "The `namedItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray/namedItem)"]

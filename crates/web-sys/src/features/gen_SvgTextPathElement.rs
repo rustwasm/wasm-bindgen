@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = SvgTextContentElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGTextPathElement , typescript_type = "SVGTextPathElement" ) ]
+    # [wasm_bindgen (extends = SvgTextContentElement , extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGTextPathElement , typescript_type = "SVGTextPathElement")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgTextPathElement` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgTextPathElement`*"]
     pub type SvgTextPathElement;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextPathElement" , js_name = startOffset ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGTextPathElement" , js_name = startOffset)]
     #[doc = "Getter for the `startOffset` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextPathElement/startOffset)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgTextPathElement`*"]
     pub fn start_offset(this: &SvgTextPathElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedEnumeration")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextPathElement" , js_name = method ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGTextPathElement" , js_name = method)]
     #[doc = "Getter for the `method` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextPathElement/method)"]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedEnumeration`, `SvgTextPathElement`*"]
     pub fn method(this: &SvgTextPathElement) -> SvgAnimatedEnumeration;
     #[cfg(feature = "SvgAnimatedEnumeration")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextPathElement" , js_name = spacing ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGTextPathElement" , js_name = spacing)]
     #[doc = "Getter for the `spacing` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextPathElement/spacing)"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedEnumeration`, `SvgTextPathElement`*"]
     pub fn spacing(this: &SvgTextPathElement) -> SvgAnimatedEnumeration;
     #[cfg(feature = "SvgAnimatedString")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextPathElement" , js_name = href ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGTextPathElement" , js_name = href)]
     #[doc = "Getter for the `href` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextPathElement/href)"]

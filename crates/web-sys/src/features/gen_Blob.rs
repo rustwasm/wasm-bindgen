@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Blob , typescript_type = "Blob" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = Blob , typescript_type = "Blob")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Blob` class."]
     #[doc = ""]
@@ -11,14 +11,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub type Blob;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Blob" , js_name = size ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "Blob" , js_name = size)]
     #[doc = "Getter for the `size` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn size(this: &Blob) -> f64;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "Blob" , js_name = type ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "Blob" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/type)"]
@@ -108,63 +108,63 @@ extern "C" {
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
     ) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_class = "Blob" , js_name = arrayBuffer ) ]
+    # [wasm_bindgen (method , structural , js_class = "Blob" , js_name = arrayBuffer)]
     #[doc = "The `arrayBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/arrayBuffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn array_buffer(this: &Blob) -> ::js_sys::Promise;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn slice(this: &Blob) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn slice_with_i32(this: &Blob, start: i32) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn slice_with_f64(this: &Blob, start: f64) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn slice_with_i32_and_i32(this: &Blob, start: i32, end: i32) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn slice_with_f64_and_i32(this: &Blob, start: f64, end: i32) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn slice_with_i32_and_f64(this: &Blob, start: i32, end: f64) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn slice_with_f64_and_f64(this: &Blob, start: f64, end: f64) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
@@ -176,7 +176,7 @@ extern "C" {
         end: i32,
         content_type: &str,
     ) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
@@ -188,7 +188,7 @@ extern "C" {
         end: i32,
         content_type: &str,
     ) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
@@ -200,7 +200,7 @@ extern "C" {
         end: f64,
         content_type: &str,
     ) -> Result<Blob, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Blob" , js_name = slice ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/slice)"]
@@ -213,14 +213,14 @@ extern "C" {
         content_type: &str,
     ) -> Result<Blob, JsValue>;
     #[cfg(feature = "ReadableStream")]
-    # [ wasm_bindgen ( method , structural , js_class = "Blob" , js_name = stream ) ]
+    # [wasm_bindgen (method , structural , js_class = "Blob" , js_name = stream)]
     #[doc = "The `stream()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/stream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `ReadableStream`*"]
     pub fn stream(this: &Blob) -> ReadableStream;
-    # [ wasm_bindgen ( method , structural , js_class = "Blob" , js_name = text ) ]
+    # [wasm_bindgen (method , structural , js_class = "Blob" , js_name = text)]
     #[doc = "The `text()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)"]

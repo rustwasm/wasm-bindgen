@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = Path2D , typescript_type = "Path2D" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = Path2D , typescript_type = "Path2D")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Path2d` class."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub fn new_with_path_string(path_string: &str) -> Result<Path2d, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = addPath ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = addPath)]
     #[doc = "The `addPath()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/addPath)"]
@@ -40,14 +40,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub fn add_path(this: &Path2d, path: &Path2d);
     #[cfg(feature = "SvgMatrix")]
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = addPath ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = addPath)]
     #[doc = "The `addPath()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/addPath)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`, `SvgMatrix`*"]
     pub fn add_path_with_transformation(this: &Path2d, path: &Path2d, transformation: &SvgMatrix);
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Path2D" , js_name = arc ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = arc)]
     #[doc = "The `arc()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/arc)"]
@@ -61,7 +61,7 @@ extern "C" {
         start_angle: f64,
         end_angle: f64,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Path2D" , js_name = arc ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = arc)]
     #[doc = "The `arc()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/arc)"]
@@ -76,7 +76,7 @@ extern "C" {
         end_angle: f64,
         anticlockwise: bool,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Path2D" , js_name = arcTo ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = arcTo)]
     #[doc = "The `arcTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/arcTo)"]
@@ -90,7 +90,7 @@ extern "C" {
         y2: f64,
         radius: f64,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = bezierCurveTo ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = bezierCurveTo)]
     #[doc = "The `bezierCurveTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/bezierCurveTo)"]
@@ -105,14 +105,14 @@ extern "C" {
         x: f64,
         y: f64,
     );
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = closePath ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = closePath)]
     #[doc = "The `closePath()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/closePath)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub fn close_path(this: &Path2d);
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Path2D" , js_name = ellipse ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = ellipse)]
     #[doc = "The `ellipse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/ellipse)"]
@@ -128,7 +128,7 @@ extern "C" {
         start_angle: f64,
         end_angle: f64,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "Path2D" , js_name = ellipse ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = ellipse)]
     #[doc = "The `ellipse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/ellipse)"]
@@ -145,28 +145,28 @@ extern "C" {
         end_angle: f64,
         anticlockwise: bool,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = lineTo ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = lineTo)]
     #[doc = "The `lineTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/lineTo)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub fn line_to(this: &Path2d, x: f64, y: f64);
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = moveTo ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = moveTo)]
     #[doc = "The `moveTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/moveTo)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub fn move_to(this: &Path2d, x: f64, y: f64);
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = quadraticCurveTo ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = quadraticCurveTo)]
     #[doc = "The `quadraticCurveTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/quadraticCurveTo)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub fn quadratic_curve_to(this: &Path2d, cpx: f64, cpy: f64, x: f64, y: f64);
-    # [ wasm_bindgen ( method , structural , js_class = "Path2D" , js_name = rect ) ]
+    # [wasm_bindgen (method , structural , js_class = "Path2D" , js_name = rect)]
     #[doc = "The `rect()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/rect)"]

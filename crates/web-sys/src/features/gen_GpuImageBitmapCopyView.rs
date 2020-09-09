@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPUImageBitmapCopyView ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUImageBitmapCopyView)]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuImageBitmapCopyView` dictionary."]
     #[doc = ""]
