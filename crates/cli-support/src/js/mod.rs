@@ -1003,37 +1003,6 @@ impl<'a> Context<'a> {
             ""
         };
 
-        // If we are targeting Node.js, it doesn't have `encodeInto` yet
-        // but it does have `Buffer::write` which has similar semantics but
-        // doesn't require creating intermediate view using `subarray`
-        // and also has `Buffer::byteLength` to calculate size upfront.
-        if self.config.mode.nodejs() {
-            let get_buf = self.expose_node_buffer_memory(memory);
-            let ret = MemView {
-                name: "passStringToWasm",
-                num: get_buf.num,
-            };
-            if !self.should_write_global(ret.to_string()) {
-                return Ok(ret);
-            }
-
-            self.global(&format!(
-                "
-                    function {}(arg, malloc) {{
-                        {}
-                        const len = Buffer.byteLength(arg);
-                        const ptr = malloc(len);
-                        {}().write(arg, ptr, len);
-                        WASM_VECTOR_LEN = len;
-                        return ptr;
-                    }}
-                ",
-                ret, debug, get_buf,
-            ));
-
-            return Ok(ret);
-        }
-
         let mem = self.expose_uint8_memory(memory);
         let ret = MemView {
             name: "passStringToWasm",
@@ -1530,10 +1499,6 @@ impl<'a> Context<'a> {
             size = size,
         ));
         return ret;
-    }
-
-    fn expose_node_buffer_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getNodeBufferMemory", "Buffer.from", memory)
     }
 
     fn expose_int8_memory(&mut self, memory: MemoryId) -> MemView {
