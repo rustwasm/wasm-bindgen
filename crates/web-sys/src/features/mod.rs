@@ -64,6 +64,12 @@ mod gen_AlignSetting;
 #[cfg(feature = "AlignSetting")]
 pub use gen_AlignSetting::*;
 
+#[cfg(feature = "AllowedBluetoothDevice")]
+#[allow(non_snake_case)]
+mod gen_AllowedBluetoothDevice;
+#[cfg(feature = "AllowedBluetoothDevice")]
+pub use gen_AllowedBluetoothDevice::*;
+
 #[cfg(feature = "AnalyserNode")]
 #[allow(non_snake_case)]
 mod gen_AnalyserNode;
@@ -483,6 +489,108 @@ pub use gen_BlobPropertyBag::*;
 mod gen_BlockParsingOptions;
 #[cfg(feature = "BlockParsingOptions")]
 pub use gen_BlockParsingOptions::*;
+
+#[cfg(feature = "Bluetooth")]
+#[allow(non_snake_case)]
+mod gen_Bluetooth;
+#[cfg(feature = "Bluetooth")]
+pub use gen_Bluetooth::*;
+
+#[cfg(feature = "BluetoothAdvertisingEvent")]
+#[allow(non_snake_case)]
+mod gen_BluetoothAdvertisingEvent;
+#[cfg(feature = "BluetoothAdvertisingEvent")]
+pub use gen_BluetoothAdvertisingEvent::*;
+
+#[cfg(feature = "BluetoothAdvertisingEventInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothAdvertisingEventInit;
+#[cfg(feature = "BluetoothAdvertisingEventInit")]
+pub use gen_BluetoothAdvertisingEventInit::*;
+
+#[cfg(feature = "BluetoothCharacteristicProperties")]
+#[allow(non_snake_case)]
+mod gen_BluetoothCharacteristicProperties;
+#[cfg(feature = "BluetoothCharacteristicProperties")]
+pub use gen_BluetoothCharacteristicProperties::*;
+
+#[cfg(feature = "BluetoothDataFilterInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothDataFilterInit;
+#[cfg(feature = "BluetoothDataFilterInit")]
+pub use gen_BluetoothDataFilterInit::*;
+
+#[cfg(feature = "BluetoothDevice")]
+#[allow(non_snake_case)]
+mod gen_BluetoothDevice;
+#[cfg(feature = "BluetoothDevice")]
+pub use gen_BluetoothDevice::*;
+
+#[cfg(feature = "BluetoothLeScanFilterInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothLeScanFilterInit;
+#[cfg(feature = "BluetoothLeScanFilterInit")]
+pub use gen_BluetoothLeScanFilterInit::*;
+
+#[cfg(feature = "BluetoothManufacturerDataMap")]
+#[allow(non_snake_case)]
+mod gen_BluetoothManufacturerDataMap;
+#[cfg(feature = "BluetoothManufacturerDataMap")]
+pub use gen_BluetoothManufacturerDataMap::*;
+
+#[cfg(feature = "BluetoothPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_BluetoothPermissionDescriptor;
+#[cfg(feature = "BluetoothPermissionDescriptor")]
+pub use gen_BluetoothPermissionDescriptor::*;
+
+#[cfg(feature = "BluetoothPermissionResult")]
+#[allow(non_snake_case)]
+mod gen_BluetoothPermissionResult;
+#[cfg(feature = "BluetoothPermissionResult")]
+pub use gen_BluetoothPermissionResult::*;
+
+#[cfg(feature = "BluetoothPermissionStorage")]
+#[allow(non_snake_case)]
+mod gen_BluetoothPermissionStorage;
+#[cfg(feature = "BluetoothPermissionStorage")]
+pub use gen_BluetoothPermissionStorage::*;
+
+#[cfg(feature = "BluetoothRemoteGattCharacteristic")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattCharacteristic;
+#[cfg(feature = "BluetoothRemoteGattCharacteristic")]
+pub use gen_BluetoothRemoteGattCharacteristic::*;
+
+#[cfg(feature = "BluetoothRemoteGattDescriptor")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattDescriptor;
+#[cfg(feature = "BluetoothRemoteGattDescriptor")]
+pub use gen_BluetoothRemoteGattDescriptor::*;
+
+#[cfg(feature = "BluetoothRemoteGattServer")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattServer;
+#[cfg(feature = "BluetoothRemoteGattServer")]
+pub use gen_BluetoothRemoteGattServer::*;
+
+#[cfg(feature = "BluetoothRemoteGattService")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattService;
+#[cfg(feature = "BluetoothRemoteGattService")]
+pub use gen_BluetoothRemoteGattService::*;
+
+#[cfg(feature = "BluetoothServiceDataMap")]
+#[allow(non_snake_case)]
+mod gen_BluetoothServiceDataMap;
+#[cfg(feature = "BluetoothServiceDataMap")]
+pub use gen_BluetoothServiceDataMap::*;
+
+#[cfg(feature = "BluetoothUuid")]
+#[allow(non_snake_case)]
+mod gen_BluetoothUuid;
+#[cfg(feature = "BluetoothUuid")]
+pub use gen_BluetoothUuid::*;
 
 #[cfg(feature = "BoxQuadOptions")]
 #[allow(non_snake_case)]
@@ -5170,6 +5278,12 @@ mod gen_RequestDestination;
 #[cfg(feature = "RequestDestination")]
 pub use gen_RequestDestination::*;
 
+#[cfg(feature = "RequestDeviceOptions")]
+#[allow(non_snake_case)]
+mod gen_RequestDeviceOptions;
+#[cfg(feature = "RequestDeviceOptions")]
+pub use gen_RequestDeviceOptions::*;
+
 #[cfg(feature = "RequestInit")]
 #[allow(non_snake_case)]
 mod gen_RequestInit;
@@ -7150,6 +7264,18 @@ mod gen_ValidityState;
 #[cfg(feature = "ValidityState")]
 pub use gen_ValidityState::*;
 
+#[cfg(feature = "ValueEvent")]
+#[allow(non_snake_case)]
+mod gen_ValueEvent;
+#[cfg(feature = "ValueEvent")]
+pub use gen_ValueEvent::*;
+
+#[cfg(feature = "ValueEventInit")]
+#[allow(non_snake_case)]
+mod gen_ValueEventInit;
+#[cfg(feature = "ValueEventInit")]
+pub use gen_ValueEventInit::*;
+
 #[cfg(feature = "VideoConfiguration")]
 #[allow(non_snake_case)]
 mod gen_VideoConfiguration;
@@ -7287,6 +7413,12 @@ pub use gen_VttCue::*;
 mod gen_VttRegion;
 #[cfg(feature = "VttRegion")]
 pub use gen_VttRegion::*;
+
+#[cfg(feature = "WatchAdvertisementsOptions")]
+#[allow(non_snake_case)]
+mod gen_WatchAdvertisementsOptions;
+#[cfg(feature = "WatchAdvertisementsOptions")]
+pub use gen_WatchAdvertisementsOptions::*;
 
 #[cfg(feature = "WaveShaperNode")]
 #[allow(non_snake_case)]
