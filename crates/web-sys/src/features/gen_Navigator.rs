@@ -105,6 +105,18 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`, `Navigator`*"]
     pub fn credentials(this: &Navigator) -> CredentialsContainer;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Bluetooth")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = bluetooth)]
+    #[doc = "Getter for the `bluetooth` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/bluetooth)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Bluetooth`, `Navigator`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn bluetooth(this: &Navigator) -> Bluetooth;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Clipboard")]
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = clipboard)]
     #[doc = "Getter for the `clipboard` field of this object."]
