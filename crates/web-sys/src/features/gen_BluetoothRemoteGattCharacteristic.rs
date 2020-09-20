@@ -53,6 +53,18 @@ extern "C" {
         this: &BluetoothRemoteGattCharacteristic,
     ) -> BluetoothCharacteristicProperties;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "DataView")]
+    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = value)]
+    #[doc = "Getter for the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/value)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothRemoteGattCharacteristic`, `DataView`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn value(this: &BluetoothRemoteGattCharacteristic) -> Option<::js_sys::DataView>;
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = oncharacteristicvaluechanged)]
     #[doc = "Getter for the `oncharacteristicvaluechanged` field of this object."]
     #[doc = ""]
