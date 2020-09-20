@@ -3,7 +3,7 @@
 [View documentation for this example online][dox] or [View compiled example
 online][compiled]
 
-[compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/web-audio/
+[compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/webaudio/
 [dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/web-audio.html
 
 You can build the example locally with:
