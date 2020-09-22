@@ -547,7 +547,7 @@ impl<'a> IdlType<'a> {
             IdlType::Error => Err(TypeError::CannotConvert),
 
             IdlType::ArrayBuffer => Ok(js_sys("ArrayBuffer")),
-            IdlType::DataView => Err(TypeError::CannotConvert),
+            IdlType::DataView => Ok(js_sys("DataView")),
             IdlType::Int8Array { immutable } => Ok(Some(array("i8", pos, *immutable))),
             IdlType::Uint8Array { immutable } => Ok(Some(array("u8", pos, *immutable))),
             IdlType::Uint8ClampedArray { immutable } => {
