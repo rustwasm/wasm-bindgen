@@ -1,7 +1,7 @@
 //! Raw API bindings for Web APIs
 //!
 //! This is a procedurally generated crate from browser WebIDL which provides a
-//! binding to all APIs that browser provide on the web.
+//! binding to all APIs that browsers provide on the web.
 //!
 //! This crate by default contains very little when compiled as almost all of
 //! its exposed APIs are gated by Cargo features. The exhaustive list of
