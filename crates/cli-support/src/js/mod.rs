@@ -335,7 +335,7 @@ impl<'a> Context<'a> {
         module_name: &str,
         needs_manual_start: bool,
     ) -> Result<(String, String, Option<String>), Error> {
-        let mut ts = self.typescript.clone();
+        let mut ts;
         let mut js = String::new();
         let mut start = None;
 
@@ -435,6 +435,16 @@ impl<'a> Context<'a> {
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 footer.push_str("export default init;\n");
             }
+        }
+
+        // Before putting the static init code declaration info, put all existing typescript into a `wasm_bindgen` namespace declaration.
+        // Not sure if this should happen in all cases, so just adding it to NoModules for now...
+        if let OutputMode::NoModules { global : _ } = &self.config.mode {
+            ts = String::from("declare namespace wasm_bindgen {\n\t");
+            ts.push_str(&self.typescript.replace("\n", "\n\t"));
+            ts.push_str("\n}\n");
+        } else {
+            ts = self.typescript.clone();
         }
 
         let (init_js, init_ts) = init;
