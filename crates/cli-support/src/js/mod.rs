@@ -574,11 +574,12 @@ impl<'a> Context<'a> {
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
         // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level cause TypeScript to ignore all "declare" statements.
         // So using "declare" everywhere for at least the NoModules option.
-        let declare_export_default;
+        // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
+        let setup_function_declaration;
         if let OutputMode::NoModules { global : _ } = &self.config.mode {
-            declare_export_default = "declare";
+            setup_function_declaration = "declare function wasm_bindgen";
         } else {
-            declare_export_default = "export default";
+            setup_function_declaration = "export default function init";
         }
         Ok(format!(
             "\n\
@@ -596,13 +597,13 @@ impl<'a> Context<'a> {
             *\n\
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
-            {declare_export_default} default function init \
+            {setup_function_declaration} \
                 (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
         ",
             memory_doc, arg_optional, memory_param,
             output = output,
             declare_export = self.declare_or_export(),
-            declare_export_default = declare_export_default,
+            setup_function_declaration = setup_function_declaration,
         ))
     }
 
