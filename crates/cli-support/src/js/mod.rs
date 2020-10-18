@@ -536,6 +536,16 @@ impl<'a> Context<'a> {
         Ok(imports)
     }
 
+    fn declare_or_export(&self) -> String {
+        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level, cause TypeScript to ignore all "declare" statements.
+        // So using "declare" everywhere for at least the NoModules option.
+        if let OutputMode::NoModules { global : _ } = &self.config.mode {
+            String::from("declare")
+        } else {
+            String::from("export")
+        }
+    }
+
     fn ts_for_init_fn(
         &self,
         has_memory: bool,
@@ -552,11 +562,19 @@ impl<'a> Context<'a> {
             ("", "")
         };
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
+        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level, cause TypeScript to ignore all "declare" statements.
+        // So using "declare" everywhere for at least the NoModules option.
+        let declare_export_default;
+        if let OutputMode::NoModules { global : _ } = &self.config.mode {
+            declare_export_default = "declare";
+        } else {
+            declare_export_default = "export default";
+        }
         Ok(format!(
             "\n\
-            export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
+            {declare_export} type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
             \n\
-            export interface InitOutput {{\n\
+            {declare_export} interface InitOutput {{\n\
             {output}}}\n\
             \n\
             /**\n\
@@ -568,11 +586,13 @@ impl<'a> Context<'a> {
             *\n\
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
-            export default function init \
+            {declare_export_default} default function init \
                 (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
         ",
             memory_doc, arg_optional, memory_param,
             output = output,
+            declare_export = self.declare_or_export(),
+            declare_export_default = declare_export_default,
         ))
     }
 
@@ -757,7 +777,7 @@ impl<'a> Context<'a> {
 
     fn write_class(&mut self, name: &str, class: &ExportedClass) -> Result<(), Error> {
         let mut dst = format!("class {} {{\n", name);
-        let mut ts_dst = format!("export {}", dst);
+        let mut ts_dst = format!("{} {}", self.declare_or_export(), dst);
 
         if self.config.debug && !class.has_constructor {
             dst.push_str(
@@ -2327,7 +2347,8 @@ impl<'a> Context<'a> {
                     AuxExportKind::Function(name) => {
                         if let Some(ts_sig) = ts_sig {
                             self.typescript.push_str(&docs);
-                            self.typescript.push_str("export function ");
+                            self.typescript.push_str(&self.declare_or_export());
+                            self.typescript.push_str(" function ");
                             self.typescript.push_str(&name);
                             self.typescript.push_str(ts_sig);
                             self.typescript.push_str(";\n");
@@ -3056,8 +3077,9 @@ impl<'a> Context<'a> {
 
         if enum_.generate_typescript {
             self.typescript.push_str(&docs);
+            self.typescript.push_str(&self.declare_or_export());
             self.typescript
-                .push_str(&format!("export enum {} {{", enum_.name));
+                .push_str(&format!(" enum {} {{", enum_.name));
         }
         for (name, value, comments) in enum_.variants.iter() {
             let variant_docs = if comments.is_empty() {
