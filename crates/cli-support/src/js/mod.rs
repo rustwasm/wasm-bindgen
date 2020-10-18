@@ -547,7 +547,7 @@ impl<'a> Context<'a> {
     }
 
     fn declare_or_export(&self) -> String {
-        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level, cause TypeScript to ignore all "declare" statements.
+        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level cause TypeScript to ignore all "declare" statements.
         // So using "declare" everywhere for at least the NoModules option.
         if let OutputMode::NoModules { global : _ } = &self.config.mode {
             String::from("declare")
@@ -572,7 +572,7 @@ impl<'a> Context<'a> {
             ("", "")
         };
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
-        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level, cause TypeScript to ignore all "declare" statements.
+        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level cause TypeScript to ignore all "declare" statements.
         // So using "declare" everywhere for at least the NoModules option.
         let declare_export_default;
         if let OutputMode::NoModules { global : _ } = &self.config.mode {
