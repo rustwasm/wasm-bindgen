@@ -11,7 +11,7 @@ version = "0.4.18"
 edition = "2018"
 
 [dependencies]
-cfg-if = "0.1.9"
+cfg-if = "1.0.0"
 js-sys = { path = "../js-sys", version = '0.3.45' }
 wasm-bindgen = { path = "../..", version = '0.2.68' }
 
