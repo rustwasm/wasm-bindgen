@@ -1080,7 +1080,7 @@ pub mod __rt {
             };
             GLOBAL_EXNDATA[0] = 0;
             GLOBAL_EXNDATA[1] = 0;
-            return ret;
+            ret
         }
     }
 
