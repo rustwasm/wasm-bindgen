@@ -50,6 +50,17 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn delayed(this: &ClipboardItem) -> bool;
     #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (structural , method , getter , js_class = "ClipboardItem" , js_name = types)]
+    #[doc = "Getter for the `types` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/types)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn types(this: &ClipboardItem) -> ::js_sys::Array;
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "ClipboardItem" , js_name = getType)]
     #[doc = "The `getType()` method."]
     #[doc = ""]

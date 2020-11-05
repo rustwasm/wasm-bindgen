@@ -39,6 +39,18 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn gpu(this: &WorkerNavigator) -> Gpu;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Usb")]
+    # [wasm_bindgen (structural , method , getter , js_class = "WorkerNavigator" , js_name = usb)]
+    #[doc = "Getter for the `usb` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerNavigator/usb)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Usb`, `WorkerNavigator`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn usb(this: &WorkerNavigator) -> Usb;
     # [wasm_bindgen (structural , method , getter , js_class = "WorkerNavigator" , js_name = hardwareConcurrency)]
     #[doc = "Getter for the `hardwareConcurrency` field of this object."]
     #[doc = ""]

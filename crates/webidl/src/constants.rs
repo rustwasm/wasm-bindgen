@@ -30,6 +30,7 @@ lazy_static! {
         "Promise",
         "Function",
         "Clamped",
+        "DataView",
     ]);
 
 

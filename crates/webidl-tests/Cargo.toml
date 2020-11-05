@@ -12,6 +12,7 @@ path = 'lib.rs'
 
 [dependencies]
 js-sys = { path = '../js-sys' }
+wasm-bindgen-futures = { path = '../futures' }
 wasm-bindgen = { path = '../..' }
 
 [build-dependencies]

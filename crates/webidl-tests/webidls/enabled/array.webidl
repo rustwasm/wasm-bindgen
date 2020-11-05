@@ -13,4 +13,7 @@ interface TestArrays {
   Uint8ClampedArray u8Clamped(Uint8ClampedArray a);
   Uint16Array u16(Uint16Array a);
   Uint32Array u32(Uint32Array a);
+  
+  readonly attribute FrozenArray<octet> octetArray;
+  readonly attribute sequence<octet> octetSequence;
 };

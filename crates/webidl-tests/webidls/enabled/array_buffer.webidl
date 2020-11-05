@@ -2,4 +2,5 @@
 interface ArrayBufferTest {
   ArrayBuffer getBuffer();
   void setBuffer(ArrayBuffer? b);
+  DataView getDataView();
 };
