@@ -10,19 +10,13 @@
  * W3C liability, trademark and document use rules apply.
  */
 
-[Pref="dom.imagecapture.enabled", Constructor(VideoStreamTrack track)]
-interface ImageCapture : EventTarget {
-  // readonly attribute PhotoSettingsOptions photoSettingsOptions;
-  readonly attribute VideoStreamTrack videoStreamTrack;
-  attribute EventHandler onphoto;
-  attribute EventHandler onerror;
-  // attribute EventHandler onphotosettingschange;
-  // attribute EventHandler onframegrab;
+[Pref="dom.imagecapture.enabled", Constructor(MediaStreamTrack videoTrack)]
+interface ImageCapture {
+   Promise<Blob>              takePhoto(optional PhotoSettings photoSettings);
+   Promise<PhotoCapabilities> getPhotoCapabilities();
+   Promise<PhotoSettings>     getPhotoSettings();
 
-  // [Throws]
-  // void setOptions (PhotoSettings? photoSettings);
-  [Throws]
-  void takePhoto();
-  // [Throws]
-  // void getFrame();
+   Promise<ImageBitmap>       grabFrame();
+
+   readonly attribute MediaStreamTrack track;
 };
