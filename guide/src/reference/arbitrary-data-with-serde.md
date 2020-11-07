@@ -1,6 +1,6 @@
 # Serializing and Deserializing Arbitrary Data Into and From `JsValue` with Serde
 
-It's possible to pass arbirtrary data from Rust to JavaScript by serializing it
+It's possible to pass arbitrary data from Rust to JavaScript by serializing it
 to JSON with [Serde](https://github.com/serde-rs/serde). `wasm-bindgen` includes
 the `JsValue` type, which streamlines serializing and deserializing.
 
