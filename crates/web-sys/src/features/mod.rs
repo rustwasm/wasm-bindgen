@@ -2230,6 +2230,12 @@ mod gen_GpuAdapter;
 #[cfg(feature = "GpuAdapter")]
 pub use gen_GpuAdapter::*;
 
+#[cfg(feature = "GpuAdapterFeatures")]
+#[allow(non_snake_case)]
+mod gen_GpuAdapterFeatures;
+#[cfg(feature = "GpuAdapterFeatures")]
+pub use gen_GpuAdapterFeatures::*;
+
 #[cfg(feature = "GpuAddressMode")]
 #[allow(non_snake_case)]
 mod gen_GpuAddressMode;
@@ -2458,17 +2464,17 @@ mod gen_GpuErrorFilter;
 #[cfg(feature = "GpuErrorFilter")]
 pub use gen_GpuErrorFilter::*;
 
-#[cfg(feature = "GpuExtensionName")]
-#[allow(non_snake_case)]
-mod gen_GpuExtensionName;
-#[cfg(feature = "GpuExtensionName")]
-pub use gen_GpuExtensionName::*;
-
 #[cfg(feature = "GpuExtent3dDict")]
 #[allow(non_snake_case)]
 mod gen_GpuExtent3dDict;
 #[cfg(feature = "GpuExtent3dDict")]
 pub use gen_GpuExtent3dDict::*;
+
+#[cfg(feature = "GpuFeatureName")]
+#[allow(non_snake_case)]
+mod gen_GpuFeatureName;
+#[cfg(feature = "GpuFeatureName")]
+pub use gen_GpuFeatureName::*;
 
 #[cfg(feature = "GpuFence")]
 #[allow(non_snake_case)]
@@ -2523,6 +2529,12 @@ pub use gen_GpuLimits::*;
 mod gen_GpuLoadOp;
 #[cfg(feature = "GpuLoadOp")]
 pub use gen_GpuLoadOp::*;
+
+#[cfg(feature = "GpuMapMode")]
+#[allow(non_snake_case)]
+mod gen_GpuMapMode;
+#[cfg(feature = "GpuMapMode")]
+pub use gen_GpuMapMode::*;
 
 #[cfg(feature = "GpuObjectDescriptorBase")]
 #[allow(non_snake_case)]

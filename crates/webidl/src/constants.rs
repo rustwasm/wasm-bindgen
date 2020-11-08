@@ -84,6 +84,8 @@ lazy_static! {
         "send",
         // WebGPU
         "setBindGroup",
+        "writeBuffer",
+        "writeTexture",
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ]);
 }

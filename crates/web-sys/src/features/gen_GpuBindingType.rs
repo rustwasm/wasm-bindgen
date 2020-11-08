@@ -16,6 +16,7 @@ pub enum GpuBindingType {
     Sampler = "sampler",
     ComparisonSampler = "comparison-sampler",
     SampledTexture = "sampled-texture",
+    MultisampledTexture = "multisampled-texture",
     ReadonlyStorageTexture = "readonly-storage-texture",
     WriteonlyStorageTexture = "writeonly-storage-texture",
 }

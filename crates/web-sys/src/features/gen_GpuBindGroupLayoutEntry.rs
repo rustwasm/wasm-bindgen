@@ -95,27 +95,6 @@ impl GpuBindGroupLayoutEntry {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `multisampled` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupLayoutEntry`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn multisampled(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("multisampled"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Change the `storageTextureFormat` field of this object."]
     #[doc = ""]
