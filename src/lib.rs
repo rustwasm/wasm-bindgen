@@ -15,7 +15,7 @@ use core::marker;
 use core::mem;
 use core::ops::{Deref, DerefMut};
 
-use crate::convert::{FromWasmAbi, WasmOptionalF64, WasmSlice};
+use crate::convert::{FromWasmAbi, WasmOptional64, WasmOptionalF64, WasmSlice};
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -143,6 +143,15 @@ impl JsValue {
         unsafe { JsValue::_new(__wbindgen_number_new(n)) }
     }
 
+    /// Creates a new JS value which is a bigint.
+    ///
+    /// This function creates a JS value representing a bigint (a heap
+    /// allocated bigint) and returns a handle to the JS version of it.
+    #[inline]
+    pub fn from_u64(n: u64) -> JsValue {
+        unsafe { JsValue::_new(__wbindgen_bigint_new(n)) }
+    }
+
     /// Creates a new JS value which is a boolean.
     ///
     /// This function creates a JS object representing a boolean (a heap
@@ -240,6 +249,15 @@ impl JsValue {
     /// `None`.
     pub fn as_f64(&self) -> Option<f64> {
         unsafe { FromWasmAbi::from_abi(__wbindgen_number_get(self.idx)) }
+    }
+
+    /// Returns the `u64` value of this JS value if it's an instance of a
+    /// bigint.
+    ///
+    /// If this JS value is not an instance of a bigint then this returns
+    /// `None`.
+    pub fn as_u64(&self) -> Option<u64> {
+        unsafe { FromWasmAbi::from_abi(__wbindgen_bigint_get(self.idx)) }
     }
 
     /// Tests whether this JS value is a JS string.
@@ -359,6 +377,13 @@ impl PartialEq<bool> for JsValue {
     }
 }
 
+impl PartialEq<u64> for JsValue {
+    #[inline]
+    fn eq(&self, other: &u64) -> bool {
+        self.as_u64() == Some(*other)
+    }
+}
+
 impl PartialEq<str> for JsValue {
     #[inline]
     fn eq(&self, other: &str) -> bool {
@@ -395,6 +420,13 @@ impl<'a> From<&'a str> for JsValue {
     }
 }
 
+impl From<bool> for JsValue {
+    #[inline]
+    fn from(s: bool) -> JsValue {
+        JsValue::from_bool(s)
+    }
+}
+
 if_std! {
     impl<'a> From<&'a String> for JsValue {
         #[inline]
@@ -411,10 +443,10 @@ if_std! {
     }
 }
 
-impl From<bool> for JsValue {
+impl From<u64> for JsValue {
     #[inline]
-    fn from(s: bool) -> JsValue {
-        JsValue::from_bool(s)
+    fn from(n: u64) -> JsValue {
+        JsValue::from_u64(n)
     }
 }
 
@@ -492,6 +524,7 @@ externs! {
 
         fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_number_new(f: f64) -> u32;
+        fn __wbindgen_bigint_new(n: u64) -> u32;
         fn __wbindgen_symbol_named_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_symbol_anonymous_new() -> u32;
 
@@ -506,6 +539,7 @@ externs! {
         fn __wbindgen_is_falsy(idx: u32) -> u32;
 
         fn __wbindgen_number_get(idx: u32) -> WasmOptionalF64;
+        fn __wbindgen_bigint_get(idx: u32) -> WasmOptional64;
         fn __wbindgen_boolean_get(idx: u32) -> u32;
         fn __wbindgen_string_get(idx: u32) -> WasmSlice;
 

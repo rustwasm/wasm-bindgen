@@ -39,6 +39,17 @@ pub fn api_baz2(a: &JsValue, b: &JsValue) {
 }
 
 #[wasm_bindgen]
+pub fn api_faz() -> JsValue {
+    JsValue::from(18446744073709551614u64)
+}
+
+#[wasm_bindgen]
+pub fn api_faz2(a: &JsValue, b: &JsValue) {
+    assert_eq!(a.as_u64(), Some(18446744073709551615u64));
+    assert_eq!(b.as_u64(), None);
+}
+
+#[wasm_bindgen]
 pub fn api_js_null() -> JsValue {
     JsValue::null()
 }

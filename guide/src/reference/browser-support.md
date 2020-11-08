@@ -58,10 +58,7 @@ also like to be aware of it!
   forbids the usage of 64-bit integers (Rust types `i64` and `u64`) in
   exported/imported functions. When using `wasm-bindgen`, however, `u64` is
   allowed! The reason for this is that it's translated to the `BigInt` type in
-  JS. The `BigInt` class, however, is only currently supported in Chrome 67+ and
-  Firefox 68+ (as of the time of this writing) and isn't supported in Edge or
-  Safari, for example. For more, up-to-date details, see [`BigInt` on Can I
-  use...][ciu_bigint].
+  JS. The `BigInt` class is supported in all modern browsers.
 
 If you find other incompatibilities please report them to us! We'd love to
 either keep this list up-to-date or fix the underlying bugs :)
@@ -72,4 +69,3 @@ either keep this list up-to-date or fix the underlying bugs :)
 [`text-encoding`]: https://www.npmjs.com/package/text-encoding
 [soq]: https://stackoverflow.com/questions/40662142/polyfill-for-textdecoder/46549188#46549188
 [mdntepi]: https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder#Polyfill
-[ciu_bigint]: https://caniuse.com/#feat=bigint

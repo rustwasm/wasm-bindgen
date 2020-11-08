@@ -10,6 +10,8 @@ exports.js_works = () => {
     assert.strictEqual(wasm.api_bar('a'), 'a');
     assert.strictEqual(wasm.api_baz(), 1);
     wasm.api_baz2(2, 'a');
+    assert.strictEqual(wasm.api_faz(), 18446744073709551614n);
+    wasm.api_faz2(18446744073709551615n, 'a');
 
     assert.strictEqual(wasm.api_js_null(), null);
     assert.strictEqual(wasm.api_js_undefined(), undefined);
