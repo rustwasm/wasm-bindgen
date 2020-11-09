@@ -16,7 +16,7 @@
   (type (;0;) (func (result i32)))
   (type (;1;) (func (param i32)))
   (type (;2;) (func (param externref)))
-  (func $foo externref shim (type 2) (param externref)
+  (func $foo_externref_shim (@name "foo externref shim") (type 2) (param externref)
     (local i32)
     call $alloc
     local.tee 1
@@ -31,5 +31,5 @@
   (func $alloc (type 0) (result i32)
     i32.const 0)
   (table (;0;) 32 externref)
-  (export "foo" (func $foo externref shim)))
+  (export "foo" (func $foo_externref_shim)))
 ;)

@@ -99,7 +99,7 @@ jobs:
         displayName: "install wasm target"
       - task: NodeTool@0
         inputs:
-          versionSpec: '>=13.0'
+          versionSpec: '>=15.0'
       - script: cargo test -p wasm-bindgen-cli-support
         displayName: "wasm-bindgen-cli-support tests"
       - script: cargo test -p wasm-bindgen-cli
