@@ -14,7 +14,7 @@
   (type (;0;) (func (result i32)))
   (type (;1;) (func (result externref)))
   (import "" "a" (func $a (type 1)))
-  (func $a externref shim (type 0) (result i32)
+  (func $a_externref_shim (@name "a externref shim") (type 0) (result i32)
     (local i32 externref)
     call $a
     local.set 1
@@ -24,7 +24,7 @@
     table.set 0
     local.get 0)
   (func (;2;) (type 0) (result i32)
-    call $a externref shim)
+    call $a_externref_shim)
   (func $alloc (type 0) (result i32)
     i32.const 0)
   (table (;0;) 32 externref)

@@ -20,7 +20,7 @@
   (type (;2;) (func (result f32)))
   (type (;3;) (func (result f64)))
   (type (;4;) (func (param i32)))
-  (func $i32 multivalue shim (type 0) (result i32)
+  (func $i32_multivalue_shim (@name "i32 multivalue shim") (type 0) (result i32)
     (local i32)
     global.get 0
     i32.const 16
@@ -35,7 +35,7 @@
     i32.const 16
     i32.add
     global.set 0)
-  (func $i64 multivalue shim (type 1) (result i64)
+  (func $i64_multivalue_shim (@name "i64 multivalue shim") (type 1) (result i64)
     (local i32)
     global.get 0
     i32.const 16
@@ -50,7 +50,7 @@
     i32.const 16
     i32.add
     global.set 0)
-  (func $f32 multivalue shim (type 2) (result f32)
+  (func $f32_multivalue_shim (@name "f32 multivalue shim") (type 2) (result f32)
     (local i32)
     global.get 0
     i32.const 16
@@ -65,7 +65,7 @@
     i32.const 16
     i32.add
     global.set 0)
-  (func $f64 multivalue shim (type 3) (result f64)
+  (func $f64_multivalue_shim (@name "f64 multivalue shim") (type 3) (result f64)
     (local i32)
     global.get 0
     i32.const 16
@@ -86,8 +86,8 @@
   (func $f64 (type 4) (param i32))
   (memory (;0;) 1)
   (global (;0;) (mut i32) (i32.const 0))
-  (export "i32" (func $i32 multivalue shim))
-  (export "i64" (func $i64 multivalue shim))
-  (export "f32" (func $f32 multivalue shim))
-  (export "f64" (func $f64 multivalue shim)))
+  (export "i32" (func $i32_multivalue_shim))
+  (export "i64" (func $i64_multivalue_shim))
+  (export "f32" (func $f32_multivalue_shim))
+  (export "f64" (func $f64_multivalue_shim)))
 ;)
