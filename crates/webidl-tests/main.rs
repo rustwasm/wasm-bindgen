@@ -28,6 +28,7 @@ pub mod enums;
 pub mod global;
 pub mod namespace;
 pub mod no_interface;
+pub mod promise;
 pub mod simple;
 pub mod throws;
 pub mod unstable;

@@ -598,10 +598,10 @@ impl<'a> IdlType<'a> {
                     None => Ok(None),
                 }
             }
-            IdlType::FrozenArray(_idl_type) => Err(TypeError::CannotConvert),
             // webidl sequences must always be returned as javascript `Array`s. They may accept
             // anything implementing the @@iterable interface.
-            IdlType::Sequence(_idl_type) => match pos {
+            // The same implementation is fine for `FrozenArray`
+            IdlType::FrozenArray(_idl_type) | IdlType::Sequence(_idl_type) => match pos {
                 TypePosition::Argument => Ok(js_value),
                 TypePosition::Return => Ok(js_sys("Array")),
             },

@@ -69,6 +69,13 @@ global.TestArrays = class {
     strictEqual(x[1], 2);
     return new Uint32Array([3, 4, 5]);
   }
+  get octetArray() {
+    return new Uint8Array([3, 4, 5]);
+  }
+
+  get octetSequence() {
+    return new Uint8Array([3, 4, 5]);
+  }
 };
 
 global.ArrayBufferTest = class {
@@ -77,6 +84,15 @@ global.ArrayBufferTest = class {
   }
   setBuffer(x) {
     // ...
+  }
+  getDataView() {
+    // taken from MDN
+    const buffer = new ArrayBuffer(16);
+    const view1 = new DataView(buffer);
+    const view2 = new DataView(buffer, 12, 4);
+    view1.setInt8(12, 42);
+
+    return view2;
   }
 };
 
@@ -149,13 +165,13 @@ const map = {
 global.get_global = () => map;
 
 global.math_test = {
-    pow(base, exp) {
-        return Math.pow(base, exp);
-    },
+  pow(base, exp) {
+    return Math.pow(base, exp);
+  },
 
-    add_one(val) {
-        return val + 1;
-    },
+  add_one(val) {
+    return val + 1;
+  },
 };
 
 global.GetNoInterfaceObject = class {
@@ -384,3 +400,9 @@ global.GetUnstableInterface = class {
     }
   }
 }
+
+global.TestPromises = class {
+  stringPromise() {
+    return new Promise(r => r("abc"));
+  }
+};
