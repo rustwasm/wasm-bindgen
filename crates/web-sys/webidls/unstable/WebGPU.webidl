@@ -6,6 +6,23 @@ dictionary GPUObjectDescriptorBase {
     USVString label;
 };
 
+dictionary GPULimits {
+    GPUSize32 maxBindGroups = 4;
+    GPUSize32 maxDynamicUniformBuffersPerPipelineLayout = 8;
+    GPUSize32 maxDynamicStorageBuffersPerPipelineLayout = 4;
+    GPUSize32 maxSampledTexturesPerShaderStage = 16;
+    GPUSize32 maxSamplersPerShaderStage = 16;
+    GPUSize32 maxStorageBuffersPerShaderStage = 4;
+    GPUSize32 maxStorageTexturesPerShaderStage = 4;
+    GPUSize32 maxUniformBuffersPerShaderStage = 12;
+    GPUSize32 maxUniformBufferBindingSize = 16384;
+    GPUSize32 maxStorageBufferBindingSize = 134217728;
+};
+
+interface GPUAdapterFeatures {
+    readonly setlike<GPUFeatureName>;
+};
+
 [Exposed=Window]
 partial interface Navigator {
     [SameObject] readonly attribute GPU gpu;
@@ -32,46 +49,35 @@ enum GPUPowerPreference {
 
 interface GPUAdapter {
     readonly attribute DOMString name;
-    readonly attribute FrozenArray<GPUExtensionName> extensions;
+    [SameObject] readonly attribute GPUAdapterFeatures features;
     //readonly attribute GPULimits limits; Don’t expose higher limits for now.
 
     Promise<GPUDevice?> requestDevice(optional GPUDeviceDescriptor descriptor = {});
 };
 
 dictionary GPUDeviceDescriptor : GPUObjectDescriptorBase {
-    sequence<GPUExtensionName> extensions = [];
+    sequence<GPUFeatureName> features = [];
     GPULimits limits = {};
 };
 
-enum GPUExtensionName {
-    "texture-compression-bc",
+enum GPUFeatureName {
+    "depth-clamping",
+    "depth24unorm-stencil8",
+    "depth32float-stencil8",
     "pipeline-statistics-query",
+    "texture-compression-bc",
     "timestamp-query",
-    "depth-clamping"
-};
-
-dictionary GPULimits {
-    GPUSize32 maxBindGroups = 4;
-    GPUSize32 maxDynamicUniformBuffersPerPipelineLayout = 8;
-    GPUSize32 maxDynamicStorageBuffersPerPipelineLayout = 4;
-    GPUSize32 maxSampledTexturesPerShaderStage = 16;
-    GPUSize32 maxSamplersPerShaderStage = 16;
-    GPUSize32 maxStorageBuffersPerShaderStage = 4;
-    GPUSize32 maxStorageTexturesPerShaderStage = 4;
-    GPUSize32 maxUniformBuffersPerShaderStage = 12;
-    GPUSize32 maxUniformBufferBindingSize = 16384;
 };
 
 [Exposed=(Window, DedicatedWorker), Serializable]
 interface GPUDevice : EventTarget {
     [SameObject] readonly attribute GPUAdapter adapter;
-    readonly attribute FrozenArray<GPUExtensionName> extensions;
+    readonly attribute FrozenArray<GPUFeatureName> features;
     readonly attribute object limits;
 
     [SameObject] readonly attribute GPUQueue defaultQueue;
 
     GPUBuffer createBuffer(GPUBufferDescriptor descriptor);
-    GPUMappedBuffer createBufferMapped(GPUBufferDescriptor descriptor);
     GPUTexture createTexture(GPUTextureDescriptor descriptor);
     GPUSampler createSampler(optional GPUSamplerDescriptor descriptor = {});
 
@@ -94,8 +100,8 @@ GPUDevice includes GPUObjectBase;
 
 [Serializable]
 interface GPUBuffer {
-    Promise<ArrayBuffer> mapReadAsync();
-    Promise<ArrayBuffer> mapWriteAsync();
+    Promise<void> mapAsync(GPUMapModeFlags mode, optional GPUSize64 offset = 0, optional GPUSize64 size);
+    ArrayBuffer getMappedRange(optional GPUSize64 offset = 0, optional GPUSize64 size);
     void unmap();
 
     void destroy();
@@ -105,20 +111,27 @@ GPUBuffer includes GPUObjectBase;
 dictionary GPUBufferDescriptor : GPUObjectDescriptorBase {
     required GPUSize64 size;
     required GPUBufferUsageFlags usage;
+    boolean mappedAtCreation = false;
 };
 
 typedef [EnforceRange] unsigned long GPUBufferUsageFlags;
 interface GPUBufferUsage {
-    const GPUBufferUsageFlags MAP_READ      = 0x0001;
-    const GPUBufferUsageFlags MAP_WRITE     = 0x0002;
-    const GPUBufferUsageFlags COPY_SRC      = 0x0004;
-    const GPUBufferUsageFlags COPY_DST      = 0x0008;
-    const GPUBufferUsageFlags INDEX         = 0x0010;
-    const GPUBufferUsageFlags VERTEX        = 0x0020;
-    const GPUBufferUsageFlags UNIFORM       = 0x0040;
-    const GPUBufferUsageFlags STORAGE       = 0x0080;
-    const GPUBufferUsageFlags INDIRECT      = 0x0100;
-    const GPUBufferUsageFlags QUERY_RESOLVE = 0x0200;
+    const GPUFlagsConstant MAP_READ      = 0x0001;
+    const GPUFlagsConstant MAP_WRITE     = 0x0002;
+    const GPUFlagsConstant COPY_SRC      = 0x0004;
+    const GPUFlagsConstant COPY_DST      = 0x0008;
+    const GPUFlagsConstant INDEX         = 0x0010;
+    const GPUFlagsConstant VERTEX        = 0x0020;
+    const GPUFlagsConstant UNIFORM       = 0x0040;
+    const GPUFlagsConstant STORAGE       = 0x0080;
+    const GPUFlagsConstant INDIRECT      = 0x0100;
+    const GPUFlagsConstant QUERY_RESOLVE = 0x0200;
+};
+
+typedef [EnforceRange] unsigned long GPUMapModeFlags;
+interface GPUMapMode {
+    const GPUFlagsConstant READ  = 0x0001;
+    const GPUFlagsConstant WRITE = 0x0002;
 };
 
 [Serializable]
@@ -146,11 +159,11 @@ enum GPUTextureDimension {
 
 typedef [EnforceRange] unsigned long GPUTextureUsageFlags;
 interface GPUTextureUsage {
-    const GPUTextureUsageFlags COPY_SRC          = 0x01;
-    const GPUTextureUsageFlags COPY_DST          = 0x02;
-    const GPUTextureUsageFlags SAMPLED           = 0x04;
-    const GPUTextureUsageFlags STORAGE           = 0x08;
-    const GPUTextureUsageFlags OUTPUT_ATTACHMENT = 0x10;
+    const GPUFlagsConstant COPY_SRC          = 0x01;
+    const GPUFlagsConstant COPY_DST          = 0x02;
+    const GPUFlagsConstant SAMPLED           = 0x04;
+    const GPUFlagsConstant STORAGE           = 0x08;
+    const GPUFlagsConstant RENDER_ATTACHMENT = 0x10;
 };
 
 interface GPUTextureView {
@@ -213,8 +226,9 @@ enum GPUTextureFormat {
     "bgra8unorm",
     "bgra8unorm-srgb",
     // Packed 32-bit formats
+    "rgb9e5ufloat",
     "rgb10a2unorm",
-    "rg11b10float",
+    "rg11b10ufloat",
 
     // 64-bit formats
     "rg32uint",
@@ -230,9 +244,11 @@ enum GPUTextureFormat {
     "rgba32float",
 
     // Depth and stencil formats
-    "depth32float",
+    "stencil8",
+    "depth16unorm",
     "depth24plus",
     "depth24plus-stencil8",
+    "depth32float",
 
     // BC compressed formats usable if "texture-compression-bc" is both
     // supported by the device/user agent and enabled in requestDevice.
@@ -247,15 +263,23 @@ enum GPUTextureFormat {
     "bc5-rg-unorm",
     "bc5-rg-snorm",
     "bc6h-rgb-ufloat",
-    "bc6h-rgb-sfloat",
+    "bc6h-rgb-float",
     "bc7-rgba-unorm",
-    "bc7-rgba-unorm-srgb"
+    "bc7-rgba-unorm-srgb",
+
+    // "depth24unorm-stencil8" feature
+    "depth24unorm-stencil8",
+
+    // "depth32float-stencil8" feature
+    "depth32float-stencil8",
 };
 
 enum GPUTextureComponentType {
     "float",
     "sint",
-    "uint"
+    "uint",
+    // Texture is used with comparison sampling only.
+    "depth-comparison"
 };
 
 interface GPUSampler {
@@ -322,7 +346,6 @@ dictionary GPUBindGroupLayoutEntry {
 
     // Used for sampled texture bindings. Must be undefined for other binding types.
     GPUTextureComponentType textureComponentType;
-    boolean multisampled;
 
     // Used for storage texture bindings. Must be undefined for other binding types.
     GPUTextureFormat storageTextureFormat;
@@ -330,9 +353,9 @@ dictionary GPUBindGroupLayoutEntry {
 
 typedef [EnforceRange] unsigned long GPUShaderStageFlags;
 interface GPUShaderStage {
-    const GPUShaderStageFlags VERTEX   = 0x1;
-    const GPUShaderStageFlags FRAGMENT = 0x2;
-    const GPUShaderStageFlags COMPUTE  = 0x4;
+    const GPUFlagsConstant VERTEX   = 0x1;
+    const GPUFlagsConstant FRAGMENT = 0x2;
+    const GPUFlagsConstant COMPUTE  = 0x4;
 };
 
 enum GPUBindingType {
@@ -342,6 +365,7 @@ enum GPUBindingType {
     "sampler",
     "comparison-sampler",
     "sampled-texture",
+    "multisampled-texture",
     "readonly-storage-texture",
     "writeonly-storage-texture"
 };
@@ -465,7 +489,7 @@ enum GPUPrimitiveTopology {
 dictionary GPURasterizationStateDescriptor {
     GPUFrontFace frontFace = "ccw";
     GPUCullMode cullMode = "none";
-    // Enable depth clamping (requires "depth-clamping" extension)
+    // Enable depth clamping (requires "depth-clamping" feature)
     boolean clampDepth = false;
 
     GPUDepthBias depthBias = 0;
@@ -494,11 +518,11 @@ dictionary GPUColorStateDescriptor {
 
 typedef [EnforceRange] unsigned long GPUColorWriteFlags;
 interface GPUColorWrite {
-    const GPUColorWriteFlags RED   = 0x1;
-    const GPUColorWriteFlags GREEN = 0x2;
-    const GPUColorWriteFlags BLUE  = 0x4;
-    const GPUColorWriteFlags ALPHA = 0x8;
-    const GPUColorWriteFlags ALL   = 0xF;
+    const GPUFlagsConstant RED   = 0x1;
+    const GPUFlagsConstant GREEN = 0x2;
+    const GPUFlagsConstant BLUE  = 0x4;
+    const GPUFlagsConstant ALPHA = 0x8;
+    const GPUFlagsConstant ALL   = 0xF;
 };
 
 dictionary GPUBlendDescriptor {
@@ -606,7 +630,7 @@ enum GPUInputStepMode {
 };
 
 dictionary GPUVertexStateDescriptor {
-    GPUIndexFormat indexFormat = "uint32";
+    GPUIndexFormat indexFormat;
     sequence<GPUVertexBufferLayoutDescriptor?> vertexBuffers = [];
 };
 
@@ -682,8 +706,8 @@ dictionary GPUCommandEncoderDescriptor : GPUObjectDescriptorBase {
 
 dictionary GPUTextureDataLayout {
     GPUSize64 offset = 0;
-    required GPUSize32 bytesPerRow;
-    GPUSize32 rowsPerImage = 0;
+    GPUSize32 bytesPerRow;
+    GPUSize32 rowsPerImage;
 };
 
 dictionary GPUBufferCopyView : GPUTextureDataLayout {
@@ -694,6 +718,7 @@ dictionary GPUTextureCopyView {
     required GPUTexture texture;
     GPUIntegerCoordinate mipLevel = 0;
     GPUOrigin3D origin = {};
+    GPUTextureAspect aspect = "all";
 };
 
 dictionary GPUImageBitmapCopyView {
@@ -840,13 +865,13 @@ interface GPUQueue {
     void writeBuffer(
         GPUBuffer buffer,
         GPUSize64 bufferOffset,
-        [AllowShared] ArrayBuffer data,
+        [AllowShared] BufferSource data,
         optional GPUSize64 dataOffset = 0,
         optional GPUSize64 size);
 
     void writeTexture(
       GPUTextureCopyView destination,
-      [AllowShared] ArrayBuffer data,
+      [AllowShared] BufferSource data,
       GPUTextureDataLayout dataLayout,
       GPUExtent3D size);
 
@@ -901,7 +926,7 @@ interface GPUCanvasContext {
 dictionary GPUSwapChainDescriptor : GPUObjectDescriptorBase {
     required GPUDevice device;
     required GPUTextureFormat format;
-    GPUTextureUsageFlags usage = 0x10;  // GPUTextureUsage.OUTPUT_ATTACHMENT
+    GPUTextureUsageFlags usage = 0x10;  // GPUTextureUsage.RENDER_ATTACHMENT
 };
 
 interface GPUSwapChain {
@@ -970,6 +995,8 @@ typedef [EnforceRange] unsigned long GPUIndex32;
 typedef [EnforceRange] unsigned long GPUSize32;
 typedef [EnforceRange] long GPUSignedOffset32;
 
+typedef unsigned long GPUFlagsConstant;
+
 dictionary GPUColorDict {
     required double r;
     required double g;
@@ -992,10 +1019,8 @@ dictionary GPUOrigin3DDict {
 typedef (sequence<GPUIntegerCoordinate> or GPUOrigin3DDict) GPUOrigin3D;
 
 dictionary GPUExtent3DDict {
-    required GPUIntegerCoordinate width;
-    required GPUIntegerCoordinate height;
-    required GPUIntegerCoordinate depth;
+    GPUIntegerCoordinate width = 1;
+    GPUIntegerCoordinate height = 1;
+    GPUIntegerCoordinate depth = 1;
 };
 typedef (sequence<GPUIntegerCoordinate> or GPUExtent3DDict) GPUExtent3D;
-
-typedef sequence<(GPUBuffer or ArrayBuffer)> GPUMappedBuffer;

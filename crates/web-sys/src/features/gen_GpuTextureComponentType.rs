@@ -13,4 +13,5 @@ pub enum GpuTextureComponentType {
     Float = "float",
     Sint = "sint",
     Uint = "uint",
+    DepthComparison = "depth-comparison",
 }

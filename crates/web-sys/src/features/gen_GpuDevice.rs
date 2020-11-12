@@ -28,16 +28,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn adapter(this: &GpuDevice) -> GpuAdapter;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = extensions)]
-    #[doc = "Getter for the `extensions` field of this object."]
+    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = features)]
+    #[doc = "Getter for the `features` field of this object."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/extensions)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/features)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuDevice`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn extensions(this: &GpuDevice) -> ::js_sys::Array;
+    pub fn features(this: &GpuDevice) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = limits)]
     #[doc = "Getter for the `limits` field of this object."]
@@ -159,21 +159,6 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn create_buffer(this: &GpuDevice, descriptor: &GpuBufferDescriptor) -> GpuBuffer;
-    #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuBufferDescriptor")]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createBufferMapped)]
-    #[doc = "The `createBufferMapped()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createBufferMapped)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`, `GpuDevice`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn create_buffer_mapped(
-        this: &GpuDevice,
-        descriptor: &GpuBufferDescriptor,
-    ) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuCommandEncoder")]
     # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createCommandEncoder)]
