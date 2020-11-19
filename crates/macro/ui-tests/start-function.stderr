@@ -18,7 +18,7 @@ error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, ()>: w
    |
    = help: the following implementations were found:
              <std::result::Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `wasm_bindgen::__rt::Start::start`
+   = note: required by `start`
    = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>: wasm_bindgen::__rt::Start` is not satisfied
@@ -29,7 +29,7 @@ error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, wasm_b
    |
    = help: the following implementations were found:
              <std::result::Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `wasm_bindgen::__rt::Start::start`
+   = note: required by `start`
    = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, ()>: wasm_bindgen::__rt::Start` is not satisfied
@@ -40,7 +40,7 @@ error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, ()>: w
    |
    = help: the following implementations were found:
              <std::result::Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `wasm_bindgen::__rt::Start::start`
+   = note: required by `start`
    = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>: wasm_bindgen::__rt::Start` is not satisfied
@@ -51,5 +51,5 @@ error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, wasm_b
    |
    = help: the following implementations were found:
              <std::result::Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `wasm_bindgen::__rt::Start::start`
+   = note: required by `start`
    = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
