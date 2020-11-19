@@ -264,7 +264,7 @@ impl ToTokens for ast::Struct {
 
 impl ToTokens for ast::StructField {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let name = &self.name;
+        let rust_name = &self.rust_name;
         let struct_name = &self.struct_name;
         let ty = &self.ty;
         let getter = &self.getter;
@@ -287,7 +287,7 @@ impl ToTokens for ast::StructField {
 
                 let js = js as *mut WasmRefCell<#struct_name>;
                 assert_not_null(js);
-                let val = (*js).borrow().#name;
+                let val = (*js).borrow().#rust_name;
                 <#ty as IntoWasmAbi>::into_abi(val)
             }
         })
@@ -321,7 +321,7 @@ impl ToTokens for ast::StructField {
                 let js = js as *mut WasmRefCell<#struct_name>;
                 assert_not_null(js);
                 let val = <#ty as FromWasmAbi>::from_abi(val);
-                (*js).borrow_mut().#name = val;
+                (*js).borrow_mut().#rust_name = val;
             }
         })
         .to_tokens(tokens);

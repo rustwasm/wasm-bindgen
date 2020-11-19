@@ -147,6 +147,13 @@ exports.js_renamed_export = () => {
     x.bar(x);
 };
 
+exports.js_renamed_field = () => {
+    const x = new wasm.RenamedField();
+    assert.ok(x.bar === 3);
+
+    x.foo();
+}
+
 exports.js_conditional_bindings = () => {
     const x = new wasm.ConditionalBindings();
     x.free();
