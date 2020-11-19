@@ -22,6 +22,7 @@ extern "C" {
     fn js_js_rename();
     fn js_access_fields();
     fn js_renamed_export();
+    fn js_renamed_field();
     fn js_conditional_bindings();
 
     fn js_assert_none(a: Option<OptionClass>);
@@ -424,6 +425,27 @@ impl RenamedExport {
 #[wasm_bindgen_test]
 fn renamed_export() {
     js_renamed_export();
+}
+
+#[wasm_bindgen]
+pub struct RenamedField {
+    #[wasm_bindgen(js_name = bar)]
+    pub foo: u32,
+}
+
+#[wasm_bindgen(js_class = RenamedField)]
+impl RenamedField {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> RenamedField {
+        RenamedField { foo: 3 }
+    }
+
+    pub fn foo(&self) {}
+}
+
+#[wasm_bindgen_test]
+fn renamed_field() {
+    js_renamed_field();
 }
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]

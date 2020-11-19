@@ -238,7 +238,8 @@ pub struct Struct {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct StructField {
-    pub name: syn::Member,
+    pub rust_name: syn::Member,
+    pub js_name: String,
     pub struct_name: Ident,
     pub readonly: bool,
     pub ty: syn::Type,

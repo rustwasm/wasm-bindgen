@@ -380,7 +380,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 syn::Visibility::Public(..) => {}
                 _ => continue,
             }
-            let (name_str, member) = match &field.ident {
+            let (js_field_name, member) = match &field.ident {
                 Some(ident) => (ident.to_string(), syn::Member::Named(ident.clone())),
                 None => (i.to_string(), syn::Member::Unnamed(i.into())),
             };
@@ -392,12 +392,18 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 continue;
             }
 
+            let js_field_name = match attrs.js_name() {
+                Some((name, _)) => name.to_string(),
+                None => js_field_name
+            };
+
             let comments = extract_doc_comments(&field.attrs);
-            let getter = shared::struct_field_get(&js_name, &name_str);
-            let setter = shared::struct_field_set(&js_name, &name_str);
+            let getter = shared::struct_field_get(&js_name, &js_field_name);
+            let setter = shared::struct_field_set(&js_name, &js_field_name);
 
             fields.push(ast::StructField {
-                name: member,
+                rust_name: member,
+                js_name: js_field_name,
                 struct_name: self.ident.clone(),
                 readonly: attrs.readonly().is_some(),
                 ty: field.ty.clone(),
