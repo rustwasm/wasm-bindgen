@@ -394,7 +394,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
 
             let js_field_name = match attrs.js_name() {
                 Some((name, _)) => name.to_string(),
-                None => js_field_name
+                None => js_field_name,
             };
 
             let comments = extract_doc_comments(&field.attrs);
