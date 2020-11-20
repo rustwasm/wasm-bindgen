@@ -37,7 +37,6 @@ enum Repr {
 }
 
 impl Diagnostic {
-
     /// Generate a `Diagnostic` from an informational message with no Span
     pub fn error<T: Into<String>>(text: T) -> Diagnostic {
         Diagnostic {
