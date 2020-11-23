@@ -153,11 +153,13 @@ pub struct ImportFunction {
     pub variadic: bool,
     /// Whether the function should use structural type checking
     pub structural: bool,
-    /// For testing purposes
+    /// Causes the Builder (See cli-support::js::binding::Builder) to error out if
+    /// it finds itself generating code for a function with this signature
     pub assert_no_shim: bool,
     /// The kind of function being imported
     pub kind: ImportFunctionKind,
-    /// The shim name to use in the generated code
+    /// The shim name to use in the generated code. The 'shim' is a function that appears in
+    /// the generated JS as a wrapper around the actual function to import.
     pub shim: Ident,
     /// The doc comment on this import, if one is provided
     pub doc_comment: Option<String>,
