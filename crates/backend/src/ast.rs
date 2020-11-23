@@ -159,7 +159,8 @@ pub struct ImportFunction {
     /// The kind of function being imported
     pub kind: ImportFunctionKind,
     /// The shim name to use in the generated code. The 'shim' is a function that appears in
-    /// the generated JS as a wrapper around the actual function to import.
+    /// the generated JS as a wrapper around the actual function to import, performing any
+    /// necessary conversions (EG adding a try/catch to change a thrown error into a Result)
     pub shim: Ident,
     /// The doc comment on this import, if one is provided
     pub doc_comment: Option<String>,
