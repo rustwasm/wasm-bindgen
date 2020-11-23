@@ -31,6 +31,7 @@ struct Context<'a> {
     externref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
+    import_alias_name_map: HashMap<String, String>,
 }
 
 struct InstructionBuilder<'a, 'b> {
@@ -64,8 +65,38 @@ pub fn process(
         externref_enabled,
         wasm_interface_types,
         support_start,
+        import_alias_name_map: Default::default(),
     };
     cx.init()?;
+
+    // collect name alias from js_name of imported types.
+    for program in &programs {
+        let decode::Program { imports, .. } = &program;
+        for import in imports {
+            match &import.kind {
+                decode::ImportKind::Type(t) => {
+                    // we don't insert new items into HashMap if imported type is not aliased
+                    if t.aliased_by_js_name {
+                        cx.import_alias_name_map
+                            .entry(t.rust_name_str.to_string())
+                            .or_insert(t.name.to_string());
+                    }
+                }
+                decode::ImportKind::Function(f) => {
+                    let decode::ImportFunction { method, .. } = f;
+                    if let Some(data) = method {
+                        // same as above, not insert if class_name is not aliased
+                        if data.aliased_by_js_class {
+                            cx.import_alias_name_map
+                                .entry(data.rust_class_str.to_string())
+                                .or_insert(data.class.to_string());
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
 
     for program in programs {
         cx.program(program)?;
@@ -532,7 +563,17 @@ impl<'a> Context<'a> {
         // to the WebAssembly instance.
         let (id, import) = match method {
             Some(data) => {
-                let class = self.determine_import(import, &data.class)?;
+                // if js_class is set explicitly, ignoire other aliases.
+                // if js_namespace is set, imports would be determined by js_namespace
+                let class_name = if data.aliased_by_js_class || (&import.js_namespace).is_some() {
+                    data.class.to_string()
+                } else {
+                    self.import_alias_name_map
+                        .get(&data.rust_class_str.to_string())
+                        .unwrap_or(&data.class.to_string())
+                        .clone()
+                };
+                let class = self.determine_import(import, class_name.as_str())?;
                 match &data.kind {
                     // NB: `structural` is ignored for constructors since the
                     // js type isn't expected to change anyway.

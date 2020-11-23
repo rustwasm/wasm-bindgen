@@ -139,6 +139,8 @@ pub struct ImportFunction {
 pub enum ImportFunctionKind {
     Method {
         class: String,
+        rust_class_str: String,
+        aliased_by_js_class: bool,
         ty: syn::Type,
         kind: MethodKind,
     },
@@ -185,6 +187,8 @@ pub struct ImportStatic {
 pub struct ImportType {
     pub vis: syn::Visibility,
     pub rust_name: Ident,
+    pub rust_name_str: String,
+    pub aliased_by_js_name: bool,
     pub js_name: String,
     pub attrs: Vec<syn::Attribute>,
     pub typescript_type: Option<String>,

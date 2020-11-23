@@ -52,6 +52,8 @@ macro_rules! shared_api {
 
         struct MethodData<'a> {
             class: &'a str,
+            rust_class_str: &'a str,
+            aliased_by_js_class: bool,
             kind: MethodKind<'a>,
         }
 
@@ -81,6 +83,8 @@ macro_rules! shared_api {
 
         struct ImportType<'a> {
             name: &'a str,
+            rust_name_str: &'a str,
+            aliased_by_js_name: bool,
             instanceof_shim: &'a str,
             vendor_prefixes: Vec<&'a str>,
         }
