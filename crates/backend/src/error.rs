@@ -2,6 +2,7 @@ use proc_macro2::*;
 use quote::{ToTokens, TokenStreamExt};
 use syn::parse::Error;
 
+/// Provide a Diagnostic with the given span and message
 #[macro_export]
 macro_rules! err_span {
     ($span:expr, $($msg:tt)*) => (
@@ -9,6 +10,7 @@ macro_rules! err_span {
     )
 }
 
+/// Immediately fail and return an Err, with the arguments passed to err_span!
 #[macro_export]
 macro_rules! bail_span {
     ($($t:tt)*) => (
@@ -16,6 +18,7 @@ macro_rules! bail_span {
     )
 }
 
+/// A struct representing a diagnostic to emit to the end-user as an error.
 #[derive(Debug)]
 pub struct Diagnostic {
     inner: Repr,
@@ -34,6 +37,7 @@ enum Repr {
 }
 
 impl Diagnostic {
+    /// Generate a `Diagnostic` from an informational message with no Span
     pub fn error<T: Into<String>>(text: T) -> Diagnostic {
         Diagnostic {
             inner: Repr::Single {
@@ -43,6 +47,7 @@ impl Diagnostic {
         }
     }
 
+    /// Generate a `Diagnostic` from a Span and an informational message
     pub fn span_error<T: Into<String>>(span: Span, text: T) -> Diagnostic {
         Diagnostic {
             inner: Repr::Single {
@@ -52,6 +57,7 @@ impl Diagnostic {
         }
     }
 
+    /// Generate a `Diagnostic` from the span of any tokenizable object and a message
     pub fn spanned_error<T: Into<String>>(node: &dyn ToTokens, text: T) -> Diagnostic {
         Diagnostic {
             inner: Repr::Single {
@@ -61,6 +67,8 @@ impl Diagnostic {
         }
     }
 
+    /// Attempt to generate a `Diagnostic` from a vector of other `Diagnostic` instances.
+    /// If the `Vec` is empty, returns `Ok(())`, otherwise returns the new `Diagnostic`
     pub fn from_vec(diagnostics: Vec<Diagnostic>) -> Result<(), Diagnostic> {
         if diagnostics.len() == 0 {
             Ok(())
@@ -71,6 +79,7 @@ impl Diagnostic {
         }
     }
 
+    /// Immediately trigger a panic from this `Diagnostic`
     #[allow(unconditional_recursion)]
     pub fn panic(&self) -> ! {
         match &self.inner {

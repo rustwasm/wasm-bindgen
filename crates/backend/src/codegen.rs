@@ -10,9 +10,13 @@ use std::sync::Mutex;
 use syn;
 use wasm_bindgen_shared as shared;
 
+/// A trait for converting AST structs into Tokens and adding them to a TokenStream,
+/// or providing a diagnostic if conversion fails.
 pub trait TryToTokens {
+    /// Attempt to convert a `Self` into tokens and add it to the `TokenStream`
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic>;
 
+    /// Attempt to convert a `Self` into a new `TokenStream`
     fn try_to_token_stream(&self) -> Result<TokenStream, Diagnostic> {
         let mut tokens = TokenStream::new();
         self.try_to_tokens(&mut tokens)?;
