@@ -6,21 +6,6 @@
  * Source: https://streams.spec.whatwg.org/#rs-class-definition
  */
 
-[Exposed=(Window,Worker,Worklet), Transferable]
-interface ReadableStream {
-  constructor(optional object underlyingSource, optional QueuingStrategy strategy = {});
-
-  readonly attribute boolean locked;
-
-  Promise<undefined> cancel(optional any reason);
-  ReadableStreamReader getReader(optional ReadableStreamGetReaderOptions options = {});
-  ReadableStream pipeThrough(ReadableWritablePair transform, optional StreamPipeOptions options = {});
-  Promise<undefined> pipeTo(WritableStream destination, optional StreamPipeOptions options = {});
-  sequence<ReadableStream> tee();
-
-  async iterable<any>(optional ReadableStreamIteratorOptions options = {});
-};
-
 typedef (ReadableStreamDefaultReader or ReadableStreamBYOBReader) ReadableStreamReader;
 
 enum ReadableStreamReaderMode { "byob" };
@@ -43,4 +28,19 @@ dictionary StreamPipeOptions {
   boolean preventAbort = false;
   boolean preventCancel = false;
   AbortSignal signal;
+};
+
+[Constructor(optional object underlyingSource, optional QueuingStrategy strategy = {}),
+ Exposed=(Window,Worker,Worklet), Transferable]
+interface ReadableStream {
+
+  readonly attribute boolean locked;
+
+  Promise<undefined> cancel(optional any reason);
+  ReadableStreamReader getReader(optional ReadableStreamGetReaderOptions options = {});
+  ReadableStream pipeThrough(ReadableWritablePair transform, optional StreamPipeOptions options = {});
+  Promise<undefined> pipeTo(WritableStream destination, optional StreamPipeOptions options = {});
+  sequence<ReadableStream> tee();
+
+  async iterable<any>(optional ReadableStreamIteratorOptions options = {});
 };
