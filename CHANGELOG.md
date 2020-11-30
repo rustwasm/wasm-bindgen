@@ -2,6 +2,34 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.69
+
+Released 2020-11-30.
+
+### Added
+
+* Unstable bindings for WebBluetooth have been added.
+  [#2311](https://github.com/rustwasm/wasm-bindgen/pull/2311)
+
+* Unstable bindings for WebUSB have been added.
+  [#2345](https://github.com/rustwasm/wasm-bindgen/pull/2345)
+
+* Renaming a struct field with `js_name` is now supported.
+  [#2360](https://github.com/rustwasm/wasm-bindgen/pull/2360)
+
+* The WebGPU WebIDL has been updated.
+  [#2353](https://github.com/rustwasm/wasm-bindgen/pull/2353)
+
+### Fixed
+
+* The ImageCapture APIs of web-sys have been moved to unstable and were fixed.
+  [#2348](https://github.com/rustwasm/wasm-bindgen/pull/2348)
+
+* Bindings for `waitAsync` have been updated.
+  [#2362](https://github.com/rustwasm/wasm-bindgen/pull/2362)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.68
 
 Released 2020-09-08.
