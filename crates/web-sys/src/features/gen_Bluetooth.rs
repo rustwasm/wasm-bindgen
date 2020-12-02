@@ -204,17 +204,6 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn get_devices(this: &Bluetooth) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "Bluetooth" , js_name = requestDevice)]
-    #[doc = "The `requestDevice()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Bluetooth`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn request_device(this: &Bluetooth) -> ::js_sys::Promise;
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "RequestDeviceOptions")]
     # [wasm_bindgen (method , structural , js_class = "Bluetooth" , js_name = requestDevice)]
     #[doc = "The `requestDevice()` method."]
@@ -225,8 +214,5 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn request_device_with_options(
-        this: &Bluetooth,
-        options: &RequestDeviceOptions,
-    ) -> ::js_sys::Promise;
+    pub fn request_device(this: &Bluetooth, options: &RequestDeviceOptions) -> ::js_sys::Promise;
 }
