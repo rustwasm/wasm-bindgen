@@ -26,7 +26,7 @@ interface Bluetooth : EventTarget {
   [SameObject]
   readonly attribute BluetoothDevice? referringDevice;
   Promise<sequence<BluetoothDevice>> getDevices();
-  Promise<BluetoothDevice> requestDevice(optional RequestDeviceOptions options = {});
+  Promise<BluetoothDevice> requestDevice(RequestDeviceOptions options);
 };
 
 Bluetooth includes BluetoothDeviceEventHandlers;
@@ -232,5 +232,5 @@ typedef (DOMString or unsigned long) BluetoothDescriptorUUID;
 [SecureContext]
 partial interface Navigator {
   [SameObject]
-  readonly attribute Bluetooth bluetooth;
+  readonly attribute Bluetooth? bluetooth;
 };
