@@ -410,6 +410,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn play(this: &HtmlMediaElement) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLMediaElement" , js_name = seekToNextFrame)]
     #[doc = "The `seekToNextFrame()` method."]
@@ -417,6 +419,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seekToNextFrame)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn seek_to_next_frame(this: &HtmlMediaElement) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaKeys")]
     # [wasm_bindgen (method , structural , js_class = "HTMLMediaElement" , js_name = setMediaKeys)]
@@ -425,6 +429,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/setMediaKeys)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `MediaKeys`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_media_keys(
         this: &HtmlMediaElement,
         media_keys: Option<&MediaKeys>,

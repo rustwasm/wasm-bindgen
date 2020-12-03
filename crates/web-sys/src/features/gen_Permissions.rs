@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Permissions/query)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Permissions`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PermissionStatus`. It can be converted like `let result: PermissionStatus = result?.await.into();`."]
     pub fn query(
         this: &Permissions,
         permission: &::js_sys::Object,
@@ -27,6 +29,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Permissions/revoke)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Permissions`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PermissionStatus`. It can be converted like `let result: PermissionStatus = result?.await.into();`."]
     pub fn revoke(
         this: &Permissions,
         permission: &::js_sys::Object,

@@ -285,6 +285,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn add_ice_candidate_with_opt_rtc_ice_candidate_init(
         this: &RtcPeerConnection,
         candidate: Option<&RtcIceCandidateInit>,
@@ -296,6 +298,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn add_ice_candidate_with_opt_rtc_ice_candidate(
         this: &RtcPeerConnection,
         candidate: Option<&RtcIceCandidate>,
@@ -307,6 +311,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn add_ice_candidate_with_rtc_ice_candidate_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         candidate: &RtcIceCandidate,
@@ -557,6 +563,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
     pub fn create_answer(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "RtcAnswerOptions")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createAnswer)]
@@ -565,6 +573,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcAnswerOptions`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
     pub fn create_answer_with_rtc_answer_options(
         this: &RtcPeerConnection,
         options: &RtcAnswerOptions,
@@ -575,6 +585,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn create_answer_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         success_callback: &::js_sys::Function,
@@ -606,6 +618,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
     pub fn create_offer(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "RtcOfferOptions")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createOffer)]
@@ -614,6 +628,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
     pub fn create_offer_with_rtc_offer_options(
         this: &RtcPeerConnection,
         options: &RtcOfferOptions,
@@ -624,6 +640,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn create_offer_with_callback_and_failure_callback(
         this: &RtcPeerConnection,
         success_callback: &::js_sys::Function,
@@ -636,6 +654,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn create_offer_with_callback_and_failure_callback_and_options(
         this: &RtcPeerConnection,
         success_callback: &::js_sys::Function,
@@ -648,6 +668,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcCertificate`. It can be converted like `let result: RtcCertificate = result?.await.into();`."]
     pub fn generate_certificate_with_object(
         keygen_algorithm: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
@@ -657,6 +679,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcCertificate`. It can be converted like `let result: RtcCertificate = result?.await.into();`."]
     pub fn generate_certificate_with_str(
         keygen_algorithm: &str,
     ) -> Result<::js_sys::Promise, JsValue>;
@@ -674,6 +698,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getIdentityAssertion)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `String`. It can be converted like `let result: String = result.await.into();`."]
     pub fn get_identity_assertion(this: &RtcPeerConnection) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getLocalStreams)]
     #[doc = "The `getLocalStreams()` method."]
@@ -681,6 +707,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getLocalStreams)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`."]
     pub fn get_local_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getReceivers)]
     #[doc = "The `getReceivers()` method."]
@@ -688,6 +716,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getReceivers)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpReceiver`."]
     pub fn get_receivers(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getRemoteStreams)]
     #[doc = "The `getRemoteStreams()` method."]
@@ -695,6 +725,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getRemoteStreams)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`."]
     pub fn get_remote_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getSenders)]
     #[doc = "The `getSenders()` method."]
@@ -702,6 +734,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getSenders)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpSender`."]
     pub fn get_senders(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
     #[doc = "The `getStats()` method."]
@@ -709,6 +743,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcStatsReport`. It can be converted like `let result: RtcStatsReport = result.await.into();`."]
     pub fn get_stats(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
@@ -717,6 +753,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcStatsReport`. It can be converted like `let result: RtcStatsReport = result.await.into();`."]
     pub fn get_stats_with_selector(
         this: &RtcPeerConnection,
         selector: Option<&MediaStreamTrack>,
@@ -728,6 +766,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn get_stats_with_selector_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         selector: Option<&MediaStreamTrack>,
@@ -740,6 +780,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getTransceivers)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpTransceiver`."]
     pub fn get_transceivers(this: &RtcPeerConnection) -> ::js_sys::Array;
     #[cfg(feature = "RtcRtpSender")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = removeTrack)]
@@ -775,6 +817,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setLocalDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_local_description(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,
@@ -786,6 +830,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setLocalDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_local_description_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,
@@ -799,6 +845,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setRemoteDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_remote_description(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,
@@ -810,6 +858,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setRemoteDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_remote_description_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,

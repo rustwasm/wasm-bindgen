@@ -96,6 +96,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/exitPresent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn exit_present(this: &VrDisplay) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(all(feature = "VrEye", feature = "VrEyeParameters",))]
     # [wasm_bindgen (method , structural , js_class = "VRDisplay" , js_name = getEyeParameters)]
@@ -119,6 +121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/getLayers)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `VrLayer`."]
     pub fn get_layers(this: &VrDisplay) -> ::js_sys::Array;
     #[cfg(feature = "VrPose")]
     # [wasm_bindgen (method , structural , js_class = "VRDisplay" , js_name = getPose)]
@@ -152,6 +156,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/requestPresent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
+    #[doc = ""]
+    #[doc = "Argument `layers`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& VrLayer`."]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn request_present(
         this: &VrDisplay,
         layers: &::wasm_bindgen::JsValue,

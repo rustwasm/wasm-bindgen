@@ -39,5 +39,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver/takeRecords)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserver`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PerformanceEntry`."]
     pub fn take_records(this: &PerformanceObserver) -> ::js_sys::Array;
 }

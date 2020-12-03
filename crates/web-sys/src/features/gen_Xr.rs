@@ -46,6 +46,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Xr`, `XrSessionMode`*"]
     #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `bool`. It can be converted like `let result: bool = result.await.into();`."]
+    #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_session_supported(this: &Xr, mode: XrSessionMode) -> ::js_sys::Promise;
@@ -58,6 +60,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Xr`, `XrSessionMode`*"]
     #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `XrSession`. It can be converted like `let result: XrSession = result.await.into();`."]
+    #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn request_session(this: &Xr, mode: XrSessionMode) -> ::js_sys::Promise;
@@ -69,6 +73,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XR/requestSession)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Xr`, `XrSessionInit`, `XrSessionMode`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `XrSession`. It can be converted like `let result: XrSession = result.await.into();`."]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

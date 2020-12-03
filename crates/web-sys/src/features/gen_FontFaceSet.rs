@@ -152,6 +152,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/load)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result.await.into();`. More information is available in the source IDL file."]
     pub fn load(this: &FontFaceSet, font: &str) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "FontFaceSet" , js_name = load)]
     #[doc = "The `load()` method."]
@@ -159,6 +161,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/load)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result.await.into();`. More information is available in the source IDL file."]
     pub fn load_with_text(this: &FontFaceSet, font: &str, text: &str) -> ::js_sys::Promise;
     #[cfg(feature = "FontFaceSetIterator")]
     # [wasm_bindgen (method , structural , js_class = "FontFaceSet" , js_name = values)]

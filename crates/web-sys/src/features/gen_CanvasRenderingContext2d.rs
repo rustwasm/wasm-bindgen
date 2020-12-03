@@ -903,6 +903,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getLineDash)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
     pub fn get_line_dash(this: &CanvasRenderingContext2d) -> ::js_sys::Array;
     # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = setLineDash)]
     #[doc = "The `setLineDash()` method."]
@@ -910,6 +912,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[doc = ""]
+    #[doc = "Argument `segments`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
     pub fn set_line_dash(
         this: &CanvasRenderingContext2d,
         segments: &::wasm_bindgen::JsValue,

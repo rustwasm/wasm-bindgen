@@ -74,6 +74,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/complete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn complete(this: &PaymentResponse) -> ::js_sys::Promise;
     #[cfg(feature = "PaymentComplete")]
     # [wasm_bindgen (method , structural , js_class = "PaymentResponse" , js_name = complete)]
@@ -82,6 +84,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/complete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentComplete`, `PaymentResponse`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn complete_with_result(
         this: &PaymentResponse,
         result: PaymentComplete,

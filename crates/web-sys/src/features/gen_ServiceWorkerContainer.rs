@@ -77,6 +77,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result.await.into();`."]
     pub fn get_registration(this: &ServiceWorkerContainer) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "ServiceWorkerContainer" , js_name = getRegistration)]
     #[doc = "The `getRegistration()` method."]
@@ -84,6 +86,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result.await.into();`."]
     pub fn get_registration_with_document_url(
         this: &ServiceWorkerContainer,
         document_url: &str,
@@ -94,6 +98,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistrations)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result.await.into();`. More information is available in the source IDL file."]
     pub fn get_registrations(this: &ServiceWorkerContainer) -> ::js_sys::Promise;
     # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerContainer" , js_name = getScopeForUrl)]
     #[doc = "The `getScopeForUrl()` method."]
@@ -108,6 +114,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ServiceWorkerRegistration`. It can be converted like `let result: ServiceWorkerRegistration = result.await.into();`."]
     pub fn register(this: &ServiceWorkerContainer, script_url: &str) -> ::js_sys::Promise;
     #[cfg(feature = "RegistrationOptions")]
     # [wasm_bindgen (method , structural , js_class = "ServiceWorkerContainer" , js_name = register)]
@@ -116,6 +124,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`, `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ServiceWorkerRegistration`. It can be converted like `let result: ServiceWorkerRegistration = result.await.into();`."]
     pub fn register_with_options(
         this: &ServiceWorkerContainer,
         script_url: &str,

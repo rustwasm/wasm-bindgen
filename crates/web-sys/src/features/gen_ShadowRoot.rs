@@ -123,5 +123,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/elementsFromPoint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShadowRoot`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Element`."]
     pub fn elements_from_point(this: &ShadowRoot, x: f32, y: f32) -> ::js_sys::Array;
 }

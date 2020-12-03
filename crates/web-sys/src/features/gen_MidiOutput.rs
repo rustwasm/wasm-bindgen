@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIOutput/send)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOutput`*"]
+    #[doc = ""]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u8`."]
     pub fn send(this: &MidiOutput, data: &::wasm_bindgen::JsValue) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "MIDIOutput" , js_name = send)]
     #[doc = "The `send()` method."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIOutput/send)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOutput`*"]
+    #[doc = ""]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u8`."]
     pub fn send_with_timestamp(
         this: &MidiOutput,
         data: &::wasm_bindgen::JsValue,

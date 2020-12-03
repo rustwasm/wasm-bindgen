@@ -296,6 +296,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttributeNames)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `String`."]
     pub fn get_attribute_names(this: &Element) -> ::js_sys::Array;
     #[cfg(feature = "Attr")]
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = getAttributeNode)]
@@ -1537,6 +1539,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoxQuads)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `DomQuad`."]
     pub fn get_box_quads(this: &Element) -> Result<::js_sys::Array, JsValue>;
     #[cfg(feature = "BoxQuadOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "Element" , js_name = getBoxQuads)]
@@ -1545,6 +1549,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoxQuads)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `Element`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `DomQuad`."]
     pub fn get_box_quads_with_options(
         this: &Element,
         options: &BoxQuadOptions,

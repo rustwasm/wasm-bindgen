@@ -82,6 +82,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/close)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn close(this: &MediaKeySession) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "MediaKeySession" , js_name = generateRequest)]
     #[doc = "The `generateRequest()` method."]
@@ -89,6 +91,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/generateRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn generate_request_with_buffer_source(
         this: &MediaKeySession,
         init_data_type: &str,
@@ -100,6 +104,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/generateRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn generate_request_with_u8_array(
         this: &MediaKeySession,
         init_data_type: &str,
@@ -111,6 +117,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/load)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `bool`. It can be converted like `let result: bool = result.await.into();`."]
     pub fn load(this: &MediaKeySession, session_id: &str) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "MediaKeySession" , js_name = remove)]
     #[doc = "The `remove()` method."]
@@ -118,6 +126,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/remove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn remove(this: &MediaKeySession) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "MediaKeySession" , js_name = update)]
     #[doc = "The `update()` method."]
@@ -125,6 +135,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/update)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn update_with_buffer_source(
         this: &MediaKeySession,
         response: &::js_sys::Object,
@@ -135,5 +147,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/update)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn update_with_u8_array(this: &MediaKeySession, response: &mut [u8]) -> ::js_sys::Promise;
 }

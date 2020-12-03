@@ -18,6 +18,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn decrypt_with_object_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn decrypt_with_str_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -44,6 +48,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn decrypt_with_object_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -57,6 +63,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn decrypt_with_str_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -70,6 +78,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveBits)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn derive_bits_with_object(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -83,6 +93,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveBits)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn derive_bits_with_str(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -96,6 +108,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn derive_key_with_object_and_object(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -111,6 +127,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn derive_key_with_str_and_object(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -126,6 +146,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn derive_key_with_object_and_str(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -141,6 +165,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn derive_key_with_str_and_str(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -155,6 +183,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn digest_with_object_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -166,6 +196,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn digest_with_str_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -177,6 +209,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn digest_with_object_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -188,6 +222,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn digest_with_str_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -200,6 +236,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn encrypt_with_object_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -213,6 +251,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn encrypt_with_str_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -226,6 +266,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn encrypt_with_object_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -239,6 +281,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn encrypt_with_str_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -252,6 +296,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn export_key(
         this: &SubtleCrypto,
         format: &str,
@@ -263,6 +309,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn generate_key_with_object(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -275,6 +325,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn generate_key_with_str(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -287,6 +341,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn import_key_with_object(
         this: &SubtleCrypto,
         format: &str,
@@ -301,6 +359,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn import_key_with_str(
         this: &SubtleCrypto,
         format: &str,
@@ -316,6 +378,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn sign_with_object_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -329,6 +393,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn sign_with_str_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -342,6 +408,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn sign_with_object_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -355,6 +423,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn sign_with_str_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -368,6 +438,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_buffer_source_and_object_and_object(
         this: &SubtleCrypto,
         format: &str,
@@ -385,6 +459,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_u8_array_and_object_and_object(
         this: &SubtleCrypto,
         format: &str,
@@ -402,6 +480,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_buffer_source_and_str_and_object(
         this: &SubtleCrypto,
         format: &str,
@@ -419,6 +501,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_u8_array_and_str_and_object(
         this: &SubtleCrypto,
         format: &str,
@@ -436,6 +522,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_buffer_source_and_object_and_str(
         this: &SubtleCrypto,
         format: &str,
@@ -453,6 +543,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_u8_array_and_object_and_str(
         this: &SubtleCrypto,
         format: &str,
@@ -470,6 +564,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_buffer_source_and_str_and_str(
         this: &SubtleCrypto,
         format: &str,
@@ -487,6 +585,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Argument `key_usages`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn unwrap_key_with_u8_array_and_str_and_str(
         this: &SubtleCrypto,
         format: &str,
@@ -504,6 +606,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_object_and_buffer_source_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -518,6 +622,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_str_and_buffer_source_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -532,6 +638,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_object_and_u8_array_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -546,6 +654,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_str_and_u8_array_and_buffer_source(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -560,6 +670,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_object_and_buffer_source_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -574,6 +686,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_str_and_buffer_source_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -588,6 +702,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_object_and_u8_array_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &::js_sys::Object,
@@ -602,6 +718,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn verify_with_str_and_u8_array_and_u8_array(
         this: &SubtleCrypto,
         algorithm: &str,
@@ -616,6 +734,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/wrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn wrap_key_with_object(
         this: &SubtleCrypto,
         format: &str,
@@ -630,6 +750,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/wrapKey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `SubtleCrypto`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result?.await.into();`."]
     pub fn wrap_key_with_str(
         this: &SubtleCrypto,
         format: &str,

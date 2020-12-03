@@ -35,6 +35,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentRequestUpdateEvent/updateWith)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEvent`*"]
+    #[doc = ""]
+    #[doc = "Argument `details_promise`: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn update_with(
         this: &PaymentRequestUpdateEvent,
         details_promise: &::js_sys::Promise,

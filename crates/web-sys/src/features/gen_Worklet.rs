@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worklet/addModule)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Worklet`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn add_module(this: &Worklet, module_url: &str) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "WorkletOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "Worklet" , js_name = addModule)]
@@ -25,6 +27,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Worklet/addModule)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Worklet`, `WorkletOptions`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn add_module_with_options(
         this: &Worklet,
         module_url: &str,

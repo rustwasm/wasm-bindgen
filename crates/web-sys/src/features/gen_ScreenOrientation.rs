@@ -47,6 +47,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/lock)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OrientationLockType`, `ScreenOrientation`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn lock(
         this: &ScreenOrientation,
         orientation: OrientationLockType,

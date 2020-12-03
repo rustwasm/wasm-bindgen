@@ -41,6 +41,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/getStats)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcStatsReport`. It can be converted like `let result: RtcStatsReport = result.await.into();`."]
     pub fn get_stats(this: &RtcRtpSender) -> ::js_sys::Promise;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = replaceTrack)]
@@ -49,6 +51,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/replaceTrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpSender`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn replace_track(
         this: &RtcRtpSender,
         with_track: Option<&MediaStreamTrack>,
@@ -59,6 +63,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/setParameters)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_parameters(this: &RtcRtpSender) -> ::js_sys::Promise;
     #[cfg(feature = "RtcRtpParameters")]
     # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = setParameters)]
@@ -67,6 +73,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/setParameters)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`, `RtcRtpSender`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_parameters_with_parameters(
         this: &RtcRtpSender,
         parameters: &RtcRtpParameters,

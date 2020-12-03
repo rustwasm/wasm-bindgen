@@ -31,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Directory/getFiles)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Directory`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
     pub fn get_files(this: &Directory) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Directory" , js_name = getFiles)]
     #[doc = "The `getFiles()` method."]
@@ -38,6 +40,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Directory/getFiles)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Directory`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
     pub fn get_files_with_recursive_flag(
         this: &Directory,
         recursive_flag: bool,
@@ -48,5 +52,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Directory/getFilesAndDirectories)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Directory`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
     pub fn get_files_and_directories(this: &Directory) -> Result<::js_sys::Promise, JsValue>;
 }

@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageManager/estimate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `StorageEstimate`. It can be converted like `let result: StorageEstimate = result?.await.into();`."]
     pub fn estimate(this: &StorageManager) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "StorageManager" , js_name = persist)]
     #[doc = "The `persist()` method."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageManager/persist)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `bool`. It can be converted like `let result: bool = result?.await.into();`."]
     pub fn persist(this: &StorageManager) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "StorageManager" , js_name = persisted)]
     #[doc = "The `persisted()` method."]
@@ -31,5 +35,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageManager/persisted)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `bool`. It can be converted like `let result: bool = result?.await.into();`."]
     pub fn persisted(this: &StorageManager) -> Result<::js_sys::Promise, JsValue>;
 }

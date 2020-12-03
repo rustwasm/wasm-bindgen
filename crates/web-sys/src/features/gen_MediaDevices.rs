@@ -31,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDevices`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
     pub fn enumerate_devices(this: &MediaDevices) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaTrackSupportedConstraints")]
     # [wasm_bindgen (method , structural , js_class = "MediaDevices" , js_name = getSupportedConstraints)]
@@ -46,6 +48,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDevices`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`. It can be converted like `let result: MediaStream = result?.await.into();`."]
     pub fn get_user_media(this: &MediaDevices) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaStreamConstraints")]
     # [wasm_bindgen (catch , method , structural , js_class = "MediaDevices" , js_name = getUserMedia)]
@@ -54,6 +58,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDevices`, `MediaStreamConstraints`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`. It can be converted like `let result: MediaStream = result?.await.into();`."]
     pub fn get_user_media_with_constraints(
         this: &MediaDevices,
         constraints: &MediaStreamConstraints,

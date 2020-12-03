@@ -22,6 +22,8 @@ impl Csp {
     #[doc = "Change the `base-uri` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn base_uri(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -39,6 +41,8 @@ impl Csp {
     #[doc = "Change the `block-all-mixed-content` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn block_all_mixed_content(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -56,6 +60,8 @@ impl Csp {
     #[doc = "Change the `child-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn child_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,6 +79,8 @@ impl Csp {
     #[doc = "Change the `connect-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn connect_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -90,6 +98,8 @@ impl Csp {
     #[doc = "Change the `default-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn default_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -107,6 +117,8 @@ impl Csp {
     #[doc = "Change the `font-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn font_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -124,6 +136,8 @@ impl Csp {
     #[doc = "Change the `form-action` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn form_action(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -141,6 +155,8 @@ impl Csp {
     #[doc = "Change the `frame-ancestors` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn frame_ancestors(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -158,6 +174,8 @@ impl Csp {
     #[doc = "Change the `frame-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn frame_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -175,6 +193,8 @@ impl Csp {
     #[doc = "Change the `img-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn img_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -192,6 +212,8 @@ impl Csp {
     #[doc = "Change the `manifest-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn manifest_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -209,6 +231,8 @@ impl Csp {
     #[doc = "Change the `media-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn media_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -226,6 +250,8 @@ impl Csp {
     #[doc = "Change the `object-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn object_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -243,6 +269,8 @@ impl Csp {
     #[doc = "Change the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn referrer(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -277,6 +305,8 @@ impl Csp {
     #[doc = "Change the `report-uri` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn report_uri(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -294,6 +324,8 @@ impl Csp {
     #[doc = "Change the `require-sri-for` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn require_sri_for(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -311,6 +343,8 @@ impl Csp {
     #[doc = "Change the `sandbox` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn sandbox(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -328,6 +362,8 @@ impl Csp {
     #[doc = "Change the `script-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn script_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -345,6 +381,8 @@ impl Csp {
     #[doc = "Change the `style-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn style_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -362,6 +400,8 @@ impl Csp {
     #[doc = "Change the `upgrade-insecure-requests` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn upgrade_insecure_requests(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -379,6 +419,8 @@ impl Csp {
     #[doc = "Change the `worker-src` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Csp`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn worker_src(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

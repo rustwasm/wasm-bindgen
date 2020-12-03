@@ -22,6 +22,8 @@ impl RtcRtpParameters {
     #[doc = "Change the `codecs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RtcRtpCodecParameters`."]
     pub fn codecs(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -36,6 +38,8 @@ impl RtcRtpParameters {
     #[doc = "Change the `encodings` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RtcRtpEncodingParameters`."]
     pub fn encodings(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -53,6 +57,8 @@ impl RtcRtpParameters {
     #[doc = "Change the `headerExtensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RtcRtpHeaderExtensionParameters`."]
     pub fn header_extensions(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

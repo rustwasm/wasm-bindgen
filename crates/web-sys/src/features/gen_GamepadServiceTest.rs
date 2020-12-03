@@ -58,6 +58,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GamepadServiceTest/addGamepad)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GamepadHand`, `GamepadMappingType`, `GamepadServiceTest`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`. It can be converted like `let result: u32 = result?.await.into();`."]
     pub fn add_gamepad(
         this: &GamepadServiceTest,
         id: &str,

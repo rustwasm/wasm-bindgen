@@ -94,6 +94,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/close)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn close(this: &AudioContext) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(all(feature = "HtmlMediaElement", feature = "MediaElementAudioSourceNode",))]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioContext" , js_name = createMediaElementSource)]
@@ -133,6 +135,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/suspend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn suspend(this: &AudioContext) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "AnalyserNode")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioContext" , js_name = createAnalyser)]
@@ -269,6 +273,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createIIRFilter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`, `IirFilterNode`*"]
+    #[doc = ""]
+    #[doc = "Argument `feedforward`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
+    #[doc = ""]
+    #[doc = "Argument `feedback`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
     pub fn create_iir_filter(
         this: &AudioContext,
         feedforward: &::wasm_bindgen::JsValue,
@@ -381,6 +389,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/decodeAudioData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioBuffer`. It can be converted like `let result: AudioBuffer = result?.await.into();`."]
     pub fn decode_audio_data(
         this: &AudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -391,6 +401,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/decodeAudioData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioBuffer`. It can be converted like `let result: AudioBuffer = result?.await.into();`."]
     pub fn decode_audio_data_with_success_callback(
         this: &AudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -402,6 +414,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/decodeAudioData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioBuffer`. It can be converted like `let result: AudioBuffer = result?.await.into();`."]
     pub fn decode_audio_data_with_success_callback_and_error_callback(
         this: &AudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -414,5 +428,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/resume)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn resume(this: &AudioContext) -> Result<::js_sys::Promise, JsValue>;
 }

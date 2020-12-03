@@ -109,6 +109,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/applyConstraints)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn apply_constraints(this: &MediaStreamTrack) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaTrackConstraints")]
     # [wasm_bindgen (catch , method , structural , js_class = "MediaStreamTrack" , js_name = applyConstraints)]
@@ -117,6 +119,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/applyConstraints)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaTrackConstraints`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn apply_constraints_with_constraints(
         this: &MediaStreamTrack,
         constraints: &MediaTrackConstraints,

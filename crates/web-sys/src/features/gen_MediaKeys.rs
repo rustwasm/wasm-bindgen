@@ -43,6 +43,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeys/getStatusForPolicy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeys`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaKeyStatus`. It can be converted like `let result: MediaKeyStatus = result.await.into();`."]
     pub fn get_status_for_policy(this: &MediaKeys) -> ::js_sys::Promise;
     #[cfg(feature = "MediaKeysPolicy")]
     # [wasm_bindgen (method , structural , js_class = "MediaKeys" , js_name = getStatusForPolicy)]
@@ -51,6 +53,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeys/getStatusForPolicy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeys`, `MediaKeysPolicy`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaKeyStatus`. It can be converted like `let result: MediaKeyStatus = result.await.into();`."]
     pub fn get_status_for_policy_with_policy(
         this: &MediaKeys,
         policy: &MediaKeysPolicy,
@@ -61,6 +65,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeys/setServerCertificate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeys`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_server_certificate_with_buffer_source(
         this: &MediaKeys,
         server_certificate: &::js_sys::Object,
@@ -71,6 +77,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeys/setServerCertificate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeys`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn set_server_certificate_with_u8_array(
         this: &MediaKeys,
         server_certificate: &mut [u8],

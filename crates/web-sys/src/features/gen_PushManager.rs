@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushManager/getSubscription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Option < PushSubscription >`. It can be converted like `let result: Option < PushSubscription > = result?.await.into();`."]
     pub fn get_subscription(this: &PushManager) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "PushManager" , js_name = permissionState)]
     #[doc = "The `permissionState()` method."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushManager/permissionState)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PushPermissionState`. It can be converted like `let result: PushPermissionState = result?.await.into();`."]
     pub fn permission_state(this: &PushManager) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "PushSubscriptionOptionsInit")]
     # [wasm_bindgen (catch , method , structural , js_class = "PushManager" , js_name = permissionState)]
@@ -32,6 +36,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushManager/permissionState)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushManager`, `PushSubscriptionOptionsInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PushPermissionState`. It can be converted like `let result: PushPermissionState = result?.await.into();`."]
     pub fn permission_state_with_options(
         this: &PushManager,
         options: &PushSubscriptionOptionsInit,
@@ -42,6 +48,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PushSubscription`. It can be converted like `let result: PushSubscription = result?.await.into();`."]
     pub fn subscribe(this: &PushManager) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "PushSubscriptionOptionsInit")]
     # [wasm_bindgen (catch , method , structural , js_class = "PushManager" , js_name = subscribe)]
@@ -50,6 +58,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushManager`, `PushSubscriptionOptionsInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PushSubscription`. It can be converted like `let result: PushSubscription = result?.await.into();`."]
     pub fn subscribe_with_options(
         this: &PushManager,
         options: &PushSubscriptionOptionsInit,

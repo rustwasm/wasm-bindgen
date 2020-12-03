@@ -117,6 +117,8 @@ impl ExtendableMessageEventInit {
     #[doc = "Change the `ports` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEventInit`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& MessagePort`."]
     pub fn ports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ports"), &JsValue::from(val));

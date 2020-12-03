@@ -55,6 +55,8 @@ impl GpuVertexBufferLayoutDescriptor {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuVertexBufferLayoutDescriptor`*"]
     #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& GpuVertexAttributeDescriptor`."]
+    #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn attributes(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {

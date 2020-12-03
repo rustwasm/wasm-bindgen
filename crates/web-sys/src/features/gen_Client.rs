@@ -54,6 +54,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/postMessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
+    #[doc = ""]
+    #[doc = "Argument `transfer`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: js_sys :: Object`."]
     pub fn post_message_with_transfer(
         this: &Client,
         message: &::wasm_bindgen::JsValue,

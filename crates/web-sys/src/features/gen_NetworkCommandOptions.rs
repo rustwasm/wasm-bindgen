@@ -129,6 +129,8 @@ impl NetworkCommandOptions {
     #[doc = "Change the `dnses` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn dnses(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("dnses"), &JsValue::from(val));
@@ -251,6 +253,8 @@ impl NetworkCommandOptions {
     #[doc = "Change the `gateways` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn gateways(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -295,6 +299,8 @@ impl NetworkCommandOptions {
     #[doc = "Change the `interfaceList` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
     pub fn interface_list(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

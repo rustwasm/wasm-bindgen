@@ -80,6 +80,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/getNotifications)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
     pub fn get_notifications(
         this: &ServiceWorkerRegistration,
     ) -> Result<::js_sys::Promise, JsValue>;
@@ -90,6 +92,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/getNotifications)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetNotificationOptions`, `ServiceWorkerRegistration`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
     pub fn get_notifications_with_filter(
         this: &ServiceWorkerRegistration,
         filter: &GetNotificationOptions,
@@ -100,6 +104,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn show_notification(
         this: &ServiceWorkerRegistration,
         title: &str,
@@ -111,6 +117,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`, `ServiceWorkerRegistration`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn show_notification_with_options(
         this: &ServiceWorkerRegistration,
         title: &str,
@@ -122,6 +130,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/unregister)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `bool`. It can be converted like `let result: bool = result?.await.into();`."]
     pub fn unregister(this: &ServiceWorkerRegistration) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerRegistration" , js_name = update)]
     #[doc = "The `update()` method."]
@@ -129,5 +139,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn update(this: &ServiceWorkerRegistration) -> Result<::js_sys::Promise, JsValue>;
 }

@@ -47,5 +47,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/respondWith)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEvent`*"]
+    #[doc = ""]
+    #[doc = "Argument `r`: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& Response`. It can be converted like `let result: & Response = result.await.into();`."]
     pub fn respond_with(this: &FetchEvent, r: &::js_sys::Promise) -> Result<(), JsValue>;
 }

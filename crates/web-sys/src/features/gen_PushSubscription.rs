@@ -51,5 +51,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PushSubscription/unsubscribe)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscription`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `bool`. It can be converted like `let result: bool = result?.await.into();`."]
     pub fn unsubscribe(this: &PushSubscription) -> Result<::js_sys::Promise, JsValue>;
 }

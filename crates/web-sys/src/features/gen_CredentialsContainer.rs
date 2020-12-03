@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/create)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Option < Credential >`. It can be converted like `let result: Option < Credential > = result?.await.into();`."]
     pub fn create(this: &CredentialsContainer) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "CredentialCreationOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = create)]
@@ -25,6 +27,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/create)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`, `CredentialsContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Option < Credential >`. It can be converted like `let result: Option < Credential > = result?.await.into();`."]
     pub fn create_with_options(
         this: &CredentialsContainer,
         options: &CredentialCreationOptions,
@@ -35,6 +39,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Option < Credential >`. It can be converted like `let result: Option < Credential > = result?.await.into();`."]
     pub fn get(this: &CredentialsContainer) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "CredentialRequestOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "CredentialsContainer" , js_name = get)]
@@ -43,6 +49,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`, `CredentialsContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Option < Credential >`. It can be converted like `let result: Option < Credential > = result?.await.into();`."]
     pub fn get_with_options(
         this: &CredentialsContainer,
         options: &CredentialRequestOptions,
@@ -53,6 +61,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/preventSilentAccess)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
     pub fn prevent_silent_access(this: &CredentialsContainer)
         -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "Credential")]
@@ -62,6 +72,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/store)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Credential`, `CredentialsContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Credential`. It can be converted like `let result: Credential = result?.await.into();`."]
     pub fn store(
         this: &CredentialsContainer,
         credential: &Credential,

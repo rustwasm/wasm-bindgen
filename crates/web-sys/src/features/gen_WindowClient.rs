@@ -32,6 +32,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WindowClient/focus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WindowClient`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `WindowClient`. It can be converted like `let result: WindowClient = result?.await.into();`."]
     pub fn focus(this: &WindowClient) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WindowClient" , js_name = navigate)]
     #[doc = "The `navigate()` method."]
@@ -39,5 +41,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WindowClient/navigate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WindowClient`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `WindowClient`. It can be converted like `let result: WindowClient = result?.await.into();`."]
     pub fn navigate(this: &WindowClient, url: &str) -> Result<::js_sys::Promise, JsValue>;
 }
