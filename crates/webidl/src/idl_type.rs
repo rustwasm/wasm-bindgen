@@ -92,79 +92,95 @@ pub(crate) enum IdlType<'a> {
 /// in the IDL. All its properties are shaped by which information it needs in its `.tell()` method
 /// that converts the gathered information into something that can be put into the docs.
 #[derive(Debug)]
-pub enum Confession {
-    // Absence indicates something went wrong checking the inner type; the first boolean indicates
-    // that even that inner type would have more confessions, the second indicates that it's
-    // actually a Result<X, _>.
-    Promise(Option<(String, bool, bool)>),
-    Iterable(Option<(String, bool)>),
+pub struct Confession {
+    kind: ConfessionKind,
+    actual_type: Option<String>,
+    is_behind_result: bool,
+    has_more_data: bool,
+}
+
+#[derive(Debug)]
+enum ConfessionKind {
+    Promise,
+    Iterable,
 }
 
 impl Confession {
     /// Create a textual description of what's wrong with the returned type.
     ///
     /// Any formatting in the return value is rustdoc-suitable Markdown.
-    pub fn tell(&self) -> String {
-        match self {
-            Confession::Promise(Some((s, more, is_in_result))) => {
-                // FIXME: The conversion guidance is implying return position
-                format!("While the Promise can produce any JsValue as far as the type system is \
-                        concerned, practically it is expected to contain a `{}`. It can be converted \
-                        like `let result: {} = result{}.await.into();`.{}",
-                        s,
-                        s,
-                        if *is_in_result { "?" } else { "" },
-                        if *more { " More information is available in the source IDL file." } else { "" }
-                        )
-            },
-            Confession::Promise(None) => {
-                "There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better.".to_string()
+    pub fn tell(&self, in_return_position: bool) -> String {
+        (|| -> Result<_, std::fmt::Error> {
+            use std::fmt::Write;
+            let mut text = String::new();
+            let mut show_more = self.has_more_data;
+
+            match (&self.kind, &self.actual_type) {
+                (ConfessionKind::Promise, Some(s)) => {
+                    write!(text, "While the Promise can produce any JsValue as far as the type system is \
+                            concerned, practically it is expected to contain a `{}`.", s)?;
+                    if in_return_position {
+                        write!(text, " It can be converted like \
+                               `let result: {} = {}.await.into();`.",
+                            s,
+                            if self.is_behind_result { "result?" } else { "result" }
+                            )?;
+                    }
+                },
+                (ConfessionKind::Promise, None) => {
+                    show_more = false;
+                    write!(text, "There is additional information in the IDL file about the content of \
+                           the promise, but it can not yet be explained any better.")?;
+                }
+                (ConfessionKind::Iterable, Some(s)) => {
+                    write!(text, "While the iterable or array can produce any JsValue as far as the \
+                            type system is concerned, practically it is expected to contain a `{}`.", s)?;
+                },
+                (ConfessionKind::Iterable, None) => {
+                    show_more = false;
+                    write!(text, "There is additional information in the IDL file about the items in \
+                           this iterable or array, but it can not yet be explained any better.")?;
+                }
             }
-            Confession::Iterable(Some((s, more))) => {
-                format!("While the iterable or array can produce any JsValue as far as the type system is \
-                        concerned, practically it is expected to contain a `{}`{}.", s, if *more { " (with more information in the IDL file)" } else { "" })
-            },
-            Confession::Iterable(None) => {
-                "There is additional information in the IDL file about the items in this iterable or array, but it can not yet be explained any better.".to_string()
+
+            if show_more {
+                write!(text, " More information is available in the source IDL file.")?;
             }
-        }
+
+            Ok(text)
+        })().expect("There are no errors writing to a String")
     }
 
     pub fn behind_result(self) -> Self {
-        match self {
-            Confession::Promise(Some((s, more, _))) => {
-                Confession::Promise(Some((s, more, true)))
-            }
-            // We don't give concrete enough unpacking instructions for these to even matter.
-            x => x,
+        Self { is_behind_result: true, ..self }
+    }
+
+    fn from_inner_idl_type(idl_type: &IdlType, idl_type_position: TypePosition, kind: ConfessionKind) -> Self {
+        use quote::quote;
+
+        let (actual_type, has_more_data) = match idl_type.to_syn_type(idl_type_position) {
+            // Without a type, there's not much point in telling there'd be *even* more data
+            Err(_) | Ok((None, _)) => (None, false),
+            Ok((Some(t), i)) => (
+                Some(format!("{}", quote! { #t })),
+                i.is_some()
+                ),
+        };
+
+        Self {
+            kind,
+            actual_type,
+            has_more_data,
+            is_behind_result: false,
         }
     }
 
     fn promise(idl_type: &IdlType, pos: TypePosition) -> Self {
-        use quote::quote;
-
-        Confession::Promise(idl_type.to_syn_type(pos)
-            .map(|(sty, innerconfession)| sty.map(|s| (s, innerconfession.is_some())))
-            .ok().flatten()
-            .map(|(sty, innerconfession)| (
-                    format!("{}", quote! { #sty }),
-                    innerconfession,
-                    false,
-                )
-        ))
+        Self::from_inner_idl_type(idl_type, pos, ConfessionKind::Promise)
     }
 
     fn iterable(idl_type: &IdlType, pos: TypePosition) -> Self {
-        use quote::quote;
-
-        Confession::Iterable(idl_type.to_syn_type(pos)
-            .map(|(sty, innerconfession)| sty.map(|s| (s, innerconfession.is_some())))
-            .ok().flatten()
-            .map(|(sty, innerconfession)| (
-                    format!("{}", quote! { #sty }),
-                    innerconfession,
-                )
-        ))
+        Self::from_inner_idl_type(idl_type, pos, ConfessionKind::Iterable)
     }
 }
 
