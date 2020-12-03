@@ -412,21 +412,24 @@ impl<'src> FirstPassRecord<'src> {
 
             fn idl_arguments<'a>(
                 args: impl Iterator<Item = (String, &'a IdlType<'a>)>,
-            ) -> Option<Vec<(Ident, syn::Type)>> {
+            ) -> Option<(Vec<(Ident, syn::Type)>, Vec<(Ident, Option<crate::idl_type::Confession>)>)> {
                 let mut output = vec![];
+                let mut confessions = vec![];
 
                 for (name, idl_type) in args {
-                    let ty = match idl_type.to_syn_type(TypePosition::Argument) {
-                        Ok(ty) => ty.unwrap(),
+                    let (ty, conf) = match idl_type.to_syn_type(TypePosition::Argument) {
+                        Ok((ty, conf)) => (ty.unwrap(), conf),
                         Err(_) => {
                             return None;
                         }
                     };
 
-                    output.push((rust_ident(&snake_case_ident(&name[..])), ty));
+                    let ident = rust_ident(&snake_case_ident(&name[..]));
+                    output.push((ident.clone(), ty));
+                    confessions.push((ident, conf));
                 }
 
-                Some(output)
+                Some((output, confessions))
             }
 
             let arguments = idl_arguments(
@@ -437,8 +440,13 @@ impl<'src> FirstPassRecord<'src> {
                     .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type)),
             );
 
-            if let Some(arguments) = arguments {
-                if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+            if let Some((arguments, arguments_confessions)) = arguments {
+                if let Ok((ret_ty, mut ret_confession)) = ret_ty.to_syn_type(TypePosition::Return) {
+                    // FIXME Does this interact with the indexing tricks around catch?
+                    if catch {
+                        ret_confession = ret_confession.map(|c| c.behind_result());
+                    }
+
                     ret.push(InterfaceMethod {
                         name: rust_ident(&rust_name),
                         js_name: name.to_string(),
@@ -450,6 +458,8 @@ impl<'src> FirstPassRecord<'src> {
                         catch,
                         variadic,
                         unstable,
+                        arguments_confessions,
+                        ret_confession,
                     });
                 }
             }
@@ -468,8 +478,8 @@ impl<'src> FirstPassRecord<'src> {
                         .chain((1..=i).map(|j| (format!("{}_{}", last_name, j), last_idl_type))),
                 );
 
-                if let Some(arguments) = arguments {
-                    if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+                if let Some((arguments, arguments_confessions)) = arguments {
+                    if let Ok((ret_ty, ret_confession)) = ret_ty.to_syn_type(TypePosition::Return) {
                         ret.push(InterfaceMethod {
                             name: rust_ident(&format!("{}_{}", rust_name, i)),
                             js_name: name.to_string(),
@@ -481,6 +491,8 @@ impl<'src> FirstPassRecord<'src> {
                             catch,
                             variadic: false,
                             unstable,
+                            arguments_confessions,
+                            ret_confession,
                         });
                     }
                 }

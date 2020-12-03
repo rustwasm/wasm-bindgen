@@ -38,6 +38,22 @@ fn comment(mut comment: String, features: &Option<String>) -> TokenStream {
     }
 }
 
+fn function_confession_docs(arguments_confessions: &Vec<(Ident, Option<crate::idl_type::Confession>)>, ret_confession: &Option<crate::idl_type::Confession>) -> proc_macro2::TokenStream {
+    let mut lines = Vec::new();
+    for (ident, confession) in arguments_confessions {
+        if let Some(confession) = confession {
+            lines.push("".to_string());
+            lines.push(format!("Argument `{}`: {}", ident, confession.tell()));
+        }
+    }
+    if let Some(confession) = ret_confession {
+        lines.push("".to_string());
+        lines.push(format!("Return value: {}", confession.tell()));
+    }
+    let lines = lines.iter().map(|doc| quote!( #[doc = #doc] ));
+    quote! { #(#lines)* }
+}
+
 fn maybe_unstable_attr(unstable: bool) -> Option<proc_macro2::TokenStream> {
     if unstable {
         Some(quote! {
@@ -288,6 +304,8 @@ pub struct InterfaceMethod {
     pub catch: bool,
     pub variadic: bool,
     pub unstable: bool,
+    pub arguments_confessions: Vec<(Ident, Option<crate::idl_type::Confession>)>,
+    pub ret_confession: Option<crate::idl_type::Confession>,
 }
 
 impl InterfaceMethod {
@@ -309,10 +327,14 @@ impl InterfaceMethod {
             catch,
             variadic,
             unstable,
+            arguments_confessions,
+            ret_confession,
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
+
+        let type_docs = function_confession_docs(arguments_confessions, ret_confession);
 
         let mut is_constructor = false;
 
@@ -423,11 +445,13 @@ impl InterfaceMethod {
                 #(#extra_args),*
             )]
             #doc_comment
+            #type_docs
             #unstable_docs
             pub fn #name(#this #(#arguments),*) #ret;
         }
     }
 }
+
 
 pub enum InterfaceConstValue {
     BooleanLiteral(bool),
@@ -624,6 +648,7 @@ pub struct DictionaryField {
     pub js_name: String,
     pub ty: Type,
     pub required: bool,
+    pub confession: Option<crate::idl_type::Confession>,
 }
 
 impl DictionaryField {
@@ -633,10 +658,21 @@ impl DictionaryField {
             js_name,
             ty,
             required: _,
+            confession,
         } = self;
 
         let unstable_attr = maybe_unstable_attr(unstable);
         let unstable_docs = maybe_unstable_docs(unstable);
+
+        // Shaping function_confession_docs to be usable here would be more effort than just doing
+        // this quickly:
+        let type_docs = confession.as_ref().map(|c| {
+            let line = c.tell();
+            quote! {
+                #[doc = ""]
+                #[doc = #line ]
+            }
+        });
 
         let mut features = BTreeSet::new();
 
@@ -657,6 +693,7 @@ impl DictionaryField {
             #unstable_attr
             #cfg_features
             #doc_comment
+            #type_docs
             #unstable_docs
             pub fn #name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
