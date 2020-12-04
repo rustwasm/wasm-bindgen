@@ -11,7 +11,7 @@
 //! API, and APIs should mention in the documentation what features they
 //! require.
 
-#![doc(html_root_url = "https://docs.rs/web-sys/0.2")]
+#![doc(html_root_url = "https://docs.rs/web-sys/0.3")]
 #![allow(deprecated)]
 
 mod features;
