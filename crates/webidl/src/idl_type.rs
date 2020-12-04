@@ -176,19 +176,17 @@ impl Confession {
                     }
                 },
                 (ConfessionKind::Promise, None) => {
-                    show_more = false;
-                    write!(text, "There is additional information in the IDL file about the content of \
-                           the promise, but it can not yet be explained any better.")?;
+                    write!(text, "While the Promise can produce any JsValue as far as the type system is \
+                            concerned, practically it is just used to indicate completion.")?;
                 }
-                (ConfessionKind::Iterable, Some(s)) => {
+                (ConfessionKind::Iterable, s) => {
+                    let s = s.as_ref().map(|s| s.as_str())
+                        // There's little point in creating JsValue that are iterating over void /
+                        // (), but let's not panic if it happens.
+                        .unwrap_or("()");
                     write!(text, "While the iterable or array can produce any JsValue as far as the \
                             type system is concerned, practically it is expected to contain a <code>{}</code>.", s)?;
                 },
-                (ConfessionKind::Iterable, None) => {
-                    show_more = false;
-                    write!(text, "There is additional information in the IDL file about the items in \
-                           this iterable or array, but it can not yet be explained any better.")?;
-                }
                 (ConfessionKind::Union, _) => {
                     show_more = false;
                     write!(text, "The type is actually a union over some types and  can not yet be \
@@ -211,9 +209,9 @@ impl Confession {
     fn from_inner_idl_type(idl_type: &IdlType, idl_type_position: TypePosition, kind: ConfessionKind) -> Self {
         let (actual_type, has_more_data) = match idl_type.to_syn_type(idl_type_position) {
             // Without a type, there's not much point in telling there'd be *even* more data
-            Err(_) | Ok((None, _)) => (None, false),
-            Ok((Some(t), i)) => (
-                Some(doc_prettyprint(&t)),
+            Err(_) => (None, false),
+            Ok((t, i)) => (
+                t.map(|t| doc_prettyprint(&t)),
                 i.is_some()
                 ),
         };
@@ -812,7 +810,7 @@ impl<'a> IdlType<'a> {
             }
 
             IdlType::Any => Ok(js_value),
-            IdlType::Void => Ok(None), // FIXME what does it mean?
+            IdlType::Void => Ok(None),
             IdlType::Callback => Ok(js_sys("Function")), // FIXME can we give type?
             IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
         }.map(|t| (t, confession))
