@@ -188,7 +188,7 @@ impl Confession {
                             self.is_behind.text_fragment(), s)?;
                     if in_return_position {
                         write!(text, " It can be converted like \
-                              `<code>let result: {} = {}.await.into();</code>.",
+                              <code>let result: {} = {}.await.into();</code>.",
                             s,
                             if self.is_behind != ConfessionWrapping::None { "result?" } else { "result" }
                             )?;
