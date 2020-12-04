@@ -184,14 +184,6 @@ impl Confession {
     }
 }
 
-trait IdentTyExt: Sized {
-    fn honestly(self) -> (Self, Option<Confession>) {
-        (self, None)
-    }
-}
-
-impl<T> IdentTyExt for T where T: Sized {}
-
 pub(crate) trait ToIdlType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a>;
 }
@@ -600,8 +592,6 @@ impl<'a> IdlType<'a> {
 
     /// Converts to syn type if possible.
     pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<(Option<syn::Type>, Option<Confession>), TypeError> {
-        // FIXME Some of the types annotated as `honestly` still need to be checked for confession
-        // (eg. callbacks).
         let externref = |ty| {
             Some(match pos {
                 TypePosition::Argument => shared_ref(ty, false),
@@ -617,14 +607,17 @@ impl<'a> IdlType<'a> {
             let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
             externref(leading_colon_path_ty(path))
         };
+        // FIXME Some of the types that do not set any confession still need to be checked for confession
+        // (eg. callbacks).
+        let mut confession = None;
         match self {
-            IdlType::Boolean => Ok(Some(ident_ty(raw_ident("bool"))).honestly()),
-            IdlType::Byte => Ok(Some(ident_ty(raw_ident("i8"))).honestly()),
-            IdlType::Octet => Ok(Some(ident_ty(raw_ident("u8"))).honestly()),
-            IdlType::Short => Ok(Some(ident_ty(raw_ident("i16"))).honestly()),
-            IdlType::UnsignedShort => Ok(Some(ident_ty(raw_ident("u16"))).honestly()),
-            IdlType::Long => Ok(Some(ident_ty(raw_ident("i32"))).honestly()),
-            IdlType::UnsignedLong => Ok(Some(ident_ty(raw_ident("u32"))).honestly()),
+            IdlType::Boolean => Ok(Some(ident_ty(raw_ident("bool")))),
+            IdlType::Byte => Ok(Some(ident_ty(raw_ident("i8")))),
+            IdlType::Octet => Ok(Some(ident_ty(raw_ident("u8")))),
+            IdlType::Short => Ok(Some(ident_ty(raw_ident("i16")))),
+            IdlType::UnsignedShort => Ok(Some(ident_ty(raw_ident("u16")))),
+            IdlType::Long => Ok(Some(ident_ty(raw_ident("i32")))),
+            IdlType::UnsignedLong => Ok(Some(ident_ty(raw_ident("u32")))),
 
             // Technically these are 64-bit numbers, but we're binding web
             // APIs that don't actually have return the corresponding 64-bit
@@ -638,42 +631,42 @@ impl<'a> IdlType<'a> {
             //
             // Perhaps one day we'll bind to u64/i64 here, but we need `BigInt`
             // to see more usage!
-            IdlType::LongLong | IdlType::UnsignedLongLong => Ok(Some(ident_ty(raw_ident("f64"))).honestly()),
+            IdlType::LongLong | IdlType::UnsignedLongLong => Ok(Some(ident_ty(raw_ident("f64")))),
 
-            IdlType::Float => Ok(Some(ident_ty(raw_ident("f32"))).honestly()),
-            IdlType::UnrestrictedFloat => Ok(Some(ident_ty(raw_ident("f32"))).honestly()),
-            IdlType::Double => Ok(Some(ident_ty(raw_ident("f64"))).honestly()),
-            IdlType::UnrestrictedDouble => Ok(Some(ident_ty(raw_ident("f64"))).honestly()),
+            IdlType::Float => Ok(Some(ident_ty(raw_ident("f32")))),
+            IdlType::UnrestrictedFloat => Ok(Some(ident_ty(raw_ident("f32")))),
+            IdlType::Double => Ok(Some(ident_ty(raw_ident("f64")))),
+            IdlType::UnrestrictedDouble => Ok(Some(ident_ty(raw_ident("f64")))),
             IdlType::DomString | IdlType::ByteString | IdlType::UsvString => match pos {
-                TypePosition::Argument => Ok(Some(shared_ref(ident_ty(raw_ident("str")), false)).honestly()),
-                TypePosition::Return => Ok(Some(ident_ty(raw_ident("String"))).honestly()),
+                TypePosition::Argument => Ok(Some(shared_ref(ident_ty(raw_ident("str")), false))),
+                TypePosition::Return => Ok(Some(ident_ty(raw_ident("String")))),
             },
-            IdlType::Object => Ok(js_sys("Object").honestly()),
+            IdlType::Object => Ok(js_sys("Object")),
             IdlType::Symbol => Err(TypeError::CannotConvert),
             IdlType::Error => Err(TypeError::CannotConvert),
 
-            IdlType::ArrayBuffer => Ok(js_sys("ArrayBuffer").honestly()),
-            IdlType::DataView => Ok(js_sys("DataView").honestly()),
-            IdlType::Int8Array { immutable } => Ok(Some(array("i8", pos, *immutable)).honestly()),
-            IdlType::Uint8Array { immutable } => Ok(Some(array("u8", pos, *immutable)).honestly()),
+            IdlType::ArrayBuffer => Ok(js_sys("ArrayBuffer")),
+            IdlType::DataView => Ok(js_sys("DataView")),
+            IdlType::Int8Array { immutable } => Ok(Some(array("i8", pos, *immutable))),
+            IdlType::Uint8Array { immutable } => Ok(Some(array("u8", pos, *immutable))),
             IdlType::Uint8ClampedArray { immutable } => {
-                Ok(Some(clamped(array("u8", pos, *immutable))).honestly())
+                Ok(Some(clamped(array("u8", pos, *immutable))))
             }
-            IdlType::Int16Array { immutable } => Ok(Some(array("i16", pos, *immutable)).honestly()),
-            IdlType::Uint16Array { immutable } => Ok(Some(array("u16", pos, *immutable)).honestly()),
-            IdlType::Int32Array { immutable } => Ok(Some(array("i32", pos, *immutable)).honestly()),
-            IdlType::Uint32Array { immutable } => Ok(Some(array("u32", pos, *immutable)).honestly()),
-            IdlType::Float32Array { immutable } => Ok(Some(array("f32", pos, *immutable)).honestly()),
-            IdlType::Float64Array { immutable } => Ok(Some(array("f64", pos, *immutable)).honestly()),
+            IdlType::Int16Array { immutable } => Ok(Some(array("i16", pos, *immutable))),
+            IdlType::Uint16Array { immutable } => Ok(Some(array("u16", pos, *immutable))),
+            IdlType::Int32Array { immutable } => Ok(Some(array("i32", pos, *immutable))),
+            IdlType::Uint32Array { immutable } => Ok(Some(array("u32", pos, *immutable))),
+            IdlType::Float32Array { immutable } => Ok(Some(array("f32", pos, *immutable))),
+            IdlType::Float64Array { immutable } => Ok(Some(array("f64", pos, *immutable))),
 
-            IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => Ok(js_sys("Object").honestly()),
+            IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => Ok(js_sys("Object")),
             IdlType::Interface(name)
             | IdlType::Dictionary(name)
             | IdlType::CallbackInterface { name, .. } => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
-                Ok(externref(ty).honestly())
+                Ok(externref(ty))
             }
-            IdlType::Enum(name) => Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))).honestly()),
+            IdlType::Enum(name) => Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str())))),
 
             IdlType::Nullable(idl_type) => {
                 let (inner, inner_confession) = idl_type.to_syn_type(pos)?;
@@ -700,23 +693,27 @@ impl<'a> IdlType<'a> {
                             }
                         }
 
-                        Ok((Some(option_ty(inner)), inner_confession))
+                        confession = inner_confession;
+                        Ok(Some(option_ty(inner)))
                     }
                     // FIXME what does it mean?
-                    None => Ok((None, None)),
+                    None => Ok(None),
                 }
             }
             // webidl sequences must always be returned as javascript `Array`s. They may accept
             // anything implementing the @@iterable interface.
             // The same implementation is fine for `FrozenArray`
-            IdlType::FrozenArray(idl_type) | IdlType::Sequence(idl_type) => match pos {
-                TypePosition::Argument => Ok((js_value, Some(Confession::iterable(idl_type, pos)))),
-                TypePosition::Return => Ok((js_sys("Array"), Some(Confession::iterable(idl_type, pos)))),
+            IdlType::FrozenArray(idl_type) | IdlType::Sequence(idl_type) => {
+                confession = Some(Confession::iterable(idl_type, pos));
+                match pos {
+                    TypePosition::Argument => Ok(js_value),
+                    TypePosition::Return => Ok(js_sys("Array")),
+                }
             },
-            IdlType::Promise(idl_type) => Ok((
-                    js_sys("Promise"),
-                    Some(Confession::promise(idl_type, pos)),
-                )),
+            IdlType::Promise(idl_type) => {
+                confession = Some(Confession::promise(idl_type, pos));
+                Ok(js_sys("Promise"))
+            },
             IdlType::Record(_idl_type_from, _idl_type_to) => Err(TypeError::CannotConvert),
             IdlType::Union(idl_types) => {
                 // Note that most union types have already been expanded to
@@ -750,13 +747,17 @@ impl<'a> IdlType<'a> {
                 } else {
                     IdlType::Any.to_syn_type(pos)
                 }
+                    .map(|(r, c)| {
+                        confession = c;
+                        r
+                    })
             }
 
-            IdlType::Any => Ok(js_value.honestly()),
-            IdlType::Void => Ok(None.honestly()), // FIXME what does it mean?
-            IdlType::Callback => Ok(js_sys("Function").honestly()), // FIXME can we give type?
+            IdlType::Any => Ok(js_value),
+            IdlType::Void => Ok(None), // FIXME what does it mean?
+            IdlType::Callback => Ok(js_sys("Function")), // FIXME can we give type?
             IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
-        }
+        }.map(|t| (t, confession))
     }
 
     /// Flattens unions recursively.
