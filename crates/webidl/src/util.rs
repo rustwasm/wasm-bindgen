@@ -386,6 +386,7 @@ impl<'src> FirstPassRecord<'src> {
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
             let catch = force_throws || throws(&signature.orig.attrs);
+            let mut add_options_around_confession = false;
             let ret_ty = if id == &OperationId::IndexingGetter {
                 // All indexing getters should return optional values (or
                 // otherwise be marked with catch).
@@ -395,6 +396,7 @@ impl<'src> FirstPassRecord<'src> {
                         if catch {
                             ret_ty
                         } else {
+                            add_options_around_confession = true;
                             IdlType::Nullable(Box::new(ty.clone()))
                         }
                     }
@@ -442,7 +444,10 @@ impl<'src> FirstPassRecord<'src> {
 
             if let Some((arguments, arguments_confessions)) = arguments {
                 if let Ok((ret_ty, mut ret_confession)) = ret_ty.to_syn_type(TypePosition::Return) {
-                    // FIXME Does this interact with the indexing tricks around catch?
+                    if add_options_around_confession {
+                        ret_confession = ret_confession.map(|c| c.behind_option());
+                    }
+
                     if catch {
                         ret_confession = ret_confession.map(|c| c.behind_result());
                     }
