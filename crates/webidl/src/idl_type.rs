@@ -104,6 +104,7 @@ enum ConfessionKind {
     Promise,
     Iterable,
     Union,
+    Callback,
 }
 
 /// Render a syn::Type in such a way that it can be included in rustdoc text.
@@ -192,6 +193,10 @@ impl Confession {
                     write!(text, "The type is actually a union over some types and  can not yet be \
                            explained any better.")?;
                 }
+                (ConfessionKind::Callback, _) => {
+                    show_more = false;
+                    write!(text, "See the referenced MDN documentation or the IDL files for the signature of the callback.")?;
+                }
             }
 
             if show_more {
@@ -235,6 +240,15 @@ impl Confession {
     fn union(_idl_types: &[IdlType]) -> Self {
         Self {
             kind: ConfessionKind::Union,
+            actual_type: None,
+            has_more_data: false,
+            is_behind_result: false,
+        }
+    }
+
+    fn callback() -> Self {
+        Self {
+            kind: ConfessionKind::Callback,
             actual_type: None,
             has_more_data: false,
             is_behind_result: false,
@@ -811,7 +825,10 @@ impl<'a> IdlType<'a> {
 
             IdlType::Any => Ok(js_value),
             IdlType::Void => Ok(None),
-            IdlType::Callback => Ok(js_sys("Function")), // FIXME can we give type?
+            IdlType::Callback => {
+                confession = Some(Confession::callback());
+                Ok(js_sys("Function"))
+            }
             IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
         }.map(|t| (t, confession))
     }
