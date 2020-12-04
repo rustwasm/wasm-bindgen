@@ -95,16 +95,33 @@ pub(crate) enum IdlType<'a> {
 pub struct Confession {
     kind: ConfessionKind,
     actual_type: Option<String>,
-    is_behind_result: bool,
+    is_behind: ConfessionWrapping,
     has_more_data: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum ConfessionKind {
     Promise,
     Iterable,
     Union,
     Callback,
+}
+
+#[derive(Debug, PartialEq)]
+enum ConfessionWrapping {
+    None,
+    Option,
+    Result,
+}
+
+impl ConfessionWrapping {
+    fn text_fragment(&self) -> &'static str {
+        match self {
+            ConfessionWrapping::None => "",
+            ConfessionWrapping::Option => " inside the option",
+            ConfessionWrapping::Result => " of the successful result",
+        }
+    }
 }
 
 /// Render a syn::Type in such a way that it can be included in rustdoc text.
@@ -166,36 +183,40 @@ impl Confession {
 
             match (&self.kind, &self.actual_type) {
                 (ConfessionKind::Promise, Some(s)) => {
-                    write!(text, "While the Promise can produce any JsValue as far as the type system is \
-                            concerned, practically it is expected to contain a <code>{}</code>.", s)?;
+                    write!(text, "While the Promise{} can produce any JsValue as far as the type system is \
+                            concerned, practically it is expected to contain a <code>{}</code>.",
+                            self.is_behind.text_fragment(), s)?;
                     if in_return_position {
                         write!(text, " It can be converted like \
                               `<code>let result: {} = {}.await.into();</code>.",
                             s,
-                            if self.is_behind_result { "result?" } else { "result" }
+                            if self.is_behind != ConfessionWrapping::None { "result?" } else { "result" }
                             )?;
                     }
                 },
                 (ConfessionKind::Promise, None) => {
-                    write!(text, "While the Promise can produce any JsValue as far as the type system is \
-                            concerned, practically it is just used to indicate completion.")?;
+                    write!(text, "While the Promise{} can produce any JsValue as far as the type system is \
+                            concerned, practically it is just used to indicate completion.",
+                            self.is_behind.text_fragment())?;
                 }
                 (ConfessionKind::Iterable, s) => {
                     let s = s.as_ref().map(|s| s.as_str())
                         // There's little point in creating JsValue that are iterating over void /
                         // (), but let's not panic if it happens.
                         .unwrap_or("()");
-                    write!(text, "While the iterable or array can produce any JsValue as far as the \
-                            type system is concerned, practically it is expected to contain a <code>{}</code>.", s)?;
+                    write!(text, "While the iterable or array{} can produce any JsValue as far as the \
+                            type system is concerned, practically it is expected to contain a <code>{}</code>.",
+                            self.is_behind.text_fragment(), s)?;
                 },
                 (ConfessionKind::Union, _) => {
                     show_more = false;
-                    write!(text, "The type is actually a union over some types and  can not yet be \
-                           explained any better.")?;
+                    write!(text, "The type{} is actually a union over some types and  can not yet be \
+                           explained any better.", self.is_behind.text_fragment())?;
                 }
                 (ConfessionKind::Callback, _) => {
                     show_more = false;
-                    write!(text, "See the referenced MDN documentation or the IDL files for the signature of the callback.")?;
+                    write!(text, "See the referenced MDN documentation or the IDL files for the signature of the callback{}.",
+                           self.is_behind.text_fragment())?;
                 }
             }
 
@@ -208,7 +229,11 @@ impl Confession {
     }
 
     pub fn behind_result(self) -> Self {
-        Self { is_behind_result: true, ..self }
+        Self { is_behind: ConfessionWrapping::Result, ..self }
+    }
+
+    pub fn behind_option(self) -> Self {
+        Self { is_behind: ConfessionWrapping::Option, ..self }
     }
 
     fn from_inner_idl_type(idl_type: &IdlType, idl_type_position: TypePosition, kind: ConfessionKind) -> Self {
@@ -225,7 +250,7 @@ impl Confession {
             kind,
             actual_type,
             has_more_data,
-            is_behind_result: false,
+            is_behind: ConfessionWrapping::None,
         }
     }
 
@@ -242,7 +267,7 @@ impl Confession {
             kind: ConfessionKind::Union,
             actual_type: None,
             has_more_data: false,
-            is_behind_result: false,
+            is_behind: ConfessionWrapping::None,
         }
     }
 
@@ -251,7 +276,7 @@ impl Confession {
             kind: ConfessionKind::Callback,
             actual_type: None,
             has_more_data: false,
-            is_behind_result: false,
+            is_behind: ConfessionWrapping::None,
         }
     }
 }
@@ -679,8 +704,6 @@ impl<'a> IdlType<'a> {
             let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
             externref(leading_colon_path_ty(path))
         };
-        // FIXME Some of the types that do not set any confession still need to be checked for confession
-        // (eg. callbacks).
         let mut confession = None;
         match self {
             IdlType::Boolean => Ok(Some(ident_ty(raw_ident("bool")))),
@@ -742,7 +765,10 @@ impl<'a> IdlType<'a> {
 
             IdlType::Nullable(idl_type) => {
                 let (inner, inner_confession) = idl_type.to_syn_type(pos)?;
-                // FIXME: inner_confession = inner_confession.but_nullable() maybe?
+
+                // eg. ExtendableMessageEventInit.source with a union, L10nValue.attributes for
+                // iterable
+                confession = inner_confession.map(|c| c.behind_option());
 
                 match inner {
                     Some(inner) => {
@@ -761,14 +787,12 @@ impl<'a> IdlType<'a> {
                                     .map(|p| p.ident == "JsValue")
                                     .unwrap_or(false)
                             {
-                                return Ok((Some(inner.clone()), inner_confession));
+                                return Ok((Some(inner.clone()), confession));
                             }
                         }
 
-                        confession = inner_confession;
                         Ok(Some(option_ty(inner)))
                     }
-                    // FIXME what does it mean?
                     None => Ok(None),
                 }
             }
