@@ -63,7 +63,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessagePort`*"]
     #[doc = ""]
-    #[doc = "Argument `transferable`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: js_sys :: Object`."]
+    #[doc = "Argument `transferable`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn post_message_with_transferable(
         this: &MessagePort,
         message: &::wasm_bindgen::JsValue,

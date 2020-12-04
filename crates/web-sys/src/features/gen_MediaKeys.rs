@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeys`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaKeyStatus`. It can be converted like `let result: MediaKeyStatus = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaKeyStatus]</code>. It can be converted like `<code>let result: [MediaKeyStatus] = result.await.into();</code>."]
     pub fn get_status_for_policy(this: &MediaKeys) -> ::js_sys::Promise;
     #[cfg(feature = "MediaKeysPolicy")]
     # [wasm_bindgen (method , structural , js_class = "MediaKeys" , js_name = getStatusForPolicy)]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeys`, `MediaKeysPolicy`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaKeyStatus`. It can be converted like `let result: MediaKeyStatus = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaKeyStatus]</code>. It can be converted like `<code>let result: [MediaKeyStatus] = result.await.into();</code>."]
     pub fn get_status_for_policy_with_policy(
         this: &MediaKeys,
         policy: &MediaKeysPolicy,

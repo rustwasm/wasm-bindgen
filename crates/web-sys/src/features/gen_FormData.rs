@@ -67,6 +67,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FormData/get)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FormData`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn get(this: &FormData, name: &str) -> ::wasm_bindgen::JsValue;
     # [wasm_bindgen (method , structural , js_class = "FormData" , js_name = getAll)]
     #[doc = "The `getAll()` method."]
@@ -75,7 +77,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FormData`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::wasm_bindgen::JsValue]</code>. More information is available in the source IDL file."]
     pub fn get_all(this: &FormData, name: &str) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "FormData" , js_name = has)]
     #[doc = "The `has()` method."]

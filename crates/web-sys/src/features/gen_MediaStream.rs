@@ -81,7 +81,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
     #[doc = ""]
-    #[doc = "Argument `tracks`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& MediaStreamTrack`."]
+    #[doc = "Argument `tracks`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[MediaStreamTrack]</code>."]
     pub fn new_with_tracks(tracks: &::wasm_bindgen::JsValue) -> Result<MediaStream, JsValue>;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "MediaStream" , js_name = addTrack)]
@@ -105,7 +105,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioStreamTrack`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioStreamTrack]</code>."]
     pub fn get_audio_tracks(this: &MediaStream) -> ::js_sys::Array;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "MediaStream" , js_name = getTrackById)]
@@ -122,7 +122,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStreamTrack`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaStreamTrack]</code>."]
     pub fn get_tracks(this: &MediaStream) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "MediaStream" , js_name = getVideoTracks)]
     #[doc = "The `getVideoTracks()` method."]
@@ -131,7 +131,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `VideoStreamTrack`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[VideoStreamTrack]</code>."]
     pub fn get_video_tracks(this: &MediaStream) -> ::js_sys::Array;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "MediaStream" , js_name = removeTrack)]

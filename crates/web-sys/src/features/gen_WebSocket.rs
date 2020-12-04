@@ -139,7 +139,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     #[doc = ""]
-    #[doc = "Argument `protocols`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `protocols`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn new_with_str_sequence(
         url: &str,
         protocols: &::wasm_bindgen::JsValue,

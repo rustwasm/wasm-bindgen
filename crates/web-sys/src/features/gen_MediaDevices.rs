@@ -32,7 +32,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDevices`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn enumerate_devices(this: &MediaDevices) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaTrackSupportedConstraints")]
     # [wasm_bindgen (method , structural , js_class = "MediaDevices" , js_name = getSupportedConstraints)]
@@ -49,7 +49,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDevices`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`. It can be converted like `let result: MediaStream = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaStream]</code>. It can be converted like `<code>let result: [MediaStream] = result?.await.into();</code>."]
     pub fn get_user_media(this: &MediaDevices) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaStreamConstraints")]
     # [wasm_bindgen (catch , method , structural , js_class = "MediaDevices" , js_name = getUserMedia)]
@@ -59,7 +59,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDevices`, `MediaStreamConstraints`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`. It can be converted like `let result: MediaStream = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaStream]</code>. It can be converted like `<code>let result: [MediaStream] = result?.await.into();</code>."]
     pub fn get_user_media_with_constraints(
         this: &MediaDevices,
         constraints: &MediaStreamConstraints,

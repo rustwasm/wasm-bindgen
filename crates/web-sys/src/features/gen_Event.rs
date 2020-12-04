@@ -122,7 +122,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `EventTarget`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[EventTarget]</code>."]
     pub fn composed_path(this: &Event) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "Event" , js_name = initEvent)]
     #[doc = "The `initEvent()` method."]

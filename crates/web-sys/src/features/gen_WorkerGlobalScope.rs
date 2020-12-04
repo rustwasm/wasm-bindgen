@@ -266,7 +266,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_html_image_element(
         this: &WorkerGlobalScope,
         a_image: &HtmlImageElement,
@@ -279,7 +279,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_html_video_element(
         this: &WorkerGlobalScope,
         a_image: &HtmlVideoElement,
@@ -292,7 +292,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_html_canvas_element(
         this: &WorkerGlobalScope,
         a_image: &HtmlCanvasElement,
@@ -305,7 +305,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_blob(
         this: &WorkerGlobalScope,
         a_image: &Blob,
@@ -318,7 +318,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_image_data(
         this: &WorkerGlobalScope,
         a_image: &ImageData,
@@ -331,7 +331,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_canvas_rendering_context_2d(
         this: &WorkerGlobalScope,
         a_image: &CanvasRenderingContext2d,
@@ -344,7 +344,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_image_bitmap(
         this: &WorkerGlobalScope,
         a_image: &ImageBitmap,
@@ -356,7 +356,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_buffer_source(
         this: &WorkerGlobalScope,
         a_image: &::js_sys::Object,
@@ -368,7 +368,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_u8_array(
         this: &WorkerGlobalScope,
         a_image: &mut [u8],
@@ -381,7 +381,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_html_image_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &HtmlImageElement,
@@ -398,7 +398,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_html_video_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &HtmlVideoElement,
@@ -415,7 +415,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_html_canvas_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &HtmlCanvasElement,
@@ -432,7 +432,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_blob_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &Blob,
@@ -449,7 +449,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_image_data_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &ImageData,
@@ -466,7 +466,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_canvas_rendering_context_2d_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &CanvasRenderingContext2d,
@@ -483,7 +483,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_image_bitmap_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &ImageBitmap,
@@ -499,7 +499,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_buffer_source_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &::js_sys::Object,
@@ -515,7 +515,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmap`. It can be converted like `let result: ImageBitmap = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmap]</code>. It can be converted like `<code>let result: [ImageBitmap] = result?.await.into();</code>."]
     pub fn create_image_bitmap_with_u8_array_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &WorkerGlobalScope,
         a_image: &mut [u8],
@@ -532,7 +532,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Response`. It can be converted like `let result: Response = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn fetch_with_request(this: &WorkerGlobalScope, input: &Request) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "WorkerGlobalScope" , js_name = fetch)]
     #[doc = "The `fetch()` method."]
@@ -541,7 +541,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Response`. It can be converted like `let result: Response = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn fetch_with_str(this: &WorkerGlobalScope, input: &str) -> ::js_sys::Promise;
     #[cfg(all(feature = "Request", feature = "RequestInit",))]
     # [wasm_bindgen (method , structural , js_class = "WorkerGlobalScope" , js_name = fetch)]
@@ -551,7 +551,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`, `RequestInit`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Response`. It can be converted like `let result: Response = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn fetch_with_request_and_init(
         this: &WorkerGlobalScope,
         input: &Request,
@@ -565,7 +565,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`, `WorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Response`. It can be converted like `let result: Response = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn fetch_with_str_and_init(
         this: &WorkerGlobalScope,
         input: &str,

@@ -22,6 +22,8 @@ impl MediaStreamConstraints {
     #[doc = "Change the `audio` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn audio(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("audio"), &JsValue::from(val));
@@ -82,6 +84,8 @@ impl MediaStreamConstraints {
     #[doc = "Change the `video` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn video(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("video"), &JsValue::from(val));

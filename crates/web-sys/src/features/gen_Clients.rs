@@ -27,7 +27,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Clients`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: wasm_bindgen :: JsValue`. It can be converted like `let result: :: wasm_bindgen :: JsValue = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::wasm_bindgen::JsValue]</code>. It can be converted like `<code>let result: [::wasm_bindgen::JsValue] = result.await.into();</code>."]
     pub fn get(this: &Clients, id: &str) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "Clients" , js_name = matchAll)]
     #[doc = "The `matchAll()` method."]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Clients`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result.await.into();</code>. More information is available in the source IDL file."]
     pub fn match_all(this: &Clients) -> ::js_sys::Promise;
     #[cfg(feature = "ClientQueryOptions")]
     # [wasm_bindgen (method , structural , js_class = "Clients" , js_name = matchAll)]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`, `Clients`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result.await.into();</code>. More information is available in the source IDL file."]
     pub fn match_all_with_options(
         this: &Clients,
         options: &ClientQueryOptions,
@@ -58,6 +58,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Clients`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Option < WindowClient >`. It can be converted like `let result: Option < WindowClient > = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Option]<[WindowClient]></code>. It can be converted like `<code>let result: [Option]<[WindowClient]> = result.await.into();</code>."]
     pub fn open_window(this: &Clients, url: &str) -> ::js_sys::Promise;
 }

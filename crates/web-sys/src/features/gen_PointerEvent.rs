@@ -106,6 +106,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEvent`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PointerEvent`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PointerEvent]</code>."]
     pub fn get_coalesced_events(this: &PointerEvent) -> ::js_sys::Array;
 }

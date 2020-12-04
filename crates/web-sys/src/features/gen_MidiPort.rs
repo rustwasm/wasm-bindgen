@@ -84,7 +84,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MidiPort`. It can be converted like `let result: MidiPort = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MidiPort]</code>. It can be converted like `<code>let result: [MidiPort] = result.await.into();</code>."]
     pub fn close(this: &MidiPort) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "MIDIPort" , js_name = open)]
     #[doc = "The `open()` method."]
@@ -93,6 +93,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MidiPort`. It can be converted like `let result: MidiPort = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MidiPort]</code>. It can be converted like `<code>let result: [MidiPort] = result.await.into();</code>."]
     pub fn open(this: &MidiPort) -> ::js_sys::Promise;
 }

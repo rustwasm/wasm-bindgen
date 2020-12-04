@@ -25,7 +25,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UrlSearchParams`*"]
     #[doc = ""]
-    #[doc = "Argument `init`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: wasm_bindgen :: JsValue`. More information is available in the source IDL file."]
+    #[doc = "Argument `init`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::wasm_bindgen::JsValue]</code>. More information is available in the source IDL file."]
     pub fn new_with_str_sequence_sequence(
         init: &::wasm_bindgen::JsValue,
     ) -> Result<UrlSearchParams, JsValue>;
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UrlSearchParams`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `String`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
     pub fn get_all(this: &UrlSearchParams, name: &str) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "URLSearchParams" , js_name = has)]
     #[doc = "The `has()` method."]

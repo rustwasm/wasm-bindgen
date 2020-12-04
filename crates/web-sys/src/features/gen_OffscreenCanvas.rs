@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Blob`. It can be converted like `let result: Blob = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Blob]</code>. It can be converted like `<code>let result: [Blob] = result?.await.into();</code>."]
     pub fn to_blob(this: &OffscreenCanvas) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = toBlob)]
     #[doc = "The `toBlob()` method."]
@@ -83,7 +83,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Blob`. It can be converted like `let result: Blob = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Blob]</code>. It can be converted like `<code>let result: [Blob] = result?.await.into();</code>."]
     pub fn to_blob_with_type(
         this: &OffscreenCanvas,
         type_: &str,
@@ -95,7 +95,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Blob`. It can be converted like `let result: Blob = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Blob]</code>. It can be converted like `<code>let result: [Blob] = result?.await.into();</code>."]
     pub fn to_blob_with_type_and_encoder_options(
         this: &OffscreenCanvas,
         type_: &str,

@@ -2057,7 +2057,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Animation`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Animation]</code>."]
     pub fn get_animations(this: &Document) -> ::js_sys::Array;
     #[cfg(feature = "Element")]
     # [wasm_bindgen (method , structural , js_class = "Document" , js_name = getElementById)]
@@ -2171,7 +2171,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Element`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Element]</code>."]
     pub fn elements_from_point(this: &Document, x: f32, y: f32) -> ::js_sys::Array;
     #[cfg(all(feature = "DomPoint", feature = "DomPointInit", feature = "Text",))]
     # [wasm_bindgen (catch , method , structural , js_class = "Document" , js_name = convertPointFromNode)]
@@ -2441,7 +2441,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `DomQuad`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[DomQuad]</code>."]
     pub fn get_box_quads(this: &Document) -> Result<::js_sys::Array, JsValue>;
     #[cfg(feature = "BoxQuadOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "Document" , js_name = getBoxQuads)]
@@ -2451,7 +2451,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `Document`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `DomQuad`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[DomQuad]</code>."]
     pub fn get_box_quads_with_options(
         this: &Document,
         options: &BoxQuadOptions,

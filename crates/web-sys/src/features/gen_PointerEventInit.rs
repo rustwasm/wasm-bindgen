@@ -471,7 +471,7 @@ impl PointerEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     #[doc = ""]
-    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& PointerEvent`."]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[PointerEvent]</code>."]
     pub fn coalesced_events(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

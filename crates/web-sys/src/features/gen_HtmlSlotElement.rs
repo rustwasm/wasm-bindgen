@@ -32,7 +32,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSlotElement`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Node`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Node]</code>."]
     pub fn assigned_nodes(this: &HtmlSlotElement) -> ::js_sys::Array;
     #[cfg(feature = "AssignedNodesOptions")]
     # [wasm_bindgen (method , structural , js_class = "HTMLSlotElement" , js_name = assignedNodes)]
@@ -42,7 +42,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`, `HtmlSlotElement`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Node`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Node]</code>."]
     pub fn assigned_nodes_with_options(
         this: &HtmlSlotElement,
         options: &AssignedNodesOptions,

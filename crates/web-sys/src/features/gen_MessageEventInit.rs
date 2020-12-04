@@ -118,7 +118,7 @@ impl MessageEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEventInit`*"]
     #[doc = ""]
-    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& MessagePort`."]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[MessagePort]</code>."]
     pub fn ports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ports"), &JsValue::from(val));
@@ -132,6 +132,8 @@ impl MessageEventInit {
     #[doc = "Change the `source` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEventInit`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn source(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

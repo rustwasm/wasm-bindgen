@@ -84,7 +84,7 @@ impl RtcMediaStreamStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     #[doc = ""]
-    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn track_ids(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

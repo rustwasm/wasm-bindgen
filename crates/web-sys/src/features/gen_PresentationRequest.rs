@@ -42,7 +42,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     #[doc = ""]
-    #[doc = "Argument `urls`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `urls`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn new_with_urls(urls: &::wasm_bindgen::JsValue) -> Result<PresentationRequest, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "PresentationRequest" , js_name = getAvailability)]
     #[doc = "The `getAvailability()` method."]
@@ -51,7 +51,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PresentationAvailability`. It can be converted like `let result: PresentationAvailability = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PresentationAvailability]</code>. It can be converted like `<code>let result: [PresentationAvailability] = result?.await.into();</code>."]
     pub fn get_availability(this: &PresentationRequest) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "PresentationRequest" , js_name = reconnect)]
     #[doc = "The `reconnect()` method."]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PresentationConnection`. It can be converted like `let result: PresentationConnection = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PresentationConnection]</code>. It can be converted like `<code>let result: [PresentationConnection] = result?.await.into();</code>."]
     pub fn reconnect(
         this: &PresentationRequest,
         presentation_id: &str,
@@ -72,6 +72,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationRequest`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PresentationConnection`. It can be converted like `let result: PresentationConnection = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PresentationConnection]</code>. It can be converted like `<code>let result: [PresentationConnection] = result?.await.into();</code>."]
     pub fn start(this: &PresentationRequest) -> Result<::js_sys::Promise, JsValue>;
 }

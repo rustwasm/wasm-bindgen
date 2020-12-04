@@ -19,7 +19,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`, `IntlUtils`*"]
     #[doc = ""]
-    #[doc = "Argument `locales`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `locales`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn get_display_names(
         this: &IntlUtils,
         locales: &::wasm_bindgen::JsValue,
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`, `DisplayNameResult`, `IntlUtils`*"]
     #[doc = ""]
-    #[doc = "Argument `locales`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `locales`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn get_display_names_with_options(
         this: &IntlUtils,
         locales: &::wasm_bindgen::JsValue,
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntlUtils`, `LocaleInfo`*"]
     #[doc = ""]
-    #[doc = "Argument `locales`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `locales`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn get_locale_info(
         this: &IntlUtils,
         locales: &::wasm_bindgen::JsValue,

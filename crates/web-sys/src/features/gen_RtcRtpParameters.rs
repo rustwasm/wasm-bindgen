@@ -23,7 +23,7 @@ impl RtcRtpParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     #[doc = ""]
-    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RtcRtpCodecParameters`."]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RtcRtpCodecParameters]</code>."]
     pub fn codecs(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -39,7 +39,7 @@ impl RtcRtpParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     #[doc = ""]
-    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RtcRtpEncodingParameters`."]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RtcRtpEncodingParameters]</code>."]
     pub fn encodings(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -58,7 +58,7 @@ impl RtcRtpParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     #[doc = ""]
-    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RtcRtpHeaderExtensionParameters`."]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RtcRtpHeaderExtensionParameters]</code>."]
     pub fn header_extensions(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

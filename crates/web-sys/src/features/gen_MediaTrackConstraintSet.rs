@@ -22,6 +22,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `autoGainControl` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn auto_gain_control(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -56,6 +58,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `channelCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn channel_count(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,6 +77,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `deviceId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn device_id(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -90,6 +96,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `echoCancellation` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn echo_cancellation(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -107,6 +115,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `facingMode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn facing_mode(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -124,6 +134,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `frameRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn frame_rate(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -141,6 +153,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `height` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn height(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -172,6 +186,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `noiseSuppression` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn noise_suppression(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -206,6 +222,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `viewportHeight` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn viewport_height(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -223,6 +241,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `viewportOffsetX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn viewport_offset_x(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -240,6 +260,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `viewportOffsetY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn viewport_offset_y(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -257,6 +279,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `viewportWidth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn viewport_width(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -274,6 +298,8 @@ impl MediaTrackConstraintSet {
     #[doc = "Change the `width` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn width(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("width"), &JsValue::from(val));

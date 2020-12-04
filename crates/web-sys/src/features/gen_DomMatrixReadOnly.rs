@@ -200,7 +200,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrixReadOnly`*"]
     #[doc = ""]
-    #[doc = "Argument `init`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
+    #[doc = "Argument `init`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     pub fn new_with_f64_sequence(
         init: &::wasm_bindgen::JsValue,
     ) -> Result<DomMatrixReadOnly, JsValue>;

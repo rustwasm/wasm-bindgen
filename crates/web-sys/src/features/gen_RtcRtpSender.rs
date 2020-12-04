@@ -42,7 +42,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcStatsReport`. It can be converted like `let result: RtcStatsReport = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcStatsReport]</code>. It can be converted like `<code>let result: [RtcStatsReport] = result.await.into();</code>."]
     pub fn get_stats(this: &RtcRtpSender) -> ::js_sys::Promise;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = replaceTrack)]

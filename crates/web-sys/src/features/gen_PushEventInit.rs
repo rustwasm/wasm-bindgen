@@ -73,6 +73,8 @@ impl PushEventInit {
     #[doc = "Change the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushEventInit`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn data(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("data"), &JsValue::from(val));

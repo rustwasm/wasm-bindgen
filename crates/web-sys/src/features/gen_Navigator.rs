@@ -257,7 +257,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `Option < Gamepad >`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Option]<[Gamepad]></code>."]
     pub fn get_gamepads(this: &Navigator) -> Result<::js_sys::Array, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Navigator" , js_name = getVRDisplays)]
     #[doc = "The `getVRDisplays()` method."]
@@ -266,7 +266,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn get_vr_displays(this: &Navigator) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "GamepadServiceTest")]
     # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = requestGamepadServiceTest)]
@@ -283,7 +283,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MidiAccess`. It can be converted like `let result: MidiAccess = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MidiAccess]</code>. It can be converted like `<code>let result: [MidiAccess] = result?.await.into();</code>."]
     pub fn request_midi_access(this: &Navigator) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MidiOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "Navigator" , js_name = requestMIDIAccess)]
@@ -293,7 +293,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOptions`, `Navigator`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MidiAccess`. It can be converted like `let result: MidiAccess = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MidiAccess]</code>. It can be converted like `<code>let result: [MidiAccess] = result?.await.into();</code>."]
     pub fn request_midi_access_with_options(
         this: &Navigator,
         options: &MidiOptions,
@@ -305,9 +305,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     #[doc = ""]
-    #[doc = "Argument `supported_configurations`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& MediaKeySystemConfiguration`."]
+    #[doc = "Argument `supported_configurations`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[MediaKeySystemConfiguration]</code>."]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaKeySystemAccess`. It can be converted like `let result: MediaKeySystemAccess = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaKeySystemAccess]</code>. It can be converted like `<code>let result: [MediaKeySystemAccess] = result.await.into();</code>."]
     pub fn request_media_key_system_access(
         this: &Navigator,
         key_system: &str,
@@ -423,7 +423,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     #[doc = ""]
-    #[doc = "Argument `pattern`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `pattern`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn vibrate_with_pattern(this: &Navigator, pattern: &::wasm_bindgen::JsValue) -> bool;
     # [wasm_bindgen (catch , method , structural , js_class = "Navigator" , js_name = registerContentHandler)]
     #[doc = "The `registerContentHandler()` method."]

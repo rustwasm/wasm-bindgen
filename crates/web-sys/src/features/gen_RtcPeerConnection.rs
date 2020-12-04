@@ -564,7 +564,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_answer(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "RtcAnswerOptions")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createAnswer)]
@@ -574,7 +574,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcAnswerOptions`, `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_answer_with_rtc_answer_options(
         this: &RtcPeerConnection,
         options: &RtcAnswerOptions,
@@ -619,7 +619,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_offer(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "RtcOfferOptions")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createOffer)]
@@ -629,7 +629,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`, `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcSessionDescriptionInit`. It can be converted like `let result: RtcSessionDescriptionInit = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_offer_with_rtc_offer_options(
         this: &RtcPeerConnection,
         options: &RtcOfferOptions,
@@ -669,7 +669,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcCertificate`. It can be converted like `let result: RtcCertificate = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcCertificate]</code>. It can be converted like `<code>let result: [RtcCertificate] = result?.await.into();</code>."]
     pub fn generate_certificate_with_object(
         keygen_algorithm: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
@@ -680,7 +680,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcCertificate`. It can be converted like `let result: RtcCertificate = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcCertificate]</code>. It can be converted like `<code>let result: [RtcCertificate] = result?.await.into();</code>."]
     pub fn generate_certificate_with_str(
         keygen_algorithm: &str,
     ) -> Result<::js_sys::Promise, JsValue>;
@@ -699,7 +699,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `String`. It can be converted like `let result: String = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>. It can be converted like `<code>let result: [String] = result.await.into();</code>."]
     pub fn get_identity_assertion(this: &RtcPeerConnection) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getLocalStreams)]
     #[doc = "The `getLocalStreams()` method."]
@@ -708,7 +708,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaStream]</code>."]
     pub fn get_local_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getReceivers)]
     #[doc = "The `getReceivers()` method."]
@@ -717,7 +717,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpReceiver`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpReceiver]</code>."]
     pub fn get_receivers(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getRemoteStreams)]
     #[doc = "The `getRemoteStreams()` method."]
@@ -726,7 +726,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaStream`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaStream]</code>."]
     pub fn get_remote_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getSenders)]
     #[doc = "The `getSenders()` method."]
@@ -735,7 +735,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpSender`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpSender]</code>."]
     pub fn get_senders(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
     #[doc = "The `getStats()` method."]
@@ -744,7 +744,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcStatsReport`. It can be converted like `let result: RtcStatsReport = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcStatsReport]</code>. It can be converted like `<code>let result: [RtcStatsReport] = result.await.into();</code>."]
     pub fn get_stats(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
@@ -754,7 +754,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcStatsReport`. It can be converted like `let result: RtcStatsReport = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcStatsReport]</code>. It can be converted like `<code>let result: [RtcStatsReport] = result.await.into();</code>."]
     pub fn get_stats_with_selector(
         this: &RtcPeerConnection,
         selector: Option<&MediaStreamTrack>,
@@ -781,7 +781,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpTransceiver`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpTransceiver]</code>."]
     pub fn get_transceivers(this: &RtcPeerConnection) -> ::js_sys::Array;
     #[cfg(feature = "RtcRtpSender")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = removeTrack)]

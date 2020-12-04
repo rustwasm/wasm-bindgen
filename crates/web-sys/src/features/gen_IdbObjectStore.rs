@@ -125,7 +125,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`, `IdbObjectStore`*"]
     #[doc = ""]
-    #[doc = "Argument `key_path`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `key_path`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn create_index_with_str_sequence(
         this: &IdbObjectStore,
         name: &str,
@@ -152,7 +152,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`, `IdbIndexParameters`, `IdbObjectStore`*"]
     #[doc = ""]
-    #[doc = "Argument `key_path`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `key_path`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn create_index_with_str_sequence_and_optional_parameters(
         this: &IdbObjectStore,
         name: &str,

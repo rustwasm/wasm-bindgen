@@ -75,7 +75,7 @@ impl PromiseRejectionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
     #[doc = ""]
-    #[doc = "While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: wasm_bindgen :: JsValue`."]
+    #[doc = "While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::wasm_bindgen::JsValue]</code>."]
     pub fn promise(&mut self, val: &::js_sys::Promise) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

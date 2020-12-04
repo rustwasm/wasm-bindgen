@@ -141,7 +141,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyframeEffect`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Object`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Object]</code>."]
     pub fn get_keyframes(this: &KeyframeEffect) -> Result<::js_sys::Array, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "KeyframeEffect" , js_name = setKeyframes)]
     #[doc = "The `setKeyframes()` method."]

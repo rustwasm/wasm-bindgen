@@ -60,7 +60,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesis`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `SpeechSynthesisVoice`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[SpeechSynthesisVoice]</code>."]
     pub fn get_voices(this: &SpeechSynthesis) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "SpeechSynthesis" , js_name = pause)]
     #[doc = "The `pause()` method."]

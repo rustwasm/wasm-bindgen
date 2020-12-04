@@ -32,7 +32,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: js_sys :: Object`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn new_with_buffer_source_sequence(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& mut [u8]`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>& mut [u8]</code>."]
     pub fn new_with_u8_array_sequence(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
@@ -56,7 +56,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& Blob`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[Blob]</code>."]
     pub fn new_with_blob_sequence(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn new_with_str_sequence(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
@@ -81,7 +81,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: js_sys :: Object`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn new_with_buffer_source_sequence_and_options(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
@@ -95,7 +95,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& mut [u8]`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>& mut [u8]</code>."]
     pub fn new_with_u8_array_sequence_and_options(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
@@ -109,7 +109,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& Blob`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[Blob]</code>."]
     pub fn new_with_blob_sequence_and_options(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,
@@ -123,7 +123,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`, `FilePropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `file_bits`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn new_with_str_sequence_and_options(
         file_bits: &::wasm_bindgen::JsValue,
         file_name: &str,

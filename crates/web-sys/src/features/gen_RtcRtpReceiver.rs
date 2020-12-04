@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpContributingSource`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpContributingSource]</code>."]
     pub fn get_contributing_sources(this: &RtcRtpReceiver) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCRtpReceiver" , js_name = getStats)]
     #[doc = "The `getStats()` method."]
@@ -35,7 +35,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcStatsReport`. It can be converted like `let result: RtcStatsReport = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcStatsReport]</code>. It can be converted like `<code>let result: [RtcStatsReport] = result.await.into();</code>."]
     pub fn get_stats(this: &RtcRtpReceiver) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "RTCRtpReceiver" , js_name = getSynchronizationSources)]
     #[doc = "The `getSynchronizationSources()` method."]
@@ -44,6 +44,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `RtcRtpSynchronizationSource`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpSynchronizationSource]</code>."]
     pub fn get_synchronization_sources(this: &RtcRtpReceiver) -> ::js_sys::Array;
 }

@@ -164,7 +164,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn get() -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "GetNotificationOptions")]
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = get)]
@@ -174,7 +174,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetNotificationOptions`, `Notification`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn get_with_filter(filter: &GetNotificationOptions) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
@@ -183,7 +183,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `NotificationPermission`. It can be converted like `let result: NotificationPermission = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[NotificationPermission]</code>. It can be converted like `<code>let result: [NotificationPermission] = result?.await.into();</code>."]
     pub fn request_permission() -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
@@ -192,7 +192,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `NotificationPermission`. It can be converted like `let result: NotificationPermission = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[NotificationPermission]</code>. It can be converted like `<code>let result: [NotificationPermission] = result?.await.into();</code>."]
     pub fn request_permission_with_permission_callback(
         permission_callback: &::js_sys::Function,
     ) -> Result<::js_sys::Promise, JsValue>;

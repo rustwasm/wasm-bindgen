@@ -73,7 +73,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Argument `transfer`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: js_sys :: Object`."]
+    #[doc = "Argument `transfer`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn post_message_with_transfer(
         this: &DedicatedWorkerGlobalScope,
         message: &::wasm_bindgen::JsValue,

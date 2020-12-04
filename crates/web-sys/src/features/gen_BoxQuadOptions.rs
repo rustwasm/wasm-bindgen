@@ -36,6 +36,8 @@ impl BoxQuadOptions {
     #[doc = "Change the `relativeTo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn relative_to(&mut self, val: &::js_sys::Object) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

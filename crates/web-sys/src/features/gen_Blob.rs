@@ -39,7 +39,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: js_sys :: Object`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn new_with_buffer_source_sequence(
         blob_parts: &::wasm_bindgen::JsValue,
     ) -> Result<Blob, JsValue>;
@@ -50,7 +50,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& mut [u8]`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>& mut [u8]</code>."]
     pub fn new_with_u8_array_sequence(
         blob_parts: &::wasm_bindgen::JsValue,
     ) -> Result<Blob, JsValue>;
@@ -61,7 +61,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& Blob`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[Blob]</code>."]
     pub fn new_with_blob_sequence(blob_parts: &::wasm_bindgen::JsValue) -> Result<Blob, JsValue>;
     #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
@@ -70,7 +70,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn new_with_str_sequence(blob_parts: &::wasm_bindgen::JsValue) -> Result<Blob, JsValue>;
     #[cfg(feature = "BlobPropertyBag")]
     #[wasm_bindgen(catch, constructor, js_class = "Blob")]
@@ -80,7 +80,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: js_sys :: Object`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn new_with_buffer_source_sequence_and_options(
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
@@ -93,7 +93,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& mut [u8]`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>& mut [u8]</code>."]
     pub fn new_with_u8_array_sequence_and_options(
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
@@ -106,7 +106,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& Blob`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[Blob]</code>."]
     pub fn new_with_blob_sequence_and_options(
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
@@ -119,7 +119,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     #[doc = ""]
-    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `blob_parts`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn new_with_str_sequence_and_options(
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
@@ -131,7 +131,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: ArrayBuffer`. It can be converted like `let result: :: js_sys :: ArrayBuffer = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::ArrayBuffer]</code>. It can be converted like `<code>let result: [::js_sys::ArrayBuffer] = result.await.into();</code>."]
     pub fn array_buffer(this: &Blob) -> ::js_sys::Promise;
     # [wasm_bindgen (catch , method , structural , js_class = "Blob" , js_name = slice)]
     #[doc = "The `slice()` method."]
@@ -245,6 +245,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `String`. It can be converted like `let result: String = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>. It can be converted like `<code>let result: [String] = result.await.into();</code>."]
     pub fn text(this: &Blob) -> ::js_sys::Promise;
 }

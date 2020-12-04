@@ -170,7 +170,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`*"]
     #[doc = ""]
-    #[doc = "Argument `store_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `store_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn transaction_with_str_sequence(
         this: &IdbDatabase,
         store_names: &::wasm_bindgen::JsValue,
@@ -195,7 +195,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`, `IdbTransactionMode`*"]
     #[doc = ""]
-    #[doc = "Argument `store_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `store_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn transaction_with_str_sequence_and_mode(
         this: &IdbDatabase,
         store_names: &::wasm_bindgen::JsValue,

@@ -19,7 +19,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaCapabilities`, `MediaDecodingConfiguration`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaCapabilitiesInfo`. It can be converted like `let result: MediaCapabilitiesInfo = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaCapabilitiesInfo]</code>. It can be converted like `<code>let result: [MediaCapabilitiesInfo] = result.await.into();</code>."]
     pub fn decoding_info(
         this: &MediaCapabilities,
         configuration: &MediaDecodingConfiguration,
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaCapabilities`, `MediaEncodingConfiguration`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `MediaCapabilitiesInfo`. It can be converted like `let result: MediaCapabilitiesInfo = result.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaCapabilitiesInfo]</code>. It can be converted like `<code>let result: [MediaCapabilitiesInfo] = result.await.into();</code>."]
     pub fn encoding_info(
         this: &MediaCapabilities,
         configuration: &MediaEncodingConfiguration,

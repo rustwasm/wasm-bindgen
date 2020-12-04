@@ -90,7 +90,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PerformanceEntry`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PerformanceEntry]</code>."]
     pub fn get_entries(this: &Performance) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "Performance" , js_name = getEntriesByName)]
     #[doc = "The `getEntriesByName()` method."]
@@ -99,7 +99,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PerformanceEntry`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PerformanceEntry]</code>."]
     pub fn get_entries_by_name(this: &Performance, name: &str) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "Performance" , js_name = getEntriesByName)]
     #[doc = "The `getEntriesByName()` method."]
@@ -108,7 +108,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PerformanceEntry`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PerformanceEntry]</code>."]
     pub fn get_entries_by_name_with_entry_type(
         this: &Performance,
         name: &str,
@@ -121,7 +121,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `PerformanceEntry`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PerformanceEntry]</code>."]
     pub fn get_entries_by_type(this: &Performance, entry_type: &str) -> ::js_sys::Array;
     # [wasm_bindgen (catch , method , structural , js_class = "Performance" , js_name = mark)]
     #[doc = "The `mark()` method."]

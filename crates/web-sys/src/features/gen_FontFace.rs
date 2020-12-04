@@ -241,6 +241,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `FontFace`. It can be converted like `let result: FontFace = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[FontFace]</code>. It can be converted like `<code>let result: [FontFace] = result?.await.into();</code>."]
     pub fn load(this: &FontFace) -> Result<::js_sys::Promise, JsValue>;
 }

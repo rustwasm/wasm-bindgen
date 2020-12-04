@@ -18,7 +18,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebglDrawBuffers`*"]
     #[doc = ""]
-    #[doc = "Argument `buffers`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `buffers`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn draw_buffers_webgl(this: &WebglDrawBuffers, buffers: &::wasm_bindgen::JsValue);
 }
 impl WebglDrawBuffers {

@@ -18,9 +18,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2f`*"]
     #[doc = ""]
-    #[doc = "Argument `register_requests`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RegisterRequest`."]
+    #[doc = "Argument `register_requests`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RegisterRequest]</code>."]
     #[doc = ""]
-    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RegisteredKey`."]
+    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RegisteredKey]</code>."]
     pub fn register(
         this: &U2f,
         app_id: &str,
@@ -35,9 +35,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2f`*"]
     #[doc = ""]
-    #[doc = "Argument `register_requests`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RegisterRequest`."]
+    #[doc = "Argument `register_requests`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RegisterRequest]</code>."]
     #[doc = ""]
-    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RegisteredKey`."]
+    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RegisteredKey]</code>."]
     pub fn register_with_opt_timeout_seconds(
         this: &U2f,
         app_id: &str,
@@ -53,7 +53,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2f`*"]
     #[doc = ""]
-    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RegisteredKey`."]
+    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RegisteredKey]</code>."]
     pub fn sign(
         this: &U2f,
         app_id: &str,
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2f`*"]
     #[doc = ""]
-    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& RegisteredKey`."]
+    #[doc = "Argument `registered_keys`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[RegisteredKey]</code>."]
     pub fn sign_with_opt_timeout_seconds(
         this: &U2f,
         app_id: &str,

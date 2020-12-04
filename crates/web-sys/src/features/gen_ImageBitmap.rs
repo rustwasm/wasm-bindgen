@@ -48,7 +48,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
     #[doc = ""]
-    #[doc = "Argument `a_possible_formats`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `ImageBitmapFormat`."]
+    #[doc = "Argument `a_possible_formats`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ImageBitmapFormat]</code>."]
     pub fn find_optimal_format_with_a_possible_formats(
         this: &ImageBitmap,
         a_possible_formats: &::wasm_bindgen::JsValue,
@@ -61,7 +61,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn map_data_into_with_buffer_source(
         this: &ImageBitmap,
         a_format: ImageBitmapFormat,
@@ -76,7 +76,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `:: js_sys :: Array`. It can be converted like `let result: :: js_sys :: Array = result?.await.into();`. More information is available in the source IDL file."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn map_data_into_with_u8_array(
         this: &ImageBitmap,
         a_format: ImageBitmapFormat,

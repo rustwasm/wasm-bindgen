@@ -483,7 +483,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn clear_bufferfv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         buffer: u32,
@@ -510,7 +510,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn clear_bufferfv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         buffer: u32,
@@ -537,7 +537,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn clear_bufferiv_with_i32_sequence(
         this: &WebGl2RenderingContext,
         buffer: u32,
@@ -564,7 +564,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn clear_bufferiv_with_i32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         buffer: u32,
@@ -591,7 +591,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn clear_bufferuiv_with_u32_sequence(
         this: &WebGl2RenderingContext,
         buffer: u32,
@@ -618,7 +618,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn clear_bufferuiv_with_u32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         buffer: u32,
@@ -1466,7 +1466,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `buffers`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `buffers`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn draw_buffers(this: &WebGl2RenderingContext, buffers: &::wasm_bindgen::JsValue);
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = drawElementsInstanced)]
     #[doc = "The `drawElementsInstanced()` method."]
@@ -1600,7 +1600,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlProgram`*"]
     #[doc = ""]
-    #[doc = "Argument `uniform_indices`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `uniform_indices`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn get_active_uniforms(
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
@@ -1877,9 +1877,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlProgram`*"]
     #[doc = ""]
-    #[doc = "Argument `uniform_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `uniform_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn get_uniform_indices(
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
@@ -1892,7 +1892,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `attachments`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `attachments`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn invalidate_framebuffer(
         this: &WebGl2RenderingContext,
         target: u32,
@@ -1905,7 +1905,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `attachments`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `attachments`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn invalidate_sub_framebuffer(
         this: &WebGl2RenderingContext,
         target: u32,
@@ -3175,7 +3175,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlProgram`*"]
     #[doc = ""]
-    #[doc = "Argument `varyings`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& str`."]
+    #[doc = "Argument `varyings`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn transform_feedback_varyings(
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
@@ -3202,7 +3202,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform1fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3229,7 +3229,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform1fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3258,7 +3258,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform1fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3286,7 +3286,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform1iv_with_i32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3313,7 +3313,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform1iv_with_i32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3342,7 +3342,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform1iv_with_i32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3382,7 +3382,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform1uiv_with_u32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3409,7 +3409,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform1uiv_with_u32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3438,7 +3438,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform1uiv_with_u32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3466,7 +3466,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform2fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3493,7 +3493,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform2fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3522,7 +3522,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform2fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3550,7 +3550,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform2iv_with_i32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3577,7 +3577,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform2iv_with_i32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3606,7 +3606,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform2iv_with_i32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3647,7 +3647,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform2uiv_with_u32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3674,7 +3674,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform2uiv_with_u32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3703,7 +3703,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform2uiv_with_u32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3731,7 +3731,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform3fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3758,7 +3758,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform3fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3787,7 +3787,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform3fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3815,7 +3815,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform3iv_with_i32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3842,7 +3842,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform3iv_with_i32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3871,7 +3871,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform3iv_with_i32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3913,7 +3913,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform3uiv_with_u32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3940,7 +3940,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform3uiv_with_u32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3969,7 +3969,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform3uiv_with_u32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -3997,7 +3997,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform4fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4024,7 +4024,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform4fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4053,7 +4053,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform4fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4081,7 +4081,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform4iv_with_i32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4108,7 +4108,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform4iv_with_i32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4137,7 +4137,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn uniform4iv_with_i32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4180,7 +4180,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform4uiv_with_u32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4207,7 +4207,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform4uiv_with_u32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4236,7 +4236,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn uniform4uiv_with_u32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4278,7 +4278,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4307,7 +4307,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4338,7 +4338,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4368,7 +4368,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2x3fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4397,7 +4397,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2x3fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4428,7 +4428,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2x3fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4458,7 +4458,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2x4fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4487,7 +4487,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2x4fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4518,7 +4518,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix2x4fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4548,7 +4548,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4577,7 +4577,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4608,7 +4608,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4638,7 +4638,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3x2fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4667,7 +4667,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3x2fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4698,7 +4698,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3x2fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4728,7 +4728,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3x4fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4757,7 +4757,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3x4fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4788,7 +4788,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix3x4fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4818,7 +4818,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4847,7 +4847,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4878,7 +4878,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4908,7 +4908,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4x2fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4937,7 +4937,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4x2fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4968,7 +4968,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4x2fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -4998,7 +4998,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4x3fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -5027,7 +5027,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4x3fv_with_f32_sequence_and_src_offset(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -5058,7 +5058,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
     #[doc = ""]
-    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `data`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn uniform_matrix4x3fv_with_f32_sequence_and_src_offset_and_src_length(
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
@@ -5106,7 +5106,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `i32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[i32]</code>."]
     pub fn vertex_attrib_i4iv_with_i32_sequence(
         this: &WebGl2RenderingContext,
         index: u32,
@@ -5144,7 +5144,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `u32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn vertex_attrib_i4uiv_with_u32_sequence(
         this: &WebGl2RenderingContext,
         index: u32,
@@ -5699,7 +5699,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlProgram`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `WebGlShader`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[WebGlShader]</code>."]
     pub fn get_attached_shaders(
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
@@ -5859,7 +5859,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `String`."]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
     pub fn get_supported_extensions(this: &WebGl2RenderingContext) -> Option<::js_sys::Array>;
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getTexParameter)]
     #[doc = "The `getTexParameter()` method."]
@@ -6279,7 +6279,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn vertex_attrib1fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         indx: u32,
@@ -6310,7 +6310,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn vertex_attrib2fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         indx: u32,
@@ -6341,7 +6341,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn vertex_attrib3fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         indx: u32,
@@ -6379,7 +6379,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f32`."]
+    #[doc = "Argument `values`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn vertex_attrib4fv_with_f32_sequence(
         this: &WebGl2RenderingContext,
         indx: u32,

@@ -120,7 +120,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioBuffer`. It can be converted like `let result: AudioBuffer = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn start_rendering(this: &OfflineAudioContext) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "AnalyserNode")]
     # [wasm_bindgen (catch , method , structural , js_class = "OfflineAudioContext" , js_name = createAnalyser)]
@@ -264,9 +264,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterNode`, `OfflineAudioContext`*"]
     #[doc = ""]
-    #[doc = "Argument `feedforward`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
+    #[doc = "Argument `feedforward`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     #[doc = ""]
-    #[doc = "Argument `feedback`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
+    #[doc = "Argument `feedback`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     pub fn create_iir_filter(
         this: &OfflineAudioContext,
         feedforward: &::wasm_bindgen::JsValue,
@@ -382,7 +382,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioBuffer`. It can be converted like `let result: AudioBuffer = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data(
         this: &OfflineAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -394,7 +394,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioBuffer`. It can be converted like `let result: AudioBuffer = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback(
         this: &OfflineAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -407,7 +407,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `AudioBuffer`. It can be converted like `let result: AudioBuffer = result?.await.into();`."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback_and_error_callback(
         this: &OfflineAudioContext,
         audio_data: &::js_sys::ArrayBuffer,

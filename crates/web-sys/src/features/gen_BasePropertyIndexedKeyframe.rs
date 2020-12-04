@@ -22,6 +22,8 @@ impl BasePropertyIndexedKeyframe {
     #[doc = "Change the `composite` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn composite(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -39,6 +41,8 @@ impl BasePropertyIndexedKeyframe {
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn easing(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
@@ -53,6 +57,8 @@ impl BasePropertyIndexedKeyframe {
     #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
+    #[doc = ""]
+    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
     pub fn offset(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =

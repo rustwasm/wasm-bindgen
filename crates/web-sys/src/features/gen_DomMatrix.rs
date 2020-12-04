@@ -361,7 +361,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
     #[doc = ""]
-    #[doc = "Argument `number_sequence`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `f64`."]
+    #[doc = "Argument `number_sequence`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     pub fn new_with_number_sequence(
         number_sequence: &::wasm_bindgen::JsValue,
     ) -> Result<DomMatrix, JsValue>;
