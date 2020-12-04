@@ -38,7 +38,7 @@ fn comment(mut comment: String, features: &Option<String>) -> TokenStream {
     }
 }
 
-fn function_confession_docs(arguments_confessions: &Vec<(Ident, Option<crate::idl_type::Confession>)>, ret_confession: &Option<crate::idl_type::Confession>) -> proc_macro2::TokenStream {
+fn function_confession_docs(arguments_confessions: &[(Ident, Option<crate::idl_type::Confession>)], ret_confession: Option<&crate::idl_type::Confession>) -> proc_macro2::TokenStream {
     let mut lines = Vec::new();
     for (ident, confession) in arguments_confessions {
         if let Some(confession) = confession {
@@ -334,7 +334,7 @@ impl InterfaceMethod {
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
 
-        let type_docs = function_confession_docs(arguments_confessions, ret_confession);
+        let type_docs = function_confession_docs(arguments_confessions, ret_confession.as_ref());
 
         let mut is_constructor = false;
 
