@@ -103,6 +103,7 @@ pub struct Confession {
 enum ConfessionKind {
     Promise,
     Iterable,
+    Union,
 }
 
 impl Confession {
@@ -140,6 +141,11 @@ impl Confession {
                     show_more = false;
                     write!(text, "There is additional information in the IDL file about the items in \
                            this iterable or array, but it can not yet be explained any better.")?;
+                }
+                (ConfessionKind::Union, _) => {
+                    show_more = false;
+                    write!(text, "The type is actually a union over some types and  can not yet be \
+                           explained any better.")?;
                 }
             }
 
@@ -181,6 +187,15 @@ impl Confession {
 
     fn iterable(idl_type: &IdlType, pos: TypePosition) -> Self {
         Self::from_inner_idl_type(idl_type, pos, ConfessionKind::Iterable)
+    }
+
+    fn union(_idl_types: &[IdlType]) -> Self {
+        Self {
+            kind: ConfessionKind::Union,
+            actual_type: None,
+            has_more_data: false,
+            is_behind_result: false,
+        }
     }
 }
 
@@ -739,6 +754,7 @@ impl<'a> IdlType<'a> {
                 //    Such an enum, however, might have a relatively high
                 //    overhead in creating it from a JS value, but would be
                 //    cheap to convert from a variant back to a JS value.
+                confession = Some(Confession::union(&idl_types));
                 if idl_types.iter().all(|idl_type| match idl_type {
                     IdlType::Interface(..) => true,
                     _ => false,
@@ -747,10 +763,7 @@ impl<'a> IdlType<'a> {
                 } else {
                     IdlType::Any.to_syn_type(pos)
                 }
-                    .map(|(r, c)| {
-                        confession = c;
-                        r
-                    })
+                    .map(|(r, _c)| r)
             }
 
             IdlType::Any => Ok(js_value),
