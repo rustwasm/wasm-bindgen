@@ -167,6 +167,7 @@ pub struct InterfaceAttribute {
     pub catch: bool,
     pub kind: InterfaceAttributeKind,
     pub unstable: bool,
+    pub confession: Option<crate::idl_type::Confession>,
 }
 
 impl InterfaceAttribute {
@@ -185,10 +186,23 @@ impl InterfaceAttribute {
             catch,
             kind,
             unstable,
+            confession,
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
+
+        let type_docs = confession.as_ref().map(|c| {
+            let preamble = match kind {
+                InterfaceAttributeKind::Getter => "Return value",
+                InterfaceAttributeKind::Setter => "Argument",
+            };
+            let line = format!("{}: {}", preamble, c.tell(false));
+            quote! {
+                #[doc = ""]
+                #[doc = #line ]
+            }
+        });
 
         let mdn_docs = mdn_doc(parent_js_name, Some(js_name));
 
@@ -278,6 +292,7 @@ impl InterfaceAttribute {
                 js_name = #js_name
             )]
             #doc_comment
+            #type_docs
             #unstable_docs
             #def
         }

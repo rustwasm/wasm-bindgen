@@ -447,8 +447,12 @@ impl<'src> FirstPassRecord<'src> {
         unstable: bool,
     ) {
         let idl_type = member.const_type.to_idl_type(self);
-        // FIXME dismissing confession
-        let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().0.unwrap();
+        let (ty, confession) = idl_type.to_syn_type(TypePosition::Return).unwrap();
+        if let Some(_) = confession {
+            eprintln!("Confession found for member {:?}, this is unexpected and will be missing \
+                      from the generated documentation.", member);
+        }
+        let ty = ty.unwrap();
 
         let js_name = member.identifier.0;
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
@@ -580,8 +584,7 @@ impl<'src> FirstPassRecord<'src> {
 
         let catch = throws(attrs);
 
-        // FIXME dismissing confession
-        let (ty, _) = type_
+        let (ty, confession) = type_
             .type_
             .to_idl_type(self)
             .to_syn_type(TypePosition::Return)
@@ -598,12 +601,12 @@ impl<'src> FirstPassRecord<'src> {
                 js_name: js_name.clone(),
                 kind,
                 unstable,
+                confession,
             });
         }
 
         if !readonly {
-            // FIXME dismissing confession
-            let (ty, _) = type_
+            let (ty, confession) = type_
                 .type_
                 .to_idl_type(self)
                 .to_syn_type(TypePosition::Argument)
@@ -620,6 +623,7 @@ impl<'src> FirstPassRecord<'src> {
                     js_name,
                     kind,
                     unstable,
+                    confession,
                 });
             }
         }
