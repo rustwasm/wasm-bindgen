@@ -95,7 +95,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn close(this: &AudioContext) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(all(feature = "HtmlMediaElement", feature = "MediaElementAudioSourceNode",))]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioContext" , js_name = createMediaElementSource)]
@@ -136,7 +136,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn suspend(this: &AudioContext) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "AnalyserNode")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioContext" , js_name = createAnalyser)]
@@ -429,6 +429,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn resume(this: &AudioContext) -> Result<::js_sys::Promise, JsValue>;
 }

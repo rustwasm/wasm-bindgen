@@ -19,7 +19,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Request`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_with_request(this: &Cache, request: &Request) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = add)]
     #[doc = "The `add()` method."]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_with_str(this: &Cache, request: &str) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = addAll)]
     #[doc = "The `addAll()` method."]
@@ -39,7 +39,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `requests`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[Request]</code>."]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_all_with_request_sequence(
         this: &Cache,
         requests: &::wasm_bindgen::JsValue,
@@ -53,7 +53,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `requests`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_all_with_str_sequence(
         this: &Cache,
         requests: &::wasm_bindgen::JsValue,
@@ -272,7 +272,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Request`, `Response`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn put_with_request(
         this: &Cache,
         request: &Request,
@@ -286,6 +286,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Response`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn put_with_str(this: &Cache, request: &str, response: &Response) -> ::js_sys::Promise;
 }

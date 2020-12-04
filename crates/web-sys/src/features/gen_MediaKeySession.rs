@@ -83,7 +83,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn close(this: &MediaKeySession) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "MediaKeySession" , js_name = generateRequest)]
     #[doc = "The `generateRequest()` method."]
@@ -92,7 +92,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn generate_request_with_buffer_source(
         this: &MediaKeySession,
         init_data_type: &str,
@@ -105,7 +105,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn generate_request_with_u8_array(
         this: &MediaKeySession,
         init_data_type: &str,
@@ -127,7 +127,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn remove(this: &MediaKeySession) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "MediaKeySession" , js_name = update)]
     #[doc = "The `update()` method."]
@@ -136,7 +136,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn update_with_buffer_source(
         this: &MediaKeySession,
         response: &::js_sys::Object,
@@ -148,6 +148,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn update_with_u8_array(this: &MediaKeySession, response: &mut [u8]) -> ::js_sys::Promise;
 }

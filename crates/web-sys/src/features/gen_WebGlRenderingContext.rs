@@ -1591,7 +1591,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlRenderingContext`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn make_xr_compatible(this: &WebGlRenderingContext) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = pixelStorei)]
     #[doc = "The `pixelStorei()` method."]

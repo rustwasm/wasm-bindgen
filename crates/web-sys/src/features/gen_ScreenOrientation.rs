@@ -48,7 +48,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OrientationLockType`, `ScreenOrientation`*"]
     #[doc = ""]
-    #[doc = "Return value: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn lock(
         this: &ScreenOrientation,
         orientation: OrientationLockType,

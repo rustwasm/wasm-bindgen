@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEvent`*"]
     #[doc = ""]
-    #[doc = "Argument `details_promise`: There is additional information in the IDL file about the content of the promise, but it can not yet be explained any better."]
+    #[doc = "Argument `details_promise`: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn update_with(
         this: &PaymentRequestUpdateEvent,
         details_promise: &::js_sys::Promise,
