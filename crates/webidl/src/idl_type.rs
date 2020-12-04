@@ -106,6 +106,53 @@ enum ConfessionKind {
     Union,
 }
 
+/// Render a syn::Type in such a way that it can be included in rustdoc text.
+///
+/// This generally looks similar to quoting it, but will make a best-effort attempt to create
+/// usable rustdoc links from it or its parts. It also attempts some clean-up like removing any
+/// lavishly used whitespace.
+///
+/// The result is not set in the teletype font common for code examples; it is recommended that the
+/// consumer of this string put it in `<code>...</code>` together with any surrounding text. (If
+/// backticks were used, those would wind up in separate code tags, creating artifacts inbetween
+/// the production boundaries, and moreover the backticks might interfere in unexpected ways).
+///
+/// A more advanced version of this would look into the details of the syn and render them
+/// piecemeal and recursively, to produce things like `[Option]<[::some::Foo]>` (which is unlike
+/// leaving all to rustdoc which would accept a `[Option<::some::Foo>]` but merely render it as
+/// "Option"); for now this captures the easy cases which make up most of webidl.
+fn doc_prettyprint(t: &syn::Type) -> String {
+    use quote::quote;
+
+    fn is_simple(s: &str) -> bool {
+        s
+            // Don't accept any whitespace -- `mut Foo` is not simple
+            .replace(" :: ", "")
+            .replace(":: ", "")
+            .chars().all(|c| c.is_alphanumeric() || c == '_')
+    }
+
+    let quoted = format!("{}", quote! { #t });
+
+    // The two more common case of things that are not is_simple but still easy
+    if let Some(q) = quoted.strip_prefix("Option < ").and_then(|q| q.strip_suffix(" >")) {
+        if is_simple(q) {
+            return format!("[Option]<[{}]>", q.replace(" ", ""))
+        }
+    }
+    if let Some(q) = quoted.strip_prefix("& ") {
+        if is_simple(q) {
+            return format!("&[{}]", q.replace(" ", ""))
+        }
+    }
+
+    if is_simple(&quoted) {
+        format!("[{}]", quoted.replace(" ", ""))
+    } else {
+        quoted
+    }
+}
+
 impl Confession {
     /// Create a textual description of what's wrong with the returned type.
     ///
@@ -119,10 +166,10 @@ impl Confession {
             match (&self.kind, &self.actual_type) {
                 (ConfessionKind::Promise, Some(s)) => {
                     write!(text, "While the Promise can produce any JsValue as far as the type system is \
-                            concerned, practically it is expected to contain a `{}`.", s)?;
+                            concerned, practically it is expected to contain a <code>{}</code>.", s)?;
                     if in_return_position {
                         write!(text, " It can be converted like \
-                               `let result: {} = {}.await.into();`.",
+                              `<code>let result: {} = {}.await.into();</code>.",
                             s,
                             if self.is_behind_result { "result?" } else { "result" }
                             )?;
@@ -135,7 +182,7 @@ impl Confession {
                 }
                 (ConfessionKind::Iterable, Some(s)) => {
                     write!(text, "While the iterable or array can produce any JsValue as far as the \
-                            type system is concerned, practically it is expected to contain a `{}`.", s)?;
+                            type system is concerned, practically it is expected to contain a <code>{}</code>.", s)?;
                 },
                 (ConfessionKind::Iterable, None) => {
                     show_more = false;
@@ -162,13 +209,11 @@ impl Confession {
     }
 
     fn from_inner_idl_type(idl_type: &IdlType, idl_type_position: TypePosition, kind: ConfessionKind) -> Self {
-        use quote::quote;
-
         let (actual_type, has_more_data) = match idl_type.to_syn_type(idl_type_position) {
             // Without a type, there's not much point in telling there'd be *even* more data
             Err(_) | Ok((None, _)) => (None, false),
             Ok((Some(t), i)) => (
-                Some(format!("{}", quote! { #t })),
+                Some(doc_prettyprint(&t)),
                 i.is_some()
                 ),
         };
