@@ -32,7 +32,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Headers`*"]
     #[doc = ""]
-    #[doc = "Argument `init`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: wasm_bindgen :: JsValue` (with more information in the IDL file)."]
+    #[doc = "Argument `init`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: wasm_bindgen :: JsValue`. More information is available in the source IDL file."]
     pub fn new_with_str_sequence_sequence(
         init: &::wasm_bindgen::JsValue,
     ) -> Result<Headers, JsValue>;

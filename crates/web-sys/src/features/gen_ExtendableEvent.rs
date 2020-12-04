@@ -36,6 +36,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableEvent`*"]
     #[doc = ""]
-    #[doc = "Argument `p`: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: wasm_bindgen :: JsValue`. It can be converted like `let result: & :: wasm_bindgen :: JsValue = result.await.into();`."]
+    #[doc = "Argument `p`: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& :: wasm_bindgen :: JsValue`."]
     pub fn wait_until(this: &ExtendableEvent, p: &::js_sys::Promise) -> Result<(), JsValue>;
 }

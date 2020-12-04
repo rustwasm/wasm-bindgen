@@ -48,6 +48,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEvent`*"]
     #[doc = ""]
-    #[doc = "Argument `r`: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& Response`. It can be converted like `let result: & Response = result.await.into();`."]
+    #[doc = "Argument `r`: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a `& Response`."]
     pub fn respond_with(this: &FetchEvent, r: &::js_sys::Promise) -> Result<(), JsValue>;
 }
