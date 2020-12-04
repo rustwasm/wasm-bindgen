@@ -38,5 +38,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey/usages)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
     pub fn usages(this: &CryptoKey) -> ::js_sys::Array;
 }

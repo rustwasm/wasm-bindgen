@@ -314,6 +314,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/onencrypted)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onencrypted(this: &HtmlMediaElement) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = onencrypted)]
     #[doc = "Setter for the `onencrypted` field of this object."]
@@ -321,6 +323,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/onencrypted)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onencrypted(this: &HtmlMediaElement, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = onwaitingforkey)]
     #[doc = "Getter for the `onwaitingforkey` field of this object."]
@@ -328,6 +332,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/onwaitingforkey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwaitingforkey(this: &HtmlMediaElement) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = onwaitingforkey)]
     #[doc = "Setter for the `onwaitingforkey` field of this object."]
@@ -335,6 +341,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/onwaitingforkey)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwaitingforkey(this: &HtmlMediaElement, value: Option<&::js_sys::Function>);
     #[cfg(all(feature = "TextTrack", feature = "TextTrackKind",))]
     # [wasm_bindgen (method , structural , js_class = "HTMLMediaElement" , js_name = addTextTrack)]
@@ -411,7 +419,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn play(this: &HtmlMediaElement) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLMediaElement" , js_name = seekToNextFrame)]
     #[doc = "The `seekToNextFrame()` method."]
@@ -420,7 +428,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn seek_to_next_frame(this: &HtmlMediaElement) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaKeys")]
     # [wasm_bindgen (method , structural , js_class = "HTMLMediaElement" , js_name = setMediaKeys)]

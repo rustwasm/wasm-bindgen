@@ -71,6 +71,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstatechange(this: &BaseAudioContext) -> Option<::js_sys::Function>;
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     # [wasm_bindgen (structural , method , setter , js_class = "BaseAudioContext" , js_name = onstatechange)]
@@ -79,6 +81,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstatechange(this: &BaseAudioContext, value: Option<&::js_sys::Function>);
     #[deprecated(note = "doesn't exist in Safari, use `AudioContext` instead now")]
     #[cfg(feature = "AnalyserNode")]
@@ -360,7 +364,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data(
         this: &BaseAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -375,7 +379,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback(
         this: &BaseAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -393,7 +397,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback_and_error_callback(
         this: &BaseAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -408,6 +412,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn resume(this: &BaseAudioContext) -> Result<::js_sys::Promise, JsValue>;
 }

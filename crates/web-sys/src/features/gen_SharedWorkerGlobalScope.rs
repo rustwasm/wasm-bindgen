@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorkerGlobalScope/onconnect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SharedWorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onconnect(this: &SharedWorkerGlobalScope) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SharedWorkerGlobalScope" , js_name = onconnect)]
     #[doc = "Setter for the `onconnect` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorkerGlobalScope/onconnect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SharedWorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onconnect(this: &SharedWorkerGlobalScope, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (method , structural , js_class = "SharedWorkerGlobalScope" , js_name = close)]
     #[doc = "The `close()` method."]

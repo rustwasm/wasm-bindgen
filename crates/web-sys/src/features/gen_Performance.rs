@@ -40,6 +40,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Performance/onresourcetimingbufferfull)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onresourcetimingbufferfull(this: &Performance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Performance" , js_name = onresourcetimingbufferfull)]
     #[doc = "Setter for the `onresourcetimingbufferfull` field of this object."]
@@ -47,6 +49,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Performance/onresourcetimingbufferfull)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onresourcetimingbufferfull(this: &Performance, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (method , structural , js_class = "Performance" , js_name = clearMarks)]
     #[doc = "The `clearMarks()` method."]

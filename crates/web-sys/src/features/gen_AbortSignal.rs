@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &AbortSignal) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "AbortSignal" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -31,5 +33,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &AbortSignal, value: Option<&::js_sys::Function>);
 }

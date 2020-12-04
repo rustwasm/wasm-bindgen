@@ -39,6 +39,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onconnect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onconnect(this: &PresentationConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "PresentationConnection" , js_name = onconnect)]
     #[doc = "Setter for the `onconnect` field of this object."]
@@ -46,6 +48,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onconnect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onconnect(this: &PresentationConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "PresentationConnection" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
@@ -53,6 +57,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclose(this: &PresentationConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "PresentationConnection" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
@@ -60,6 +66,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclose(this: &PresentationConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "PresentationConnection" , js_name = onterminate)]
     #[doc = "Getter for the `onterminate` field of this object."]
@@ -67,6 +75,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onterminate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onterminate(this: &PresentationConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "PresentationConnection" , js_name = onterminate)]
     #[doc = "Setter for the `onterminate` field of this object."]
@@ -74,6 +84,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onterminate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onterminate(this: &PresentationConnection, value: Option<&::js_sys::Function>);
     #[cfg(feature = "PresentationConnectionBinaryType")]
     # [wasm_bindgen (structural , method , getter , js_class = "PresentationConnection" , js_name = binaryType)]
@@ -97,6 +109,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessage(this: &PresentationConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "PresentationConnection" , js_name = onmessage)]
     #[doc = "Setter for the `onmessage` field of this object."]
@@ -104,6 +118,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnection/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessage(this: &PresentationConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (catch , method , structural , js_class = "PresentationConnection" , js_name = close)]
     #[doc = "The `close()` method."]

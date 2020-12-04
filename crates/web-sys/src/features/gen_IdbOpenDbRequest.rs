@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/onblocked)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbRequest`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onblocked(this: &IdbOpenDbRequest) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBOpenDBRequest" , js_name = onblocked)]
     #[doc = "Setter for the `onblocked` field of this object."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/onblocked)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbRequest`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onblocked(this: &IdbOpenDbRequest, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBOpenDBRequest" , js_name = onupgradeneeded)]
     #[doc = "Getter for the `onupgradeneeded` field of this object."]
@@ -31,6 +35,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/onupgradeneeded)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbRequest`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onupgradeneeded(this: &IdbOpenDbRequest) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBOpenDBRequest" , js_name = onupgradeneeded)]
     #[doc = "Setter for the `onupgradeneeded` field of this object."]
@@ -38,5 +44,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/onupgradeneeded)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbRequest`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onupgradeneeded(this: &IdbOpenDbRequest, value: Option<&::js_sys::Function>);
 }

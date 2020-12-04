@@ -111,6 +111,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Screen/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Screen`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchange(this: &Screen) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Screen" , js_name = onchange)]
     #[doc = "Setter for the `onchange` field of this object."]
@@ -118,5 +120,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Screen/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Screen`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchange(this: &Screen, value: Option<&::js_sys::Function>);
 }

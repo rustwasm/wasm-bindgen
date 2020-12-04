@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSetLoadEvent/fontfaces)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetLoadEvent`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[FontFace]</code>."]
     pub fn fontfaces(this: &FontFaceSetLoadEvent) -> ::js_sys::Array;
     #[wasm_bindgen(catch, constructor, js_class = "FontFaceSetLoadEvent")]
     #[doc = "The `new FontFaceSetLoadEvent(..)` constructor, creating a new instance of `FontFaceSetLoadEvent`."]

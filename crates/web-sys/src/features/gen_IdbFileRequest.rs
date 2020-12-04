@@ -33,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileRequest/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileRequest`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onprogress(this: &IdbFileRequest) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBFileRequest" , js_name = onprogress)]
     #[doc = "Setter for the `onprogress` field of this object."]
@@ -40,5 +42,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileRequest/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileRequest`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onprogress(this: &IdbFileRequest, value: Option<&::js_sys::Function>);
 }

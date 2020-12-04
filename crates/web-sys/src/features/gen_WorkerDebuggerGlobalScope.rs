@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerDebuggerGlobalScope/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessage(this: &WorkerDebuggerGlobalScope) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "WorkerDebuggerGlobalScope" , js_name = onmessage)]
     #[doc = "Setter for the `onmessage` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerDebuggerGlobalScope/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessage(this: &WorkerDebuggerGlobalScope, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (catch , method , structural , js_class = "WorkerDebuggerGlobalScope" , js_name = createSandbox)]
     #[doc = "The `createSandbox()` method."]
@@ -110,7 +114,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::wasm_bindgen::JsValue]</code>."]
+    #[doc = "Return value: While the iterable or array of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::wasm_bindgen::JsValue]</code>."]
     pub fn retrieve_console_events(
         this: &WorkerDebuggerGlobalScope,
     ) -> Result<::js_sys::Array, JsValue>;
@@ -121,7 +125,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
     #[doc = ""]
-    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_console_event_handler(
         this: &WorkerDebuggerGlobalScope,
         handler: Option<&::js_sys::Function>,

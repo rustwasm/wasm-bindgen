@@ -31,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaddtrack(this: &MediaStream) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaStream" , js_name = onaddtrack)]
     #[doc = "Setter for the `onaddtrack` field of this object."]
@@ -38,6 +40,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaddtrack(this: &MediaStream, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStream" , js_name = onremovetrack)]
     #[doc = "Getter for the `onremovetrack` field of this object."]
@@ -45,6 +49,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/onremovetrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onremovetrack(this: &MediaStream) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaStream" , js_name = onremovetrack)]
     #[doc = "Setter for the `onremovetrack` field of this object."]
@@ -52,6 +58,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/onremovetrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onremovetrack(this: &MediaStream, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStream" , js_name = currentTime)]
     #[doc = "Getter for the `currentTime` field of this object."]

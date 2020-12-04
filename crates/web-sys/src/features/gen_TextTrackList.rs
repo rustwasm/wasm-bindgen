@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchange(this: &TextTrackList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TextTrackList" , js_name = onchange)]
     #[doc = "Setter for the `onchange` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchange(this: &TextTrackList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TextTrackList" , js_name = onaddtrack)]
     #[doc = "Getter for the `onaddtrack` field of this object."]
@@ -38,6 +42,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaddtrack(this: &TextTrackList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TextTrackList" , js_name = onaddtrack)]
     #[doc = "Setter for the `onaddtrack` field of this object."]
@@ -45,6 +51,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaddtrack(this: &TextTrackList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TextTrackList" , js_name = onremovetrack)]
     #[doc = "Getter for the `onremovetrack` field of this object."]
@@ -52,6 +60,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList/onremovetrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onremovetrack(this: &TextTrackList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TextTrackList" , js_name = onremovetrack)]
     #[doc = "Setter for the `onremovetrack` field of this object."]
@@ -59,6 +69,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList/onremovetrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onremovetrack(this: &TextTrackList, value: Option<&::js_sys::Function>);
     #[cfg(feature = "TextTrack")]
     # [wasm_bindgen (method , structural , js_class = "TextTrackList" , js_name = getTrackById)]

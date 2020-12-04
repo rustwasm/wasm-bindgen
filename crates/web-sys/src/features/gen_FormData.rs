@@ -68,7 +68,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FormData`*"]
     #[doc = ""]
-    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn get(this: &FormData, name: &str) -> ::wasm_bindgen::JsValue;
     # [wasm_bindgen (method , structural , js_class = "FormData" , js_name = getAll)]
     #[doc = "The `getAll()` method."]

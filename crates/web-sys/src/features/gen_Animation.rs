@@ -120,6 +120,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/ready)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Animation]</code>."]
     pub fn ready(this: &Animation) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Animation" , js_name = finished)]
     #[doc = "Getter for the `finished` field of this object."]
@@ -127,6 +129,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Animation]</code>."]
     pub fn finished(this: &Animation) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Animation" , js_name = onfinish)]
     #[doc = "Getter for the `onfinish` field of this object."]
@@ -134,6 +138,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onfinish(this: &Animation) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Animation" , js_name = onfinish)]
     #[doc = "Setter for the `onfinish` field of this object."]
@@ -141,6 +147,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onfinish(this: &Animation, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Animation" , js_name = oncancel)]
     #[doc = "Getter for the `oncancel` field of this object."]
@@ -148,6 +156,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/oncancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncancel(this: &Animation) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Animation" , js_name = oncancel)]
     #[doc = "Setter for the `oncancel` field of this object."]
@@ -155,6 +165,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/oncancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncancel(this: &Animation, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "Animation")]
     #[doc = "The `new Animation(..)` constructor, creating a new instance of `Animation`."]

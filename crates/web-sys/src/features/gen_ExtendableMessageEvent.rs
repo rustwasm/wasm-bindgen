@@ -38,6 +38,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableMessageEvent/source)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEvent`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn source(this: &ExtendableMessageEvent) -> Option<::js_sys::Object>;
     # [wasm_bindgen (structural , method , getter , js_class = "ExtendableMessageEvent" , js_name = ports)]
     #[doc = "Getter for the `ports` field of this object."]
@@ -45,6 +47,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableMessageEvent/ports)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEvent`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MessagePort]</code>."]
     pub fn ports(this: &ExtendableMessageEvent) -> ::js_sys::Array;
     #[wasm_bindgen(catch, constructor, js_class = "ExtendableMessageEvent")]
     #[doc = "The `new ExtendableMessageEvent(..)` constructor, creating a new instance of `ExtendableMessageEvent`."]

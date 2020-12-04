@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onreadystatechange(this: &XmlHttpRequest) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequest" , js_name = onreadystatechange)]
     #[doc = "Setter for the `onreadystatechange` field of this object."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onreadystatechange(this: &XmlHttpRequest, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequest" , js_name = readyState)]
     #[doc = "Getter for the `readyState` field of this object."]

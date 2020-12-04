@@ -18,7 +18,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Worklet`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_module(this: &Worklet, module_url: &str) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "WorkletOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "Worklet" , js_name = addModule)]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Worklet`, `WorkletOptions`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_module_with_options(
         this: &Worklet,
         module_url: &str,

@@ -103,6 +103,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onaudiostart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaudiostart(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onaudiostart)]
     #[doc = "Setter for the `onaudiostart` field of this object."]
@@ -110,6 +112,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onaudiostart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaudiostart(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onsoundstart)]
     #[doc = "Getter for the `onsoundstart` field of this object."]
@@ -117,6 +121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onsoundstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onsoundstart(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onsoundstart)]
     #[doc = "Setter for the `onsoundstart` field of this object."]
@@ -124,6 +130,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onsoundstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onsoundstart(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onspeechstart)]
     #[doc = "Getter for the `onspeechstart` field of this object."]
@@ -131,6 +139,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onspeechstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onspeechstart(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onspeechstart)]
     #[doc = "Setter for the `onspeechstart` field of this object."]
@@ -138,6 +148,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onspeechstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onspeechstart(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onspeechend)]
     #[doc = "Getter for the `onspeechend` field of this object."]
@@ -145,6 +157,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onspeechend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onspeechend(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onspeechend)]
     #[doc = "Setter for the `onspeechend` field of this object."]
@@ -152,6 +166,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onspeechend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onspeechend(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onsoundend)]
     #[doc = "Getter for the `onsoundend` field of this object."]
@@ -159,6 +175,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onsoundend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onsoundend(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onsoundend)]
     #[doc = "Setter for the `onsoundend` field of this object."]
@@ -166,6 +184,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onsoundend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onsoundend(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onaudioend)]
     #[doc = "Getter for the `onaudioend` field of this object."]
@@ -173,6 +193,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onaudioend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaudioend(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onaudioend)]
     #[doc = "Setter for the `onaudioend` field of this object."]
@@ -180,6 +202,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onaudioend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaudioend(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onresult)]
     #[doc = "Getter for the `onresult` field of this object."]
@@ -187,6 +211,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onresult)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onresult(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onresult)]
     #[doc = "Setter for the `onresult` field of this object."]
@@ -194,6 +220,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onresult)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onresult(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onnomatch)]
     #[doc = "Getter for the `onnomatch` field of this object."]
@@ -201,6 +229,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onnomatch)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onnomatch(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onnomatch)]
     #[doc = "Setter for the `onnomatch` field of this object."]
@@ -208,6 +238,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onnomatch)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onnomatch(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -215,6 +247,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -222,6 +256,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onstart)]
     #[doc = "Getter for the `onstart` field of this object."]
@@ -229,6 +265,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstart(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onstart)]
     #[doc = "Setter for the `onstart` field of this object."]
@@ -236,6 +274,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstart(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognition" , js_name = onend)]
     #[doc = "Getter for the `onend` field of this object."]
@@ -243,6 +283,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onend(this: &SpeechRecognition) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = onend)]
     #[doc = "Setter for the `onend` field of this object."]
@@ -250,6 +292,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/onend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onend(this: &SpeechRecognition, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "SpeechRecognition")]
     #[doc = "The `new SpeechRecognition(..)` constructor, creating a new instance of `SpeechRecognition`."]

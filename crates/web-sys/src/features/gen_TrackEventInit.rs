@@ -74,7 +74,7 @@ impl TrackEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
     #[doc = ""]
-    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = "The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn track(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("track"), &JsValue::from(val));

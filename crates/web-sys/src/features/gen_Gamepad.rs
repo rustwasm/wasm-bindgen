@@ -61,6 +61,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/buttons)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[GamepadButton]</code>."]
     pub fn buttons(this: &Gamepad) -> ::js_sys::Array;
     # [wasm_bindgen (structural , method , getter , js_class = "Gamepad" , js_name = axes)]
     #[doc = "Getter for the `axes` field of this object."]
@@ -68,6 +70,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/axes)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     pub fn axes(this: &Gamepad) -> ::js_sys::Array;
     # [wasm_bindgen (structural , method , getter , js_class = "Gamepad" , js_name = timestamp)]
     #[doc = "Getter for the `timestamp` field of this object."]
@@ -90,5 +94,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/hapticActuators)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[GamepadHapticActuator]</code>."]
     pub fn haptic_actuators(this: &Gamepad) -> ::js_sys::Array;
 }

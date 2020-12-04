@@ -31,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchange(this: &MediaQueryList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaQueryList" , js_name = onchange)]
     #[doc = "Setter for the `onchange` field of this object."]
@@ -38,6 +40,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchange(this: &MediaQueryList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (catch , method , structural , js_class = "MediaQueryList" , js_name = addListener)]
     #[doc = "The `addListener()` method."]
@@ -46,7 +50,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     #[doc = ""]
-    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn add_listener_with_opt_callback(
         this: &MediaQueryList,
         listener: Option<&::js_sys::Function>,
@@ -69,7 +73,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
     #[doc = ""]
-    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn remove_listener_with_opt_callback(
         this: &MediaQueryList,
         listener: Option<&::js_sys::Function>,

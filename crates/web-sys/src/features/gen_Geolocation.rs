@@ -39,7 +39,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
-    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn get_current_position_with_error_callback(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -55,7 +55,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
-    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn get_current_position_with_error_callback_and_options(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -83,7 +83,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
-    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn watch_position_with_error_callback(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -99,7 +99,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
-    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn watch_position_with_error_callback_and_options(
         this: &Geolocation,
         success_callback: &::js_sys::Function,

@@ -113,6 +113,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerNavigator/languages)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerNavigator`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
     pub fn languages(this: &WorkerNavigator) -> ::js_sys::Array;
     # [wasm_bindgen (structural , method , getter , js_class = "WorkerNavigator" , js_name = onLine)]
     #[doc = "Getter for the `onLine` field of this object."]

@@ -56,6 +56,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn stroke_style(this: &CanvasRenderingContext2d) -> ::wasm_bindgen::JsValue;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = strokeStyle)]
     #[doc = "Setter for the `strokeStyle` field of this object."]
@@ -63,6 +65,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[doc = ""]
+    #[doc = "Argument: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn set_stroke_style(this: &CanvasRenderingContext2d, value: &::wasm_bindgen::JsValue);
     # [wasm_bindgen (structural , method , getter , js_class = "CanvasRenderingContext2D" , js_name = fillStyle)]
     #[doc = "Getter for the `fillStyle` field of this object."]
@@ -70,6 +74,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn fill_style(this: &CanvasRenderingContext2d) -> ::wasm_bindgen::JsValue;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = fillStyle)]
     #[doc = "Setter for the `fillStyle` field of this object."]
@@ -77,6 +83,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[doc = ""]
+    #[doc = "Argument: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn set_fill_style(this: &CanvasRenderingContext2d, value: &::wasm_bindgen::JsValue);
     # [wasm_bindgen (structural , method , getter , js_class = "CanvasRenderingContext2D" , js_name = filter)]
     #[doc = "Getter for the `filter` field of this object."]

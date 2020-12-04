@@ -18,7 +18,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Permissions`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PermissionStatus]</code>. It can be converted like `<code>let result: [PermissionStatus] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PermissionStatus]</code>. It can be converted like `<code>let result: [PermissionStatus] = result?.await.into();</code>."]
     pub fn query(
         this: &Permissions,
         permission: &::js_sys::Object,
@@ -30,7 +30,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Permissions`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PermissionStatus]</code>. It can be converted like `<code>let result: [PermissionStatus] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PermissionStatus]</code>. It can be converted like `<code>let result: [PermissionStatus] = result?.await.into();</code>."]
     pub fn revoke(
         this: &Permissions,
         permission: &::js_sys::Object,

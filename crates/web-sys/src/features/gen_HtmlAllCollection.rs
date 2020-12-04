@@ -33,7 +33,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAllCollection`*"]
     #[doc = ""]
-    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn item_with_name(this: &HtmlAllCollection, name: &str) -> Option<::js_sys::Object>;
     # [wasm_bindgen (method , structural , js_class = "HTMLAllCollection" , js_name = namedItem)]
     #[doc = "The `namedItem()` method."]
@@ -42,7 +42,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAllCollection`*"]
     #[doc = ""]
-    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn named_item(this: &HtmlAllCollection, name: &str) -> Option<::js_sys::Object>;
     #[cfg(feature = "Node")]
     #[wasm_bindgen(method, structural, js_class = "HTMLAllCollection", indexing_getter)]
@@ -59,6 +59,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAllCollection`*"]
     #[doc = ""]
-    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn get_with_name(this: &HtmlAllCollection, name: &str) -> Option<::js_sys::Object>;
 }

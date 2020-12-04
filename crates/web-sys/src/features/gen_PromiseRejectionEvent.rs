@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PromiseRejectionEvent/promise)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEvent`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::wasm_bindgen::JsValue]</code>."]
     pub fn promise(this: &PromiseRejectionEvent) -> ::js_sys::Promise;
     # [wasm_bindgen (structural , method , getter , js_class = "PromiseRejectionEvent" , js_name = reason)]
     #[doc = "Getter for the `reason` field of this object."]

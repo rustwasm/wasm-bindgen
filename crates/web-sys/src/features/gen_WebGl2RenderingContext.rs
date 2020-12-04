@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/canvas)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn canvas(this: &WebGl2RenderingContext) -> Option<::js_sys::Object>;
     # [wasm_bindgen (structural , method , getter , js_class = "WebGL2RenderingContext" , js_name = drawingBufferWidth)]
     #[doc = "Getter for the `drawingBufferWidth` field of this object."]
@@ -1879,7 +1881,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "Argument `uniform_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
+    #[doc = "Return value: While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[u32]</code>."]
     pub fn get_uniform_indices(
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
@@ -5699,7 +5701,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlProgram`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[WebGlShader]</code>."]
+    #[doc = "Return value: While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[WebGlShader]</code>."]
     pub fn get_attached_shaders(
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
@@ -5859,7 +5861,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
+    #[doc = "Return value: While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
     pub fn get_supported_extensions(this: &WebGl2RenderingContext) -> Option<::js_sys::Array>;
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getTexParameter)]
     #[doc = "The `getTexParameter()` method."]

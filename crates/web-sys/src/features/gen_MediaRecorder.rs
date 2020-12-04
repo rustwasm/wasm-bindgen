@@ -40,6 +40,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/ondataavailable)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondataavailable(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaRecorder" , js_name = ondataavailable)]
     #[doc = "Setter for the `ondataavailable` field of this object."]
@@ -47,6 +49,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/ondataavailable)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondataavailable(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MediaRecorder" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -54,6 +58,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaRecorder" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -61,6 +67,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MediaRecorder" , js_name = onstart)]
     #[doc = "Getter for the `onstart` field of this object."]
@@ -68,6 +76,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstart(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaRecorder" , js_name = onstart)]
     #[doc = "Setter for the `onstart` field of this object."]
@@ -75,6 +85,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstart(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MediaRecorder" , js_name = onstop)]
     #[doc = "Getter for the `onstop` field of this object."]
@@ -82,6 +94,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstop(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaRecorder" , js_name = onstop)]
     #[doc = "Setter for the `onstop` field of this object."]
@@ -89,6 +103,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onstop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstop(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MediaRecorder" , js_name = onwarning)]
     #[doc = "Getter for the `onwarning` field of this object."]
@@ -96,6 +112,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onwarning)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwarning(this: &MediaRecorder) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaRecorder" , js_name = onwarning)]
     #[doc = "Setter for the `onwarning` field of this object."]
@@ -103,6 +121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/onwarning)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwarning(this: &MediaRecorder, value: Option<&::js_sys::Function>);
     #[cfg(feature = "MediaStream")]
     #[wasm_bindgen(catch, constructor, js_class = "MediaRecorder")]

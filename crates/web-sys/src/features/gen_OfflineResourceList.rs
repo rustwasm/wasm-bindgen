@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onchecking)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchecking(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = onchecking)]
     #[doc = "Setter for the `onchecking` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onchecking)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchecking(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineResourceList" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -38,6 +42,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -45,6 +51,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineResourceList" , js_name = onnoupdate)]
     #[doc = "Getter for the `onnoupdate` field of this object."]
@@ -52,6 +60,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onnoupdate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onnoupdate(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = onnoupdate)]
     #[doc = "Setter for the `onnoupdate` field of this object."]
@@ -59,6 +69,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onnoupdate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onnoupdate(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineResourceList" , js_name = ondownloading)]
     #[doc = "Getter for the `ondownloading` field of this object."]
@@ -66,6 +78,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/ondownloading)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondownloading(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = ondownloading)]
     #[doc = "Setter for the `ondownloading` field of this object."]
@@ -73,6 +87,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/ondownloading)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondownloading(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineResourceList" , js_name = onprogress)]
     #[doc = "Getter for the `onprogress` field of this object."]
@@ -80,6 +96,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onprogress(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = onprogress)]
     #[doc = "Setter for the `onprogress` field of this object."]
@@ -87,6 +105,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onprogress(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineResourceList" , js_name = onupdateready)]
     #[doc = "Getter for the `onupdateready` field of this object."]
@@ -94,6 +114,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onupdateready)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onupdateready(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = onupdateready)]
     #[doc = "Setter for the `onupdateready` field of this object."]
@@ -101,6 +123,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onupdateready)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onupdateready(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineResourceList" , js_name = oncached)]
     #[doc = "Getter for the `oncached` field of this object."]
@@ -108,6 +132,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/oncached)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncached(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = oncached)]
     #[doc = "Setter for the `oncached` field of this object."]
@@ -115,6 +141,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/oncached)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncached(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineResourceList" , js_name = onobsolete)]
     #[doc = "Getter for the `onobsolete` field of this object."]
@@ -122,6 +150,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onobsolete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onobsolete(this: &OfflineResourceList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineResourceList" , js_name = onobsolete)]
     #[doc = "Setter for the `onobsolete` field of this object."]
@@ -129,6 +159,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineResourceList/onobsolete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineResourceList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onobsolete(this: &OfflineResourceList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (catch , method , structural , js_class = "OfflineResourceList" , js_name = swapCache)]
     #[doc = "The `swapCache()` method."]

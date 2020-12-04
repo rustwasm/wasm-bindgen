@@ -253,7 +253,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::ArrayBuffer]</code>. It can be converted like `<code>let result: [::js_sys::ArrayBuffer] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::ArrayBuffer]</code>. It can be converted like `<code>let result: [::js_sys::ArrayBuffer] = result?.await.into();</code>."]
     pub fn array_buffer(this: &Response) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Response" , js_name = blob)]
     #[doc = "The `blob()` method."]
@@ -262,7 +262,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Blob]</code>. It can be converted like `<code>let result: [Blob] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Blob]</code>. It can be converted like `<code>let result: [Blob] = result?.await.into();</code>."]
     pub fn blob(this: &Response) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Response" , js_name = formData)]
     #[doc = "The `formData()` method."]
@@ -271,7 +271,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[FormData]</code>. It can be converted like `<code>let result: [FormData] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[FormData]</code>. It can be converted like `<code>let result: [FormData] = result?.await.into();</code>."]
     pub fn form_data(this: &Response) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Response" , js_name = json)]
     #[doc = "The `json()` method."]
@@ -280,7 +280,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Object]</code>. It can be converted like `<code>let result: [::js_sys::Object] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Object]</code>. It can be converted like `<code>let result: [::js_sys::Object] = result?.await.into();</code>."]
     pub fn json(this: &Response) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Response" , js_name = text)]
     #[doc = "The `text()` method."]
@@ -289,6 +289,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>. It can be converted like `<code>let result: [String] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>. It can be converted like `<code>let result: [String] = result?.await.into();</code>."]
     pub fn text(this: &Response) -> Result<::js_sys::Promise, JsValue>;
 }

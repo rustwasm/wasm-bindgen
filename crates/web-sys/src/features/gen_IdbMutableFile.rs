@@ -39,6 +39,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBMutableFile/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbMutableFile`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &IdbMutableFile) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBMutableFile" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -46,6 +48,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBMutableFile/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbMutableFile`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &IdbMutableFile, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBMutableFile" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -53,6 +57,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBMutableFile/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbMutableFile`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &IdbMutableFile) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBMutableFile" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -60,6 +66,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBMutableFile/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbMutableFile`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &IdbMutableFile, value: Option<&::js_sys::Function>);
     #[cfg(feature = "DomRequest")]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBMutableFile" , js_name = getFile)]

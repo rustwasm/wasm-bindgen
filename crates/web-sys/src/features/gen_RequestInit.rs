@@ -23,7 +23,7 @@ impl RequestInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
     #[doc = ""]
-    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = "The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn body(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("body"), &JsValue::from(val));

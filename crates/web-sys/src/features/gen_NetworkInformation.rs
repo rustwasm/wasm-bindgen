@@ -25,6 +25,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/ontypechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkInformation`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontypechange(this: &NetworkInformation) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "NetworkInformation" , js_name = ontypechange)]
     #[doc = "Setter for the `ontypechange` field of this object."]
@@ -32,5 +34,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/ontypechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkInformation`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontypechange(this: &NetworkInformation, value: Option<&::js_sys::Function>);
 }

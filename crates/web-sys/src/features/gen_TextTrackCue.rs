@@ -81,6 +81,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/onenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCue`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onenter(this: &TextTrackCue) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TextTrackCue" , js_name = onenter)]
     #[doc = "Setter for the `onenter` field of this object."]
@@ -88,6 +90,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/onenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCue`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onenter(this: &TextTrackCue, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TextTrackCue" , js_name = onexit)]
     #[doc = "Getter for the `onexit` field of this object."]
@@ -95,6 +99,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/onexit)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCue`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onexit(this: &TextTrackCue) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TextTrackCue" , js_name = onexit)]
     #[doc = "Setter for the `onexit` field of this object."]
@@ -102,5 +108,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/onexit)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCue`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onexit(this: &TextTrackCue, value: Option<&::js_sys::Function>);
 }

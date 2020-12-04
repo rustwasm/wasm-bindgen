@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBCursor/source)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbCursor`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn source(this: &IdbCursor) -> ::js_sys::Object;
     #[cfg(feature = "IdbCursorDirection")]
     # [wasm_bindgen (structural , method , getter , js_class = "IDBCursor" , js_name = direction)]

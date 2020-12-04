@@ -53,7 +53,7 @@ impl RegisteredKey {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     #[doc = ""]
-    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Transport]</code>."]
+    #[doc = "While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Transport]</code>."]
     pub fn transports(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

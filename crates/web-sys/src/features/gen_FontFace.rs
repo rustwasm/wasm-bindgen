@@ -151,6 +151,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/loaded)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[FontFace]</code>."]
     pub fn loaded(this: &FontFace) -> Result<::js_sys::Promise, JsValue>;
     #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
@@ -241,6 +243,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
     #[doc = ""]
-    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[FontFace]</code>. It can be converted like `<code>let result: [FontFace] = result?.await.into();</code>."]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[FontFace]</code>. It can be converted like `<code>let result: [FontFace] = result?.await.into();</code>."]
     pub fn load(this: &FontFace) -> Result<::js_sys::Promise, JsValue>;
 }

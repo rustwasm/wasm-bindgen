@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationAvailability/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationAvailability`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchange(this: &PresentationAvailability) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "PresentationAvailability" , js_name = onchange)]
     #[doc = "Setter for the `onchange` field of this object."]
@@ -31,5 +33,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationAvailability/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationAvailability`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchange(this: &PresentationAvailability, value: Option<&::js_sys::Function>);
 }

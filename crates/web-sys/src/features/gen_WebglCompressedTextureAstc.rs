@@ -18,7 +18,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebglCompressedTextureAstc`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
+    #[doc = "Return value: While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
     pub fn get_supported_profiles(this: &WebglCompressedTextureAstc) -> Option<::js_sys::Array>;
 }
 impl WebglCompressedTextureAstc {

@@ -40,7 +40,7 @@ impl IdbObjectStoreParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
     #[doc = ""]
-    #[doc = "The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = "The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn key_path(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

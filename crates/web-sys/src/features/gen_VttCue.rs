@@ -63,6 +63,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/line)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn line(this: &VttCue) -> ::wasm_bindgen::JsValue;
     # [wasm_bindgen (structural , method , setter , js_class = "VTTCue" , js_name = line)]
     #[doc = "Setter for the `line` field of this object."]
@@ -70,6 +72,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/line)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
+    #[doc = ""]
+    #[doc = "Argument: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn set_line(this: &VttCue, value: &::wasm_bindgen::JsValue);
     #[cfg(feature = "LineAlignSetting")]
     # [wasm_bindgen (structural , method , getter , js_class = "VTTCue" , js_name = lineAlign)]
@@ -93,6 +97,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/position)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn position(this: &VttCue) -> ::wasm_bindgen::JsValue;
     # [wasm_bindgen (structural , method , setter , js_class = "VTTCue" , js_name = position)]
     #[doc = "Setter for the `position` field of this object."]
@@ -100,6 +106,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/position)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
+    #[doc = ""]
+    #[doc = "Argument: The type is actually a union over some types and  can not yet be explained any better."]
     pub fn set_position(this: &VttCue, value: &::wasm_bindgen::JsValue);
     #[cfg(feature = "PositionAlignSetting")]
     # [wasm_bindgen (structural , method , getter , js_class = "VTTCue" , js_name = positionAlign)]

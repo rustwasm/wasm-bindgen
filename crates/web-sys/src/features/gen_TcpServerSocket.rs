@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPServerSocket/onconnect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpServerSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onconnect(this: &TcpServerSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TCPServerSocket" , js_name = onconnect)]
     #[doc = "Setter for the `onconnect` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPServerSocket/onconnect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpServerSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onconnect(this: &TcpServerSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TCPServerSocket" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -38,6 +42,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPServerSocket/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpServerSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &TcpServerSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TCPServerSocket" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -45,6 +51,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPServerSocket/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpServerSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &TcpServerSocket, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "TCPServerSocket")]
     #[doc = "The `new TcpServerSocket(..)` constructor, creating a new instance of `TcpServerSocket`."]

@@ -32,6 +32,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/thresholds)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     pub fn thresholds(this: &IntersectionObserver) -> ::js_sys::Array;
     #[wasm_bindgen(catch, constructor, js_class = "IntersectionObserver")]
     #[doc = "The `new IntersectionObserver(..)` constructor, creating a new instance of `IntersectionObserver`."]

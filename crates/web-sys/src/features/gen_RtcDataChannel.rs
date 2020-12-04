@@ -74,6 +74,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onopen(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCDataChannel" , js_name = onopen)]
     #[doc = "Setter for the `onopen` field of this object."]
@@ -81,6 +83,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onopen(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCDataChannel" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -88,6 +92,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCDataChannel" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -95,6 +101,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCDataChannel" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
@@ -102,6 +110,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclose(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCDataChannel" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
@@ -109,6 +119,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclose(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCDataChannel" , js_name = onmessage)]
     #[doc = "Getter for the `onmessage` field of this object."]
@@ -116,6 +128,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessage(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCDataChannel" , js_name = onmessage)]
     #[doc = "Setter for the `onmessage` field of this object."]
@@ -123,6 +137,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessage(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCDataChannel" , js_name = onbufferedamountlow)]
     #[doc = "Getter for the `onbufferedamountlow` field of this object."]
@@ -130,6 +146,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onbufferedamountlow)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onbufferedamountlow(this: &RtcDataChannel) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCDataChannel" , js_name = onbufferedamountlow)]
     #[doc = "Setter for the `onbufferedamountlow` field of this object."]
@@ -137,6 +155,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/onbufferedamountlow)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onbufferedamountlow(this: &RtcDataChannel, value: Option<&::js_sys::Function>);
     #[cfg(feature = "RtcDataChannelType")]
     # [wasm_bindgen (structural , method , getter , js_class = "RTCDataChannel" , js_name = binaryType)]

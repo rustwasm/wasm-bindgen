@@ -33,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiAccess`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstatechange(this: &MidiAccess) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MIDIAccess" , js_name = onstatechange)]
     #[doc = "Setter for the `onstatechange` field of this object."]
@@ -40,6 +42,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiAccess`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstatechange(this: &MidiAccess, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MIDIAccess" , js_name = sysexEnabled)]
     #[doc = "Getter for the `sysexEnabled` field of this object."]

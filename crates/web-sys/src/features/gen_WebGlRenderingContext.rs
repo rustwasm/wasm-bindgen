@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/canvas)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlRenderingContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn canvas(this: &WebGlRenderingContext) -> Option<::js_sys::Object>;
     # [wasm_bindgen (structural , method , getter , js_class = "WebGLRenderingContext" , js_name = drawingBufferWidth)]
     #[doc = "Getter for the `drawingBufferWidth` field of this object."]
@@ -1280,7 +1282,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlProgram`, `WebGlRenderingContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[WebGlShader]</code>."]
+    #[doc = "Return value: While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[WebGlShader]</code>."]
     pub fn get_attached_shaders(
         this: &WebGlRenderingContext,
         program: &WebGlProgram,
@@ -1439,7 +1441,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlRenderingContext`*"]
     #[doc = ""]
-    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
+    #[doc = "Return value: While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>."]
     pub fn get_supported_extensions(this: &WebGlRenderingContext) -> Option<::js_sys::Array>;
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = getTexParameter)]
     #[doc = "The `getTexParameter()` method."]
