@@ -2175,6 +2175,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn request_animation_frame(
         this: &Window,
         callback: &::js_sys::Function,
@@ -2185,6 +2187,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn request_idle_callback(
         this: &Window,
         callback: &::js_sys::Function,
@@ -2196,6 +2200,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`, `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn request_idle_callback_with_options(
         this: &Window,
         callback: &::js_sys::Function,
@@ -2656,6 +2662,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2666,6 +2674,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2678,6 +2688,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_0(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2689,6 +2701,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_1(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2701,6 +2715,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_2(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2714,6 +2730,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_3(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2728,6 +2746,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_4(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2743,6 +2763,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_5(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2759,6 +2781,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_6(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2776,6 +2800,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_7(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2929,6 +2955,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2939,6 +2967,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2951,6 +2981,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_0(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2962,6 +2994,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_1(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2974,6 +3008,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_2(
         this: &Window,
         handler: &::js_sys::Function,
@@ -2987,6 +3023,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_3(
         this: &Window,
         handler: &::js_sys::Function,
@@ -3001,6 +3039,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_4(
         this: &Window,
         handler: &::js_sys::Function,
@@ -3016,6 +3056,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_5(
         this: &Window,
         handler: &::js_sys::Function,
@@ -3032,6 +3074,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_6(
         this: &Window,
         handler: &::js_sys::Function,
@@ -3049,6 +3093,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_7(
         this: &Window,
         handler: &::js_sys::Function,

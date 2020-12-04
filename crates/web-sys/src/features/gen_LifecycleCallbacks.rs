@@ -22,6 +22,8 @@ impl LifecycleCallbacks {
     #[doc = "Change the `adoptedCallback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn adopted_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -39,6 +41,8 @@ impl LifecycleCallbacks {
     #[doc = "Change the `attributeChangedCallback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn attribute_changed_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -56,6 +60,8 @@ impl LifecycleCallbacks {
     #[doc = "Change the `connectedCallback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn connected_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -73,6 +79,8 @@ impl LifecycleCallbacks {
     #[doc = "Change the `disconnectedCallback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn disconnected_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

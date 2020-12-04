@@ -120,6 +120,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerDebuggerGlobalScope/setConsoleEventHandler)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_console_event_handler(
         this: &WorkerDebuggerGlobalScope,
         handler: Option<&::js_sys::Function>,
@@ -130,6 +132,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerDebuggerGlobalScope/setImmediate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerDebuggerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_immediate(
         this: &WorkerDebuggerGlobalScope,
         handler: &::js_sys::Function,

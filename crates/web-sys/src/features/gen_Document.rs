@@ -2873,6 +2873,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createExpression)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathExpression`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn create_expression_with_opt_callback(
         this: &Document,
         expression: &str,
@@ -2916,6 +2918,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn evaluate_with_opt_callback(
         this: &Document,
         expression: &str,
@@ -2942,6 +2946,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn evaluate_with_opt_callback_and_type(
         this: &Document,
         expression: &str,
@@ -2970,6 +2976,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn evaluate_with_opt_callback_and_type_and_result(
         this: &Document,
         expression: &str,

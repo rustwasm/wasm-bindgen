@@ -577,6 +577,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -587,6 +589,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -599,6 +603,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_0(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -610,6 +616,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_1(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -622,6 +630,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_2(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -635,6 +645,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_3(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -649,6 +661,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_4(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -664,6 +678,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_5(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -680,6 +696,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_6(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -697,6 +715,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setInterval)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_interval_with_callback_and_timeout_and_arguments_7(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -850,6 +870,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -860,6 +882,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -872,6 +896,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_0(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -883,6 +909,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_1(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -895,6 +923,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_2(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -908,6 +938,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_3(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -922,6 +954,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_4(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -937,6 +971,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_5(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -953,6 +989,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_6(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,
@@ -970,6 +1008,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/setTimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `handler`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn set_timeout_with_callback_and_timeout_and_arguments_7(
         this: &WorkerGlobalScope,
         handler: &::js_sys::Function,

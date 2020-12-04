@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn add_event_listener_with_callback(
         this: &EventTarget,
         type_: &str,
@@ -48,6 +50,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AddEventListenerOptions`, `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn add_event_listener_with_callback_and_add_event_listener_options(
         this: &EventTarget,
         type_: &str,
@@ -73,6 +77,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn add_event_listener_with_callback_and_bool(
         this: &EventTarget,
         type_: &str,
@@ -99,6 +105,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AddEventListenerOptions`, `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn add_event_listener_with_callback_and_add_event_listener_options_and_wants_untrusted(
         this: &EventTarget,
         type_: &str,
@@ -126,6 +134,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn add_event_listener_with_callback_and_bool_and_wants_untrusted(
         this: &EventTarget,
         type_: &str,
@@ -161,6 +171,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn remove_event_listener_with_callback(
         this: &EventTarget,
         type_: &str,
@@ -185,6 +197,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`, `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn remove_event_listener_with_callback_and_event_listener_options(
         this: &EventTarget,
         type_: &str,
@@ -210,6 +224,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn remove_event_listener_with_callback_and_bool(
         this: &EventTarget,
         type_: &str,

@@ -312,6 +312,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnection`*"]
     #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_ice_candidate_with_rtc_ice_candidate_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
@@ -586,6 +590,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn create_answer_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
@@ -641,6 +649,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn create_offer_with_callback_and_failure_callback(
         this: &RtcPeerConnection,
@@ -654,6 +666,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn create_offer_with_callback_and_failure_callback_and_options(
@@ -767,6 +783,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
     #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn get_stats_with_selector_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
@@ -831,6 +851,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
     #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn set_local_description_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
@@ -858,6 +882,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setRemoteDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn set_remote_description_with_success_callback_and_failure_callback(

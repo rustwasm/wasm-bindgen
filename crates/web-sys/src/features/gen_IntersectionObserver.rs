@@ -39,6 +39,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
+    #[doc = ""]
+    #[doc = "Argument `intersection_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn new(intersection_callback: &::js_sys::Function)
         -> Result<IntersectionObserver, JsValue>;
     #[cfg(feature = "IntersectionObserverInit")]
@@ -48,6 +50,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`, `IntersectionObserverInit`*"]
+    #[doc = ""]
+    #[doc = "Argument `intersection_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn new_with_options(
         intersection_callback: &::js_sys::Function,
         options: &IntersectionObserverInit,

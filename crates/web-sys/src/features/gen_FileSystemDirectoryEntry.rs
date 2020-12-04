@@ -52,6 +52,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_directory_with_path_and_options_and_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,
@@ -78,6 +80,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_directory_with_path_and_options_and_callback_and_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,
@@ -92,6 +98,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_directory_with_path_and_options_and_file_system_entry_callback_and_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,
@@ -106,6 +114,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getDirectory)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_directory_with_path_and_options_and_callback_and_error_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,
@@ -164,6 +174,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_file_with_path_and_options_and_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,
@@ -190,6 +202,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_file_with_path_and_options_and_callback_and_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,
@@ -204,6 +220,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryEntry`, `FileSystemEntryCallback`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_file_with_path_and_options_and_file_system_entry_callback_and_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,
@@ -218,6 +236,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry/getFile)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemDirectoryEntry`, `FileSystemFlags`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_file_with_path_and_options_and_callback_and_error_callback(
         this: &FileSystemDirectoryEntry,
         path: Option<&str>,

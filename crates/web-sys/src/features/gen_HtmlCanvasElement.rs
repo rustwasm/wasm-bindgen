@@ -66,6 +66,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn to_blob(this: &HtmlCanvasElement, callback: &::js_sys::Function) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = toBlob)]
     #[doc = "The `toBlob()` method."]
@@ -73,6 +75,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn to_blob_with_type(
         this: &HtmlCanvasElement,
         callback: &::js_sys::Function,
@@ -84,6 +88,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn to_blob_with_type_and_encoder_options(
         this: &HtmlCanvasElement,
         callback: &::js_sys::Function,

@@ -126,6 +126,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/forEach)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Argument `cb`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn for_each(this: &FontFaceSet, cb: &::js_sys::Function) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "FontFaceSet" , js_name = forEach)]
     #[doc = "The `forEach()` method."]
@@ -133,6 +135,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/forEach)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Argument `cb`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn for_each_with_this_arg(
         this: &FontFaceSet,
         cb: &::js_sys::Function,

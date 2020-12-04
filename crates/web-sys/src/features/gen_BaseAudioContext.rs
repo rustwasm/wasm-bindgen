@@ -373,6 +373,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
     #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback(
         this: &BaseAudioContext,
@@ -386,6 +388,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback_and_error_callback(

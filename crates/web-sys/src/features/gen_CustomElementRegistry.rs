@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomElementRegistry`*"]
+    #[doc = ""]
+    #[doc = "Argument `function_constructor`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn define(
         this: &CustomElementRegistry,
         name: &str,
@@ -29,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomElementRegistry`, `ElementDefinitionOptions`*"]
+    #[doc = ""]
+    #[doc = "Argument `function_constructor`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn define_with_options(
         this: &CustomElementRegistry,
         name: &str,

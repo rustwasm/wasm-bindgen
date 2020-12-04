@@ -192,6 +192,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     #[doc = ""]
+    #[doc = "Argument `permission_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
     #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[NotificationPermission]</code>. It can be converted like `<code>let result: [NotificationPermission] = result?.await.into();</code>."]
     pub fn request_permission_with_permission_callback(
         permission_callback: &::js_sys::Function,

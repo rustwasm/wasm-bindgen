@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFileEntry`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn file_with_callback(this: &FileSystemFileEntry, success_callback: &::js_sys::Function);
     #[cfg(feature = "FileCallback")]
     # [wasm_bindgen (method , structural , js_class = "FileSystemFileEntry" , js_name = file)]
@@ -32,6 +34,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFileEntry`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn file_with_callback_and_callback(
         this: &FileSystemFileEntry,
         success_callback: &::js_sys::Function,
@@ -44,6 +50,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`, `FileSystemFileEntry`*"]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn file_with_file_callback_and_callback(
         this: &FileSystemFileEntry,
         success_callback: &FileCallback,
@@ -56,6 +64,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry/file)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemFileEntry`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn file_with_callback_and_error_callback(
         this: &FileSystemFileEntry,
         success_callback: &::js_sys::Function,

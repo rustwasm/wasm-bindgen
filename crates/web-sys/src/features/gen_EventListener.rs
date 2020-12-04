@@ -22,6 +22,8 @@ impl EventListener {
     #[doc = "Change the `handleEvent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListener`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

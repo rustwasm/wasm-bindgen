@@ -45,6 +45,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn add_listener_with_opt_callback(
         this: &MediaQueryList,
         listener: Option<&::js_sys::Function>,
@@ -66,6 +68,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/removeListener)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
+    #[doc = ""]
+    #[doc = "Argument `listener`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn remove_listener_with_opt_callback(
         this: &MediaQueryList,
         listener: Option<&::js_sys::Function>,

@@ -60,6 +60,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemEntry/getParent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemEntry`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_parent_with_callback(this: &FileSystemEntry, success_callback: &::js_sys::Function);
     #[cfg(feature = "FileSystemEntryCallback")]
     # [wasm_bindgen (method , structural , js_class = "FileSystemEntry" , js_name = getParent)]
@@ -78,6 +80,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemEntry/getParent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemEntry`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_parent_with_callback_and_callback(
         this: &FileSystemEntry,
         success_callback: &::js_sys::Function,
@@ -90,6 +96,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemEntry/getParent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemEntry`, `FileSystemEntryCallback`*"]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_parent_with_file_system_entry_callback_and_callback(
         this: &FileSystemEntry,
         success_callback: &FileSystemEntryCallback,
@@ -102,6 +110,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemEntry/getParent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorCallback`, `FileSystemEntry`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_parent_with_callback_and_error_callback(
         this: &FileSystemEntry,
         success_callback: &::js_sys::Function,
