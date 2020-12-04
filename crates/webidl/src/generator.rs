@@ -43,12 +43,12 @@ fn function_confession_docs(arguments_confessions: &Vec<(Ident, Option<crate::id
     for (ident, confession) in arguments_confessions {
         if let Some(confession) = confession {
             lines.push("".to_string());
-            lines.push(format!("Argument `{}`: {}", ident, confession.tell()));
+            lines.push(format!("Argument `{}`: {}", ident, confession.tell(false)));
         }
     }
     if let Some(confession) = ret_confession {
         lines.push("".to_string());
-        lines.push(format!("Return value: {}", confession.tell()));
+        lines.push(format!("Return value: {}", confession.tell(true)));
     }
     let lines = lines.iter().map(|doc| quote!( #[doc = #doc] ));
     quote! { #(#lines)* }
@@ -667,7 +667,7 @@ impl DictionaryField {
         // Shaping function_confession_docs to be usable here would be more effort than just doing
         // this quickly:
         let type_docs = confession.as_ref().map(|c| {
-            let line = c.tell();
+            let line = c.tell(false);
             quote! {
                 #[doc = ""]
                 #[doc = #line ]
