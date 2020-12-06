@@ -11,7 +11,7 @@ use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
-use walrus::{FunctionId, ImportId, MemoryId, Module, TableId};
+use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
 
@@ -53,6 +53,9 @@ pub struct Context<'a> {
     /// names.
     memory_indices: HashMap<MemoryId, usize>,
     table_indices: HashMap<TableId, usize>,
+
+    /// A flag to track if the stack pointer setter shim has been injected.
+    stack_pointer_shim_injected: bool,
 }
 
 #[derive(Default)]
@@ -100,6 +103,7 @@ impl<'a> Context<'a> {
             aux,
             memory_indices: Default::default(),
             table_indices: Default::default(),
+            stack_pointer_shim_injected: false,
         })
     }
 
@@ -3304,6 +3308,47 @@ impl<'a> Context<'a> {
         } else {
             format!("{}{}", name, cnt)
         }
+    }
+
+    fn inject_stack_pointer_shim(&mut self) -> Result<(), Error> {
+        if self.stack_pointer_shim_injected {
+            return Ok(());
+        }
+        let stack_pointer = match self.aux.shadow_stack_pointer {
+            Some(s) => s,
+            // In theory this shouldn't happen since malloc is included in
+            // most wasm binaries (and may be gc'd out) and that almost
+            // always pulls in a stack pointer. We can try to synthesize
+            // something here later if necessary.
+            None => bail!("failed to find shadow stack pointer"),
+        };
+
+        use walrus::ir::*;
+
+        let mut builder =
+            walrus::FunctionBuilder::new(&mut self.module.types, &[ValType::I32], &[ValType::I32]);
+        builder.name("__wbindgen_add_to_stack_pointer".to_string());
+
+        let mut body = builder.func_body();
+        let arg = self.module.locals.add(ValType::I32);
+
+        // Create a shim function that mutate the stack pointer
+        // to avoid exporting a mutable global.
+        body.local_get(arg)
+            .global_get(stack_pointer)
+            .binop(BinaryOp::I32Add)
+            .global_set(stack_pointer)
+            .global_get(stack_pointer);
+
+        let add_to_stack_pointer_func = builder.finish(vec![arg], &mut self.module.funcs);
+
+        self.module
+            .exports
+            .add("__wbindgen_add_to_stack_pointer", add_to_stack_pointer_func);
+
+        self.stack_pointer_shim_injected = true;
+
+        Ok(())
     }
 }
 
