@@ -436,6 +436,14 @@ fn get_ty(mut ty: &syn::Type) -> &syn::Type {
     ty
 }
 
+fn get_expr(mut expr: &syn::Expr) -> &syn::Expr {
+    while let syn::Expr::Group(g) = expr {
+        expr = &g.expr;
+    }
+
+    expr
+}
+
 impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
@@ -1074,24 +1082,24 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
         }
 
-        match &v.discriminant {
-            Some((
-                _,
-                syn::Expr::Lit(syn::ExprLit {
-                    attrs: _,
-                    lit: syn::Lit::Str(str_lit),
-                }),
-            )) => {
-                variants.push(v.ident.clone());
-                variant_values.push(str_lit.value());
-            }
-            Some((_, expr)) => bail_span!(
-                expr,
-                "enums with #[wasm_bidngen] cannot mix string and non-string values",
-            ),
+        let (_, expr) = match &v.discriminant {
+            Some(pair) => pair,
             None => {
                 bail_span!(v, "all variants must have a value");
             }
+        };
+        match get_expr(expr) {
+            syn::Expr::Lit(syn::ExprLit {
+                attrs: _,
+                lit: syn::Lit::Str(str_lit),
+            }) => {
+                variants.push(v.ident.clone());
+                variant_values.push(str_lit.value());
+            }
+            expr => bail_span!(
+                expr,
+                "enums with #[wasm_bidngen] cannot mix string and non-string values",
+            ),
         }
     }
 
@@ -1122,18 +1130,17 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         let generate_typescript = opts.skip_typescript().is_none();
 
         // Check if the first value is a string literal
-        match self.variants[0].discriminant {
-            Some((
-                _,
+        if let Some((_, expr)) = &self.variants[0].discriminant {
+            match get_expr(expr) {
                 syn::Expr::Lit(syn::ExprLit {
                     attrs: _,
                     lit: syn::Lit::Str(_),
-                }),
-            )) => {
-                opts.check_used()?;
-                return import_enum(self, program);
+                }) => {
+                    opts.check_used()?;
+                    return import_enum(self, program);
+                }
+                _ => {}
             }
-            _ => {}
         }
         let js_name = opts
             .js_name()
@@ -1169,28 +1176,27 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                 }
 
                 let value = match &v.discriminant {
-                    Some((
-                        _,
+                    Some((_, expr)) => match get_expr(expr) {
                         syn::Expr::Lit(syn::ExprLit {
                             attrs: _,
                             lit: syn::Lit::Int(int_lit),
-                        }),
-                    )) => match int_lit.base10_digits().parse::<u32>() {
-                        Ok(v) => v,
-                        Err(_) => {
-                            bail_span!(
-                                int_lit,
-                                "enums with #[wasm_bindgen] can only support \
+                        }) => match int_lit.base10_digits().parse::<u32>() {
+                            Ok(v) => v,
+                            Err(_) => {
+                                bail_span!(
+                                    int_lit,
+                                    "enums with #[wasm_bindgen] can only support \
                                  numbers that can be represented as u32"
-                            );
-                        }
+                                );
+                            }
+                        },
+                        expr => bail_span!(
+                            expr,
+                            "enums with #[wasm_bidngen] may only have \
+                             number literal values",
+                        ),
                     },
                     None => i as u32,
-                    Some((_, expr)) => bail_span!(
-                        expr,
-                        "enums with #[wasm_bidngen] may only have \
-                         number literal values",
-                    ),
                 };
 
                 let comments = extract_doc_comments(&v.attrs);
@@ -1242,15 +1248,15 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
             bail_span!(self, "#[wasm_bindgen] will not work on constants unless you are defining a #[wasm_bindgen(typescript_custom_section)].");
         }
 
-        match *self.expr {
+        match get_expr(&self.expr) {
             syn::Expr::Lit(syn::ExprLit {
                 lit: syn::Lit::Str(litstr),
                 ..
             }) => {
                 program.typescript_custom_sections.push(litstr.value());
             }
-            _ => {
-                bail_span!(self, "Expected a string literal to be used with #[wasm_bindgen(typescript_custom_section)].");
+            expr => {
+                bail_span!(expr, "Expected a string literal to be used with #[wasm_bindgen(typescript_custom_section)].");
             }
         }
 
