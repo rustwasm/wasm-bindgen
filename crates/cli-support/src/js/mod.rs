@@ -439,7 +439,7 @@ impl<'a> Context<'a> {
 
         // Before putting the static init code declaration info, put all existing typescript into a `wasm_bindgen` namespace declaration.
         // Not sure if this should happen in all cases, so just adding it to NoModules for now...
-        if let OutputMode::NoModules { global : _ } = &self.config.mode {
+        if self.config.mode.no_modules() {
             ts = String::from("declare namespace wasm_bindgen {\n\t");
             ts.push_str(&self.typescript.replace("\n", "\n\t"));
             ts.push_str("\n}\n");
@@ -550,7 +550,7 @@ impl<'a> Context<'a> {
     /// In particular, in no-modules mode, all functions/classes/enums are placed in a `declare`d namespace.
     /// So they don't need to be `export`ed too (as of TypeScript 3.8.3 at least).
     fn maybe_export(&self) -> String {
-        if let OutputMode::NoModules { global : _ } = &self.config.mode {
+        if self.config.mode.no_modules() {
             String::from("")
         } else {
             String::from("export ")
@@ -578,7 +578,7 @@ impl<'a> Context<'a> {
         // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
         let setup_function_declaration;
         let declare_or_export;
-        if let OutputMode::NoModules { global : _ } = &self.config.mode {
+        if self.config.mode.no_modules() {
             declare_or_export = "declare";
             setup_function_declaration = "declare function wasm_bindgen";
         } else {
