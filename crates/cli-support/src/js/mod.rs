@@ -602,8 +602,7 @@ impl<'a> Context<'a> {
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
             {setup_function_declaration} \
-                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
-        ",
+                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
             memory_doc, arg_optional, memory_param,
             output = output,
             declare_or_export = declare_or_export,
