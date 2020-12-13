@@ -546,17 +546,6 @@ impl<'a> Context<'a> {
         Ok(imports)
     }
 
-    /// For a few instances where should (sometimes) use the "export" keyword in the TypeScript declaration file.
-    /// In particular, in no-modules mode, all functions/classes/enums are placed in a `declare`d namespace.
-    /// So they don't need to be `export`ed too (as of TypeScript 3.8.3 at least).
-    fn maybe_export(&self) -> String {
-        if self.config.mode.no_modules() {
-            String::from("")
-        } else {
-            String::from("export ")
-        }
-    }
-
     fn ts_for_init_fn(
         &self,
         has_memory: bool,
@@ -791,7 +780,7 @@ impl<'a> Context<'a> {
 
     fn write_class(&mut self, name: &str, class: &ExportedClass) -> Result<(), Error> {
         let mut dst = format!("class {} {{\n", name);
-        let mut ts_dst = format!("{}{}", self.maybe_export(), dst);
+        let mut ts_dst = format!("export {}", dst);
 
         if self.config.debug && !class.has_constructor {
             dst.push_str(
@@ -2361,8 +2350,7 @@ impl<'a> Context<'a> {
                     AuxExportKind::Function(name) => {
                         if let Some(ts_sig) = ts_sig {
                             self.typescript.push_str(&docs);
-                            self.typescript.push_str(&self.maybe_export());
-                            self.typescript.push_str("function ");
+                            self.typescript.push_str("export function ");
                             self.typescript.push_str(&name);
                             self.typescript.push_str(ts_sig);
                             self.typescript.push_str(";\n");
@@ -3091,9 +3079,8 @@ impl<'a> Context<'a> {
 
         if enum_.generate_typescript {
             self.typescript.push_str(&docs);
-            self.typescript.push_str(&self.maybe_export());
             self.typescript
-                .push_str(&format!("enum {} {{", enum_.name));
+                .push_str(&format!("export enum {} {{", enum_.name));
         }
         for (name, value, comments) in enum_.variants.iter() {
             let variant_docs = if comments.is_empty() {
