@@ -505,7 +505,7 @@ impl<'src> FirstPassRecord<'src> {
             OperationId::Constructor(Some(op)) => op,
             _ => return idl_type,
         };
-        
+
         if IMMUTABLE_SLICE_WHITELIST.contains(op) {
             flag_slices_immutable(&mut idl_type)
         }
