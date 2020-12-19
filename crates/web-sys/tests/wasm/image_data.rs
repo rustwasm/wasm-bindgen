@@ -10,9 +10,8 @@ extern "C" {
 #[wasm_bindgen_test]
 fn test_anchor_element() {
     // This test is to make sure there is no weird mutability going on.
-    let buf = vec![1,2,3,255];
-    let image_data =
-    web_sys::ImageData::new_with_u8_clamped_array(Clamped(&buf), 1).unwrap();
+    let buf = vec![1, 2, 3, 255];
+    let image_data = web_sys::ImageData::new_with_u8_clamped_array(Clamped(&buf), 1).unwrap();
     let mut data = image_data.data();
     data[1] = 4;
     assert_eq!(buf[1], 2);
