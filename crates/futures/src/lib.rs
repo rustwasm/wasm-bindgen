@@ -43,6 +43,7 @@ use std::task::{Context, Poll, Waker};
 use wasm_bindgen::prelude::*;
 
 mod queue;
+pub mod stream;
 
 mod task {
     use cfg_if::cfg_if;
