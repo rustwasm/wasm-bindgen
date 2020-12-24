@@ -58,4 +58,30 @@ extern "C" {
 }
 ```
 
+The `js_name` attribute can also be used in situations where a JavaScript module uses 
+`export default`. In this case, setting the `js_name` attribute to "default" on the 
+`type` declaration, and the [`js_class` attribute][jsclass] to "default" on any methods 
+on the exported object will generate the correct imports.
+
+
+For example, a module that would be imported directly in JavaScript:
+
+```javascript
+import Foo from "bar";
+
+let f = new Foo();
+```
+
+Could be accessed using this definition in Rust:
+
+```rust
+#[wasm_bindgen(module = "bar")]
+extern "C" {
+    #[wasm_bindgen(js_name = default)
+    type Foo;
+    #[wasm_bindgen(constructor, js_class = default)]
+    pub fn new() -> Foo;
+}
+```
+
 [jsclass]: js_class.html
