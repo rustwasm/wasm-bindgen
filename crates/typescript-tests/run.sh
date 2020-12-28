@@ -23,3 +23,13 @@ if [ ! -d node_modules ]; then
 fi
 
 npm run tsc
+
+# Build using no-modules, and make sure can minimally be read by the TypeScript compiler.
+mkdir pkg/no_modules
+cargo run -p wasm-bindgen-cli --bin wasm-bindgen -- \
+  ../../target/wasm32-unknown-unknown/debug/typescript_tests.wasm \
+  --out-dir pkg/no_modules \
+  --target no-modules \
+  --typescript
+
+npm run tsc -- -p no_modules.tsconfig.json

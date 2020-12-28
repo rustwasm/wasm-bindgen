@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "outDir": "nowhere",
+    },
+    "include": [
+        "pkg/no_modules/typescript_tests.d.ts"
+    ]
+}
