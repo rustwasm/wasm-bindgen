@@ -540,11 +540,7 @@ impl<'a> Context<'a> {
         Ok(imports)
     }
 
-    fn ts_for_init_fn(
-        &self,
-        has_memory: bool,
-        has_module_or_path_optional: bool,
-    ) -> Result<String, Error> {
+    fn ts_for_init_fn(&self, has_memory: bool) -> Result<String, Error> {
         let output = crate::wasm2es6js::interface(&self.module)?;
 
         let (memory_doc, memory_param) = if has_memory {
@@ -555,7 +551,7 @@ impl<'a> Context<'a> {
         } else {
             ("", "")
         };
-        let arg_optional = if has_module_or_path_optional { "?" } else { "" };
+
         Ok(format!(
             "\n\
             export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
@@ -573,9 +569,9 @@ impl<'a> Context<'a> {
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
             export default function init \
-                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
+                (module_or_path: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
         ",
-            memory_doc, arg_optional, memory_param,
+            memory_doc, memory_param,
             output = output,
         ))
     }
@@ -610,29 +606,7 @@ impl<'a> Context<'a> {
             }
         }
 
-        let default_module_path = match self.config.mode {
-            OutputMode::Web => {
-                "\
-                    if (typeof input === 'undefined') {
-                        input = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            }
-            OutputMode::NoModules { .. } => {
-                "\
-                    if (typeof input === 'undefined') {
-                        let src;
-                        if (typeof document === 'undefined') {
-                            src = location.href;
-                        } else {
-                            src = document.currentScript.src;
-                        }
-                        input = src.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            }
-            _ => "",
-        };
-
-        let ts = self.ts_for_init_fn(has_memory, !default_module_path.is_empty())?;
+        let ts = self.ts_for_init_fn(has_memory)?;
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
@@ -721,7 +695,6 @@ impl<'a> Context<'a> {
                 }}
 
                 async function init(input{init_memory_arg}) {{
-                    {default_module_path}
                     const imports = {{}};
                     {imports_init}
 
@@ -738,7 +711,6 @@ impl<'a> Context<'a> {
                 }}
             ",
             init_memory_arg = init_memory_arg,
-            default_module_path = default_module_path,
             init_memory1 = init_memory1,
             init_memory2 = init_memory2,
             start = if needs_manual_start {
