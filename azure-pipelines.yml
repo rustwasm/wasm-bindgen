@@ -131,7 +131,7 @@ jobs:
     displayName: "Verify that web-sys is compiled correctly"
     steps:
       - template: ci/azure-install-rust.yml
-      - script: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl webidls src/features
+      - script: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features
       - script: git diff --exit-code
 
   - job: test_js_sys
@@ -226,7 +226,7 @@ jobs:
         displayName: "add target"
       - script: cargo build --manifest-path benchmarks/Cargo.toml --release --target wasm32-unknown-unknown
         displayName: "build benchmarks"
-      - script: cargo run -p wasm-bindgen-cli target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm --out-dir benchmarks/pkg --target web
+      - script: cargo run -p wasm-bindgen-cli -- target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm --out-dir benchmarks/pkg --target web
         displayName: "run wasm-bindgen"
       - task: PublishPipelineArtifact@0
         inputs:
