@@ -413,7 +413,7 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         match id {
             OperationId::Operation(Some(_)) => {}
-            OperationId::Constructor
+            OperationId::Constructor(_)
             | OperationId::NamedConstructor(_)
             | OperationId::Operation(None)
             | OperationId::IndexingGetter

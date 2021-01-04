@@ -297,7 +297,7 @@ impl<'src> FirstPassRecord<'src> {
             // > value of a type corresponding to the interface the
             // > `[Constructor]` extended attribute appears on, **or throw an
             // > exception**.
-            OperationId::Constructor => {
+            OperationId::Constructor(_) => {
                 ("new", InterfaceMethodKind::Constructor(None), false, true)
             }
             OperationId::NamedConstructor(n) => (
@@ -502,6 +502,7 @@ impl<'src> FirstPassRecord<'src> {
     fn maybe_adjust<'a>(&self, mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
         let op = match id {
             OperationId::Operation(Some(op)) => op,
+            OperationId::Constructor(Some(op)) => op,
             _ => return idl_type,
         };
 

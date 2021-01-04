@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`*"]
     pub fn new_with_u8_clamped_array(
-        data: ::wasm_bindgen::Clamped<&mut [u8]>,
+        data: ::wasm_bindgen::Clamped<&[u8]>,
         sw: u32,
     ) -> Result<ImageData, JsValue>;
     #[wasm_bindgen(catch, constructor, js_class = "ImageData")]
@@ -56,7 +56,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`*"]
     pub fn new_with_u8_clamped_array_and_sh(
-        data: ::wasm_bindgen::Clamped<&mut [u8]>,
+        data: ::wasm_bindgen::Clamped<&[u8]>,
         sw: u32,
         sh: u32,
     ) -> Result<ImageData, JsValue>;
