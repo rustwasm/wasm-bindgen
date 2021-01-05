@@ -88,3 +88,26 @@ async fn can_create_multiple_futures_from_same_promise() {
     a.await.unwrap();
     b.await.unwrap();
 }
+
+#[cfg(feature = "futures-core-03-stream")]
+#[wasm_bindgen_test]
+async fn can_use_an_async_iterable_as_stream() {
+    use futures_lite::stream::StreamExt;
+    use wasm_bindgen::JsCast;
+    use wasm_bindgen_futures::stream::JsStream;
+
+    let async_iter = js_sys::Function::new_no_args(
+        "return async function*() { 
+            yield 42;
+            yield 24;
+        }()",
+    )
+    .call0(&JsValue::undefined())
+    .unwrap()
+    .unchecked_into::<js_sys::AsyncIterator>();
+
+    let mut stream = JsStream::from(async_iter);
+    assert_eq!(stream.next().await, Some(Ok(JsValue::from(42))));
+    assert_eq!(stream.next().await, Some(Ok(JsValue::from(24))));
+    assert_eq!(stream.next().await, None);
+}

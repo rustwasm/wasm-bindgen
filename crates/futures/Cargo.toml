@@ -14,6 +14,10 @@ edition = "2018"
 cfg-if = "1.0.0"
 js-sys = { path = "../js-sys", version = '0.3.46' }
 wasm-bindgen = { path = "../..", version = '0.2.69' }
+futures-core =  { version = '0.3.8', default-features = false, optional = true }
+
+[features]
+futures-core-03-stream = ['futures-core']
 
 [target.'cfg(target_feature = "atomics")'.dependencies.web-sys]
 path = "../web-sys"
@@ -26,3 +30,4 @@ features = [
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = { path = '../test', version = '0.3.19' }
 futures-channel-preview = { version = "0.3.0-alpha.18" }
+futures-lite = { version = "1.11.3", default-features = false }
