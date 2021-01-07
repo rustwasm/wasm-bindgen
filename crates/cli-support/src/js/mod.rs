@@ -274,7 +274,7 @@ impl<'a> Context<'a> {
         reset_indentation(&shim)
     }
 
-    // generates somthing like
+    // generates something like
     // ```js
     // import * as import0 from './snippets/.../inline1.js';
     // ```,
