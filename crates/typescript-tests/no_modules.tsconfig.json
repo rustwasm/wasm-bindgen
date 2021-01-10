@@ -3,9 +3,10 @@
         "target": "es6",
         "noImplicitAny": true,
         "sourceMap": true,
-        "outDir": "nowhere",
+        "outDir": "dist_no_modules",
     },
     "include": [
-        "pkg/no_modules/typescript_tests.d.ts"
+        "pkg/no_modules/*.d.ts",
+        "src_no_modules/*.ts",
     ]
 }
