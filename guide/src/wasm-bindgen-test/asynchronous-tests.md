@@ -27,8 +27,7 @@ async fn my_async_test() {
 ## Rust compiler compatibility
 
 Note that `async` functions are only supported in stable from Rust 1.39.0 and
-beyond. As of the time of this writing (2019-09-05) this is the Nightly channel
-of Rust.
+beyond.
 
 If you're using the `futures` crate from crates.io in its 0.1 version then
 you'll want to use the `0.3.*` version of `wasm-bindgen-futures` and the `0.2.8`
