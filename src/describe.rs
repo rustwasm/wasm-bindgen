@@ -42,6 +42,7 @@ tys! {
     RUST_STRUCT
     CHAR
     OPTIONAL
+    RESULT
     UNIT
     CLAMPED
 }

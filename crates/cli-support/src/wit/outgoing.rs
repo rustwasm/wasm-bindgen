@@ -149,6 +149,7 @@ impl InstructionBuilder<'_, '_> {
             }
 
             Descriptor::Option(d) => self.outgoing_option(d)?,
+            Descriptor::Result(d) => self.outgoing_result(d)?,
 
             Descriptor::Function(_) | Descriptor::Closure(_) | Descriptor::Slice(_) => bail!(
                 "unsupported argument type for calling JS function from Rust: {:?}",
@@ -335,6 +336,10 @@ impl InstructionBuilder<'_, '_> {
             ),
         }
         Ok(())
+    }
+
+    fn outgoing_result(&mut self, arg: &Descriptor) -> Result<(), Error> {
+        unimplemented!()
     }
 
     fn outgoing_option_ref(&mut self, _mutable: bool, arg: &Descriptor) -> Result<(), Error> {

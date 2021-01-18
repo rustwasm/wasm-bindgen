@@ -275,6 +275,9 @@ fn translate_instruction(
         | Option64FromI32 { .. } => {
             bail!("optional types aren't supported in wasm bindgen");
         }
+        UnwrapResult => {
+            bail!("self-unwrapping result types aren't supported in wasm bindgen");
+        }
         MutableSliceToMemory { .. } | VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
             bail!("vector slices aren't supported in wasm interface types yet");
         }

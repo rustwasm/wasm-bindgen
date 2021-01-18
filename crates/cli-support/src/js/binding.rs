@@ -783,6 +783,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("len{}", i));
         }
 
+        Instruction::UnwrapResult => {
+            unimplemented!()
+        }
+
         Instruction::OptionString {
             mem,
             malloc,
