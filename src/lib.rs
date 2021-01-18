@@ -65,6 +65,8 @@ pub mod prelude {
 pub mod convert;
 pub mod describe;
 
+pub use crate::convert::JsError;
+
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
 
@@ -924,6 +926,7 @@ externs! {
 
         fn __wbindgen_throw(a: *const u8, b: usize) -> !;
         fn __wbindgen_rethrow(a: u32) -> !;
+        fn __wbindgen_error_new(a: *const u8, b: usize) -> u32;
 
         fn __wbindgen_cb_drop(idx: u32) -> u32;
 

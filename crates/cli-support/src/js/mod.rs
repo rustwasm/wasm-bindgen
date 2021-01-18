@@ -3141,6 +3141,11 @@ impl<'a> Context<'a> {
                 format!("throw {}", args[0])
             }
 
+            Intrinsic::ErrorNew => {
+                assert_eq!(args.len(), 1);
+                format!("new Error({})", args[0])
+            }
+
             Intrinsic::Module => {
                 assert_eq!(args.len(), 0);
                 if !self.config.mode.no_modules() && !self.config.mode.web() {
