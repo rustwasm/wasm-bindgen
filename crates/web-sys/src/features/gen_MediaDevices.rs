@@ -32,6 +32,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDevices`*"]
     pub fn enumerate_devices(this: &MediaDevices) -> Result<::js_sys::Promise, JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "MediaDevices" , js_name = getDisplayMedia)]
+    #[doc = "The `getDisplayMedia()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaDevices`*"]
+    pub fn get_display_media(this: &MediaDevices) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(feature = "DisplayMediaStreamConstraints")]
+    # [wasm_bindgen (catch , method , structural , js_class = "MediaDevices" , js_name = getDisplayMedia)]
+    #[doc = "The `getDisplayMedia()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`, `MediaDevices`*"]
+    pub fn get_display_media_with_constraints(
+        this: &MediaDevices,
+        constraints: &DisplayMediaStreamConstraints,
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaTrackSupportedConstraints")]
     # [wasm_bindgen (method , structural , js_class = "MediaDevices" , js_name = getSupportedConstraints)]
     #[doc = "The `getSupportedConstraints()` method."]

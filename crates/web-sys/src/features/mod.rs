@@ -1432,6 +1432,12 @@ mod gen_Directory;
 #[cfg(feature = "Directory")]
 pub use gen_Directory::*;
 
+#[cfg(feature = "DisplayMediaStreamConstraints")]
+#[allow(non_snake_case)]
+mod gen_DisplayMediaStreamConstraints;
+#[cfg(feature = "DisplayMediaStreamConstraints")]
+pub use gen_DisplayMediaStreamConstraints::*;
+
 #[cfg(feature = "DisplayNameOptions")]
 #[allow(non_snake_case)]
 mod gen_DisplayNameOptions;
