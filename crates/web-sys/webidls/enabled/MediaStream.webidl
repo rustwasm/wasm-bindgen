@@ -23,6 +23,11 @@ dictionary MediaStreamConstraints {
     DOMString? peerIdentity = null;
 };
 
+dictionary DisplayMediaStreamConstraints {
+    (boolean or MediaTrackConstraints) video = true;
+    (boolean or MediaTrackConstraints) audio = false;
+};
+
 [Exposed=Window,
  Constructor,
  Constructor (MediaStream stream),
