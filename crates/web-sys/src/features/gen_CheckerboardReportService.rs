@@ -31,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CheckerboardReportService/getReports)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReportService`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[CheckerboardReport]</code>."]
     pub fn get_reports(this: &CheckerboardReportService) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "CheckerboardReportService" , js_name = isRecordingEnabled)]
     #[doc = "The `isRecordingEnabled()` method."]

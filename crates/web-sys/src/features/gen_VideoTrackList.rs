@@ -31,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrackList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchange(this: &VideoTrackList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "VideoTrackList" , js_name = onchange)]
     #[doc = "Setter for the `onchange` field of this object."]
@@ -38,6 +40,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrackList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchange(this: &VideoTrackList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "VideoTrackList" , js_name = onaddtrack)]
     #[doc = "Getter for the `onaddtrack` field of this object."]
@@ -45,6 +49,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrackList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaddtrack(this: &VideoTrackList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "VideoTrackList" , js_name = onaddtrack)]
     #[doc = "Setter for the `onaddtrack` field of this object."]
@@ -52,6 +58,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrackList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaddtrack(this: &VideoTrackList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "VideoTrackList" , js_name = onremovetrack)]
     #[doc = "Getter for the `onremovetrack` field of this object."]
@@ -59,6 +67,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onremovetrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrackList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onremovetrack(this: &VideoTrackList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "VideoTrackList" , js_name = onremovetrack)]
     #[doc = "Setter for the `onremovetrack` field of this object."]
@@ -66,6 +76,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrackList/onremovetrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrackList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onremovetrack(this: &VideoTrackList, value: Option<&::js_sys::Function>);
     #[cfg(feature = "VideoTrack")]
     # [wasm_bindgen (method , structural , js_class = "VideoTrackList" , js_name = getTrackById)]

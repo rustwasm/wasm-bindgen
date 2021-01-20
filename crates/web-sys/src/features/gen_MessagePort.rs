@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessagePort`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessage(this: &MessagePort) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MessagePort" , js_name = onmessage)]
     #[doc = "Setter for the `onmessage` field of this object."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessagePort`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessage(this: &MessagePort, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MessagePort" , js_name = onmessageerror)]
     #[doc = "Getter for the `onmessageerror` field of this object."]
@@ -31,6 +35,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/onmessageerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessagePort`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessageerror(this: &MessagePort) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MessagePort" , js_name = onmessageerror)]
     #[doc = "Setter for the `onmessageerror` field of this object."]
@@ -38,6 +44,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/onmessageerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessagePort`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessageerror(this: &MessagePort, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (method , structural , js_class = "MessagePort" , js_name = close)]
     #[doc = "The `close()` method."]
@@ -62,6 +70,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort/postMessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessagePort`*"]
+    #[doc = ""]
+    #[doc = "Argument `transferable`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn post_message_with_transferable(
         this: &MessagePort,
         message: &::wasm_bindgen::JsValue,

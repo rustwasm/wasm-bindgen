@@ -39,6 +39,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/getAsString)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItem`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn get_as_string(
         this: &DataTransferItem,
         callback: Option<&::js_sys::Function>,

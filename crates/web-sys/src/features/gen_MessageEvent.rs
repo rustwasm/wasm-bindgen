@@ -38,6 +38,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/source)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn source(this: &MessageEvent) -> Option<::js_sys::Object>;
     # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = ports)]
     #[doc = "Getter for the `ports` field of this object."]
@@ -45,6 +47,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/ports)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MessagePort]</code>."]
     pub fn ports(this: &MessageEvent) -> ::js_sys::Array;
     #[wasm_bindgen(catch, constructor, js_class = "MessageEvent")]
     #[doc = "The `new MessageEvent(..)` constructor, creating a new instance of `MessageEvent`."]
@@ -190,6 +194,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`, `Window`*"]
+    #[doc = ""]
+    #[doc = "Argument `ports`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[MessagePort]</code>."]
     pub fn init_message_event_with_bubbles_and_cancelable_and_data_and_origin_and_last_event_id_and_opt_window_and_ports(
         this: &MessageEvent,
         type_: &str,
@@ -208,6 +214,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`, `MessagePort`*"]
+    #[doc = ""]
+    #[doc = "Argument `ports`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[MessagePort]</code>."]
     pub fn init_message_event_with_bubbles_and_cancelable_and_data_and_origin_and_last_event_id_and_opt_message_port_and_ports(
         this: &MessageEvent,
         type_: &str,
@@ -226,6 +234,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`, `ServiceWorker`*"]
+    #[doc = ""]
+    #[doc = "Argument `ports`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[MessagePort]</code>."]
     pub fn init_message_event_with_bubbles_and_cancelable_and_data_and_origin_and_last_event_id_and_opt_service_worker_and_ports(
         this: &MessageEvent,
         type_: &str,

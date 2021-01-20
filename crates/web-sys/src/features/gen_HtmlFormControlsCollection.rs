@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormControlsCollection/namedItem)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn named_item(this: &HtmlFormControlsCollection, name: &str) -> Option<::js_sys::Object>;
     #[wasm_bindgen(
         method,
@@ -29,5 +31,7 @@ extern "C" {
     #[doc = ""]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFormControlsCollection`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn get(this: &HtmlFormControlsCollection, name: &str) -> Option<::js_sys::Object>;
 }

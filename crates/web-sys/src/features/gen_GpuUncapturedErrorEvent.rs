@@ -23,6 +23,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuUncapturedErrorEvent`*"]
     #[doc = ""]
+    #[doc = "Return value: The type is actually a union over some types and  can not yet be explained any better."]
+    #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn error(this: &GpuUncapturedErrorEvent) -> ::js_sys::Object;

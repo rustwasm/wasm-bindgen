@@ -22,6 +22,8 @@ impl VrLayer {
     #[doc = "Change the `leftBounds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn left_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -39,6 +41,8 @@ impl VrLayer {
     #[doc = "Change the `rightBounds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn right_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

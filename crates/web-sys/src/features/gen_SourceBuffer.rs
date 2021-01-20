@@ -90,6 +90,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdatestart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onupdatestart(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = onupdatestart)]
     #[doc = "Setter for the `onupdatestart` field of this object."]
@@ -97,6 +99,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdatestart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onupdatestart(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = onupdate)]
     #[doc = "Getter for the `onupdate` field of this object."]
@@ -104,6 +108,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onupdate(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = onupdate)]
     #[doc = "Setter for the `onupdate` field of this object."]
@@ -111,6 +117,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onupdate(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = onupdateend)]
     #[doc = "Getter for the `onupdateend` field of this object."]
@@ -118,6 +126,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdateend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onupdateend(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = onupdateend)]
     #[doc = "Setter for the `onupdateend` field of this object."]
@@ -125,6 +135,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onupdateend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onupdateend(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -132,6 +144,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -139,6 +153,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = onabort)]
     #[doc = "Getter for the `onabort` field of this object."]
@@ -146,6 +162,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &SourceBuffer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -153,6 +171,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &SourceBuffer, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (catch , method , structural , js_class = "SourceBuffer" , js_name = abort)]
     #[doc = "The `abort()` method."]
@@ -195,6 +215,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/appendBufferAsync)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn append_buffer_async_with_array_buffer(
         this: &SourceBuffer,
         data: &::js_sys::ArrayBuffer,
@@ -205,6 +227,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/appendBufferAsync)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn append_buffer_async_with_array_buffer_view(
         this: &SourceBuffer,
         data: &::js_sys::Object,
@@ -215,6 +239,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/appendBufferAsync)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn append_buffer_async_with_u8_array(
         this: &SourceBuffer,
         data: &mut [u8],
@@ -239,6 +265,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/removeAsync)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn remove_async(
         this: &SourceBuffer,
         start: f64,

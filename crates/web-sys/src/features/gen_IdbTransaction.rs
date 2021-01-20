@@ -41,6 +41,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &IdbTransaction) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBTransaction" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -48,6 +50,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &IdbTransaction, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBTransaction" , js_name = oncomplete)]
     #[doc = "Getter for the `oncomplete` field of this object."]
@@ -55,6 +59,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncomplete(this: &IdbTransaction) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBTransaction" , js_name = oncomplete)]
     #[doc = "Setter for the `oncomplete` field of this object."]
@@ -62,6 +68,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/oncomplete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncomplete(this: &IdbTransaction, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBTransaction" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -69,6 +77,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &IdbTransaction) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBTransaction" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -76,6 +86,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &IdbTransaction, value: Option<&::js_sys::Function>);
     #[cfg(feature = "DomStringList")]
     # [wasm_bindgen (structural , method , getter , js_class = "IDBTransaction" , js_name = objectStoreNames)]

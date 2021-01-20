@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TrackEvent/track)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEvent`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn track(this: &TrackEvent) -> Option<::js_sys::Object>;
     #[wasm_bindgen(catch, constructor, js_class = "TrackEvent")]
     #[doc = "The `new TrackEvent(..)` constructor, creating a new instance of `TrackEvent`."]

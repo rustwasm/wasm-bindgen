@@ -25,6 +25,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclick(this: &Notification) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Notification" , js_name = onclick)]
     #[doc = "Setter for the `onclick` field of this object."]
@@ -32,6 +34,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclick(this: &Notification, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = onshow)]
     #[doc = "Getter for the `onshow` field of this object."]
@@ -39,6 +43,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onshow)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onshow(this: &Notification) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Notification" , js_name = onshow)]
     #[doc = "Setter for the `onshow` field of this object."]
@@ -46,6 +52,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onshow)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onshow(this: &Notification, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -53,6 +61,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &Notification) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Notification" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -60,6 +70,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &Notification, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
@@ -67,6 +79,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclose(this: &Notification) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Notification" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
@@ -74,6 +88,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclose(this: &Notification, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = title)]
     #[doc = "Getter for the `title` field of this object."]
@@ -163,6 +179,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/get)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn get() -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "GetNotificationOptions")]
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = get)]
@@ -171,6 +189,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/get)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetNotificationOptions`, `Notification`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result?.await.into();</code>. More information is available in the source IDL file."]
     pub fn get_with_filter(filter: &GetNotificationOptions) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
@@ -178,6 +198,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[NotificationPermission]</code>. It can be converted like `<code>let result: [NotificationPermission] = result?.await.into();</code>."]
     pub fn request_permission() -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
@@ -185,6 +207,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
+    #[doc = ""]
+    #[doc = "Argument `permission_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[NotificationPermission]</code>. It can be converted like `<code>let result: [NotificationPermission] = result?.await.into();</code>."]
     pub fn request_permission_with_permission_callback(
         permission_callback: &::js_sys::Function,
     ) -> Result<::js_sys::Promise, JsValue>;

@@ -32,6 +32,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstatechange(this: &ServiceWorker) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "ServiceWorker" , js_name = onstatechange)]
     #[doc = "Setter for the `onstatechange` field of this object."]
@@ -39,6 +41,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstatechange(this: &ServiceWorker, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorker" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -46,6 +50,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &ServiceWorker) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "ServiceWorker" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -53,6 +59,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &ServiceWorker, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorker" , js_name = postMessage)]
     #[doc = "The `postMessage()` method."]
@@ -70,6 +78,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/postMessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorker`*"]
+    #[doc = ""]
+    #[doc = "Argument `transferable`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::js_sys::Object]</code>."]
     pub fn post_message_with_transferable(
         this: &ServiceWorker,
         message: &::wasm_bindgen::JsValue,

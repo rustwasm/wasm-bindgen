@@ -39,6 +39,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onloadstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadstart(this: &FileReader) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FileReader" , js_name = onloadstart)]
     #[doc = "Setter for the `onloadstart` field of this object."]
@@ -46,6 +48,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onloadstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadstart(this: &FileReader, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "FileReader" , js_name = onprogress)]
     #[doc = "Getter for the `onprogress` field of this object."]
@@ -53,6 +57,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onprogress(this: &FileReader) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FileReader" , js_name = onprogress)]
     #[doc = "Setter for the `onprogress` field of this object."]
@@ -60,6 +66,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onprogress(this: &FileReader, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "FileReader" , js_name = onload)]
     #[doc = "Getter for the `onload` field of this object."]
@@ -67,6 +75,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onload(this: &FileReader) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FileReader" , js_name = onload)]
     #[doc = "Setter for the `onload` field of this object."]
@@ -74,6 +84,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onload(this: &FileReader, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "FileReader" , js_name = onabort)]
     #[doc = "Getter for the `onabort` field of this object."]
@@ -81,6 +93,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &FileReader) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FileReader" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -88,6 +102,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &FileReader, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "FileReader" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -95,6 +111,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &FileReader) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FileReader" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -102,6 +120,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &FileReader, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "FileReader" , js_name = onloadend)]
     #[doc = "Getter for the `onloadend` field of this object."]
@@ -109,6 +129,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onloadend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadend(this: &FileReader) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FileReader" , js_name = onloadend)]
     #[doc = "Setter for the `onloadend` field of this object."]
@@ -116,6 +138,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onloadend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileReader`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadend(this: &FileReader, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "FileReader")]
     #[doc = "The `new FileReader(..)` constructor, creating a new instance of `FileReader`."]

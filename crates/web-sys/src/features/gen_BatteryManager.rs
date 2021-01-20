@@ -45,6 +45,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/onchargingchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchargingchange(this: &BatteryManager) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "BatteryManager" , js_name = onchargingchange)]
     #[doc = "Setter for the `onchargingchange` field of this object."]
@@ -52,6 +54,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/onchargingchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchargingchange(this: &BatteryManager, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "BatteryManager" , js_name = onchargingtimechange)]
     #[doc = "Getter for the `onchargingtimechange` field of this object."]
@@ -59,6 +63,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/onchargingtimechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchargingtimechange(this: &BatteryManager) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "BatteryManager" , js_name = onchargingtimechange)]
     #[doc = "Setter for the `onchargingtimechange` field of this object."]
@@ -66,6 +72,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/onchargingtimechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchargingtimechange(this: &BatteryManager, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "BatteryManager" , js_name = ondischargingtimechange)]
     #[doc = "Getter for the `ondischargingtimechange` field of this object."]
@@ -73,6 +81,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/ondischargingtimechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondischargingtimechange(this: &BatteryManager) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "BatteryManager" , js_name = ondischargingtimechange)]
     #[doc = "Setter for the `ondischargingtimechange` field of this object."]
@@ -80,6 +90,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/ondischargingtimechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondischargingtimechange(this: &BatteryManager, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "BatteryManager" , js_name = onlevelchange)]
     #[doc = "Getter for the `onlevelchange` field of this object."]
@@ -87,6 +99,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/onlevelchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onlevelchange(this: &BatteryManager) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "BatteryManager" , js_name = onlevelchange)]
     #[doc = "Setter for the `onlevelchange` field of this object."]
@@ -94,5 +108,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/onlevelchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BatteryManager`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onlevelchange(this: &BatteryManager, value: Option<&::js_sys::Function>);
 }

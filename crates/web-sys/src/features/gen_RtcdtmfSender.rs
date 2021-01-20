@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/ontonechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontonechange(this: &RtcdtmfSender) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCDTMFSender" , js_name = ontonechange)]
     #[doc = "Setter for the `ontonechange` field of this object."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/ontonechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontonechange(this: &RtcdtmfSender, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCDTMFSender" , js_name = toneBuffer)]
     #[doc = "Getter for the `toneBuffer` field of this object."]

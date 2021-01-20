@@ -38,6 +38,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onopen(this: &WebSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "WebSocket" , js_name = onopen)]
     #[doc = "Setter for the `onopen` field of this object."]
@@ -45,6 +47,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onopen(this: &WebSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "WebSocket" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -52,6 +56,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &WebSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "WebSocket" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -59,6 +65,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &WebSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "WebSocket" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
@@ -66,6 +74,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclose(this: &WebSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "WebSocket" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
@@ -73,6 +83,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclose(this: &WebSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "WebSocket" , js_name = extensions)]
     #[doc = "Getter for the `extensions` field of this object."]
@@ -94,6 +106,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessage(this: &WebSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "WebSocket" , js_name = onmessage)]
     #[doc = "Setter for the `onmessage` field of this object."]
@@ -101,6 +115,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessage(this: &WebSocket, value: Option<&::js_sys::Function>);
     #[cfg(feature = "BinaryType")]
     # [wasm_bindgen (structural , method , getter , js_class = "WebSocket" , js_name = binaryType)]
@@ -138,6 +154,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument `protocols`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn new_with_str_sequence(
         url: &str,
         protocols: &::wasm_bindgen::JsValue,

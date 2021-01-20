@@ -85,6 +85,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/oncuechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrack`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncuechange(this: &TextTrack) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TextTrack" , js_name = oncuechange)]
     #[doc = "Setter for the `oncuechange` field of this object."]
@@ -92,6 +94,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/oncuechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrack`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncuechange(this: &TextTrack, value: Option<&::js_sys::Function>);
     #[cfg(feature = "VttCue")]
     # [wasm_bindgen (method , structural , js_class = "TextTrack" , js_name = addCue)]

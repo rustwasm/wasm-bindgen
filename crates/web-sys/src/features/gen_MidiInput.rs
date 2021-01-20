@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIInput/onmidimessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiInput`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmidimessage(this: &MidiInput) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MIDIInput" , js_name = onmidimessage)]
     #[doc = "Setter for the `onmidimessage` field of this object."]
@@ -24,5 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIInput/onmidimessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiInput`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmidimessage(this: &MidiInput, value: Option<&::js_sys::Function>);
 }

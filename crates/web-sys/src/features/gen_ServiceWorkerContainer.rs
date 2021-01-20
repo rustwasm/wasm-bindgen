@@ -25,6 +25,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/ready)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ServiceWorkerRegistration]</code>."]
     pub fn ready(this: &ServiceWorkerContainer) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorkerContainer" , js_name = oncontrollerchange)]
     #[doc = "Getter for the `oncontrollerchange` field of this object."]
@@ -32,6 +34,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/oncontrollerchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncontrollerchange(this: &ServiceWorkerContainer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "ServiceWorkerContainer" , js_name = oncontrollerchange)]
     #[doc = "Setter for the `oncontrollerchange` field of this object."]
@@ -39,6 +43,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/oncontrollerchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncontrollerchange(
         this: &ServiceWorkerContainer,
         value: Option<&::js_sys::Function>,
@@ -49,6 +55,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &ServiceWorkerContainer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "ServiceWorkerContainer" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -56,6 +64,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &ServiceWorkerContainer, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "ServiceWorkerContainer" , js_name = onmessage)]
     #[doc = "Getter for the `onmessage` field of this object."]
@@ -63,6 +73,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessage(this: &ServiceWorkerContainer) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "ServiceWorkerContainer" , js_name = onmessage)]
     #[doc = "Setter for the `onmessage` field of this object."]
@@ -70,6 +82,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessage(this: &ServiceWorkerContainer, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (method , structural , js_class = "ServiceWorkerContainer" , js_name = getRegistration)]
     #[doc = "The `getRegistration()` method."]
@@ -77,6 +91,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::wasm_bindgen::JsValue]</code>. It can be converted like `<code>let result: [::wasm_bindgen::JsValue] = result.await.into();</code>."]
     pub fn get_registration(this: &ServiceWorkerContainer) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "ServiceWorkerContainer" , js_name = getRegistration)]
     #[doc = "The `getRegistration()` method."]
@@ -84,6 +100,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::wasm_bindgen::JsValue]</code>. It can be converted like `<code>let result: [::wasm_bindgen::JsValue] = result.await.into();</code>."]
     pub fn get_registration_with_document_url(
         this: &ServiceWorkerContainer,
         document_url: &str,
@@ -94,6 +112,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistrations)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result.await.into();</code>. More information is available in the source IDL file."]
     pub fn get_registrations(this: &ServiceWorkerContainer) -> ::js_sys::Promise;
     # [wasm_bindgen (catch , method , structural , js_class = "ServiceWorkerContainer" , js_name = getScopeForUrl)]
     #[doc = "The `getScopeForUrl()` method."]
@@ -108,6 +128,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ServiceWorkerRegistration]</code>. It can be converted like `<code>let result: [ServiceWorkerRegistration] = result.await.into();</code>."]
     pub fn register(this: &ServiceWorkerContainer, script_url: &str) -> ::js_sys::Promise;
     #[cfg(feature = "RegistrationOptions")]
     # [wasm_bindgen (method , structural , js_class = "ServiceWorkerContainer" , js_name = register)]
@@ -116,6 +138,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`, `ServiceWorkerContainer`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[ServiceWorkerRegistration]</code>. It can be converted like `<code>let result: [ServiceWorkerRegistration] = result.await.into();</code>."]
     pub fn register_with_options(
         this: &ServiceWorkerContainer,
         script_url: &str,

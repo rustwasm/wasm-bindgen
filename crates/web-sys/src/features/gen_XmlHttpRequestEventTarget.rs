@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onloadstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadstart(this: &XmlHttpRequestEventTarget) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequestEventTarget" , js_name = onloadstart)]
     #[doc = "Setter for the `onloadstart` field of this object."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onloadstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadstart(this: &XmlHttpRequestEventTarget, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequestEventTarget" , js_name = onprogress)]
     #[doc = "Getter for the `onprogress` field of this object."]
@@ -31,6 +35,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onprogress(this: &XmlHttpRequestEventTarget) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequestEventTarget" , js_name = onprogress)]
     #[doc = "Setter for the `onprogress` field of this object."]
@@ -38,6 +44,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onprogress(this: &XmlHttpRequestEventTarget, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequestEventTarget" , js_name = onabort)]
     #[doc = "Getter for the `onabort` field of this object."]
@@ -45,6 +53,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &XmlHttpRequestEventTarget) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequestEventTarget" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -52,6 +62,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &XmlHttpRequestEventTarget, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequestEventTarget" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -59,6 +71,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &XmlHttpRequestEventTarget) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequestEventTarget" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -66,6 +80,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &XmlHttpRequestEventTarget, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequestEventTarget" , js_name = onload)]
     #[doc = "Getter for the `onload` field of this object."]
@@ -73,6 +89,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onload)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onload(this: &XmlHttpRequestEventTarget) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequestEventTarget" , js_name = onload)]
     #[doc = "Setter for the `onload` field of this object."]
@@ -80,6 +98,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onload)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onload(this: &XmlHttpRequestEventTarget, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequestEventTarget" , js_name = ontimeout)]
     #[doc = "Getter for the `ontimeout` field of this object."]
@@ -87,6 +107,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/ontimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontimeout(this: &XmlHttpRequestEventTarget) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequestEventTarget" , js_name = ontimeout)]
     #[doc = "Setter for the `ontimeout` field of this object."]
@@ -94,6 +116,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/ontimeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontimeout(this: &XmlHttpRequestEventTarget, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequestEventTarget" , js_name = onloadend)]
     #[doc = "Getter for the `onloadend` field of this object."]
@@ -101,6 +125,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onloadend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadend(this: &XmlHttpRequestEventTarget) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequestEventTarget" , js_name = onloadend)]
     #[doc = "Setter for the `onloadend` field of this object."]
@@ -108,5 +134,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestEventTarget/onloadend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequestEventTarget`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadend(this: &XmlHttpRequestEventTarget, value: Option<&::js_sys::Function>);
 }

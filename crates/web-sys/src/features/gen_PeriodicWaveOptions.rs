@@ -39,6 +39,8 @@ impl PeriodicWaveOptions {
     #[doc = "Change the `imag` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PeriodicWaveOptions`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn imag(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("imag"), &JsValue::from(val));
@@ -52,6 +54,8 @@ impl PeriodicWaveOptions {
     #[doc = "Change the `real` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PeriodicWaveOptions`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f32]</code>."]
     pub fn real(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("real"), &JsValue::from(val));

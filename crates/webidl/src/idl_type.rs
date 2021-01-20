@@ -88,6 +88,199 @@ pub(crate) enum IdlType<'a> {
     UnknownInterface(&'a str),
 }
 
+/// Indication that the [syn::Type] returned along with this does not tell the whole truth encoded
+/// in the IDL. All its properties are shaped by which information it needs in its `.tell()` method
+/// that converts the gathered information into something that can be put into the docs.
+#[derive(Debug)]
+pub struct Confession {
+    kind: ConfessionKind,
+    actual_type: Option<String>,
+    is_behind: ConfessionWrapping,
+    has_more_data: bool,
+}
+
+#[derive(Debug, PartialEq)]
+enum ConfessionKind {
+    Promise,
+    Iterable,
+    Union,
+    Callback,
+}
+
+#[derive(Debug, PartialEq)]
+enum ConfessionWrapping {
+    None,
+    Option,
+    Result,
+}
+
+impl ConfessionWrapping {
+    fn text_fragment(&self) -> &'static str {
+        match self {
+            ConfessionWrapping::None => "",
+            ConfessionWrapping::Option => " inside the option",
+            ConfessionWrapping::Result => " of the successful result",
+        }
+    }
+}
+
+/// Render a syn::Type in such a way that it can be included in rustdoc text.
+///
+/// This generally looks similar to quoting it, but will make a best-effort attempt to create
+/// usable rustdoc links from it or its parts. It also attempts some clean-up like removing any
+/// lavishly used whitespace.
+///
+/// The result is not set in the teletype font common for code examples; it is recommended that the
+/// consumer of this string put it in `<code>...</code>` together with any surrounding text. (If
+/// backticks were used, those would wind up in separate code tags, creating artifacts inbetween
+/// the production boundaries, and moreover the backticks might interfere in unexpected ways).
+///
+/// A more advanced version of this would look into the details of the syn and render them
+/// piecemeal and recursively, to produce things like `[Option]<[::some::Foo]>` (which is unlike
+/// leaving all to rustdoc which would accept a `[Option<::some::Foo>]` but merely render it as
+/// "Option"); for now this captures the easy cases which make up most of webidl.
+fn doc_prettyprint(t: &syn::Type) -> String {
+    use quote::quote;
+
+    fn is_simple(s: &str) -> bool {
+        s
+            // Don't accept any whitespace -- `mut Foo` is not simple
+            .replace(" :: ", "")
+            .replace(":: ", "")
+            .chars().all(|c| c.is_alphanumeric() || c == '_')
+    }
+
+    let quoted = format!("{}", quote! { #t });
+
+    // The two more common case of things that are not is_simple but still easy
+    if let Some(q) = quoted.strip_prefix("Option < ").and_then(|q| q.strip_suffix(" >")) {
+        if is_simple(q) {
+            return format!("[Option]<[{}]>", q.replace(" ", ""))
+        }
+    }
+    if let Some(q) = quoted.strip_prefix("& ") {
+        if is_simple(q) {
+            return format!("&[{}]", q.replace(" ", ""))
+        }
+    }
+
+    if is_simple(&quoted) {
+        format!("[{}]", quoted.replace(" ", ""))
+    } else {
+        quoted
+    }
+}
+
+impl Confession {
+    /// Create a textual description of what's wrong with the returned type.
+    ///
+    /// Any formatting in the return value is rustdoc-suitable Markdown.
+    pub fn tell(&self, in_return_position: bool) -> String {
+        (|| -> Result<_, std::fmt::Error> {
+            use std::fmt::Write;
+            let mut text = String::new();
+            let mut show_more = self.has_more_data;
+
+            match (&self.kind, &self.actual_type) {
+                (ConfessionKind::Promise, Some(s)) => {
+                    write!(text, "While the Promise{} can produce any JsValue as far as the type system is \
+                            concerned, practically it is expected to contain a <code>{}</code>.",
+                            self.is_behind.text_fragment(), s)?;
+                    if in_return_position {
+                        write!(text, " It can be converted like \
+                              <code>let result: {} = {}.await.into();</code>.",
+                            s,
+                            if self.is_behind != ConfessionWrapping::None { "result?" } else { "result" }
+                            )?;
+                    }
+                },
+                (ConfessionKind::Promise, None) => {
+                    write!(text, "While the Promise{} can produce any JsValue as far as the type system is \
+                            concerned, practically it is just used to indicate completion.",
+                            self.is_behind.text_fragment())?;
+                }
+                (ConfessionKind::Iterable, s) => {
+                    let s = s.as_ref().map(|s| s.as_str())
+                        // There's little point in creating JsValue that are iterating over void /
+                        // (), but let's not panic if it happens.
+                        .unwrap_or("()");
+                    write!(text, "While the iterable or array{} can produce any JsValue as far as the \
+                            type system is concerned, practically it is expected to contain a <code>{}</code>.",
+                            self.is_behind.text_fragment(), s)?;
+                },
+                (ConfessionKind::Union, _) => {
+                    show_more = false;
+                    write!(text, "The type{} is actually a union over some types and  can not yet be \
+                           explained any better.", self.is_behind.text_fragment())?;
+                }
+                (ConfessionKind::Callback, _) => {
+                    show_more = false;
+                    write!(text, "See the referenced MDN documentation or the IDL files for the signature of the callback{}.",
+                           self.is_behind.text_fragment())?;
+                }
+            }
+
+            if show_more {
+                write!(text, " More information is available in the source IDL file.")?;
+            }
+
+            Ok(text)
+        })().expect("There are no errors writing to a String")
+    }
+
+    pub fn behind_result(self) -> Self {
+        Self { is_behind: ConfessionWrapping::Result, ..self }
+    }
+
+    pub fn behind_option(self) -> Self {
+        Self { is_behind: ConfessionWrapping::Option, ..self }
+    }
+
+    fn from_inner_idl_type(idl_type: &IdlType, idl_type_position: TypePosition, kind: ConfessionKind) -> Self {
+        let (actual_type, has_more_data) = match idl_type.to_syn_type(idl_type_position) {
+            // Without a type, there's not much point in telling there'd be *even* more data
+            Err(_) => (None, false),
+            Ok((t, i)) => (
+                t.map(|t| doc_prettyprint(&t)),
+                i.is_some()
+                ),
+        };
+
+        Self {
+            kind,
+            actual_type,
+            has_more_data,
+            is_behind: ConfessionWrapping::None,
+        }
+    }
+
+    fn promise(idl_type: &IdlType, pos: TypePosition) -> Self {
+        Self::from_inner_idl_type(idl_type, pos, ConfessionKind::Promise)
+    }
+
+    fn iterable(idl_type: &IdlType, pos: TypePosition) -> Self {
+        Self::from_inner_idl_type(idl_type, pos, ConfessionKind::Iterable)
+    }
+
+    fn union(_idl_types: &[IdlType]) -> Self {
+        Self {
+            kind: ConfessionKind::Union,
+            actual_type: None,
+            has_more_data: false,
+            is_behind: ConfessionWrapping::None,
+        }
+    }
+
+    fn callback() -> Self {
+        Self {
+            kind: ConfessionKind::Callback,
+            actual_type: None,
+            has_more_data: false,
+            is_behind: ConfessionWrapping::None,
+        }
+    }
+}
+
 pub(crate) trait ToIdlType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a>;
 }
@@ -495,7 +688,7 @@ impl<'a> IdlType<'a> {
     }
 
     /// Converts to syn type if possible.
-    pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<Option<syn::Type>, TypeError> {
+    pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<(Option<syn::Type>, Option<Confession>), TypeError> {
         let externref = |ty| {
             Some(match pos {
                 TypePosition::Argument => shared_ref(ty, false),
@@ -511,6 +704,7 @@ impl<'a> IdlType<'a> {
             let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
             externref(leading_colon_path_ty(path))
         };
+        let mut confession = None;
         match self {
             IdlType::Boolean => Ok(Some(ident_ty(raw_ident("bool")))),
             IdlType::Byte => Ok(Some(ident_ty(raw_ident("i8")))),
@@ -570,7 +764,11 @@ impl<'a> IdlType<'a> {
             IdlType::Enum(name) => Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str())))),
 
             IdlType::Nullable(idl_type) => {
-                let inner = idl_type.to_syn_type(pos)?;
+                let (inner, inner_confession) = idl_type.to_syn_type(pos)?;
+
+                // eg. ExtendableMessageEventInit.source with a union, L10nValue.attributes for
+                // iterable
+                confession = inner_confession.map(|c| c.behind_option());
 
                 match inner {
                     Some(inner) => {
@@ -589,7 +787,7 @@ impl<'a> IdlType<'a> {
                                     .map(|p| p.ident == "JsValue")
                                     .unwrap_or(false)
                             {
-                                return Ok(Some(inner.clone()));
+                                return Ok((Some(inner.clone()), confession));
                             }
                         }
 
@@ -601,11 +799,17 @@ impl<'a> IdlType<'a> {
             // webidl sequences must always be returned as javascript `Array`s. They may accept
             // anything implementing the @@iterable interface.
             // The same implementation is fine for `FrozenArray`
-            IdlType::FrozenArray(_idl_type) | IdlType::Sequence(_idl_type) => match pos {
-                TypePosition::Argument => Ok(js_value),
-                TypePosition::Return => Ok(js_sys("Array")),
+            IdlType::FrozenArray(idl_type) | IdlType::Sequence(idl_type) => {
+                confession = Some(Confession::iterable(idl_type, pos));
+                match pos {
+                    TypePosition::Argument => Ok(js_value),
+                    TypePosition::Return => Ok(js_sys("Array")),
+                }
             },
-            IdlType::Promise(_idl_type) => Ok(js_sys("Promise")),
+            IdlType::Promise(idl_type) => {
+                confession = Some(Confession::promise(idl_type, pos));
+                Ok(js_sys("Promise"))
+            },
             IdlType::Record(_idl_type_from, _idl_type_to) => Err(TypeError::CannotConvert),
             IdlType::Union(idl_types) => {
                 // Note that most union types have already been expanded to
@@ -631,6 +835,7 @@ impl<'a> IdlType<'a> {
                 //    Such an enum, however, might have a relatively high
                 //    overhead in creating it from a JS value, but would be
                 //    cheap to convert from a variant back to a JS value.
+                confession = Some(Confession::union(&idl_types));
                 if idl_types.iter().all(|idl_type| match idl_type {
                     IdlType::Interface(..) => true,
                     _ => false,
@@ -639,13 +844,17 @@ impl<'a> IdlType<'a> {
                 } else {
                     IdlType::Any.to_syn_type(pos)
                 }
+                    .map(|(r, _c)| r)
             }
 
             IdlType::Any => Ok(js_value),
             IdlType::Void => Ok(None),
-            IdlType::Callback => Ok(js_sys("Function")),
+            IdlType::Callback => {
+                confession = Some(Confession::callback());
+                Ok(js_sys("Function"))
+            }
             IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
-        }
+        }.map(|t| (t, confession))
     }
 
     /// Flattens unions recursively.

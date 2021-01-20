@@ -61,6 +61,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onopen(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TCPSocket" , js_name = onopen)]
     #[doc = "Setter for the `onopen` field of this object."]
@@ -68,6 +70,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onopen(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TCPSocket" , js_name = ondrain)]
     #[doc = "Getter for the `ondrain` field of this object."]
@@ -75,6 +79,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondrain)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondrain(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TCPSocket" , js_name = ondrain)]
     #[doc = "Setter for the `ondrain` field of this object."]
@@ -82,6 +88,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondrain)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondrain(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TCPSocket" , js_name = ondata)]
     #[doc = "Getter for the `ondata` field of this object."]
@@ -89,6 +97,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondata)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondata(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TCPSocket" , js_name = ondata)]
     #[doc = "Setter for the `ondata` field of this object."]
@@ -96,6 +106,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/ondata)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondata(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TCPSocket" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -103,6 +115,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TCPSocket" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -110,6 +124,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &TcpSocket, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "TCPSocket" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
@@ -117,6 +133,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclose(this: &TcpSocket) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "TCPSocket" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
@@ -124,6 +142,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocket`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclose(this: &TcpSocket, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "TCPSocket")]
     #[doc = "The `new TcpSocket(..)` constructor, creating a new instance of `TcpSocket`."]

@@ -38,6 +38,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onopen(this: &EventSource) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "EventSource" , js_name = onopen)]
     #[doc = "Setter for the `onopen` field of this object."]
@@ -45,6 +47,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onopen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onopen(this: &EventSource, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "EventSource" , js_name = onmessage)]
     #[doc = "Getter for the `onmessage` field of this object."]
@@ -52,6 +56,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmessage(this: &EventSource) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "EventSource" , js_name = onmessage)]
     #[doc = "Setter for the `onmessage` field of this object."]
@@ -59,6 +65,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onmessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmessage(this: &EventSource, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "EventSource" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -66,6 +74,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &EventSource) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "EventSource" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -73,6 +83,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventSource`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &EventSource, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "EventSource")]
     #[doc = "The `new EventSource(..)` constructor, creating a new instance of `EventSource`."]

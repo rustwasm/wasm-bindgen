@@ -69,6 +69,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstatechange(this: &MidiPort) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MIDIPort" , js_name = onstatechange)]
     #[doc = "Setter for the `onstatechange` field of this object."]
@@ -76,6 +78,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstatechange(this: &MidiPort, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (method , structural , js_class = "MIDIPort" , js_name = close)]
     #[doc = "The `close()` method."]
@@ -83,6 +87,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/close)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MidiPort]</code>. It can be converted like `<code>let result: [MidiPort] = result.await.into();</code>."]
     pub fn close(this: &MidiPort) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "MIDIPort" , js_name = open)]
     #[doc = "The `open()` method."]
@@ -90,5 +96,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/open)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MidiPort]</code>. It can be converted like `<code>let result: [MidiPort] = result.await.into();</code>."]
     pub fn open(this: &MidiPort) -> ::js_sys::Promise;
 }

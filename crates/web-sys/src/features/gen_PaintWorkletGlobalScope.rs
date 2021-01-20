@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaintWorkletGlobalScope/registerPaint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaintWorkletGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "Argument `paint_ctor`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn register_paint(
         this: &PaintWorkletGlobalScope,
         name: &str,

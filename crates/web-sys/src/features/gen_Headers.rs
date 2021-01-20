@@ -31,6 +31,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Headers`*"]
+    #[doc = ""]
+    #[doc = "Argument `init`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[::wasm_bindgen::JsValue]</code>. More information is available in the source IDL file."]
     pub fn new_with_str_sequence_sequence(
         init: &::wasm_bindgen::JsValue,
     ) -> Result<Headers, JsValue>;

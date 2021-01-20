@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloading)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloading(this: &FontFaceSet) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFaceSet" , js_name = onloading)]
     #[doc = "Setter for the `onloading` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloading)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloading(this: &FontFaceSet, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "FontFaceSet" , js_name = onloadingdone)]
     #[doc = "Getter for the `onloadingdone` field of this object."]
@@ -38,6 +42,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingdone)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadingdone(this: &FontFaceSet) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFaceSet" , js_name = onloadingdone)]
     #[doc = "Setter for the `onloadingdone` field of this object."]
@@ -45,6 +51,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingdone)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadingdone(this: &FontFaceSet, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "FontFaceSet" , js_name = onloadingerror)]
     #[doc = "Getter for the `onloadingerror` field of this object."]
@@ -52,6 +60,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadingerror(this: &FontFaceSet) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFaceSet" , js_name = onloadingerror)]
     #[doc = "Setter for the `onloadingerror` field of this object."]
@@ -59,6 +69,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/onloadingerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadingerror(this: &FontFaceSet, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , catch , method , getter , js_class = "FontFaceSet" , js_name = ready)]
     #[doc = "Getter for the `ready` field of this object."]
@@ -66,6 +78,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/ready)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn ready(this: &FontFaceSet) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "FontFaceSetLoadStatus")]
     # [wasm_bindgen (structural , method , getter , js_class = "FontFaceSet" , js_name = status)]
@@ -126,6 +140,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/forEach)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Argument `cb`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn for_each(this: &FontFaceSet, cb: &::js_sys::Function) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "FontFaceSet" , js_name = forEach)]
     #[doc = "The `forEach()` method."]
@@ -133,6 +149,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/forEach)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Argument `cb`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn for_each_with_this_arg(
         this: &FontFaceSet,
         cb: &::js_sys::Function,
@@ -152,6 +170,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/load)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result.await.into();</code>. More information is available in the source IDL file."]
     pub fn load(this: &FontFaceSet, font: &str) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "FontFaceSet" , js_name = load)]
     #[doc = "The `load()` method."]
@@ -159,6 +179,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/load)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSet`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result.await.into();</code>. More information is available in the source IDL file."]
     pub fn load_with_text(this: &FontFaceSet, font: &str, text: &str) -> ::js_sys::Promise;
     #[cfg(feature = "FontFaceSetIterator")]
     # [wasm_bindgen (method , structural , js_class = "FontFaceSet" , js_name = values)]

@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn get_current_position(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -34,6 +36,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn get_current_position_with_error_callback(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -46,6 +52,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`, `PositionOptions`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn get_current_position_with_error_callback_and_options(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -58,6 +68,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn watch_position(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -68,6 +80,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn watch_position_with_error_callback(
         this: &Geolocation,
         success_callback: &::js_sys::Function,
@@ -80,6 +96,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`, `PositionOptions`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn watch_position_with_error_callback_and_options(
         this: &Geolocation,
         success_callback: &::js_sys::Function,

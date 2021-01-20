@@ -38,6 +38,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/onvoiceschanged)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesis`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onvoiceschanged(this: &SpeechSynthesis) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesis" , js_name = onvoiceschanged)]
     #[doc = "Setter for the `onvoiceschanged` field of this object."]
@@ -45,6 +47,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/onvoiceschanged)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesis`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onvoiceschanged(this: &SpeechSynthesis, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (method , structural , js_class = "SpeechSynthesis" , js_name = cancel)]
     #[doc = "The `cancel()` method."]
@@ -59,6 +63,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/getVoices)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesis`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[SpeechSynthesisVoice]</code>."]
     pub fn get_voices(this: &SpeechSynthesis) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "SpeechSynthesis" , js_name = pause)]
     #[doc = "The `pause()` method."]

@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/delete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[bool]</code>. It can be converted like `<code>let result: [bool] = result.await.into();</code>."]
     pub fn delete(this: &CacheStorage, cache_name: &str) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "CacheStorage" , js_name = has)]
     #[doc = "The `has()` method."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/has)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[bool]</code>. It can be converted like `<code>let result: [bool] = result.await.into();</code>."]
     pub fn has(this: &CacheStorage, cache_name: &str) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "CacheStorage" , js_name = keys)]
     #[doc = "The `keys()` method."]
@@ -31,6 +35,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/keys)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Array]</code>. It can be converted like `<code>let result: [::js_sys::Array] = result.await.into();</code>. More information is available in the source IDL file."]
     pub fn keys(this: &CacheStorage) -> ::js_sys::Promise;
     #[cfg(feature = "Request")]
     # [wasm_bindgen (method , structural , js_class = "CacheStorage" , js_name = match)]
@@ -39,6 +45,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/match)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`, `Request`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn match_with_request(this: &CacheStorage, request: &Request) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "CacheStorage" , js_name = match)]
     #[doc = "The `match()` method."]
@@ -46,6 +54,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/match)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn match_with_str(this: &CacheStorage, request: &str) -> ::js_sys::Promise;
     #[cfg(all(feature = "CacheQueryOptions", feature = "Request",))]
     # [wasm_bindgen (method , structural , js_class = "CacheStorage" , js_name = match)]
@@ -54,6 +64,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/match)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`, `CacheStorage`, `Request`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn match_with_request_and_options(
         this: &CacheStorage,
         request: &Request,
@@ -66,6 +78,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/match)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`, `CacheStorage`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Response]</code>. It can be converted like `<code>let result: [Response] = result.await.into();</code>."]
     pub fn match_with_str_and_options(
         this: &CacheStorage,
         request: &str,
@@ -77,5 +91,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/open)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Cache]</code>. It can be converted like `<code>let result: [Cache] = result.await.into();</code>."]
     pub fn open(this: &CacheStorage, cache_name: &str) -> ::js_sys::Promise;
 }

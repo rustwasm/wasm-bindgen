@@ -1,1 +1,2 @@
 *.webidl linguist-vendored
+crates/web-sys/src/features/gen_*.rs linguist-generated=true

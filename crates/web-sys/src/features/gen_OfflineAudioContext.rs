@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/oncomplete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncomplete(this: &OfflineAudioContext) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineAudioContext" , js_name = oncomplete)]
     #[doc = "Setter for the `oncomplete` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/oncomplete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncomplete(this: &OfflineAudioContext, value: Option<&::js_sys::Function>);
     #[cfg(feature = "AudioDestinationNode")]
     # [wasm_bindgen (structural , method , getter , js_class = "OfflineAudioContext" , js_name = destination)]
@@ -84,6 +88,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstatechange(this: &OfflineAudioContext) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "OfflineAudioContext" , js_name = onstatechange)]
     #[doc = "Setter for the `onstatechange` field of this object."]
@@ -91,6 +97,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/onstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstatechange(this: &OfflineAudioContext, value: Option<&::js_sys::Function>);
     #[cfg(feature = "OfflineAudioContextOptions")]
     #[wasm_bindgen(catch, constructor, js_class = "OfflineAudioContext")]
@@ -119,6 +127,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/startRendering)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn start_rendering(this: &OfflineAudioContext) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "AnalyserNode")]
     # [wasm_bindgen (catch , method , structural , js_class = "OfflineAudioContext" , js_name = createAnalyser)]
@@ -261,6 +271,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/createIIRFilter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterNode`, `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Argument `feedforward`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
+    #[doc = ""]
+    #[doc = "Argument `feedback`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     pub fn create_iir_filter(
         this: &OfflineAudioContext,
         feedforward: &::wasm_bindgen::JsValue,
@@ -375,6 +389,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/decodeAudioData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data(
         this: &OfflineAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -385,6 +401,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/decodeAudioData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback(
         this: &OfflineAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -396,6 +416,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/decodeAudioData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `error_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[AudioBuffer]</code>. It can be converted like `<code>let result: [AudioBuffer] = result?.await.into();</code>."]
     pub fn decode_audio_data_with_success_callback_and_error_callback(
         this: &OfflineAudioContext,
         audio_data: &::js_sys::ArrayBuffer,
@@ -408,5 +434,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/resume)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContext`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn resume(this: &OfflineAudioContext) -> Result<::js_sys::Promise, JsValue>;
 }

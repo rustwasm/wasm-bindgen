@@ -96,6 +96,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/peerIdentity)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcIdentityAssertion]</code>."]
     pub fn peer_identity(this: &RtcPeerConnection) -> ::js_sys::Promise;
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = idpLoginUrl)]
     #[doc = "Getter for the `idpLoginUrl` field of this object."]
@@ -110,6 +112,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onnegotiationneeded)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onnegotiationneeded(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onnegotiationneeded)]
     #[doc = "Setter for the `onnegotiationneeded` field of this object."]
@@ -117,6 +121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onnegotiationneeded)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onnegotiationneeded(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onicecandidate)]
     #[doc = "Getter for the `onicecandidate` field of this object."]
@@ -124,6 +130,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicecandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onicecandidate(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onicecandidate)]
     #[doc = "Setter for the `onicecandidate` field of this object."]
@@ -131,6 +139,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicecandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onicecandidate(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onsignalingstatechange)]
     #[doc = "Getter for the `onsignalingstatechange` field of this object."]
@@ -138,6 +148,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onsignalingstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onsignalingstatechange(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onsignalingstatechange)]
     #[doc = "Setter for the `onsignalingstatechange` field of this object."]
@@ -145,6 +157,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onsignalingstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onsignalingstatechange(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onaddstream)]
     #[doc = "Getter for the `onaddstream` field of this object."]
@@ -152,6 +166,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddstream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaddstream(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onaddstream)]
     #[doc = "Setter for the `onaddstream` field of this object."]
@@ -159,6 +175,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddstream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaddstream(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onaddtrack)]
     #[doc = "Getter for the `onaddtrack` field of this object."]
@@ -166,6 +184,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaddtrack(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onaddtrack)]
     #[doc = "Setter for the `onaddtrack` field of this object."]
@@ -173,6 +193,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddtrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaddtrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = ontrack)]
     #[doc = "Getter for the `ontrack` field of this object."]
@@ -180,6 +202,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontrack(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = ontrack)]
     #[doc = "Setter for the `ontrack` field of this object."]
@@ -187,6 +211,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onremovestream)]
     #[doc = "Getter for the `onremovestream` field of this object."]
@@ -194,6 +220,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onremovestream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onremovestream(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onremovestream)]
     #[doc = "Setter for the `onremovestream` field of this object."]
@@ -201,6 +229,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onremovestream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onremovestream(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = oniceconnectionstatechange)]
     #[doc = "Getter for the `oniceconnectionstatechange` field of this object."]
@@ -208,6 +238,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/oniceconnectionstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oniceconnectionstatechange(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = oniceconnectionstatechange)]
     #[doc = "Setter for the `oniceconnectionstatechange` field of this object."]
@@ -215,6 +247,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/oniceconnectionstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oniceconnectionstatechange(
         this: &RtcPeerConnection,
         value: Option<&::js_sys::Function>,
@@ -225,6 +259,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicegatheringstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onicegatheringstatechange(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onicegatheringstatechange)]
     #[doc = "Setter for the `onicegatheringstatechange` field of this object."]
@@ -232,6 +268,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicegatheringstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onicegatheringstatechange(
         this: &RtcPeerConnection,
         value: Option<&::js_sys::Function>,
@@ -242,6 +280,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondatachannel(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = ondatachannel)]
     #[doc = "Setter for the `ondatachannel` field of this object."]
@@ -249,6 +289,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondatachannel(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "RTCPeerConnection")]
     #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`."]
@@ -285,6 +327,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_ice_candidate_with_opt_rtc_ice_candidate_init(
         this: &RtcPeerConnection,
         candidate: Option<&RtcIceCandidateInit>,
@@ -296,6 +340,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_ice_candidate_with_opt_rtc_ice_candidate(
         this: &RtcPeerConnection,
         candidate: Option<&RtcIceCandidate>,
@@ -307,6 +353,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn add_ice_candidate_with_rtc_ice_candidate_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         candidate: &RtcIceCandidate,
@@ -557,6 +609,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_answer(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "RtcAnswerOptions")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createAnswer)]
@@ -565,6 +619,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcAnswerOptions`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_answer_with_rtc_answer_options(
         this: &RtcPeerConnection,
         options: &RtcAnswerOptions,
@@ -575,6 +631,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn create_answer_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         success_callback: &::js_sys::Function,
@@ -606,6 +668,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_offer(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "RtcOfferOptions")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createOffer)]
@@ -614,6 +678,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcSessionDescriptionInit]</code>. It can be converted like `<code>let result: [RtcSessionDescriptionInit] = result.await.into();</code>."]
     pub fn create_offer_with_rtc_offer_options(
         this: &RtcPeerConnection,
         options: &RtcOfferOptions,
@@ -624,6 +690,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn create_offer_with_callback_and_failure_callback(
         this: &RtcPeerConnection,
         success_callback: &::js_sys::Function,
@@ -636,6 +708,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn create_offer_with_callback_and_failure_callback_and_options(
         this: &RtcPeerConnection,
         success_callback: &::js_sys::Function,
@@ -648,6 +726,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcCertificate]</code>. It can be converted like `<code>let result: [RtcCertificate] = result?.await.into();</code>."]
     pub fn generate_certificate_with_object(
         keygen_algorithm: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
@@ -657,6 +737,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcCertificate]</code>. It can be converted like `<code>let result: [RtcCertificate] = result?.await.into();</code>."]
     pub fn generate_certificate_with_str(
         keygen_algorithm: &str,
     ) -> Result<::js_sys::Promise, JsValue>;
@@ -674,6 +756,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getIdentityAssertion)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[String]</code>. It can be converted like `<code>let result: [String] = result.await.into();</code>."]
     pub fn get_identity_assertion(this: &RtcPeerConnection) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getLocalStreams)]
     #[doc = "The `getLocalStreams()` method."]
@@ -681,6 +765,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getLocalStreams)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaStream]</code>."]
     pub fn get_local_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getReceivers)]
     #[doc = "The `getReceivers()` method."]
@@ -688,6 +774,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getReceivers)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpReceiver]</code>."]
     pub fn get_receivers(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getRemoteStreams)]
     #[doc = "The `getRemoteStreams()` method."]
@@ -695,6 +783,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getRemoteStreams)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MediaStream]</code>."]
     pub fn get_remote_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getSenders)]
     #[doc = "The `getSenders()` method."]
@@ -702,6 +792,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getSenders)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpSender]</code>."]
     pub fn get_senders(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
     #[doc = "The `getStats()` method."]
@@ -709,6 +801,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcStatsReport]</code>. It can be converted like `<code>let result: [RtcStatsReport] = result.await.into();</code>."]
     pub fn get_stats(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "MediaStreamTrack")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
@@ -717,6 +811,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcStatsReport]</code>. It can be converted like `<code>let result: [RtcStatsReport] = result.await.into();</code>."]
     pub fn get_stats_with_selector(
         this: &RtcPeerConnection,
         selector: Option<&MediaStreamTrack>,
@@ -728,6 +824,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn get_stats_with_selector_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         selector: Option<&MediaStreamTrack>,
@@ -740,6 +842,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getTransceivers)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[RtcRtpTransceiver]</code>."]
     pub fn get_transceivers(this: &RtcPeerConnection) -> ::js_sys::Array;
     #[cfg(feature = "RtcRtpSender")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = removeTrack)]
@@ -775,6 +879,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setLocalDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn set_local_description(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,
@@ -786,6 +892,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setLocalDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn set_local_description_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,
@@ -799,6 +911,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setRemoteDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn set_remote_description(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,
@@ -810,6 +924,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setRemoteDescription)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
+    #[doc = ""]
+    #[doc = "Argument `success_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Argument `failure_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn set_remote_description_with_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
         description: &RtcSessionDescriptionInit,

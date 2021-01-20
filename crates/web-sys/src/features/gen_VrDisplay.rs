@@ -96,6 +96,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/exitPresent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn exit_present(this: &VrDisplay) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(all(feature = "VrEye", feature = "VrEyeParameters",))]
     # [wasm_bindgen (method , structural , js_class = "VRDisplay" , js_name = getEyeParameters)]
@@ -119,6 +121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/getLayers)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[VrLayer]</code>."]
     pub fn get_layers(this: &VrDisplay) -> ::js_sys::Array;
     #[cfg(feature = "VrPose")]
     # [wasm_bindgen (method , structural , js_class = "VRDisplay" , js_name = getPose)]
@@ -142,6 +146,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/requestAnimationFrame)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn request_animation_frame(
         this: &VrDisplay,
         callback: &::js_sys::Function,
@@ -152,6 +158,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/requestPresent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
+    #[doc = ""]
+    #[doc = "Argument `layers`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[VrLayer]</code>."]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn request_present(
         this: &VrDisplay,
         layers: &::wasm_bindgen::JsValue,

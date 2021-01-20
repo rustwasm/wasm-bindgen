@@ -103,6 +103,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstart(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = onstart)]
     #[doc = "Setter for the `onstart` field of this object."]
@@ -110,6 +112,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstart(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = onend)]
     #[doc = "Getter for the `onend` field of this object."]
@@ -117,6 +121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onend(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = onend)]
     #[doc = "Setter for the `onend` field of this object."]
@@ -124,6 +130,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onend(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -131,6 +139,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -138,6 +148,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = onpause)]
     #[doc = "Getter for the `onpause` field of this object."]
@@ -145,6 +157,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onpause)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpause(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = onpause)]
     #[doc = "Setter for the `onpause` field of this object."]
@@ -152,6 +166,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onpause)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpause(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = onresume)]
     #[doc = "Getter for the `onresume` field of this object."]
@@ -159,6 +175,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onresume)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onresume(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = onresume)]
     #[doc = "Setter for the `onresume` field of this object."]
@@ -166,6 +184,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onresume)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onresume(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = onmark)]
     #[doc = "Getter for the `onmark` field of this object."]
@@ -173,6 +193,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onmark)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmark(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = onmark)]
     #[doc = "Setter for the `onmark` field of this object."]
@@ -180,6 +202,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onmark)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmark(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisUtterance" , js_name = onboundary)]
     #[doc = "Getter for the `onboundary` field of this object."]
@@ -187,6 +211,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onboundary)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onboundary(this: &SpeechSynthesisUtterance) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechSynthesisUtterance" , js_name = onboundary)]
     #[doc = "Setter for the `onboundary` field of this object."]
@@ -194,6 +220,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/onboundary)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisUtterance`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onboundary(this: &SpeechSynthesisUtterance, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "SpeechSynthesisUtterance")]
     #[doc = "The `new SpeechSynthesisUtterance(..)` constructor, creating a new instance of `SpeechSynthesisUtterance`."]

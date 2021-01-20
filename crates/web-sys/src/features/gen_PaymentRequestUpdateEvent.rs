@@ -35,6 +35,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentRequestUpdateEvent/updateWith)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentRequestUpdateEvent`*"]
+    #[doc = ""]
+    #[doc = "Argument `details_promise`: While the Promise can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn update_with(
         this: &PaymentRequestUpdateEvent,
         details_promise: &::js_sys::Promise,

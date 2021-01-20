@@ -136,6 +136,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/serverTiming)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceResourceTiming`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PerformanceServerTiming]</code>."]
     pub fn server_timing(this: &PerformanceResourceTiming) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "PerformanceResourceTiming" , js_name = toJSON)]
     #[doc = "The `toJSON()` method."]

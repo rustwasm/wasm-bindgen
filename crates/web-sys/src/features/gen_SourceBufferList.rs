@@ -24,6 +24,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBufferList/onaddsourcebuffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBufferList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onaddsourcebuffer(this: &SourceBufferList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SourceBufferList" , js_name = onaddsourcebuffer)]
     #[doc = "Setter for the `onaddsourcebuffer` field of this object."]
@@ -31,6 +33,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBufferList/onaddsourcebuffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBufferList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onaddsourcebuffer(this: &SourceBufferList, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBufferList" , js_name = onremovesourcebuffer)]
     #[doc = "Getter for the `onremovesourcebuffer` field of this object."]
@@ -38,6 +42,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBufferList/onremovesourcebuffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBufferList`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onremovesourcebuffer(this: &SourceBufferList) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "SourceBufferList" , js_name = onremovesourcebuffer)]
     #[doc = "Setter for the `onremovesourcebuffer` field of this object."]
@@ -45,6 +51,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBufferList/onremovesourcebuffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBufferList`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onremovesourcebuffer(this: &SourceBufferList, value: Option<&::js_sys::Function>);
     #[cfg(feature = "SourceBuffer")]
     #[wasm_bindgen(method, structural, js_class = "SourceBufferList", indexing_getter)]

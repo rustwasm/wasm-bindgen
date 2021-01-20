@@ -323,11 +323,13 @@ impl<'src> FirstPassRecord<'src> {
 
     fn dictionary_field(&self, field: &'src DictionaryMember<'src>) -> Option<DictionaryField> {
         // use argument position now as we're just binding setters
-        let ty = field
+        let (ty, confession) = field
             .type_
             .to_idl_type(self)
             .to_syn_type(TypePosition::Argument)
-            .unwrap_or(None)?;
+            .unwrap_or((None, None));
+
+        let ty = ty?;
 
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
@@ -376,6 +378,7 @@ impl<'src> FirstPassRecord<'src> {
             name: rust_ident(&snake_case_ident(field.identifier.0)),
             js_name: field.identifier.0.to_string(),
             ty,
+            confession,
         })
     }
 
@@ -444,7 +447,12 @@ impl<'src> FirstPassRecord<'src> {
         unstable: bool,
     ) {
         let idl_type = member.const_type.to_idl_type(self);
-        let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
+        let (ty, confession) = idl_type.to_syn_type(TypePosition::Return).unwrap();
+        if let Some(_) = confession {
+            eprintln!("Confession found for member {:?}, this is unexpected and will be missing \
+                      from the generated documentation.", member);
+        }
+        let ty = ty.unwrap();
 
         let js_name = member.identifier.0;
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
@@ -576,11 +584,11 @@ impl<'src> FirstPassRecord<'src> {
 
         let catch = throws(attrs);
 
-        let ty = type_
+        let (ty, confession) = type_
             .type_
             .to_idl_type(self)
             .to_syn_type(TypePosition::Return)
-            .unwrap_or(None);
+            .unwrap_or((None, None));
 
         // Skip types which can't be converted
         if let Some(ty) = ty {
@@ -593,15 +601,16 @@ impl<'src> FirstPassRecord<'src> {
                 js_name: js_name.clone(),
                 kind,
                 unstable,
+                confession,
             });
         }
 
         if !readonly {
-            let ty = type_
+            let (ty, confession) = type_
                 .type_
                 .to_idl_type(self)
                 .to_syn_type(TypePosition::Argument)
-                .unwrap_or(None);
+                .unwrap_or((None, None));
 
             // Skip types which can't be converted
             if let Some(ty) = ty {
@@ -614,6 +623,7 @@ impl<'src> FirstPassRecord<'src> {
                     js_name,
                     kind,
                     unstable,
+                    confession,
                 });
             }
         }
@@ -655,14 +665,17 @@ impl<'src> FirstPassRecord<'src> {
                     };
                     let pos = TypePosition::Argument;
 
+                    let (ty, confession) = idl_type::IdlType::Callback
+                            .to_syn_type(pos)
+                            .unwrap();
+                    let ty = ty.unwrap();
+
                     fields.push(DictionaryField {
                         required: false,
                         name: rust_ident(&snake_case_ident(identifier)),
                         js_name: identifier.to_string(),
-                        ty: idl_type::IdlType::Callback
-                            .to_syn_type(pos)
-                            .unwrap()
-                            .unwrap(),
+                        ty,
+                        confession,
                     })
                 }
                 _ => {

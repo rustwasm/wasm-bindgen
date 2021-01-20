@@ -32,6 +32,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScreenOrientation`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchange(this: &ScreenOrientation) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "ScreenOrientation" , js_name = onchange)]
     #[doc = "Setter for the `onchange` field of this object."]
@@ -39,6 +41,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScreenOrientation`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchange(this: &ScreenOrientation, value: Option<&::js_sys::Function>);
     #[cfg(feature = "OrientationLockType")]
     # [wasm_bindgen (catch , method , structural , js_class = "ScreenOrientation" , js_name = lock)]
@@ -47,6 +51,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/lock)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OrientationLockType`, `ScreenOrientation`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn lock(
         this: &ScreenOrientation,
         orientation: OrientationLockType,

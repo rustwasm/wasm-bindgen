@@ -59,6 +59,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onmute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmute(this: &MediaStreamTrack) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaStreamTrack" , js_name = onmute)]
     #[doc = "Setter for the `onmute` field of this object."]
@@ -66,6 +68,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onmute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmute(this: &MediaStreamTrack, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamTrack" , js_name = onunmute)]
     #[doc = "Getter for the `onunmute` field of this object."]
@@ -73,6 +77,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onunmute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onunmute(this: &MediaStreamTrack) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaStreamTrack" , js_name = onunmute)]
     #[doc = "Setter for the `onunmute` field of this object."]
@@ -80,6 +86,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onunmute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onunmute(this: &MediaStreamTrack, value: Option<&::js_sys::Function>);
     #[cfg(feature = "MediaStreamTrackState")]
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamTrack" , js_name = readyState)]
@@ -95,6 +103,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onended)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onended(this: &MediaStreamTrack) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaStreamTrack" , js_name = onended)]
     #[doc = "Setter for the `onended` field of this object."]
@@ -102,6 +112,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/onended)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onended(this: &MediaStreamTrack, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (catch , method , structural , js_class = "MediaStreamTrack" , js_name = applyConstraints)]
     #[doc = "The `applyConstraints()` method."]
@@ -109,6 +121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/applyConstraints)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn apply_constraints(this: &MediaStreamTrack) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "MediaTrackConstraints")]
     # [wasm_bindgen (catch , method , structural , js_class = "MediaStreamTrack" , js_name = applyConstraints)]
@@ -117,6 +131,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/applyConstraints)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaTrackConstraints`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the Promise of the successful result can produce any JsValue as far as the type system is concerned, practically it is just used to indicate completion."]
     pub fn apply_constraints_with_constraints(
         this: &MediaStreamTrack,
         constraints: &MediaTrackConstraints,

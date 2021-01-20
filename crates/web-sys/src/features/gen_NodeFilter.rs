@@ -22,6 +22,8 @@ impl NodeFilter {
     #[doc = "Change the `acceptNode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NodeFilter`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn accept_node(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

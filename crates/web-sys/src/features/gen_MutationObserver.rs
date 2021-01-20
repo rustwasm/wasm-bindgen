@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/MutationObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObserver`*"]
+    #[doc = ""]
+    #[doc = "Argument `mutation_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn new(mutation_callback: &::js_sys::Function) -> Result<MutationObserver, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "MutationObserver" , js_name = disconnect)]
     #[doc = "The `disconnect()` method."]
@@ -51,5 +53,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/takeRecords)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObserver`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[MutationRecord]</code>."]
     pub fn take_records(this: &MutationObserver) -> ::js_sys::Array;
 }

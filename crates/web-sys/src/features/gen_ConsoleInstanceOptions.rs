@@ -39,6 +39,8 @@ impl ConsoleInstanceOptions {
     #[doc = "Change the `dump` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn dump(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("dump"), &JsValue::from(val));

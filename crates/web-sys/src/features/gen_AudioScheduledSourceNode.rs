@@ -19,6 +19,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioScheduledSourceNode/onended)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioScheduledSourceNode`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onended(this: &AudioScheduledSourceNode) -> Option<::js_sys::Function>;
     #[deprecated(note = "doesn't exist in Safari, use parent class methods instead")]
     # [wasm_bindgen (structural , method , setter , js_class = "AudioScheduledSourceNode" , js_name = onended)]
@@ -27,6 +29,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioScheduledSourceNode/onended)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioScheduledSourceNode`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onended(this: &AudioScheduledSourceNode, value: Option<&::js_sys::Function>);
     #[deprecated(note = "doesn't exist in Safari, use parent class methods instead")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioScheduledSourceNode" , js_name = start)]

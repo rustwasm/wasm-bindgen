@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyframeEffect`*"]
+    #[doc = ""]
+    #[doc = "Return value: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn target(this: &KeyframeEffect) -> Option<::js_sys::Object>;
     # [wasm_bindgen (structural , method , setter , js_class = "KeyframeEffect" , js_name = target)]
     #[doc = "Setter for the `target` field of this object."]
@@ -24,6 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyframeEffect`*"]
+    #[doc = ""]
+    #[doc = "Argument: The type inside the option is actually a union over some types and  can not yet be explained any better."]
     pub fn set_target(this: &KeyframeEffect, value: Option<&::js_sys::Object>);
     #[cfg(feature = "IterationCompositeOperation")]
     # [wasm_bindgen (structural , method , getter , js_class = "KeyframeEffect" , js_name = iterationComposite)]
@@ -140,6 +144,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/getKeyframes)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyframeEffect`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[::js_sys::Object]</code>."]
     pub fn get_keyframes(this: &KeyframeEffect) -> Result<::js_sys::Array, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "KeyframeEffect" , js_name = setKeyframes)]
     #[doc = "The `setKeyframes()` method."]

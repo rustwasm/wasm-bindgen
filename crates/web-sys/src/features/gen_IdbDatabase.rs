@@ -39,6 +39,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -46,6 +48,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
@@ -53,6 +57,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclose(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
@@ -60,6 +66,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclose(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -67,6 +75,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -74,6 +84,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = onversionchange)]
     #[doc = "Getter for the `onversionchange` field of this object."]
@@ -81,6 +93,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onversionchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onversionchange(this: &IdbDatabase) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBDatabase" , js_name = onversionchange)]
     #[doc = "Setter for the `onversionchange` field of this object."]
@@ -88,6 +102,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/onversionchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onversionchange(this: &IdbDatabase, value: Option<&::js_sys::Function>);
     #[cfg(feature = "StorageType")]
     # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = storage)]
@@ -169,6 +185,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`*"]
+    #[doc = ""]
+    #[doc = "Argument `store_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn transaction_with_str_sequence(
         this: &IdbDatabase,
         store_names: &::wasm_bindgen::JsValue,
@@ -192,6 +210,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`, `IdbTransactionMode`*"]
+    #[doc = ""]
+    #[doc = "Argument `store_names`: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[str]</code>."]
     pub fn transaction_with_str_sequence_and_mode(
         this: &IdbDatabase,
         store_names: &::wasm_bindgen::JsValue,

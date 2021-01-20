@@ -227,6 +227,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onreadystatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onreadystatechange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onreadystatechange)]
     #[doc = "Setter for the `onreadystatechange` field of this object."]
@@ -234,6 +236,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onreadystatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onreadystatechange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onbeforescriptexecute)]
     #[doc = "Getter for the `onbeforescriptexecute` field of this object."]
@@ -241,6 +245,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onbeforescriptexecute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onbeforescriptexecute(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onbeforescriptexecute)]
     #[doc = "Setter for the `onbeforescriptexecute` field of this object."]
@@ -248,6 +254,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onbeforescriptexecute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onbeforescriptexecute(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onafterscriptexecute)]
     #[doc = "Getter for the `onafterscriptexecute` field of this object."]
@@ -255,6 +263,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onafterscriptexecute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onafterscriptexecute(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onafterscriptexecute)]
     #[doc = "Setter for the `onafterscriptexecute` field of this object."]
@@ -262,6 +272,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onafterscriptexecute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onafterscriptexecute(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onselectionchange)]
     #[doc = "Getter for the `onselectionchange` field of this object."]
@@ -269,6 +281,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onselectionchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onselectionchange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onselectionchange)]
     #[doc = "Setter for the `onselectionchange` field of this object."]
@@ -276,6 +290,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onselectionchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onselectionchange(this: &Document, value: Option<&::js_sys::Function>);
     #[cfg(feature = "Element")]
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = currentScript)]
@@ -321,6 +337,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onfullscreenchange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onfullscreenchange)]
     #[doc = "Setter for the `onfullscreenchange` field of this object."]
@@ -328,6 +346,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onfullscreenchange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onfullscreenerror)]
     #[doc = "Getter for the `onfullscreenerror` field of this object."]
@@ -335,6 +355,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onfullscreenerror(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onfullscreenerror)]
     #[doc = "Setter for the `onfullscreenerror` field of this object."]
@@ -342,6 +364,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onfullscreenerror(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerlockchange)]
     #[doc = "Getter for the `onpointerlockchange` field of this object."]
@@ -349,6 +373,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerlockchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerlockchange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerlockchange)]
     #[doc = "Setter for the `onpointerlockchange` field of this object."]
@@ -356,6 +382,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerlockchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerlockchange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerlockerror)]
     #[doc = "Getter for the `onpointerlockerror` field of this object."]
@@ -363,6 +391,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerlockerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerlockerror(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerlockerror)]
     #[doc = "Setter for the `onpointerlockerror` field of this object."]
@@ -370,6 +400,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerlockerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerlockerror(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = hidden)]
     #[doc = "Getter for the `hidden` field of this object."]
@@ -392,6 +424,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onvisibilitychange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onvisibilitychange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onvisibilitychange)]
     #[doc = "Setter for the `onvisibilitychange` field of this object."]
@@ -399,6 +433,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onvisibilitychange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onvisibilitychange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = selectedStyleSheetSet)]
     #[doc = "Getter for the `selectedStyleSheetSet` field of this object."]
@@ -466,6 +502,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncopy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncopy(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = oncopy)]
     #[doc = "Setter for the `oncopy` field of this object."]
@@ -473,6 +511,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncopy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncopy(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = oncut)]
     #[doc = "Getter for the `oncut` field of this object."]
@@ -480,6 +520,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncut)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncut(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = oncut)]
     #[doc = "Setter for the `oncut` field of this object."]
@@ -487,6 +529,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncut)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncut(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpaste)]
     #[doc = "Getter for the `onpaste` field of this object."]
@@ -494,6 +538,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpaste)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpaste(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpaste)]
     #[doc = "Setter for the `onpaste` field of this object."]
@@ -501,6 +547,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpaste)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpaste(this: &Document, value: Option<&::js_sys::Function>);
     #[cfg(feature = "Element")]
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = activeElement)]
@@ -548,6 +596,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onabort(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onabort)]
     #[doc = "Setter for the `onabort` field of this object."]
@@ -555,6 +605,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onabort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onabort(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onblur)]
     #[doc = "Getter for the `onblur` field of this object."]
@@ -562,6 +614,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onblur)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onblur(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onblur)]
     #[doc = "Setter for the `onblur` field of this object."]
@@ -569,6 +623,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onblur)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onblur(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onfocus)]
     #[doc = "Getter for the `onfocus` field of this object."]
@@ -576,6 +632,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onfocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onfocus(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onfocus)]
     #[doc = "Setter for the `onfocus` field of this object."]
@@ -583,6 +641,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onfocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onfocus(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onauxclick)]
     #[doc = "Getter for the `onauxclick` field of this object."]
@@ -590,6 +650,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onauxclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onauxclick(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onauxclick)]
     #[doc = "Setter for the `onauxclick` field of this object."]
@@ -597,6 +659,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onauxclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onauxclick(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = oncanplay)]
     #[doc = "Getter for the `oncanplay` field of this object."]
@@ -604,6 +668,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncanplay)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncanplay(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = oncanplay)]
     #[doc = "Setter for the `oncanplay` field of this object."]
@@ -611,6 +677,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncanplay)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncanplay(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = oncanplaythrough)]
     #[doc = "Getter for the `oncanplaythrough` field of this object."]
@@ -618,6 +686,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncanplaythrough)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncanplaythrough(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = oncanplaythrough)]
     #[doc = "Setter for the `oncanplaythrough` field of this object."]
@@ -625,6 +695,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncanplaythrough)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncanplaythrough(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onchange)]
     #[doc = "Getter for the `onchange` field of this object."]
@@ -632,6 +704,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onchange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onchange)]
     #[doc = "Setter for the `onchange` field of this object."]
@@ -639,6 +713,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onchange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onclick)]
     #[doc = "Getter for the `onclick` field of this object."]
@@ -646,6 +722,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclick(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onclick)]
     #[doc = "Setter for the `onclick` field of this object."]
@@ -653,6 +731,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclick(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onclose)]
     #[doc = "Getter for the `onclose` field of this object."]
@@ -660,6 +740,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onclose(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onclose)]
     #[doc = "Setter for the `onclose` field of this object."]
@@ -667,6 +749,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onclose(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = oncontextmenu)]
     #[doc = "Getter for the `oncontextmenu` field of this object."]
@@ -674,6 +758,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncontextmenu)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oncontextmenu(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = oncontextmenu)]
     #[doc = "Setter for the `oncontextmenu` field of this object."]
@@ -681,6 +767,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oncontextmenu)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oncontextmenu(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondblclick)]
     #[doc = "Getter for the `ondblclick` field of this object."]
@@ -688,6 +776,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondblclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondblclick(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondblclick)]
     #[doc = "Setter for the `ondblclick` field of this object."]
@@ -695,6 +785,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondblclick)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondblclick(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondrag)]
     #[doc = "Getter for the `ondrag` field of this object."]
@@ -702,6 +794,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondrag)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondrag(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondrag)]
     #[doc = "Setter for the `ondrag` field of this object."]
@@ -709,6 +803,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondrag)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondrag(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondragend)]
     #[doc = "Getter for the `ondragend` field of this object."]
@@ -716,6 +812,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondragend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondragend)]
     #[doc = "Setter for the `ondragend` field of this object."]
@@ -723,6 +821,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondragend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondragenter)]
     #[doc = "Getter for the `ondragenter` field of this object."]
@@ -730,6 +830,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondragenter(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondragenter)]
     #[doc = "Setter for the `ondragenter` field of this object."]
@@ -737,6 +839,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondragenter(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondragexit)]
     #[doc = "Getter for the `ondragexit` field of this object."]
@@ -744,6 +848,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragexit)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondragexit(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondragexit)]
     #[doc = "Setter for the `ondragexit` field of this object."]
@@ -751,6 +857,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragexit)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondragexit(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondragleave)]
     #[doc = "Getter for the `ondragleave` field of this object."]
@@ -758,6 +866,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragleave)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondragleave(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondragleave)]
     #[doc = "Setter for the `ondragleave` field of this object."]
@@ -765,6 +875,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragleave)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondragleave(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondragover)]
     #[doc = "Getter for the `ondragover` field of this object."]
@@ -772,6 +884,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragover)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondragover(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondragover)]
     #[doc = "Setter for the `ondragover` field of this object."]
@@ -779,6 +893,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragover)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondragover(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondragstart)]
     #[doc = "Getter for the `ondragstart` field of this object."]
@@ -786,6 +902,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondragstart(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondragstart)]
     #[doc = "Setter for the `ondragstart` field of this object."]
@@ -793,6 +911,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondragstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondragstart(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondrop)]
     #[doc = "Getter for the `ondrop` field of this object."]
@@ -800,6 +920,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondrop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondrop(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondrop)]
     #[doc = "Setter for the `ondrop` field of this object."]
@@ -807,6 +929,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondrop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondrop(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ondurationchange)]
     #[doc = "Getter for the `ondurationchange` field of this object."]
@@ -814,6 +938,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondurationchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ondurationchange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ondurationchange)]
     #[doc = "Setter for the `ondurationchange` field of this object."]
@@ -821,6 +947,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ondurationchange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ondurationchange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onemptied)]
     #[doc = "Getter for the `onemptied` field of this object."]
@@ -828,6 +956,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onemptied)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onemptied(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onemptied)]
     #[doc = "Setter for the `onemptied` field of this object."]
@@ -835,6 +965,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onemptied)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onemptied(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onended)]
     #[doc = "Getter for the `onended` field of this object."]
@@ -842,6 +974,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onended)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onended(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onended)]
     #[doc = "Setter for the `onended` field of this object."]
@@ -849,6 +983,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onended)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onended(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = oninput)]
     #[doc = "Getter for the `oninput` field of this object."]
@@ -856,6 +992,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oninput)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oninput(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = oninput)]
     #[doc = "Setter for the `oninput` field of this object."]
@@ -863,6 +1001,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oninput)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oninput(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = oninvalid)]
     #[doc = "Getter for the `oninvalid` field of this object."]
@@ -870,6 +1010,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oninvalid)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn oninvalid(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = oninvalid)]
     #[doc = "Setter for the `oninvalid` field of this object."]
@@ -877,6 +1019,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/oninvalid)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_oninvalid(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onkeydown)]
     #[doc = "Getter for the `onkeydown` field of this object."]
@@ -884,6 +1028,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onkeydown)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onkeydown(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onkeydown)]
     #[doc = "Setter for the `onkeydown` field of this object."]
@@ -891,6 +1037,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onkeydown)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onkeydown(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onkeypress)]
     #[doc = "Getter for the `onkeypress` field of this object."]
@@ -898,6 +1046,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onkeypress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onkeypress(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onkeypress)]
     #[doc = "Setter for the `onkeypress` field of this object."]
@@ -905,6 +1055,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onkeypress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onkeypress(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onkeyup)]
     #[doc = "Getter for the `onkeyup` field of this object."]
@@ -912,6 +1064,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onkeyup)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onkeyup(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onkeyup)]
     #[doc = "Setter for the `onkeyup` field of this object."]
@@ -919,6 +1073,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onkeyup)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onkeyup(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onload)]
     #[doc = "Getter for the `onload` field of this object."]
@@ -926,6 +1082,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onload)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onload(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onload)]
     #[doc = "Setter for the `onload` field of this object."]
@@ -933,6 +1091,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onload)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onload(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onloadeddata)]
     #[doc = "Getter for the `onloadeddata` field of this object."]
@@ -940,6 +1100,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadeddata)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadeddata(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onloadeddata)]
     #[doc = "Setter for the `onloadeddata` field of this object."]
@@ -947,6 +1109,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadeddata)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadeddata(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onloadedmetadata)]
     #[doc = "Getter for the `onloadedmetadata` field of this object."]
@@ -954,6 +1118,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadedmetadata)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadedmetadata(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onloadedmetadata)]
     #[doc = "Setter for the `onloadedmetadata` field of this object."]
@@ -961,6 +1127,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadedmetadata)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadedmetadata(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onloadend)]
     #[doc = "Getter for the `onloadend` field of this object."]
@@ -968,6 +1136,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onloadend)]
     #[doc = "Setter for the `onloadend` field of this object."]
@@ -975,6 +1145,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onloadstart)]
     #[doc = "Getter for the `onloadstart` field of this object."]
@@ -982,6 +1154,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onloadstart(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onloadstart)]
     #[doc = "Setter for the `onloadstart` field of this object."]
@@ -989,6 +1163,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onloadstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onloadstart(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onmousedown)]
     #[doc = "Getter for the `onmousedown` field of this object."]
@@ -996,6 +1172,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmousedown)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmousedown(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onmousedown)]
     #[doc = "Setter for the `onmousedown` field of this object."]
@@ -1003,6 +1181,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmousedown)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmousedown(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onmouseenter)]
     #[doc = "Getter for the `onmouseenter` field of this object."]
@@ -1010,6 +1190,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmouseenter(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onmouseenter)]
     #[doc = "Setter for the `onmouseenter` field of this object."]
@@ -1017,6 +1199,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmouseenter(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onmouseleave)]
     #[doc = "Getter for the `onmouseleave` field of this object."]
@@ -1024,6 +1208,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseleave)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmouseleave(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onmouseleave)]
     #[doc = "Setter for the `onmouseleave` field of this object."]
@@ -1031,6 +1217,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseleave)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmouseleave(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onmousemove)]
     #[doc = "Getter for the `onmousemove` field of this object."]
@@ -1038,6 +1226,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmousemove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmousemove(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onmousemove)]
     #[doc = "Setter for the `onmousemove` field of this object."]
@@ -1045,6 +1235,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmousemove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmousemove(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onmouseout)]
     #[doc = "Getter for the `onmouseout` field of this object."]
@@ -1052,6 +1244,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmouseout(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onmouseout)]
     #[doc = "Setter for the `onmouseout` field of this object."]
@@ -1059,6 +1253,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmouseout(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onmouseover)]
     #[doc = "Getter for the `onmouseover` field of this object."]
@@ -1066,6 +1262,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseover)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmouseover(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onmouseover)]
     #[doc = "Setter for the `onmouseover` field of this object."]
@@ -1073,6 +1271,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseover)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmouseover(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onmouseup)]
     #[doc = "Getter for the `onmouseup` field of this object."]
@@ -1080,6 +1280,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseup)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onmouseup(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onmouseup)]
     #[doc = "Setter for the `onmouseup` field of this object."]
@@ -1087,6 +1289,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onmouseup)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onmouseup(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onwheel)]
     #[doc = "Getter for the `onwheel` field of this object."]
@@ -1094,6 +1298,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwheel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwheel(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onwheel)]
     #[doc = "Setter for the `onwheel` field of this object."]
@@ -1101,6 +1307,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwheel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwheel(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpause)]
     #[doc = "Getter for the `onpause` field of this object."]
@@ -1108,6 +1316,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpause)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpause(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpause)]
     #[doc = "Setter for the `onpause` field of this object."]
@@ -1115,6 +1325,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpause)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpause(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onplay)]
     #[doc = "Getter for the `onplay` field of this object."]
@@ -1122,6 +1334,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onplay)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onplay(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onplay)]
     #[doc = "Setter for the `onplay` field of this object."]
@@ -1129,6 +1343,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onplay)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onplay(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onplaying)]
     #[doc = "Getter for the `onplaying` field of this object."]
@@ -1136,6 +1352,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onplaying)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onplaying(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onplaying)]
     #[doc = "Setter for the `onplaying` field of this object."]
@@ -1143,6 +1361,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onplaying)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onplaying(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onprogress)]
     #[doc = "Getter for the `onprogress` field of this object."]
@@ -1150,6 +1370,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onprogress(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onprogress)]
     #[doc = "Setter for the `onprogress` field of this object."]
@@ -1157,6 +1379,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onprogress)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onprogress(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onratechange)]
     #[doc = "Getter for the `onratechange` field of this object."]
@@ -1164,6 +1388,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onratechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onratechange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onratechange)]
     #[doc = "Setter for the `onratechange` field of this object."]
@@ -1171,6 +1397,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onratechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onratechange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onreset)]
     #[doc = "Getter for the `onreset` field of this object."]
@@ -1178,6 +1406,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onreset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onreset(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onreset)]
     #[doc = "Setter for the `onreset` field of this object."]
@@ -1185,6 +1415,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onreset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onreset(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onresize)]
     #[doc = "Getter for the `onresize` field of this object."]
@@ -1192,6 +1424,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onresize)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onresize(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onresize)]
     #[doc = "Setter for the `onresize` field of this object."]
@@ -1199,6 +1433,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onresize)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onresize(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onscroll)]
     #[doc = "Getter for the `onscroll` field of this object."]
@@ -1206,6 +1442,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onscroll)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onscroll(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onscroll)]
     #[doc = "Setter for the `onscroll` field of this object."]
@@ -1213,6 +1451,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onscroll)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onscroll(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onseeked)]
     #[doc = "Getter for the `onseeked` field of this object."]
@@ -1220,6 +1460,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onseeked)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onseeked(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onseeked)]
     #[doc = "Setter for the `onseeked` field of this object."]
@@ -1227,6 +1469,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onseeked)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onseeked(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onseeking)]
     #[doc = "Getter for the `onseeking` field of this object."]
@@ -1234,6 +1478,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onseeking)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onseeking(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onseeking)]
     #[doc = "Setter for the `onseeking` field of this object."]
@@ -1241,6 +1487,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onseeking)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onseeking(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onselect)]
     #[doc = "Getter for the `onselect` field of this object."]
@@ -1248,6 +1496,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onselect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onselect(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onselect)]
     #[doc = "Setter for the `onselect` field of this object."]
@@ -1255,6 +1505,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onselect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onselect(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onshow)]
     #[doc = "Getter for the `onshow` field of this object."]
@@ -1262,6 +1514,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onshow)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onshow(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onshow)]
     #[doc = "Setter for the `onshow` field of this object."]
@@ -1269,6 +1523,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onshow)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onshow(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onstalled)]
     #[doc = "Getter for the `onstalled` field of this object."]
@@ -1276,6 +1532,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onstalled)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onstalled(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onstalled)]
     #[doc = "Setter for the `onstalled` field of this object."]
@@ -1283,6 +1541,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onstalled)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onstalled(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onsubmit)]
     #[doc = "Getter for the `onsubmit` field of this object."]
@@ -1290,6 +1550,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onsubmit)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onsubmit(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onsubmit)]
     #[doc = "Setter for the `onsubmit` field of this object."]
@@ -1297,6 +1559,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onsubmit)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onsubmit(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onsuspend)]
     #[doc = "Getter for the `onsuspend` field of this object."]
@@ -1304,6 +1568,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onsuspend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onsuspend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onsuspend)]
     #[doc = "Setter for the `onsuspend` field of this object."]
@@ -1311,6 +1577,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onsuspend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onsuspend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontimeupdate)]
     #[doc = "Getter for the `ontimeupdate` field of this object."]
@@ -1318,6 +1586,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontimeupdate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontimeupdate(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontimeupdate)]
     #[doc = "Setter for the `ontimeupdate` field of this object."]
@@ -1325,6 +1595,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontimeupdate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontimeupdate(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onvolumechange)]
     #[doc = "Getter for the `onvolumechange` field of this object."]
@@ -1332,6 +1604,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onvolumechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onvolumechange(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onvolumechange)]
     #[doc = "Setter for the `onvolumechange` field of this object."]
@@ -1339,6 +1613,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onvolumechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onvolumechange(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onwaiting)]
     #[doc = "Getter for the `onwaiting` field of this object."]
@@ -1346,6 +1622,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwaiting)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwaiting(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onwaiting)]
     #[doc = "Setter for the `onwaiting` field of this object."]
@@ -1353,6 +1631,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwaiting)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwaiting(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onselectstart)]
     #[doc = "Getter for the `onselectstart` field of this object."]
@@ -1360,6 +1640,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onselectstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onselectstart(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onselectstart)]
     #[doc = "Setter for the `onselectstart` field of this object."]
@@ -1367,6 +1649,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onselectstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onselectstart(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontoggle)]
     #[doc = "Getter for the `ontoggle` field of this object."]
@@ -1374,6 +1658,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontoggle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontoggle(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontoggle)]
     #[doc = "Setter for the `ontoggle` field of this object."]
@@ -1381,6 +1667,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontoggle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontoggle(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointercancel)]
     #[doc = "Getter for the `onpointercancel` field of this object."]
@@ -1388,6 +1676,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointercancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointercancel(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointercancel)]
     #[doc = "Setter for the `onpointercancel` field of this object."]
@@ -1395,6 +1685,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointercancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointercancel(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerdown)]
     #[doc = "Getter for the `onpointerdown` field of this object."]
@@ -1402,6 +1694,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerdown)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerdown(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerdown)]
     #[doc = "Setter for the `onpointerdown` field of this object."]
@@ -1409,6 +1703,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerdown)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerdown(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerup)]
     #[doc = "Getter for the `onpointerup` field of this object."]
@@ -1416,6 +1712,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerup)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerup(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerup)]
     #[doc = "Setter for the `onpointerup` field of this object."]
@@ -1423,6 +1721,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerup)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerup(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointermove)]
     #[doc = "Getter for the `onpointermove` field of this object."]
@@ -1430,6 +1730,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointermove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointermove(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointermove)]
     #[doc = "Setter for the `onpointermove` field of this object."]
@@ -1437,6 +1739,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointermove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointermove(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerout)]
     #[doc = "Getter for the `onpointerout` field of this object."]
@@ -1444,6 +1748,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerout(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerout)]
     #[doc = "Setter for the `onpointerout` field of this object."]
@@ -1451,6 +1757,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerout(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerover)]
     #[doc = "Getter for the `onpointerover` field of this object."]
@@ -1458,6 +1766,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerover)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerover(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerover)]
     #[doc = "Setter for the `onpointerover` field of this object."]
@@ -1465,6 +1775,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerover)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerover(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerenter)]
     #[doc = "Getter for the `onpointerenter` field of this object."]
@@ -1472,6 +1784,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerenter(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerenter)]
     #[doc = "Setter for the `onpointerenter` field of this object."]
@@ -1479,6 +1793,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerenter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerenter(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onpointerleave)]
     #[doc = "Getter for the `onpointerleave` field of this object."]
@@ -1486,6 +1802,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerleave)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onpointerleave(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onpointerleave)]
     #[doc = "Setter for the `onpointerleave` field of this object."]
@@ -1493,6 +1811,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onpointerleave)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onpointerleave(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ongotpointercapture)]
     #[doc = "Getter for the `ongotpointercapture` field of this object."]
@@ -1500,6 +1820,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ongotpointercapture)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ongotpointercapture(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ongotpointercapture)]
     #[doc = "Setter for the `ongotpointercapture` field of this object."]
@@ -1507,6 +1829,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ongotpointercapture)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ongotpointercapture(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onlostpointercapture)]
     #[doc = "Getter for the `onlostpointercapture` field of this object."]
@@ -1514,6 +1838,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onlostpointercapture)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onlostpointercapture(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onlostpointercapture)]
     #[doc = "Setter for the `onlostpointercapture` field of this object."]
@@ -1521,6 +1847,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onlostpointercapture)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onlostpointercapture(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onanimationcancel)]
     #[doc = "Getter for the `onanimationcancel` field of this object."]
@@ -1528,6 +1856,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationcancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onanimationcancel(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onanimationcancel)]
     #[doc = "Setter for the `onanimationcancel` field of this object."]
@@ -1535,6 +1865,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationcancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onanimationcancel(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onanimationend)]
     #[doc = "Getter for the `onanimationend` field of this object."]
@@ -1542,6 +1874,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onanimationend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onanimationend)]
     #[doc = "Setter for the `onanimationend` field of this object."]
@@ -1549,6 +1883,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onanimationend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onanimationiteration)]
     #[doc = "Getter for the `onanimationiteration` field of this object."]
@@ -1556,6 +1892,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationiteration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onanimationiteration(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onanimationiteration)]
     #[doc = "Setter for the `onanimationiteration` field of this object."]
@@ -1563,6 +1901,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationiteration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onanimationiteration(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onanimationstart)]
     #[doc = "Getter for the `onanimationstart` field of this object."]
@@ -1570,6 +1910,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onanimationstart(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onanimationstart)]
     #[doc = "Setter for the `onanimationstart` field of this object."]
@@ -1577,6 +1919,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onanimationstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onanimationstart(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontransitioncancel)]
     #[doc = "Getter for the `ontransitioncancel` field of this object."]
@@ -1584,6 +1928,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitioncancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontransitioncancel(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontransitioncancel)]
     #[doc = "Setter for the `ontransitioncancel` field of this object."]
@@ -1591,6 +1937,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitioncancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontransitioncancel(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontransitionend)]
     #[doc = "Getter for the `ontransitionend` field of this object."]
@@ -1598,6 +1946,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitionend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontransitionend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontransitionend)]
     #[doc = "Setter for the `ontransitionend` field of this object."]
@@ -1605,6 +1955,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitionend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontransitionend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontransitionrun)]
     #[doc = "Getter for the `ontransitionrun` field of this object."]
@@ -1612,6 +1964,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitionrun)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontransitionrun(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontransitionrun)]
     #[doc = "Setter for the `ontransitionrun` field of this object."]
@@ -1619,6 +1973,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitionrun)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontransitionrun(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontransitionstart)]
     #[doc = "Getter for the `ontransitionstart` field of this object."]
@@ -1626,6 +1982,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitionstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontransitionstart(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontransitionstart)]
     #[doc = "Setter for the `ontransitionstart` field of this object."]
@@ -1633,6 +1991,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontransitionstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontransitionstart(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onwebkitanimationend)]
     #[doc = "Getter for the `onwebkitanimationend` field of this object."]
@@ -1640,6 +2000,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkitanimationend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwebkitanimationend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onwebkitanimationend)]
     #[doc = "Setter for the `onwebkitanimationend` field of this object."]
@@ -1647,6 +2009,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkitanimationend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwebkitanimationend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onwebkitanimationiteration)]
     #[doc = "Getter for the `onwebkitanimationiteration` field of this object."]
@@ -1654,6 +2018,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkitanimationiteration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwebkitanimationiteration(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onwebkitanimationiteration)]
     #[doc = "Setter for the `onwebkitanimationiteration` field of this object."]
@@ -1661,6 +2027,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkitanimationiteration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwebkitanimationiteration(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onwebkitanimationstart)]
     #[doc = "Getter for the `onwebkitanimationstart` field of this object."]
@@ -1668,6 +2036,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkitanimationstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwebkitanimationstart(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onwebkitanimationstart)]
     #[doc = "Setter for the `onwebkitanimationstart` field of this object."]
@@ -1675,6 +2045,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkitanimationstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwebkitanimationstart(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onwebkittransitionend)]
     #[doc = "Getter for the `onwebkittransitionend` field of this object."]
@@ -1682,6 +2054,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkittransitionend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onwebkittransitionend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onwebkittransitionend)]
     #[doc = "Setter for the `onwebkittransitionend` field of this object."]
@@ -1689,6 +2063,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onwebkittransitionend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onwebkittransitionend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = onerror)]
     #[doc = "Getter for the `onerror` field of this object."]
@@ -1696,6 +2072,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn onerror(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = onerror)]
     #[doc = "Setter for the `onerror` field of this object."]
@@ -1703,6 +2081,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/onerror)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_onerror(this: &Document, value: Option<&::js_sys::Function>);
     #[cfg(feature = "HtmlCollection")]
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = children)]
@@ -1741,6 +2121,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontouchstart(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontouchstart)]
     #[doc = "Setter for the `ontouchstart` field of this object."]
@@ -1748,6 +2130,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchstart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontouchstart(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontouchend)]
     #[doc = "Getter for the `ontouchend` field of this object."]
@@ -1755,6 +2139,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontouchend(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontouchend)]
     #[doc = "Setter for the `ontouchend` field of this object."]
@@ -1762,6 +2148,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchend)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontouchend(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontouchmove)]
     #[doc = "Getter for the `ontouchmove` field of this object."]
@@ -1769,6 +2157,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchmove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontouchmove(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontouchmove)]
     #[doc = "Setter for the `ontouchmove` field of this object."]
@@ -1776,6 +2166,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchmove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontouchmove(this: &Document, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = ontouchcancel)]
     #[doc = "Getter for the `ontouchcancel` field of this object."]
@@ -1783,6 +2175,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchcancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn ontouchcancel(this: &Document) -> Option<::js_sys::Function>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = ontouchcancel)]
     #[doc = "Setter for the `ontouchcancel` field of this object."]
@@ -1790,6 +2184,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/ontouchcancel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Argument: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn set_ontouchcancel(this: &Document, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "Document")]
     #[doc = "The `new Document(..)` constructor, creating a new instance of `Document`."]
@@ -2056,6 +2452,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/getAnimations)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Animation]</code>."]
     pub fn get_animations(this: &Document) -> ::js_sys::Array;
     #[cfg(feature = "Element")]
     # [wasm_bindgen (method , structural , js_class = "Document" , js_name = getElementById)]
@@ -2168,6 +2566,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[Element]</code>."]
     pub fn elements_from_point(this: &Document, x: f32, y: f32) -> ::js_sys::Array;
     #[cfg(all(feature = "DomPoint", feature = "DomPointInit", feature = "Text",))]
     # [wasm_bindgen (catch , method , structural , js_class = "Document" , js_name = convertPointFromNode)]
@@ -2436,6 +2836,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/getBoxQuads)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[DomQuad]</code>."]
     pub fn get_box_quads(this: &Document) -> Result<::js_sys::Array, JsValue>;
     #[cfg(feature = "BoxQuadOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "Document" , js_name = getBoxQuads)]
@@ -2444,6 +2846,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/getBoxQuads)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `Document`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array of the successful result can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[DomQuad]</code>."]
     pub fn get_box_quads_with_options(
         this: &Document,
         options: &BoxQuadOptions,
@@ -2865,6 +3269,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/createExpression)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathExpression`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn create_expression_with_opt_callback(
         this: &Document,
         expression: &str,
@@ -2908,6 +3314,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn evaluate_with_opt_callback(
         this: &Document,
         expression: &str,
@@ -2934,6 +3342,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn evaluate_with_opt_callback_and_type(
         this: &Document,
         expression: &str,
@@ -2962,6 +3372,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `XPathResult`*"]
+    #[doc = ""]
+    #[doc = "Argument `resolver`: See the referenced MDN documentation or the IDL files for the signature of the callback inside the option."]
     pub fn evaluate_with_opt_callback_and_type_and_result(
         this: &Document,
         expression: &str,

@@ -17,6 +17,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver/PerformanceObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserver`*"]
+    #[doc = ""]
+    #[doc = "Argument `callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn new(callback: &::js_sys::Function) -> Result<PerformanceObserver, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "PerformanceObserver" , js_name = disconnect)]
     #[doc = "The `disconnect()` method."]
@@ -39,5 +41,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver/takeRecords)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserver`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[PerformanceEntry]</code>."]
     pub fn take_records(this: &PerformanceObserver) -> ::js_sys::Array;
 }

@@ -22,6 +22,8 @@ impl L10nValue {
     #[doc = "Change the `attributes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
+    #[doc = ""]
+    #[doc = "While the iterable or array inside the option can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>&[AttributeNameValue]</code>."]
     pub fn attributes(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(

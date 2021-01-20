@@ -32,6 +32,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/thresholds)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[f64]</code>."]
     pub fn thresholds(this: &IntersectionObserver) -> ::js_sys::Array;
     #[wasm_bindgen(catch, constructor, js_class = "IntersectionObserver")]
     #[doc = "The `new IntersectionObserver(..)` constructor, creating a new instance of `IntersectionObserver`."]
@@ -39,6 +41,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
+    #[doc = ""]
+    #[doc = "Argument `intersection_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn new(intersection_callback: &::js_sys::Function)
         -> Result<IntersectionObserver, JsValue>;
     #[cfg(feature = "IntersectionObserverInit")]
@@ -48,6 +52,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`, `IntersectionObserverInit`*"]
+    #[doc = ""]
+    #[doc = "Argument `intersection_callback`: See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn new_with_options(
         intersection_callback: &::js_sys::Function,
         options: &IntersectionObserverInit,
@@ -73,6 +79,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/takeRecords)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
+    #[doc = ""]
+    #[doc = "Return value: While the iterable or array can produce any JsValue as far as the type system is concerned, practically it is expected to contain a <code>[IntersectionObserverEntry]</code>."]
     pub fn take_records(this: &IntersectionObserver) -> ::js_sys::Array;
     #[cfg(feature = "Element")]
     # [wasm_bindgen (method , structural , js_class = "IntersectionObserver" , js_name = unobserve)]

@@ -27,6 +27,8 @@ impl RtcIdentityProvider {
     #[doc = "Change the `generateAssertion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn generate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -44,6 +46,8 @@ impl RtcIdentityProvider {
     #[doc = "Change the `validateAssertion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[doc = ""]
+    #[doc = "See the referenced MDN documentation or the IDL files for the signature of the callback."]
     pub fn validate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
