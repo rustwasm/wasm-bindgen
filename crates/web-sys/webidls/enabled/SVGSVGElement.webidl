@@ -33,21 +33,21 @@ interface SVGSVGElement : SVGGraphicsElement {
   [DependsOn=Nothing, Affects=Nothing]
   unsigned long suspendRedraw(unsigned long maxWaitMilliseconds);
   [DependsOn=Nothing, Affects=Nothing]
-  void unsuspendRedraw(unsigned long suspendHandleID);
+  undefined unsuspendRedraw(unsigned long suspendHandleID);
   [DependsOn=Nothing, Affects=Nothing]
-  void unsuspendRedrawAll();
+  undefined unsuspendRedrawAll();
   [DependsOn=Nothing, Affects=Nothing]
-  void forceRedraw();
-  void pauseAnimations();
-  void unpauseAnimations();
+  undefined forceRedraw();
+  undefined pauseAnimations();
+  undefined unpauseAnimations();
   boolean animationsPaused();
   float getCurrentTime();
-  void setCurrentTime(float seconds);
+  undefined setCurrentTime(float seconds);
   // NodeList getIntersectionList(SVGRect rect, SVGElement referenceElement);
   // NodeList getEnclosureList(SVGRect rect, SVGElement referenceElement);
   // boolean checkIntersection(SVGElement element, SVGRect rect);
   // boolean checkEnclosure(SVGElement element, SVGRect rect);
-  void deselectAll();
+  undefined deselectAll();
   [NewObject]
   SVGNumber createSVGNumber();
   [NewObject]

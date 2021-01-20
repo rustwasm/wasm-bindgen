@@ -28,12 +28,12 @@ interface EventTarget {
      value is true, while in chrome the default boolean value is
      false. */
   [Throws]
-  void addEventListener(DOMString type,
+  undefined addEventListener(DOMString type,
                         EventListener listener,
                         optional (AddEventListenerOptions or boolean) options,
                         optional boolean? wantsUntrusted = null);
   [Throws]
-  void removeEventListener(DOMString type,
+  undefined removeEventListener(DOMString type,
                            EventListener listener,
                            optional (EventListenerOptions or boolean) options);
   [Throws, NeedsCallerType]

@@ -56,7 +56,7 @@ interface Notification : EventTarget {
   [Constant]
   readonly attribute any data;
 
-  void close();
+  undefined close();
 };
 
 dictionary NotificationOptions {
@@ -87,7 +87,7 @@ enum NotificationPermission {
   "granted"
 };
 
-callback NotificationPermissionCallback = void (NotificationPermission permission);
+callback NotificationPermissionCallback = undefined (NotificationPermission permission);
 
 enum NotificationDirection {
   "auto",

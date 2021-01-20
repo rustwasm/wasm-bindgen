@@ -13,7 +13,7 @@
 interface SVGTransformList {
   readonly attribute unsigned long numberOfItems;
   [Throws]
-  void clear();
+  undefined clear();
   [Throws]
   SVGTransform initialize(SVGTransform newItem);
   [Throws]

@@ -70,9 +70,9 @@ dictionary RTCRtpParameters {
  JSImplementation="@mozilla.org/dom/rtpsender;1"]
 interface RTCRtpSender {
   readonly attribute MediaStreamTrack? track;
-  Promise<void> setParameters (optional RTCRtpParameters parameters);
+  Promise<undefined> setParameters (optional RTCRtpParameters parameters);
   RTCRtpParameters getParameters();
-  Promise<void> replaceTrack(MediaStreamTrack? withTrack);
+  Promise<undefined> replaceTrack(MediaStreamTrack? withTrack);
   Promise<RTCStatsReport> getStats();
   [Pref="media.peerconnection.dtmf.enabled"]
   readonly attribute RTCDTMFSender? dtmf;
@@ -80,9 +80,9 @@ interface RTCRtpSender {
   [ChromeOnly]
   sequence<MediaStream> getStreams();
   [ChromeOnly]
-  void setStreams(sequence<MediaStream> streams);
+  undefined setStreams(sequence<MediaStream> streams);
   [ChromeOnly]
-  void setTrack(MediaStreamTrack? track);
+  undefined setTrack(MediaStreamTrack? track);
   [ChromeOnly]
-  void checkWasCreatedByPc(RTCPeerConnection pc);
+  undefined checkWasCreatedByPc(RTCPeerConnection pc);
 };

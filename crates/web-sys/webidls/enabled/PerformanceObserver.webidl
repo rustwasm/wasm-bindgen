@@ -12,14 +12,14 @@ dictionary PerformanceObserverInit {
   boolean buffered = false;
 };
 
-callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
+callback PerformanceObserverCallback = undefined (PerformanceObserverEntryList entries,
                                              PerformanceObserver observer);
 
 [Func="mozilla::dom::DOMPrefs::PerformanceObserverEnabled",
  Constructor(PerformanceObserverCallback callback),
  Exposed=(Window,Worker)]
 interface PerformanceObserver {
-    void observe(PerformanceObserverInit options);
-    void disconnect();
+    undefined observe(PerformanceObserverInit options);
+    undefined disconnect();
     PerformanceEntryList takeRecords();
 };

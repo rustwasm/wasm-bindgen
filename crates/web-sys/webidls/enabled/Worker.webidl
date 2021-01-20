@@ -15,10 +15,10 @@
 [Constructor(USVString scriptURL, optional WorkerOptions options),
  Exposed=(Window,DedicatedWorker,SharedWorker,System)]
 interface Worker : EventTarget {
-  void terminate();
+  undefined terminate();
 
   [Throws]
-  void postMessage(any message, optional sequence<object> transfer = []);
+  undefined postMessage(any message, optional sequence<object> transfer = []);
 
   attribute EventHandler onmessage;
   attribute EventHandler onmessageerror;

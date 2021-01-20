@@ -11,5 +11,5 @@
  */
 
 callback interface EventListener {
-  void handleEvent(Event event);
+  undefined handleEvent(Event event);
 };

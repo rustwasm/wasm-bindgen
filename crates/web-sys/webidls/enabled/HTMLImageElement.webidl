@@ -47,7 +47,7 @@ interface HTMLImageElement : HTMLElement {
   readonly attribute unsigned long naturalHeight;
   readonly attribute boolean complete;
            [NewObject]
-           Promise<void> decode();
+           Promise<undefined> decode();
 };
 
 // http://www.whatwg.org/specs/web-apps/current-work/#other-elements,-attributes-and-apis

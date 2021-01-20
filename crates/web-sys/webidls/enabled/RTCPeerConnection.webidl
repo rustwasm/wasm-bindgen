@@ -7,9 +7,9 @@
  * http://w3c.github.io/webrtc-pc/#interface-definition
  */
 
-callback RTCSessionDescriptionCallback = void (RTCSessionDescriptionInit description);
-callback RTCPeerConnectionErrorCallback = void (DOMException error);
-callback RTCStatsCallback = void (RTCStatsReport report);
+callback RTCSessionDescriptionCallback = undefined (RTCSessionDescriptionInit description);
+callback RTCPeerConnectionErrorCallback = undefined (DOMException error);
+callback RTCStatsCallback = undefined (RTCStatsReport report);
 
 enum RTCSignalingState {
     "stable",
@@ -70,14 +70,14 @@ interface RTCPeerConnection : EventTarget  {
   static Promise<RTCCertificate> generateCertificate (AlgorithmIdentifier keygenAlgorithm);
 
   [Pref="media.peerconnection.identity.enabled"]
-  void setIdentityProvider (DOMString provider,
+  undefined setIdentityProvider (DOMString provider,
                             optional RTCIdentityProviderOptions options);
   [Pref="media.peerconnection.identity.enabled"]
   Promise<DOMString> getIdentityAssertion();
   Promise<RTCSessionDescriptionInit> createOffer (optional RTCOfferOptions options);
   Promise<RTCSessionDescriptionInit> createAnswer (optional RTCAnswerOptions options);
-  Promise<void> setLocalDescription (RTCSessionDescriptionInit description);
-  Promise<void> setRemoteDescription (RTCSessionDescriptionInit description);
+  Promise<undefined> setLocalDescription (RTCSessionDescriptionInit description);
+  Promise<undefined> setRemoteDescription (RTCSessionDescriptionInit description);
   readonly attribute RTCSessionDescription? localDescription;
   readonly attribute RTCSessionDescription? currentLocalDescription;
   readonly attribute RTCSessionDescription? pendingLocalDescription;
@@ -85,7 +85,7 @@ interface RTCPeerConnection : EventTarget  {
   readonly attribute RTCSessionDescription? currentRemoteDescription;
   readonly attribute RTCSessionDescription? pendingRemoteDescription;
   readonly attribute RTCSignalingState signalingState;
-  Promise<void> addIceCandidate ((RTCIceCandidateInit or RTCIceCandidate)? candidate);
+  Promise<undefined> addIceCandidate ((RTCIceCandidateInit or RTCIceCandidate)? candidate);
   readonly attribute boolean? canTrickleIceCandidates;
   readonly attribute RTCIceGatheringState iceGatheringState;
   readonly attribute RTCIceConnectionState iceConnectionState;
@@ -102,7 +102,7 @@ interface RTCPeerConnection : EventTarget  {
   sequence<MediaStream> getLocalStreams ();
   [Deprecated="RTCPeerConnectionGetStreams"]
   sequence<MediaStream> getRemoteStreams ();
-  void addStream (MediaStream stream);
+  undefined addStream (MediaStream stream);
 
   // replaces addStream; fails if already added
   // because a track can be part of multiple streams, stream parameters
@@ -111,7 +111,7 @@ interface RTCPeerConnection : EventTarget  {
   RTCRtpSender addTrack(MediaStreamTrack track,
                         MediaStream stream,
                         MediaStream... moreStreams);
-  void removeTrack(RTCRtpSender sender);
+  undefined removeTrack(RTCRtpSender sender);
 
   RTCRtpTransceiver addTransceiver((MediaStreamTrack or DOMString) trackOrKind,
                                    optional RTCRtpTransceiverInit init);
@@ -120,7 +120,7 @@ interface RTCPeerConnection : EventTarget  {
   sequence<RTCRtpReceiver> getReceivers();
   sequence<RTCRtpTransceiver> getTransceivers();
 
-  void close ();
+  undefined close ();
   attribute EventHandler onnegotiationneeded;
   attribute EventHandler onicecandidate;
   attribute EventHandler onsignalingstatechange;
@@ -143,24 +143,24 @@ interface RTCPeerConnection : EventTarget  {
 
 partial interface RTCPeerConnection {
 
-  // Dummy Promise<void> return values avoid "WebIDL.WebIDLError: error:
+  // Dummy Promise<undefined> return values aundefined "WebIDL.WebIDLError: error:
   // We have overloads with both Promise and non-Promise return types"
 
-  Promise<void> createOffer (RTCSessionDescriptionCallback successCallback,
+  Promise<undefined> createOffer (RTCSessionDescriptionCallback successCallback,
                              RTCPeerConnectionErrorCallback failureCallback,
                              optional RTCOfferOptions options);
-  Promise<void> createAnswer (RTCSessionDescriptionCallback successCallback,
+  Promise<undefined> createAnswer (RTCSessionDescriptionCallback successCallback,
                               RTCPeerConnectionErrorCallback failureCallback);
-  Promise<void> setLocalDescription (RTCSessionDescriptionInit description,
+  Promise<undefined> setLocalDescription (RTCSessionDescriptionInit description,
                                      VoidFunction successCallback,
                                      RTCPeerConnectionErrorCallback failureCallback);
-  Promise<void> setRemoteDescription (RTCSessionDescriptionInit description,
+  Promise<undefined> setRemoteDescription (RTCSessionDescriptionInit description,
                                       VoidFunction successCallback,
                                       RTCPeerConnectionErrorCallback failureCallback);
-  Promise<void> addIceCandidate (RTCIceCandidate candidate,
+  Promise<undefined> addIceCandidate (RTCIceCandidate candidate,
                                  VoidFunction successCallback,
                                  RTCPeerConnectionErrorCallback failureCallback);
-  Promise<void> getStats (MediaStreamTrack? selector,
+  Promise<undefined> getStats (MediaStreamTrack? selector,
                           RTCStatsCallback successCallback,
                           RTCPeerConnectionErrorCallback failureCallback);
 };

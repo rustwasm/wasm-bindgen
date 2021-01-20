@@ -43,7 +43,7 @@ interface WebSocket : EventTarget {
   readonly attribute DOMString protocol;
 
   [Throws]
-  void close([Clamp] optional unsigned short code, optional DOMString reason);
+  undefined close([Clamp] optional unsigned short code, optional DOMString reason);
 
   // messaging
 
@@ -52,16 +52,16 @@ interface WebSocket : EventTarget {
   attribute BinaryType binaryType;
 
   [Throws]
-  void send(DOMString data);
+  undefined send(DOMString data);
 
   [Throws]
-  void send(Blob data);
+  undefined send(Blob data);
 
   [Throws]
-  void send(ArrayBuffer data);
+  undefined send(ArrayBuffer data);
 
   [Throws]
-  void send(ArrayBufferView data);
+  undefined send(ArrayBufferView data);
 };
 
 // Support for creating server-side chrome-only WebSocket. Used in

@@ -82,16 +82,16 @@ interface MediaStreamTrack : EventTarget {
     readonly    attribute MediaStreamTrackState readyState;
                 attribute EventHandler          onended;
     MediaStreamTrack       clone ();
-    void                   stop ();
+    undefined                   stop ();
 //  MediaTrackCapabilities getCapabilities ();
     MediaTrackConstraints  getConstraints ();
     [NeedsCallerType]
     MediaTrackSettings     getSettings ();
 
     [Throws, NeedsCallerType]
-    Promise<void>          applyConstraints (optional MediaTrackConstraints constraints);
+    Promise<undefined>          applyConstraints (optional MediaTrackConstraints constraints);
 //              attribute EventHandler          onoverconstrained;
 
     [ChromeOnly]
-    void mutedChanged(boolean muted);
+    undefined mutedChanged(boolean muted);
 };

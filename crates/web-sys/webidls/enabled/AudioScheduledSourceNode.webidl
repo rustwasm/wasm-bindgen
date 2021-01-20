@@ -19,8 +19,8 @@ AudioScheduledSourceNode includes rustAudioScheduledSourceNode;
 interface mixin rustAudioScheduledSourceNode {
                     attribute EventHandler onended;
     [Throws]
-    void start (optional double when = 0);
+    undefined start (optional double when = 0);
 
     [Throws]
-    void stop (optional double when = 0);
+    undefined stop (optional double when = 0);
 };

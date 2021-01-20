@@ -37,16 +37,16 @@ interface Animation : EventTarget {
   readonly attribute Promise<Animation> finished;
            attribute EventHandler       onfinish;
            attribute EventHandler       oncancel;
-  void cancel ();
+  undefined cancel ();
   [Throws]
-  void finish ();
+  undefined finish ();
   [Throws, BinaryName="playFromJS"]
-  void play ();
+  undefined play ();
   [Throws, BinaryName="pauseFromJS"]
-  void pause ();
-  void updatePlaybackRate (double playbackRate);
+  undefined pause ();
+  undefined updatePlaybackRate (double playbackRate);
   [Throws]
-  void reverse ();
+  undefined reverse ();
 };
 
 // Non-standard extensions

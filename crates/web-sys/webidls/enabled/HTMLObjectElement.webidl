@@ -44,7 +44,7 @@ interface HTMLObjectElement : HTMLElement {
   readonly attribute DOMString validationMessage;
   boolean checkValidity();
   boolean reportValidity();
-  void setCustomValidity(DOMString error);
+  undefined setCustomValidity(DOMString error);
 };
 
 // http://www.whatwg.org/specs/web-apps/current-work/#HTMLObjectElement-partial

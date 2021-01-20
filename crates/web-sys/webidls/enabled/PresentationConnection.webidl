@@ -60,16 +60,16 @@ interface PresentationConnection : EventTarget {
    * This function only works when the state is "connected".
    */
   [Throws]
-  void send(DOMString data);
+  undefined send(DOMString data);
 
   [Throws]
-  void send(Blob data);
+  undefined send(Blob data);
 
   [Throws]
-  void send(ArrayBuffer data);
+  undefined send(ArrayBuffer data);
 
   [Throws]
-  void send(ArrayBufferView data);
+  undefined send(ArrayBufferView data);
 
   /*
    * It is triggered when receiving messages.
@@ -83,7 +83,7 @@ interface PresentationConnection : EventTarget {
    * This function only works when the state is "connected" or "connecting".
    */
   [Throws]
-  void close();
+  undefined close();
 
   /*
    * Both the controlling and receiving browsing context can terminate the
@@ -92,5 +92,5 @@ interface PresentationConnection : EventTarget {
    * This function only works when the state is not "connected".
    */
    [Throws]
-   void terminate();
+   undefined terminate();
 };

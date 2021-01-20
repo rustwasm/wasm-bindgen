@@ -23,5 +23,5 @@ interface CSSStyleSheet : StyleSheet {
   [Throws, NeedsSubjectPrincipal]
   unsigned long insertRule(DOMString rule, optional unsigned long index = 0);
   [Throws, NeedsSubjectPrincipal]
-  void deleteRule(unsigned long index);
+  undefined deleteRule(unsigned long index);
 };

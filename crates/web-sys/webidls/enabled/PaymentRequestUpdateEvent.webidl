@@ -13,7 +13,7 @@
  Func="mozilla::dom::PaymentRequest::PrefEnabled"]
 interface PaymentRequestUpdateEvent : Event {
   [Throws]
-  void updateWith(Promise<PaymentDetailsUpdate> detailsPromise);
+  undefined updateWith(Promise<PaymentDetailsUpdate> detailsPromise);
 };
 
 dictionary PaymentRequestUpdateEventInit : EventInit {

@@ -32,13 +32,13 @@ interface HTMLElement : Element {
   [CEReactions, SetterThrows, Pure]
            attribute boolean hidden;
   [NeedsCallerType]
-  void click();
+  undefined click();
   [CEReactions, SetterThrows, Pure]
            attribute long tabIndex;
   [Throws]
-  void focus();
+  undefined focus();
   [Throws]
-  void blur();
+  undefined blur();
   [CEReactions, SetterThrows, Pure]
            attribute DOMString accessKey;
   [Pure]

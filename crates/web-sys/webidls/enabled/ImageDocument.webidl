@@ -23,20 +23,20 @@ interface ImageDocument : HTMLDocument {
   readonly attribute imgIRequest? imageRequest;
 
   /* Resize the image to fit visible area. */
-  void shrinkToFit();
+  undefined shrinkToFit();
 
   /* Restore image original size. */
-  void restoreImage();
+  undefined restoreImage();
 
   /* Restore the image, trying to keep a certain pixel in the same position.
    * The coordinate system is that of the shrunken image.
    */
-  void restoreImageTo(long x, long y);
+  undefined restoreImageTo(long x, long y);
 
   /* A helper method for switching between states.
    * The switching logic is as follows. If the image has been resized
    * restore image original size, otherwise if the image is overflowing
    * current visible area resize the image to fit the area.
    */
-  void toggleImageSize();
+  undefined toggleImageSize();
 };

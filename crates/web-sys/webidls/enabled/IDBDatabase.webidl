@@ -21,13 +21,13 @@ interface IDBDatabase : EventTarget {
     IDBObjectStore createObjectStore (DOMString name, optional IDBObjectStoreParameters optionalParameters);
 
     [Throws]
-    void           deleteObjectStore (DOMString name);
+    undefined           deleteObjectStore (DOMString name);
 
     [Throws]
     IDBTransaction transaction ((DOMString or sequence<DOMString>) storeNames,
                                 optional IDBTransactionMode mode = "readonly");
 
-    void           close ();
+    undefined           close ();
 
                 attribute EventHandler       onabort;
                 attribute EventHandler       onclose;

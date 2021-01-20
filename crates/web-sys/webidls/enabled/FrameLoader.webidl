@@ -46,7 +46,7 @@ interface FrameLoader {
    * is being fired.
    */
   [Throws]
-  void addProcessChangeBlockingPromise(Promise<any> aPromise);
+  undefined addProcessChangeBlockingPromise(Promise<any> aPromise);
 
   /**
    * Find out whether the loader's frame is at too great a depth in
@@ -61,20 +61,20 @@ interface FrameLoader {
    * Throws an exception with non-remote frames.
    */
   [Throws]
-  void activateRemoteFrame();
+  undefined activateRemoteFrame();
 
   /**
    * Deactivate remote frame.
    * Throws an exception with non-remote frames.
    */
   [Throws]
-  void deactivateRemoteFrame();
+  undefined deactivateRemoteFrame();
 
   /**
    * @see nsIDOMWindowUtils sendMouseEvent.
    */
   [Throws]
-  void sendCrossProcessMouseEvent(DOMString aType,
+  undefined sendCrossProcessMouseEvent(DOMString aType,
                                   float aX,
                                   float aY,
                                   long aButton,
@@ -86,7 +86,7 @@ interface FrameLoader {
    * Activate event forwarding from client (remote frame) to parent.
    */
   [Throws]
-  void activateFrameEvent(DOMString aType, boolean capture);
+  undefined activateFrameEvent(DOMString aType, boolean capture);
 
   // Note, when frameloaders are swapped, also messageManagers are swapped.
   readonly attribute MessageSender? messageManager;
@@ -96,19 +96,19 @@ interface FrameLoader {
    * received by the Compositor, a MozAfterRemoteFrame event be sent
    * to the window.
    */
-  void requestNotifyAfterRemotePaint();
+  undefined requestNotifyAfterRemotePaint();
 
   /**
    * Close the window through the ownerElement.
    */
   [Throws]
-  void requestFrameLoaderClose();
+  undefined requestFrameLoaderClose();
 
   /**
    * Force a remote browser to recompute its dimension and screen position.
    */
   [Throws]
-  void requestUpdatePosition();
+  undefined requestUpdatePosition();
 
   /**
    * Print the current document.
@@ -119,7 +119,7 @@ interface FrameLoader {
    * @param aProgressListener optional print progress listener.
    */
   [Throws]
-  void print(unsigned long long aOuterWindowID,
+  undefined print(unsigned long long aOuterWindowID,
              nsIPrintSettings aPrintSettings,
              optional nsIWebProgressListener? aProgressListener = null);
 
@@ -212,7 +212,7 @@ interface FrameLoader {
 interface mixin WebBrowserPersistable
 {
   [Throws]
-  void startPersistence(unsigned long long aOuterWindowID,
+  undefined startPersistence(unsigned long long aOuterWindowID,
                         nsIWebBrowserPersistDocumentReceiver aRecv);
 };
 

@@ -33,21 +33,21 @@ interface AudioNode : EventTarget {
     [Throws]
     AudioNode connect(AudioNode destination, optional unsigned long output = 0, optional unsigned long input = 0);
     [Throws]
-    void connect(AudioParam destination, optional unsigned long output = 0);
+    undefined connect(AudioParam destination, optional unsigned long output = 0);
     [Throws]
-    void disconnect();
+    undefined disconnect();
     [Throws]
-    void disconnect(unsigned long output);
+    undefined disconnect(unsigned long output);
     [Throws]
-    void disconnect(AudioNode destination);
+    undefined disconnect(AudioNode destination);
     [Throws]
-    void disconnect(AudioNode destination, unsigned long output);
+    undefined disconnect(AudioNode destination, unsigned long output);
     [Throws]
-    void disconnect(AudioNode destination, unsigned long output, unsigned long input);
+    undefined disconnect(AudioNode destination, unsigned long output, unsigned long input);
     [Throws]
-    void disconnect(AudioParam destination);
+    undefined disconnect(AudioParam destination);
     [Throws]
-    void disconnect(AudioParam destination, unsigned long output);
+    undefined disconnect(AudioParam destination, unsigned long output);
 
     readonly attribute BaseAudioContext context;
     readonly attribute unsigned long numberOfInputs;

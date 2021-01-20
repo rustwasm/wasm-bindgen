@@ -11,15 +11,15 @@ dictionary FileSystemFlags {
 };
 
 callback interface FileSystemEntryCallback {
-    void handleEvent(FileSystemEntry entry);
+    undefined handleEvent(FileSystemEntry entry);
 };
 
 callback interface VoidCallback {
-    void handleEvent();
+    undefined handleEvent();
 };
 
 callback interface ErrorCallback {
-    void handleEvent(DOMException err);
+    undefined handleEvent(DOMException err);
 };
 
 interface FileSystem {

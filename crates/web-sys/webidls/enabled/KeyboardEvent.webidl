@@ -36,7 +36,7 @@ interface KeyboardEvent : UIEvent
   readonly attribute DOMString code;
 
   [Throws]
-  void initKeyboardEvent(DOMString typeArg,
+  undefined initKeyboardEvent(DOMString typeArg,
                          optional boolean bubblesArg = false,
                          optional boolean cancelableArg = false,
                          optional Window? viewArg = null,

@@ -98,8 +98,8 @@ interface Document : Node {
 
   // NEW
   // No support for prepend/append yet
-  // void prepend((Node or DOMString)... nodes);
-  // void append((Node or DOMString)... nodes);
+  // undefined prepend((Node or DOMString)... nodes);
+  // undefined append((Node or DOMString)... nodes);
 
   // These are not in the spec, but leave them for now for backwards compat.
   // So sort of like Gecko extensions
@@ -144,9 +144,9 @@ partial interface Document {
   // dynamic markup insertion
   //(HTML only)Document open(optional DOMString type, optional DOMString replace);
   //(HTML only)WindowProxy open(DOMString url, DOMString name, DOMString features, optional boolean replace);
-  //(HTML only)void close();
-  //(HTML only)void write(DOMString... text);
-  //(HTML only)void writeln(DOMString... text);
+  //(HTML only)undefined close();
+  //(HTML only)undefined write(DOMString... text);
+  //(HTML only)undefined writeln(DOMString... text);
 
   // user interaction
   [Pure]
@@ -187,7 +187,7 @@ partial interface Document {
    *
    * @see <https://developer.mozilla.org/en/DOM/document.releaseCapture>
    */
-  void releaseCapture();
+  undefined releaseCapture();
 
   [ChromeOnly]
   readonly attribute URI? documentURIObject;
@@ -212,9 +212,9 @@ partial interface Document {
   [SameObject] readonly attribute HTMLCollection anchors;
   [SameObject] readonly attribute HTMLCollection applets;
 
-  //(HTML only)void clear();
-  //(HTML only)void captureEvents();
-  //(HTML only)void releaseEvents();
+  //(HTML only)undefined clear();
+  //(HTML only)undefined captureEvents();
+  //(HTML only)undefined releaseEvents();
 
   //(HTML only)[SameObject] readonly attribute HTMLAllCollection all;
 };
@@ -229,7 +229,7 @@ partial interface Document {
   readonly attribute boolean fullscreenEnabled;
 
   [Func="nsDocument::IsUnprefixedFullscreenEnabled"]
-  void exitFullscreen();
+  undefined exitFullscreen();
 
   // Events handlers
   [Func="nsDocument::IsUnprefixedFullscreenEnabled"]
@@ -241,7 +241,7 @@ partial interface Document {
 // https://w3c.github.io/pointerlock/#extensions-to-the-document-interface
 // https://w3c.github.io/pointerlock/#extensions-to-the-documentorshadowroot-mixin
 partial interface Document {
-  void exitPointerLock();
+  undefined exitPointerLock();
 
   // Event handlers
   attribute EventHandler onpointerlockchange;
@@ -262,7 +262,7 @@ partial interface Document {
     readonly attribute DOMString? preferredStyleSheetSet;
     [Constant]
     readonly attribute DOMStringList styleSheetSets;
-    void enableStyleSheetsForSet (DOMString? name);
+    undefined enableStyleSheetsForSet (DOMString? name);
 };
 
 // https://drafts.csswg.org/cssom-view/#extensions-to-the-document-interface
@@ -340,7 +340,7 @@ partial interface Document {
    * instance.
    */
   [ChromeOnly, Throws]
-  void removeAnonymousContent(AnonymousContent aContent);
+  undefined removeAnonymousContent(AnonymousContent aContent);
 };
 
 // http://w3c.github.io/selection-api/#extensions-to-document-interface
@@ -359,7 +359,7 @@ partial interface Document {
 // by user gesture.
 partial interface Document {
   [ChromeOnly]
-  void notifyUserGestureActivation();
+  undefined notifyUserGestureActivation();
 };
 
 // For more information on Flash classification, see

@@ -13,7 +13,7 @@
 interface SVGLengthList {
   readonly attribute unsigned long numberOfItems;
   [Throws]
-  void clear();
+  undefined clear();
   [Throws]
   SVGLength initialize(SVGLength newItem);
   [Throws]

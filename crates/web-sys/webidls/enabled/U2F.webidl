@@ -63,8 +63,8 @@ dictionary SignResponse {
     DOMString? errorMessage;
 };
 
-callback U2FRegisterCallback = void(RegisterResponse response);
-callback U2FSignCallback = void(SignResponse response);
+callback U2FRegisterCallback = undefined(RegisterResponse response);
+callback U2FSignCallback = undefined(SignResponse response);
 
 [SecureContext, Pref="security.webauth.u2f"]
 interface U2F {
@@ -79,14 +79,14 @@ interface U2F {
   const unsigned short TIMEOUT = 5;
 
   [Throws]
-  void register (DOMString appId,
+  undefined register (DOMString appId,
                  sequence<RegisterRequest> registerRequests,
                  sequence<RegisteredKey> registeredKeys,
                  U2FRegisterCallback callback,
                  optional long? opt_timeoutSeconds);
 
   [Throws]
-  void sign (DOMString appId,
+  undefined sign (DOMString appId,
              DOMString challenge,
              sequence<RegisteredKey> registeredKeys,
              U2FSignCallback callback,

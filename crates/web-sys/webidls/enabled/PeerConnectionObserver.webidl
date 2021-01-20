@@ -13,39 +13,39 @@
 interface PeerConnectionObserver
 {
   /* JSEP callbacks */
-  void onCreateOfferSuccess(DOMString offer);
-  void onCreateOfferError(unsigned long name, DOMString message);
-  void onCreateAnswerSuccess(DOMString answer);
-  void onCreateAnswerError(unsigned long name, DOMString message);
-  void onSetLocalDescriptionSuccess();
-  void onSetRemoteDescriptionSuccess();
-  void onSetLocalDescriptionError(unsigned long name, DOMString message);
-  void onSetRemoteDescriptionError(unsigned long name, DOMString message);
-  void onAddIceCandidateSuccess();
-  void onAddIceCandidateError(unsigned long name, DOMString message);
-  void onIceCandidate(unsigned short level, DOMString mid, DOMString candidate);
+  undefined onCreateOfferSuccess(DOMString offer);
+  undefined onCreateOfferError(unsigned long name, DOMString message);
+  undefined onCreateAnswerSuccess(DOMString answer);
+  undefined onCreateAnswerError(unsigned long name, DOMString message);
+  undefined onSetLocalDescriptionSuccess();
+  undefined onSetRemoteDescriptionSuccess();
+  undefined onSetLocalDescriptionError(unsigned long name, DOMString message);
+  undefined onSetRemoteDescriptionError(unsigned long name, DOMString message);
+  undefined onAddIceCandidateSuccess();
+  undefined onAddIceCandidateError(unsigned long name, DOMString message);
+  undefined onIceCandidate(unsigned short level, DOMString mid, DOMString candidate);
 
   /* Stats callbacks */
-  void onGetStatsSuccess(optional RTCStatsReportInternal report);
-  void onGetStatsError(unsigned long name, DOMString message);
+  undefined onGetStatsSuccess(optional RTCStatsReportInternal report);
+  undefined onGetStatsError(unsigned long name, DOMString message);
 
   /* Data channel callbacks */
-  void notifyDataChannel(RTCDataChannel channel);
+  undefined notifyDataChannel(RTCDataChannel channel);
 
   /* Notification of one of several types of state changed */
-  void onStateChange(PCObserverStateType state);
+  undefined onStateChange(PCObserverStateType state);
 
   /* Transceiver management; called when setRemoteDescription causes a
      transceiver to be created on the C++ side */
-  void onTransceiverNeeded(DOMString kind, TransceiverImpl transceiverImpl);
+  undefined onTransceiverNeeded(DOMString kind, TransceiverImpl transceiverImpl);
 
   /* DTMF callback */
-  void onDTMFToneChange(MediaStreamTrack track, DOMString tone);
+  undefined onDTMFToneChange(MediaStreamTrack track, DOMString tone);
 
   /* Packet dump callback */
-  void onPacket(unsigned long level, mozPacketDumpType type, boolean sending,
+  undefined onPacket(unsigned long level, mozPacketDumpType type, boolean sending,
                 ArrayBuffer packet);
 
   /* Transceiver sync */
-  void syncTransceivers();
+  undefined syncTransceivers();
 };

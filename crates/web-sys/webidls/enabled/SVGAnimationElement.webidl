@@ -21,13 +21,13 @@ interface SVGAnimationElement : SVGElement {
   float getSimpleDuration();
 
   [Throws]
-  void beginElement();
+  undefined beginElement();
   [Throws]
-  void beginElementAt(float offset);
+  undefined beginElementAt(float offset);
   [Throws]
-  void endElement();
+  undefined endElement();
   [Throws]
-  void endElementAt(float offset);
+  undefined endElementAt(float offset);
 };
 
 SVGAnimationElement includes SVGTests;

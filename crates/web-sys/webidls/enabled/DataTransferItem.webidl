@@ -11,12 +11,12 @@ interface DataTransferItem {
   readonly attribute DOMString kind;
   readonly attribute DOMString type;
   [Throws, NeedsSubjectPrincipal]
-  void getAsString(FunctionStringCallback? _callback);
+  undefined getAsString(FunctionStringCallback? _callback);
   [Throws, NeedsSubjectPrincipal]
   File? getAsFile();
 };
 
-callback FunctionStringCallback = void (DOMString data);
+callback FunctionStringCallback = undefined (DOMString data);
 
 partial interface DataTransferItem {
   [Pref="dom.webkitBlink.filesystem.enabled", BinaryName="getAsEntry", Throws,

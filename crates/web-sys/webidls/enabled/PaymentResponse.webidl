@@ -28,5 +28,5 @@ interface PaymentResponse {
   readonly attribute DOMString?      payerPhone;
 
   [NewObject]
-  Promise<void> complete(optional PaymentComplete result = "unknown");
+  Promise<undefined> complete(optional PaymentComplete result = "unknown");
 };

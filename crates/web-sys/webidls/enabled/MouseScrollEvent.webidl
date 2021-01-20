@@ -11,7 +11,7 @@ interface MouseScrollEvent : MouseEvent
 
   readonly attribute long axis;
 
-  void initMouseScrollEvent(DOMString type,
+  undefined initMouseScrollEvent(DOMString type,
                             optional boolean canBubble = false,
                             optional boolean cancelable = false,
                             optional Window? view = null,

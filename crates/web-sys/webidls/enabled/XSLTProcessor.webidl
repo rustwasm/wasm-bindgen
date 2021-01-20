@@ -20,7 +20,7 @@ interface XSLTProcessor {
      *              stylesheet.
      */
     [Throws]
-    void importStylesheet(Node style);
+    undefined importStylesheet(Node style);
 
     /**
      * Transforms the node source applying the stylesheet given by
@@ -55,7 +55,7 @@ interface XSLTProcessor {
      * @param value        The new value of the XSLT parameter
      */
     [Throws]
-    void setParameter([TreatNullAs=EmptyString] DOMString namespaceURI,
+    undefined setParameter([TreatNullAs=EmptyString] DOMString namespaceURI,
                       DOMString localName,
                       any value);
 
@@ -78,7 +78,7 @@ interface XSLTProcessor {
      * @param localName    The local name of the XSLT parameter
      */
     [Throws]
-    void removeParameter([TreatNullAs=EmptyString] DOMString namespaceURI,
+    undefined removeParameter([TreatNullAs=EmptyString] DOMString namespaceURI,
                          DOMString localName);
 
     /**
@@ -86,12 +86,12 @@ interface XSLTProcessor {
      * the processor use the default-value for all parameters as specified in
      * the stylesheet.
      */
-    void clearParameters();
+    undefined clearParameters();
 
     /**
      * Remove all parameters and stylesheets from this XSLTProcessor.
      */
-    void reset();
+    undefined reset();
 
     /**
     * Disables all loading of external documents, such as from

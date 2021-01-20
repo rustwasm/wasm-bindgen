@@ -18,11 +18,11 @@ interface RTCRtpReceiver {
   sequence<RTCRtpSynchronizationSource> getSynchronizationSources();
 
   [ChromeOnly]
-  void setStreamIds(sequence<DOMString> streamIds);
+  undefined setStreamIds(sequence<DOMString> streamIds);
   [ChromeOnly]
-  void setRemoteSendBit(boolean sendBit);
+  undefined setRemoteSendBit(boolean sendBit);
   [ChromeOnly]
-  void processTrackAdditionsAndRemovals(
+  undefined processTrackAdditionsAndRemovals(
       RTCRtpTransceiver transceiver,
       object postProcessing);
 };

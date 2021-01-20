@@ -36,11 +36,11 @@ interface HTMLSelectElement : HTMLElement {
   getter Element? item(unsigned long index);
   HTMLOptionElement? namedItem(DOMString name);
   [CEReactions, Throws]
-  void add((HTMLOptionElement or HTMLOptGroupElement) element, optional (HTMLElement or long)? before = null);
+  undefined add((HTMLOptionElement or HTMLOptGroupElement) element, optional (HTMLElement or long)? before = null);
   [CEReactions]
-  void remove(long index);
+  undefined remove(long index);
   [CEReactions, Throws]
-  setter void (unsigned long index, HTMLOptionElement? option);
+  setter undefined (unsigned long index, HTMLOptionElement? option);
 
   readonly attribute HTMLCollection selectedOptions;
   [SetterThrows, Pure]
@@ -54,13 +54,13 @@ interface HTMLSelectElement : HTMLElement {
   readonly attribute DOMString validationMessage;
   boolean checkValidity();
   boolean reportValidity();
-  void setCustomValidity(DOMString error);
+  undefined setCustomValidity(DOMString error);
 
   readonly attribute NodeList labels;
 
   // https://www.w3.org/Bugs/Public/show_bug.cgi?id=20720
   [CEReactions]
-  void remove();
+  undefined remove();
 };
 
 // Chrome only interface

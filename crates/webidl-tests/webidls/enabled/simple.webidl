@@ -43,8 +43,8 @@ interface GlobalMethod {
 [Constructor()]
 interface Indexing {
   getter short (unsigned long index);
-  setter void (unsigned long index, short value);
-  deleter void (unsigned long index);
+  setter undefined (unsigned long index, short value);
+  deleter undefined (unsigned long index);
 };
 
 [Constructor()]
@@ -89,16 +89,16 @@ interface mixin MixinBar {
 };
 
 partial interface mixin MixinBar {
-  void addToBar(short other);
+  undefined addToBar(short other);
 };
 
 MixinFoo includes MixinBar;
 
 [Constructor()]
 interface Overloads {
-  void foo();
-  void foo(DOMString arg, optional long a);
-  void foo(DOMString arg, (float or short) b);
+  undefined foo();
+  undefined foo(DOMString arg, optional long a);
+  undefined foo(DOMString arg, (float or short) b);
 };
 
 callback MyCallback = any();
@@ -108,7 +108,7 @@ callback GetAnswer = long();
 
 [Constructor()]
 interface InvokeCallback {
-  void invoke(MyCallback callback);
+  undefined invoke(MyCallback callback);
   long callAdd(AddCallback callback);
   DOMString callRepeat(RepeatCallback callback);
 };

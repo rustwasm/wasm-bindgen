@@ -5,11 +5,11 @@
  */
 
 callback interface FileCallback {
-    void handleEvent(File file);
+    undefined handleEvent(File file);
 };
 
 interface FileSystemFileEntry : FileSystemEntry {
     [BinaryName="GetFile"]
-    void file (FileCallback successCallback,
+    undefined file (FileCallback successCallback,
                optional ErrorCallback errorCallback);
 };

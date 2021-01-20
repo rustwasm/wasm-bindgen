@@ -10,10 +10,10 @@
 [Exposed=(Window,Worker,AudioWorklet,System)]
 interface MessagePort : EventTarget {
   [Throws]
-  void postMessage(any message, optional sequence<object> transferable = []);
+  undefined postMessage(any message, optional sequence<object> transferable = []);
 
-  void start();
-  void close();
+  undefined start();
+  undefined close();
 
   // event handlers
   attribute EventHandler onmessage;

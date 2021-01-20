@@ -4,7 +4,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-callback BrowserElementNextPaintEventCallback = void ();
+callback BrowserElementNextPaintEventCallback = undefined ();
 
 enum BrowserFindCaseSensitivity { "case-sensitive", "case-insensitive" };
 enum BrowserFindDirection { "forward", "backward" };
@@ -29,19 +29,19 @@ interface mixin BrowserElementCommon {
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void addNextPaintListener(BrowserElementNextPaintEventCallback listener);
+  undefined addNextPaintListener(BrowserElementNextPaintEventCallback listener);
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void removeNextPaintListener(BrowserElementNextPaintEventCallback listener);
+  undefined removeNextPaintListener(BrowserElementNextPaintEventCallback listener);
 };
 
 interface mixin BrowserElementPrivileged {
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void sendMouseEvent(DOMString type,
+  undefined sendMouseEvent(DOMString type,
                       unsigned long x,
                       unsigned long y,
                       unsigned long button,
@@ -52,7 +52,7 @@ interface mixin BrowserElementPrivileged {
    Pref="dom.mozBrowserFramesEnabled",
    Func="TouchEvent::PrefEnabled",
    ChromeOnly]
-  void sendTouchEvent(DOMString type,
+  undefined sendTouchEvent(DOMString type,
                       sequence<unsigned long> identifiers,
                       sequence<long> x,
                       sequence<long> y,
@@ -66,22 +66,22 @@ interface mixin BrowserElementPrivileged {
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void goBack();
+  undefined goBack();
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void goForward();
+  undefined goForward();
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void reload(optional boolean hardReload = false);
+  undefined reload(optional boolean hardReload = false);
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void stop();
+  undefined stop();
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
@@ -104,7 +104,7 @@ interface mixin BrowserElementPrivileged {
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void zoom(float zoom);
+  undefined zoom(float zoom);
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
@@ -124,17 +124,17 @@ interface mixin BrowserElementPrivileged {
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void findAll(DOMString searchString, BrowserFindCaseSensitivity caseSensitivity);
+  undefined findAll(DOMString searchString, BrowserFindCaseSensitivity caseSensitivity);
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void findNext(BrowserFindDirection direction);
+  undefined findNext(BrowserFindDirection direction);
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
-  void clearMatch();
+  undefined clearMatch();
 
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
