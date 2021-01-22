@@ -35,9 +35,9 @@ interface AudioBufferSourceNode : AudioScheduledSourceNode {
     attribute EventHandler onended;
 
     [Throws]
-    void start(optional double when = 0, optional double grainOffset = 0,
+    undefined start(optional double when = 0, optional double grainOffset = 0,
                optional double grainDuration);
 
     [Throws]
-    void stop (optional double when = 0);
+    undefined stop (optional double when = 0);
 };

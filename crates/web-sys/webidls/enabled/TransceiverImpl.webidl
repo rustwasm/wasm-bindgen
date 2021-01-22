@@ -18,6 +18,6 @@
 interface TransceiverImpl {
   MediaStreamTrack getReceiveTrack();
   [Throws]
-  void syncWithJS(RTCRtpTransceiver transceiver);
+  undefined syncWithJS(RTCRtpTransceiver transceiver);
 };
 

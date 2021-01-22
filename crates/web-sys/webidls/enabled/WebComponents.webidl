@@ -10,11 +10,11 @@
  * liability, trademark and document use rules apply.
  */
 
-callback LifecycleConnectedCallback = void();
-callback LifecycleDisconnectedCallback = void();
-callback LifecycleAdoptedCallback = void(Document? oldDocument,
+callback LifecycleConnectedCallback = undefined();
+callback LifecycleDisconnectedCallback = undefined();
+callback LifecycleAdoptedCallback = undefined(Document? oldDocument,
                                          Document? newDocment);
-callback LifecycleAttributeChangedCallback = void(DOMString attrName,
+callback LifecycleAttributeChangedCallback = undefined(DOMString attrName,
                                                   DOMString? oldValue,
                                                   DOMString? newValue,
                                                   DOMString? namespaceURI);

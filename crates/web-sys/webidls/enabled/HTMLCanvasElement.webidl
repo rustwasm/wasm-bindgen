@@ -28,7 +28,7 @@ interface HTMLCanvasElement : HTMLElement {
   DOMString toDataURL(optional DOMString type = "",
                       optional any encoderOptions);
   [Throws, NeedsSubjectPrincipal]
-  void toBlob(BlobCallback _callback,
+  undefined toBlob(BlobCallback _callback,
               optional DOMString type = "",
               optional any encoderOptions);
 };
@@ -40,4 +40,4 @@ partial interface HTMLCanvasElement {
   OffscreenCanvas transferControlToOffscreen();
 };
 
-callback BlobCallback = void(Blob? blob);
+callback BlobCallback = undefined(Blob? blob);

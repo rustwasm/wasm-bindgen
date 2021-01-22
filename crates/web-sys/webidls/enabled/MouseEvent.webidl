@@ -38,7 +38,7 @@ interface MouseEvent : UIEvent {
   readonly attribute long           movementY;
 
   // Deprecated in DOM Level 3:
-void initMouseEvent(DOMString typeArg,
+undefined initMouseEvent(DOMString typeArg,
                     optional boolean canBubbleArg = false,
                     optional boolean cancelableArg = false,
                     optional Window? viewArg = null,

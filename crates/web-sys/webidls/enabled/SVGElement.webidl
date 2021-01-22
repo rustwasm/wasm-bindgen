@@ -24,8 +24,8 @@ interface SVGElement : Element {
 
   [SetterThrows, Pure]
         attribute long tabIndex;
-  [Throws] void focus();
-  [Throws] void blur();
+  [Throws] undefined focus();
+  [Throws] undefined blur();
 };
 
 SVGElement includes GlobalEventHandlers;

@@ -9,7 +9,7 @@
 
 [JSImplementation="@mozilla.org/dom/rtcdtmfsender;1"]
 interface RTCDTMFSender : EventTarget {
-    void insertDTMF(DOMString tones,
+    undefined insertDTMF(DOMString tones,
                     optional unsigned long duration = 100,
                     optional unsigned long interToneGap = 70);
              attribute EventHandler  ontonechange;

@@ -23,7 +23,7 @@ interface FontFaceSetIterator {
   [Throws] FontFaceSetIteratorResult next();
 };
 
-callback FontFaceSetForEachCallback = void (FontFace value, FontFace key, FontFaceSet set);
+callback FontFaceSetForEachCallback = undefined (FontFace value, FontFace key, FontFaceSet set);
 
 enum FontFaceSetLoadStatus { "loading", "loaded" };
 
@@ -34,14 +34,14 @@ interface FontFaceSet : EventTarget {
 
   // Emulate setlike behavior until we can use that directly.
   readonly attribute unsigned long size;
-  [Throws] void add(FontFace font);
+  [Throws] undefined add(FontFace font);
   boolean has(FontFace font);
   boolean delete(FontFace font);
-  void clear();
+  undefined clear();
   [NewObject] FontFaceSetIterator entries();
   // Iterator keys();
   [NewObject, Alias=keys, Alias="@@iterator"] FontFaceSetIterator values();
-  [Throws] void forEach(FontFaceSetForEachCallback cb, optional any thisArg);
+  [Throws] undefined forEach(FontFaceSetForEachCallback cb, optional any thisArg);
 
   // -- events for when loading state changes
   attribute EventHandler onloading;
@@ -57,7 +57,7 @@ interface FontFaceSet : EventTarget {
   [Throws] boolean check(DOMString font, optional DOMString text = " ");
 
   // async notification that font loading and layout operations are done
-  [Throws] readonly attribute Promise<void> ready;
+  [Throws] readonly attribute Promise<undefined> ready;
 
   // loading state, "loading" while one or more fonts loading, "loaded" otherwise
   readonly attribute FontFaceSetLoadStatus status;

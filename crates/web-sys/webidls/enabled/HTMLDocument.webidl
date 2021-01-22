@@ -20,11 +20,11 @@ interface HTMLDocument : Document {
   [CEReactions, Throws]
   WindowProxy? open(DOMString url, DOMString name, DOMString features, optional boolean replace = false);
   [CEReactions, Throws]
-  void close();
+  undefined close();
   [CEReactions, Throws]
-  void write(DOMString... text);
+  undefined write(DOMString... text);
   [CEReactions, Throws]
-  void writeln(DOMString... text);
+  undefined writeln(DOMString... text);
 
   [CEReactions, SetterThrows, SetterNeedsSubjectPrincipal]
            attribute DOMString designMode;
@@ -48,15 +48,15 @@ interface HTMLDocument : Document {
   [CEReactions, TreatNullAs=EmptyString] attribute DOMString alinkColor;
   [CEReactions, TreatNullAs=EmptyString] attribute DOMString bgColor;
 
-  void clear();
+  undefined clear();
 
   readonly attribute HTMLAllCollection all;
 
   // @deprecated These are old Netscape 4 methods. Do not use,
   //             the implementation is no-op.
   // XXXbz do we actually need these anymore?
-  void                      captureEvents();
-  void                      releaseEvents();
+  undefined                      captureEvents();
+  undefined                      releaseEvents();
 };
 
 partial interface HTMLDocument {

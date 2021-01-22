@@ -38,5 +38,5 @@ interface TCPServerSocket : EventTarget {
   /**
    * Close the server socket.
    */
-  void close();
+  undefined close();
 };

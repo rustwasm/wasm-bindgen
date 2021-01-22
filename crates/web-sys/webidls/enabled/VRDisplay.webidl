@@ -258,7 +258,7 @@ interface VRDisplay : EventTarget {
    * updated when calling resetPose(). This should be called in only
    * sitting-space experiences.
    */
-  void resetPose();
+  undefined resetPose();
 
   /**
    * z-depth defining the near plane of the eye view frustum
@@ -289,18 +289,18 @@ interface VRDisplay : EventTarget {
    * Passing the value returned by `requestAnimationFrame` to
    * `cancelAnimationFrame` will unregister the callback.
    */
-  [Throws] void cancelAnimationFrame(long handle);
+  [Throws] undefined cancelAnimationFrame(long handle);
 
   /**
    * Begin presenting to the VRDisplay. Must be called in response to a user gesture.
    * Repeat calls while already presenting will update the VRLayers being displayed.
    */
-  [Throws, NeedsCallerType] Promise<void> requestPresent(sequence<VRLayer> layers);
+  [Throws, NeedsCallerType] Promise<undefined> requestPresent(sequence<VRLayer> layers);
 
   /**
    * Stops presenting to the VRDisplay.
    */
-  [Throws] Promise<void> exitPresent();
+  [Throws] Promise<undefined> exitPresent();
 
   /**
    * Get the layers currently being presented.
@@ -313,5 +313,5 @@ interface VRDisplay : EventTarget {
    * canvas as any other operation that uses its source image, and canvases
    * created without preserveDrawingBuffer set to true will be cleared.
    */
-  void submitFrame();
+  undefined submitFrame();
 };

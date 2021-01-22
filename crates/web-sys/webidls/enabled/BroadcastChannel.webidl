@@ -13,9 +13,9 @@ interface BroadcastChannel : EventTarget {
   readonly attribute DOMString name;
 
   [Throws]
-  void postMessage(any message);
+  undefined postMessage(any message);
 
-  void close();
+  undefined close();
 
   attribute EventHandler onmessage;
   attribute EventHandler onmessageerror;

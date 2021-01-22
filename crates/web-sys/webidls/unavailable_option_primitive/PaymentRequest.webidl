@@ -97,7 +97,7 @@ interface PaymentRequest : EventTarget {
   [NewObject]
   Promise<PaymentResponse> show(optional Promise<PaymentDetailsUpdate> detailsPromise);
   [NewObject]
-  Promise<void>            abort();
+  Promise<undefined>            abort();
   [NewObject]
   Promise<boolean>         canMakePayment();
 

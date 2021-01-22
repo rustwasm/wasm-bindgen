@@ -14,7 +14,7 @@ interface DataTransfer {
 
   readonly attribute DataTransferItemList items;
 
-  void setDragImage(Element image, long x, long y);
+  undefined setDragImage(Element image, long x, long y);
 
   // ReturnValueNeedsContainsHack on .types because lots of extension
   // code was expecting .contains() back when it was a DOMStringList.
@@ -23,9 +23,9 @@ interface DataTransfer {
   [Throws, NeedsSubjectPrincipal]
   DOMString getData(DOMString format);
   [Throws, NeedsSubjectPrincipal]
-  void setData(DOMString format, DOMString data);
+  undefined setData(DOMString format, DOMString data);
   [Throws, NeedsSubjectPrincipal]
-  void clearData(optional DOMString format);
+  undefined clearData(optional DOMString format);
   [NeedsSubjectPrincipal]
   readonly attribute FileList? files;
 };

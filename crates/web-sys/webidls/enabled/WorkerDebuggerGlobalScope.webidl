@@ -12,29 +12,29 @@ interface WorkerDebuggerGlobalScope : EventTarget {
   object createSandbox(DOMString name, object prototype);
 
   [Throws]
-  void loadSubScript(DOMString url, optional object sandbox);
+  undefined loadSubScript(DOMString url, optional object sandbox);
 
-  void enterEventLoop();
+  undefined enterEventLoop();
 
-  void leaveEventLoop();
+  undefined leaveEventLoop();
 
-  void postMessage(DOMString message);
+  undefined postMessage(DOMString message);
 
   attribute EventHandler onmessage;
 
   [Throws]
-  void setImmediate(Function handler);
+  undefined setImmediate(Function handler);
 
-  void reportError(DOMString message);
+  undefined reportError(DOMString message);
 
   [Throws]
   sequence<any> retrieveConsoleEvents();
 
   [Throws]
-  void setConsoleEventHandler(AnyCallback? handler);
+  undefined setConsoleEventHandler(AnyCallback? handler);
 };
 
 // So you can debug while you debug
 partial interface WorkerDebuggerGlobalScope {
-  void dump(optional DOMString string);
+  undefined dump(optional DOMString string);
 };

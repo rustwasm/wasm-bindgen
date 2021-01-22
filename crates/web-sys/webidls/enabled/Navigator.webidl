@@ -80,14 +80,14 @@ interface mixin NavigatorOnLine {
 interface mixin NavigatorContentUtils {
   // content handler registration
   [Throws, Func="nsGlobalWindowInner::RegisterProtocolHandlerAllowedForContext"]
-  void registerProtocolHandler(DOMString scheme, DOMString url, DOMString title);
+  undefined registerProtocolHandler(DOMString scheme, DOMString url, DOMString title);
   [Pref="dom.registerContentHandler.enabled", Throws]
-  void registerContentHandler(DOMString mimeType, DOMString url, DOMString title);
+  undefined registerContentHandler(DOMString mimeType, DOMString url, DOMString title);
   // NOT IMPLEMENTED
   //DOMString isProtocolHandlerRegistered(DOMString scheme, DOMString url);
   //DOMString isContentHandlerRegistered(DOMString mimeType, DOMString url);
-  //void unregisterProtocolHandler(DOMString scheme, DOMString url);
-  //void unregisterContentHandler(DOMString mimeType, DOMString url);
+  //undefined unregisterProtocolHandler(DOMString scheme, DOMString url);
+  //undefined unregisterContentHandler(DOMString mimeType, DOMString url);
 };
 
 [SecureContext, Exposed=(Window,Worker)]
@@ -98,7 +98,7 @@ interface mixin NavigatorStorage {
 
 interface mixin NavigatorStorageUtils {
   // NOT IMPLEMENTED
-  //void yieldForStorageUpdates();
+  //undefined yieldForStorageUpdates();
 };
 
 partial interface Navigator {
@@ -182,7 +182,7 @@ partial interface Navigator {
   [ChromeOnly, Pref="dom.vr.enabled"]
   readonly attribute boolean isWebVRContentPresenting;
   [ChromeOnly, Pref="dom.vr.enabled"]
-  void requestVRPresentation(VRDisplay display);
+  undefined requestVRPresentation(VRDisplay display);
 };
 partial interface Navigator {
   [Pref="dom.vr.test.enabled"]
@@ -195,8 +195,8 @@ partial interface Navigator {
   Promise<MIDIAccess> requestMIDIAccess(optional MIDIOptions options);
 };
 
-callback NavigatorUserMediaSuccessCallback = void (MediaStream stream);
-callback NavigatorUserMediaErrorCallback = void (MediaStreamError error);
+callback NavigatorUserMediaSuccessCallback = undefined (MediaStream stream);
+callback NavigatorUserMediaErrorCallback = undefined (MediaStreamError error);
 
 partial interface Navigator {
   [Throws, Func="Navigator::HasUserMediaSupport"]

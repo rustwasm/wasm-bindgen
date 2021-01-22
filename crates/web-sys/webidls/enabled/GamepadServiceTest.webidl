@@ -19,23 +19,23 @@ interface GamepadServiceTest
                                     unsigned long numAxes,
                                     unsigned long numHaptics);
 
-  void removeGamepad(unsigned long index);
+  undefined removeGamepad(unsigned long index);
 
-  void newButtonEvent(unsigned long index,
+  undefined newButtonEvent(unsigned long index,
                       unsigned long button,
                       boolean pressed,
                       boolean touched);
 
-  void newButtonValueEvent(unsigned long index,
+  undefined newButtonValueEvent(unsigned long index,
                            unsigned long button,
                            boolean pressed,
                            boolean touched,
                            double value);
 
-  void newAxisMoveEvent(unsigned long index,
+  undefined newAxisMoveEvent(unsigned long index,
                         unsigned long axis,
                         double value);
-  void newPoseMove(unsigned long index,
+  undefined newPoseMove(unsigned long index,
                    Float32Array? orient,
                    Float32Array? pos,
                    Float32Array? angVelocity,

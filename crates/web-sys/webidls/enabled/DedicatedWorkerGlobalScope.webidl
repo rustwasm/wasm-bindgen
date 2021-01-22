@@ -19,9 +19,9 @@ interface DedicatedWorkerGlobalScope : WorkerGlobalScope {
   readonly attribute DOMString name;
 
   [Throws]
-  void postMessage(any message, optional sequence<object> transfer = []);
+  undefined postMessage(any message, optional sequence<object> transfer = []);
 
-  void close();
+  undefined close();
 
   attribute EventHandler onmessage;
   attribute EventHandler onmessageerror;

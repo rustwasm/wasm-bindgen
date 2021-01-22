@@ -35,7 +35,7 @@ interface OscillatorNode : AudioScheduledSourceNode {
     readonly attribute AudioParam frequency; // in Hertz
     readonly attribute AudioParam detune; // in Cents
 
-    void setPeriodicWave(PeriodicWave periodicWave);
+    undefined setPeriodicWave(PeriodicWave periodicWave);
 };
 
 OscillatorNode includes rustAudioScheduledSourceNode;

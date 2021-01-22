@@ -73,7 +73,7 @@ interface Node : EventTarget {
   [CEReactions, Throws]
   Node removeChild(Node child);
   [CEReactions]
-  void normalize();
+  undefined normalize();
 
   [CEReactions, Throws]
   Node cloneNode(optional boolean deep = false);

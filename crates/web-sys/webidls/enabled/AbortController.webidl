@@ -11,5 +11,5 @@
 interface AbortController {
   readonly attribute AbortSignal signal;
 
-  void abort();
+  undefined abort();
 };

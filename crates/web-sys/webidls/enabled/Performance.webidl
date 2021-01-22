@@ -43,8 +43,8 @@ partial interface Performance {
 // http://www.w3.org/TR/resource-timing/#extensions-performance-interface
 [Exposed=(Window,Worker)]
 partial interface Performance {
-  void clearResourceTimings();
-  void setResourceTimingBufferSize(unsigned long maxSize);
+  undefined clearResourceTimings();
+  undefined setResourceTimingBufferSize(unsigned long maxSize);
   attribute EventHandler onresourcetimingbufferfull;
 };
 
@@ -52,9 +52,9 @@ partial interface Performance {
 [Exposed=(Window,Worker)]
 partial interface Performance {
   [Throws]
-  void mark(DOMString markName);
-  void clearMarks(optional DOMString markName);
+  undefined mark(DOMString markName);
+  undefined clearMarks(optional DOMString markName);
   [Throws]
-  void measure(DOMString measureName, optional DOMString startMark, optional DOMString endMark);
-  void clearMeasures(optional DOMString measureName);
+  undefined measure(DOMString measureName, optional DOMString startMark, optional DOMString endMark);
+  undefined clearMeasures(optional DOMString measureName);
 };

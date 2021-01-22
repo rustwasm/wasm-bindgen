@@ -100,11 +100,11 @@ GPUDevice includes GPUObjectBase;
 
 [Serializable]
 interface GPUBuffer {
-    Promise<void> mapAsync(GPUMapModeFlags mode, optional GPUSize64 offset = 0, optional GPUSize64 size);
+    Promise<undefined> mapAsync(GPUMapModeFlags mode, optional GPUSize64 offset = 0, optional GPUSize64 size);
     ArrayBuffer getMappedRange(optional GPUSize64 offset = 0, optional GPUSize64 size);
-    void unmap();
+    undefined unmap();
 
-    void destroy();
+    undefined destroy();
 };
 GPUBuffer includes GPUObjectBase;
 
@@ -138,7 +138,7 @@ interface GPUMapMode {
 interface GPUTexture {
     GPUTextureView createView(optional GPUTextureViewDescriptor descriptor = {});
 
-    void destroy();
+    undefined destroy();
 };
 GPUTexture includes GPUObjectBase;
 
@@ -659,35 +659,35 @@ interface GPUCommandEncoder {
     GPURenderPassEncoder beginRenderPass(GPURenderPassDescriptor descriptor);
     GPUComputePassEncoder beginComputePass(optional GPUComputePassDescriptor descriptor = {});
 
-    void copyBufferToBuffer(
+    undefined copyBufferToBuffer(
         GPUBuffer source,
         GPUSize64 sourceOffset,
         GPUBuffer destination,
         GPUSize64 destinationOffset,
         GPUSize64 size);
 
-    void copyBufferToTexture(
+    undefined copyBufferToTexture(
         GPUBufferCopyView source,
         GPUTextureCopyView destination,
         GPUExtent3D copySize);
 
-    void copyTextureToBuffer(
+    undefined copyTextureToBuffer(
         GPUTextureCopyView source,
         GPUBufferCopyView destination,
         GPUExtent3D copySize);
 
-    void copyTextureToTexture(
+    undefined copyTextureToTexture(
         GPUTextureCopyView source,
         GPUTextureCopyView destination,
         GPUExtent3D copySize);
 
-    void pushDebugGroup(USVString groupLabel);
-    void popDebugGroup();
-    void insertDebugMarker(USVString markerLabel);
+    undefined pushDebugGroup(USVString groupLabel);
+    undefined popDebugGroup();
+    undefined insertDebugMarker(USVString markerLabel);
 
-    void writeTimestamp(GPUQuerySet querySet, GPUSize32 queryIndex);
+    undefined writeTimestamp(GPUQuerySet querySet, GPUSize32 queryIndex);
 
-    void resolveQuerySet(
+    undefined resolveQuerySet(
         GPUQuerySet querySet,
         GPUSize32 firstQuery,
         GPUSize32 queryCount,
@@ -727,30 +727,30 @@ dictionary GPUImageBitmapCopyView {
 };
 
 interface mixin GPUProgrammablePassEncoder {
-    void setBindGroup(GPUIndex32 index, GPUBindGroup bindGroup,
+    undefined setBindGroup(GPUIndex32 index, GPUBindGroup bindGroup,
                       optional sequence<GPUBufferDynamicOffset> dynamicOffsets = []);
 
-    void setBindGroup(GPUIndex32 index, GPUBindGroup bindGroup,
+    undefined setBindGroup(GPUIndex32 index, GPUBindGroup bindGroup,
                       Uint32Array dynamicOffsetsData,
                       GPUSize64 dynamicOffsetsDataStart,
                       GPUSize32 dynamicOffsetsDataLength);
 
-    void pushDebugGroup(USVString groupLabel);
-    void popDebugGroup();
-    void insertDebugMarker(USVString markerLabel);
+    undefined pushDebugGroup(USVString groupLabel);
+    undefined popDebugGroup();
+    undefined insertDebugMarker(USVString markerLabel);
 };
 
 interface GPUComputePassEncoder {
-    void setPipeline(GPUComputePipeline pipeline);
-    void dispatch(GPUSize32 x, optional GPUSize32 y = 1, optional GPUSize32 z = 1);
-    void dispatchIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
+    undefined setPipeline(GPUComputePipeline pipeline);
+    undefined dispatch(GPUSize32 x, optional GPUSize32 y = 1, optional GPUSize32 z = 1);
+    undefined dispatchIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
 
-    void beginPipelineStatisticsQuery(GPUQuerySet querySet, GPUSize32 queryIndex);
-    void endPipelineStatisticsQuery();
+    undefined beginPipelineStatisticsQuery(GPUQuerySet querySet, GPUSize32 queryIndex);
+    undefined endPipelineStatisticsQuery();
 
-    void writeTimestamp(GPUQuerySet querySet, GPUSize32 queryIndex);
+    undefined writeTimestamp(GPUQuerySet querySet, GPUSize32 queryIndex);
 
-    void endPass();
+    undefined endPass();
 };
 GPUComputePassEncoder includes GPUObjectBase;
 GPUComputePassEncoder includes GPUProgrammablePassEncoder;
@@ -759,43 +759,43 @@ dictionary GPUComputePassDescriptor : GPUObjectDescriptorBase {
 };
 
 interface mixin GPURenderEncoderBase {
-    void setPipeline(GPURenderPipeline pipeline);
+    undefined setPipeline(GPURenderPipeline pipeline);
 
-    void setIndexBuffer(GPUBuffer buffer, optional GPUSize64 offset = 0, optional GPUSize64 size = 0);
-    void setVertexBuffer(GPUIndex32 slot, GPUBuffer buffer, optional GPUSize64 offset = 0, optional GPUSize64 size = 0);
+    undefined setIndexBuffer(GPUBuffer buffer, optional GPUSize64 offset = 0, optional GPUSize64 size = 0);
+    undefined setVertexBuffer(GPUIndex32 slot, GPUBuffer buffer, optional GPUSize64 offset = 0, optional GPUSize64 size = 0);
 
-    void draw(GPUSize32 vertexCount, optional GPUSize32 instanceCount = 1,
+    undefined draw(GPUSize32 vertexCount, optional GPUSize32 instanceCount = 1,
               optional GPUSize32 firstVertex = 0, optional GPUSize32 firstInstance = 0);
-    void drawIndexed(GPUSize32 indexCount, optional GPUSize32 instanceCount = 1,
+    undefined drawIndexed(GPUSize32 indexCount, optional GPUSize32 instanceCount = 1,
                      optional GPUSize32 firstIndex = 0,
                      optional GPUSignedOffset32 baseVertex = 0,
                      optional GPUSize32 firstInstance = 0);
 
-    void drawIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
-    void drawIndexedIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
+    undefined drawIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
+    undefined drawIndexedIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
 };
 
 interface GPURenderPassEncoder {
-    void setViewport(float x, float y,
+    undefined setViewport(float x, float y,
                      float width, float height,
                      float minDepth, float maxDepth);
 
-    void setScissorRect(GPUIntegerCoordinate x, GPUIntegerCoordinate y,
+    undefined setScissorRect(GPUIntegerCoordinate x, GPUIntegerCoordinate y,
                         GPUIntegerCoordinate width, GPUIntegerCoordinate height);
 
-    void setBlendColor(GPUColor color);
-    void setStencilReference(GPUStencilValue reference);
+    undefined setBlendColor(GPUColor color);
+    undefined setStencilReference(GPUStencilValue reference);
 
-    void beginOcclusionQuery(GPUSize32 queryIndex);
-    void endOcclusionQuery();
+    undefined beginOcclusionQuery(GPUSize32 queryIndex);
+    undefined endOcclusionQuery();
 
-    void beginPipelineStatisticsQuery(GPUQuerySet querySet, GPUSize32 queryIndex);
-    void endPipelineStatisticsQuery();
+    undefined beginPipelineStatisticsQuery(GPUQuerySet querySet, GPUSize32 queryIndex);
+    undefined endPipelineStatisticsQuery();
 
-    void writeTimestamp(GPUQuerySet querySet, GPUSize32 queryIndex);
+    undefined writeTimestamp(GPUQuerySet querySet, GPUSize32 queryIndex);
 
-    void executeBundles(sequence<GPURenderBundle> bundles);
-    void endPass();
+    undefined executeBundles(sequence<GPURenderBundle> bundles);
+    undefined endPass();
 };
 GPURenderPassEncoder includes GPUObjectBase;
 GPURenderPassEncoder includes GPUProgrammablePassEncoder;
@@ -857,25 +857,25 @@ dictionary GPURenderBundleEncoderDescriptor : GPUObjectDescriptorBase {
 };
 
 interface GPUQueue {
-    void submit(sequence<GPUCommandBuffer> commandBuffers);
+    undefined submit(sequence<GPUCommandBuffer> commandBuffers);
 
     GPUFence createFence(optional GPUFenceDescriptor descriptor = {});
-    void signal(GPUFence fence, GPUFenceValue signalValue);
+    undefined signal(GPUFence fence, GPUFenceValue signalValue);
 
-    void writeBuffer(
+    undefined writeBuffer(
         GPUBuffer buffer,
         GPUSize64 bufferOffset,
         [AllowShared] BufferSource data,
         optional GPUSize64 dataOffset = 0,
         optional GPUSize64 size);
 
-    void writeTexture(
+    undefined writeTexture(
       GPUTextureCopyView destination,
       [AllowShared] BufferSource data,
       GPUTextureDataLayout dataLayout,
       GPUExtent3D size);
 
-    void copyImageBitmapToTexture(
+    undefined copyImageBitmapToTexture(
         GPUImageBitmapCopyView source,
         GPUTextureCopyView destination,
         GPUExtent3D copySize);
@@ -884,7 +884,7 @@ GPUQueue includes GPUObjectBase;
 
 interface GPUFence {
     GPUFenceValue getCompletedValue();
-    Promise<void> onCompletion(GPUFenceValue completionValue);
+    Promise<undefined> onCompletion(GPUFenceValue completionValue);
 };
 GPUFence includes GPUObjectBase;
 
@@ -893,7 +893,7 @@ dictionary GPUFenceDescriptor : GPUObjectDescriptorBase {
 };
 
 interface GPUQuerySet {
-    void destroy();
+    undefined destroy();
 };
 GPUQuerySet includes GPUObjectBase;
 
@@ -959,7 +959,7 @@ interface GPUValidationError {
 typedef (GPUOutOfMemoryError or GPUValidationError) GPUError;
 
 partial interface GPUDevice {
-    void pushErrorScope(GPUErrorFilter filter);
+    undefined pushErrorScope(GPUErrorFilter filter);
     Promise<GPUError?> popErrorScope();
 };
 

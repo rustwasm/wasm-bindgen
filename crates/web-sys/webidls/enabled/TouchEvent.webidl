@@ -22,7 +22,7 @@ interface TouchEvent : UIEvent {
   readonly attribute boolean ctrlKey;
   readonly attribute boolean shiftKey;
 
-  void initTouchEvent(DOMString type,
+  undefined initTouchEvent(DOMString type,
                       optional boolean canBubble = false,
                       optional boolean cancelable = false,
                       optional Window? view = null,

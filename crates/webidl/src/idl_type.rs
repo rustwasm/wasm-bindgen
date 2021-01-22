@@ -83,7 +83,7 @@ pub(crate) enum IdlType<'a> {
     Union(Vec<IdlType<'a>>),
 
     Any,
-    Void,
+    Undefined,
 
     UnknownInterface(&'a str),
 }
@@ -298,7 +298,7 @@ impl<'a> ToIdlType<'a> for ConstType<'a> {
 impl<'a> ToIdlType<'a> for ReturnType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
-            ReturnType::Void(t) => t.to_idl_type(record),
+            ReturnType::Undefined(t) => t.to_idl_type(record),
             ReturnType::Type(t) => t.to_idl_type(record),
         }
     }
@@ -388,7 +388,7 @@ terms_to_idl_type! {
     Object => Object
     Octet => Octet
     Short => Short
-    Void => Void
+    Undefined => Undefined
     ArrayBuffer => ArrayBuffer
     DataView => DataView
     Error => Error
@@ -490,7 +490,7 @@ impl<'a> IdlType<'a> {
             }
 
             IdlType::Any => dst.push_str("any"),
-            IdlType::Void => dst.push_str("void"),
+            IdlType::Undefined => dst.push_str("undefined"),
         }
     }
 
@@ -642,7 +642,7 @@ impl<'a> IdlType<'a> {
             }
 
             IdlType::Any => Ok(js_value),
-            IdlType::Void => Ok(None),
+            IdlType::Undefined => Ok(None),
             IdlType::Callback => Ok(js_sys("Function")),
             IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
         }

@@ -44,7 +44,7 @@ partial interface URL {
   [Throws]
   static DOMString createObjectURL(Blob blob);
   [Throws]
-  static void revokeObjectURL(DOMString url);
+  static undefined revokeObjectURL(DOMString url);
   [ChromeOnly, Throws]
   static boolean isValidURL(DOMString url);
 };

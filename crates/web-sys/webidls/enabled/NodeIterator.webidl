@@ -27,5 +27,5 @@ interface NodeIterator {
   [Throws]
   Node? previousNode();
 
-  void detach();
+  undefined detach();
 };

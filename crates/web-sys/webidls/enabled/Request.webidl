@@ -35,7 +35,7 @@ interface Request {
 
   // Bug 1124638 - Allow chrome callers to set the context.
   [ChromeOnly]
-  void overrideContentPolicyType(nsContentPolicyType context);
+  undefined overrideContentPolicyType(nsContentPolicyType context);
 };
 Request includes Body;
 

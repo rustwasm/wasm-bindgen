@@ -15,15 +15,15 @@
 interface FileReader : EventTarget {
   // async read methods
   [Throws]
-  void readAsArrayBuffer(Blob blob);
+  undefined readAsArrayBuffer(Blob blob);
   [Throws]
-  void readAsBinaryString(Blob filedata);
+  undefined readAsBinaryString(Blob filedata);
   [Throws]
-  void readAsText(Blob blob, optional DOMString label);
+  undefined readAsText(Blob blob, optional DOMString label);
   [Throws]
-  void readAsDataURL(Blob blob);
+  undefined readAsDataURL(Blob blob);
 
-  void abort();
+  undefined abort();
 
   // states
   const unsigned short EMPTY = 0;

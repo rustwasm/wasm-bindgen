@@ -13,7 +13,7 @@
 interface SVGNumberList {
   readonly attribute unsigned long numberOfItems;
   [Throws]
-  void clear();
+  undefined clear();
   [Throws]
   SVGNumber initialize(SVGNumber newItem);
   [Throws]

@@ -18,7 +18,7 @@ interface mixin ParentNode {
   readonly attribute unsigned long childElementCount;
 
   [CEReactions, Throws, Unscopable]
-  void prepend((Node or DOMString)... nodes);
+  undefined prepend((Node or DOMString)... nodes);
   [CEReactions, Throws, Unscopable]
-  void append((Node or DOMString)... nodes);
+  undefined append((Node or DOMString)... nodes);
 };

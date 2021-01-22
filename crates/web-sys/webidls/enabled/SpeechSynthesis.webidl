@@ -16,15 +16,15 @@ interface SpeechSynthesis : EventTarget{
   readonly attribute boolean speaking;
   readonly attribute boolean paused;
 
-  void speak(SpeechSynthesisUtterance utterance);
-  void cancel();
-  void pause();
-  void resume();
+  undefined speak(SpeechSynthesisUtterance utterance);
+  undefined cancel();
+  undefined pause();
+  undefined resume();
   sequence<SpeechSynthesisVoice> getVoices();
 
   attribute EventHandler onvoiceschanged;
 
   [ChromeOnly]
   // Force an utterance to end. Circumvents bad speech service implementations.
-  void forceEnd();
+  undefined forceEnd();
 };

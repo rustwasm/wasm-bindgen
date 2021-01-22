@@ -26,7 +26,7 @@ interface DOMRequest : EventTarget {
            [TreatNonCallableAsNull] optional AnyCallback? rejectCallback = null);
 
   [ChromeOnly]
-  void fireDetailedError(DOMException aError);
+  undefined fireDetailedError(DOMException aError);
 };
 
 DOMRequest includes DOMRequestShared;

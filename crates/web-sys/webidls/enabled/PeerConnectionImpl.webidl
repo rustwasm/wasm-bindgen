@@ -21,24 +21,24 @@
 interface PeerConnectionImpl  {
   /* Must be called first. Observer events dispatched on the thread provided */
   [Throws]
-  void initialize(PeerConnectionObserver observer, Window window,
+  undefined initialize(PeerConnectionObserver observer, Window window,
                   RTCConfiguration iceServers,
                   nsISupports thread);
 
   /* JSEP calls */
   [Throws]
-  void createOffer(optional RTCOfferOptions options);
+  undefined createOffer(optional RTCOfferOptions options);
   [Throws]
-  void createAnswer();
+  undefined createAnswer();
   [Throws]
-  void setLocalDescription(long action, DOMString sdp);
+  undefined setLocalDescription(long action, DOMString sdp);
   [Throws]
-  void setRemoteDescription(long action, DOMString sdp);
+  undefined setRemoteDescription(long action, DOMString sdp);
 
   /* Stats call, calls either |onGetStatsSuccess| or |onGetStatsError| on our
      observer. (see the |PeerConnectionObserver| interface) */
   [Throws]
-  void getStats(MediaStreamTrack? selector);
+  undefined getStats(MediaStreamTrack? selector);
 
   /* Adds the tracks created by GetUserMedia */
   [Throws]
@@ -47,7 +47,7 @@ interface PeerConnectionImpl  {
   [Throws]
   boolean checkNegotiationNeeded();
   [Throws]
-  void insertDTMF(TransceiverImpl transceiver, DOMString tones,
+  undefined insertDTMF(TransceiverImpl transceiver, DOMString tones,
                   optional unsigned long duration = 100,
                   optional unsigned long interToneGap = 70);
   [Throws]
@@ -58,31 +58,31 @@ interface PeerConnectionImpl  {
   DOMHighResTimeStamp getNowInRtpSourceReferenceTime();
 
   [Throws]
-  void replaceTrackNoRenegotiation(TransceiverImpl transceiverImpl,
+  undefined replaceTrackNoRenegotiation(TransceiverImpl transceiverImpl,
                                    MediaStreamTrack? withTrack);
   [Throws]
-  void closeStreams();
+  undefined closeStreams();
 
   [Throws]
-  void addRIDExtension(MediaStreamTrack recvTrack, unsigned short extensionId);
+  undefined addRIDExtension(MediaStreamTrack recvTrack, unsigned short extensionId);
   [Throws]
-  void addRIDFilter(MediaStreamTrack recvTrack, DOMString rid);
+  undefined addRIDFilter(MediaStreamTrack recvTrack, DOMString rid);
 
   // Inserts CSRC data for the RtpSourceObserver for testing
   [Throws]
-  void insertAudioLevelForContributingSource(MediaStreamTrack recvTrack,
+  undefined insertAudioLevelForContributingSource(MediaStreamTrack recvTrack,
                                              unsigned long source,
                                              DOMHighResTimeStamp timestamp,
                                              boolean hasLevel,
                                              byte level);
 
   [Throws]
-  void enablePacketDump(unsigned long level,
+  undefined enablePacketDump(unsigned long level,
                         mozPacketDumpType type,
                         boolean sending);
 
   [Throws]
-  void disablePacketDump(unsigned long level,
+  undefined disablePacketDump(unsigned long level,
                          mozPacketDumpType type,
                          boolean sending);
 
@@ -92,11 +92,11 @@ interface PeerConnectionImpl  {
    * into the SDP.
    */
   [Throws]
-  void addIceCandidate(DOMString candidate, DOMString mid, unsigned short level);
+  undefined addIceCandidate(DOMString candidate, DOMString mid, unsigned short level);
 
   /* Puts the SIPCC engine back to 'kIdle', shuts down threads, deletes state */
   [Throws]
-  void close();
+  undefined close();
 
   /* Notify DOM window if this plugin crash is ours. */
   boolean pluginCrash(unsigned long long pluginId, DOMString name);

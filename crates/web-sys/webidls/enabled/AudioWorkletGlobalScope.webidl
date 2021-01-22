@@ -9,7 +9,7 @@
 
 [Global=(Worklet,AudioWorklet),Exposed=AudioWorklet]
 interface AudioWorkletGlobalScope : WorkletGlobalScope {
-    void registerProcessor (DOMString name, VoidFunction processorCtor);
+    undefined registerProcessor (DOMString name, VoidFunction processorCtor);
     readonly  attribute   unsigned long long currentFrame;
     readonly  attribute   double currentTime;
     readonly  attribute   float sampleRate;

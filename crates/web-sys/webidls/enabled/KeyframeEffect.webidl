@@ -34,7 +34,7 @@ interface KeyframeEffect : AnimationEffect {
   attribute IterationCompositeOperation     iterationComposite;
   attribute CompositeOperation              composite;
   [Throws] sequence<object> getKeyframes ();
-  [Throws] void             setKeyframes (object? keyframes);
+  [Throws] undefined             setKeyframes (object? keyframes);
 };
 
 // Non-standard extensions

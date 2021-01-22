@@ -7,6 +7,6 @@
 [NoInterfaceObject, JSImplementation="@mozilla.org/sidebar;1"]
 interface External
 {
-  void AddSearchProvider(DOMString aDescriptionURL);
+  undefined AddSearchProvider(DOMString aDescriptionURL);
   unsigned long IsSearchProviderInstalled(DOMString aSearchURL);
 };

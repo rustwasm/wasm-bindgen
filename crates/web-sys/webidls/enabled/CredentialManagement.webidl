@@ -22,7 +22,7 @@ interface CredentialsContainer {
   [Throws]
   Promise<Credential> store(Credential credential);
   [Throws]
-  Promise<void> preventSilentAccess();
+  Promise<undefined> preventSilentAccess();
 };
 
 dictionary CredentialRequestOptions {

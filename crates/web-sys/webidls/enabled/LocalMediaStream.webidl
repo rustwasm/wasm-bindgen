@@ -11,5 +11,5 @@
  */
 
 interface LocalMediaStream : MediaStream {
-    void stop();
+    undefined stop();
 };

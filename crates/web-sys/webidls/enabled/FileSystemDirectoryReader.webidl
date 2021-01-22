@@ -5,7 +5,7 @@
  */
 
 callback interface FileSystemEntriesCallback {
-    void handleEvent(sequence<FileSystemEntry> entries);
+    undefined handleEvent(sequence<FileSystemEntry> entries);
 };
 
 interface FileSystemDirectoryReader {
@@ -13,6 +13,6 @@ interface FileSystemDirectoryReader {
     // readEntries can be called just once. The second time it returns no data.
 
     [Throws]
-    void readEntries(FileSystemEntriesCallback successCallback,
+    undefined readEntries(FileSystemEntriesCallback successCallback,
                      optional ErrorCallback errorCallback);
 };
