@@ -1,6 +1,6 @@
 # Support for Weak References
 
-By default wasm-bindgen does not uses the [TC39 weak references
+By default wasm-bindgen does not use the [TC39 weak references
 proposal](https://github.com/tc39/proposal-weakrefs). This proposal just
 advanced to stage 4 at the time of this writing, but it will still stake some
 time for support to percolate into all the major browsers.
