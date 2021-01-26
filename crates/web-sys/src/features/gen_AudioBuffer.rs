@@ -78,7 +78,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
     pub fn copy_to_channel(
         this: &AudioBuffer,
-        source: &mut [f32],
+        source: &[f32],
         channel_number: i32,
     ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "AudioBuffer" , js_name = copyToChannel)]
@@ -89,7 +89,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
     pub fn copy_to_channel_with_start_in_channel(
         this: &AudioBuffer,
-        source: &mut [f32],
+        source: &[f32],
         channel_number: i32,
         start_in_channel: u32,
     ) -> Result<(), JsValue>;
