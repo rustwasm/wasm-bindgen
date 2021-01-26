@@ -88,6 +88,8 @@ lazy_static! {
         "setBindGroup",
         "writeBuffer",
         "writeTexture",
+        // AudioBuffer
+        "copyToChannel"
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ]);
 }
