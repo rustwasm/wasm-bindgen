@@ -2095,10 +2095,6 @@ impl<'a> Context<'a> {
                 self.imports_post.push_str(";\n");
 
                 fn switch(dst: &mut String, name: &str, prefix: &str, left: &[String]) {
-                    if left.len() == 0 {
-                        dst.push_str(prefix);
-                        return dst.push_str(name);
-                    }
                     dst.push_str("(typeof ");
                     dst.push_str(prefix);
                     dst.push_str(name);
@@ -2106,7 +2102,11 @@ impl<'a> Context<'a> {
                     dst.push_str(prefix);
                     dst.push_str(name);
                     dst.push_str(" : ");
-                    switch(dst, name, &left[0], &left[1..]);
+                    if left.is_empty() {
+                        dst.push_str("undefined");
+                    } else {
+                        switch(dst, name, &left[0], &left[1..]);
+                    }
                     dst.push_str(")");
                 }
                 format!("l{}", name)
