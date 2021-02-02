@@ -2909,6 +2909,11 @@ impl<'a> Context<'a> {
                 args[0].clone()
             }
 
+            Intrinsic::BigIntNew => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
             Intrinsic::StringNew => {
                 assert_eq!(args.len(), 1);
                 args[0].clone()
@@ -2928,6 +2933,12 @@ impl<'a> Context<'a> {
                 assert_eq!(args.len(), 1);
                 prelude.push_str(&format!("const obj = {};\n", args[0]));
                 format!("typeof(obj) === 'number' ? obj : undefined")
+            }
+
+            Intrinsic::BigIntGet => {
+                assert_eq!(args.len(), 1);
+                prelude.push_str(&format!("const obj = {};\n", args[0]));
+                format!("typeof(obj) === 'bigint' ? obj : undefined")
             }
 
             Intrinsic::StringGet => {

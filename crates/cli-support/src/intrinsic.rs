@@ -79,6 +79,10 @@ fn opt_f64() -> Descriptor {
     Descriptor::Option(Box::new(Descriptor::F64))
 }
 
+fn opt_u64() -> Descriptor {
+    Descriptor::Option(Box::new(Descriptor::U64))
+}
+
 intrinsics! {
     pub enum Intrinsic {
         #[symbol = "__wbindgen_jsval_eq"]
@@ -117,6 +121,9 @@ intrinsics! {
         #[symbol = "__wbindgen_number_new"]
         #[signature = fn(F64) -> Externref]
         NumberNew,
+        #[symbol = "__wbindgen_bigint_new"]
+        #[signature = fn(U64) -> Externref]
+        BigIntNew,
         #[symbol = "__wbindgen_string_new"]
         #[signature = fn(ref_string()) -> Externref]
         StringNew,
@@ -129,6 +136,9 @@ intrinsics! {
         #[symbol = "__wbindgen_number_get"]
         #[signature = fn(ref_externref()) -> opt_f64()]
         NumberGet,
+        #[symbol = "__wbindgen_bigint_get"]
+        #[signature = fn(ref_externref()) -> opt_u64()]
+        BigIntGet,
         #[symbol = "__wbindgen_string_get"]
         #[signature = fn(ref_externref()) -> opt_string()]
         StringGet,
