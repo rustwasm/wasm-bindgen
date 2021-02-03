@@ -1276,7 +1276,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw)
     #[wasm_bindgen(method, structural, catch)]
-    pub fn throw(this: &Generator, error: &Error) -> Result<IteratorNext, JsValue>;
+    pub fn throw(this: &Generator, error: &Error) -> Result<IteratorNext, Error>;
 }
 
 // Map
