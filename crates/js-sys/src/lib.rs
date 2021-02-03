@@ -1254,7 +1254,7 @@ impl Function {
 // Generator
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Generator<any, any, any>")]
+    #[wasm_bindgen(extends = Object, extends = Iterator, typescript_type = "Generator<any, any, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Generator;
 
