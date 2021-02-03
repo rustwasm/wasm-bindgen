@@ -8,14 +8,6 @@ extern "C" {
     fn one_two_generator() -> Generator;
     fn dummy_generator() -> Generator;
     fn broken_generator() -> Generator;
-
-    type GeneratorResult;
-
-    #[wasm_bindgen(method, getter, structural)]
-    fn value(this: &GeneratorResult) -> JsValue;
-    #[wasm_bindgen(method, getter, structural)]
-    fn done(this: &GeneratorResult) -> bool;
-
 }
 
 #[wasm_bindgen_test]
@@ -23,11 +15,11 @@ fn return_() {
     let gen = one_two_generator();
     gen.next(&JsValue::undefined()).unwrap();
 
-    let res = GeneratorResult::from(gen.return_(&42.into()));
+    let res = gen.return_(&42.into());
     assert_eq!(res.value(), 42);
     assert!(res.done());
 
-    let next = GeneratorResult::from(gen.next(&JsValue::undefined()).unwrap());
+    let next = gen.next(&JsValue::undefined()).unwrap();
     assert!(next.value().is_undefined());
     assert!(next.done());
 }
@@ -36,11 +28,11 @@ fn return_() {
 fn next() {
     let gen = dummy_generator();
 
-    let result = GeneratorResult::from(gen.next(&JsValue::undefined()).unwrap());
+    let result = gen.next(&JsValue::undefined()).unwrap();
     assert!(!result.done());
     assert_eq!(result.value(), "2 * 2");
 
-    let result = GeneratorResult::from(gen.next(&4.into()).unwrap());
+    let result = gen.next(&4.into()).unwrap();
     assert!(result.done());
     assert_eq!(result.value(), true);
 
@@ -53,7 +45,7 @@ fn throw() {
     gen.next(&JsValue::undefined()).unwrap();
 
     assert!(gen.throw(&Error::new("something went wrong")).is_err());
-    let next = GeneratorResult::from(gen.next(&JsValue::undefined()).unwrap());
+    let next = gen.next(&JsValue::undefined()).unwrap();
     assert!(next.value().is_undefined());
     assert!(next.done());
 }

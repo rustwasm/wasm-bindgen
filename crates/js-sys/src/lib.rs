@@ -1263,20 +1263,20 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/next)
     #[wasm_bindgen(method, structural, catch)]
-    pub fn next(this: &Generator, value: &JsValue) -> Result<JsValue, JsValue>;
+    pub fn next(this: &Generator, value: &JsValue) -> Result<IteratorNext, JsValue>;
 
     /// The `return()` method returns the given value and finishes the generator.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/return)
     #[wasm_bindgen(method, structural, js_name = return)]
-    pub fn return_(this: &Generator, value: &JsValue) -> JsValue;
+    pub fn return_(this: &Generator, value: &JsValue) -> IteratorNext;
 
     /// The `throw()` method resumes the execution of a generator by throwing an error into it
     /// and returns an object with two properties done and value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw)
     #[wasm_bindgen(method, structural, catch)]
-    pub fn throw(this: &Generator, error: &Error) -> Result<JsValue, JsValue>;
+    pub fn throw(this: &Generator, error: &Error) -> Result<IteratorNext, JsValue>;
 }
 
 // Map
