@@ -1263,7 +1263,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/next)
     #[wasm_bindgen(method, structural, catch)]
-    pub fn next(this: &Generator, value: &JsValue) -> Result<IteratorNext, JsValue>;
+    pub fn next(this: &Generator, value: &JsValue) -> Result<IteratorNext, TypeError>;
 
     /// The `return()` method returns the given value and finishes the generator.
     ///
@@ -1390,7 +1390,7 @@ extern "C" {
     /// (such as false or undefined), a TypeError ("iterator.next() returned a
     /// non-object value") will be thrown.
     #[wasm_bindgen(catch, method, structural)]
-    pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
+    pub fn next(this: &Iterator) -> Result<IteratorNext, TypeError>;
 }
 
 impl Iterator {
@@ -1429,7 +1429,7 @@ extern "C" {
     /// gets returned (such as false or undefined), a TypeError ("iterator.next()
     /// returned a non-object value") will be thrown.
     #[wasm_bindgen(catch, method, structural)]
-    pub fn next(this: &AsyncIterator) -> Result<Promise, JsValue>;
+    pub fn next(this: &AsyncIterator) -> Result<Promise, TypeError>;
 }
 
 /// An iterator over the JS `Symbol.iterator` iteration protocol.
@@ -1453,7 +1453,7 @@ struct IterState {
 }
 
 impl<'a> IntoIterator for &'a Iterator {
-    type Item = Result<JsValue, JsValue>;
+    type Item = Result<JsValue, TypeError>;
     type IntoIter = Iter<'a>;
 
     fn into_iter(self) -> Iter<'a> {
@@ -1465,7 +1465,7 @@ impl<'a> IntoIterator for &'a Iterator {
 }
 
 impl<'a> std::iter::Iterator for Iter<'a> {
-    type Item = Result<JsValue, JsValue>;
+    type Item = Result<JsValue, TypeError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.state.next(self.js)
@@ -1473,7 +1473,7 @@ impl<'a> std::iter::Iterator for Iter<'a> {
 }
 
 impl IntoIterator for Iterator {
-    type Item = Result<JsValue, JsValue>;
+    type Item = Result<JsValue, TypeError>;
     type IntoIter = IntoIter;
 
     fn into_iter(self) -> IntoIter {
@@ -1485,7 +1485,7 @@ impl IntoIterator for Iterator {
 }
 
 impl std::iter::Iterator for IntoIter {
-    type Item = Result<JsValue, JsValue>;
+    type Item = Result<JsValue, TypeError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.state.next(&self.js)
@@ -1497,7 +1497,7 @@ impl IterState {
         IterState { done: false }
     }
 
-    fn next(&mut self, js: &Iterator) -> Option<Result<JsValue, JsValue>> {
+    fn next(&mut self, js: &Iterator) -> Option<Result<JsValue, TypeError>> {
         if self.done {
             return None;
         }

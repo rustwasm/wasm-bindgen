@@ -44,8 +44,14 @@ fn throw() {
     let gen = one_two_generator();
     gen.next(&JsValue::undefined()).unwrap();
 
-    assert!(gen.throw(&Error::new("something went wrong")).is_err());
+    let throw = gen.throw(&Error::new("something went wrong"));
+    assert!(throw.is_err());
+    if let Err(error) = throw {
+        assert!(js_sys::Error::instanceof(&error));
+    }
+
     let next = gen.next(&JsValue::undefined()).unwrap();
+
     assert!(next.value().is_undefined());
     assert!(next.done());
 }
