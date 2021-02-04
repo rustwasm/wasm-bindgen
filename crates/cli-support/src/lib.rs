@@ -286,12 +286,23 @@ impl Bindgen {
         self.generate_output()?.emit(path.as_ref())
     }
 
-    pub fn generate_output(&mut self) -> Result<Output, Error> {
-        let (mut module, stem) = match self.input {
+    pub fn stem(&self) -> Result<&str, Error> {
+        Ok(match &self.input {
             Input::None => bail!("must have an input by now"),
-            Input::Module(ref mut m, ref name) => {
+            Input::Module(_, name) => name,
+            Input::Path(path) => match &self.out_name {
+                Some(name) => name,
+                None => path.file_stem().unwrap().to_str().unwrap(),
+            },
+        })
+    }
+
+    pub fn generate_output(&mut self) -> Result<Output, Error> {
+        let mut module = match self.input {
+            Input::None => bail!("must have an input by now"),
+            Input::Module(ref mut m, _) => {
                 let blank_module = Module::default();
-                (mem::replace(m, blank_module), &name[..])
+                mem::replace(m, blank_module)
             }
             Input::Path(ref path) => {
                 let wasm = wit_text::parse_file(&path)
@@ -312,11 +323,7 @@ impl Bindgen {
                     .on_parse(wit_walrus::on_parse)
                     .parse(&wasm)
                     .context("failed to parse input file as wasm")?;
-                let stem = match &self.out_name {
-                    Some(name) => &name,
-                    None => path.file_stem().unwrap().to_str().unwrap(),
-                };
-                (module, stem)
+                module
             }
         };
 
@@ -408,6 +415,8 @@ impl Bindgen {
         // of which leave "garbage" lying around, so let's prune out all our
         // unnecessary things here.
         gc_module_and_adapters(&mut module);
+
+        let stem = self.stem()?;
 
         // We're ready for the final emission passes now. If we're in wasm
         // interface types mode then we execute the various passes there and
