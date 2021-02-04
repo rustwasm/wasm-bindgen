@@ -611,14 +611,14 @@ impl<'a> Context<'a> {
         }
 
         let default_module_path = match self.config.mode {
-            OutputMode::Web => {
+            OutputMode::Web => format!(
                 "\
-                    if (typeof input === 'undefined') {
-                        input = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            }
-            OutputMode::NoModules { .. } => {
-                "\
+                    if (typeof input === 'undefined') {{
+                        input = new URL('{stem}_bg.wasm', import.meta.url);
+                    }}",
+                stem = self.config.stem()?
+            ),
+            OutputMode::NoModules { .. } => "\
                     if (typeof input === 'undefined') {
                         let src;
                         if (typeof document === 'undefined') {
@@ -628,8 +628,8 @@ impl<'a> Context<'a> {
                         }
                         input = src.replace(/\\.js$/, '_bg.wasm');
                     }"
-            }
-            _ => "",
+            .to_string(),
+            _ => "".to_string(),
         };
 
         let ts = self.ts_for_init_fn(has_memory, !default_module_path.is_empty())?;
