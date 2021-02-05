@@ -850,10 +850,15 @@ impl<'a> Context<'a> {
 
         dst.push_str(&format!(
             "
-            free() {{
+            __destroy_into_raw() {{
                 const ptr = this.ptr;
                 this.ptr = 0;
                 {}
+                return ptr;
+            }}
+
+            free() {{
+                const ptr = this.__destroy_into_raw();
                 wasm.{}(ptr);
             }}
             ",
