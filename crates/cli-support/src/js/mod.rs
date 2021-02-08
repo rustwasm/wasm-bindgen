@@ -339,7 +339,7 @@ impl<'a> Context<'a> {
         module_name: &str,
         needs_manual_start: bool,
     ) -> Result<(String, String, Option<String>), Error> {
-        let mut ts = self.typescript.clone();
+        let mut ts;
         let mut js = String::new();
         let mut start = None;
 
@@ -439,6 +439,16 @@ impl<'a> Context<'a> {
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 footer.push_str("export default init;\n");
             }
+        }
+
+        // Before putting the static init code declaration info, put all existing typescript into a `wasm_bindgen` namespace declaration.
+        // Not sure if this should happen in all cases, so just adding it to NoModules for now...
+        if self.config.mode.no_modules() {
+            ts = String::from("declare namespace wasm_bindgen {\n\t");
+            ts.push_str(&self.typescript.replace("\n", "\n\t"));
+            ts.push_str("\n}\n");
+        } else {
+            ts = self.typescript.clone();
         }
 
         let (init_js, init_ts) = init;
@@ -556,11 +566,23 @@ impl<'a> Context<'a> {
             ("", "")
         };
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
+        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level cause TypeScript to ignore all "declare" statements.
+        // So using "declare" everywhere for at least the NoModules option.
+        // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
+        let setup_function_declaration;
+        let declare_or_export;
+        if self.config.mode.no_modules() {
+            declare_or_export = "declare";
+            setup_function_declaration = "declare function wasm_bindgen";
+        } else {
+            declare_or_export = "export";
+            setup_function_declaration = "export default function init";
+        }
         Ok(format!(
             "\n\
-            export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
+            {declare_or_export} type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
             \n\
-            export interface InitOutput {{\n\
+            {declare_or_export} interface InitOutput {{\n\
             {output}}}\n\
             \n\
             /**\n\
@@ -572,11 +594,12 @@ impl<'a> Context<'a> {
             *\n\
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
-            export default function init \
-                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
-        ",
+            {setup_function_declaration} \
+                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
             memory_doc, arg_optional, memory_param,
             output = output,
+            declare_or_export = declare_or_export,
+            setup_function_declaration = setup_function_declaration,
         ))
     }
 
