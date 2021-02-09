@@ -4,7 +4,9 @@
   (import "__wbindgen_externref_xform__" "__wbindgen_externref_table_grow"
     (func $grow (param i32) (result i32)))
   (func $foo (export "foo") (param i32)
+    (local i32)
     i32.const 0
+    local.tee 0
     call $grow
     drop)
   (func $alloc (export "__externref_table_alloc") (result i32)
@@ -20,6 +22,7 @@
   (func $foo (type 1) (param i32)
     (local i32)
     i32.const 0
+    local.tee 0
     local.set 1
     ref.null extern
     local.get 1
