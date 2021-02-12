@@ -252,6 +252,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn list(this: &HtmlInputElement) -> Option<HtmlElement>;
+    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = list)]
+    #[doc = "Setter for the `list` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/list)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
+    pub fn set_list(this: &HtmlInputElement, value: &str);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = max)]
     #[doc = "Getter for the `max` field of this object."]
     #[doc = ""]
