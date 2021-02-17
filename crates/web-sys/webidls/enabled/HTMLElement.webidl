@@ -18,6 +18,10 @@ interface HTMLElement : Element {
   [CEReactions]
            attribute DOMString title;
   [CEReactions]
+           attribute long scrollHeight;
+  [CEReactions]
+           attribute long scrollTop;
+  [CEReactions]
            attribute DOMString lang;
   //         attribute boolean translate;
   [CEReactions, SetterThrows, Pure]
