@@ -37,9 +37,9 @@ extern "C" {
     //                          rest: Vec<String>) -> String;
     #[wasm_bindgen(variadic)]
     fn variadic_sum_rest_vec(first: u8, second: u8, rest: Vec<u8>) -> u8;
-//#[wasm_bindgen(variadic)]
-//fn variadic_compare_pairs(first: JsValue, second: JsValue, rest: &[JsValue]);
-//TODO imported type
+    //#[wasm_bindgen(variadic)]
+    //fn variadic_compare_pairs(first: JsValue, second: JsValue, rest: &[JsValue]);
+    //TODO imported type
 }
 
 // ints
