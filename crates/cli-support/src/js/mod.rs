@@ -560,7 +560,7 @@ impl<'a> Context<'a> {
         let (memory_doc, memory_param) = if has_memory {
             (
                 "* @param {WebAssembly.Memory} maybe_memory\n",
-                ", maybe_memory: WebAssembly.Memory",
+                ", maybe_memory?: WebAssembly.Memory",
             )
         } else {
             ("", "")
