@@ -210,7 +210,7 @@ jobs:
       - script: |
           set -e
           sed -i 's/python/#python/' examples/raytrace-parallel/build.sh
-          (cd examples/raytrace-parallel && ./build.sh)
+          (cd examples/raytrace-parallel && rustup run nightly-2020-08-27 ./build.sh)
           cp examples/raytrace-parallel/*.{js,html,wasm} $BUILD_ARTIFACTSTAGINGDIRECTORY
         displayName: "build example"
       - task: PublishPipelineArtifact@0
