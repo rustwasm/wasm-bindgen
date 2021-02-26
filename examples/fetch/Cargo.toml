@@ -8,9 +8,9 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { version = "0.2.70", features = ["serde-serialize"]  }
-js-sys = "0.3.47"
-wasm-bindgen-futures = "0.4.20"
+wasm-bindgen = { version = "0.2.71", features = ["serde-serialize"]  }
+js-sys = "0.3.48"
+wasm-bindgen-futures = "0.4.21"
 serde = { version = "1.0.80", features = ["derive"] }
 serde_derive = "^1.0.59"
 
