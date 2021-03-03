@@ -6,7 +6,8 @@
  *
  * Source: https://streams.spec.whatwg.org/#rs-class-definition
  */
-
+ 
+[Exposed=(Window,Worker,Worklet), Transferable]
 interface ReadableStream {
   constructor(optional object underlyingSource, optional QueuingStrategy strategy = {});
 
