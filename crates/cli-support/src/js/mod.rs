@@ -560,7 +560,7 @@ impl<'a> Context<'a> {
         let (memory_doc, memory_param) = if has_memory {
             (
                 "* @param {WebAssembly.Memory} maybe_memory\n",
-                ", maybe_memory: WebAssembly.Memory",
+                ", maybe_memory?: WebAssembly.Memory",
             )
         } else {
             ("", "")
@@ -610,24 +610,23 @@ impl<'a> Context<'a> {
     ) -> Result<(String, String), Error> {
         let module_name = "wbg";
         let mut init_memory_arg = "";
-        let mut init_memory1 = String::new();
-        let mut init_memory2 = String::new();
+        let mut init_memory = String::new();
         let mut has_memory = false;
         if let Some(mem) = self.module.memories.iter().next() {
             if let Some(id) = mem.import {
                 self.module.imports.get_mut(id).module = module_name.to_string();
-                let mut memory = String::from("new WebAssembly.Memory({");
-                memory.push_str(&format!("initial:{}", mem.initial));
+                init_memory = format!(
+                    "imports.{}.memory = maybe_memory || new WebAssembly.Memory({{",
+                    module_name
+                );
+                init_memory.push_str(&format!("initial:{}", mem.initial));
                 if let Some(max) = mem.maximum {
-                    memory.push_str(&format!(",maximum:{}", max));
+                    init_memory.push_str(&format!(",maximum:{}", max));
                 }
                 if mem.shared {
-                    memory.push_str(",shared:true");
+                    init_memory.push_str(",shared:true");
                 }
-                memory.push_str("})");
-                self.imports_post.push_str("let memory;\n");
-                init_memory1 = format!("memory = imports.{}.memory = maybe_memory;", module_name);
-                init_memory2 = format!("memory = imports.{}.memory = {};", module_name, memory);
+                init_memory.push_str("});");
                 init_memory_arg = ", maybe_memory";
                 has_memory = true;
             }
@@ -706,9 +705,8 @@ impl<'a> Context<'a> {
 
         let js = format!(
             "\
-                async function load(module, imports{init_memory_arg}) {{
+                async function load(module, imports) {{
                     if (typeof Response === 'function' && module instanceof Response) {{
-                        {init_memory2}
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
                             try {{
                                 return await WebAssembly.instantiateStreaming(module, imports);
@@ -731,7 +729,6 @@ impl<'a> Context<'a> {
                         return await WebAssembly.instantiate(bytes, imports);
 
                     }} else {{
-                        {init_memory1}
                         const instance = await WebAssembly.instantiate(module, imports);
 
                         if (instance instanceof WebAssembly.Instance) {{
@@ -752,7 +749,9 @@ impl<'a> Context<'a> {
                         input = fetch(input);
                     }}
 
-                    const {{ instance, module }} = await load(await input, imports{init_memory_arg});
+                    {init_memory}
+
+                    const {{ instance, module }} = await load(await input, imports);
 
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
@@ -762,8 +761,7 @@ impl<'a> Context<'a> {
             ",
             init_memory_arg = init_memory_arg,
             default_module_path = default_module_path,
-            init_memory1 = init_memory1,
-            init_memory2 = init_memory2,
+            init_memory = init_memory,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
             } else {
