@@ -4,45 +4,43 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUVertexAttributeDescriptor)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUImageCopyTexture)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuVertexAttributeDescriptor` dictionary."]
+    #[doc = "The `GpuImageCopyTexture` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttributeDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuVertexAttributeDescriptor;
+    pub type GpuImageCopyTexture;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuVertexAttributeDescriptor {
-    #[cfg(feature = "GpuVertexFormat")]
-    #[doc = "Construct a new `GpuVertexAttributeDescriptor`."]
+impl GpuImageCopyTexture {
+    #[cfg(feature = "GpuTexture")]
+    #[doc = "Construct a new `GpuImageCopyTexture`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttributeDescriptor`, `GpuVertexFormat`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(format: GpuVertexFormat, offset: f64, shader_location: u32) -> Self {
+    pub fn new(texture: &GpuTexture) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.format(format);
-        ret.offset(offset);
-        ret.shader_location(shader_location);
+        ret.texture(texture);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuVertexFormat")]
-    #[doc = "Change the `format` field of this object."]
+    #[cfg(feature = "GpuTextureAspect")]
+    #[doc = "Change the `aspect` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttributeDescriptor`, `GpuVertexFormat`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuTextureAspect`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn format(&mut self, val: GpuVertexFormat) -> &mut Self {
+    pub fn aspect(&mut self, val: GpuTextureAspect) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("format"), &JsValue::from(val));
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("aspect"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"
@@ -51,35 +49,57 @@ impl GpuVertexAttributeDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `offset` field of this object."]
+    #[doc = "Change the `mipLevel` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttributeDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn offset(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("offset"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `shaderLocation` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttributeDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn shader_location(&mut self, val: u32) -> &mut Self {
+    pub fn mip_level(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("shaderLocation"),
+            &JsValue::from("mipLevel"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn origin(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r =
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("origin"), &JsValue::from(val));
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTexture")]
+    #[doc = "Change the `texture` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuTexture`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn texture(&mut self, val: &GpuTexture) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("texture"),
             &JsValue::from(val),
         );
         debug_assert!(

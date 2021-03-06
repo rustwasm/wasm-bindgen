@@ -2242,6 +2242,12 @@ mod gen_GpuAdapterFeatures;
 #[cfg(feature = "GpuAdapterFeatures")]
 pub use gen_GpuAdapterFeatures::*;
 
+#[cfg(feature = "GpuAdapterLimits")]
+#[allow(non_snake_case)]
+mod gen_GpuAdapterLimits;
+#[cfg(feature = "GpuAdapterLimits")]
+pub use gen_GpuAdapterLimits::*;
+
 #[cfg(feature = "GpuAddressMode")]
 #[allow(non_snake_case)]
 mod gen_GpuAddressMode;
@@ -2284,17 +2290,11 @@ mod gen_GpuBindGroupLayoutEntry;
 #[cfg(feature = "GpuBindGroupLayoutEntry")]
 pub use gen_GpuBindGroupLayoutEntry::*;
 
-#[cfg(feature = "GpuBindingType")]
+#[cfg(feature = "GpuBlendComponent")]
 #[allow(non_snake_case)]
-mod gen_GpuBindingType;
-#[cfg(feature = "GpuBindingType")]
-pub use gen_GpuBindingType::*;
-
-#[cfg(feature = "GpuBlendDescriptor")]
-#[allow(non_snake_case)]
-mod gen_GpuBlendDescriptor;
-#[cfg(feature = "GpuBlendDescriptor")]
-pub use gen_GpuBlendDescriptor::*;
+mod gen_GpuBlendComponent;
+#[cfg(feature = "GpuBlendComponent")]
+pub use gen_GpuBlendComponent::*;
 
 #[cfg(feature = "GpuBlendFactor")]
 #[allow(non_snake_case)]
@@ -2308,6 +2308,12 @@ mod gen_GpuBlendOperation;
 #[cfg(feature = "GpuBlendOperation")]
 pub use gen_GpuBlendOperation::*;
 
+#[cfg(feature = "GpuBlendState")]
+#[allow(non_snake_case)]
+mod gen_GpuBlendState;
+#[cfg(feature = "GpuBlendState")]
+pub use gen_GpuBlendState::*;
+
 #[cfg(feature = "GpuBuffer")]
 #[allow(non_snake_case)]
 mod gen_GpuBuffer;
@@ -2320,11 +2326,17 @@ mod gen_GpuBufferBinding;
 #[cfg(feature = "GpuBufferBinding")]
 pub use gen_GpuBufferBinding::*;
 
-#[cfg(feature = "GpuBufferCopyView")]
+#[cfg(feature = "GpuBufferBindingLayout")]
 #[allow(non_snake_case)]
-mod gen_GpuBufferCopyView;
-#[cfg(feature = "GpuBufferCopyView")]
-pub use gen_GpuBufferCopyView::*;
+mod gen_GpuBufferBindingLayout;
+#[cfg(feature = "GpuBufferBindingLayout")]
+pub use gen_GpuBufferBindingLayout::*;
+
+#[cfg(feature = "GpuBufferBindingType")]
+#[allow(non_snake_case)]
+mod gen_GpuBufferBindingType;
+#[cfg(feature = "GpuBufferBindingType")]
+pub use gen_GpuBufferBindingType::*;
 
 #[cfg(feature = "GpuBufferDescriptor")]
 #[allow(non_snake_case)]
@@ -2350,11 +2362,11 @@ mod gen_GpuColorDict;
 #[cfg(feature = "GpuColorDict")]
 pub use gen_GpuColorDict::*;
 
-#[cfg(feature = "GpuColorStateDescriptor")]
+#[cfg(feature = "GpuColorTargetState")]
 #[allow(non_snake_case)]
-mod gen_GpuColorStateDescriptor;
-#[cfg(feature = "GpuColorStateDescriptor")]
-pub use gen_GpuColorStateDescriptor::*;
+mod gen_GpuColorTargetState;
+#[cfg(feature = "GpuColorTargetState")]
+pub use gen_GpuColorTargetState::*;
 
 #[cfg(feature = "GpuColorWrite")]
 #[allow(non_snake_case)]
@@ -2440,11 +2452,11 @@ mod gen_GpuCullMode;
 #[cfg(feature = "GpuCullMode")]
 pub use gen_GpuCullMode::*;
 
-#[cfg(feature = "GpuDepthStencilStateDescriptor")]
+#[cfg(feature = "GpuDepthStencilState")]
 #[allow(non_snake_case)]
-mod gen_GpuDepthStencilStateDescriptor;
-#[cfg(feature = "GpuDepthStencilStateDescriptor")]
-pub use gen_GpuDepthStencilStateDescriptor::*;
+mod gen_GpuDepthStencilState;
+#[cfg(feature = "GpuDepthStencilState")]
+pub use gen_GpuDepthStencilState::*;
 
 #[cfg(feature = "GpuDevice")]
 #[allow(non_snake_case)]
@@ -2464,6 +2476,12 @@ mod gen_GpuDeviceLostInfo;
 #[cfg(feature = "GpuDeviceLostInfo")]
 pub use gen_GpuDeviceLostInfo::*;
 
+#[cfg(feature = "GpuDeviceLostReason")]
+#[allow(non_snake_case)]
+mod gen_GpuDeviceLostReason;
+#[cfg(feature = "GpuDeviceLostReason")]
+pub use gen_GpuDeviceLostReason::*;
+
 #[cfg(feature = "GpuErrorFilter")]
 #[allow(non_snake_case)]
 mod gen_GpuErrorFilter;
@@ -2482,23 +2500,17 @@ mod gen_GpuFeatureName;
 #[cfg(feature = "GpuFeatureName")]
 pub use gen_GpuFeatureName::*;
 
-#[cfg(feature = "GpuFence")]
-#[allow(non_snake_case)]
-mod gen_GpuFence;
-#[cfg(feature = "GpuFence")]
-pub use gen_GpuFence::*;
-
-#[cfg(feature = "GpuFenceDescriptor")]
-#[allow(non_snake_case)]
-mod gen_GpuFenceDescriptor;
-#[cfg(feature = "GpuFenceDescriptor")]
-pub use gen_GpuFenceDescriptor::*;
-
 #[cfg(feature = "GpuFilterMode")]
 #[allow(non_snake_case)]
 mod gen_GpuFilterMode;
 #[cfg(feature = "GpuFilterMode")]
 pub use gen_GpuFilterMode::*;
+
+#[cfg(feature = "GpuFragmentState")]
+#[allow(non_snake_case)]
+mod gen_GpuFragmentState;
+#[cfg(feature = "GpuFragmentState")]
+pub use gen_GpuFragmentState::*;
 
 #[cfg(feature = "GpuFrontFace")]
 #[allow(non_snake_case)]
@@ -2506,11 +2518,29 @@ mod gen_GpuFrontFace;
 #[cfg(feature = "GpuFrontFace")]
 pub use gen_GpuFrontFace::*;
 
-#[cfg(feature = "GpuImageBitmapCopyView")]
+#[cfg(feature = "GpuImageCopyBuffer")]
 #[allow(non_snake_case)]
-mod gen_GpuImageBitmapCopyView;
-#[cfg(feature = "GpuImageBitmapCopyView")]
-pub use gen_GpuImageBitmapCopyView::*;
+mod gen_GpuImageCopyBuffer;
+#[cfg(feature = "GpuImageCopyBuffer")]
+pub use gen_GpuImageCopyBuffer::*;
+
+#[cfg(feature = "GpuImageCopyImageBitmap")]
+#[allow(non_snake_case)]
+mod gen_GpuImageCopyImageBitmap;
+#[cfg(feature = "GpuImageCopyImageBitmap")]
+pub use gen_GpuImageCopyImageBitmap::*;
+
+#[cfg(feature = "GpuImageCopyTexture")]
+#[allow(non_snake_case)]
+mod gen_GpuImageCopyTexture;
+#[cfg(feature = "GpuImageCopyTexture")]
+pub use gen_GpuImageCopyTexture::*;
+
+#[cfg(feature = "GpuImageDataLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuImageDataLayout;
+#[cfg(feature = "GpuImageDataLayout")]
+pub use gen_GpuImageDataLayout::*;
 
 #[cfg(feature = "GpuIndexFormat")]
 #[allow(non_snake_case)]
@@ -2524,12 +2554,6 @@ mod gen_GpuInputStepMode;
 #[cfg(feature = "GpuInputStepMode")]
 pub use gen_GpuInputStepMode::*;
 
-#[cfg(feature = "GpuLimits")]
-#[allow(non_snake_case)]
-mod gen_GpuLimits;
-#[cfg(feature = "GpuLimits")]
-pub use gen_GpuLimits::*;
-
 #[cfg(feature = "GpuLoadOp")]
 #[allow(non_snake_case)]
 mod gen_GpuLoadOp;
@@ -2541,6 +2565,12 @@ pub use gen_GpuLoadOp::*;
 mod gen_GpuMapMode;
 #[cfg(feature = "GpuMapMode")]
 pub use gen_GpuMapMode::*;
+
+#[cfg(feature = "GpuMultisampleState")]
+#[allow(non_snake_case)]
+mod gen_GpuMultisampleState;
+#[cfg(feature = "GpuMultisampleState")]
+pub use gen_GpuMultisampleState::*;
 
 #[cfg(feature = "GpuObjectDescriptorBase")]
 #[allow(non_snake_case)]
@@ -2596,17 +2626,23 @@ mod gen_GpuPowerPreference;
 #[cfg(feature = "GpuPowerPreference")]
 pub use gen_GpuPowerPreference::*;
 
+#[cfg(feature = "GpuPrimitiveState")]
+#[allow(non_snake_case)]
+mod gen_GpuPrimitiveState;
+#[cfg(feature = "GpuPrimitiveState")]
+pub use gen_GpuPrimitiveState::*;
+
 #[cfg(feature = "GpuPrimitiveTopology")]
 #[allow(non_snake_case)]
 mod gen_GpuPrimitiveTopology;
 #[cfg(feature = "GpuPrimitiveTopology")]
 pub use gen_GpuPrimitiveTopology::*;
 
-#[cfg(feature = "GpuProgrammableStageDescriptor")]
+#[cfg(feature = "GpuProgrammableStage")]
 #[allow(non_snake_case)]
-mod gen_GpuProgrammableStageDescriptor;
-#[cfg(feature = "GpuProgrammableStageDescriptor")]
-pub use gen_GpuProgrammableStageDescriptor::*;
+mod gen_GpuProgrammableStage;
+#[cfg(feature = "GpuProgrammableStage")]
+pub use gen_GpuProgrammableStage::*;
 
 #[cfg(feature = "GpuQuerySet")]
 #[allow(non_snake_case)]
@@ -2632,12 +2668,6 @@ mod gen_GpuQueue;
 #[cfg(feature = "GpuQueue")]
 pub use gen_GpuQueue::*;
 
-#[cfg(feature = "GpuRasterizationStateDescriptor")]
-#[allow(non_snake_case)]
-mod gen_GpuRasterizationStateDescriptor;
-#[cfg(feature = "GpuRasterizationStateDescriptor")]
-pub use gen_GpuRasterizationStateDescriptor::*;
-
 #[cfg(feature = "GpuRenderBundle")]
 #[allow(non_snake_case)]
 mod gen_GpuRenderBundle;
@@ -2662,17 +2692,17 @@ mod gen_GpuRenderBundleEncoderDescriptor;
 #[cfg(feature = "GpuRenderBundleEncoderDescriptor")]
 pub use gen_GpuRenderBundleEncoderDescriptor::*;
 
-#[cfg(feature = "GpuRenderPassColorAttachmentDescriptor")]
+#[cfg(feature = "GpuRenderPassColorAttachment")]
 #[allow(non_snake_case)]
-mod gen_GpuRenderPassColorAttachmentDescriptor;
-#[cfg(feature = "GpuRenderPassColorAttachmentDescriptor")]
-pub use gen_GpuRenderPassColorAttachmentDescriptor::*;
+mod gen_GpuRenderPassColorAttachment;
+#[cfg(feature = "GpuRenderPassColorAttachment")]
+pub use gen_GpuRenderPassColorAttachment::*;
 
-#[cfg(feature = "GpuRenderPassDepthStencilAttachmentDescriptor")]
+#[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
 #[allow(non_snake_case)]
-mod gen_GpuRenderPassDepthStencilAttachmentDescriptor;
-#[cfg(feature = "GpuRenderPassDepthStencilAttachmentDescriptor")]
-pub use gen_GpuRenderPassDepthStencilAttachmentDescriptor::*;
+mod gen_GpuRenderPassDepthStencilAttachment;
+#[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
+pub use gen_GpuRenderPassDepthStencilAttachment::*;
 
 #[cfg(feature = "GpuRenderPassDescriptor")]
 #[allow(non_snake_case)]
@@ -2710,6 +2740,18 @@ mod gen_GpuSampler;
 #[cfg(feature = "GpuSampler")]
 pub use gen_GpuSampler::*;
 
+#[cfg(feature = "GpuSamplerBindingLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuSamplerBindingLayout;
+#[cfg(feature = "GpuSamplerBindingLayout")]
+pub use gen_GpuSamplerBindingLayout::*;
+
+#[cfg(feature = "GpuSamplerBindingType")]
+#[allow(non_snake_case)]
+mod gen_GpuSamplerBindingType;
+#[cfg(feature = "GpuSamplerBindingType")]
+pub use gen_GpuSamplerBindingType::*;
+
 #[cfg(feature = "GpuSamplerDescriptor")]
 #[allow(non_snake_case)]
 mod gen_GpuSamplerDescriptor;
@@ -2734,17 +2776,29 @@ mod gen_GpuShaderStage;
 #[cfg(feature = "GpuShaderStage")]
 pub use gen_GpuShaderStage::*;
 
+#[cfg(feature = "GpuStencilFaceState")]
+#[allow(non_snake_case)]
+mod gen_GpuStencilFaceState;
+#[cfg(feature = "GpuStencilFaceState")]
+pub use gen_GpuStencilFaceState::*;
+
 #[cfg(feature = "GpuStencilOperation")]
 #[allow(non_snake_case)]
 mod gen_GpuStencilOperation;
 #[cfg(feature = "GpuStencilOperation")]
 pub use gen_GpuStencilOperation::*;
 
-#[cfg(feature = "GpuStencilStateFaceDescriptor")]
+#[cfg(feature = "GpuStorageTextureAccess")]
 #[allow(non_snake_case)]
-mod gen_GpuStencilStateFaceDescriptor;
-#[cfg(feature = "GpuStencilStateFaceDescriptor")]
-pub use gen_GpuStencilStateFaceDescriptor::*;
+mod gen_GpuStorageTextureAccess;
+#[cfg(feature = "GpuStorageTextureAccess")]
+pub use gen_GpuStorageTextureAccess::*;
+
+#[cfg(feature = "GpuStorageTextureBindingLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuStorageTextureBindingLayout;
+#[cfg(feature = "GpuStorageTextureBindingLayout")]
+pub use gen_GpuStorageTextureBindingLayout::*;
 
 #[cfg(feature = "GpuStoreOp")]
 #[allow(non_snake_case)]
@@ -2776,23 +2830,11 @@ mod gen_GpuTextureAspect;
 #[cfg(feature = "GpuTextureAspect")]
 pub use gen_GpuTextureAspect::*;
 
-#[cfg(feature = "GpuTextureComponentType")]
+#[cfg(feature = "GpuTextureBindingLayout")]
 #[allow(non_snake_case)]
-mod gen_GpuTextureComponentType;
-#[cfg(feature = "GpuTextureComponentType")]
-pub use gen_GpuTextureComponentType::*;
-
-#[cfg(feature = "GpuTextureCopyView")]
-#[allow(non_snake_case)]
-mod gen_GpuTextureCopyView;
-#[cfg(feature = "GpuTextureCopyView")]
-pub use gen_GpuTextureCopyView::*;
-
-#[cfg(feature = "GpuTextureDataLayout")]
-#[allow(non_snake_case)]
-mod gen_GpuTextureDataLayout;
-#[cfg(feature = "GpuTextureDataLayout")]
-pub use gen_GpuTextureDataLayout::*;
+mod gen_GpuTextureBindingLayout;
+#[cfg(feature = "GpuTextureBindingLayout")]
+pub use gen_GpuTextureBindingLayout::*;
 
 #[cfg(feature = "GpuTextureDescriptor")]
 #[allow(non_snake_case)]
@@ -2811,6 +2853,12 @@ pub use gen_GpuTextureDimension::*;
 mod gen_GpuTextureFormat;
 #[cfg(feature = "GpuTextureFormat")]
 pub use gen_GpuTextureFormat::*;
+
+#[cfg(feature = "GpuTextureSampleType")]
+#[allow(non_snake_case)]
+mod gen_GpuTextureSampleType;
+#[cfg(feature = "GpuTextureSampleType")]
+pub use gen_GpuTextureSampleType::*;
 
 #[cfg(feature = "GpuTextureUsage")]
 #[allow(non_snake_case)]
@@ -2854,17 +2902,17 @@ mod gen_GpuValidationError;
 #[cfg(feature = "GpuValidationError")]
 pub use gen_GpuValidationError::*;
 
-#[cfg(feature = "GpuVertexAttributeDescriptor")]
+#[cfg(feature = "GpuVertexAttribute")]
 #[allow(non_snake_case)]
-mod gen_GpuVertexAttributeDescriptor;
-#[cfg(feature = "GpuVertexAttributeDescriptor")]
-pub use gen_GpuVertexAttributeDescriptor::*;
+mod gen_GpuVertexAttribute;
+#[cfg(feature = "GpuVertexAttribute")]
+pub use gen_GpuVertexAttribute::*;
 
-#[cfg(feature = "GpuVertexBufferLayoutDescriptor")]
+#[cfg(feature = "GpuVertexBufferLayout")]
 #[allow(non_snake_case)]
-mod gen_GpuVertexBufferLayoutDescriptor;
-#[cfg(feature = "GpuVertexBufferLayoutDescriptor")]
-pub use gen_GpuVertexBufferLayoutDescriptor::*;
+mod gen_GpuVertexBufferLayout;
+#[cfg(feature = "GpuVertexBufferLayout")]
+pub use gen_GpuVertexBufferLayout::*;
 
 #[cfg(feature = "GpuVertexFormat")]
 #[allow(non_snake_case)]
@@ -2872,11 +2920,11 @@ mod gen_GpuVertexFormat;
 #[cfg(feature = "GpuVertexFormat")]
 pub use gen_GpuVertexFormat::*;
 
-#[cfg(feature = "GpuVertexStateDescriptor")]
+#[cfg(feature = "GpuVertexState")]
 #[allow(non_snake_case)]
-mod gen_GpuVertexStateDescriptor;
-#[cfg(feature = "GpuVertexStateDescriptor")]
-pub use gen_GpuVertexStateDescriptor::*;
+mod gen_GpuVertexState;
+#[cfg(feature = "GpuVertexState")]
+pub use gen_GpuVertexState::*;
 
 #[cfg(feature = "GridDeclaration")]
 #[allow(non_snake_case)]

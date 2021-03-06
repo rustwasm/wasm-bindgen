@@ -4,45 +4,42 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPURenderPassColorAttachmentDescriptor)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUPrimitiveState)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuRenderPassColorAttachmentDescriptor` dictionary."]
+    #[doc = "The `GpuPrimitiveState` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachmentDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPrimitiveState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuRenderPassColorAttachmentDescriptor;
+    pub type GpuPrimitiveState;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuRenderPassColorAttachmentDescriptor {
-    #[cfg(feature = "GpuTextureView")]
-    #[doc = "Construct a new `GpuRenderPassColorAttachmentDescriptor`."]
+impl GpuPrimitiveState {
+    #[doc = "Construct a new `GpuPrimitiveState`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachmentDescriptor`, `GpuTextureView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPrimitiveState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(attachment: &GpuTextureView, load_value: &::wasm_bindgen::JsValue) -> Self {
+    pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.attachment(attachment);
-        ret.load_value(load_value);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuTextureView")]
-    #[doc = "Change the `attachment` field of this object."]
+    #[cfg(feature = "GpuCullMode")]
+    #[doc = "Change the `cullMode` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachmentDescriptor`, `GpuTextureView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCullMode`, `GpuPrimitiveState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn attachment(&mut self, val: &GpuTextureView) -> &mut Self {
+    pub fn cull_mode(&mut self, val: GpuCullMode) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("attachment"),
+            &JsValue::from("cullMode"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -53,17 +50,18 @@ impl GpuRenderPassColorAttachmentDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `loadValue` field of this object."]
+    #[cfg(feature = "GpuFrontFace")]
+    #[doc = "Change the `frontFace` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachmentDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuFrontFace`, `GpuPrimitiveState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn load_value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn front_face(&mut self, val: GpuFrontFace) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("loadValue"),
+            &JsValue::from("frontFace"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -74,18 +72,18 @@ impl GpuRenderPassColorAttachmentDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuTextureView")]
-    #[doc = "Change the `resolveTarget` field of this object."]
+    #[cfg(feature = "GpuIndexFormat")]
+    #[doc = "Change the `stripIndexFormat` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachmentDescriptor`, `GpuTextureView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuIndexFormat`, `GpuPrimitiveState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn resolve_target(&mut self, val: &GpuTextureView) -> &mut Self {
+    pub fn strip_index_format(&mut self, val: GpuIndexFormat) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("resolveTarget"),
+            &JsValue::from("stripIndexFormat"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -96,18 +94,18 @@ impl GpuRenderPassColorAttachmentDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuStoreOp")]
-    #[doc = "Change the `storeOp` field of this object."]
+    #[cfg(feature = "GpuPrimitiveTopology")]
+    #[doc = "Change the `topology` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachmentDescriptor`, `GpuStoreOp`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPrimitiveState`, `GpuPrimitiveTopology`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn store_op(&mut self, val: GpuStoreOp) -> &mut Self {
+    pub fn topology(&mut self, val: GpuPrimitiveTopology) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("storeOp"),
+            &JsValue::from("topology"),
             &JsValue::from(val),
         );
         debug_assert!(

@@ -4,42 +4,43 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUBlendDescriptor)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUImageCopyBuffer)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuBlendDescriptor` dictionary."]
+    #[doc = "The `GpuImageCopyBuffer` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyBuffer`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuBlendDescriptor;
+    pub type GpuImageCopyBuffer;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuBlendDescriptor {
-    #[doc = "Construct a new `GpuBlendDescriptor`."]
+impl GpuImageCopyBuffer {
+    #[cfg(feature = "GpuBuffer")]
+    #[doc = "Construct a new `GpuImageCopyBuffer`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuImageCopyBuffer`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new() -> Self {
+    pub fn new(buffer: &GpuBuffer) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
+        ret.buffer(buffer);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuBlendFactor")]
-    #[doc = "Change the `dstFactor` field of this object."]
+    #[doc = "Change the `bytesPerRow` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendDescriptor`, `GpuBlendFactor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyBuffer`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn dst_factor(&mut self, val: GpuBlendFactor) -> &mut Self {
+    pub fn bytes_per_row(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("dstFactor"),
+            &JsValue::from("bytesPerRow"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -50,18 +51,35 @@ impl GpuBlendDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuBlendOperation")]
-    #[doc = "Change the `operation` field of this object."]
+    #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendDescriptor`, `GpuBlendOperation`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyBuffer`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn operation(&mut self, val: GpuBlendOperation) -> &mut Self {
+    pub fn offset(&mut self, val: f64) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r =
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("offset"), &JsValue::from(val));
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `rowsPerImage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyBuffer`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn rows_per_image(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("operation"),
+            &JsValue::from("rowsPerImage"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -72,20 +90,17 @@ impl GpuBlendDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuBlendFactor")]
-    #[doc = "Change the `srcFactor` field of this object."]
+    #[cfg(feature = "GpuBuffer")]
+    #[doc = "Change the `buffer` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendDescriptor`, `GpuBlendFactor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuImageCopyBuffer`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn src_factor(&mut self, val: GpuBlendFactor) -> &mut Self {
+    pub fn buffer(&mut self, val: &GpuBuffer) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("srcFactor"),
-            &JsValue::from(val),
-        );
+        let r =
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("buffer"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"

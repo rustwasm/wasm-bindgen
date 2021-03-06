@@ -4,46 +4,43 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUImageBitmapCopyView)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUBlendState)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuImageBitmapCopyView` dictionary."]
+    #[doc = "The `GpuBlendState` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageBitmapCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBlendState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuImageBitmapCopyView;
+    pub type GpuBlendState;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuImageBitmapCopyView {
-    #[cfg(feature = "ImageBitmap")]
-    #[doc = "Construct a new `GpuImageBitmapCopyView`."]
+impl GpuBlendState {
+    #[cfg(feature = "GpuBlendComponent")]
+    #[doc = "Construct a new `GpuBlendState`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageBitmapCopyView`, `ImageBitmap`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(image_bitmap: &ImageBitmap) -> Self {
+    pub fn new(alpha: &GpuBlendComponent, color: &GpuBlendComponent) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.image_bitmap(image_bitmap);
+        ret.alpha(alpha);
+        ret.color(color);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "ImageBitmap")]
-    #[doc = "Change the `imageBitmap` field of this object."]
+    #[cfg(feature = "GpuBlendComponent")]
+    #[doc = "Change the `alpha` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageBitmapCopyView`, `ImageBitmap`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn image_bitmap(&mut self, val: &ImageBitmap) -> &mut Self {
+    pub fn alpha(&mut self, val: &GpuBlendComponent) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("imageBitmap"),
-            &JsValue::from(val),
-        );
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("alpha"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"
@@ -52,16 +49,16 @@ impl GpuImageBitmapCopyView {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `origin` field of this object."]
+    #[cfg(feature = "GpuBlendComponent")]
+    #[doc = "Change the `color` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageBitmapCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn origin(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn color(&mut self, val: &GpuBlendComponent) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("origin"), &JsValue::from(val));
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("color"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"

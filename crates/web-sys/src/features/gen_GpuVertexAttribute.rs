@@ -4,45 +4,45 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUVertexBufferLayoutDescriptor)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUVertexAttribute)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuVertexBufferLayoutDescriptor` dictionary."]
+    #[doc = "The `GpuVertexAttribute` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexBufferLayoutDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttribute`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuVertexBufferLayoutDescriptor;
+    pub type GpuVertexAttribute;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuVertexBufferLayoutDescriptor {
-    #[doc = "Construct a new `GpuVertexBufferLayoutDescriptor`."]
+impl GpuVertexAttribute {
+    #[cfg(feature = "GpuVertexFormat")]
+    #[doc = "Construct a new `GpuVertexAttribute`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexBufferLayoutDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttribute`, `GpuVertexFormat`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(array_stride: f64, attributes: &::wasm_bindgen::JsValue) -> Self {
+    pub fn new(format: GpuVertexFormat, offset: f64, shader_location: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.array_stride(array_stride);
-        ret.attributes(attributes);
+        ret.format(format);
+        ret.offset(offset);
+        ret.shader_location(shader_location);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `arrayStride` field of this object."]
+    #[cfg(feature = "GpuVertexFormat")]
+    #[doc = "Change the `format` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexBufferLayoutDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttribute`, `GpuVertexFormat`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn array_stride(&mut self, val: f64) -> &mut Self {
+    pub fn format(&mut self, val: GpuVertexFormat) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("arrayStride"),
-            &JsValue::from(val),
-        );
+        let r =
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("format"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"
@@ -51,19 +51,16 @@ impl GpuVertexBufferLayoutDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `attributes` field of this object."]
+    #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuVertexBufferLayoutDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttribute`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn attributes(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn offset(&mut self, val: f64) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("attributes"),
-            &JsValue::from(val),
-        );
+        let r =
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("offset"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"
@@ -72,18 +69,17 @@ impl GpuVertexBufferLayoutDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuInputStepMode")]
-    #[doc = "Change the `stepMode` field of this object."]
+    #[doc = "Change the `shaderLocation` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuInputStepMode`, `GpuVertexBufferLayoutDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexAttribute`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn step_mode(&mut self, val: GpuInputStepMode) -> &mut Self {
+    pub fn shader_location(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("stepMode"),
+            &JsValue::from("shaderLocation"),
             &JsValue::from(val),
         );
         debug_assert!(
