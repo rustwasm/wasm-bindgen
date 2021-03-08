@@ -235,113 +235,113 @@ extern "C" {
         size: f64,
     );
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBufferCopyView", feature = "GpuTextureCopyView",))]
+    #[cfg(all(feature = "GpuImageCopyBuffer", feature = "GpuImageCopyTexture",))]
     # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToTexture)]
     #[doc = "The `copyBufferToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuTextureCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuImageCopyBuffer`, `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_texture_with_u32_sequence(
         this: &GpuCommandEncoder,
-        source: &GpuBufferCopyView,
-        destination: &GpuTextureCopyView,
+        source: &GpuImageCopyBuffer,
+        destination: &GpuImageCopyTexture,
         copy_size: &::wasm_bindgen::JsValue,
     );
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
-        feature = "GpuBufferCopyView",
         feature = "GpuExtent3dDict",
-        feature = "GpuTextureCopyView",
+        feature = "GpuImageCopyBuffer",
+        feature = "GpuImageCopyTexture",
     ))]
     # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = copyBufferToTexture)]
     #[doc = "The `copyBufferToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuImageCopyBuffer`, `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_buffer_to_texture_with_gpu_extent_3d_dict(
         this: &GpuCommandEncoder,
-        source: &GpuBufferCopyView,
-        destination: &GpuTextureCopyView,
+        source: &GpuImageCopyBuffer,
+        destination: &GpuImageCopyTexture,
         copy_size: &GpuExtent3dDict,
     );
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBufferCopyView", feature = "GpuTextureCopyView",))]
+    #[cfg(all(feature = "GpuImageCopyBuffer", feature = "GpuImageCopyTexture",))]
     # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToBuffer)]
     #[doc = "The `copyTextureToBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuTextureCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuImageCopyBuffer`, `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_buffer_with_u32_sequence(
         this: &GpuCommandEncoder,
-        source: &GpuTextureCopyView,
-        destination: &GpuBufferCopyView,
+        source: &GpuImageCopyTexture,
+        destination: &GpuImageCopyBuffer,
         copy_size: &::wasm_bindgen::JsValue,
     );
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
-        feature = "GpuBufferCopyView",
         feature = "GpuExtent3dDict",
-        feature = "GpuTextureCopyView",
+        feature = "GpuImageCopyBuffer",
+        feature = "GpuImageCopyTexture",
     ))]
     # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToBuffer)]
     #[doc = "The `copyTextureToBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferCopyView`, `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuImageCopyBuffer`, `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_buffer_with_gpu_extent_3d_dict(
         this: &GpuCommandEncoder,
-        source: &GpuTextureCopyView,
-        destination: &GpuBufferCopyView,
+        source: &GpuImageCopyTexture,
+        destination: &GpuImageCopyBuffer,
         copy_size: &GpuExtent3dDict,
     );
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuTextureCopyView")]
+    #[cfg(feature = "GpuImageCopyTexture")]
     # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToTexture)]
     #[doc = "The `copyTextureToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuTextureCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_texture_with_u32_sequence(
         this: &GpuCommandEncoder,
-        source: &GpuTextureCopyView,
-        destination: &GpuTextureCopyView,
+        source: &GpuImageCopyTexture,
+        destination: &GpuImageCopyTexture,
         copy_size: &::wasm_bindgen::JsValue,
     );
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuExtent3dDict", feature = "GpuTextureCopyView",))]
+    #[cfg(all(feature = "GpuExtent3dDict", feature = "GpuImageCopyTexture",))]
     # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = copyTextureToTexture)]
     #[doc = "The `copyTextureToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyTextureToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuTextureCopyView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuExtent3dDict`, `GpuImageCopyTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_texture_to_texture_with_gpu_extent_3d_dict(
         this: &GpuCommandEncoder,
-        source: &GpuTextureCopyView,
-        destination: &GpuTextureCopyView,
+        source: &GpuImageCopyTexture,
+        destination: &GpuImageCopyTexture,
         copy_size: &GpuExtent3dDict,
     );
     #[cfg(web_sys_unstable_apis)]

@@ -4,59 +4,44 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPURenderPassDescriptor)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPURenderPassColorAttachment)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuRenderPassDescriptor` dictionary."]
+    #[doc = "The `GpuRenderPassColorAttachment` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuRenderPassDescriptor;
+    pub type GpuRenderPassColorAttachment;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuRenderPassDescriptor {
-    #[doc = "Construct a new `GpuRenderPassDescriptor`."]
+impl GpuRenderPassColorAttachment {
+    #[cfg(feature = "GpuTextureView")]
+    #[doc = "Construct a new `GpuRenderPassColorAttachment`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`, `GpuTextureView`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(color_attachments: &::wasm_bindgen::JsValue) -> Self {
+    pub fn new(load_value: &::wasm_bindgen::JsValue, view: &GpuTextureView) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.color_attachments(color_attachments);
+        ret.load_value(load_value);
+        ret.view(view);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `label` field of this object."]
+    #[doc = "Change the `loadValue` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn label(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `colorAttachments` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn color_attachments(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn load_value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("colorAttachments"),
+            &JsValue::from("loadValue"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -67,21 +52,18 @@ impl GpuRenderPassDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
-    #[doc = "Change the `depthStencilAttachment` field of this object."]
+    #[cfg(feature = "GpuTextureView")]
+    #[doc = "Change the `resolveTarget` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`, `GpuRenderPassDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`, `GpuTextureView`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn depth_stencil_attachment(
-        &mut self,
-        val: &GpuRenderPassDepthStencilAttachment,
-    ) -> &mut Self {
+    pub fn resolve_target(&mut self, val: &GpuTextureView) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("depthStencilAttachment"),
+            &JsValue::from("resolveTarget"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -92,20 +74,38 @@ impl GpuRenderPassDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuQuerySet")]
-    #[doc = "Change the `occlusionQuerySet` field of this object."]
+    #[cfg(feature = "GpuStoreOp")]
+    #[doc = "Change the `storeOp` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuQuerySet`, `GpuRenderPassDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`, `GpuStoreOp`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn occlusion_query_set(&mut self, val: &GpuQuerySet) -> &mut Self {
+    pub fn store_op(&mut self, val: GpuStoreOp) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("occlusionQuerySet"),
+            &JsValue::from("storeOp"),
             &JsValue::from(val),
         );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureView")]
+    #[doc = "Change the `view` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`, `GpuTextureView`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn view(&mut self, val: &GpuTextureView) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("view"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"
