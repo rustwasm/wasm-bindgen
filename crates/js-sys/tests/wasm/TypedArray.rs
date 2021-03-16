@@ -148,7 +148,7 @@ fn copy_to() {
 #[wasm_bindgen_test]
 fn copy_from() {
     let x = [1, 2, 3];
-    let mut array = Int32Array::new(&3.into());
+    let array = Int32Array::new(&3.into());
     array.copy_from(&x);
     array.for_each(&mut |x, i, _| {
         assert_eq!(x, (i + 1) as i32);
