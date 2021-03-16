@@ -146,6 +146,16 @@ fn copy_to() {
 }
 
 #[wasm_bindgen_test]
+fn copy_from() {
+    let x = [1, 2, 3];
+    let array = Int32Array::new(&3.into());
+    array.copy_from(&x);
+    array.for_each(&mut |x, i, _| {
+        assert_eq!(x, (i + 1) as i32);
+    });
+}
+
+#[wasm_bindgen_test]
 fn to_vec() {
     let array = Int32Array::new(&10.into());
     array.fill(5, 0, 10);
