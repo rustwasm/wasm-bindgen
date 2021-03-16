@@ -4999,6 +4999,7 @@ macro_rules! arrays {
             /// different than the length of the provided `src` array.
             pub fn copy_from(&self, src: &[$ty]) {
                 assert_eq!(self.length() as usize, src.len());
+                // This is safe because the `set` function copies from its TypedArray argument
                 unsafe { self.set(&$name::view(src), 0) }
             }
 
