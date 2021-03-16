@@ -4997,7 +4997,7 @@ macro_rules! arrays {
             ///
             /// This function will panic if this typed array's length is
             /// different than the length of the provided `src` array.
-            pub fn copy_from(&mut self, src: &[$ty]) {
+            pub fn copy_from(&self, src: &[$ty]) {
                 assert_eq!(self.length() as usize, src.len());
                 unsafe { self.set(&$name::view(src), 0) }
             }
