@@ -102,7 +102,7 @@ fn stringify_with_replacer() {
 
     let replacer_func =
         Function::new_with_args("key, value", "return key === 'hello' ? undefined : value")
-        .unwrap();
+            .unwrap();
     let output2: String =
         JSON::stringify_with_replacer(&JsValue::from(obj), &JsValue::from(replacer_func))
             .unwrap()
@@ -165,7 +165,8 @@ fn stringify_with_replacer_and_space() {
     assert_eq!(output2, "{\n    \"hello\": \"world\"\n}");
 
     let replacer_func =
-        Function::new_with_args("key, value", "return key === 'hello' ? undefined : value").unwrap();
+        Function::new_with_args("key, value", "return key === 'hello' ? undefined : value")
+            .unwrap();
     let output3: String = JSON::stringify_with_replacer_and_space(
         &JsValue::from(obj),
         &JsValue::from(replacer_func),
