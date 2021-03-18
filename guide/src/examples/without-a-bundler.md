@@ -29,9 +29,9 @@ what it means to deploy without a bundler.
 
 ## Using the older `--target no-modules`
 
-[View full source code][code]
+[View full source code][code-no-modules]
 
-[code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler-no-modules
+[code-no-modules]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler-no-modules
 
 The older version of using `wasm-bindgen` without a bundler is to use the
 `--target no-modules` flag to the `wasm-bindgen` CLI.
