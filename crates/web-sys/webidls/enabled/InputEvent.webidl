@@ -11,7 +11,6 @@ interface InputEvent : UIEvent
   readonly attribute DOMString     inputType;
   [NeedsCallerType]
   readonly attribute DOMString?    data;
-  readonly attribute DataTransfer? dataTransfer;
 };
 
 dictionary InputEventInit : UIEventInit

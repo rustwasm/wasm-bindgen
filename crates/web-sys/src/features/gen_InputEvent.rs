@@ -40,14 +40,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `InputEvent`*"]
     pub fn data_transfer(this: &InputEvent) -> Option<DataTransfer>;
-    #[cfg(feature = "DataTransfer")]
-    # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = dataTransfer)]
-    #[doc = "Getter for the `dataTransfer` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/dataTransfer)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `InputEvent`*"]
-    pub fn data_transfer(this: &InputEvent) -> Option<DataTransfer>;
     #[wasm_bindgen(catch, constructor, js_class = "InputEvent")]
     #[doc = "The `new InputEvent(..)` constructor, creating a new instance of `InputEvent`."]
     #[doc = ""]
