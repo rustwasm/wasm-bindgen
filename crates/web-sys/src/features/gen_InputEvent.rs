@@ -11,6 +11,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
     pub type InputEvent;
+    # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = data)]
+    #[doc = "Getter for the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/data)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
+    pub fn data(this: &InputEvent) -> String;
     # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = isComposing)]
     #[doc = "Getter for the `isComposing` field of this object."]
     #[doc = ""]

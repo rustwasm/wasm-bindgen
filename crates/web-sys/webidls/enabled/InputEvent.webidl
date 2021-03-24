@@ -7,6 +7,7 @@
 [Constructor(DOMString type, optional InputEventInit eventInitDict)]
 interface InputEvent : UIEvent
 {
+  readonly attribute DOMString     data;
   readonly attribute boolean       isComposing;
 };
 
