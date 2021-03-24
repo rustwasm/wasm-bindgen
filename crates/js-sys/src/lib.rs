@@ -4488,8 +4488,8 @@ pub mod Intl {
         /// Intl.DateTimeFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/format)
-        #[wasm_bindgen(method, getter, js_class = "Intl.DateTimeFormat")]
-        pub fn format(this: &DateTimeFormat) -> Function;
+        #[wasm_bindgen(method, js_class = "Intl.DateTimeFormat")]
+        pub fn format(this: &DateTimeFormat, date: &Date) -> JsString;
 
         /// The `Intl.DateTimeFormat.prototype.formatToParts()` method allows locale-aware
         /// formatting of strings produced by DateTimeFormat formatters.

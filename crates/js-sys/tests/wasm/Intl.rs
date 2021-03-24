@@ -55,7 +55,7 @@ fn date_time_format() {
     let epoch = Date::new(&JsValue::from(0));
 
     let c = Intl::DateTimeFormat::new(&locales, &opts);
-    assert!(c.format().is_instance_of::<Function>());
+    assert!(c.format(&epoch).is_string());
     assert!(c.format_to_parts(&epoch).is_instance_of::<Array>());
     assert!(c.resolved_options().is_instance_of::<Object>());
 
