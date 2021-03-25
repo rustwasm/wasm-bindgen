@@ -18,6 +18,28 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
     pub fn is_composing(this: &InputEvent) -> bool;
+    # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = inputType)]
+    #[doc = "Getter for the `inputType` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/inputType)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
+    pub fn input_type(this: &InputEvent) -> String;
+    # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = data)]
+    #[doc = "Getter for the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/data)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
+    pub fn data(this: &InputEvent) -> Option<String>;
+    #[cfg(feature = "DataTransfer")]
+    # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = dataTransfer)]
+    #[doc = "Getter for the `dataTransfer` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/dataTransfer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `InputEvent`*"]
+    pub fn data_transfer(this: &InputEvent) -> Option<DataTransfer>;
     #[wasm_bindgen(catch, constructor, js_class = "InputEvent")]
     #[doc = "The `new InputEvent(..)` constructor, creating a new instance of `InputEvent`."]
     #[doc = ""]
@@ -36,4 +58,11 @@ extern "C" {
         type_: &str,
         event_init_dict: &InputEventInit,
     ) -> Result<InputEvent, JsValue>;
+    # [wasm_bindgen (method , structural , js_class = "InputEvent" , js_name = getTargetRanges)]
+    #[doc = "The `getTargetRanges()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/getTargetRanges)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
+    pub fn get_target_ranges(this: &InputEvent) -> ::js_sys::Array;
 }
