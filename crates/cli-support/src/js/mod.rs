@@ -431,7 +431,7 @@ impl<'a> Context<'a> {
                         footer.push_str(" = ");
                         footer.push_str(js.trim());
                         footer.push_str(";\n");
-                    }       
+                    }
                 }
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -1746,7 +1746,7 @@ impl<'a> Context<'a> {
             (Some(table), Some(alloc)) => {
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
-                    "
+                    "\
                     function handleError(f, args) {{                       
                         try {{
                             return f.apply(this, args);
@@ -1762,7 +1762,7 @@ impl<'a> Context<'a> {
             _ => {
                 self.expose_add_heap_object();
                 self.global(&format!(
-                    "
+                    "\
                     function handleError(f, args) {{
                         try {{
                             return f.apply(this, arguments);
@@ -2403,7 +2403,7 @@ impl<'a> Context<'a> {
             }
             Kind::Import(core) => {
                 let code = if catch {
-                    format!("function() {{ handleError(function {}, arguments )}}", code)
+                    format!("function() {{ handleError(function {}, arguments) }}", code)
                 } else if log_error {
                     format!("function() {{ logError(function {}, arguments) }}", code)
                 } else {
