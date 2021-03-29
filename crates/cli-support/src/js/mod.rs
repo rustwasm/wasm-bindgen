@@ -419,11 +419,19 @@ impl<'a> Context<'a> {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
-                    footer.push_str("\nexport const ");
-                    footer.push_str(&import.name);
-                    footer.push_str(" = ");
-                    footer.push_str(js.trim());
-                    footer.push_str(";\n");
+                    if js.starts_with("function") {
+                        let body = &js[8..];
+                        footer.push_str("\nexport function ");
+                        footer.push_str(&import.name);
+                        footer.push_str(body.trim());
+                        footer.push_str(";\n");
+                    } else {
+                        footer.push_str("\nexport const ");
+                        footer.push_str(&import.name);
+                        footer.push_str(" = ");
+                        footer.push_str(js.trim());
+                        footer.push_str(";\n");
+                    }       
                 }
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -1739,16 +1747,13 @@ impl<'a> Context<'a> {
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
                     "
-                    function handleError(f) {{
-                        return function () {{
-                            try {{
-                                return f.apply(this, arguments);
-
-                            }} catch (e) {{
-                                const idx = {}(e);
-                                wasm.{}(idx);
-                            }}
-                        }};
+                    function handleError(f, args) {{                       
+                        try {{
+                            return f.apply(this, args);
+                        }} catch (e) {{
+                            const idx = {}(e);
+                            wasm.{}(idx);
+                        }}                      
                     }}
                     ",
                     add, store,
@@ -1758,15 +1763,12 @@ impl<'a> Context<'a> {
                 self.expose_add_heap_object();
                 self.global(&format!(
                     "
-                    function handleError(f) {{
-                        return function () {{
-                            try {{
-                                return f.apply(this, arguments);
-
-                            }} catch (e) {{
-                                wasm.{}(addHeapObject(e));
-                            }}
-                        }};
+                    function handleError(f, args) {{
+                        try {{
+                            return f.apply(this, arguments);
+                        }} catch (e) {{
+                            wasm.{}(addHeapObject(e));
+                        }}
                     }}
                     ",
                     store,
@@ -1782,27 +1784,24 @@ impl<'a> Context<'a> {
         }
         self.global(
             "\
-            function logError(f) {
-                return function () {
-                    try {
-                        return f.apply(this, arguments);
-
-                    } catch (e) {
-                        let error = (function () {
-                            try {
-                                return e instanceof Error \
-                                    ? `${e.message}\\n\\nStack:\\n${e.stack}` \
-                                    : e.toString();
-                            } catch(_) {
-                                return \"<failed to stringify thrown value>\";
-                            }
-                        }());
-                        console.error(\"wasm-bindgen: imported JS function that \
-                                        was not marked as `catch` threw an error:\", \
-                                        error);
-                        throw e;
-                    }
-                };
+            function logError(f, args) {            
+                try {
+                    return f.apply(this, args);
+                } catch (e) {
+                    let error = (function () {
+                        try {
+                            return e instanceof Error \
+                                ? `${e.message}\\n\\nStack:\\n${e.stack}` \
+                                : e.toString();
+                        } catch(_) {
+                            return \"<failed to stringify thrown value>\";
+                        }
+                    }());
+                    console.error(\"wasm-bindgen: imported JS function that \
+                                    was not marked as `catch` threw an error:\", \
+                                    error);
+                    throw e;
+                }
             }
             ",
         );
@@ -2404,9 +2403,9 @@ impl<'a> Context<'a> {
             }
             Kind::Import(core) => {
                 let code = if catch {
-                    format!("handleError(function{})", code)
+                    format!("function() {{ handleError(function {}, arguments )}}", code)
                 } else if log_error {
-                    format!("logError(function{})", code)
+                    format!("function() {{ logError(function {}, arguments) }}", code)
                 } else {
                     format!("function{}", code)
                 };
