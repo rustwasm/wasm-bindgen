@@ -87,7 +87,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2021-01-23
+          toolchain: nightly-2021-03-28
       - template: ci/azure-install-node.yml
       - script: cargo test --target wasm32-unknown-unknown --features nightly --test wasm
 
