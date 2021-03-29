@@ -1765,7 +1765,7 @@ impl<'a> Context<'a> {
                     "\
                     function handleError(f, args) {{
                         try {{
-                            return f.apply(this, arguments);
+                            return f.apply(this, args);
                         }} catch (e) {{
                             wasm.{}(addHeapObject(e));
                         }}

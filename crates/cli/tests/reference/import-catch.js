@@ -31,7 +31,7 @@ function addHeapObject(obj) {
 
 function handleError(f, args) {
     try {
-        return f.apply(this, arguments);
+        return f.apply(this, args);
     } catch (e) {
         wasm.__wbindgen_exn_store(addHeapObject(e));
     }
