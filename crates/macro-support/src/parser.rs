@@ -299,7 +299,6 @@ impl Parse for BindgenAttr {
 
             (@parser $variant:ident(Span, Vec<String>, Vec<Span>)) => ({
                 input.parse::<Token![=]>()?;
-                let input_before_parse = input.fork();
                 let (vals, spans) = match input.parse::<syn::ExprArray>() {
                     Ok(exprs) => {
                         let mut vals = vec![];
@@ -320,7 +319,7 @@ impl Parse for BindgenAttr {
                         (vals, spans)
                     },
                     Err(_) => {
-                        let ident = input_before_parse.parse::<AnyIdent>()?.0;
+                        let ident = input.parse::<AnyIdent>()?.0;
                         (vec![ident.to_string()], vec![ident.span()])
                     }
                 };
