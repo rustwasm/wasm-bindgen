@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-webidl"
-version = "0.2.72"
+version = "0.2.73"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 categories = ["wasm"]
@@ -20,7 +20,7 @@ log = "0.4.1"
 proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '1.0', features = ['full'] }
-wasm-bindgen-backend = { version = "=0.2.72", path = "../backend" }
+wasm-bindgen-backend = { version = "=0.2.73", path = "../backend" }
 weedle = "0.12"
 lazy_static = "1.0.2"
 sourcefile = "0.1"
