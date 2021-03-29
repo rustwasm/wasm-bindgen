@@ -29,15 +29,12 @@ function addHeapObject(obj) {
     return idx;
 }
 
-function handleError(f) {
-    return function () {
-        try {
-            return f.apply(this, arguments);
-
-        } catch (e) {
-            wasm.__wbindgen_exn_store(addHeapObject(e));
-        }
-    };
+function handleError(f, args) {
+    try {
+        return f.apply(this, arguments);
+    } catch (e) {
+        wasm.__wbindgen_exn_store(addHeapObject(e));
+    }
 }
 /**
 */
@@ -45,11 +42,11 @@ export function exported() {
     wasm.exported();
 }
 
-export const __wbg_foo_8d66ddef0ff279d6 = handleError(function() {
+export function __wbg_foo_8d66ddef0ff279d6() { handleError(function () {
     foo();
-});
+}, arguments )};
 
-export const __wbindgen_rethrow = function(arg0) {
+export function __wbindgen_rethrow(arg0) {
     throw takeObject(arg0);
 };
 
