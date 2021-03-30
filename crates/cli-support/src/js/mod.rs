@@ -2403,9 +2403,9 @@ impl<'a> Context<'a> {
             }
             Kind::Import(core) => {
                 let code = if catch {
-                    format!("function() {{ handleError(function {}, arguments) }}", code)
+                    format!("function() {{ return handleError(function {}, arguments) }}", code)
                 } else if log_error {
-                    format!("function() {{ logError(function {}, arguments) }}", code)
+                    format!("function() {{ return logError(function {}, arguments) }}", code)
                 } else {
                     format!("function{}", code)
                 };

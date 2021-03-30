@@ -42,9 +42,9 @@ export function exported() {
     wasm.exported();
 }
 
-export function __wbg_foo_8d66ddef0ff279d6() { handleError(function () {
+export function __wbg_foo_8d66ddef0ff279d6() { return handleError(function () {
     foo();
-}, arguments )};
+}, arguments) };
 
 export function __wbindgen_rethrow(arg0) {
     throw takeObject(arg0);
