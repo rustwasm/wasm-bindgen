@@ -30,7 +30,9 @@ fn collator() {
     let opts = Object::new();
 
     let c = Intl::Collator::new(&locales, &opts);
-    assert!(c.compare().is_instance_of::<Function>());
+    assert_eq!(c.compare("a", "b"), -1);
+    assert_eq!(c.compare("a", "a"), 0);
+    assert_eq!(c.compare("b", "a"), 1);
     assert!(c.resolved_options().is_instance_of::<Object>());
 
     let a = Intl::Collator::supported_locales_of(&locales, &opts);

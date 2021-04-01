@@ -4444,8 +4444,8 @@ pub mod Intl {
         /// object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/compare)
-        #[wasm_bindgen(method, getter, js_class = "Intl.Collator")]
-        pub fn compare(this: &Collator) -> Function;
+        #[wasm_bindgen(method, js_class = "Intl.Collator")]
+        pub fn compare(this: &Collator, string1: &str, string2: &str) -> i32;
 
         /// The `Intl.Collator.prototype.resolvedOptions()` method returns a new
         /// object with properties reflecting the locale and collation options
