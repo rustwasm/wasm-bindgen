@@ -20,9 +20,10 @@ also like to be aware of it!
   that at this time no bundler will do this by default, but we'd love to
   document plugins which do this if you are aware of one!
   
-* **Edge before 79+** - the `TextEncoder` and `TextDecoder` APIs where not
-  available in Edge which `wasm-bindgen` uses to encode/decode strings between
-  JS and Rust. You can polyfill this with at least one of two strategies:
+* **Edge before 79+** - the `TextEncoder` and `TextDecoder` APIs, which
+  `wasm-bindgen` uses to encode/decode strings between JS and Rust, were not
+  available before version 79. You can polyfill this with at least one of two
+  strategies:
 
   1. If using a bundler, you can likely configure the bundler to polyfill these
      types by default. For example if you're using Webpack you can use the
