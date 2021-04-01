@@ -82,7 +82,7 @@ fn number_format() {
     let opts = Object::new();
 
     let n = Intl::NumberFormat::new(&locales, &opts);
-    assert!(n.format().is_instance_of::<Function>());
+    assert_eq!(n.format(42.5), JsString::from("42.5"));
     assert!(n.format_to_parts(42.5).is_instance_of::<Array>());
     assert!(n.resolved_options().is_instance_of::<Object>());
 
