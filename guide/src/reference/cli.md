@@ -118,3 +118,7 @@ proposal](https://github.com/webassembly/reference-types) proposal, meaning that
 the WebAssembly binary will use `externref` when importing and exporting
 functions that work with `JsValue`. For more information see the [documentation
 about reference types](./reference-types.md).
+
+### `--omit-default-module-path`
+
+Don't add WebAssembly fallback imports in generated JavaScript.
