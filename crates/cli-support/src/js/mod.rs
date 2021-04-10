@@ -638,7 +638,7 @@ impl<'a> Context<'a> {
                     "const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);",
                     stem = self.config.stem()?
                 ),
-                " = cached_default_url".to_string()
+                " = cached_default_url".to_string(),
             ),
             OutputMode::NoModules { .. } => (
                 "\
