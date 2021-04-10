@@ -632,18 +632,11 @@ impl<'a> Context<'a> {
             }
         }
 
-        let default_input_initializer_fn_call = " = create_default_module_path()".to_string();
-
         let (default_module_path_creator, default_input_initializer) = match self.config.mode {
             OutputMode::Web => (format!(
-                "\
-                    const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);
-
-                    function create_default_module_path() {{
-                        return cached_default_url;
-                    }}",
+                "const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);",
                 stem = self.config.stem()?
-            ), default_input_initializer_fn_call),
+            ), " = cached_default_url".to_string()),
             OutputMode::NoModules { .. } => ("\
                     const cached_current_script_src = 'document' in window
                         ? window.document.currentScript
@@ -655,7 +648,7 @@ impl<'a> Context<'a> {
                             : cached_current_script.src;
 
                         return src.replace(/\\.js$/, '_bg.wasm');
-                    }".to_string(), default_input_initializer_fn_call),
+                    }".to_string(), " = create_default_module_path()".to_string()),
             _ => (String::new(), String::new()),
         };
 
