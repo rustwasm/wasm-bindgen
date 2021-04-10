@@ -633,11 +633,15 @@ impl<'a> Context<'a> {
         }
 
         let (default_module_path_creator, default_input_initializer) = match self.config.mode {
-            OutputMode::Web => (format!(
-                "const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);",
-                stem = self.config.stem()?
-            ), " = cached_default_url".to_string()),
-            OutputMode::NoModules { .. } => ("\
+            OutputMode::Web => (
+                format!(
+                    "const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);",
+                    stem = self.config.stem()?
+                ),
+                " = cached_default_url".to_string()
+            ),
+            OutputMode::NoModules { .. } => (
+                "\
                     const cached_current_script_src = 'document' in window
                         ? window.document.currentScript
                         : null;
@@ -648,7 +652,10 @@ impl<'a> Context<'a> {
                             : cached_current_script.src;
 
                         return src.replace(/\\.js$/, '_bg.wasm');
-                    }".to_string(), " = create_default_module_path()".to_string()),
+                    }"
+                .to_string(),
+                " = create_default_module_path()".to_string(),
+            ),
             _ => (String::new(), String::new()),
         };
 
