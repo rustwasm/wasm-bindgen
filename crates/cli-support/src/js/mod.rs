@@ -632,8 +632,10 @@ impl<'a> Context<'a> {
             }
         }
 
-        let default_module_path_creator = match self.config.mode {
-            OutputMode::Web => format!(
+        let default_input_initializer_fn_call = " = create_default_module_path()".to_string();
+
+        let (default_module_path_creator, default_input_initializer) = match self.config.mode {
+            OutputMode::Web => (format!(
                 "\
                     const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);
 
@@ -641,8 +643,8 @@ impl<'a> Context<'a> {
                         return cached_default_url;
                     }}",
                 stem = self.config.stem()?
-            ),
-            OutputMode::NoModules { .. } => "\
+            ), default_input_initializer_fn_call),
+            OutputMode::NoModules { .. } => ("\
                     const cached_current_script_src = 'document' in window
                         ? window.document.currentScript
                         : null;
@@ -653,9 +655,8 @@ impl<'a> Context<'a> {
                             : cached_current_script.src;
 
                         return src.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            .to_string(),
-            _ => "".to_string(),
+                    }".to_string(), default_input_initializer_fn_call),
+            _ => (String::new(), String::new()),
         };
 
         let ts = self.ts_for_init_fn(has_memory, !default_module_path_creator.is_empty())?;
@@ -746,7 +747,7 @@ impl<'a> Context<'a> {
 
                 {default_module_path_creator}
 
-                async function init(input{init_input_default_argument}{init_memory_arg}) {{
+                async function init(input{input_default_initializer}{init_memory_arg}) {{
                     const imports = {{}};
                     {imports_init}
 
@@ -765,12 +766,8 @@ impl<'a> Context<'a> {
                 }}
             ",
             default_module_path_creator = default_module_path_creator,
-            init_memory_arg = init_memory_arg,
-            init_input_default_argument = if default_module_path_creator.is_empty() {
-                "" // the function isn't available to call, thus there is no default value
-            } else {
-                " = create_default_module_path()"
-            }
+            init_memory_arg = init_memory_arg
+            input_default_initializer = input_default_initializer,
             init_memory = init_memory,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
