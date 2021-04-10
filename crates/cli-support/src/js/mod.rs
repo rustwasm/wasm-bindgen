@@ -632,29 +632,33 @@ impl<'a> Context<'a> {
             }
         }
 
-        let default_module_path = match self.config.mode {
+        let default_module_path_creator = match self.config.mode {
             OutputMode::Web => format!(
                 "\
-                    if (typeof input === 'undefined') {{
-                        input = new URL('{stem}_bg.wasm', import.meta.url);
+                    const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);
+
+                    function create_default_module_path() {{
+                        return cached_default_url;
                     }}",
                 stem = self.config.stem()?
             ),
             OutputMode::NoModules { .. } => "\
-                    if (typeof input === 'undefined') {
-                        let src;
-                        if (typeof document === 'undefined') {
-                            src = location.href;
-                        } else {
-                            src = document.currentScript.src;
-                        }
-                        input = src.replace(/\\.js$/, '_bg.wasm');
+                    const cached_current_script_src = 'document' in window
+                        ? window.document.currentScript
+                        : null;
+
+                    function create_default_module_path() {
+                        const src = typeof document === 'undefined'
+                            ? location.href
+                            : cached_current_script.src;
+
+                        return src.replace(/\\.js$/, '_bg.wasm');
                     }"
             .to_string(),
             _ => "".to_string(),
         };
 
-        let ts = self.ts_for_init_fn(has_memory, !default_module_path.is_empty())?;
+        let ts = self.ts_for_init_fn(has_memory, !default_module_path_creator.is_empty())?;
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
@@ -740,8 +744,9 @@ impl<'a> Context<'a> {
                     }}
                 }}
 
-                async function init(input{init_memory_arg}) {{
-                    {default_module_path}
+                {default_module_path_creator}
+
+                async function init(input{init_input_default_argument}{init_memory_arg}) {{
                     const imports = {{}};
                     {imports_init}
 
@@ -759,8 +764,13 @@ impl<'a> Context<'a> {
                     return wasm;
                 }}
             ",
+            default_module_path_creator = default_module_path_creator,
             init_memory_arg = init_memory_arg,
-            default_module_path = default_module_path,
+            init_input_default_argument = if default_module_path_creator.is_empty() {
+                "" // the function isn't available to call, thus there is no default value
+            } else {
+                " = create_default_module_path()"
+            }
             init_memory = init_memory,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
