@@ -758,8 +758,8 @@ impl<'a> Context<'a> {
                     return wasm;
                 }}
             ",
+            init_memory_arg = init_memory_arg,
             default_module_path_creator = default_module_path_creator,
-            init_memory_arg = init_memory_arg
             input_default_initializer = input_default_initializer,
             init_memory = init_memory,
             start = if needs_manual_start {
