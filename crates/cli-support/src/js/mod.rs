@@ -632,7 +632,7 @@ impl<'a> Context<'a> {
             }
         }
 
-        let (default_module_path_creator, default_input_initializer) =  {
+        let (default_module_path_creator, default_input_initializer) = {
             const ASSIGNMENT_STRING: &'static str = " = default_wasm_source_url";
 
             match self.config.mode {
