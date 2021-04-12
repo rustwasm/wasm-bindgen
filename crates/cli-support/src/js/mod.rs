@@ -632,31 +632,29 @@ impl<'a> Context<'a> {
             }
         }
 
-        let (default_module_path_creator, default_input_initializer) = match self.config.mode {
-            OutputMode::Web => (
-                format!(
-                    "const cached_default_url = new URL('{stem}_bg.wasm', import.meta.url);",
-                    stem = self.config.stem()?
+        let (default_module_path_creator, default_input_initializer) =  {
+            const ASSIGNMENT_STRING: &'static str = " = default_wasm_source_url";
+
+            match self.config.mode {
+                OutputMode::Web => (
+                    format!(
+                        "const default_wasm_source_url = new URL('{stem}_bg.wasm', import.meta.url);",
+                        stem = self.config.stem()?
+                    ),
+                    ASSIGNMENT_STRING,
                 ),
-                " = cached_default_url".to_string(),
-            ),
-            OutputMode::NoModules { .. } => (
-                "\
-                    const cached_current_script_src = 'document' in window
-                        ? window.document.currentScript
-                        : null;
-
-                    function create_default_module_path() {
-                        const src = typeof document === 'undefined'
-                            ? location.href
-                            : cached_current_script.src;
-
-                        return src.replace(/\\.js$/, '_bg.wasm');
-                    }"
-                .to_string(),
-                " = create_default_module_path()".to_string(),
-            ),
-            _ => (String::new(), String::new()),
+                OutputMode::NoModules { .. } => (
+                    "\
+                        const default_wasm_source_url = (typeof document !== 'undefined'
+                            ? document.currentScript.src
+                            : location.href
+                        ).replace(/\.js$/, '_bg.wasm');
+                    "
+                    .to_string(),
+                    ASSIGNMENT_STRING,
+                ),
+                _ => (String::new(), ""),
+            }
         };
 
         let ts = self.ts_for_init_fn(has_memory, !default_module_path_creator.is_empty())?;
@@ -747,7 +745,7 @@ impl<'a> Context<'a> {
 
                 {default_module_path_creator}
 
-                async function init(input{input_default_initializer}{init_memory_arg}) {{
+                async function init(input{default_input_initializer}{init_memory_arg}) {{
                     const imports = {{}};
                     {imports_init}
 
@@ -767,7 +765,7 @@ impl<'a> Context<'a> {
             ",
             init_memory_arg = init_memory_arg,
             default_module_path_creator = default_module_path_creator,
-            input_default_initializer = input_default_initializer,
+            default_input_initializer = default_input_initializer,
             init_memory = init_memory,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
