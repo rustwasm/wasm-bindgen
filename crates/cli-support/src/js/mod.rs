@@ -644,7 +644,7 @@ impl<'a> Context<'a> {
                     ASSIGNMENT_STRING,
                 ),
                 OutputMode::NoModules { .. } => (
-                    "\
+                    r"\
                         const default_wasm_source_url = (typeof document !== 'undefined'
                             ? document.currentScript.src
                             : location.href
