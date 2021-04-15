@@ -5242,6 +5242,24 @@ mod gen_ReadableStream;
 #[cfg(feature = "ReadableStream")]
 pub use gen_ReadableStream::*;
 
+#[cfg(feature = "ReadableStreamGetReaderOptions")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamGetReaderOptions;
+#[cfg(feature = "ReadableStreamGetReaderOptions")]
+pub use gen_ReadableStreamGetReaderOptions::*;
+
+#[cfg(feature = "ReadableStreamIteratorOptions")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamIteratorOptions;
+#[cfg(feature = "ReadableStreamIteratorOptions")]
+pub use gen_ReadableStreamIteratorOptions::*;
+
+#[cfg(feature = "ReadableStreamReaderMode")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamReaderMode;
+#[cfg(feature = "ReadableStreamReaderMode")]
+pub use gen_ReadableStreamReaderMode::*;
+
 #[cfg(feature = "RecordingState")]
 #[allow(non_snake_case)]
 mod gen_RecordingState;
@@ -6225,6 +6243,12 @@ pub use gen_StorageManager::*;
 mod gen_StorageType;
 #[cfg(feature = "StorageType")]
 pub use gen_StorageType::*;
+
+#[cfg(feature = "StreamPipeOptions")]
+#[allow(non_snake_case)]
+mod gen_StreamPipeOptions;
+#[cfg(feature = "StreamPipeOptions")]
+pub use gen_StreamPipeOptions::*;
 
 #[cfg(feature = "StyleRuleChangeEventInit")]
 #[allow(non_snake_case)]
