@@ -645,6 +645,9 @@ impl<'a> Context<'a> {
                 ),
                 OutputMode::NoModules { .. } => (
                     r"\
+                        // Document#currentScript is a getter,
+                        // it's value changes upon evaluating each script,
+                        // therefore it must be cached
                         const default_wasm_source_url = (typeof document !== 'undefined'
                             ? document.currentScript.src
                             : location.href
