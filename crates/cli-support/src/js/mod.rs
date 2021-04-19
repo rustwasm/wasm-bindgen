@@ -640,35 +640,43 @@ impl<'a> Context<'a> {
             }
         }
 
-        let default_module_path = if !self.config.omit_default_module_path {
-            match self.config.mode {
-                OutputMode::Web => format!(
-                    "\
-                    if (typeof input === 'undefined') {{
-                        input = new URL('{stem}_bg.wasm', import.meta.url);
-                    }}",
-                    stem = self.config.stem()?
-                ),
-                OutputMode::NoModules { .. } => "\
-                    if (typeof input === 'undefined') {
-                        let src;
-                        if (typeof document === 'undefined') {
-                            src = location.href;
-                        } else {
-                            src = document.currentScript.src;
-                        }
-                        input = src.replace(/\\.js$/, '_bg.wasm');
-                    }"
-                .to_string(),
-                _ => "".to_string(),
+        let (default_module_path_creator, default_input_initializer): (String, &'static str) = {
+            const ASSIGNMENT_STRING: &'static str = " = default_wasm_source_url";
+            const EMPTY: (String, &'static str) = (String::new(), "");
+            let config = &self.config;
+
+            if !config.omit_default_module_path {
+                match config.mode {
+                    OutputMode::Web => (
+                        format!(
+                            "const default_wasm_source_url = new URL('{stem}_bg.wasm', import.meta.url);",
+                            stem = config.stem()?
+                        ),
+                        ASSIGNMENT_STRING,
+                    ),
+                    OutputMode::NoModules { .. } => (
+                        r"\
+                            // Document#currentScript is a getter,
+                            // it's value changes upon evaluating each script,
+                            // therefore it must be cached
+                            const default_wasm_source_url = (typeof document !== 'undefined'
+                                ? document.currentScript.src
+                                : location.href
+                            ).replace(/\.js$/, '_bg.wasm');
+                        "
+                        .to_string(),
+                        ASSIGNMENT_STRING,
+                    ),
+                    _ => EMPTY,
+                }
+            } else {
+                EMPTY
             }
-        } else {
-            String::from("")
         };
 
         let ts = self.ts_for_init_fn(
             has_memory,
-            !self.config.omit_default_module_path && !default_module_path.is_empty(),
+            !self.config.omit_default_module_path && !default_module_path_creator.is_empty(),
         )?;
 
         // Initialize the `imports` object for all import definitions that we're
@@ -755,8 +763,9 @@ impl<'a> Context<'a> {
                     }}
                 }}
 
-                async function init(input{init_memory_arg}) {{
-                    {default_module_path}
+                {default_module_path_creator}
+
+                async function init(input{default_input_initializer}{init_memory_arg}) {{
                     const imports = {{}};
                     {imports_init}
 
@@ -775,7 +784,8 @@ impl<'a> Context<'a> {
                 }}
             ",
             init_memory_arg = init_memory_arg,
-            default_module_path = default_module_path,
+            default_module_path_creator = default_module_path_creator,
+            default_input_initializer = default_input_initializer,
             init_memory = init_memory,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
