@@ -33,6 +33,7 @@ pub struct Bindgen {
     keep_debug: bool,
     remove_name_section: bool,
     remove_producers_section: bool,
+    omit_default_module_path: bool,
     emit_start: bool,
     // Experimental support for weakrefs, an upcoming ECMAScript feature.
     // Currently only enable-able through an env var.
@@ -115,6 +116,7 @@ impl Bindgen {
             multi_value: multi_value || wasm_interface_types,
             wasm_interface_types,
             encode_into: EncodeInto::Test,
+            omit_default_module_path: true,
         }
     }
 
@@ -279,6 +281,11 @@ impl Bindgen {
 
     pub fn encode_into(&mut self, mode: EncodeInto) -> &mut Bindgen {
         self.encode_into = mode;
+        self
+    }
+
+    pub fn omit_default_module_path(&mut self, omit_default_module_path: bool) -> &mut Bindgen {
+        self.omit_default_module_path = omit_default_module_path;
         self
     }
 

@@ -227,6 +227,93 @@ fn bin_crate_works() {
 }
 
 #[test]
+fn default_module_path_target_web() {
+    let (mut cmd, out_dir) = Project::new("default_module_path_target_web")
+        .file(
+            "src/lib.rs",
+            r#"
+            "#,
+        )
+        .wasm_bindgen("--target web");
+    cmd.assert().success();
+    let contents = fs::read_to_string(out_dir.join("default_module_path_target_web.js")).unwrap();
+    assert!(contents.contains(
+        "\
+async function init(input) {
+    if (typeof input === 'undefined') {
+        input = new URL('default_module_path_target_web_bg.wasm', import.meta.url);
+    }",
+    ));
+}
+
+#[test]
+fn default_module_path_target_no_modules() {
+    let (mut cmd, out_dir) = Project::new("default_module_path_target_no_modules")
+        .file(
+            "src/lib.rs",
+            r#"
+            "#,
+        )
+        .wasm_bindgen("--target no-modules");
+    cmd.assert().success();
+    let contents =
+        fs::read_to_string(out_dir.join("default_module_path_target_no_modules.js")).unwrap();
+    assert!(contents.contains(
+        "\
+    async function init(input) {
+        if (typeof input === 'undefined') {
+            let src;
+            if (typeof document === 'undefined') {
+                src = location.href;
+            } else {
+                src = document.currentScript.src;
+            }
+            input = src.replace(/\\.js$/, '_bg.wasm');
+        }",
+    ));
+}
+
+#[test]
+fn omit_default_module_path_target_web() {
+    let (mut cmd, out_dir) = Project::new("omit_default_module_path_target_web")
+        .file(
+            "src/lib.rs",
+            r#"
+            "#,
+        )
+        .wasm_bindgen("--target web --omit-default-module-path");
+    cmd.assert().success();
+    let contents =
+        fs::read_to_string(out_dir.join("omit_default_module_path_target_web.js")).unwrap();
+    assert!(contents.contains(
+        "\
+async function init(input) {
+
+    const imports = {};",
+    ));
+}
+
+#[test]
+fn omit_default_module_path_target_no_modules() {
+    let (mut cmd, out_dir) = Project::new("omit_default_module_path_target_no_modules")
+        .file(
+            "src/lib.rs",
+            r#"
+            "#,
+        )
+        .wasm_bindgen("--target no-modules --omit-default-module-path");
+    cmd.assert().success();
+    let contents =
+        fs::read_to_string(out_dir.join("omit_default_module_path_target_no_modules.js")).unwrap();
+    assert!(contents.contains(
+        "\
+    async function init(input) {
+
+        const imports = {};",
+    ));
+}
+
+#[test]
 fn empty_interface_types() {
     let (mut cmd, _out_dir) = Project::new("empty_interface_types")
         .file(
