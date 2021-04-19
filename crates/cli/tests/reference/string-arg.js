@@ -83,7 +83,7 @@ export function foo(a) {
     wasm.foo(ptr0, len0);
 }
 
-export const __wbindgen_throw = function(arg0, arg1) {
+export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
 

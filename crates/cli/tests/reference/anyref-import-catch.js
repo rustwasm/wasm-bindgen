@@ -24,16 +24,13 @@ function addToExternrefTable0(obj) {
     return idx;
 }
 
-function handleError(f) {
-    return function () {
-        try {
-            return f.apply(this, arguments);
-
-        } catch (e) {
-            const idx = addToExternrefTable0(e);
-            wasm.__wbindgen_exn_store(idx);
-        }
-    };
+function handleError(f, args) {
+    try {
+        return f.apply(this, args);
+    } catch (e) {
+        const idx = addToExternrefTable0(e);
+        wasm.__wbindgen_exn_store(idx);
+    }
 }
 /**
 */
@@ -41,19 +38,19 @@ export function exported() {
     wasm.exported();
 }
 
-export const __wbg_foo_8d66ddef0ff279d6 = handleError(function() {
+export function __wbg_foo_8d66ddef0ff279d6() { return handleError(function () {
     foo();
-});
+}, arguments) };
 
-export const __wbindgen_throw = function(arg0, arg1) {
+export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
 
-export const __wbindgen_rethrow = function(arg0) {
+export function __wbindgen_rethrow(arg0) {
     throw arg0;
 };
 
-export const __wbindgen_init_externref_table = function() {
+export function __wbindgen_init_externref_table() {
     const table = wasm.__wbindgen_export_0;
     const offset = table.grow(4);
     table.set(0, undefined);
