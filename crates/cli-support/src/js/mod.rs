@@ -640,15 +640,16 @@ impl<'a> Context<'a> {
             }
         }
 
-        let default_module_path = match self.config.mode {
-            OutputMode::Web => format!(
-                "\
+        let default_module_path = if !self.config.omit_default_module_path {
+            match self.config.mode {
+                OutputMode::Web => format!(
+                    "\
                     if (typeof input === 'undefined') {{
                         input = new URL('{stem}_bg.wasm', import.meta.url);
                     }}",
-                stem = self.config.stem()?
-            ),
-            OutputMode::NoModules { .. } => "\
+                    stem = self.config.stem()?
+                ),
+                OutputMode::NoModules { .. } => "\
                     if (typeof input === 'undefined') {
                         let src;
                         if (typeof document === 'undefined') {
@@ -658,11 +659,17 @@ impl<'a> Context<'a> {
                         }
                         input = src.replace(/\\.js$/, '_bg.wasm');
                     }"
-            .to_string(),
-            _ => "".to_string(),
+                .to_string(),
+                _ => "".to_string(),
+            }
+        } else {
+            String::from("")
         };
 
-        let ts = self.ts_for_init_fn(has_memory, !default_module_path.is_empty())?;
+        let ts = self.ts_for_init_fn(
+            has_memory,
+            !self.config.omit_default_module_path && !default_module_path.is_empty(),
+        )?;
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
