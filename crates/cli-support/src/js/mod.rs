@@ -419,11 +419,19 @@ impl<'a> Context<'a> {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
-                    footer.push_str("\nexport const ");
-                    footer.push_str(&import.name);
-                    footer.push_str(" = ");
-                    footer.push_str(js.trim());
-                    footer.push_str(";\n");
+                    if js.starts_with("function") {
+                        let body = &js[8..];
+                        footer.push_str("\nexport function ");
+                        footer.push_str(&import.name);
+                        footer.push_str(body.trim());
+                        footer.push_str(";\n");
+                    } else {
+                        footer.push_str("\nexport const ");
+                        footer.push_str(&import.name);
+                        footer.push_str(" = ");
+                        footer.push_str(js.trim());
+                        footer.push_str(";\n");
+                    }
                 }
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -632,35 +640,36 @@ impl<'a> Context<'a> {
             }
         }
 
-        let (default_module_path_creator, default_input_initializer) = {
-            const ASSIGNMENT_STRING: &'static str = " = default_wasm_source_url";
-
+        let default_module_path = if !self.config.omit_default_module_path {
             match self.config.mode {
-                OutputMode::Web => (
-                    format!(
-                        "const default_wasm_source_url = new URL('{stem}_bg.wasm', import.meta.url);",
-                        stem = self.config.stem()?
-                    ),
-                    ASSIGNMENT_STRING,
+                OutputMode::Web => format!(
+                    "\
+                    if (typeof input === 'undefined') {{
+                        input = new URL('{stem}_bg.wasm', import.meta.url);
+                    }}",
+                    stem = self.config.stem()?
                 ),
-                OutputMode::NoModules { .. } => (
-                    r"\
-                        // Document#currentScript is a getter,
-                        // it's value changes upon evaluating each script,
-                        // therefore it must be cached
-                        const default_wasm_source_url = (typeof document !== 'undefined'
-                            ? document.currentScript.src
-                            : location.href
-                        ).replace(/\.js$/, '_bg.wasm');
-                    "
-                    .to_string(),
-                    ASSIGNMENT_STRING,
-                ),
-                _ => (String::new(), ""),
+                OutputMode::NoModules { .. } => "\
+                    if (typeof input === 'undefined') {
+                        let src;
+                        if (typeof document === 'undefined') {
+                            src = location.href;
+                        } else {
+                            src = document.currentScript.src;
+                        }
+                        input = src.replace(/\\.js$/, '_bg.wasm');
+                    }"
+                .to_string(),
+                _ => "".to_string(),
             }
+        } else {
+            String::from("")
         };
 
-        let ts = self.ts_for_init_fn(has_memory, !default_module_path_creator.is_empty())?;
+        let ts = self.ts_for_init_fn(
+            has_memory,
+            !self.config.omit_default_module_path && !default_module_path.is_empty(),
+        )?;
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
@@ -746,9 +755,8 @@ impl<'a> Context<'a> {
                     }}
                 }}
 
-                {default_module_path_creator}
-
-                async function init(input{default_input_initializer}{init_memory_arg}) {{
+                async function init(input{init_memory_arg}) {{
+                    {default_module_path}
                     const imports = {{}};
                     {imports_init}
 
@@ -767,8 +775,7 @@ impl<'a> Context<'a> {
                 }}
             ",
             init_memory_arg = init_memory_arg,
-            default_module_path_creator = default_module_path_creator,
-            default_input_initializer = default_input_initializer,
+            default_module_path = default_module_path,
             init_memory = init_memory,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
@@ -1746,17 +1753,14 @@ impl<'a> Context<'a> {
             (Some(table), Some(alloc)) => {
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
-                    "
-                    function handleError(f) {{
-                        return function () {{
-                            try {{
-                                return f.apply(this, arguments);
-
-                            }} catch (e) {{
-                                const idx = {}(e);
-                                wasm.{}(idx);
-                            }}
-                        }};
+                    "\
+                    function handleError(f, args) {{                       
+                        try {{
+                            return f.apply(this, args);
+                        }} catch (e) {{
+                            const idx = {}(e);
+                            wasm.{}(idx);
+                        }}                      
                     }}
                     ",
                     add, store,
@@ -1765,16 +1769,13 @@ impl<'a> Context<'a> {
             _ => {
                 self.expose_add_heap_object();
                 self.global(&format!(
-                    "
-                    function handleError(f) {{
-                        return function () {{
-                            try {{
-                                return f.apply(this, arguments);
-
-                            }} catch (e) {{
-                                wasm.{}(addHeapObject(e));
-                            }}
-                        }};
+                    "\
+                    function handleError(f, args) {{
+                        try {{
+                            return f.apply(this, args);
+                        }} catch (e) {{
+                            wasm.{}(addHeapObject(e));
+                        }}
                     }}
                     ",
                     store,
@@ -1790,27 +1791,24 @@ impl<'a> Context<'a> {
         }
         self.global(
             "\
-            function logError(f) {
-                return function () {
-                    try {
-                        return f.apply(this, arguments);
-
-                    } catch (e) {
-                        let error = (function () {
-                            try {
-                                return e instanceof Error \
-                                    ? `${e.message}\\n\\nStack:\\n${e.stack}` \
-                                    : e.toString();
-                            } catch(_) {
-                                return \"<failed to stringify thrown value>\";
-                            }
-                        }());
-                        console.error(\"wasm-bindgen: imported JS function that \
-                                        was not marked as `catch` threw an error:\", \
-                                        error);
-                        throw e;
-                    }
-                };
+            function logError(f, args) {            
+                try {
+                    return f.apply(this, args);
+                } catch (e) {
+                    let error = (function () {
+                        try {
+                            return e instanceof Error \
+                                ? `${e.message}\\n\\nStack:\\n${e.stack}` \
+                                : e.toString();
+                        } catch(_) {
+                            return \"<failed to stringify thrown value>\";
+                        }
+                    }());
+                    console.error(\"wasm-bindgen: imported JS function that \
+                                    was not marked as `catch` threw an error:\", \
+                                    error);
+                    throw e;
+                }
             }
             ",
         );
@@ -2412,9 +2410,15 @@ impl<'a> Context<'a> {
             }
             Kind::Import(core) => {
                 let code = if catch {
-                    format!("handleError(function{})", code)
+                    format!(
+                        "function() {{ return handleError(function {}, arguments) }}",
+                        code
+                    )
                 } else if log_error {
-                    format!("logError(function{})", code)
+                    format!(
+                        "function() {{ return logError(function {}, arguments) }}",
+                        code
+                    )
                 } else {
                     format!("function{}", code)
                 };
