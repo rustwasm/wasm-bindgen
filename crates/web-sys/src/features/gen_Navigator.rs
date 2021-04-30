@@ -129,6 +129,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn clipboard(this: &Navigator) -> Clipboard;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "WakeLock")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = wakeLock)]
+    #[doc = "Getter for the `wakeLock` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/wakeLock)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `WakeLock`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn wake_lock(this: &Navigator) -> WakeLock;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Gpu")]
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = gpu)]
     #[doc = "Getter for the `gpu` field of this object."]

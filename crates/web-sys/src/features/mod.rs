@@ -7660,6 +7660,24 @@ mod gen_VttRegion;
 #[cfg(feature = "VttRegion")]
 pub use gen_VttRegion::*;
 
+#[cfg(feature = "WakeLock")]
+#[allow(non_snake_case)]
+mod gen_WakeLock;
+#[cfg(feature = "WakeLock")]
+pub use gen_WakeLock::*;
+
+#[cfg(feature = "WakeLockSentinel")]
+#[allow(non_snake_case)]
+mod gen_WakeLockSentinel;
+#[cfg(feature = "WakeLockSentinel")]
+pub use gen_WakeLockSentinel::*;
+
+#[cfg(feature = "WakeLockType")]
+#[allow(non_snake_case)]
+mod gen_WakeLockType;
+#[cfg(feature = "WakeLockType")]
+pub use gen_WakeLockType::*;
+
 #[cfg(feature = "WatchAdvertisementsOptions")]
 #[allow(non_snake_case)]
 mod gen_WatchAdvertisementsOptions;
