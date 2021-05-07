@@ -915,8 +915,7 @@ Released 2019-04-10.
 
 ### Added
 
-* Initial support for transitive NPM dependencies has been added, although
-  support has not fully landed in `wasm-pack` yet so it's not 100% integrated.
+* Initial support for transitive NPM dependencies has been added.
   [#1305](https://github.com/rustwasm/wasm-bindgen/pull/1305)
 
 * The `constructor` property of `Object` is now bound in `js-sys`.

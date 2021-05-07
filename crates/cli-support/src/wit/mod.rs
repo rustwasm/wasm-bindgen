@@ -1457,15 +1457,16 @@ fn extract_programs<'a>(
                     "
 
 it looks like the Rust project used to create this wasm file was linked against
-a different version of wasm-bindgen than this binary:
+version of wasm-bindgen that uses a different bindgen format than this binary:
 
-  rust wasm file: {}
-     this binary: {}
+  rust wasm file schema version: {}
+     this binary schema version: {}
 
-Currently the bindgen format is unstable enough that these two version must
-exactly match, so it's required that these two version are kept in sync by
-either updating the wasm-bindgen dependency or this binary. You should be able
-to update the wasm-bindgen dependency with:
+Currently the bindgen format is unstable enough that these two schema versions
+must exactly match. You can accomplish this by either updating the wasm-bindgen
+dependency or this binary.
+
+You should be able to update the wasm-bindgen dependency with:
 
     cargo update -p wasm-bindgen
 

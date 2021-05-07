@@ -20,7 +20,8 @@ $ cp ./benchmarks /some/other/directory
 Next, `cd` into that directory and execute:
 
 ```
-$ wasm-pack build --target web
+$ cargo build --release --target wasm32-unknown-unknown
+$ wasm-bindgen --target web ./target/wasm32-unknown-unknown/release/crate.wasm
 ```
 
 Next, use your favorite static file server to host the current directory. For
