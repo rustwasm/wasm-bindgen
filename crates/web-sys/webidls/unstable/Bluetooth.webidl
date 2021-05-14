@@ -4,7 +4,7 @@ dictionary BluetoothDataFilterInit {
 };
 
 dictionary BluetoothManufacturerDataFilterInit : BluetoothDataFilterInit {
-  required [EnforceRange] unsigned short companyIdentifier;
+  [EnforceRange] required unsigned short companyIdentifier;
 };
 
 dictionary BluetoothServiceDataFilterInit : BluetoothDataFilterInit {
