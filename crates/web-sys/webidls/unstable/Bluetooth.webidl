@@ -3,19 +3,26 @@ dictionary BluetoothDataFilterInit {
   BufferSource mask;
 };
 
+dictionary BluetoothManufacturerDataFilterInit : BluetoothDataFilterInit {
+  required [EnforceRange] unsigned short companyIdentifier;
+};
+
+dictionary BluetoothServiceDataFilterInit : BluetoothDataFilterInit {
+  required BluetoothServiceUUID service;
+};
+
 dictionary BluetoothLEScanFilterInit {
   sequence<BluetoothServiceUUID> services;
   DOMString name;
   DOMString namePrefix;
-  // Maps unsigned shorts to BluetoothDataFilters.
-  object manufacturerData;
-  // Maps BluetoothServiceUUIDs to BluetoothDataFilters.
-  object serviceData;
+  sequence<BluetoothManufacturerDataFilterInit> manufacturerData;
+  sequence<BluetoothServiceDataFilterInit> serviceData;
 };
 
 dictionary RequestDeviceOptions {
   sequence<BluetoothLEScanFilterInit> filters;
   sequence<BluetoothServiceUUID> optionalServices = [];
+  sequence<unsigned short> optionalManufacturerData = [];
   boolean acceptAllDevices = false;
 };
 
@@ -26,7 +33,7 @@ interface Bluetooth : EventTarget {
   [SameObject]
   readonly attribute BluetoothDevice? referringDevice;
   Promise<sequence<BluetoothDevice>> getDevices();
-  Promise<BluetoothDevice> requestDevice(RequestDeviceOptions options);
+  Promise<BluetoothDevice> requestDevice(optional RequestDeviceOptions options = {});
 };
 
 Bluetooth includes BluetoothDeviceEventHandlers;
@@ -38,6 +45,7 @@ dictionary BluetoothPermissionDescriptor : PermissionDescriptor {
   // These match RequestDeviceOptions.
   sequence<BluetoothLEScanFilterInit> filters;
   sequence<BluetoothServiceUUID> optionalServices = [];
+  sequence<unsigned short> optionalManufacturerData = [];
   boolean acceptAllDevices = false;
 };
 
@@ -46,6 +54,7 @@ dictionary AllowedBluetoothDevice {
   required boolean mayUseGATT;
   // An allowedServices of "all" means all services are allowed.
   required (DOMString or sequence<UUID>) allowedServices;
+  required sequence<unsigned short> allowedManufacturerData;
 };
 dictionary BluetoothPermissionStorage {
   required sequence<AllowedBluetoothDevice> allowedDevices;
@@ -232,5 +241,5 @@ typedef (DOMString or unsigned long) BluetoothDescriptorUUID;
 [SecureContext]
 partial interface Navigator {
   [SameObject]
-  readonly attribute Bluetooth? bluetooth;
+  readonly attribute Bluetooth bluetooth;
 };
