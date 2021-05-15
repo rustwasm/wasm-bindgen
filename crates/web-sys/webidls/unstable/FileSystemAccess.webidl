@@ -1,3 +1,11 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/*
+ * File System Access API
+ * Draft Community Group Report, 18 February 2021
+ * The origin of this IDL file is:
+ * https://wicg.github.io/file-system-access/
+ */
+
 enum FileSystemPermissionMode {
   "read",
   "readwrite"
