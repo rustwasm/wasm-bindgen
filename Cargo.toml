@@ -80,6 +80,7 @@ members = [
   "examples/todomvc",
   "examples/wasm-in-wasm",
   "examples/wasm-in-wasm-imports",
+  "examples/wasm-in-web-worker",
   "examples/wasm2js",
   "examples/webaudio",
   "examples/webgl",
