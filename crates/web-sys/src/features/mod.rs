@@ -538,6 +538,12 @@ mod gen_BluetoothLeScanFilterInit;
 #[cfg(feature = "BluetoothLeScanFilterInit")]
 pub use gen_BluetoothLeScanFilterInit::*;
 
+#[cfg(feature = "BluetoothManufacturerDataFilterInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothManufacturerDataFilterInit;
+#[cfg(feature = "BluetoothManufacturerDataFilterInit")]
+pub use gen_BluetoothManufacturerDataFilterInit::*;
+
 #[cfg(feature = "BluetoothManufacturerDataMap")]
 #[allow(non_snake_case)]
 mod gen_BluetoothManufacturerDataMap;
@@ -585,6 +591,12 @@ pub use gen_BluetoothRemoteGattServer::*;
 mod gen_BluetoothRemoteGattService;
 #[cfg(feature = "BluetoothRemoteGattService")]
 pub use gen_BluetoothRemoteGattService::*;
+
+#[cfg(feature = "BluetoothServiceDataFilterInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothServiceDataFilterInit;
+#[cfg(feature = "BluetoothServiceDataFilterInit")]
+pub use gen_BluetoothServiceDataFilterInit::*;
 
 #[cfg(feature = "BluetoothServiceDataMap")]
 #[allow(non_snake_case)]
@@ -1042,6 +1054,12 @@ mod gen_ConstrainLongRange;
 #[cfg(feature = "ConstrainLongRange")]
 pub use gen_ConstrainLongRange::*;
 
+#[cfg(feature = "ConstrainPoint2dParameters")]
+#[allow(non_snake_case)]
+mod gen_ConstrainPoint2dParameters;
+#[cfg(feature = "ConstrainPoint2dParameters")]
+pub use gen_ConstrainPoint2dParameters::*;
+
 #[cfg(feature = "ContextAttributes2d")]
 #[allow(non_snake_case)]
 mod gen_ContextAttributes2d;
@@ -1389,6 +1407,18 @@ pub use gen_DeviceOrientationEvent::*;
 mod gen_DeviceOrientationEventInit;
 #[cfg(feature = "DeviceOrientationEventInit")]
 pub use gen_DeviceOrientationEventInit::*;
+
+#[cfg(feature = "DevicePosture")]
+#[allow(non_snake_case)]
+mod gen_DevicePosture;
+#[cfg(feature = "DevicePosture")]
+pub use gen_DevicePosture::*;
+
+#[cfg(feature = "DevicePostureType")]
+#[allow(non_snake_case)]
+mod gen_DevicePostureType;
+#[cfg(feature = "DevicePostureType")]
+pub use gen_DevicePostureType::*;
 
 #[cfg(feature = "DeviceProximityEvent")]
 #[allow(non_snake_case)]
@@ -2002,6 +2032,12 @@ mod gen_FileSystemFlags;
 #[cfg(feature = "FileSystemFlags")]
 pub use gen_FileSystemFlags::*;
 
+#[cfg(feature = "FillLightMode")]
+#[allow(non_snake_case)]
+mod gen_FillLightMode;
+#[cfg(feature = "FillLightMode")]
+pub use gen_FillLightMode::*;
+
 #[cfg(feature = "FillMode")]
 #[allow(non_snake_case)]
 mod gen_FillMode;
@@ -2236,12 +2272,6 @@ mod gen_GpuAdapter;
 #[cfg(feature = "GpuAdapter")]
 pub use gen_GpuAdapter::*;
 
-#[cfg(feature = "GpuAdapterFeatures")]
-#[allow(non_snake_case)]
-mod gen_GpuAdapterFeatures;
-#[cfg(feature = "GpuAdapterFeatures")]
-pub use gen_GpuAdapterFeatures::*;
-
 #[cfg(feature = "GpuAdapterLimits")]
 #[allow(non_snake_case)]
 mod gen_GpuAdapterLimits;
@@ -2349,6 +2379,12 @@ pub use gen_GpuBufferDescriptor::*;
 mod gen_GpuBufferUsage;
 #[cfg(feature = "GpuBufferUsage")]
 pub use gen_GpuBufferUsage::*;
+
+#[cfg(feature = "GpuCanvasCompositingAlphaMode")]
+#[allow(non_snake_case)]
+mod gen_GpuCanvasCompositingAlphaMode;
+#[cfg(feature = "GpuCanvasCompositingAlphaMode")]
+pub use gen_GpuCanvasCompositingAlphaMode::*;
 
 #[cfg(feature = "GpuCanvasContext")]
 #[allow(non_snake_case)]
@@ -2494,6 +2530,24 @@ mod gen_GpuExtent3dDict;
 #[cfg(feature = "GpuExtent3dDict")]
 pub use gen_GpuExtent3dDict::*;
 
+#[cfg(feature = "GpuExternalTexture")]
+#[allow(non_snake_case)]
+mod gen_GpuExternalTexture;
+#[cfg(feature = "GpuExternalTexture")]
+pub use gen_GpuExternalTexture::*;
+
+#[cfg(feature = "GpuExternalTextureBindingLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuExternalTextureBindingLayout;
+#[cfg(feature = "GpuExternalTextureBindingLayout")]
+pub use gen_GpuExternalTextureBindingLayout::*;
+
+#[cfg(feature = "GpuExternalTextureDescriptor")]
+#[allow(non_snake_case)]
+mod gen_GpuExternalTextureDescriptor;
+#[cfg(feature = "GpuExternalTextureDescriptor")]
+pub use gen_GpuExternalTextureDescriptor::*;
+
 #[cfg(feature = "GpuFeatureName")]
 #[allow(non_snake_case)]
 mod gen_GpuFeatureName;
@@ -2524,11 +2578,11 @@ mod gen_GpuImageCopyBuffer;
 #[cfg(feature = "GpuImageCopyBuffer")]
 pub use gen_GpuImageCopyBuffer::*;
 
-#[cfg(feature = "GpuImageCopyImageBitmap")]
+#[cfg(feature = "GpuImageCopyExternalImage")]
 #[allow(non_snake_case)]
-mod gen_GpuImageCopyImageBitmap;
-#[cfg(feature = "GpuImageCopyImageBitmap")]
-pub use gen_GpuImageCopyImageBitmap::*;
+mod gen_GpuImageCopyExternalImage;
+#[cfg(feature = "GpuImageCopyExternalImage")]
+pub use gen_GpuImageCopyExternalImage::*;
 
 #[cfg(feature = "GpuImageCopyTexture")]
 #[allow(non_snake_case)]
@@ -2625,6 +2679,12 @@ pub use gen_GpuPipelineStatisticName::*;
 mod gen_GpuPowerPreference;
 #[cfg(feature = "GpuPowerPreference")]
 pub use gen_GpuPowerPreference::*;
+
+#[cfg(feature = "GpuPredefinedColorSpace")]
+#[allow(non_snake_case)]
+mod gen_GpuPredefinedColorSpace;
+#[cfg(feature = "GpuPredefinedColorSpace")]
+pub use gen_GpuPredefinedColorSpace::*;
 
 #[cfg(feature = "GpuPrimitiveState")]
 #[allow(non_snake_case)]
@@ -2805,6 +2865,12 @@ pub use gen_GpuStorageTextureBindingLayout::*;
 mod gen_GpuStoreOp;
 #[cfg(feature = "GpuStoreOp")]
 pub use gen_GpuStoreOp::*;
+
+#[cfg(feature = "GpuSupportedFeatures")]
+#[allow(non_snake_case)]
+mod gen_GpuSupportedFeatures;
+#[cfg(feature = "GpuSupportedFeatures")]
+pub use gen_GpuSupportedFeatures::*;
 
 #[cfg(feature = "GpuSwapChain")]
 #[allow(non_snake_case)]
@@ -4096,6 +4162,12 @@ mod gen_MediaRecorderOptions;
 #[cfg(feature = "MediaRecorderOptions")]
 pub use gen_MediaRecorderOptions::*;
 
+#[cfg(feature = "MediaSettingsRange")]
+#[allow(non_snake_case)]
+mod gen_MediaSettingsRange;
+#[cfg(feature = "MediaSettingsRange")]
+pub use gen_MediaSettingsRange::*;
+
 #[cfg(feature = "MediaSource")]
 #[allow(non_snake_case)]
 mod gen_MediaSource;
@@ -4239,6 +4311,12 @@ pub use gen_MessageEventInit::*;
 mod gen_MessagePort;
 #[cfg(feature = "MessagePort")]
 pub use gen_MessagePort::*;
+
+#[cfg(feature = "MeteringMode")]
+#[allow(non_snake_case)]
+mod gen_MeteringMode;
+#[cfg(feature = "MeteringMode")]
+pub use gen_MeteringMode::*;
 
 #[cfg(feature = "MidiAccess")]
 #[allow(non_snake_case)]
@@ -4900,6 +4978,18 @@ mod gen_Permissions;
 #[cfg(feature = "Permissions")]
 pub use gen_Permissions::*;
 
+#[cfg(feature = "PhotoCapabilities")]
+#[allow(non_snake_case)]
+mod gen_PhotoCapabilities;
+#[cfg(feature = "PhotoCapabilities")]
+pub use gen_PhotoCapabilities::*;
+
+#[cfg(feature = "PhotoSettings")]
+#[allow(non_snake_case)]
+mod gen_PhotoSettings;
+#[cfg(feature = "PhotoSettings")]
+pub use gen_PhotoSettings::*;
+
 #[cfg(feature = "PlaybackDirection")]
 #[allow(non_snake_case)]
 mod gen_PlaybackDirection;
@@ -4923,6 +5013,12 @@ pub use gen_PluginArray::*;
 mod gen_PluginCrashedEventInit;
 #[cfg(feature = "PluginCrashedEventInit")]
 pub use gen_PluginCrashedEventInit::*;
+
+#[cfg(feature = "Point2d")]
+#[allow(non_snake_case)]
+mod gen_Point2d;
+#[cfg(feature = "Point2d")]
+pub use gen_Point2d::*;
 
 #[cfg(feature = "PointerEvent")]
 #[allow(non_snake_case)]
@@ -5313,6 +5409,12 @@ pub use gen_ReadableStreamReaderMode::*;
 mod gen_RecordingState;
 #[cfg(feature = "RecordingState")]
 pub use gen_RecordingState::*;
+
+#[cfg(feature = "RedEyeReduction")]
+#[allow(non_snake_case)]
+mod gen_RedEyeReduction;
+#[cfg(feature = "RedEyeReduction")]
+pub use gen_RedEyeReduction::*;
 
 #[cfg(feature = "ReferrerPolicy")]
 #[allow(non_snake_case)]
@@ -6069,6 +6171,12 @@ pub use gen_ShadowRootInit::*;
 mod gen_ShadowRootMode;
 #[cfg(feature = "ShadowRootMode")]
 pub use gen_ShadowRootMode::*;
+
+#[cfg(feature = "ShareData")]
+#[allow(non_snake_case)]
+mod gen_ShareData;
+#[cfg(feature = "ShareData")]
+pub use gen_ShareData::*;
 
 #[cfg(feature = "SharedWorker")]
 #[allow(non_snake_case)]
@@ -8044,12 +8152,6 @@ mod gen_XmlSerializer;
 #[cfg(feature = "XmlSerializer")]
 pub use gen_XmlSerializer::*;
 
-#[cfg(feature = "Xr")]
-#[allow(non_snake_case)]
-mod gen_Xr;
-#[cfg(feature = "Xr")]
-pub use gen_Xr::*;
-
 #[cfg(feature = "XrBoundedReferenceSpace")]
 #[allow(non_snake_case)]
 mod gen_XrBoundedReferenceSpace;
@@ -8109,6 +8211,24 @@ pub use gen_XrInputSourcesChangeEvent::*;
 mod gen_XrInputSourcesChangeEventInit;
 #[cfg(feature = "XrInputSourcesChangeEventInit")]
 pub use gen_XrInputSourcesChangeEventInit::*;
+
+#[cfg(feature = "XrLayer")]
+#[allow(non_snake_case)]
+mod gen_XrLayer;
+#[cfg(feature = "XrLayer")]
+pub use gen_XrLayer::*;
+
+#[cfg(feature = "XrPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_XrPermissionDescriptor;
+#[cfg(feature = "XrPermissionDescriptor")]
+pub use gen_XrPermissionDescriptor::*;
+
+#[cfg(feature = "XrPermissionStatus")]
+#[allow(non_snake_case)]
+mod gen_XrPermissionStatus;
+#[cfg(feature = "XrPermissionStatus")]
+pub use gen_XrPermissionStatus::*;
 
 #[cfg(feature = "XrPose")]
 #[allow(non_snake_case)]
@@ -8193,6 +8313,12 @@ pub use gen_XrSessionMode::*;
 mod gen_XrSpace;
 #[cfg(feature = "XrSpace")]
 pub use gen_XrSpace::*;
+
+#[cfg(feature = "XrSystem")]
+#[allow(non_snake_case)]
+mod gen_XrSystem;
+#[cfg(feature = "XrSystem")]
+pub use gen_XrSystem::*;
 
 #[cfg(feature = "XrTargetRayMode")]
 #[allow(non_snake_case)]

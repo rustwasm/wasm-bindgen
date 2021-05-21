@@ -28,18 +28,6 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn track(this: &ImageCapture) -> MediaStreamTrack;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "MediaStreamTrack")]
-    #[wasm_bindgen(catch, constructor, js_class = "ImageCapture")]
-    #[doc = "The `new ImageCapture(..)` constructor, creating a new instance of `ImageCapture`."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/ImageCapture)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageCapture`, `MediaStreamTrack`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(video_track: &MediaStreamTrack) -> Result<ImageCapture, JsValue>;
-    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "ImageCapture" , js_name = getPhotoCapabilities)]
     #[doc = "The `getPhotoCapabilities()` method."]
     #[doc = ""]
@@ -83,4 +71,19 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn take_photo(this: &ImageCapture) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "PhotoSettings")]
+    # [wasm_bindgen (method , structural , js_class = "ImageCapture" , js_name = takePhoto)]
+    #[doc = "The `takePhoto()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/takePhoto)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageCapture`, `PhotoSettings`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn take_photo_with_photo_settings(
+        this: &ImageCapture,
+        photo_settings: &PhotoSettings,
+    ) -> ::js_sys::Promise;
 }
