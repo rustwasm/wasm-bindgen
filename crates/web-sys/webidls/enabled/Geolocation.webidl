@@ -4,33 +4,39 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  *
  * The origin of this IDL file is
- * http://www.w3.org/TR/geolocation-API
+ * https://www.w3.org/TR/geolocation
  *
- * Copyright © 2012 W3C® (MIT, ERCIM, Keio), All Rights Reserved. W3C
- * liability, trademark and document use rules apply.
+ * Copyright © 2021 W3C® (MIT, ERCIM, Keioi, Beihang). W3C
+ * liability, trademark and permissive document license rules apply.
  */
 
 dictionary PositionOptions {
   boolean enableHighAccuracy = false;
-  [Clamp] unsigned long timeout = 0x7fffffff;
+  [Clamp] unsigned long timeout = 0xFFFFFFFF;
   [Clamp] unsigned long maximumAge = 0;
 };
 
-[NoInterfaceObject]
+[Exposed=Window]
 interface Geolocation {
-  [Throws, NeedsCallerType]
-  undefined getCurrentPosition(PositionCallback successCallback,
-                          optional PositionErrorCallback? errorCallback = null,
-                          optional PositionOptions options);
+  undefined getCurrentPosition (
+    PositionCallback successCallback,
+    optional PositionErrorCallback? errorCallback = null,
+    optional PositionOptions options = {}
+  );
 
-  [Throws, NeedsCallerType]
-  long watchPosition(PositionCallback successCallback,
-                     optional PositionErrorCallback? errorCallback = null,
-                     optional PositionOptions options);
+  long watchPosition (
+    PositionCallback successCallback,
+    optional PositionErrorCallback? errorCallback = null,
+    optional PositionOptions options = {}
+  );
 
-  undefined clearWatch(long watchId);
+  undefined clearWatch (long watchId);
 };
 
-callback PositionCallback = undefined (Position position);
+callback PositionCallback = undefined (
+  GeolocationPosition position
+);
 
-callback PositionErrorCallback = undefined (PositionError positionError);
+callback PositionErrorCallback = undefined (
+  GeolocationPositionError positionError
+);
