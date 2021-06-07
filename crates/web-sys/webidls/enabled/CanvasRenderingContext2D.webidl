@@ -339,17 +339,19 @@ interface TextMetrics {
   // x-direction
   readonly attribute double width; // advance width
 
-  /*
-   * NOT IMPLEMENTED YET
-
   readonly attribute double actualBoundingBoxLeft;
   readonly attribute double actualBoundingBoxRight;
 
-  // y-direction
   readonly attribute double fontBoundingBoxAscent;
   readonly attribute double fontBoundingBoxDescent;
+
+  // y-direction
   readonly attribute double actualBoundingBoxAscent;
   readonly attribute double actualBoundingBoxDescent;
+
+  /*
+   * NOT IMPLEMENTED YET
+  
   readonly attribute double emHeightAscent;
   readonly attribute double emHeightDescent;
   readonly attribute double hangingBaseline;
