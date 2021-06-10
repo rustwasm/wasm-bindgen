@@ -73,6 +73,28 @@ extern "C" {
         transform: &ReadableWritablePair,
         options: &StreamPipeOptions,
     ) -> ReadableStream;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "WritableStream")]
+    # [wasm_bindgen (method , structural , js_class = "ReadableStream" , js_name = pipeTo)]
+    #[doc = "The `pipeTo()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream/pipeTo)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `WritableStream`*"]
+    pub fn pipe_to(this: &ReadableStream, destination: &WritableStream) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "WritableStream", feature = "StreamPipeOptions",))]
+    # [wasm_bindgen (method , structural , js_class = "ReadableStream" , js_name = pipeTo)]
+    #[doc = "The `pipeTo()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream/pipeTo)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `WritableStream`, `StreamPipeOptions`*"]
+    pub fn pipe_to_with_options(
+        this: &ReadableStream,
+        destination: &WritableStream,
+        options: &StreamPipeOptions,
+    ) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "ReadableStream" , js_name = tee)]
     #[doc = "The `tee()` method."]
     #[doc = ""]
