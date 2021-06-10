@@ -5290,6 +5290,18 @@ mod gen_ReadableStream;
 #[cfg(feature = "ReadableStream")]
 pub use gen_ReadableStream::*;
 
+#[cfg(feature = "ReadableStreamDefaultReadResult")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamDefaultReadResult;
+#[cfg(feature = "ReadableStreamDefaultReadResult")]
+pub use gen_ReadableStreamDefaultReadResult::*;
+
+#[cfg(feature = "ReadableStreamDefaultReader")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamDefaultReader;
+#[cfg(feature = "ReadableStreamDefaultReader")]
+pub use gen_ReadableStreamDefaultReader::*;
+
 #[cfg(feature = "ReadableStreamGetReaderOptions")]
 #[allow(non_snake_case)]
 mod gen_ReadableStreamGetReaderOptions;
@@ -7245,6 +7257,12 @@ pub use gen_TrackEvent::*;
 mod gen_TrackEventInit;
 #[cfg(feature = "TrackEventInit")]
 pub use gen_TrackEventInit::*;
+
+#[cfg(feature = "TransformStream")]
+#[allow(non_snake_case)]
+mod gen_TransformStream;
+#[cfg(feature = "TransformStream")]
+pub use gen_TransformStream::*;
 
 #[cfg(feature = "TransitionEvent")]
 #[allow(non_snake_case)]
