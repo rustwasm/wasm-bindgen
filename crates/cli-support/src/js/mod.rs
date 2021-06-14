@@ -1754,13 +1754,13 @@ impl<'a> Context<'a> {
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
                     "\
-                    function handleError(f, args) {{                       
+                    function handleError(f, args) {{
                         try {{
                             return f.apply(this, args);
                         }} catch (e) {{
                             const idx = {}(e);
                             wasm.{}(idx);
-                        }}                      
+                        }}
                     }}
                     ",
                     add, store,
@@ -1791,7 +1791,7 @@ impl<'a> Context<'a> {
         }
         self.global(
             "\
-            function logError(f, args) {            
+            function logError(f, args) {
                 try {
                     return f.apply(this, args);
                 } catch (e) {
@@ -3306,6 +3306,9 @@ impl<'a> Context<'a> {
         let default_name = format!("__wbindgen_export_{}", self.next_export_idx);
         self.next_export_idx += 1;
         let name = match id {
+            walrus::ExportItem::Memory(_) if self.module.memories.iter().count() == 1 => {
+                "memory".to_owned()
+            }
             walrus::ExportItem::Function(f) => match &self.module.funcs.get(f).name {
                 Some(s) => to_js_identifier(s),
                 None => default_name,
