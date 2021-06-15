@@ -336,17 +336,17 @@ impl<'a> Context<'a> {
                     }}
                     wasmCode = await Deno.readFile(file);
                     break
+                case 'https:':
                 case 'http:':
                     const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm';
                     wasmCode = await (await fetch(wasm_url)).arrayBuffer();
                     break
                 default:
-                    console.error(`Unsupported protocol: ${{url.protocol}}`);
-                    Deno.exit(0);
+                    throw `Unsupported protocol: ${{url.protocol}}`;
                     break
             }}
 
-            const wasmInstance = await WebAssembly.instantiate(await WebAssembly.compile(wasmCode), imports);
+            const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
             const wasm = wasmInstance.exports;",
             module_name = module_name
         )
