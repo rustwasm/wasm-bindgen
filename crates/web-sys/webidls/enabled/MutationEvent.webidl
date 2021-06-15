@@ -24,7 +24,7 @@ interface MutationEvent : Event
   readonly attribute unsigned short attrChange;
 
   [Throws]
-  void initMutationEvent(DOMString type,
+  undefined initMutationEvent(DOMString type,
                          optional boolean canBubble = false,
                          optional boolean cancelable = false,
                          optional Node? relatedNode = null,

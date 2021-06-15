@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = FileSystemDirectoryReader , typescript_type = "FileSystemDirectoryReader" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = FileSystemDirectoryReader , typescript_type = "FileSystemDirectoryReader")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `FileSystemDirectoryReader` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryReader`*"]
     pub type FileSystemDirectoryReader;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries)]
     #[doc = "The `readEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryReader/readEntries)"]
@@ -22,7 +22,7 @@ extern "C" {
         success_callback: &::js_sys::Function,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "FileSystemEntriesCallback")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries)]
     #[doc = "The `readEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryReader/readEntries)"]
@@ -32,7 +32,7 @@ extern "C" {
         this: &FileSystemDirectoryReader,
         success_callback: &FileSystemEntriesCallback,
     ) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries)]
     #[doc = "The `readEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryReader/readEntries)"]
@@ -44,7 +44,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "FileSystemEntriesCallback")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries)]
     #[doc = "The `readEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryReader/readEntries)"]
@@ -56,7 +56,7 @@ extern "C" {
         error_callback: &::js_sys::Function,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "ErrorCallback")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries)]
     #[doc = "The `readEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryReader/readEntries)"]
@@ -68,7 +68,7 @@ extern "C" {
         error_callback: &ErrorCallback,
     ) -> Result<(), JsValue>;
     #[cfg(all(feature = "ErrorCallback", feature = "FileSystemEntriesCallback",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryReader" , js_name = readEntries)]
     #[doc = "The `readEntries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryReader/readEntries)"]

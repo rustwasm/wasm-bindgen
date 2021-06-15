@@ -681,11 +681,13 @@ impl Transform<'_> {
                 continue;
             }
             let entry = func.entry_block();
+            let scratch_i32 = module.locals.add(ValType::I32);
             dfs_pre_order_mut(
                 &mut Rewrite {
                     clone_ref: self.clone_ref()?,
                     heap_dealloc: self.heap_dealloc()?,
                     xform: self,
+                    scratch_i32,
                 },
                 func,
                 entry,
@@ -698,6 +700,7 @@ impl Transform<'_> {
             xform: &'a Transform<'b>,
             clone_ref: FunctionId,
             heap_dealloc: FunctionId,
+            scratch_i32: LocalId,
         }
 
         impl VisitorMut for Rewrite<'_, '_> {
@@ -723,16 +726,28 @@ impl Transform<'_> {
                     let ty = ValType::Externref;
                     match intrinsic {
                         Intrinsic::TableGrow => {
-                            // Switch this to a `table.grow` instruction...
+                            // Change something that looks like:
+                            //
+                            //      call $table_grow
+                            //
+                            // into:
+                            //
+                            //      local.set $scratch
+                            //      ref.null extern
+                            //      local.get $scratch
+                            //      table.grow $table
+                            //
+                            // Note that things happen backwards here due to the
+                            // order of insertion.
                             seq.instrs[i].0 = TableGrow {
                                 table: self.xform.table,
                             }
                             .into();
-                            // ... and then insert a `ref.null` before the
-                            // preceding instruction as the value to grow the
-                            // table with.
-                            seq.instrs
-                                .insert(i - 1, (RefNull { ty }.into(), InstrLocId::default()));
+                            let loc = seq.instrs[i].1;
+                            let local = self.scratch_i32;
+                            seq.instrs.insert(i, (LocalGet { local }.into(), loc));
+                            seq.instrs.insert(i, (RefNull { ty }.into(), loc));
+                            seq.instrs.insert(i, (LocalSet { local }.into(), loc));
                         }
                         Intrinsic::TableSetNull => {
                             // Switch this to a `table.set` instruction...

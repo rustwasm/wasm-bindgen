@@ -22,9 +22,9 @@ interface AudioContext : BaseAudioContext {
     // Bug 1324545: AudioTimestamp                  getOutputTimestamp ();
 
     [Throws]
-    Promise<void> suspend();
+    Promise<undefined> suspend();
     [Throws]
-    Promise<void> close();
+    Promise<undefined> close();
 
     [NewObject, Throws]
     MediaElementAudioSourceNode createMediaElementSource(HTMLMediaElement mediaElement);

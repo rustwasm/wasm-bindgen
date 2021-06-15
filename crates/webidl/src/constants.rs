@@ -30,6 +30,7 @@ lazy_static! {
         "Promise",
         "Function",
         "Clamped",
+        "DataView",
     ]);
 
 
@@ -41,6 +42,8 @@ lazy_static! {
 
 
     pub(crate) static ref IMMUTABLE_SLICE_WHITELIST: BTreeSet<&'static str> = BTreeSet::from_iter(vec![
+        // ImageData
+        "ImageData",
         // WebGlRenderingContext, WebGl2RenderingContext
         "uniform1fv",
         "uniform2fv",
@@ -83,6 +86,10 @@ lazy_static! {
         "send",
         // WebGPU
         "setBindGroup",
+        "writeBuffer",
+        "writeTexture",
+        // AudioBuffer
+        "copyToChannel"
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ]);
 }

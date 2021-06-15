@@ -25,15 +25,15 @@ use crate::generator::{
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, is_structural, read_dir, shouty_snake_case_ident, snake_case_ident, throws,
-    webidl_const_v_to_backend_const_v, TypePosition,
+    camel_case_ident, is_structural, is_type_unstable, read_dir, shouty_snake_case_ident,
+    snake_case_ident, throws, webidl_const_v_to_backend_const_v, TypePosition,
 };
 use anyhow::Context;
 use anyhow::Result;
 use proc_macro2::{Ident, TokenStream};
 use quote::ToTokens;
 use sourcefile::SourceFile;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 use std::ffi::OsStr;
 use std::fmt;
 use std::fs;
@@ -41,6 +41,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use wasm_bindgen_backend::util::rust_ident;
 use weedle::attribute::ExtendedAttributeList;
+use weedle::common::Identifier;
 use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
 use weedle::Parse;
@@ -126,6 +127,22 @@ fn parse(
     definitions.first_pass(&mut first_pass_record, ApiStability::Stable)?;
 
     let unstable_definitions = parse_source(unstable_source)?;
+
+    // Gather unstable type Identifiers so that stable APIs can be downgraded
+    // to unstable if they accept one of these types
+    let unstable_types: HashSet<Identifier> = unstable_definitions
+        .iter()
+        .flat_map(|definition| {
+            use weedle::Definition::*;
+            match definition {
+                Dictionary(v) => Some(v.identifier),
+                Enum(v) => Some(v.identifier),
+                Interface(v) => Some(v.identifier),
+                _ => None,
+            }
+        })
+        .collect();
+
     unstable_definitions.first_pass(&mut first_pass_record, ApiStability::Unstable)?;
 
     let mut types: BTreeMap<String, Program> = BTreeMap::new();
@@ -138,7 +155,14 @@ fn parse(
     for (js_name, d) in first_pass_record.dictionaries.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_dictionary(&options, program, name, js_name.to_string(), d);
+        first_pass_record.append_dictionary(
+            &options,
+            program,
+            name,
+            js_name.to_string(),
+            d,
+            &unstable_types,
+        );
     }
     for (js_name, n) in first_pass_record.namespaces.iter() {
         let name = rust_ident(&snake_case_ident(js_name));
@@ -148,7 +172,14 @@ fn parse(
     for (js_name, d) in first_pass_record.interfaces.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
         let program = types.entry(name.to_string()).or_default();
-        first_pass_record.append_interface(&options, program, name, js_name.to_string(), d);
+        first_pass_record.append_interface(
+            &options,
+            program,
+            name,
+            js_name.to_string(),
+            &unstable_types,
+            d,
+        );
     }
     for (js_name, d) in first_pass_record.callback_interfaces.iter() {
         let name = rust_ident(&camel_case_ident(js_name));
@@ -252,6 +283,7 @@ impl<'src> FirstPassRecord<'src> {
         name: Ident,
         js_name: String,
         data: &first_pass::DictionaryData<'src>,
+        unstable_types: &HashSet<Identifier>,
     ) {
         let def = match data.definition {
             Some(def) => def,
@@ -264,7 +296,7 @@ impl<'src> FirstPassRecord<'src> {
 
         let mut fields = Vec::new();
 
-        if !self.append_dictionary_members(&js_name, &mut fields) {
+        if !self.append_dictionary_members(&js_name, &mut fields, unstable, unstable_types) {
             return;
         }
 
@@ -278,7 +310,13 @@ impl<'src> FirstPassRecord<'src> {
         .to_tokens(&mut program.tokens);
     }
 
-    fn append_dictionary_members(&self, dict: &'src str, dst: &mut Vec<DictionaryField>) -> bool {
+    fn append_dictionary_members(
+        &self,
+        dict: &'src str,
+        dst: &mut Vec<DictionaryField>,
+        unstable: bool,
+        unstable_types: &HashSet<Identifier>,
+    ) -> bool {
         let dict_data = &self.dictionaries[&dict];
         let definition = dict_data.definition.unwrap();
 
@@ -286,7 +324,7 @@ impl<'src> FirstPassRecord<'src> {
         // > such that inherited dictionary members are ordered before
         // > non-inherited members ...
         if let Some(parent) = &definition.inheritance {
-            if !self.append_dictionary_members(parent.identifier.0, dst) {
+            if !self.append_dictionary_members(parent.identifier.0, dst, unstable, unstable_types) {
                 return false;
             }
         }
@@ -299,7 +337,7 @@ impl<'src> FirstPassRecord<'src> {
         let members = definition.members.body.iter();
         let partials = dict_data.partials.iter().flat_map(|d| &d.members.body);
         for member in members.chain(partials) {
-            match self.dictionary_field(member) {
+            match self.dictionary_field(member, unstable, unstable_types) {
                 Some(f) => dst.push(f),
                 None => {
                     log::warn!(
@@ -321,7 +359,17 @@ impl<'src> FirstPassRecord<'src> {
         return true;
     }
 
-    fn dictionary_field(&self, field: &'src DictionaryMember<'src>) -> Option<DictionaryField> {
+    fn dictionary_field(
+        &self,
+        field: &'src DictionaryMember<'src>,
+        unstable: bool,
+        unstable_types: &HashSet<Identifier>,
+    ) -> Option<DictionaryField> {
+        let unstable_override = match unstable {
+            true => true,
+            false => is_type_unstable(&field.type_, unstable_types),
+        };
+
         // use argument position now as we're just binding setters
         let ty = field
             .type_
@@ -376,6 +424,7 @@ impl<'src> FirstPassRecord<'src> {
             name: rust_ident(&snake_case_ident(field.identifier.0)),
             js_name: field.identifier.0.to_string(),
             ty,
+            unstable: unstable_override,
         })
     }
 
@@ -413,7 +462,7 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         match id {
             OperationId::Operation(Some(_)) => {}
-            OperationId::Constructor
+            OperationId::Constructor(_)
             | OperationId::NamedConstructor(_)
             | OperationId::Operation(None)
             | OperationId::IndexingGetter
@@ -424,7 +473,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        for x in self.create_imports(None, id, data, false) {
+        for x in self.create_imports(None, id, data, false, &HashSet::new()) {
             functions.push(Function {
                 name: x.name,
                 js_name: x.js_name,
@@ -465,6 +514,7 @@ impl<'src> FirstPassRecord<'src> {
         program: &mut Program,
         name: Ident,
         js_name: String,
+        unstable_types: &HashSet<Identifier>,
         data: &InterfaceData<'src>,
     ) {
         let unstable = data.stability.is_unstable();
@@ -505,7 +555,7 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         for (id, op_data) in data.operations.iter() {
-            self.member_operation(&mut methods, data, id, op_data);
+            self.member_operation(&mut methods, data, id, op_data, unstable_types);
         }
 
         for mixin_data in self.all_mixins(&js_name) {
@@ -533,7 +583,7 @@ impl<'src> FirstPassRecord<'src> {
             }
 
             for (id, op_data) in mixin_data.operations.iter() {
-                self.member_operation(&mut methods, data, id, op_data);
+                self.member_operation(&mut methods, data, id, op_data, unstable_types);
             }
         }
 
@@ -625,11 +675,12 @@ impl<'src> FirstPassRecord<'src> {
         data: &InterfaceData<'src>,
         id: &OperationId<'src>,
         op_data: &OperationData<'src>,
+        unstable_types: &HashSet<Identifier>,
     ) {
         let attrs = data.definition_attributes;
         let unstable = data.stability.is_unstable();
 
-        for method in self.create_imports(attrs, id, op_data, unstable) {
+        for method in self.create_imports(attrs, id, op_data, unstable, unstable_types) {
             methods.push(method);
         }
     }
@@ -663,6 +714,7 @@ impl<'src> FirstPassRecord<'src> {
                             .to_syn_type(pos)
                             .unwrap()
                             .unwrap(),
+                        unstable: false,
                     })
                 }
                 _ => {

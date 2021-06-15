@@ -21,11 +21,11 @@ enum HeadersGuardEnum {
 [Constructor(optional HeadersInit init),
  Exposed=(Window,Worker)]
 interface Headers {
-  [Throws] void append(ByteString name, ByteString value);
-  [Throws] void delete(ByteString name);
+  [Throws] undefined append(ByteString name, ByteString value);
+  [Throws] undefined delete(ByteString name);
   [Throws] ByteString? get(ByteString name);
   [Throws] boolean has(ByteString name);
-  [Throws] void set(ByteString name, ByteString value);
+  [Throws] undefined set(ByteString name, ByteString value);
   iterable<ByteString, ByteString>;
 
   // Used to test different guard states from mochitest.

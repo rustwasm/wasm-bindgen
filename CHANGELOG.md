@@ -2,6 +2,97 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.73
+
+Released 2021-03-29.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.72...0.2.73)
+
+--------------------------------------------------------------------------------
+
+## 0.2.72
+
+Released 2021-03-18.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.71...0.2.72)
+
+--------------------------------------------------------------------------------
+
+## 0.2.71
+
+Released 2021-02-26.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.70...0.2.71)
+
+--------------------------------------------------------------------------------
+
+## 0.2.70
+
+Released 2021-01-25.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.69...0.2.70)
+
+--------------------------------------------------------------------------------
+
+## 0.2.69
+
+Released 2020-11-30.
+
+### Added
+
+* Unstable bindings for WebBluetooth have been added.
+  [#2311](https://github.com/rustwasm/wasm-bindgen/pull/2311)
+
+* Unstable bindings for WebUSB have been added.
+  [#2345](https://github.com/rustwasm/wasm-bindgen/pull/2345)
+
+* Renaming a struct field with `js_name` is now supported.
+  [#2360](https://github.com/rustwasm/wasm-bindgen/pull/2360)
+
+* The WebGPU WebIDL has been updated.
+  [#2353](https://github.com/rustwasm/wasm-bindgen/pull/2353)
+
+### Fixed
+
+* The ImageCapture APIs of web-sys have been moved to unstable and were fixed.
+  [#2348](https://github.com/rustwasm/wasm-bindgen/pull/2348)
+
+* Bindings for `waitAsync` have been updated.
+  [#2362](https://github.com/rustwasm/wasm-bindgen/pull/2362)
+
+--------------------------------------------------------------------------------
+
+## 0.2.68
+
+Released 2020-09-08.
+
+### Added
+
+* Add userVisibleOnly property to PushSubscriptionOptionsInit.
+  [#2288](https://github.com/rustwasm/wasm-bindgen/pull/2288)
+
+### Fixed
+
+* TypeScript files now import `*.wasm` instead of bare files.
+  [#2283](https://github.com/rustwasm/wasm-bindgen/pull/2283)
+
+* Usage of `externref` now appropriately resizes the table by using 2x the
+  previous capacity, fixing a performance issue with lots of externref objects.
+  [#2294](https://github.com/rustwasm/wasm-bindgen/pull/2294)
+
+* Compatibility with the latest Firefox WebDriver has been fixed.
+  [#2301](https://github.com/rustwasm/wasm-bindgen/pull/2301)
+
+* Non deterministic output with closures has been fixed.
+  [#2304](https://github.com/rustwasm/wasm-bindgen/pull/2304)
+
+### Updated
+
+* The WebGPU WebIDL was updated.
+  [#2267](https://github.com/rustwasm/wasm-bindgen/pull/2267)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.67
 
 Released 2020-07-28.
@@ -824,8 +915,7 @@ Released 2019-04-10.
 
 ### Added
 
-* Initial support for transitive NPM dependencies has been added, although
-  support has not fully landed in `wasm-pack` yet so it's not 100% integrated.
+* Initial support for transitive NPM dependencies has been added.
   [#1305](https://github.com/rustwasm/wasm-bindgen/pull/1305)
 
 * The `constructor` property of `Object` is now bound in `js-sys`.

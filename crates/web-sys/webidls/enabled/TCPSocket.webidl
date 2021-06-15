@@ -34,7 +34,7 @@ interface TCPSocket : EventTarget {
   /**
    * Upgrade an insecure connection to use TLS. Throws if the ready state is not OPEN.
    */
-  [Throws] void upgradeToSecure();
+  [Throws] undefined upgradeToSecure();
 
   /**
    * The UTF16 host of this socket object.
@@ -61,7 +61,7 @@ interface TCPSocket : EventTarget {
    * Pause reading incoming data and invocations of the ondata handler until
    * resume is called. Can be called multiple times without resuming.
    */
-  void suspend();
+  undefined suspend();
 
   /**
    * Resume reading incoming data and invoking ondata as usual. There must be
@@ -69,17 +69,17 @@ interface TCPSocket : EventTarget {
    * socket is not suspended.
    */
   [Throws]
-  void resume();
+  undefined resume();
 
   /**
    * Close the socket.
    */
-  void close();
+  undefined close();
 
   /**
    * Close the socket immediately without waiting for unsent data.
    */
-  [ChromeOnly] void closeImmediately();
+  [ChromeOnly] undefined closeImmediately();
 
   /**
    * Write data to the socket.

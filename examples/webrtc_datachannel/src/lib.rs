@@ -36,7 +36,7 @@ pub async fn start() -> Result<(), JsValue> {
 
     /*
      * Create DataChannel on pc1 to negotiate
-     * Message will be shonw here after connection established
+     * Message will be shown here after connection established
      *
      */
     let dc1 = pc1.create_data_channel("my-data-channel");
@@ -57,7 +57,7 @@ pub async fn start() -> Result<(), JsValue> {
     onmessage_callback.forget();
 
     /*
-     * If negotiaion has done, this closure will be called
+     * If negotiation has done, this closure will be called
      *
      */
     let ondatachannel_callback = Closure::wrap(Box::new(move |ev: RtcDataChannelEvent| {

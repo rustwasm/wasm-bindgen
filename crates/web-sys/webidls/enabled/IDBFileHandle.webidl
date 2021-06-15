@@ -35,7 +35,7 @@ interface IDBFileHandle : EventTarget
   [Throws]
   IDBFileRequest? flush();
   [Throws]
-  void abort();
+  undefined abort();
 
   attribute EventHandler oncomplete;
   attribute EventHandler onabort;

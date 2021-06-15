@@ -1,3 +1,6 @@
+//! Common utility function for manipulating syn types and
+//! handling parsed values
+
 use std::collections::hash_map::DefaultHasher;
 use std::env;
 use std::fmt;
@@ -11,6 +14,7 @@ use crate::ast;
 use proc_macro2::{self, Ident};
 use syn;
 
+/// Check whether a given `&str` is a Rust keyword
 fn is_rust_keyword(name: &str) -> bool {
     match name {
         "abstract" | "alignof" | "as" | "become" | "box" | "break" | "const" | "continue"
@@ -24,7 +28,7 @@ fn is_rust_keyword(name: &str) -> bool {
     }
 }
 
-// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
+/// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
 pub fn rust_ident(name: &str) -> Ident {
     if name == "" {
         panic!("tried to create empty Ident (from \"\")");
@@ -57,8 +61,8 @@ pub fn rust_ident(name: &str) -> Ident {
     }
 }
 
-// Create an `Ident` without checking to see if it conflicts with a Rust
-// keyword.
+/// Create an `Ident` without checking to see if it conflicts with a Rust
+/// keyword.
 pub fn raw_ident(name: &str) -> Ident {
     Ident::new(name, proc_macro2::Span::call_site())
 }
@@ -108,10 +112,12 @@ where
     .into()
 }
 
+/// Create a path type with a single segment from a given Identifier
 pub fn ident_ty(ident: Ident) -> syn::Type {
     simple_path_ty(Some(ident))
 }
 
+/// Convert an ImportFunction into the more generic Import type, wrapping the provided function
 pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
     ast::Import {
         module: ast::ImportModule::None,

@@ -20,6 +20,7 @@ pub mod history;
 pub mod hr_element;
 pub mod html_element;
 pub mod html_html_element;
+pub mod image_data;
 pub mod input_element;
 //TODO: Both menu-related tests completely break in Chrome, but run fine in Firefox.
 //pub mod menu_element;

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Blob , extends = :: js_sys :: Object , js_name = File , typescript_type = "File" ) ]
+    # [wasm_bindgen (extends = Blob , extends = :: js_sys :: Object , js_name = File , typescript_type = "File")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `File` class."]
     #[doc = ""]
@@ -11,14 +11,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     pub type File;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "File" , js_name = name ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "File" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `File`*"]
     pub fn name(this: &File) -> String;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "File" , js_name = lastModified ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "File" , js_name = lastModified)]
     #[doc = "Getter for the `lastModified` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/File/lastModified)"]

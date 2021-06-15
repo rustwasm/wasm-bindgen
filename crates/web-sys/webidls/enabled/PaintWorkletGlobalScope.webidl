@@ -9,5 +9,5 @@
 
 [Global=(Worklet,PaintWorklet),Exposed=PaintWorklet]
 interface PaintWorkletGlobalScope : WorkletGlobalScope {
-    void registerPaint(DOMString name, VoidFunction paintCtor);
+    undefined registerPaint(DOMString name, VoidFunction paintCtor);
 };

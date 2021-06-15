@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEDropShadowElement , typescript_type = "SVGFEDropShadowElement" ) ]
+    # [wasm_bindgen (extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGFEDropShadowElement , typescript_type = "SVGFEDropShadowElement")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgfeDropShadowElement` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgfeDropShadowElement`*"]
     pub type SvgfeDropShadowElement;
     #[cfg(feature = "SvgAnimatedString")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = in1 ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = in1)]
     #[doc = "Getter for the `in1` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/in1)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedString`, `SvgfeDropShadowElement`*"]
     pub fn in1(this: &SvgfeDropShadowElement) -> SvgAnimatedString;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = dx ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = dx)]
     #[doc = "Getter for the `dx` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/dx)"]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeDropShadowElement`*"]
     pub fn dx(this: &SvgfeDropShadowElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = dy ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = dy)]
     #[doc = "Getter for the `dy` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/dy)"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeDropShadowElement`*"]
     pub fn dy(this: &SvgfeDropShadowElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = stdDeviationX ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = stdDeviationX)]
     #[doc = "Getter for the `stdDeviationX` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/stdDeviationX)"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeDropShadowElement`*"]
     pub fn std_deviation_x(this: &SvgfeDropShadowElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedNumber")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = stdDeviationY ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = stdDeviationY)]
     #[doc = "Getter for the `stdDeviationY` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/stdDeviationY)"]
@@ -52,7 +52,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedNumber`, `SvgfeDropShadowElement`*"]
     pub fn std_deviation_y(this: &SvgfeDropShadowElement) -> SvgAnimatedNumber;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = x ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = x)]
     #[doc = "Getter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/x)"]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeDropShadowElement`*"]
     pub fn x(this: &SvgfeDropShadowElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = y ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = y)]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/y)"]
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeDropShadowElement`*"]
     pub fn y(this: &SvgfeDropShadowElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = width ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = width)]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/width)"]
@@ -76,7 +76,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeDropShadowElement`*"]
     pub fn width(this: &SvgfeDropShadowElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = height ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/height)"]
@@ -84,14 +84,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgfeDropShadowElement`*"]
     pub fn height(this: &SvgfeDropShadowElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedString")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = result ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGFEDropShadowElement" , js_name = result)]
     #[doc = "Getter for the `result` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/result)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedString`, `SvgfeDropShadowElement`*"]
     pub fn result(this: &SvgfeDropShadowElement) -> SvgAnimatedString;
-    # [ wasm_bindgen ( method , structural , js_class = "SVGFEDropShadowElement" , js_name = setStdDeviation ) ]
+    # [wasm_bindgen (method , structural , js_class = "SVGFEDropShadowElement" , js_name = setStdDeviation)]
     #[doc = "The `setStdDeviation()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGFEDropShadowElement/setStdDeviation)"]

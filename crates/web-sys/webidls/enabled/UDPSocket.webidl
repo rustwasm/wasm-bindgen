@@ -28,13 +28,13 @@ interface UDPSocket : EventTarget {
     readonly    attribute boolean          addressReuse;
     readonly    attribute boolean          loopback;
     readonly    attribute SocketReadyState readyState;
-    readonly    attribute Promise<void>    opened;
-    readonly    attribute Promise<void>    closed;
+    readonly    attribute Promise<undefined>    opened;
+    readonly    attribute Promise<undefined>    closed;
 //    readonly    attribute ReadableStream   input; //Bug 1056444: Stream API is not ready
 //    readonly    attribute WriteableStream  output; //Bug 1056444: Stream API is not ready
                 attribute EventHandler     onmessage; //Bug 1056444: use event interface before Stream API is ready
-    Promise<void> close ();
-    [Throws] void    joinMulticastGroup (DOMString multicastGroupAddress);
-    [Throws] void    leaveMulticastGroup (DOMString multicastGroupAddress);
+    Promise<undefined> close ();
+    [Throws] undefined    joinMulticastGroup (DOMString multicastGroupAddress);
+    [Throws] undefined    leaveMulticastGroup (DOMString multicastGroupAddress);
     [Throws] boolean send ((DOMString or Blob or ArrayBuffer or ArrayBufferView) data, optional DOMString? remoteAddress, optional unsigned short? remotePort); //Bug 1056444: use send method before Stream API is ready
 };

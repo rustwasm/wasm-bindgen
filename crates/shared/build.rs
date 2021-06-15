@@ -1,6 +1,11 @@
+use std::collections::hash_map::DefaultHasher;
+use std::hash::Hasher;
+use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
+    set_schema_version_env_var();
+
     let rev = Command::new("git")
         .arg("rev-parse")
         .arg("HEAD")
@@ -13,4 +18,14 @@ fn main() {
             println!("cargo:rustc-env=WBG_VERSION={}", &rev[..9]);
         }
     }
+}
+
+fn set_schema_version_env_var() {
+    let schema_file = PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/src/lib.rs"));
+    let schema_file = std::fs::read(schema_file).unwrap();
+
+    let mut hasher = DefaultHasher::new();
+    hasher.write(&schema_file);
+
+    println!("cargo:rustc-env=SCHEMA_FILE_HASH={}", hasher.finish());
 }

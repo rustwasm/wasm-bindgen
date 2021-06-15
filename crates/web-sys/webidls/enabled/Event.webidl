@@ -29,15 +29,15 @@ interface Event {
   [Pure]
   readonly attribute unsigned short eventPhase;
 
-  void stopPropagation();
-  void stopImmediatePropagation();
+  undefined stopPropagation();
+  undefined stopImmediatePropagation();
 
   [Pure]
   readonly attribute boolean bubbles;
   [Pure]
   readonly attribute boolean cancelable;
   [NeedsCallerType]
-  void preventDefault();
+  undefined preventDefault();
   [Pure, NeedsCallerType]
   readonly attribute boolean defaultPrevented;
   [ChromeOnly, Pure]
@@ -52,7 +52,7 @@ interface Event {
   [Pure]
   readonly attribute DOMHighResTimeStamp timeStamp;
 
-  void initEvent(DOMString type,
+  undefined initEvent(DOMString type,
                  optional boolean bubbles = false,
                  optional boolean cancelable = false);
   attribute boolean cancelBubble;

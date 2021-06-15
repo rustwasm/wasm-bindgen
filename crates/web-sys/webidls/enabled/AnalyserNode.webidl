@@ -22,12 +22,12 @@ dictionary AnalyserOptions : AudioNodeOptions {
 interface AnalyserNode : AudioNode {
 
     // Real-time frequency-domain data
-    void getFloatFrequencyData(Float32Array array);
-    void getByteFrequencyData(Uint8Array array);
+    undefined getFloatFrequencyData(Float32Array array);
+    undefined getByteFrequencyData(Uint8Array array);
 
     // Real-time waveform data
-    void getFloatTimeDomainData(Float32Array array);
-    void getByteTimeDomainData(Uint8Array array);
+    undefined getFloatTimeDomainData(Float32Array array);
+    undefined getByteTimeDomainData(Uint8Array array);
 
     [SetterThrows, Pure]
     attribute unsigned long fftSize;

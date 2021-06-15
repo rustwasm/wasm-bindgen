@@ -4,34 +4,11 @@ The `wasm-bindgen` command line tool has a number of options available to it to
 tweak the JavaScript that is generated. The most up-to-date set of flags can
 always be listed via `wasm-bindgen --help`.
 
-> Note: usually, one should use a [`wasm-pack`-based workflow][wasm-pack] rather
-> than running the `wasm-bindgen` command line tool by hand.
-
-[wasm-pack]: https://github.com/rustwasm/wasm-pack
-
 ## Installation
 
-The recommend way to install the `wasm-bindgen` command line tool is with the
-`wasm-pack` installer described
-[here](https://rustwasm.github.io/wasm-pack/installer/). After installing
-`wasm-pack`, you are ready to build project invoking `wasm-pack build`.
-This command installs apropriate version of the `wasm-bindgen` command-line
-tool. The version of `wasm-bindgen` installed by `wasm-pack` is not available
- to be used directly via command line.
-
-It is not recommended to install `wasm-bindgen-cli` as its version must match
-_exactly_ the version of `wasm-bindgen` that is specified in the project's
-cargo.lock file. Using `wasm-pack` for building simplifies the build process
-as `wasm-pack` ensures that the proper version of `wasm-bindgen` command-line
-tool is used. That means that `wasm-pack` may install many different versions
-of `wasm-bindgen`, but during the build `wasm-pack` will always make sure to
-use the correct one.
-
-Note: if, for any reason, you decide to use wasm-bindgen directly (this is
-not recommended!) you will have to manually take care of using exactly the
-same version of wasm-bindgen command-line tool (wasm-bindgen-cli) that
-matches the version of wasm-bingden in cargo.lock.
-
+```
+cargo install -f wasm-bindgen-cli
+```
 
 ## Usage
 
@@ -118,3 +95,7 @@ proposal](https://github.com/webassembly/reference-types) proposal, meaning that
 the WebAssembly binary will use `externref` when importing and exporting
 functions that work with `JsValue`. For more information see the [documentation
 about reference types](./reference-types.md).
+
+### `--omit-default-module-path`
+
+Don't add WebAssembly fallback imports in generated JavaScript.

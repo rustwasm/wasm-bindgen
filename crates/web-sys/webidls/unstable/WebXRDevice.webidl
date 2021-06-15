@@ -42,13 +42,13 @@ enum XRVisibilityState {
   [SameObject] readonly attribute XRInputSourceArray inputSources;
 
   // Methods
-  void updateRenderState(optional XRRenderStateInit state = {});
+  undefined updateRenderState(optional XRRenderStateInit state = {});
   [NewObject] Promise<XRReferenceSpace> requestReferenceSpace(XRReferenceSpaceType type);
 
   long requestAnimationFrame(XRFrameRequestCallback callback);
-  void cancelAnimationFrame(long handle);
+  undefined cancelAnimationFrame(long handle);
 
-  Promise<void> end();
+  Promise<undefined> end();
 
   // Events
   attribute EventHandler onend;
@@ -73,7 +73,7 @@ dictionary XRRenderStateInit {
   readonly attribute XRWebGLLayer? baseLayer;
 };
 
-callback XRFrameRequestCallback = void (DOMHighResTimeStamp time, XRFrame frame);
+callback XRFrameRequestCallback = undefined (DOMHighResTimeStamp time, XRFrame frame);
 
 [SecureContext, Exposed=Window] interface XRFrame {
   [SameObject] readonly attribute XRSession session;
@@ -220,7 +220,7 @@ partial dictionary WebGLContextAttributes {
 };
 
 partial interface mixin WebGLRenderingContextBase {
-    Promise<void> makeXRCompatible();
+    Promise<undefined> makeXRCompatible();
 };
 
 [SecureContext, Exposed=Window]

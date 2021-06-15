@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = InputEventInit ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = InputEventInit)]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `InputEventInit` dictionary."]
     #[doc = ""]
@@ -98,6 +98,54 @@ impl InputEventInit {
         let _ = r;
         self
     }
+    #[doc = "Change the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
+    pub fn data(&mut self, val: Option<&str>) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("data"), &JsValue::from(val));
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(feature = "DataTransfer")]
+    #[doc = "Change the `dataTransfer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `InputEventInit`*"]
+    pub fn data_transfer(&mut self, val: Option<&DataTransfer>) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("dataTransfer"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[doc = "Change the `inputType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
+    pub fn input_type(&mut self, val: &str) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("inputType"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
     #[doc = "Change the `isComposing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
@@ -106,6 +154,23 @@ impl InputEventInit {
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
             &JsValue::from("isComposing"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[doc = "Change the `targetRanges` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
+    pub fn target_ranges(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("targetRanges"),
             &JsValue::from(val),
         );
         debug_assert!(

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = PeriodicWave , typescript_type = "PeriodicWave" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = PeriodicWave , typescript_type = "PeriodicWave")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PeriodicWave` class."]
     #[doc = ""]

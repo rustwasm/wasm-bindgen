@@ -22,7 +22,7 @@ interface SVGFEDropShadowElement : SVGElement {
   [Constant]
   readonly attribute SVGAnimatedNumber stdDeviationY;
 
-  void setStdDeviation(float stdDeviationX, float stdDeviationY);
+  undefined setStdDeviation(float stdDeviationX, float stdDeviationY);
 };
 
 SVGFEDropShadowElement includes SVGFilterPrimitiveStandardAttributes;

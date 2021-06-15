@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = GPURenderPipelineDescriptor ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPURenderPipelineDescriptor)]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuRenderPipelineDescriptor` dictionary."]
     #[doc = ""]
@@ -16,26 +16,17 @@ extern "C" {
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPipelineDescriptor {
-    #[cfg(all(
-        feature = "GpuPrimitiveTopology",
-        feature = "GpuProgrammableStageDescriptor",
-    ))]
+    #[cfg(feature = "GpuVertexState")]
     #[doc = "Construct a new `GpuRenderPipelineDescriptor`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuPrimitiveTopology`, `GpuProgrammableStageDescriptor`, `GpuRenderPipelineDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPipelineDescriptor`, `GpuVertexState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(
-        color_states: &::wasm_bindgen::JsValue,
-        primitive_topology: GpuPrimitiveTopology,
-        vertex_stage: &GpuProgrammableStageDescriptor,
-    ) -> Self {
+    pub fn new(vertex: &GpuVertexState) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.color_states(color_states);
-        ret.primitive_topology(primitive_topology);
-        ret.vertex_stage(vertex_stage);
+        ret.vertex(vertex);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,17 +66,18 @@ impl GpuRenderPipelineDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `alphaToCoverageEnabled` field of this object."]
+    #[cfg(feature = "GpuDepthStencilState")]
+    #[doc = "Change the `depthStencil` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPipelineDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilState`, `GpuRenderPipelineDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn alpha_to_coverage_enabled(&mut self, val: bool) -> &mut Self {
+    pub fn depth_stencil(&mut self, val: &GpuDepthStencilState) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("alphaToCoverageEnabled"),
+            &JsValue::from("depthStencil"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -96,17 +88,18 @@ impl GpuRenderPipelineDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `colorStates` field of this object."]
+    #[cfg(feature = "GpuFragmentState")]
+    #[doc = "Change the `fragment` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPipelineDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuFragmentState`, `GpuRenderPipelineDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn color_states(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn fragment(&mut self, val: &GpuFragmentState) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("colorStates"),
+            &JsValue::from("fragment"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -117,18 +110,18 @@ impl GpuRenderPipelineDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuDepthStencilStateDescriptor")]
-    #[doc = "Change the `depthStencilState` field of this object."]
+    #[cfg(feature = "GpuMultisampleState")]
+    #[doc = "Change the `multisample` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilStateDescriptor`, `GpuRenderPipelineDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuMultisampleState`, `GpuRenderPipelineDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn depth_stencil_state(&mut self, val: &GpuDepthStencilStateDescriptor) -> &mut Self {
+    pub fn multisample(&mut self, val: &GpuMultisampleState) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("depthStencilState"),
+            &JsValue::from("multisample"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -139,18 +132,18 @@ impl GpuRenderPipelineDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuProgrammableStageDescriptor")]
-    #[doc = "Change the `fragmentStage` field of this object."]
+    #[cfg(feature = "GpuPrimitiveState")]
+    #[doc = "Change the `primitive` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuRenderPipelineDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPrimitiveState`, `GpuRenderPipelineDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn fragment_stage(&mut self, val: &GpuProgrammableStageDescriptor) -> &mut Self {
+    pub fn primitive(&mut self, val: &GpuPrimitiveState) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("fragmentStage"),
+            &JsValue::from("primitive"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -161,128 +154,17 @@ impl GpuRenderPipelineDescriptor {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuPrimitiveTopology")]
-    #[doc = "Change the `primitiveTopology` field of this object."]
+    #[cfg(feature = "GpuVertexState")]
+    #[doc = "Change the `vertex` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuPrimitiveTopology`, `GpuRenderPipelineDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn primitive_topology(&mut self, val: GpuPrimitiveTopology) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("primitiveTopology"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuRasterizationStateDescriptor")]
-    #[doc = "Change the `rasterizationState` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRasterizationStateDescriptor`, `GpuRenderPipelineDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPipelineDescriptor`, `GpuVertexState`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn rasterization_state(&mut self, val: &GpuRasterizationStateDescriptor) -> &mut Self {
+    pub fn vertex(&mut self, val: &GpuVertexState) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rasterizationState"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `sampleCount` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPipelineDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn sample_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sampleCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `sampleMask` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPipelineDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn sample_mask(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sampleMask"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuProgrammableStageDescriptor")]
-    #[doc = "Change the `vertexStage` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStageDescriptor`, `GpuRenderPipelineDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn vertex_stage(&mut self, val: &GpuProgrammableStageDescriptor) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("vertexStage"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuVertexStateDescriptor")]
-    #[doc = "Change the `vertexState` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPipelineDescriptor`, `GpuVertexStateDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn vertex_state(&mut self, val: &GpuVertexStateDescriptor) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("vertexState"),
-            &JsValue::from(val),
-        );
+        let r =
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("vertex"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"

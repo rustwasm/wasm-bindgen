@@ -1,4 +1,4 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, HashSet};
 use std::fs;
 use std::iter::FromIterator;
 use std::path::{Path, PathBuf};
@@ -11,7 +11,9 @@ use syn;
 use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident};
 use weedle;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
+use weedle::common::Identifier;
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
+use weedle::types::{NonAnyType, SingleType};
 
 use crate::constants::IMMUTABLE_SLICE_WHITELIST;
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
@@ -204,6 +206,7 @@ impl<'src> FirstPassRecord<'src> {
         id: &OperationId<'src>,
         data: &OperationData<'src>,
         unstable: bool,
+        unstable_types: &HashSet<Identifier>,
     ) -> Vec<InterfaceMethod> {
         let is_static = data.is_static;
 
@@ -297,7 +300,7 @@ impl<'src> FirstPassRecord<'src> {
             // > value of a type corresponding to the interface the
             // > `[Constructor]` extended attribute appears on, **or throw an
             // > exception**.
-            OperationId::Constructor => {
+            OperationId::Constructor(_) => {
                 ("new", InterfaceMethodKind::Constructor(None), false, true)
             }
             OperationId::NamedConstructor(n) => (
@@ -437,6 +440,19 @@ impl<'src> FirstPassRecord<'src> {
                     .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type)),
             );
 
+            // Stable types can have methods that have unstable argument types.
+            // If any of the arguments types are `unstable` then this method is downgraded
+            // to be unstable.
+            let unstable_override = match unstable {
+                // only downgrade stable methods
+                false => signature
+                    .orig
+                    .args
+                    .iter()
+                    .any(|arg| is_type_unstable(arg.ty, unstable_types)),
+                true => true,
+            };
+
             if let Some(arguments) = arguments {
                 if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
                     ret.push(InterfaceMethod {
@@ -449,7 +465,7 @@ impl<'src> FirstPassRecord<'src> {
                         structural,
                         catch,
                         variadic,
-                        unstable,
+                        unstable: unstable_override,
                     });
                 }
             }
@@ -480,7 +496,7 @@ impl<'src> FirstPassRecord<'src> {
                             structural,
                             catch,
                             variadic: false,
-                            unstable,
+                            unstable: unstable_override,
                         });
                     }
                 }
@@ -502,6 +518,7 @@ impl<'src> FirstPassRecord<'src> {
     fn maybe_adjust<'a>(&self, mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
         let op = match id {
             OperationId::Operation(Some(op)) => op,
+            OperationId::Constructor(Some(op)) => op,
             _ => return idl_type,
         };
 
@@ -510,6 +527,16 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         idl_type
+    }
+}
+
+pub fn is_type_unstable(ty: &weedle::types::Type, unstable_types: &HashSet<Identifier>) -> bool {
+    match ty {
+        weedle::types::Type::Single(SingleType::NonAny(NonAnyType::Identifier(i))) => {
+            // Check if the type in the unstable type list
+            unstable_types.contains(&i.type_)
+        }
+        _ => false,
     }
 }
 

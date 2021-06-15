@@ -10,9 +10,13 @@ use std::sync::Mutex;
 use syn;
 use wasm_bindgen_shared as shared;
 
+/// A trait for converting AST structs into Tokens and adding them to a TokenStream,
+/// or providing a diagnostic if conversion fails.
 pub trait TryToTokens {
+    /// Attempt to convert a `Self` into tokens and add it to the `TokenStream`
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic>;
 
+    /// Attempt to convert a `Self` into a new `TokenStream`
     fn try_to_token_stream(&self) -> Result<TokenStream, Diagnostic> {
         let mut tokens = TokenStream::new();
         self.try_to_tokens(&mut tokens)?;
@@ -264,7 +268,7 @@ impl ToTokens for ast::Struct {
 
 impl ToTokens for ast::StructField {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let name = &self.name;
+        let rust_name = &self.rust_name;
         let struct_name = &self.struct_name;
         let ty = &self.ty;
         let getter = &self.getter;
@@ -287,7 +291,7 @@ impl ToTokens for ast::StructField {
 
                 let js = js as *mut WasmRefCell<#struct_name>;
                 assert_not_null(js);
-                let val = (*js).borrow().#name;
+                let val = (*js).borrow().#rust_name;
                 <#ty as IntoWasmAbi>::into_abi(val)
             }
         })
@@ -321,7 +325,7 @@ impl ToTokens for ast::StructField {
                 let js = js as *mut WasmRefCell<#struct_name>;
                 assert_not_null(js);
                 let val = <#ty as FromWasmAbi>::from_abi(val);
-                (*js).borrow_mut().#name = val;
+                (*js).borrow_mut().#rust_name = val;
             }
         })
         .to_tokens(tokens);

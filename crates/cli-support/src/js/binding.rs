@@ -124,15 +124,14 @@ impl<'a, 'b> Builder<'a, 'b> {
                 drop(params.next());
                 if js.cx.config.debug {
                     js.prelude(
-                        "if (this.ptr == 0) throw new Error('Attempt to use a moved value');\n",
+                        "if (this.ptr == 0) throw new Error('Attempt to use a moved value');",
                     );
                 }
                 if consumes_self {
-                    js.prelude("var ptr = this.ptr;");
-                    js.prelude("this.ptr = 0;");
-                    js.args.push("ptr".to_string());
+                    js.prelude("const ptr = this.__destroy_into_raw();");
+                    js.args.push("ptr".into());
                 } else {
-                    js.args.push("this.ptr".to_string());
+                    js.args.push("this.ptr".into());
                 }
             }
             None => {}
@@ -560,17 +559,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::Retptr { size } => {
-            let sp = match js.cx.aux.shadow_stack_pointer {
-                Some(s) => js.cx.export_name_of(s),
-                // In theory this shouldn't happen since malloc is included in
-                // most wasm binaries (and may be gc'd out) and that almost
-                // always pulls in a stack pointer. We can try to synthesize
-                // something here later if necessary.
-                None => bail!("failed to find shadow stack pointer"),
-            };
-            js.prelude(&format!("const retptr = wasm.{}.value - {};", sp, size));
-            js.prelude(&format!("wasm.{}.value = retptr;", sp));
-            js.finally(&format!("wasm.{}.value += {};", sp, size));
+            js.cx.inject_stack_pointer_shim()?;
+            js.prelude(&format!(
+                "const retptr = wasm.__wbindgen_add_to_stack_pointer(-{});",
+                size
+            ));
+            js.finally(&format!("wasm.__wbindgen_add_to_stack_pointer({});", size));
             js.stack.push("retptr".to_string());
         }
 

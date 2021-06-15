@@ -33,7 +33,7 @@
 
    ```sh
    cd crates/web-sys
-   cargo run --release --package wasm-bindgen-webidl webidls src/features
+   cargo run --release --package wasm-bindgen-webidl -- webidls src/features
    ```
 
    You can then use `git diff` to ensure the bindings look correct.

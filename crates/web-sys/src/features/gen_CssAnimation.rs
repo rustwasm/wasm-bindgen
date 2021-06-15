@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Animation , extends = EventTarget , extends = :: js_sys :: Object , js_name = CSSAnimation , typescript_type = "CSSAnimation" ) ]
+    # [wasm_bindgen (extends = Animation , extends = EventTarget , extends = :: js_sys :: Object , js_name = CSSAnimation , typescript_type = "CSSAnimation")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `CssAnimation` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssAnimation`*"]
     pub type CssAnimation;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "CSSAnimation" , js_name = animationName ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "CSSAnimation" , js_name = animationName)]
     #[doc = "Getter for the `animationName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSAnimation/animationName)"]

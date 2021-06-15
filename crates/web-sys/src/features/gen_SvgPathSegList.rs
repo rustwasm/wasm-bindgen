@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = SVGPathSegList , typescript_type = "SVGPathSegList" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = SVGPathSegList , typescript_type = "SVGPathSegList")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgPathSegList` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegList`*"]
     pub type SvgPathSegList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGPathSegList" , js_name = numberOfItems ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGPathSegList" , js_name = numberOfItems)]
     #[doc = "Getter for the `numberOfItems` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegList/numberOfItems)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegList`*"]
     pub fn number_of_items(this: &SvgPathSegList) -> u32;
     #[cfg(feature = "SvgPathSeg")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGPathSegList" , js_name = getItem ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGPathSegList" , js_name = getItem)]
     #[doc = "The `getItem()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegList/getItem)"]

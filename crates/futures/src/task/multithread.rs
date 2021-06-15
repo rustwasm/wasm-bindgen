@@ -36,7 +36,7 @@ impl AtomicWaker {
         // the corresponding `waitAsync` that was waiting for the transition
         // from SLEEPING to AWAKE.
         unsafe {
-            core::arch::wasm32::atomic_notify(
+            core::arch::wasm32::memory_atomic_notify(
                 &self.state as *const AtomicI32 as *mut i32,
                 1, // Number of threads to notify
             );
@@ -115,68 +115,88 @@ impl Task {
             None => return,
         };
 
-        // Also the same as `singlethread.rs`, flag ourselves as ready to
-        // receive a notification.
-        let prev = self.atomic.state.swap(SLEEPING, SeqCst);
-        debug_assert_eq!(prev, AWAKE);
+        loop {
+            // Also the same as `singlethread.rs`, flag ourselves as ready to
+            // receive a notification.
+            let prev = self.atomic.state.swap(SLEEPING, SeqCst);
+            debug_assert_eq!(prev, AWAKE);
 
-        let poll = {
-            let mut cx = Context::from_waker(&self.waker);
-            inner.future.as_mut().poll(&mut cx)
-        };
+            let poll = {
+                let mut cx = Context::from_waker(&self.waker);
+                inner.future.as_mut().poll(&mut cx)
+            };
 
-        match poll {
-            // Same as `singlethread.rs` (noticing a pattern?) clean up
-            // resources associated with the future ASAP.
-            Poll::Ready(()) => {
-                *borrow = None;
+            match poll {
+                // Same as `singlethread.rs` (noticing a pattern?) clean up
+                // resources associated with the future ASAP.
+                Poll::Ready(()) => {
+                    *borrow = None;
+                }
+
+                // Unlike `singlethread.rs` we are responsible for ensuring there's
+                // a closure to handle the notification that a Future is ready. In
+                // the single-threaded case the notification itself enqueues work,
+                // but in the multithreaded case we don't know what thread a
+                // notification comes from so we need to ensure the current running
+                // thread is the one that enqueues the work. To do that we execute
+                // `Atomics.waitAsync`, creating a local Promise on our own thread
+                // which will resolve once `Atomics.notify` is called.
+                //
+                // We could be in one of two states as we execute this:
+                //
+                // * `SLEEPING` - we'll get notified via `Atomics.notify`
+                //   and then this Promise will resolve.
+                //
+                // * `AWAKE` - the Promise will immediately be resolved and
+                //   we'll execute the work on the next microtask queue.
+                Poll::Pending => {
+                    match wait_async(&self.atomic.state, SLEEPING) {
+                        Some(promise) => drop(promise.then(&inner.closure)),
+                        // our state has already changed so we can just do the work
+                        // again inline.
+                        None => continue,
+                    }
+                }
             }
-
-            // Unlike `singlethread.rs` we are responsible for ensuring there's
-            // a closure to handle the notification that a Future is ready. In
-            // the single-threaded case the notification itself enqueues work,
-            // but in the multithreaded case we don't know what thread a
-            // notification comes from so we need to ensure the current running
-            // thread is the one that enqueues the work. To do that we execute
-            // `Atomics.waitAsync`, creating a local Promise on our own thread
-            // which will resolve once `Atomics.notify` is called.
-            //
-            // We could be in one of two states as we execute this:
-            //
-            // * `SLEEPING` - we'll get notified via `Atomics.notify`
-            //   and then this Promise will resolve.
-            //
-            // * `AWAKE` - the Promise will immediately be resolved and
-            //   we'll execute the work on the next microtask queue.
-            Poll::Pending => {
-                drop(wait_async(&self.atomic.state, SLEEPING).then(&inner.closure));
-            }
+            break;
         }
     }
 }
 
-fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
-    // If `Atomics.waitAsync` isn't defined (as it isn't defined anywhere today)
-    // then we use our fallback, otherwise we use the native function.
+fn wait_async(ptr: &AtomicI32, current_value: i32) -> Option<js_sys::Promise> {
+    // If `Atomics.waitAsync` isn't defined then we use our fallback, otherwise
+    // we use the native function.
     return if Atomics::get_wait_async().is_undefined() {
-        crate::task::wait_async_polyfill::wait_async(ptr, current_value)
+        Some(crate::task::wait_async_polyfill::wait_async(
+            ptr,
+            current_value,
+        ))
     } else {
         let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
-        Atomics::wait_async(
-            &mem.buffer(),
-            ptr as *const AtomicI32 as i32 / 4,
-            current_value,
-        )
+        let array = js_sys::Int32Array::new(&mem.buffer());
+        let result = Atomics::wait_async(&array, ptr as *const AtomicI32 as i32 / 4, current_value);
+        if result.async_() {
+            Some(result.value())
+        } else {
+            None
+        }
     };
 
     #[wasm_bindgen]
     extern "C" {
         type Atomics;
+        type WaitAsyncResult;
 
         #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync)]
-        fn wait_async(buf: &JsValue, index: i32, value: i32) -> js_sys::Promise;
+        fn wait_async(buf: &js_sys::Int32Array, index: i32, value: i32) -> WaitAsyncResult;
 
         #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync, getter)]
         fn get_wait_async() -> JsValue;
+
+        #[wasm_bindgen(method, getter, structural, js_name = async)]
+        fn async_(this: &WaitAsyncResult) -> bool;
+
+        #[wasm_bindgen(method, getter, structural)]
+        fn value(this: &WaitAsyncResult) -> js_sys::Promise;
     }
 }

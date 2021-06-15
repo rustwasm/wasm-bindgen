@@ -8,23 +8,23 @@
 [Pref="dom.vr.test.enabled",
  HeaderFile="mozilla/dom/VRServiceTest.h"]
 interface VRMockDisplay {
-  void setEyeResolution(unsigned long aRenderWidth, unsigned long aRenderHeight);
-  void setEyeParameter(VREye eye, double offsetX, double offsetY, double offsetZ,
+  undefined setEyeResolution(unsigned long aRenderWidth, unsigned long aRenderHeight);
+  undefined setEyeParameter(VREye eye, double offsetX, double offsetY, double offsetZ,
                        double upDegree, double rightDegree,
                        double downDegree, double leftDegree);
-  void setPose(Float32Array? position, Float32Array? linearVelocity,
+  undefined setPose(Float32Array? position, Float32Array? linearVelocity,
                Float32Array? linearAcceleration, Float32Array? orientation,
                Float32Array? angularVelocity, Float32Array? angularAcceleration);
-  void setMountState(boolean isMounted);
-  void update();
+  undefined setMountState(boolean isMounted);
+  undefined update();
 };
 
 [Pref="dom.vr.test.enabled",
  HeaderFile="mozilla/dom/VRServiceTest.h"]
 interface VRMockController {
-  void newButtonEvent(unsigned long button, boolean pressed);
-  void newAxisMoveEvent(unsigned long axis, double value);
-  void newPoseMove(Float32Array? position, Float32Array? linearVelocity,
+  undefined newButtonEvent(unsigned long button, boolean pressed);
+  undefined newAxisMoveEvent(unsigned long axis, double value);
+  undefined newPoseMove(Float32Array? position, Float32Array? linearVelocity,
                    Float32Array? linearAcceleration, Float32Array? orientation,
                    Float32Array? angularVelocity, Float32Array? angularAcceleration);
 };

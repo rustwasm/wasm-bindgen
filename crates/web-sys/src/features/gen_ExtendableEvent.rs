@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = ExtendableEvent , typescript_type = "ExtendableEvent" ) ]
+    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = ExtendableEvent , typescript_type = "ExtendableEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ExtendableEvent` class."]
     #[doc = ""]
@@ -29,7 +29,7 @@ extern "C" {
         type_: &str,
         event_init_dict: &ExtendableEventInit,
     ) -> Result<ExtendableEvent, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "ExtendableEvent" , js_name = waitUntil ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "ExtendableEvent" , js_name = waitUntil)]
     #[doc = "The `waitUntil()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil)"]

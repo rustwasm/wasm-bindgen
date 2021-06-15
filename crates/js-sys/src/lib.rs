@@ -4987,6 +4987,22 @@ macro_rules! arrays {
                 self.raw_copy_to(dst);
             }
 
+            /// Copy the contents of the source Rust slice into this
+            /// JS typed array.
+            ///
+            /// This function will efficiently copy the memory from within
+            /// the wasm module's own linear memory to this typed array.
+            ///
+            /// # Panics
+            ///
+            /// This function will panic if this typed array's length is
+            /// different than the length of the provided `src` array.
+            pub fn copy_from(&self, src: &[$ty]) {
+                assert_eq!(self.length() as usize, src.len());
+                // This is safe because the `set` function copies from its TypedArray argument
+                unsafe { self.set(&$name::view(src), 0) }
+            }
+
             /// Efficiently copies the contents of this JS typed array into a new Vec.
             pub fn to_vec(&self) -> Vec<$ty> {
                 let mut output = vec![$ty::default(); self.length() as usize];

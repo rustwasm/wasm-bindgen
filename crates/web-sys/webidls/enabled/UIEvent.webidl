@@ -15,7 +15,7 @@ interface UIEvent : Event
 {
   readonly attribute WindowProxy? view;
   readonly attribute long         detail;
-  void initUIEvent(DOMString aType,
+  undefined initUIEvent(DOMString aType,
                    optional boolean aCanBubble = false,
                    optional boolean aCancelable = false,
                    optional Window? aView = null,

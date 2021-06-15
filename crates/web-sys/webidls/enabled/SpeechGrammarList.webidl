@@ -17,7 +17,7 @@ interface SpeechGrammarList {
     [Throws]
     getter SpeechGrammar item(unsigned long index);
     [Throws]
-    void addFromURI(DOMString src, optional float weight);
+    undefined addFromURI(DOMString src, optional float weight);
     [Throws]
-    void addFromString(DOMString string, optional float weight);
+    undefined addFromString(DOMString string, optional float weight);
 };

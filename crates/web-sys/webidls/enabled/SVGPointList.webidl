@@ -13,7 +13,7 @@
 interface SVGPointList {
   readonly attribute unsigned long numberOfItems;
   [Throws]
-  void clear();
+  undefined clear();
   [Throws]
   SVGPoint initialize(SVGPoint newItem);
   [Throws]

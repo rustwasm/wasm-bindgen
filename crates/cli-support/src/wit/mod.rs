@@ -183,13 +183,13 @@ impl<'a> Context<'a> {
             // Finally we store all this metadata in the import map which we've
             // learned so when a binding for the import is generated we can
             // generate all the appropriate shims.
-            for (id, descriptor) in closure_imports {
+            for (id, descriptor) in crate::sorted_iter(&closure_imports) {
                 let signature = Function {
                     shim_idx: 0,
                     arguments: vec![Descriptor::I32; 3],
                     ret: Descriptor::Externref,
                 };
-                let id = self.import_adapter(id, signature, AdapterJsImportKind::Normal)?;
+                let id = self.import_adapter(*id, signature, AdapterJsImportKind::Normal)?;
                 // Synthesize the two integer pointers we pass through which
                 // aren't present in the signature but are present in the wasm
                 // signature.
@@ -1457,15 +1457,16 @@ fn extract_programs<'a>(
                     "
 
 it looks like the Rust project used to create this wasm file was linked against
-a different version of wasm-bindgen than this binary:
+version of wasm-bindgen that uses a different bindgen format than this binary:
 
-  rust wasm file: {}
-     this binary: {}
+  rust wasm file schema version: {}
+     this binary schema version: {}
 
-Currently the bindgen format is unstable enough that these two version must
-exactly match, so it's required that these two version are kept in sync by
-either updating the wasm-bindgen dependency or this binary. You should be able
-to update the wasm-bindgen dependency with:
+Currently the bindgen format is unstable enough that these two schema versions
+must exactly match. You can accomplish this by either updating the wasm-bindgen
+dependency or this binary.
+
+You should be able to update the wasm-bindgen dependency with:
 
     cargo update -p wasm-bindgen
 

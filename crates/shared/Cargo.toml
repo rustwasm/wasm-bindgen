@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-shared"
-version = "0.2.67"
+version = "0.2.74"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/shared"

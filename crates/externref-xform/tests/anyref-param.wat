@@ -11,7 +11,7 @@
 (module
   (type (;0;) (func (param i32)))
   (type (;1;) (func (param externref)))
-  (func $foo externref shim (type 1) (param externref)
+  (func $foo_externref_shim (@name "foo externref shim") (type 1) (param externref)
     (local i32)
     global.get 0
     i32.const 1
@@ -33,5 +33,5 @@
   (func $foo (type 0) (param i32))
   (table (;0;) 32 externref)
   (global (;0;) (mut i32) (i32.const 32))
-  (export "foo" (func $foo externref shim)))
+  (export "foo" (func $foo_externref_shim)))
 ;)

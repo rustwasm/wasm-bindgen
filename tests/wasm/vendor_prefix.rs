@@ -28,6 +28,13 @@ extern "C" {
     fn new() -> MySpecialApi3;
     #[wasm_bindgen(method)]
     fn foo(this: &MySpecialApi3) -> u32;
+
+    // This API does not exist at all;
+    // test that Rust gets a chance to catch the error (#2437)
+    #[wasm_bindgen(vendor_prefix = a, vendor_prefix = b)]
+    type MyMissingApi;
+    #[wasm_bindgen(constructor, catch)]
+    fn new() -> Result<MyMissingApi, JsValue>;
 }
 
 #[wasm_bindgen_test]
@@ -37,4 +44,5 @@ pub fn polyfill_works() {
     assert_eq!(MySpecialApi::new().foo(), 123);
     assert_eq!(MySpecialApi2::new().foo(), 124);
     assert_eq!(MySpecialApi3::new().foo(), 125);
+    assert!(MyMissingApi::new().is_err());
 }

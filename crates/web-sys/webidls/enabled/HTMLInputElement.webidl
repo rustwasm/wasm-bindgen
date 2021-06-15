@@ -101,9 +101,9 @@ interface HTMLInputElement : HTMLElement {
            attribute unsigned long width;
 /* TODO
   [Throws]
-  void stepUp(optional long n = 1);
+  undefined stepUp(optional long n = 1);
   [Throws]
-  void stepDown(optional long n = 1);
+  undefined stepDown(optional long n = 1);
 */
 
   [Pure]
@@ -114,11 +114,11 @@ interface HTMLInputElement : HTMLElement {
   readonly attribute DOMString validationMessage;
   boolean checkValidity();
   boolean reportValidity();
-  void setCustomValidity(DOMString error);
+  undefined setCustomValidity(DOMString error);
 
   readonly attribute NodeList? labels;
 
-  void select();
+  undefined select();
 
   [Throws]
            attribute unsigned long? selectionStart;
@@ -127,13 +127,13 @@ interface HTMLInputElement : HTMLElement {
   [Throws]
            attribute DOMString? selectionDirection;
   [Throws]
-  void setRangeText(DOMString replacement);
+  undefined setRangeText(DOMString replacement);
 
   [Throws]
-  void setRangeText(DOMString replacement, unsigned long start,
+  undefined setRangeText(DOMString replacement, unsigned long start,
     unsigned long end, optional SelectionMode selectionMode = "preserve");
   [Throws]
-  void setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
+  undefined setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
 
   // also has obsolete members
 };
@@ -160,7 +160,7 @@ partial interface HTMLInputElement {
   Promise<sequence<File>> getFiles(optional boolean recursiveFlag = false);
 
   [Throws, Pref="dom.input.dirpicker"]
-  void chooseDirectory();
+  undefined chooseDirectory();
 };
 */
 
@@ -186,10 +186,10 @@ partial interface HTMLInputElement {
   DateTimeValue getDateTimeInputBoxValue();
 
   [Pref="dom.forms.datetime", ChromeOnly]
-  void updateDateTimeInputBox(optional DateTimeValue value);
+  undefined updateDateTimeInputBox(optional DateTimeValue value);
 
   [Pref="dom.forms.datetime", ChromeOnly]
-  void setDateTimePickerState(boolean open);
+  undefined setDateTimePickerState(boolean open);
 
   [Pref="dom.forms.datetime", ChromeOnly,
    BinaryName="getMinimumAsDouble"]

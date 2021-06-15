@@ -88,7 +88,7 @@ interface TreeView
    * specifies before/on/after the given |row|.
    */
   [Throws]
-  void drop(long row, long orientation, DataTransfer? dataTransfer);
+  undefined drop(long row, long orientation, DataTransfer? dataTransfer);
 
   /**
    * Methods used by the tree to draw thread lines in the tree.
@@ -141,29 +141,29 @@ interface TreeView
    * Called during initialization to link the view to the front end box object.
    */
   [Throws]
-  void setTree(TreeBoxObject? tree);
+  undefined setTree(TreeBoxObject? tree);
   
   /**
    * Called on the view when an item is opened or closed.
    */
   [Throws]
-  void toggleOpenState(long row);
+  undefined toggleOpenState(long row);
 
   /**
    * Called on the view when a header is clicked.
    */
   [Throws]
-  void cycleHeader(TreeColumn column);
+  undefined cycleHeader(TreeColumn column);
 
   /**
    * Should be called from a XUL onselect handler whenever the selection changes.
    */
-  void selectionChanged();
+  undefined selectionChanged();
 
   /**
    * Called on the view when a cell in a non-selectable cycling column (e.g., unread/flag/etc.) is clicked.
    */
-  void cycleCell(long row, TreeColumn column);
+  undefined cycleCell(long row, TreeColumn column);
   
   /**
    * isEditable is called to ask the view if the cell contents are editable.
@@ -186,28 +186,28 @@ interface TreeView
    * This method is only called for columns of type other than |text|.
    */
   [Throws]
-  void setCellValue(long row, TreeColumn column, DOMString value);
+  undefined setCellValue(long row, TreeColumn column, DOMString value);
 
   /**
    * setCellText is called when the contents of the cell have been edited by the user.
    */   
   [Throws]
-  void setCellText(long row, TreeColumn column, DOMString value);
+  undefined setCellText(long row, TreeColumn column, DOMString value);
 
   /**
    * A command API that can be used to invoke commands on the selection.  The tree
    * will automatically invoke this method when certain keys are pressed.  For example,
    * when the DEL key is pressed, performAction will be called with the "delete" string.
    */
-  void performAction(DOMString action);
+  undefined performAction(DOMString action);
 
   /**
    * A command API that can be used to invoke commands on a specific row.
    */
-  void performActionOnRow(DOMString action, long row);
+  undefined performActionOnRow(DOMString action, long row);
 
   /**
    * A command API that can be used to invoke commands on a specific cell.
    */
-  void performActionOnCell(DOMString action, long row, TreeColumn column);
+  undefined performActionOnCell(DOMString action, long row, TreeColumn column);
 };

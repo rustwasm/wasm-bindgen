@@ -20,14 +20,14 @@ interface ChildSHistory {
 
   boolean canGo(long aOffset);
   [Throws]
-  void go(long aOffset);
+  undefined go(long aOffset);
 
   /**
    * Reload the current entry. The flags which should be passed to this
    * function are documented and defined in nsIWebNavigation.idl
    */
   [Throws]
-  void reload(unsigned long aReloadFlags);
+  undefined reload(unsigned long aReloadFlags);
 
   /**
    * Getter for the legacy nsISHistory implementation.

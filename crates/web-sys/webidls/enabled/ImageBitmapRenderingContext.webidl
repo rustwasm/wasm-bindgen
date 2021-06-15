@@ -32,9 +32,9 @@ interface ImageBitmapRenderingContext {
   // would be covered by the canvas's bitmap which are not covered by
   // the supplied ImageBitmap are rendered transparent black. Any CSS
   // styles affecting the display of the canvas are applied as usual.
-  void transferFromImageBitmap(ImageBitmap bitmap);
+  undefined transferFromImageBitmap(ImageBitmap bitmap);
 
   // Deprecated version of transferFromImageBitmap
   [Deprecated="ImageBitmapRenderingContext_TransferImageBitmap"]
-  void transferImageBitmap(ImageBitmap bitmap);
+  undefined transferImageBitmap(ImageBitmap bitmap);
 };

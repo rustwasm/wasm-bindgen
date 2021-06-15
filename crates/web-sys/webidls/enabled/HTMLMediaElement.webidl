@@ -34,7 +34,7 @@ interface HTMLMediaElement : HTMLElement {
            attribute DOMString preload;
   [NewObject]
   readonly attribute TimeRanges buffered;
-  void load();
+  undefined load();
   DOMString canPlayType(DOMString type);
 
   // ready state
@@ -50,7 +50,7 @@ interface HTMLMediaElement : HTMLElement {
   [SetterThrows]
            attribute double currentTime;
   [Throws]
-  void fastSeek(double time);
+  undefined fastSeek(double time);
   readonly attribute unrestricted double duration;
   [ChromeOnly]
   readonly attribute boolean isEncrypted;
@@ -70,9 +70,9 @@ interface HTMLMediaElement : HTMLElement {
   [CEReactions, SetterThrows]
            attribute boolean loop;
   [Throws]
-  Promise<void> play();
+  Promise<undefined> play();
   [Throws]
-  void pause();
+  undefined pause();
 
   // TODO: Bug 847377 - mediaGroup and MediaController
   // media controller
@@ -104,9 +104,9 @@ interface HTMLMediaElement : HTMLElement {
 partial interface HTMLMediaElement {
   readonly attribute MediaKeys? mediaKeys;
 
-  // void, not any: https://www.w3.org/Bugs/Public/show_bug.cgi?id=26457
+  // undefined, not any: https://www.w3.org/Bugs/Public/show_bug.cgi?id=26457
   [NewObject]
-  Promise<void> setMediaKeys(MediaKeys? mediaKeys);
+  Promise<undefined> setMediaKeys(MediaKeys? mediaKeys);
 
   attribute EventHandler onencrypted;
 
@@ -145,7 +145,7 @@ partial interface HTMLMediaElement {
  */
 partial interface HTMLMediaElement {
   [Throws, Pref="media.seekToNextFrame.enabled"]
-  Promise<void> seekToNextFrame();
+  Promise<undefined> seekToNextFrame();
 };
 
 /*
@@ -159,7 +159,7 @@ partial interface HTMLMediaElement {
  */
 partial interface HTMLMediaElement {
   [Pref="media.test.video-suspend"]
-  void setVisible(boolean aVisible);
+  undefined setVisible(boolean aVisible);
 
   [Pref="media.test.video-suspend"]
   boolean hasSuspendTaint();

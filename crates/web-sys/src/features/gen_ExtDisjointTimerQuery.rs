@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_disjoint_timer_query , typescript_type = "EXT_disjoint_timer_query" ) ]
+    # [wasm_bindgen (is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = EXT_disjoint_timer_query , typescript_type = "EXT_disjoint_timer_query")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ExtDisjointTimerQuery` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub type ExtDisjointTimerQuery;
     #[cfg(feature = "WebGlQuery")]
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = beginQueryEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = beginQueryEXT)]
     #[doc = "The `beginQueryEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/beginQueryEXT)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`, `WebGlQuery`*"]
     pub fn begin_query_ext(this: &ExtDisjointTimerQuery, target: u32, query: &WebGlQuery);
     #[cfg(feature = "WebGlQuery")]
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = createQueryEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = createQueryEXT)]
     #[doc = "The `createQueryEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/createQueryEXT)"]
@@ -28,21 +28,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`, `WebGlQuery`*"]
     pub fn create_query_ext(this: &ExtDisjointTimerQuery) -> Option<WebGlQuery>;
     #[cfg(feature = "WebGlQuery")]
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = deleteQueryEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = deleteQueryEXT)]
     #[doc = "The `deleteQueryEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/deleteQueryEXT)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`, `WebGlQuery`*"]
     pub fn delete_query_ext(this: &ExtDisjointTimerQuery, query: Option<&WebGlQuery>);
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = endQueryEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = endQueryEXT)]
     #[doc = "The `endQueryEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/endQueryEXT)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`*"]
     pub fn end_query_ext(this: &ExtDisjointTimerQuery, target: u32);
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = getQueryEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = getQueryEXT)]
     #[doc = "The `getQueryEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/getQueryEXT)"]
@@ -54,7 +54,7 @@ extern "C" {
         pname: u32,
     ) -> ::wasm_bindgen::JsValue;
     #[cfg(feature = "WebGlQuery")]
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = getQueryObjectEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = getQueryObjectEXT)]
     #[doc = "The `getQueryObjectEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/getQueryObjectEXT)"]
@@ -66,7 +66,7 @@ extern "C" {
         pname: u32,
     ) -> ::wasm_bindgen::JsValue;
     #[cfg(feature = "WebGlQuery")]
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = isQueryEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = isQueryEXT)]
     #[doc = "The `isQueryEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/isQueryEXT)"]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ExtDisjointTimerQuery`, `WebGlQuery`*"]
     pub fn is_query_ext(this: &ExtDisjointTimerQuery, query: Option<&WebGlQuery>) -> bool;
     #[cfg(feature = "WebGlQuery")]
-    # [ wasm_bindgen ( method , structural , js_class = "EXT_disjoint_timer_query" , js_name = queryCounterEXT ) ]
+    # [wasm_bindgen (method , structural , js_class = "EXT_disjoint_timer_query" , js_name = queryCounterEXT)]
     #[doc = "The `queryCounterEXT()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EXT_disjoint_timer_query/queryCounterEXT)"]

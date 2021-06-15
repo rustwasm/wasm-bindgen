@@ -42,9 +42,9 @@ interface HTMLFormElement : HTMLElement {
   getter nsISupports (DOMString name);
 
   [Throws]
-  void submit();
+  undefined submit();
   [CEReactions]
-  void reset();
+  undefined reset();
   boolean checkValidity();
   boolean reportValidity();
 };

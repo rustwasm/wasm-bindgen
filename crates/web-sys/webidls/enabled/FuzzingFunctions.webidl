@@ -15,16 +15,16 @@ interface FuzzingFunctions {
   /**
    * Synchronously perform a garbage collection.
    */
-  static void garbageCollect();
+  static undefined garbageCollect();
 
   /**
    * Synchronously perform a cycle collection.
    */
-  static void cycleCollect();
+  static undefined cycleCollect();
 
   /**
    * Enable accessibility.
    */
   [Throws]
-  static void enableAccessibility();
+  static undefined enableAccessibility();
 };

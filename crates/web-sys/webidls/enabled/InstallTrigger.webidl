@@ -8,7 +8,7 @@
  * A callback function that webpages can implement to be notified when triggered
  * installs complete.
  */
-callback InstallTriggerCallback = void(DOMString url, short status);
+callback InstallTriggerCallback = undefined(DOMString url, short status);
 
 dictionary InstallTriggerData {
   DOMString URL;

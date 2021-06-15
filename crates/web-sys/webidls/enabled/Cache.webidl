@@ -18,11 +18,11 @@ interface Cache {
   [NewObject]
   Promise<sequence<Response>> matchAll(optional RequestInfo request, optional CacheQueryOptions options);
   [NewObject, NeedsCallerType]
-  Promise<void> add(RequestInfo request);
+  Promise<undefined> add(RequestInfo request);
   [NewObject, NeedsCallerType]
-  Promise<void> addAll(sequence<RequestInfo> requests);
+  Promise<undefined> addAll(sequence<RequestInfo> requests);
   [NewObject]
-  Promise<void> put(RequestInfo request, Response response);
+  Promise<undefined> put(RequestInfo request, Response response);
   [NewObject]
   Promise<boolean> delete(RequestInfo request, optional CacheQueryOptions options);
   [NewObject]

@@ -16,6 +16,6 @@ interface FileSystemEntry {
 
     readonly attribute FileSystem filesystem;
 
-    void getParent(optional FileSystemEntryCallback successCallback,
+    undefined getParent(optional FileSystemEntryCallback successCallback,
                    optional ErrorCallback errorCallback);
 };

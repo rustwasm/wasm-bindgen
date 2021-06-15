@@ -13,9 +13,9 @@ interface ListBoxObject : BoxObject {
   long getNumberOfVisibleRows();
   long getIndexOfFirstVisibleRow();
 
-  void ensureIndexIsVisible(long rowIndex);
-  void scrollToIndex(long rowIndex);
-  void scrollByLines(long numLines);
+  undefined ensureIndexIsVisible(long rowIndex);
+  undefined scrollToIndex(long rowIndex);
+  undefined scrollByLines(long numLines);
 
   Element? getItemAtIndex(long index);
   long getIndexOfItem(Element item);

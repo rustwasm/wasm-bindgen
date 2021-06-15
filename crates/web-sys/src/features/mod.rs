@@ -64,6 +64,18 @@ mod gen_AlignSetting;
 #[cfg(feature = "AlignSetting")]
 pub use gen_AlignSetting::*;
 
+#[cfg(feature = "AllowedBluetoothDevice")]
+#[allow(non_snake_case)]
+mod gen_AllowedBluetoothDevice;
+#[cfg(feature = "AllowedBluetoothDevice")]
+pub use gen_AllowedBluetoothDevice::*;
+
+#[cfg(feature = "AllowedUsbDevice")]
+#[allow(non_snake_case)]
+mod gen_AllowedUsbDevice;
+#[cfg(feature = "AllowedUsbDevice")]
+pub use gen_AllowedUsbDevice::*;
+
 #[cfg(feature = "AnalyserNode")]
 #[allow(non_snake_case)]
 mod gen_AnalyserNode;
@@ -483,6 +495,108 @@ pub use gen_BlobPropertyBag::*;
 mod gen_BlockParsingOptions;
 #[cfg(feature = "BlockParsingOptions")]
 pub use gen_BlockParsingOptions::*;
+
+#[cfg(feature = "Bluetooth")]
+#[allow(non_snake_case)]
+mod gen_Bluetooth;
+#[cfg(feature = "Bluetooth")]
+pub use gen_Bluetooth::*;
+
+#[cfg(feature = "BluetoothAdvertisingEvent")]
+#[allow(non_snake_case)]
+mod gen_BluetoothAdvertisingEvent;
+#[cfg(feature = "BluetoothAdvertisingEvent")]
+pub use gen_BluetoothAdvertisingEvent::*;
+
+#[cfg(feature = "BluetoothAdvertisingEventInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothAdvertisingEventInit;
+#[cfg(feature = "BluetoothAdvertisingEventInit")]
+pub use gen_BluetoothAdvertisingEventInit::*;
+
+#[cfg(feature = "BluetoothCharacteristicProperties")]
+#[allow(non_snake_case)]
+mod gen_BluetoothCharacteristicProperties;
+#[cfg(feature = "BluetoothCharacteristicProperties")]
+pub use gen_BluetoothCharacteristicProperties::*;
+
+#[cfg(feature = "BluetoothDataFilterInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothDataFilterInit;
+#[cfg(feature = "BluetoothDataFilterInit")]
+pub use gen_BluetoothDataFilterInit::*;
+
+#[cfg(feature = "BluetoothDevice")]
+#[allow(non_snake_case)]
+mod gen_BluetoothDevice;
+#[cfg(feature = "BluetoothDevice")]
+pub use gen_BluetoothDevice::*;
+
+#[cfg(feature = "BluetoothLeScanFilterInit")]
+#[allow(non_snake_case)]
+mod gen_BluetoothLeScanFilterInit;
+#[cfg(feature = "BluetoothLeScanFilterInit")]
+pub use gen_BluetoothLeScanFilterInit::*;
+
+#[cfg(feature = "BluetoothManufacturerDataMap")]
+#[allow(non_snake_case)]
+mod gen_BluetoothManufacturerDataMap;
+#[cfg(feature = "BluetoothManufacturerDataMap")]
+pub use gen_BluetoothManufacturerDataMap::*;
+
+#[cfg(feature = "BluetoothPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_BluetoothPermissionDescriptor;
+#[cfg(feature = "BluetoothPermissionDescriptor")]
+pub use gen_BluetoothPermissionDescriptor::*;
+
+#[cfg(feature = "BluetoothPermissionResult")]
+#[allow(non_snake_case)]
+mod gen_BluetoothPermissionResult;
+#[cfg(feature = "BluetoothPermissionResult")]
+pub use gen_BluetoothPermissionResult::*;
+
+#[cfg(feature = "BluetoothPermissionStorage")]
+#[allow(non_snake_case)]
+mod gen_BluetoothPermissionStorage;
+#[cfg(feature = "BluetoothPermissionStorage")]
+pub use gen_BluetoothPermissionStorage::*;
+
+#[cfg(feature = "BluetoothRemoteGattCharacteristic")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattCharacteristic;
+#[cfg(feature = "BluetoothRemoteGattCharacteristic")]
+pub use gen_BluetoothRemoteGattCharacteristic::*;
+
+#[cfg(feature = "BluetoothRemoteGattDescriptor")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattDescriptor;
+#[cfg(feature = "BluetoothRemoteGattDescriptor")]
+pub use gen_BluetoothRemoteGattDescriptor::*;
+
+#[cfg(feature = "BluetoothRemoteGattServer")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattServer;
+#[cfg(feature = "BluetoothRemoteGattServer")]
+pub use gen_BluetoothRemoteGattServer::*;
+
+#[cfg(feature = "BluetoothRemoteGattService")]
+#[allow(non_snake_case)]
+mod gen_BluetoothRemoteGattService;
+#[cfg(feature = "BluetoothRemoteGattService")]
+pub use gen_BluetoothRemoteGattService::*;
+
+#[cfg(feature = "BluetoothServiceDataMap")]
+#[allow(non_snake_case)]
+mod gen_BluetoothServiceDataMap;
+#[cfg(feature = "BluetoothServiceDataMap")]
+pub use gen_BluetoothServiceDataMap::*;
+
+#[cfg(feature = "BluetoothUuid")]
+#[allow(non_snake_case)]
+mod gen_BluetoothUuid;
+#[cfg(feature = "BluetoothUuid")]
+pub use gen_BluetoothUuid::*;
 
 #[cfg(feature = "BoxQuadOptions")]
 #[allow(non_snake_case)]
@@ -1318,6 +1432,12 @@ mod gen_Directory;
 #[cfg(feature = "Directory")]
 pub use gen_Directory::*;
 
+#[cfg(feature = "DisplayMediaStreamConstraints")]
+#[allow(non_snake_case)]
+mod gen_DisplayMediaStreamConstraints;
+#[cfg(feature = "DisplayMediaStreamConstraints")]
+pub use gen_DisplayMediaStreamConstraints::*;
+
 #[cfg(feature = "DisplayNameOptions")]
 #[allow(non_snake_case)]
 mod gen_DisplayNameOptions;
@@ -2116,6 +2236,18 @@ mod gen_GpuAdapter;
 #[cfg(feature = "GpuAdapter")]
 pub use gen_GpuAdapter::*;
 
+#[cfg(feature = "GpuAdapterFeatures")]
+#[allow(non_snake_case)]
+mod gen_GpuAdapterFeatures;
+#[cfg(feature = "GpuAdapterFeatures")]
+pub use gen_GpuAdapterFeatures::*;
+
+#[cfg(feature = "GpuAdapterLimits")]
+#[allow(non_snake_case)]
+mod gen_GpuAdapterLimits;
+#[cfg(feature = "GpuAdapterLimits")]
+pub use gen_GpuAdapterLimits::*;
+
 #[cfg(feature = "GpuAddressMode")]
 #[allow(non_snake_case)]
 mod gen_GpuAddressMode;
@@ -2158,17 +2290,11 @@ mod gen_GpuBindGroupLayoutEntry;
 #[cfg(feature = "GpuBindGroupLayoutEntry")]
 pub use gen_GpuBindGroupLayoutEntry::*;
 
-#[cfg(feature = "GpuBindingType")]
+#[cfg(feature = "GpuBlendComponent")]
 #[allow(non_snake_case)]
-mod gen_GpuBindingType;
-#[cfg(feature = "GpuBindingType")]
-pub use gen_GpuBindingType::*;
-
-#[cfg(feature = "GpuBlendDescriptor")]
-#[allow(non_snake_case)]
-mod gen_GpuBlendDescriptor;
-#[cfg(feature = "GpuBlendDescriptor")]
-pub use gen_GpuBlendDescriptor::*;
+mod gen_GpuBlendComponent;
+#[cfg(feature = "GpuBlendComponent")]
+pub use gen_GpuBlendComponent::*;
 
 #[cfg(feature = "GpuBlendFactor")]
 #[allow(non_snake_case)]
@@ -2182,6 +2308,12 @@ mod gen_GpuBlendOperation;
 #[cfg(feature = "GpuBlendOperation")]
 pub use gen_GpuBlendOperation::*;
 
+#[cfg(feature = "GpuBlendState")]
+#[allow(non_snake_case)]
+mod gen_GpuBlendState;
+#[cfg(feature = "GpuBlendState")]
+pub use gen_GpuBlendState::*;
+
 #[cfg(feature = "GpuBuffer")]
 #[allow(non_snake_case)]
 mod gen_GpuBuffer;
@@ -2194,11 +2326,17 @@ mod gen_GpuBufferBinding;
 #[cfg(feature = "GpuBufferBinding")]
 pub use gen_GpuBufferBinding::*;
 
-#[cfg(feature = "GpuBufferCopyView")]
+#[cfg(feature = "GpuBufferBindingLayout")]
 #[allow(non_snake_case)]
-mod gen_GpuBufferCopyView;
-#[cfg(feature = "GpuBufferCopyView")]
-pub use gen_GpuBufferCopyView::*;
+mod gen_GpuBufferBindingLayout;
+#[cfg(feature = "GpuBufferBindingLayout")]
+pub use gen_GpuBufferBindingLayout::*;
+
+#[cfg(feature = "GpuBufferBindingType")]
+#[allow(non_snake_case)]
+mod gen_GpuBufferBindingType;
+#[cfg(feature = "GpuBufferBindingType")]
+pub use gen_GpuBufferBindingType::*;
 
 #[cfg(feature = "GpuBufferDescriptor")]
 #[allow(non_snake_case)]
@@ -2224,11 +2362,11 @@ mod gen_GpuColorDict;
 #[cfg(feature = "GpuColorDict")]
 pub use gen_GpuColorDict::*;
 
-#[cfg(feature = "GpuColorStateDescriptor")]
+#[cfg(feature = "GpuColorTargetState")]
 #[allow(non_snake_case)]
-mod gen_GpuColorStateDescriptor;
-#[cfg(feature = "GpuColorStateDescriptor")]
-pub use gen_GpuColorStateDescriptor::*;
+mod gen_GpuColorTargetState;
+#[cfg(feature = "GpuColorTargetState")]
+pub use gen_GpuColorTargetState::*;
 
 #[cfg(feature = "GpuColorWrite")]
 #[allow(non_snake_case)]
@@ -2314,11 +2452,11 @@ mod gen_GpuCullMode;
 #[cfg(feature = "GpuCullMode")]
 pub use gen_GpuCullMode::*;
 
-#[cfg(feature = "GpuDepthStencilStateDescriptor")]
+#[cfg(feature = "GpuDepthStencilState")]
 #[allow(non_snake_case)]
-mod gen_GpuDepthStencilStateDescriptor;
-#[cfg(feature = "GpuDepthStencilStateDescriptor")]
-pub use gen_GpuDepthStencilStateDescriptor::*;
+mod gen_GpuDepthStencilState;
+#[cfg(feature = "GpuDepthStencilState")]
+pub use gen_GpuDepthStencilState::*;
 
 #[cfg(feature = "GpuDevice")]
 #[allow(non_snake_case)]
@@ -2338,17 +2476,17 @@ mod gen_GpuDeviceLostInfo;
 #[cfg(feature = "GpuDeviceLostInfo")]
 pub use gen_GpuDeviceLostInfo::*;
 
+#[cfg(feature = "GpuDeviceLostReason")]
+#[allow(non_snake_case)]
+mod gen_GpuDeviceLostReason;
+#[cfg(feature = "GpuDeviceLostReason")]
+pub use gen_GpuDeviceLostReason::*;
+
 #[cfg(feature = "GpuErrorFilter")]
 #[allow(non_snake_case)]
 mod gen_GpuErrorFilter;
 #[cfg(feature = "GpuErrorFilter")]
 pub use gen_GpuErrorFilter::*;
-
-#[cfg(feature = "GpuExtensionName")]
-#[allow(non_snake_case)]
-mod gen_GpuExtensionName;
-#[cfg(feature = "GpuExtensionName")]
-pub use gen_GpuExtensionName::*;
 
 #[cfg(feature = "GpuExtent3dDict")]
 #[allow(non_snake_case)]
@@ -2356,17 +2494,11 @@ mod gen_GpuExtent3dDict;
 #[cfg(feature = "GpuExtent3dDict")]
 pub use gen_GpuExtent3dDict::*;
 
-#[cfg(feature = "GpuFence")]
+#[cfg(feature = "GpuFeatureName")]
 #[allow(non_snake_case)]
-mod gen_GpuFence;
-#[cfg(feature = "GpuFence")]
-pub use gen_GpuFence::*;
-
-#[cfg(feature = "GpuFenceDescriptor")]
-#[allow(non_snake_case)]
-mod gen_GpuFenceDescriptor;
-#[cfg(feature = "GpuFenceDescriptor")]
-pub use gen_GpuFenceDescriptor::*;
+mod gen_GpuFeatureName;
+#[cfg(feature = "GpuFeatureName")]
+pub use gen_GpuFeatureName::*;
 
 #[cfg(feature = "GpuFilterMode")]
 #[allow(non_snake_case)]
@@ -2374,17 +2506,41 @@ mod gen_GpuFilterMode;
 #[cfg(feature = "GpuFilterMode")]
 pub use gen_GpuFilterMode::*;
 
+#[cfg(feature = "GpuFragmentState")]
+#[allow(non_snake_case)]
+mod gen_GpuFragmentState;
+#[cfg(feature = "GpuFragmentState")]
+pub use gen_GpuFragmentState::*;
+
 #[cfg(feature = "GpuFrontFace")]
 #[allow(non_snake_case)]
 mod gen_GpuFrontFace;
 #[cfg(feature = "GpuFrontFace")]
 pub use gen_GpuFrontFace::*;
 
-#[cfg(feature = "GpuImageBitmapCopyView")]
+#[cfg(feature = "GpuImageCopyBuffer")]
 #[allow(non_snake_case)]
-mod gen_GpuImageBitmapCopyView;
-#[cfg(feature = "GpuImageBitmapCopyView")]
-pub use gen_GpuImageBitmapCopyView::*;
+mod gen_GpuImageCopyBuffer;
+#[cfg(feature = "GpuImageCopyBuffer")]
+pub use gen_GpuImageCopyBuffer::*;
+
+#[cfg(feature = "GpuImageCopyImageBitmap")]
+#[allow(non_snake_case)]
+mod gen_GpuImageCopyImageBitmap;
+#[cfg(feature = "GpuImageCopyImageBitmap")]
+pub use gen_GpuImageCopyImageBitmap::*;
+
+#[cfg(feature = "GpuImageCopyTexture")]
+#[allow(non_snake_case)]
+mod gen_GpuImageCopyTexture;
+#[cfg(feature = "GpuImageCopyTexture")]
+pub use gen_GpuImageCopyTexture::*;
+
+#[cfg(feature = "GpuImageDataLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuImageDataLayout;
+#[cfg(feature = "GpuImageDataLayout")]
+pub use gen_GpuImageDataLayout::*;
 
 #[cfg(feature = "GpuIndexFormat")]
 #[allow(non_snake_case)]
@@ -2398,17 +2554,23 @@ mod gen_GpuInputStepMode;
 #[cfg(feature = "GpuInputStepMode")]
 pub use gen_GpuInputStepMode::*;
 
-#[cfg(feature = "GpuLimits")]
-#[allow(non_snake_case)]
-mod gen_GpuLimits;
-#[cfg(feature = "GpuLimits")]
-pub use gen_GpuLimits::*;
-
 #[cfg(feature = "GpuLoadOp")]
 #[allow(non_snake_case)]
 mod gen_GpuLoadOp;
 #[cfg(feature = "GpuLoadOp")]
 pub use gen_GpuLoadOp::*;
+
+#[cfg(feature = "GpuMapMode")]
+#[allow(non_snake_case)]
+mod gen_GpuMapMode;
+#[cfg(feature = "GpuMapMode")]
+pub use gen_GpuMapMode::*;
+
+#[cfg(feature = "GpuMultisampleState")]
+#[allow(non_snake_case)]
+mod gen_GpuMultisampleState;
+#[cfg(feature = "GpuMultisampleState")]
+pub use gen_GpuMultisampleState::*;
 
 #[cfg(feature = "GpuObjectDescriptorBase")]
 #[allow(non_snake_case)]
@@ -2464,17 +2626,23 @@ mod gen_GpuPowerPreference;
 #[cfg(feature = "GpuPowerPreference")]
 pub use gen_GpuPowerPreference::*;
 
+#[cfg(feature = "GpuPrimitiveState")]
+#[allow(non_snake_case)]
+mod gen_GpuPrimitiveState;
+#[cfg(feature = "GpuPrimitiveState")]
+pub use gen_GpuPrimitiveState::*;
+
 #[cfg(feature = "GpuPrimitiveTopology")]
 #[allow(non_snake_case)]
 mod gen_GpuPrimitiveTopology;
 #[cfg(feature = "GpuPrimitiveTopology")]
 pub use gen_GpuPrimitiveTopology::*;
 
-#[cfg(feature = "GpuProgrammableStageDescriptor")]
+#[cfg(feature = "GpuProgrammableStage")]
 #[allow(non_snake_case)]
-mod gen_GpuProgrammableStageDescriptor;
-#[cfg(feature = "GpuProgrammableStageDescriptor")]
-pub use gen_GpuProgrammableStageDescriptor::*;
+mod gen_GpuProgrammableStage;
+#[cfg(feature = "GpuProgrammableStage")]
+pub use gen_GpuProgrammableStage::*;
 
 #[cfg(feature = "GpuQuerySet")]
 #[allow(non_snake_case)]
@@ -2500,12 +2668,6 @@ mod gen_GpuQueue;
 #[cfg(feature = "GpuQueue")]
 pub use gen_GpuQueue::*;
 
-#[cfg(feature = "GpuRasterizationStateDescriptor")]
-#[allow(non_snake_case)]
-mod gen_GpuRasterizationStateDescriptor;
-#[cfg(feature = "GpuRasterizationStateDescriptor")]
-pub use gen_GpuRasterizationStateDescriptor::*;
-
 #[cfg(feature = "GpuRenderBundle")]
 #[allow(non_snake_case)]
 mod gen_GpuRenderBundle;
@@ -2530,17 +2692,17 @@ mod gen_GpuRenderBundleEncoderDescriptor;
 #[cfg(feature = "GpuRenderBundleEncoderDescriptor")]
 pub use gen_GpuRenderBundleEncoderDescriptor::*;
 
-#[cfg(feature = "GpuRenderPassColorAttachmentDescriptor")]
+#[cfg(feature = "GpuRenderPassColorAttachment")]
 #[allow(non_snake_case)]
-mod gen_GpuRenderPassColorAttachmentDescriptor;
-#[cfg(feature = "GpuRenderPassColorAttachmentDescriptor")]
-pub use gen_GpuRenderPassColorAttachmentDescriptor::*;
+mod gen_GpuRenderPassColorAttachment;
+#[cfg(feature = "GpuRenderPassColorAttachment")]
+pub use gen_GpuRenderPassColorAttachment::*;
 
-#[cfg(feature = "GpuRenderPassDepthStencilAttachmentDescriptor")]
+#[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
 #[allow(non_snake_case)]
-mod gen_GpuRenderPassDepthStencilAttachmentDescriptor;
-#[cfg(feature = "GpuRenderPassDepthStencilAttachmentDescriptor")]
-pub use gen_GpuRenderPassDepthStencilAttachmentDescriptor::*;
+mod gen_GpuRenderPassDepthStencilAttachment;
+#[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
+pub use gen_GpuRenderPassDepthStencilAttachment::*;
 
 #[cfg(feature = "GpuRenderPassDescriptor")]
 #[allow(non_snake_case)]
@@ -2578,6 +2740,18 @@ mod gen_GpuSampler;
 #[cfg(feature = "GpuSampler")]
 pub use gen_GpuSampler::*;
 
+#[cfg(feature = "GpuSamplerBindingLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuSamplerBindingLayout;
+#[cfg(feature = "GpuSamplerBindingLayout")]
+pub use gen_GpuSamplerBindingLayout::*;
+
+#[cfg(feature = "GpuSamplerBindingType")]
+#[allow(non_snake_case)]
+mod gen_GpuSamplerBindingType;
+#[cfg(feature = "GpuSamplerBindingType")]
+pub use gen_GpuSamplerBindingType::*;
+
 #[cfg(feature = "GpuSamplerDescriptor")]
 #[allow(non_snake_case)]
 mod gen_GpuSamplerDescriptor;
@@ -2602,17 +2776,29 @@ mod gen_GpuShaderStage;
 #[cfg(feature = "GpuShaderStage")]
 pub use gen_GpuShaderStage::*;
 
+#[cfg(feature = "GpuStencilFaceState")]
+#[allow(non_snake_case)]
+mod gen_GpuStencilFaceState;
+#[cfg(feature = "GpuStencilFaceState")]
+pub use gen_GpuStencilFaceState::*;
+
 #[cfg(feature = "GpuStencilOperation")]
 #[allow(non_snake_case)]
 mod gen_GpuStencilOperation;
 #[cfg(feature = "GpuStencilOperation")]
 pub use gen_GpuStencilOperation::*;
 
-#[cfg(feature = "GpuStencilStateFaceDescriptor")]
+#[cfg(feature = "GpuStorageTextureAccess")]
 #[allow(non_snake_case)]
-mod gen_GpuStencilStateFaceDescriptor;
-#[cfg(feature = "GpuStencilStateFaceDescriptor")]
-pub use gen_GpuStencilStateFaceDescriptor::*;
+mod gen_GpuStorageTextureAccess;
+#[cfg(feature = "GpuStorageTextureAccess")]
+pub use gen_GpuStorageTextureAccess::*;
+
+#[cfg(feature = "GpuStorageTextureBindingLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuStorageTextureBindingLayout;
+#[cfg(feature = "GpuStorageTextureBindingLayout")]
+pub use gen_GpuStorageTextureBindingLayout::*;
 
 #[cfg(feature = "GpuStoreOp")]
 #[allow(non_snake_case)]
@@ -2644,23 +2830,11 @@ mod gen_GpuTextureAspect;
 #[cfg(feature = "GpuTextureAspect")]
 pub use gen_GpuTextureAspect::*;
 
-#[cfg(feature = "GpuTextureComponentType")]
+#[cfg(feature = "GpuTextureBindingLayout")]
 #[allow(non_snake_case)]
-mod gen_GpuTextureComponentType;
-#[cfg(feature = "GpuTextureComponentType")]
-pub use gen_GpuTextureComponentType::*;
-
-#[cfg(feature = "GpuTextureCopyView")]
-#[allow(non_snake_case)]
-mod gen_GpuTextureCopyView;
-#[cfg(feature = "GpuTextureCopyView")]
-pub use gen_GpuTextureCopyView::*;
-
-#[cfg(feature = "GpuTextureDataLayout")]
-#[allow(non_snake_case)]
-mod gen_GpuTextureDataLayout;
-#[cfg(feature = "GpuTextureDataLayout")]
-pub use gen_GpuTextureDataLayout::*;
+mod gen_GpuTextureBindingLayout;
+#[cfg(feature = "GpuTextureBindingLayout")]
+pub use gen_GpuTextureBindingLayout::*;
 
 #[cfg(feature = "GpuTextureDescriptor")]
 #[allow(non_snake_case)]
@@ -2679,6 +2853,12 @@ pub use gen_GpuTextureDimension::*;
 mod gen_GpuTextureFormat;
 #[cfg(feature = "GpuTextureFormat")]
 pub use gen_GpuTextureFormat::*;
+
+#[cfg(feature = "GpuTextureSampleType")]
+#[allow(non_snake_case)]
+mod gen_GpuTextureSampleType;
+#[cfg(feature = "GpuTextureSampleType")]
+pub use gen_GpuTextureSampleType::*;
 
 #[cfg(feature = "GpuTextureUsage")]
 #[allow(non_snake_case)]
@@ -2722,17 +2902,17 @@ mod gen_GpuValidationError;
 #[cfg(feature = "GpuValidationError")]
 pub use gen_GpuValidationError::*;
 
-#[cfg(feature = "GpuVertexAttributeDescriptor")]
+#[cfg(feature = "GpuVertexAttribute")]
 #[allow(non_snake_case)]
-mod gen_GpuVertexAttributeDescriptor;
-#[cfg(feature = "GpuVertexAttributeDescriptor")]
-pub use gen_GpuVertexAttributeDescriptor::*;
+mod gen_GpuVertexAttribute;
+#[cfg(feature = "GpuVertexAttribute")]
+pub use gen_GpuVertexAttribute::*;
 
-#[cfg(feature = "GpuVertexBufferLayoutDescriptor")]
+#[cfg(feature = "GpuVertexBufferLayout")]
 #[allow(non_snake_case)]
-mod gen_GpuVertexBufferLayoutDescriptor;
-#[cfg(feature = "GpuVertexBufferLayoutDescriptor")]
-pub use gen_GpuVertexBufferLayoutDescriptor::*;
+mod gen_GpuVertexBufferLayout;
+#[cfg(feature = "GpuVertexBufferLayout")]
+pub use gen_GpuVertexBufferLayout::*;
 
 #[cfg(feature = "GpuVertexFormat")]
 #[allow(non_snake_case)]
@@ -2740,11 +2920,11 @@ mod gen_GpuVertexFormat;
 #[cfg(feature = "GpuVertexFormat")]
 pub use gen_GpuVertexFormat::*;
 
-#[cfg(feature = "GpuVertexStateDescriptor")]
+#[cfg(feature = "GpuVertexState")]
 #[allow(non_snake_case)]
-mod gen_GpuVertexStateDescriptor;
-#[cfg(feature = "GpuVertexStateDescriptor")]
-pub use gen_GpuVertexStateDescriptor::*;
+mod gen_GpuVertexState;
+#[cfg(feature = "GpuVertexState")]
+pub use gen_GpuVertexState::*;
 
 #[cfg(feature = "GridDeclaration")]
 #[allow(non_snake_case)]
@@ -5110,6 +5290,24 @@ mod gen_ReadableStream;
 #[cfg(feature = "ReadableStream")]
 pub use gen_ReadableStream::*;
 
+#[cfg(feature = "ReadableStreamGetReaderOptions")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamGetReaderOptions;
+#[cfg(feature = "ReadableStreamGetReaderOptions")]
+pub use gen_ReadableStreamGetReaderOptions::*;
+
+#[cfg(feature = "ReadableStreamIteratorOptions")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamIteratorOptions;
+#[cfg(feature = "ReadableStreamIteratorOptions")]
+pub use gen_ReadableStreamIteratorOptions::*;
+
+#[cfg(feature = "ReadableStreamReaderMode")]
+#[allow(non_snake_case)]
+mod gen_ReadableStreamReaderMode;
+#[cfg(feature = "ReadableStreamReaderMode")]
+pub use gen_ReadableStreamReaderMode::*;
+
 #[cfg(feature = "RecordingState")]
 #[allow(non_snake_case)]
 mod gen_RecordingState;
@@ -5169,6 +5367,12 @@ pub use gen_RequestCredentials::*;
 mod gen_RequestDestination;
 #[cfg(feature = "RequestDestination")]
 pub use gen_RequestDestination::*;
+
+#[cfg(feature = "RequestDeviceOptions")]
+#[allow(non_snake_case)]
+mod gen_RequestDeviceOptions;
+#[cfg(feature = "RequestDeviceOptions")]
+pub use gen_RequestDeviceOptions::*;
 
 #[cfg(feature = "RequestInit")]
 #[allow(non_snake_case)]
@@ -6087,6 +6291,12 @@ pub use gen_StorageManager::*;
 mod gen_StorageType;
 #[cfg(feature = "StorageType")]
 pub use gen_StorageType::*;
+
+#[cfg(feature = "StreamPipeOptions")]
+#[allow(non_snake_case)]
+mod gen_StreamPipeOptions;
+#[cfg(feature = "StreamPipeOptions")]
+pub use gen_StreamPipeOptions::*;
 
 #[cfg(feature = "StyleRuleChangeEventInit")]
 #[allow(non_snake_case)]
@@ -7126,6 +7336,156 @@ mod gen_UrlSearchParams;
 #[cfg(feature = "UrlSearchParams")]
 pub use gen_UrlSearchParams::*;
 
+#[cfg(feature = "Usb")]
+#[allow(non_snake_case)]
+mod gen_Usb;
+#[cfg(feature = "Usb")]
+pub use gen_Usb::*;
+
+#[cfg(feature = "UsbAlternateInterface")]
+#[allow(non_snake_case)]
+mod gen_UsbAlternateInterface;
+#[cfg(feature = "UsbAlternateInterface")]
+pub use gen_UsbAlternateInterface::*;
+
+#[cfg(feature = "UsbConfiguration")]
+#[allow(non_snake_case)]
+mod gen_UsbConfiguration;
+#[cfg(feature = "UsbConfiguration")]
+pub use gen_UsbConfiguration::*;
+
+#[cfg(feature = "UsbConnectionEvent")]
+#[allow(non_snake_case)]
+mod gen_UsbConnectionEvent;
+#[cfg(feature = "UsbConnectionEvent")]
+pub use gen_UsbConnectionEvent::*;
+
+#[cfg(feature = "UsbConnectionEventInit")]
+#[allow(non_snake_case)]
+mod gen_UsbConnectionEventInit;
+#[cfg(feature = "UsbConnectionEventInit")]
+pub use gen_UsbConnectionEventInit::*;
+
+#[cfg(feature = "UsbControlTransferParameters")]
+#[allow(non_snake_case)]
+mod gen_UsbControlTransferParameters;
+#[cfg(feature = "UsbControlTransferParameters")]
+pub use gen_UsbControlTransferParameters::*;
+
+#[cfg(feature = "UsbDevice")]
+#[allow(non_snake_case)]
+mod gen_UsbDevice;
+#[cfg(feature = "UsbDevice")]
+pub use gen_UsbDevice::*;
+
+#[cfg(feature = "UsbDeviceFilter")]
+#[allow(non_snake_case)]
+mod gen_UsbDeviceFilter;
+#[cfg(feature = "UsbDeviceFilter")]
+pub use gen_UsbDeviceFilter::*;
+
+#[cfg(feature = "UsbDeviceRequestOptions")]
+#[allow(non_snake_case)]
+mod gen_UsbDeviceRequestOptions;
+#[cfg(feature = "UsbDeviceRequestOptions")]
+pub use gen_UsbDeviceRequestOptions::*;
+
+#[cfg(feature = "UsbDirection")]
+#[allow(non_snake_case)]
+mod gen_UsbDirection;
+#[cfg(feature = "UsbDirection")]
+pub use gen_UsbDirection::*;
+
+#[cfg(feature = "UsbEndpoint")]
+#[allow(non_snake_case)]
+mod gen_UsbEndpoint;
+#[cfg(feature = "UsbEndpoint")]
+pub use gen_UsbEndpoint::*;
+
+#[cfg(feature = "UsbEndpointType")]
+#[allow(non_snake_case)]
+mod gen_UsbEndpointType;
+#[cfg(feature = "UsbEndpointType")]
+pub use gen_UsbEndpointType::*;
+
+#[cfg(feature = "UsbInTransferResult")]
+#[allow(non_snake_case)]
+mod gen_UsbInTransferResult;
+#[cfg(feature = "UsbInTransferResult")]
+pub use gen_UsbInTransferResult::*;
+
+#[cfg(feature = "UsbInterface")]
+#[allow(non_snake_case)]
+mod gen_UsbInterface;
+#[cfg(feature = "UsbInterface")]
+pub use gen_UsbInterface::*;
+
+#[cfg(feature = "UsbIsochronousInTransferPacket")]
+#[allow(non_snake_case)]
+mod gen_UsbIsochronousInTransferPacket;
+#[cfg(feature = "UsbIsochronousInTransferPacket")]
+pub use gen_UsbIsochronousInTransferPacket::*;
+
+#[cfg(feature = "UsbIsochronousInTransferResult")]
+#[allow(non_snake_case)]
+mod gen_UsbIsochronousInTransferResult;
+#[cfg(feature = "UsbIsochronousInTransferResult")]
+pub use gen_UsbIsochronousInTransferResult::*;
+
+#[cfg(feature = "UsbIsochronousOutTransferPacket")]
+#[allow(non_snake_case)]
+mod gen_UsbIsochronousOutTransferPacket;
+#[cfg(feature = "UsbIsochronousOutTransferPacket")]
+pub use gen_UsbIsochronousOutTransferPacket::*;
+
+#[cfg(feature = "UsbIsochronousOutTransferResult")]
+#[allow(non_snake_case)]
+mod gen_UsbIsochronousOutTransferResult;
+#[cfg(feature = "UsbIsochronousOutTransferResult")]
+pub use gen_UsbIsochronousOutTransferResult::*;
+
+#[cfg(feature = "UsbOutTransferResult")]
+#[allow(non_snake_case)]
+mod gen_UsbOutTransferResult;
+#[cfg(feature = "UsbOutTransferResult")]
+pub use gen_UsbOutTransferResult::*;
+
+#[cfg(feature = "UsbPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_UsbPermissionDescriptor;
+#[cfg(feature = "UsbPermissionDescriptor")]
+pub use gen_UsbPermissionDescriptor::*;
+
+#[cfg(feature = "UsbPermissionResult")]
+#[allow(non_snake_case)]
+mod gen_UsbPermissionResult;
+#[cfg(feature = "UsbPermissionResult")]
+pub use gen_UsbPermissionResult::*;
+
+#[cfg(feature = "UsbPermissionStorage")]
+#[allow(non_snake_case)]
+mod gen_UsbPermissionStorage;
+#[cfg(feature = "UsbPermissionStorage")]
+pub use gen_UsbPermissionStorage::*;
+
+#[cfg(feature = "UsbRecipient")]
+#[allow(non_snake_case)]
+mod gen_UsbRecipient;
+#[cfg(feature = "UsbRecipient")]
+pub use gen_UsbRecipient::*;
+
+#[cfg(feature = "UsbRequestType")]
+#[allow(non_snake_case)]
+mod gen_UsbRequestType;
+#[cfg(feature = "UsbRequestType")]
+pub use gen_UsbRequestType::*;
+
+#[cfg(feature = "UsbTransferStatus")]
+#[allow(non_snake_case)]
+mod gen_UsbTransferStatus;
+#[cfg(feature = "UsbTransferStatus")]
+pub use gen_UsbTransferStatus::*;
+
 #[cfg(feature = "UserProximityEvent")]
 #[allow(non_snake_case)]
 mod gen_UserProximityEvent;
@@ -7149,6 +7509,18 @@ pub use gen_UserVerificationRequirement::*;
 mod gen_ValidityState;
 #[cfg(feature = "ValidityState")]
 pub use gen_ValidityState::*;
+
+#[cfg(feature = "ValueEvent")]
+#[allow(non_snake_case)]
+mod gen_ValueEvent;
+#[cfg(feature = "ValueEvent")]
+pub use gen_ValueEvent::*;
+
+#[cfg(feature = "ValueEventInit")]
+#[allow(non_snake_case)]
+mod gen_ValueEventInit;
+#[cfg(feature = "ValueEventInit")]
+pub use gen_ValueEventInit::*;
 
 #[cfg(feature = "VideoConfiguration")]
 #[allow(non_snake_case)]
@@ -7287,6 +7659,30 @@ pub use gen_VttCue::*;
 mod gen_VttRegion;
 #[cfg(feature = "VttRegion")]
 pub use gen_VttRegion::*;
+
+#[cfg(feature = "WakeLock")]
+#[allow(non_snake_case)]
+mod gen_WakeLock;
+#[cfg(feature = "WakeLock")]
+pub use gen_WakeLock::*;
+
+#[cfg(feature = "WakeLockSentinel")]
+#[allow(non_snake_case)]
+mod gen_WakeLockSentinel;
+#[cfg(feature = "WakeLockSentinel")]
+pub use gen_WakeLockSentinel::*;
+
+#[cfg(feature = "WakeLockType")]
+#[allow(non_snake_case)]
+mod gen_WakeLockType;
+#[cfg(feature = "WakeLockType")]
+pub use gen_WakeLockType::*;
+
+#[cfg(feature = "WatchAdvertisementsOptions")]
+#[allow(non_snake_case)]
+mod gen_WatchAdvertisementsOptions;
+#[cfg(feature = "WatchAdvertisementsOptions")]
+pub use gen_WatchAdvertisementsOptions::*;
 
 #[cfg(feature = "WaveShaperNode")]
 #[allow(non_snake_case)]

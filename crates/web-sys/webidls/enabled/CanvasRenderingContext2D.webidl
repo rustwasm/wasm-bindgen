@@ -96,7 +96,7 @@ interface CanvasRenderingContext2D {
    * and Web Extensions (with a permission) only.
    */
   [Throws, Func="CanvasUtils::HasDrawWindowPrivilege"]
-  void drawWindow(Window window, double x, double y, double w, double h,
+  undefined drawWindow(Window window, double x, double y, double w, double h,
                   DOMString bgColor, optional unsigned long flags = 0);
 
   /**
@@ -104,7 +104,7 @@ interface CanvasRenderingContext2D {
    * backend to fallback to a software one. All state should be preserved.
    */
   [ChromeOnly]
-  void demote();
+  undefined demote();
 };
 
 CanvasRenderingContext2D includes CanvasState;
@@ -127,25 +127,25 @@ CanvasRenderingContext2D includes CanvasHitRegions;
 
 interface mixin CanvasState {
   // state
-  void save(); // push state on state stack
-  void restore(); // pop state stack and restore state
+  undefined save(); // push state on state stack
+  undefined restore(); // pop state stack and restore state
 };
 
 interface mixin CanvasTransform {
   // transformations (default transform is the identity matrix)
 // NOT IMPLEMENTED           attribute SVGMatrix currentTransform;
   [Throws, LenientFloat]
-  void scale(double x, double y);
+  undefined scale(double x, double y);
   [Throws, LenientFloat]
-  void rotate(double angle);
+  undefined rotate(double angle);
   [Throws, LenientFloat]
-  void translate(double x, double y);
+  undefined translate(double x, double y);
   [Throws, LenientFloat]
-  void transform(double a, double b, double c, double d, double e, double f);
+  undefined transform(double a, double b, double c, double d, double e, double f);
   [Throws, LenientFloat]
-  void setTransform(double a, double b, double c, double d, double e, double f);
+  undefined setTransform(double a, double b, double c, double d, double e, double f);
   [Throws]
-  void resetTransform();
+  undefined resetTransform();
   [NewObject, Throws]
   DOMMatrix getTransform();
 };
@@ -191,23 +191,23 @@ interface mixin CanvasFilters {
 
 interface mixin CanvasRect {
   [LenientFloat]
-  void clearRect(double x, double y, double w, double h);
+  undefined clearRect(double x, double y, double w, double h);
   [LenientFloat]
-  void fillRect(double x, double y, double w, double h);
+  undefined fillRect(double x, double y, double w, double h);
   [LenientFloat]
-  void strokeRect(double x, double y, double w, double h);
+  undefined strokeRect(double x, double y, double w, double h);
 };
 
 interface mixin CanvasDrawPath {
   // path API (see also CanvasPathMethods)
-  void beginPath();
-  void fill(optional CanvasWindingRule winding = "nonzero");
-  void fill(Path2D path, optional CanvasWindingRule winding = "nonzero");
-  void stroke();
-  void stroke(Path2D path);
-  void clip(optional CanvasWindingRule winding = "nonzero");
-  void clip(Path2D path, optional CanvasWindingRule winding = "nonzero");
-// NOT IMPLEMENTED  void resetClip();
+  undefined beginPath();
+  undefined fill(optional CanvasWindingRule winding = "nonzero");
+  undefined fill(Path2D path, optional CanvasWindingRule winding = "nonzero");
+  undefined stroke();
+  undefined stroke(Path2D path);
+  undefined clip(optional CanvasWindingRule winding = "nonzero");
+  undefined clip(Path2D path, optional CanvasWindingRule winding = "nonzero");
+// NOT IMPLEMENTED  undefined resetClip();
   [NeedsSubjectPrincipal]
   boolean isPointInPath(unrestricted double x, unrestricted double y, optional CanvasWindingRule winding = "nonzero");
   [NeedsSubjectPrincipal] // Only required because overloads can't have different extended attributes.
@@ -219,31 +219,31 @@ interface mixin CanvasDrawPath {
 };
 
 interface mixin CanvasUserInterface {
-  [Pref="canvas.focusring.enabled", Throws] void drawFocusIfNeeded(Element element);
-// NOT IMPLEMENTED  void drawSystemFocusRing(Path path, HTMLElement element);
+  [Pref="canvas.focusring.enabled", Throws] undefined drawFocusIfNeeded(Element element);
+// NOT IMPLEMENTED  undefined drawSystemFocusRing(Path path, HTMLElement element);
   [Pref="canvas.customfocusring.enabled"] boolean drawCustomFocusRing(Element element);
 // NOT IMPLEMENTED  boolean drawCustomFocusRing(Path path, HTMLElement element);
-// NOT IMPLEMENTED  void scrollPathIntoView();
-// NOT IMPLEMENTED  void scrollPathIntoView(Path path);
+// NOT IMPLEMENTED  undefined scrollPathIntoView();
+// NOT IMPLEMENTED  undefined scrollPathIntoView(Path path);
 };
 
 interface mixin CanvasText {
   // text (see also the CanvasPathDrawingStyles interface)
   [Throws, LenientFloat]
-  void fillText(DOMString text, double x, double y, optional double maxWidth);
+  undefined fillText(DOMString text, double x, double y, optional double maxWidth);
   [Throws, LenientFloat]
-  void strokeText(DOMString text, double x, double y, optional double maxWidth);
+  undefined strokeText(DOMString text, double x, double y, optional double maxWidth);
   [NewObject, Throws]
   TextMetrics measureText(DOMString text);
 };
 
 interface mixin CanvasDrawImage {
   [Throws, LenientFloat]
-  void drawImage(CanvasImageSource image, double dx, double dy);
+  undefined drawImage(CanvasImageSource image, double dx, double dy);
   [Throws, LenientFloat]
-  void drawImage(CanvasImageSource image, double dx, double dy, double dw, double dh);
+  undefined drawImage(CanvasImageSource image, double dx, double dy, double dw, double dh);
   [Throws, LenientFloat]
-  void drawImage(CanvasImageSource image, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh);
+  undefined drawImage(CanvasImageSource image, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh);
 };
 
 interface mixin CanvasImageData {
@@ -255,9 +255,9 @@ interface mixin CanvasImageData {
   [NewObject, Throws, NeedsSubjectPrincipal]
   ImageData getImageData(double sx, double sy, double sw, double sh);
   [Throws]
-  void putImageData(ImageData imagedata, double dx, double dy);
+  undefined putImageData(ImageData imagedata, double dx, double dy);
   [Throws]
-  void putImageData(ImageData imagedata, double dx, double dy, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight);
+  undefined putImageData(ImageData imagedata, double dx, double dy, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight);
 };
 
 interface mixin CanvasPathDrawingStyles {
@@ -271,7 +271,7 @@ interface mixin CanvasPathDrawingStyles {
   attribute double miterLimit; // (default 10)
 
   // dashed lines
-  [LenientFloat, Throws] void setLineDash(sequence<double> segments); // default empty
+  [LenientFloat, Throws] undefined setLineDash(sequence<double> segments); // default empty
   sequence<double> getLineDash();
   [LenientFloat] attribute double lineDashOffset;
 };
@@ -286,52 +286,52 @@ interface mixin CanvasTextDrawingStyles {
 
 interface mixin CanvasPathMethods {
   // shared path API methods
-  void closePath();
+  undefined closePath();
   [LenientFloat]
-  void moveTo(double x, double y);
+  undefined moveTo(double x, double y);
   [LenientFloat]
-  void lineTo(double x, double y);
+  undefined lineTo(double x, double y);
   [LenientFloat]
-  void quadraticCurveTo(double cpx, double cpy, double x, double y);
+  undefined quadraticCurveTo(double cpx, double cpy, double x, double y);
 
   [LenientFloat]
-  void bezierCurveTo(double cp1x, double cp1y, double cp2x, double cp2y, double x, double y);
-
-  [Throws, LenientFloat]
-  void arcTo(double x1, double y1, double x2, double y2, double radius);
-// NOT IMPLEMENTED  [LenientFloat] void arcTo(double x1, double y1, double x2, double y2, double radiusX, double radiusY, double rotation);
-
-  [LenientFloat]
-  void rect(double x, double y, double w, double h);
+  undefined bezierCurveTo(double cp1x, double cp1y, double cp2x, double cp2y, double x, double y);
 
   [Throws, LenientFloat]
-  void arc(double x, double y, double radius, double startAngle, double endAngle, optional boolean anticlockwise = false);
+  undefined arcTo(double x1, double y1, double x2, double y2, double radius);
+// NOT IMPLEMENTED  [LenientFloat] undefined arcTo(double x1, double y1, double x2, double y2, double radiusX, double radiusY, double rotation);
+
+  [LenientFloat]
+  undefined rect(double x, double y, double w, double h);
 
   [Throws, LenientFloat]
-  void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, optional boolean anticlockwise = false);
+  undefined arc(double x, double y, double radius, double startAngle, double endAngle, optional boolean anticlockwise = false);
+
+  [Throws, LenientFloat]
+  undefined ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, optional boolean anticlockwise = false);
 };
 
 interface mixin CanvasHitRegions {
   // hit regions
-  [Pref="canvas.hitregions.enabled", Throws] void addHitRegion(optional HitRegionOptions options);
-  [Pref="canvas.hitregions.enabled"] void removeHitRegion(DOMString id);
-  [Pref="canvas.hitregions.enabled"] void clearHitRegions();
+  [Pref="canvas.hitregions.enabled", Throws] undefined addHitRegion(optional HitRegionOptions options);
+  [Pref="canvas.hitregions.enabled"] undefined removeHitRegion(DOMString id);
+  [Pref="canvas.hitregions.enabled"] undefined clearHitRegions();
 };
 
 interface CanvasGradient {
   // opaque object
   [Throws]
   // addColorStop should take a double
-  void addColorStop(float offset, DOMString color);
+  undefined addColorStop(float offset, DOMString color);
 };
 
 interface CanvasPattern {
   // opaque object
   // [Throws, LenientFloat] - could not do this overload because of bug 1020975
-  // void setTransform(double a, double b, double c, double d, double e, double f);
+  // undefined setTransform(double a, double b, double c, double d, double e, double f);
 
   // No throw necessary here - SVGMatrix is always good.
-  void setTransform(SVGMatrix matrix);
+  undefined setTransform(SVGMatrix matrix);
 };
 
 interface TextMetrics {
@@ -339,17 +339,19 @@ interface TextMetrics {
   // x-direction
   readonly attribute double width; // advance width
 
-  /*
-   * NOT IMPLEMENTED YET
-
   readonly attribute double actualBoundingBoxLeft;
   readonly attribute double actualBoundingBoxRight;
 
-  // y-direction
   readonly attribute double fontBoundingBoxAscent;
   readonly attribute double fontBoundingBoxDescent;
+
+  // y-direction
   readonly attribute double actualBoundingBoxAscent;
   readonly attribute double actualBoundingBoxDescent;
+
+  /*
+   * NOT IMPLEMENTED YET
+  
   readonly attribute double emHeightAscent;
   readonly attribute double emHeightDescent;
   readonly attribute double hangingBaseline;
@@ -365,6 +367,6 @@ interface TextMetrics {
  Constructor(DOMString pathString)]
 interface Path2D
 {
-  void addPath(Path2D path, optional SVGMatrix transformation);
+  undefined addPath(Path2D path, optional SVGMatrix transformation);
 };
 Path2D includes CanvasPathMethods;

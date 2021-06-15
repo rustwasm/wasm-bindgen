@@ -34,19 +34,19 @@ interface MediaRecorder : EventTarget {
   attribute EventHandler onwarning;
 
   [Throws]
-  void start(optional long timeSlice);
+  undefined start(optional long timeSlice);
 
   [Throws]
-  void stop();
+  undefined stop();
 
   [Throws]
-  void pause();
+  undefined pause();
 
   [Throws]
-  void resume();
+  undefined resume();
 
   [Throws]
-  void requestData();
+  undefined requestData();
 
   static boolean isTypeSupported(DOMString type);
 };

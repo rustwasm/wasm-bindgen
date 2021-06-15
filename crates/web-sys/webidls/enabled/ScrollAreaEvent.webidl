@@ -11,7 +11,7 @@ interface ScrollAreaEvent : UIEvent
   readonly attribute float width;
   readonly attribute float height;
 
-  void initScrollAreaEvent(DOMString type,
+  undefined initScrollAreaEvent(DOMString type,
                            optional boolean canBubble = false,
                            optional boolean cancelable = false,
                            optional Window? view = null,

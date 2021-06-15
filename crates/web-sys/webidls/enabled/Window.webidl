@@ -48,11 +48,11 @@
   [Replaceable, Throws] readonly attribute BarProp statusbar;
   [Replaceable, Throws] readonly attribute BarProp toolbar;
   [Throws] attribute DOMString status;
-  [Throws, CrossOriginCallable] void close();
+  [Throws, CrossOriginCallable] undefined close();
   [Throws, CrossOriginReadable] readonly attribute boolean closed;
-  [Throws] void stop();
-  [Throws, CrossOriginCallable] void focus();
-  [Throws, CrossOriginCallable] void blur();
+  [Throws] undefined stop();
+  [Throws, CrossOriginCallable] undefined focus();
+  [Throws, CrossOriginCallable] undefined blur();
   [Replaceable] readonly attribute any event;
 
   // other browsing contexts
@@ -76,15 +76,15 @@
   [Throws, Pref="browser.cache.offline.enable", Func="nsGlobalWindowInner::OfflineCacheAllowedForContext"] readonly attribute ApplicationCache applicationCache;
 
   // user prompts
-  [Throws, NeedsSubjectPrincipal] void alert();
-  [Throws, NeedsSubjectPrincipal] void alert(DOMString message);
+  [Throws, NeedsSubjectPrincipal] undefined alert();
+  [Throws, NeedsSubjectPrincipal] undefined alert(DOMString message);
   [Throws, NeedsSubjectPrincipal] boolean confirm(optional DOMString message = "");
   [Throws, NeedsSubjectPrincipal] DOMString? prompt(optional DOMString message = "", optional DOMString default = "");
   [Throws, Func="nsGlobalWindowInner::IsWindowPrintEnabled"]
-  void print();
+  undefined print();
 
   [Throws, CrossOriginCallable, NeedsSubjectPrincipal]
-  void postMessage(any message, DOMString targetOrigin, optional sequence<object> transfer = []);
+  undefined postMessage(any message, DOMString targetOrigin, optional sequence<object> transfer = []);
 
   // also has obsolete members
 };
@@ -112,8 +112,8 @@ Window includes WindowLocalStorage;
 
 // http://www.whatwg.org/specs/web-apps/current-work/
 partial interface Window {
-  void captureEvents();
-  void releaseEvents();
+  undefined captureEvents();
+  undefined releaseEvents();
 };
 
 // https://dvcs.w3.org/hg/editing/raw-file/tip/editing.html
@@ -149,14 +149,14 @@ partial interface Window {
   [Replaceable, Throws] readonly attribute Screen screen;
 
   // browsing context
-  //[Throws] void moveTo(double x, double y);
-  //[Throws] void moveBy(double x, double y);
-  //[Throws] void resizeTo(double x, double y);
-  //[Throws] void resizeBy(double x, double y);
-  [Throws, NeedsCallerType] void moveTo(long x, long y);
-  [Throws, NeedsCallerType] void moveBy(long x, long y);
-  [Throws, NeedsCallerType] void resizeTo(long x, long y);
-  [Throws, NeedsCallerType] void resizeBy(long x, long y);
+  //[Throws] undefined moveTo(double x, double y);
+  //[Throws] undefined moveBy(double x, double y);
+  //[Throws] undefined resizeTo(double x, double y);
+  //[Throws] undefined resizeBy(double x, double y);
+  [Throws, NeedsCallerType] undefined moveTo(long x, long y);
+  [Throws, NeedsCallerType] undefined moveBy(long x, long y);
+  [Throws, NeedsCallerType] undefined resizeTo(long x, long y);
+  [Throws, NeedsCallerType] undefined resizeBy(long x, long y);
 
   // viewport
   // These are writable because we allow chrome to write them.  And they need
@@ -168,12 +168,12 @@ partial interface Window {
   [Throws, NeedsCallerType] attribute any innerHeight;
 
   // viewport scrolling
-  void scroll(unrestricted double x, unrestricted double y);
-  void scroll(optional ScrollToOptions options);
-  void scrollTo(unrestricted double x, unrestricted double y);
-  void scrollTo(optional ScrollToOptions options);
-  void scrollBy(unrestricted double x, unrestricted double y);
-  void scrollBy(optional ScrollToOptions options);
+  undefined scroll(unrestricted double x, unrestricted double y);
+  undefined scroll(optional ScrollToOptions options);
+  undefined scrollTo(unrestricted double x, unrestricted double y);
+  undefined scrollTo(optional ScrollToOptions options);
+  undefined scrollBy(unrestricted double x, unrestricted double y);
+  undefined scrollBy(optional ScrollToOptions options);
   // The four properties below are double per spec at the moment, but whether
   // that will continue is unclear.
   [Replaceable, Throws] readonly attribute double scrollX;
@@ -199,9 +199,9 @@ partial interface Window {
 // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/RequestAnimationFrame/Overview.html
 partial interface Window {
   [Throws] long requestAnimationFrame(FrameRequestCallback callback);
-  [Throws] void cancelAnimationFrame(long handle);
+  [Throws] undefined cancelAnimationFrame(long handle);
 };
-callback FrameRequestCallback = void (DOMHighResTimeStamp time);
+callback FrameRequestCallback = undefined (DOMHighResTimeStamp time);
 
 // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming/Overview.html
 partial interface Window {
@@ -264,11 +264,11 @@ partial interface Window {
   unsigned long requestIdleCallback(IdleRequestCallback callback,
                                     optional IdleRequestOptions options);
   [Func="nsGlobalWindowInner::IsRequestIdleCallbackEnabled"]
-  void          cancelIdleCallback(unsigned long handle);
+  undefined          cancelIdleCallback(unsigned long handle);
 };
 
 dictionary IdleRequestOptions {
   unsigned long timeout;
 };
 
-callback IdleRequestCallback = void (IdleDeadline deadline);
+callback IdleRequestCallback = undefined (IdleDeadline deadline);

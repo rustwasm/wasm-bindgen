@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-wasm-conventions"
-version = "0.2.67"
+version = "0.2.74"
 authors = ["The wasm-bindgen developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/wasm-conventions"
@@ -10,5 +10,5 @@ description = "Utilities for working with Wasm codegen conventions (usually esta
 edition = "2018"
 
 [dependencies]
-walrus = "0.18.0"
+walrus = "0.19.0"
 anyhow = "1.0"

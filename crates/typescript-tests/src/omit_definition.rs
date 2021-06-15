@@ -32,3 +32,12 @@ pub enum MyEnum {
     Two,
     Three,
 }
+
+macro_rules! generate_ts {
+    ($lit:literal) => {
+        #[wasm_bindgen(typescript_custom_section)]
+        const _: &str = $lit;
+    };
+}
+
+generate_ts!("");

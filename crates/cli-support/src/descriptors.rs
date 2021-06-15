@@ -116,7 +116,10 @@ impl WasmBindgenDescriptorsSection {
         // freshly manufactured import. Save off the type of this import in
         // ourselves, and then we're good to go.
         let ty = module.funcs.get(wbindgen_describe_closure).ty();
-        for (func, descriptor) in func_to_descriptor {
+        // sort to ensure ids and caches are consistent across runs
+        let mut items = func_to_descriptor.into_iter().collect::<Vec<_>>();
+        items.sort_by_key(|i| i.0);
+        for (func, descriptor) in items {
             // This uses a cache so that if the same closure exists multiple times it will
             // deduplicate it so it only exists once.
             let id = match self.cached_closures.get(&descriptor) {

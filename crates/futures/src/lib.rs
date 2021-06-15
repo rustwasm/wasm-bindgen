@@ -43,6 +43,8 @@ use std::task::{Context, Poll, Waker};
 use wasm_bindgen::prelude::*;
 
 mod queue;
+#[cfg(feature = "futures-core-03-stream")]
+pub mod stream;
 
 mod task {
     use cfg_if::cfg_if;

@@ -11,10 +11,10 @@ interface BrowserFeedWriter {
   /**
    * Writes the feed content, assumes that the feed writer is initialized.
    */
-  void writeContent();
+  undefined writeContent();
 
   /**
    * Uninitialize the feed writer.
    */
-  void close();
+  undefined close();
 };

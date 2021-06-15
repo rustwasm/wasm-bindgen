@@ -20,7 +20,7 @@ interface WorkerGlobalScope : EventTarget {
   readonly attribute WorkerNavigator navigator;
 
   [Throws]
-  void importScripts(DOMString... urls);
+  undefined importScripts(DOMString... urls);
 
   attribute OnErrorEventHandler onerror;
 

@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = DataTransferItemList , typescript_type = "DataTransferItemList" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = DataTransferItemList , typescript_type = "DataTransferItemList")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `DataTransferItemList` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItemList`*"]
     pub type DataTransferItemList;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "DataTransferItemList" , js_name = length ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "DataTransferItemList" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItemList/length)"]
@@ -19,7 +19,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItemList`*"]
     pub fn length(this: &DataTransferItemList) -> u32;
     #[cfg(feature = "DataTransferItem")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "DataTransferItemList" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "DataTransferItemList" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItemList/add)"]
@@ -31,7 +31,7 @@ extern "C" {
         type_: &str,
     ) -> Result<Option<DataTransferItem>, JsValue>;
     #[cfg(all(feature = "DataTransferItem", feature = "File",))]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "DataTransferItemList" , js_name = add ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "DataTransferItemList" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItemList/add)"]
@@ -41,14 +41,14 @@ extern "C" {
         this: &DataTransferItemList,
         data: &File,
     ) -> Result<Option<DataTransferItem>, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "DataTransferItemList" , js_name = clear ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "DataTransferItemList" , js_name = clear)]
     #[doc = "The `clear()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItemList/clear)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItemList`*"]
     pub fn clear(this: &DataTransferItemList) -> Result<(), JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "DataTransferItemList" , js_name = remove ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "DataTransferItemList" , js_name = remove)]
     #[doc = "The `remove()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItemList/remove)"]

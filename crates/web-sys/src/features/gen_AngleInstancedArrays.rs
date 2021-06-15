@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ANGLE_instanced_arrays , typescript_type = "ANGLE_instanced_arrays" ) ]
+    # [wasm_bindgen (is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = ANGLE_instanced_arrays , typescript_type = "ANGLE_instanced_arrays")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AngleInstancedArrays` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AngleInstancedArrays`*"]
     pub type AngleInstancedArrays;
-    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawArraysInstancedANGLE ) ]
+    # [wasm_bindgen (method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawArraysInstancedANGLE)]
     #[doc = "The `drawArraysInstancedANGLE()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/drawArraysInstancedANGLE)"]
@@ -24,7 +24,7 @@ extern "C" {
         count: i32,
         primcount: i32,
     );
-    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawElementsInstancedANGLE ) ]
+    # [wasm_bindgen (method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawElementsInstancedANGLE)]
     #[doc = "The `drawElementsInstancedANGLE()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/drawElementsInstancedANGLE)"]
@@ -38,7 +38,7 @@ extern "C" {
         offset: i32,
         primcount: i32,
     );
-    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawElementsInstancedANGLE ) ]
+    # [wasm_bindgen (method , structural , js_class = "ANGLE_instanced_arrays" , js_name = drawElementsInstancedANGLE)]
     #[doc = "The `drawElementsInstancedANGLE()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/drawElementsInstancedANGLE)"]
@@ -52,7 +52,7 @@ extern "C" {
         offset: f64,
         primcount: i32,
     );
-    # [ wasm_bindgen ( method , structural , js_class = "ANGLE_instanced_arrays" , js_name = vertexAttribDivisorANGLE ) ]
+    # [wasm_bindgen (method , structural , js_class = "ANGLE_instanced_arrays" , js_name = vertexAttribDivisorANGLE)]
     #[doc = "The `vertexAttribDivisorANGLE()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ANGLE_instanced_arrays/vertexAttribDivisorANGLE)"]

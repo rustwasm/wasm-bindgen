@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = :: js_sys :: Object , js_name = MessageChannel , typescript_type = "MessageChannel" ) ]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = MessageChannel , typescript_type = "MessageChannel")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `MessageChannel` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MessageChannel`*"]
     pub type MessageChannel;
     #[cfg(feature = "MessagePort")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port1 ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "MessageChannel" , js_name = port1)]
     #[doc = "Getter for the `port1` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port1)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MessageChannel`, `MessagePort`*"]
     pub fn port1(this: &MessageChannel) -> MessagePort;
     #[cfg(feature = "MessagePort")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "MessageChannel" , js_name = port2 ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "MessageChannel" , js_name = port2)]
     #[doc = "Getter for the `port2` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel/port2)"]

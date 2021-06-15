@@ -22,13 +22,13 @@ interface Storage {
   getter DOMString? getItem(DOMString key);
 
   [Throws, NeedsSubjectPrincipal]
-  setter void setItem(DOMString key, DOMString value);
+  setter undefined setItem(DOMString key, DOMString value);
 
   [Throws, NeedsSubjectPrincipal]
-  deleter void removeItem(DOMString key);
+  deleter undefined removeItem(DOMString key);
 
   [Throws, NeedsSubjectPrincipal]
-  void clear();
+  undefined clear();
 
   [ChromeOnly]
   readonly attribute boolean isSessionOnly;

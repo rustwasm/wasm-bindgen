@@ -102,7 +102,7 @@ impl Interval {
         // Construct a new closure.
         let closure = Closure::new(f);
 
-        // Pass the closuer to JS, to run every n milliseconds.
+        // Pass the closure to JS, to run every n milliseconds.
         let token = setInterval(&closure, millis);
 
         Interval { closure, token }

@@ -14,18 +14,18 @@ interface ScrollBoxObject : BoxObject {
    * Values will be clamped to legal values.
    */
   [Throws]
-  void scrollTo(long x, long y);
+  undefined scrollTo(long x, long y);
 
   /**
    * Scroll the given amount of device pixels to the right and down.
    * Values will be clamped to make the resuling position legal.
    */
   [Throws]
-  void scrollBy(long dx, long dy);
+  undefined scrollBy(long dx, long dy);
   [Throws]
-  void scrollByIndex(long dindexes);
+  undefined scrollByIndex(long dindexes);
   [Throws]
-  void scrollToElement(Element child);
+  undefined scrollToElement(Element child);
 
   /**
    * Get the current scroll position in css pixels.
@@ -41,5 +41,5 @@ interface ScrollBoxObject : BoxObject {
   readonly attribute long scrolledHeight;
 
   [Throws]
-  void ensureElementIsVisible(Element child);
+  undefined ensureElementIsVisible(Element child);
 };

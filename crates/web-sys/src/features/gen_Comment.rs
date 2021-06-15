@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = Comment , typescript_type = "Comment" ) ]
+    # [wasm_bindgen (extends = CharacterData , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = Comment , typescript_type = "Comment")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Comment` class."]
     #[doc = ""]

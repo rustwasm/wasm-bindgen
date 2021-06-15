@@ -18,7 +18,7 @@ interface Clients {
   [NewObject]
   Promise<WindowClient?> openWindow(USVString url);
   [NewObject]
-  Promise<void> claim();
+  Promise<undefined> claim();
 };
 
 dictionary ClientQueryOptions {

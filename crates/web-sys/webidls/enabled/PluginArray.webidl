@@ -14,5 +14,5 @@ interface PluginArray {
   [NeedsCallerType]
   getter Plugin? namedItem(DOMString name);
 
-  void refresh(optional boolean reloadDocuments = false);
+  undefined refresh(optional boolean reloadDocuments = false);
 };

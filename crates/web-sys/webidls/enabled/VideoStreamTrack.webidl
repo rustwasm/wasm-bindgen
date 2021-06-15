@@ -13,7 +13,7 @@
 // [Constructor(optional MediaTrackConstraints videoConstraints)]
 interface VideoStreamTrack : MediaStreamTrack {
 //    static sequence<DOMString> getSourceIds ();
-//    void                       takePhoto ();
+//    undefined                       takePhoto ();
 //                attribute EventHandler onphoto;
 //                attribute EventHandler onphotoerror;
 };

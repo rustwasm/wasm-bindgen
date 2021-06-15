@@ -27,5 +27,5 @@ interface DOMParser {
   // Can be used to allow a DOMParser to parse XUL/XBL no matter what
   // principal it's using for the document.
   [ChromeOnly]
-  void forceEnableXULXBL();
+  undefined forceEnableXULXBL();
 };

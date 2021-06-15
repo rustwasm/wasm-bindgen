@@ -31,5 +31,5 @@ interface HTMLFieldSetElement : HTMLElement {
   boolean checkValidity();
   boolean reportValidity();
 
-  void setCustomValidity(DOMString error);
+  undefined setCustomValidity(DOMString error);
 };

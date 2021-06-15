@@ -43,13 +43,13 @@ interface Element : Node {
   [CEReactions, NeedsSubjectPrincipal=NonSystem, Throws]
   boolean toggleAttribute(DOMString name, optional boolean force);
   [CEReactions, NeedsSubjectPrincipal=NonSystem, Throws]
-  void setAttribute(DOMString name, DOMString value);
+  undefined setAttribute(DOMString name, DOMString value);
   [CEReactions, NeedsSubjectPrincipal=NonSystem, Throws]
-  void setAttributeNS(DOMString? namespace, DOMString name, DOMString value);
+  undefined setAttributeNS(DOMString? namespace, DOMString name, DOMString value);
   [CEReactions, Throws]
-  void removeAttribute(DOMString name);
+  undefined removeAttribute(DOMString name);
   [CEReactions, Throws]
-  void removeAttributeNS(DOMString? namespace, DOMString localName);
+  undefined removeAttributeNS(DOMString? namespace, DOMString localName);
   [Pure]
   boolean hasAttribute(DOMString name);
   [Pure]
@@ -78,7 +78,7 @@ interface Element : Node {
   Element? insertAdjacentElement(DOMString where, Element element); // historical
 
   [Throws]
-  void insertAdjacentText(DOMString where, DOMString data); // historical
+  undefined insertAdjacentText(DOMString where, DOMString data); // historical
 
   /**
    * The ratio of font-size-inflated text font size to computed font
@@ -98,10 +98,10 @@ interface Element : Node {
 
   // Pointer events methods.
   [Throws, Pref="dom.w3c_pointer_events.enabled"]
-  void setPointerCapture(long pointerId);
+  undefined setPointerCapture(long pointerId);
 
   [Throws, Pref="dom.w3c_pointer_events.enabled"]
-  void releasePointerCapture(long pointerId);
+  undefined releasePointerCapture(long pointerId);
 
   [Pref="dom.w3c_pointer_events.enabled"]
   boolean hasPointerCapture(long pointerId);
@@ -115,19 +115,19 @@ interface Element : Node {
    * element.
    *
    */
-  void setCapture(optional boolean retargetToElement = false);
+  undefined setCapture(optional boolean retargetToElement = false);
 
   /**
    * If this element has captured the mouse, release the capture. If another
    * element has captured the mouse, this method has no effect.
    */
-  void releaseCapture();
+  undefined releaseCapture();
 
   /*
    * Chrome-only version of setCapture that works outside of a mousedown event.
    */
   [ChromeOnly]
-  void setCaptureAlways(optional boolean retargetToElement = false);
+  undefined setCaptureAlways(optional boolean retargetToElement = false);
 
   // Obsolete methods.
   Attr? getAttributeNode(DOMString name);
@@ -186,19 +186,19 @@ partial interface Element {
   DOMRect getBoundingClientRect();
 
   // scrolling
-  void scrollIntoView(optional (boolean or ScrollIntoViewOptions) arg);
+  undefined scrollIntoView(optional (boolean or ScrollIntoViewOptions) arg);
   // None of the CSSOM attributes are [Pure], because they flush
            attribute long scrollTop;   // scroll on setting
            attribute long scrollLeft;  // scroll on setting
   readonly attribute long scrollWidth;
   readonly attribute long scrollHeight;
 
-  void scroll(unrestricted double x, unrestricted double y);
-  void scroll(optional ScrollToOptions options);
-  void scrollTo(unrestricted double x, unrestricted double y);
-  void scrollTo(optional ScrollToOptions options);
-  void scrollBy(unrestricted double x, unrestricted double y);
-  void scrollBy(optional ScrollToOptions options);
+  undefined scroll(unrestricted double x, unrestricted double y);
+  undefined scroll(optional ScrollToOptions options);
+  undefined scrollTo(unrestricted double x, unrestricted double y);
+  undefined scrollTo(optional ScrollToOptions options);
+  undefined scrollBy(unrestricted double x, unrestricted double y);
+  undefined scrollBy(optional ScrollToOptions options);
 
   readonly attribute long clientTop;
   readonly attribute long clientLeft;
@@ -213,7 +213,7 @@ partial interface Element {
   [CEReactions, Pure,SetterThrows,TreatNullAs=EmptyString]
   attribute DOMString outerHTML;
   [CEReactions, Throws]
-  void insertAdjacentHTML(DOMString position, DOMString text);
+  undefined insertAdjacentHTML(DOMString position, DOMString text);
 };
 
 // http://www.w3.org/TR/selectors-api/#interface-definitions
@@ -255,11 +255,11 @@ Element includes GeometryUtils;
 // https://fullscreen.spec.whatwg.org/#api
 partial interface Element {
   [Throws, Func="nsDocument::IsUnprefixedFullscreenEnabled", NeedsCallerType]
-  void requestFullscreen();
+  undefined requestFullscreen();
 };
 
 // https://w3c.github.io/pointerlock/#extensions-to-the-element-interface
 partial interface Element {
   [NeedsCallerType]
-  void requestPointerLock();
+  undefined requestPointerLock();
 };

@@ -101,7 +101,10 @@ pub(crate) struct CallbackInterfaceData<'src> {
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub(crate) enum OperationId<'src> {
-    Constructor,
+    /// The name of a constructor in crates/web-sys/webidls/enabled/*.webidl
+    ///
+    /// ex: Constructor(Some("ImageData"))
+    Constructor(Option<&'src str>),
     NamedConstructor(IgnoreTraits<&'src str>),
     /// The name of a function in crates/web-sys/webidls/enabled/*.webidl
     ///
@@ -390,7 +393,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor],
+                &[OperationId::Constructor(Some(self_name))],
                 &list.args.body.list,
                 &return_ty,
                 &None,
@@ -402,7 +405,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor],
+                &[OperationId::Constructor(Some(self_name))],
                 &[],
                 &return_ty,
                 &None,
@@ -498,6 +501,13 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
             }
             InterfaceMember::Setlike(_) => {
                 log::warn!("Unsupported WebIDL Setlike interface member: {:?}", self);
+                Ok(())
+            }
+            InterfaceMember::AsyncIterable(_iterable) => {
+                log::warn!(
+                    "Unsupported WebIDL async iterable interface member: {:?}",
+                    self
+                );
                 Ok(())
             }
         }

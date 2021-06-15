@@ -6,8 +6,7 @@ as documentation for the various known options, and as always PRs are welcome
 to update this if it's out of date!
 
 The methods of deployment and integration here are primarily tied to the
-`--target` flag. Note that the `--target` flag of `wasm-pack` and `wasm-bindgen`
-should behave the same way in this respect. The values possible here are:
+`--target` flag.
 
 | Value           | Summary                                                    |
 |-----------------|------------------------------------------------------------|
@@ -55,8 +54,7 @@ If you're not using a bundler but you're still running code in a web browser,
 `--target web` flag. You can check out a [full example][nomex] in the
 documentation, but the highlights of this output are:
 
-* When compiling you'll pass `--target web` to `wasm-pack` (or `wasm-bindgen`
-  directly).
+* When compiling you'll pass `--target web` to `wasm-bindgen`
 * The output can natively be included on a web page, and doesn't require any
   further postprocessing. The output is included as an ES module.
 * The `--target web` mode is not able to use NPM dependencies.
@@ -79,8 +77,7 @@ information about `--target no-modules`.
 **`--target nodejs`**
 
 If you're deploying WebAssembly into Node.js (perhaps as an alternative to a
-native module), then you'll want to pass the `--target nodejs` flag to
-`wasm-pack` or `wasm-bindgen`.
+native module), then you'll want to pass the `--target nodejs` flag to `wasm-bindgen`.
 
 Like the "without a bundler" strategy, this method of deployment does not
 require any further postprocessing. The generated JS shims can be `require`'d

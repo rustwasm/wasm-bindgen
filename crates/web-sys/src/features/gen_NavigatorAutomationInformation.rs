@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = NavigatorAutomationInformation , typescript_type = "NavigatorAutomationInformation" ) ]
+    # [wasm_bindgen (is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = NavigatorAutomationInformation , typescript_type = "NavigatorAutomationInformation")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `NavigatorAutomationInformation` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NavigatorAutomationInformation`*"]
     pub type NavigatorAutomationInformation;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "NavigatorAutomationInformation" , js_name = webdriver ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "NavigatorAutomationInformation" , js_name = webdriver)]
     #[doc = "Getter for the `webdriver` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorAutomationInformation/webdriver)"]

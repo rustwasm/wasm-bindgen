@@ -17,26 +17,26 @@ interface HTMLTableElement : HTMLElement {
            attribute HTMLTableCaptionElement? caption;
   HTMLElement createCaption();
   [CEReactions]
-  void deleteCaption();
+  undefined deleteCaption();
            [CEReactions, SetterThrows]
            attribute HTMLTableSectionElement? tHead;
   HTMLElement createTHead();
   [CEReactions]
-  void deleteTHead();
+  undefined deleteTHead();
            [CEReactions, SetterThrows]
            attribute HTMLTableSectionElement? tFoot;
   HTMLElement createTFoot();
   [CEReactions]
-  void deleteTFoot();
+  undefined deleteTFoot();
   readonly attribute HTMLCollection tBodies;
   HTMLElement createTBody();
   readonly attribute HTMLCollection rows;
   [Throws]
   HTMLElement insertRow(optional long index = -1);
   [CEReactions, Throws]
-  void deleteRow(long index);
+  undefined deleteRow(long index);
   //         attribute boolean sortable;
-  //void stopSorting();
+  //undefined stopSorting();
 };
 
 partial interface HTMLTableElement {

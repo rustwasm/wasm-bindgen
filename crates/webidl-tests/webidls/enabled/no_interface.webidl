@@ -1,7 +1,7 @@
 [NoInterfaceObject]
 interface NoInterfaceObject {
   readonly attribute double number;
-  void foo();
+  undefined foo();
 };
 
 interface GetNoInterfaceObject {

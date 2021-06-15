@@ -19,10 +19,11 @@ also like to be aware of it!
   an example of doing this too](../examples/wasm2js.html)). Note
   that at this time no bundler will do this by default, but we'd love to
   document plugins which do this if you are aware of one!
-
-* **Edge** - the `TextEncoder` and `TextDecoder` APIs are not currently
-  available in Edge which `wasm-bindgen` uses to encode/decode strings between
-  JS and Rust. You can polyfill this with at least one of two strategies:
+  
+* **Edge before 79+** - the `TextEncoder` and `TextDecoder` APIs, which
+  `wasm-bindgen` uses to encode/decode strings between JS and Rust, were not
+  available before version 79. You can polyfill this with at least one of two
+  strategies:
 
   1. If using a bundler, you can likely configure the bundler to polyfill these
      types by default. For example if you're using Webpack you can use the
@@ -31,7 +32,6 @@ also like to be aware of it!
 
      ```js
      const webpack = require('webpack');
-
      module.exports = {
          plugins: [
              new webpack.ProvidePlugin({
@@ -39,7 +39,6 @@ also like to be aware of it!
                TextEncoder: ['text-encoding', 'TextEncoder']
              })
          ]
-
          // ... other configuration options
      };
      ```
@@ -58,10 +57,9 @@ also like to be aware of it!
   forbids the usage of 64-bit integers (Rust types `i64` and `u64`) in
   exported/imported functions. When using `wasm-bindgen`, however, `u64` is
   allowed! The reason for this is that it's translated to the `BigInt` type in
-  JS. The `BigInt` class, however, is only currently supported in Chrome 67+ and
-  Firefox 68+ (as of the time of this writing) and isn't supported in Edge or
-  Safari, for example. For more, up-to-date details, see [`BigInt` on Can I
-  use...][ciu_bigint].
+  JS. The `BigInt` class is supported by all major browsers starting in the 
+  following versions: Chrome 67+, Firefox 68+, Edge 79+, and Safari 14+.
+
 
 If you find other incompatibilities please report them to us! We'd love to
 either keep this list up-to-date or fix the underlying bugs :)
@@ -72,4 +70,3 @@ either keep this list up-to-date or fix the underlying bugs :)
 [`text-encoding`]: https://www.npmjs.com/package/text-encoding
 [soq]: https://stackoverflow.com/questions/40662142/polyfill-for-textdecoder/46549188#46549188
 [mdntepi]: https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder#Polyfill
-[ciu_bigint]: https://caniuse.com/#feat=bigint

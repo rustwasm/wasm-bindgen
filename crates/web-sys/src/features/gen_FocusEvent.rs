@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = FocusEvent , typescript_type = "FocusEvent" ) ]
+    # [wasm_bindgen (extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = FocusEvent , typescript_type = "FocusEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `FocusEvent` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FocusEvent`*"]
     pub type FocusEvent;
     #[cfg(feature = "EventTarget")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "FocusEvent" , js_name = relatedTarget ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "FocusEvent" , js_name = relatedTarget)]
     #[doc = "Getter for the `relatedTarget` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/relatedTarget)"]

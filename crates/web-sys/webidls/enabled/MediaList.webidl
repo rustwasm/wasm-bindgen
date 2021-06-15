@@ -19,7 +19,7 @@ interface MediaList {
   readonly attribute unsigned long    length;
   getter DOMString?  item(unsigned long index);
   [Throws]
-  void               deleteMedium(DOMString oldMedium);
+  undefined               deleteMedium(DOMString oldMedium);
   [Throws]
-  void               appendMedium(DOMString newMedium);
+  undefined               appendMedium(DOMString newMedium);
 };

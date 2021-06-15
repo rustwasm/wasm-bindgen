@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGTextContentElement , typescript_type = "SVGTextContentElement" ) ]
+    # [wasm_bindgen (extends = SvgGraphicsElement , extends = SvgElement , extends = Element , extends = Node , extends = EventTarget , extends = :: js_sys :: Object , js_name = SVGTextContentElement , typescript_type = "SVGTextContentElement")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `SvgTextContentElement` class."]
     #[doc = ""]
@@ -12,7 +12,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgTextContentElement`*"]
     pub type SvgTextContentElement;
     #[cfg(feature = "SvgAnimatedLength")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextContentElement" , js_name = textLength ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGTextContentElement" , js_name = textLength)]
     #[doc = "Getter for the `textLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/textLength)"]
@@ -20,7 +20,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedLength`, `SvgTextContentElement`*"]
     pub fn text_length(this: &SvgTextContentElement) -> SvgAnimatedLength;
     #[cfg(feature = "SvgAnimatedEnumeration")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "SVGTextContentElement" , js_name = lengthAdjust ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGTextContentElement" , js_name = lengthAdjust)]
     #[doc = "Getter for the `lengthAdjust` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/lengthAdjust)"]
@@ -28,14 +28,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedEnumeration`, `SvgTextContentElement`*"]
     pub fn length_adjust(this: &SvgTextContentElement) -> SvgAnimatedEnumeration;
     #[cfg(feature = "SvgPoint")]
-    # [ wasm_bindgen ( method , structural , js_class = "SVGTextContentElement" , js_name = getCharNumAtPosition ) ]
+    # [wasm_bindgen (method , structural , js_class = "SVGTextContentElement" , js_name = getCharNumAtPosition)]
     #[doc = "The `getCharNumAtPosition()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getCharNumAtPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPoint`, `SvgTextContentElement`*"]
     pub fn get_char_num_at_position(this: &SvgTextContentElement, point: &SvgPoint) -> i32;
-    # [ wasm_bindgen ( method , structural , js_class = "SVGTextContentElement" , js_name = getComputedTextLength ) ]
+    # [wasm_bindgen (method , structural , js_class = "SVGTextContentElement" , js_name = getComputedTextLength)]
     #[doc = "The `getComputedTextLength()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getComputedTextLength)"]
@@ -43,7 +43,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SvgTextContentElement`*"]
     pub fn get_computed_text_length(this: &SvgTextContentElement) -> f32;
     #[cfg(feature = "SvgPoint")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGTextContentElement" , js_name = getEndPositionOfChar ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGTextContentElement" , js_name = getEndPositionOfChar)]
     #[doc = "The `getEndPositionOfChar()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getEndPositionOfChar)"]
@@ -54,7 +54,7 @@ extern "C" {
         charnum: u32,
     ) -> Result<SvgPoint, JsValue>;
     #[cfg(feature = "SvgRect")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGTextContentElement" , js_name = getExtentOfChar ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGTextContentElement" , js_name = getExtentOfChar)]
     #[doc = "The `getExtentOfChar()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getExtentOfChar)"]
@@ -64,14 +64,14 @@ extern "C" {
         this: &SvgTextContentElement,
         charnum: u32,
     ) -> Result<SvgRect, JsValue>;
-    # [ wasm_bindgen ( method , structural , js_class = "SVGTextContentElement" , js_name = getNumberOfChars ) ]
+    # [wasm_bindgen (method , structural , js_class = "SVGTextContentElement" , js_name = getNumberOfChars)]
     #[doc = "The `getNumberOfChars()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getNumberOfChars)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgTextContentElement`*"]
     pub fn get_number_of_chars(this: &SvgTextContentElement) -> i32;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGTextContentElement" , js_name = getRotationOfChar ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGTextContentElement" , js_name = getRotationOfChar)]
     #[doc = "The `getRotationOfChar()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getRotationOfChar)"]
@@ -80,7 +80,7 @@ extern "C" {
     pub fn get_rotation_of_char(this: &SvgTextContentElement, charnum: u32)
         -> Result<f32, JsValue>;
     #[cfg(feature = "SvgPoint")]
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGTextContentElement" , js_name = getStartPositionOfChar ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGTextContentElement" , js_name = getStartPositionOfChar)]
     #[doc = "The `getStartPositionOfChar()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getStartPositionOfChar)"]
@@ -90,7 +90,7 @@ extern "C" {
         this: &SvgTextContentElement,
         charnum: u32,
     ) -> Result<SvgPoint, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGTextContentElement" , js_name = getSubStringLength ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGTextContentElement" , js_name = getSubStringLength)]
     #[doc = "The `getSubStringLength()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/getSubStringLength)"]
@@ -101,7 +101,7 @@ extern "C" {
         charnum: u32,
         nchars: u32,
     ) -> Result<f32, JsValue>;
-    # [ wasm_bindgen ( catch , method , structural , js_class = "SVGTextContentElement" , js_name = selectSubString ) ]
+    # [wasm_bindgen (catch , method , structural , js_class = "SVGTextContentElement" , js_name = selectSubString)]
     #[doc = "The `selectSubString()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement/selectSubString)"]

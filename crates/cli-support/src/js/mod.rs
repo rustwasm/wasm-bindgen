@@ -11,7 +11,7 @@ use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
-use walrus::{FunctionId, ImportId, MemoryId, Module, TableId};
+use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
 
@@ -53,6 +53,9 @@ pub struct Context<'a> {
     /// names.
     memory_indices: HashMap<MemoryId, usize>,
     table_indices: HashMap<TableId, usize>,
+
+    /// A flag to track if the stack pointer setter shim has been injected.
+    stack_pointer_shim_injected: bool,
 }
 
 #[derive(Default)]
@@ -100,6 +103,7 @@ impl<'a> Context<'a> {
             aux,
             memory_indices: Default::default(),
             table_indices: Default::default(),
+            stack_pointer_shim_injected: false,
         })
     }
 
@@ -270,7 +274,7 @@ impl<'a> Context<'a> {
         reset_indentation(&shim)
     }
 
-    // generates somthing like
+    // generates something like
     // ```js
     // import * as import0 from './snippets/.../inline1.js';
     // ```,
@@ -352,7 +356,7 @@ impl<'a> Context<'a> {
         module_name: &str,
         needs_manual_start: bool,
     ) -> Result<(String, String, Option<String>), Error> {
-        let mut ts = self.typescript.clone();
+        let mut ts;
         let mut js = String::new();
         let mut start = None;
 
@@ -432,11 +436,19 @@ impl<'a> Context<'a> {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
-                    footer.push_str("\nexport const ");
-                    footer.push_str(&import.name);
-                    footer.push_str(" = ");
-                    footer.push_str(js.trim());
-                    footer.push_str(";\n");
+                    if js.starts_with("function") {
+                        let body = &js[8..];
+                        footer.push_str("\nexport function ");
+                        footer.push_str(&import.name);
+                        footer.push_str(body.trim());
+                        footer.push_str(";\n");
+                    } else {
+                        footer.push_str("\nexport const ");
+                        footer.push_str(&import.name);
+                        footer.push_str(" = ");
+                        footer.push_str(js.trim());
+                        footer.push_str(";\n");
+                    }
                 }
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -452,6 +464,16 @@ impl<'a> Context<'a> {
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 footer.push_str("export default init;\n");
             }
+        }
+
+        // Before putting the static init code declaration info, put all existing typescript into a `wasm_bindgen` namespace declaration.
+        // Not sure if this should happen in all cases, so just adding it to NoModules for now...
+        if self.config.mode.no_modules() {
+            ts = String::from("declare namespace wasm_bindgen {\n\t");
+            ts.push_str(&self.typescript.replace("\n", "\n\t"));
+            ts.push_str("\n}\n");
+        } else {
+            ts = self.typescript.clone();
         }
 
         let (init_js, init_ts) = init;
@@ -563,17 +585,29 @@ impl<'a> Context<'a> {
         let (memory_doc, memory_param) = if has_memory {
             (
                 "* @param {WebAssembly.Memory} maybe_memory\n",
-                ", maybe_memory: WebAssembly.Memory",
+                ", maybe_memory?: WebAssembly.Memory",
             )
         } else {
             ("", "")
         };
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
+        // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level cause TypeScript to ignore all "declare" statements.
+        // So using "declare" everywhere for at least the NoModules option.
+        // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
+        let setup_function_declaration;
+        let declare_or_export;
+        if self.config.mode.no_modules() {
+            declare_or_export = "declare";
+            setup_function_declaration = "declare function wasm_bindgen";
+        } else {
+            declare_or_export = "export";
+            setup_function_declaration = "export default function init";
+        }
         Ok(format!(
             "\n\
-            export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
+            {declare_or_export} type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
             \n\
-            export interface InitOutput {{\n\
+            {declare_or_export} interface InitOutput {{\n\
             {output}}}\n\
             \n\
             /**\n\
@@ -585,11 +619,12 @@ impl<'a> Context<'a> {
             *\n\
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
-            export default function init \
-                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;
-        ",
+            {setup_function_declaration} \
+                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
             memory_doc, arg_optional, memory_param,
             output = output,
+            declare_or_export = declare_or_export,
+            setup_function_declaration = setup_function_declaration,
         ))
     }
 
@@ -600,38 +635,38 @@ impl<'a> Context<'a> {
     ) -> Result<(String, String), Error> {
         let module_name = "wbg";
         let mut init_memory_arg = "";
-        let mut init_memory1 = String::new();
-        let mut init_memory2 = String::new();
+        let mut init_memory = String::new();
         let mut has_memory = false;
         if let Some(mem) = self.module.memories.iter().next() {
             if let Some(id) = mem.import {
                 self.module.imports.get_mut(id).module = module_name.to_string();
-                let mut memory = String::from("new WebAssembly.Memory({");
-                memory.push_str(&format!("initial:{}", mem.initial));
+                init_memory = format!(
+                    "imports.{}.memory = maybe_memory || new WebAssembly.Memory({{",
+                    module_name
+                );
+                init_memory.push_str(&format!("initial:{}", mem.initial));
                 if let Some(max) = mem.maximum {
-                    memory.push_str(&format!(",maximum:{}", max));
+                    init_memory.push_str(&format!(",maximum:{}", max));
                 }
                 if mem.shared {
-                    memory.push_str(",shared:true");
+                    init_memory.push_str(",shared:true");
                 }
-                memory.push_str("})");
-                self.imports_post.push_str("let memory;\n");
-                init_memory1 = format!("memory = imports.{}.memory = maybe_memory;", module_name);
-                init_memory2 = format!("memory = imports.{}.memory = {};", module_name, memory);
+                init_memory.push_str("});");
                 init_memory_arg = ", maybe_memory";
                 has_memory = true;
             }
         }
 
-        let default_module_path = match self.config.mode {
-            OutputMode::Web => {
-                "\
-                    if (typeof input === 'undefined') {
-                        input = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            }
-            OutputMode::NoModules { .. } => {
-                "\
+        let default_module_path = if !self.config.omit_default_module_path {
+            match self.config.mode {
+                OutputMode::Web => format!(
+                    "\
+                    if (typeof input === 'undefined') {{
+                        input = new URL('{stem}_bg.wasm', import.meta.url);
+                    }}",
+                    stem = self.config.stem()?
+                ),
+                OutputMode::NoModules { .. } => "\
                     if (typeof input === 'undefined') {
                         let src;
                         if (typeof document === 'undefined') {
@@ -641,11 +676,17 @@ impl<'a> Context<'a> {
                         }
                         input = src.replace(/\\.js$/, '_bg.wasm');
                     }"
+                .to_string(),
+                _ => "".to_string(),
             }
-            _ => "",
+        } else {
+            String::from("")
         };
 
-        let ts = self.ts_for_init_fn(has_memory, !default_module_path.is_empty())?;
+        let ts = self.ts_for_init_fn(
+            has_memory,
+            !self.config.omit_default_module_path && !default_module_path.is_empty(),
+        )?;
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
@@ -696,9 +737,8 @@ impl<'a> Context<'a> {
 
         let js = format!(
             "\
-                async function load(module, imports{init_memory_arg}) {{
+                async function load(module, imports) {{
                     if (typeof Response === 'function' && module instanceof Response) {{
-                        {init_memory2}
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
                             try {{
                                 return await WebAssembly.instantiateStreaming(module, imports);
@@ -721,7 +761,6 @@ impl<'a> Context<'a> {
                         return await WebAssembly.instantiate(bytes, imports);
 
                     }} else {{
-                        {init_memory1}
                         const instance = await WebAssembly.instantiate(module, imports);
 
                         if (instance instanceof WebAssembly.Instance) {{
@@ -742,7 +781,9 @@ impl<'a> Context<'a> {
                         input = fetch(input);
                     }}
 
-                    const {{ instance, module }} = await load(await input, imports{init_memory_arg});
+                    {init_memory}
+
+                    const {{ instance, module }} = await load(await input, imports);
 
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
@@ -752,8 +793,7 @@ impl<'a> Context<'a> {
             ",
             init_memory_arg = init_memory_arg,
             default_module_path = default_module_path,
-            init_memory1 = init_memory1,
-            init_memory2 = init_memory2,
+            init_memory = init_memory,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
             } else {
@@ -863,10 +903,15 @@ impl<'a> Context<'a> {
 
         dst.push_str(&format!(
             "
-            free() {{
+            __destroy_into_raw() {{
                 const ptr = this.ptr;
                 this.ptr = 0;
                 {}
+                return ptr;
+            }}
+
+            free() {{
+                const ptr = this.__destroy_into_raw();
                 wasm.{}(ptr);
             }}
             ",
@@ -1019,37 +1064,6 @@ impl<'a> Context<'a> {
         } else {
             ""
         };
-
-        // If we are targeting Node.js, it doesn't have `encodeInto` yet
-        // but it does have `Buffer::write` which has similar semantics but
-        // doesn't require creating intermediate view using `subarray`
-        // and also has `Buffer::byteLength` to calculate size upfront.
-        if self.config.mode.nodejs() {
-            let get_buf = self.expose_node_buffer_memory(memory);
-            let ret = MemView {
-                name: "passStringToWasm",
-                num: get_buf.num,
-            };
-            if !self.should_write_global(ret.to_string()) {
-                return Ok(ret);
-            }
-
-            self.global(&format!(
-                "
-                    function {}(arg, malloc) {{
-                        {}
-                        const len = Buffer.byteLength(arg);
-                        const ptr = malloc(len);
-                        {}().write(arg, ptr, len);
-                        WASM_VECTOR_LEN = len;
-                        return ptr;
-                    }}
-                ",
-                ret, debug, get_buf,
-            ));
-
-            return Ok(ret);
-        }
 
         let mem = self.expose_uint8_memory(memory);
         let ret = MemView {
@@ -1549,10 +1563,6 @@ impl<'a> Context<'a> {
         return ret;
     }
 
-    fn expose_node_buffer_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getNodeBufferMemory", "Buffer.from", memory)
-    }
-
     fn expose_int8_memory(&mut self, memory: MemoryId) -> MemView {
         self.memview("getInt8Memory", "new Int8Array", memory)
     }
@@ -1760,17 +1770,14 @@ impl<'a> Context<'a> {
             (Some(table), Some(alloc)) => {
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
-                    "
-                    function handleError(f) {{
-                        return function () {{
-                            try {{
-                                return f.apply(this, arguments);
-
-                            }} catch (e) {{
-                                const idx = {}(e);
-                                wasm.{}(idx);
-                            }}
-                        }};
+                    "\
+                    function handleError(f, args) {{
+                        try {{
+                            return f.apply(this, args);
+                        }} catch (e) {{
+                            const idx = {}(e);
+                            wasm.{}(idx);
+                        }}
                     }}
                     ",
                     add, store,
@@ -1779,16 +1786,13 @@ impl<'a> Context<'a> {
             _ => {
                 self.expose_add_heap_object();
                 self.global(&format!(
-                    "
-                    function handleError(f) {{
-                        return function () {{
-                            try {{
-                                return f.apply(this, arguments);
-
-                            }} catch (e) {{
-                                wasm.{}(addHeapObject(e));
-                            }}
-                        }};
+                    "\
+                    function handleError(f, args) {{
+                        try {{
+                            return f.apply(this, args);
+                        }} catch (e) {{
+                            wasm.{}(addHeapObject(e));
+                        }}
                     }}
                     ",
                     store,
@@ -1804,27 +1808,24 @@ impl<'a> Context<'a> {
         }
         self.global(
             "\
-            function logError(f) {
-                return function () {
-                    try {
-                        return f.apply(this, arguments);
-
-                    } catch (e) {
-                        let error = (function () {
-                            try {
-                                return e instanceof Error \
-                                    ? `${e.message}\\n\\nStack:\\n${e.stack}` \
-                                    : e.toString();
-                            } catch(_) {
-                                return \"<failed to stringify thrown value>\";
-                            }
-                        }());
-                        console.error(\"wasm-bindgen: imported JS function that \
-                                        was not marked as `catch` threw an error:\", \
-                                        error);
-                        throw e;
-                    }
-                };
+            function logError(f, args) {
+                try {
+                    return f.apply(this, args);
+                } catch (e) {
+                    let error = (function () {
+                        try {
+                            return e instanceof Error \
+                                ? `${e.message}\\n\\nStack:\\n${e.stack}` \
+                                : e.toString();
+                        } catch(_) {
+                            return \"<failed to stringify thrown value>\";
+                        }
+                    }());
+                    console.error(\"wasm-bindgen: imported JS function that \
+                                    was not marked as `catch` threw an error:\", \
+                                    error);
+                    throw e;
+                }
             }
             ",
         );
@@ -2143,10 +2144,6 @@ impl<'a> Context<'a> {
                 self.imports_post.push_str(";\n");
 
                 fn switch(dst: &mut String, name: &str, prefix: &str, left: &[String]) {
-                    if left.len() == 0 {
-                        dst.push_str(prefix);
-                        return dst.push_str(name);
-                    }
                     dst.push_str("(typeof ");
                     dst.push_str(prefix);
                     dst.push_str(name);
@@ -2154,7 +2151,11 @@ impl<'a> Context<'a> {
                     dst.push_str(prefix);
                     dst.push_str(name);
                     dst.push_str(" : ");
-                    switch(dst, name, &left[0], &left[1..]);
+                    if left.is_empty() {
+                        dst.push_str("undefined");
+                    } else {
+                        switch(dst, name, &left[0], &left[1..]);
+                    }
                     dst.push_str(")");
                 }
                 format!("l{}", name)
@@ -2426,9 +2427,15 @@ impl<'a> Context<'a> {
             }
             Kind::Import(core) => {
                 let code = if catch {
-                    format!("handleError(function{})", code)
+                    format!(
+                        "function() {{ return handleError(function {}, arguments) }}",
+                        code
+                    )
                 } else if log_error {
-                    format!("logError(function{})", code)
+                    format!(
+                        "function() {{ return logError(function {}, arguments) }}",
+                        code
+                    )
                 } else {
                     format!("function{}", code)
                 };
@@ -3316,6 +3323,9 @@ impl<'a> Context<'a> {
         let default_name = format!("__wbindgen_export_{}", self.next_export_idx);
         self.next_export_idx += 1;
         let name = match id {
+            walrus::ExportItem::Memory(_) if self.module.memories.iter().count() == 1 => {
+                "memory".to_owned()
+            }
             walrus::ExportItem::Function(f) => match &self.module.funcs.get(f).name {
                 Some(s) => to_js_identifier(s),
                 None => default_name,
@@ -3356,6 +3366,47 @@ impl<'a> Context<'a> {
         } else {
             format!("{}{}", name, cnt)
         }
+    }
+
+    fn inject_stack_pointer_shim(&mut self) -> Result<(), Error> {
+        if self.stack_pointer_shim_injected {
+            return Ok(());
+        }
+        let stack_pointer = match self.aux.shadow_stack_pointer {
+            Some(s) => s,
+            // In theory this shouldn't happen since malloc is included in
+            // most wasm binaries (and may be gc'd out) and that almost
+            // always pulls in a stack pointer. We can try to synthesize
+            // something here later if necessary.
+            None => bail!("failed to find shadow stack pointer"),
+        };
+
+        use walrus::ir::*;
+
+        let mut builder =
+            walrus::FunctionBuilder::new(&mut self.module.types, &[ValType::I32], &[ValType::I32]);
+        builder.name("__wbindgen_add_to_stack_pointer".to_string());
+
+        let mut body = builder.func_body();
+        let arg = self.module.locals.add(ValType::I32);
+
+        // Create a shim function that mutate the stack pointer
+        // to avoid exporting a mutable global.
+        body.local_get(arg)
+            .global_get(stack_pointer)
+            .binop(BinaryOp::I32Add)
+            .global_set(stack_pointer)
+            .global_get(stack_pointer);
+
+        let add_to_stack_pointer_func = builder.finish(vec![arg], &mut self.module.funcs);
+
+        self.module
+            .exports
+            .add("__wbindgen_add_to_stack_pointer", add_to_stack_pointer_func);
+
+        self.stack_pointer_shim_injected = true;
+
+        Ok(())
     }
 }
 

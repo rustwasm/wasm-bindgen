@@ -16,7 +16,7 @@ interface FetchEvent : ExtendableEvent {
   readonly attribute boolean isReload;
 
   [Throws]
-  void respondWith(Promise<Response> r);
+  undefined respondWith(Promise<Response> r);
 };
 
 dictionary FetchEventInit : EventInit {

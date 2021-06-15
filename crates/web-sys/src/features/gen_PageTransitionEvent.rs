@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = PageTransitionEvent , typescript_type = "PageTransitionEvent" ) ]
+    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = PageTransitionEvent , typescript_type = "PageTransitionEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `PageTransitionEvent` class."]
     #[doc = ""]
@@ -11,7 +11,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PageTransitionEvent`*"]
     pub type PageTransitionEvent;
-    # [ wasm_bindgen ( structural , method , getter , js_class = "PageTransitionEvent" , js_name = persisted ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "PageTransitionEvent" , js_name = persisted)]
     #[doc = "Getter for the `persisted` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PageTransitionEvent/persisted)"]

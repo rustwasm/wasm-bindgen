@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [ wasm_bindgen ( extends = Event , extends = :: js_sys :: Object , js_name = XRInputSourcesChangeEvent , typescript_type = "XRInputSourcesChangeEvent" ) ]
+    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = XRInputSourcesChangeEvent , typescript_type = "XRInputSourcesChangeEvent")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `XrInputSourcesChangeEvent` class."]
     #[doc = ""]
@@ -17,7 +17,7 @@ extern "C" {
     pub type XrInputSourcesChangeEvent;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrSession")]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRInputSourcesChangeEvent" , js_name = session ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRInputSourcesChangeEvent" , js_name = session)]
     #[doc = "Getter for the `session` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRInputSourcesChangeEvent/session)"]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn session(this: &XrInputSourcesChangeEvent) -> XrSession;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRInputSourcesChangeEvent" , js_name = added ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRInputSourcesChangeEvent" , js_name = added)]
     #[doc = "Getter for the `added` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRInputSourcesChangeEvent/added)"]
@@ -39,7 +39,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn added(this: &XrInputSourcesChangeEvent) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
-    # [ wasm_bindgen ( structural , method , getter , js_class = "XRInputSourcesChangeEvent" , js_name = removed ) ]
+    # [wasm_bindgen (structural , method , getter , js_class = "XRInputSourcesChangeEvent" , js_name = removed)]
     #[doc = "Getter for the `removed` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRInputSourcesChangeEvent/removed)"]

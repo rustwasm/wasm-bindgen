@@ -1,5 +1,6 @@
 [Constructor]
 interface ArrayBufferTest {
   ArrayBuffer getBuffer();
-  void setBuffer(ArrayBuffer? b);
+  undefined setBuffer(ArrayBuffer? b);
+  DataView getDataView();
 };
