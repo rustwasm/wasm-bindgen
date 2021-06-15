@@ -341,8 +341,7 @@ impl<'a> Context<'a> {
                 console.error(`Unsupported protocol: ${{url.protocol}}`)
                 Deno.exit(0)
             }}
-            const wasmModule = new WebAssembly.Module(wasmCode);
-            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            const wasmInstance = await WebAssembly.instantiate(await WebAssembly.compile(wasmCode), imports);
             const wasm = wasmInstance.exports;",
             module_name = module_name
         )
