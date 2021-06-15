@@ -322,25 +322,30 @@ impl<'a> Context<'a> {
         // Deno removed support for .wasm imports in https://github.com/denoland/deno/pull/5135
         // the issue for bringing it back is https://github.com/denoland/deno/issues/5609.
         format!(
-            "const url = new URL(import.meta.url)
+            "const url = new URL(import.meta.url);
 
-            let wasmCode = ''
-            if (url.protocol.includes('file')) {{
-                let file = new URL(import.meta.url).pathname;
-                if (Deno.build.os === 'windows') {{
-                    if (file.startsWith('/')) file = file.substr(1)
-                    file = Deno.realPathSync(file + '/../{module_name}_bg.wasm')
-                }} else {{
-                    file = file.substring(0, file.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
-                }}
-                wasmCode = Deno.readFileSync(file)
-            }} else if (url.protocol.includes('http')) {{
-                const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm'
-                wasmCode = await (await fetch(wasm_url)).arrayBuffer()
-            }} else {{
-                console.error(`Unsupported protocol: ${{url.protocol}}`)
-                Deno.exit(0)
+            let wasmCode = '';
+            switch (url.protocol) {{
+                case 'file:':
+                    let file = new URL(import.meta.url).pathname;
+                    if (Deno.build.os === 'windows') {{
+                        if (file.startsWith('/')) file = file.substr(1);
+                        file = await Deno.realPath(file + '/../{module_name}_bg.wasm');
+                    }} else {{
+                        file = file.substring(0, file.lastIndexOf('/') + 1) + '{module_name}_bg.wasm';
+                    }}
+                    wasmCode = await Deno.readFile(file);
+                    break
+                case 'http:':
+                    const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm';
+                    wasmCode = await (await fetch(wasm_url)).arrayBuffer();
+                    break
+                default:
+                    console.error(`Unsupported protocol: ${{url.protocol}}`);
+                    Deno.exit(0);
+                    break
             }}
+
             const wasmInstance = await WebAssembly.instantiate(await WebAssembly.compile(wasmCode), imports);
             const wasm = wasmInstance.exports;",
             module_name = module_name
