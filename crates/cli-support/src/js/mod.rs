@@ -323,22 +323,17 @@ impl<'a> Context<'a> {
         // the issue for bringing it back is https://github.com/denoland/deno/issues/5609.
         format!(
             "const url = new URL(import.meta.url);
-
+            let wasm_url = (new URL('{module_name}_bg.wasm', url)).pathname;
             let wasmCode = '';
             switch (url.protocol) {{
                 case 'file:':
-                    let file = url.pathname;
-                    if (Deno.build.os === 'windows') {{
-                        if (file.startsWith('/')) file = file.substr(1);
-                        file = await Deno.realPath(file + '/../{module_name}_bg.wasm');
-                    }} else {{
-                        file = file.substring(0, file.lastIndexOf('/') + 1) + '{module_name}_bg.wasm';
+                    if (Deno.build.os === 'windows' && wasm_url.startsWith('/')) {{
+                        wasm_url = wasm_url.substr(1);
                     }}
-                    wasmCode = await Deno.readFile(file);
+                    wasmCode = await Deno.readFile(wasm_url);
                     break
                 case 'https:':
                 case 'http:':
-                    const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + '{module_name}_bg.wasm';
                     wasmCode = await (await fetch(wasm_url)).arrayBuffer();
                     break
                 default:
