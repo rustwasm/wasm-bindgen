@@ -1432,6 +1432,12 @@ mod gen_Directory;
 #[cfg(feature = "Directory")]
 pub use gen_Directory::*;
 
+#[cfg(feature = "DirectoryPickerOptions")]
+#[allow(non_snake_case)]
+mod gen_DirectoryPickerOptions;
+#[cfg(feature = "DirectoryPickerOptions")]
+pub use gen_DirectoryPickerOptions::*;
+
 #[cfg(feature = "DisplayMediaStreamConstraints")]
 #[allow(non_snake_case)]
 mod gen_DisplayMediaStreamConstraints;
@@ -1936,6 +1942,18 @@ mod gen_FileList;
 #[cfg(feature = "FileList")]
 pub use gen_FileList::*;
 
+#[cfg(feature = "FilePickerAcceptType")]
+#[allow(non_snake_case)]
+mod gen_FilePickerAcceptType;
+#[cfg(feature = "FilePickerAcceptType")]
+pub use gen_FilePickerAcceptType::*;
+
+#[cfg(feature = "FilePickerOptions")]
+#[allow(non_snake_case)]
+mod gen_FilePickerOptions;
+#[cfg(feature = "FilePickerOptions")]
+pub use gen_FilePickerOptions::*;
+
 #[cfg(feature = "FilePropertyBag")]
 #[allow(non_snake_case)]
 mod gen_FilePropertyBag;
@@ -1960,11 +1978,23 @@ mod gen_FileSystem;
 #[cfg(feature = "FileSystem")]
 pub use gen_FileSystem::*;
 
+#[cfg(feature = "FileSystemCreateWritableOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemCreateWritableOptions;
+#[cfg(feature = "FileSystemCreateWritableOptions")]
+pub use gen_FileSystemCreateWritableOptions::*;
+
 #[cfg(feature = "FileSystemDirectoryEntry")]
 #[allow(non_snake_case)]
 mod gen_FileSystemDirectoryEntry;
 #[cfg(feature = "FileSystemDirectoryEntry")]
 pub use gen_FileSystemDirectoryEntry::*;
+
+#[cfg(feature = "FileSystemDirectoryHandle")]
+#[allow(non_snake_case)]
+mod gen_FileSystemDirectoryHandle;
+#[cfg(feature = "FileSystemDirectoryHandle")]
+pub use gen_FileSystemDirectoryHandle::*;
 
 #[cfg(feature = "FileSystemDirectoryReader")]
 #[allow(non_snake_case)]
@@ -1996,11 +2026,71 @@ mod gen_FileSystemFileEntry;
 #[cfg(feature = "FileSystemFileEntry")]
 pub use gen_FileSystemFileEntry::*;
 
+#[cfg(feature = "FileSystemFileHandle")]
+#[allow(non_snake_case)]
+mod gen_FileSystemFileHandle;
+#[cfg(feature = "FileSystemFileHandle")]
+pub use gen_FileSystemFileHandle::*;
+
 #[cfg(feature = "FileSystemFlags")]
 #[allow(non_snake_case)]
 mod gen_FileSystemFlags;
 #[cfg(feature = "FileSystemFlags")]
 pub use gen_FileSystemFlags::*;
+
+#[cfg(feature = "FileSystemGetDirectoryOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemGetDirectoryOptions;
+#[cfg(feature = "FileSystemGetDirectoryOptions")]
+pub use gen_FileSystemGetDirectoryOptions::*;
+
+#[cfg(feature = "FileSystemGetFileOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemGetFileOptions;
+#[cfg(feature = "FileSystemGetFileOptions")]
+pub use gen_FileSystemGetFileOptions::*;
+
+#[cfg(feature = "FileSystemHandle")]
+#[allow(non_snake_case)]
+mod gen_FileSystemHandle;
+#[cfg(feature = "FileSystemHandle")]
+pub use gen_FileSystemHandle::*;
+
+#[cfg(feature = "FileSystemHandleKind")]
+#[allow(non_snake_case)]
+mod gen_FileSystemHandleKind;
+#[cfg(feature = "FileSystemHandleKind")]
+pub use gen_FileSystemHandleKind::*;
+
+#[cfg(feature = "FileSystemHandlePermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_FileSystemHandlePermissionDescriptor;
+#[cfg(feature = "FileSystemHandlePermissionDescriptor")]
+pub use gen_FileSystemHandlePermissionDescriptor::*;
+
+#[cfg(feature = "FileSystemPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_FileSystemPermissionDescriptor;
+#[cfg(feature = "FileSystemPermissionDescriptor")]
+pub use gen_FileSystemPermissionDescriptor::*;
+
+#[cfg(feature = "FileSystemPermissionMode")]
+#[allow(non_snake_case)]
+mod gen_FileSystemPermissionMode;
+#[cfg(feature = "FileSystemPermissionMode")]
+pub use gen_FileSystemPermissionMode::*;
+
+#[cfg(feature = "FileSystemRemoveOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemRemoveOptions;
+#[cfg(feature = "FileSystemRemoveOptions")]
+pub use gen_FileSystemRemoveOptions::*;
+
+#[cfg(feature = "FileSystemWritableFileStream")]
+#[allow(non_snake_case)]
+mod gen_FileSystemWritableFileStream;
+#[cfg(feature = "FileSystemWritableFileStream")]
+pub use gen_FileSystemWritableFileStream::*;
 
 #[cfg(feature = "FillMode")]
 #[allow(non_snake_case)]
@@ -4594,6 +4684,12 @@ mod gen_OffscreenCanvas;
 #[cfg(feature = "OffscreenCanvas")]
 pub use gen_OffscreenCanvas::*;
 
+#[cfg(feature = "OpenFilePickerOptions")]
+#[allow(non_snake_case)]
+mod gen_OpenFilePickerOptions;
+#[cfg(feature = "OpenFilePickerOptions")]
+pub use gen_OpenFilePickerOptions::*;
+
 #[cfg(feature = "OpenWindowEventDetail")]
 #[allow(non_snake_case)]
 mod gen_OpenWindowEventDetail;
@@ -5889,6 +5985,12 @@ pub use gen_RtcrtpContributingSourceStats::*;
 mod gen_RtcrtpStreamStats;
 #[cfg(feature = "RtcrtpStreamStats")]
 pub use gen_RtcrtpStreamStats::*;
+
+#[cfg(feature = "SaveFilePickerOptions")]
+#[allow(non_snake_case)]
+mod gen_SaveFilePickerOptions;
+#[cfg(feature = "SaveFilePickerOptions")]
+pub use gen_SaveFilePickerOptions::*;
 
 #[cfg(feature = "Screen")]
 #[allow(non_snake_case)]
@@ -8007,6 +8109,18 @@ pub use gen_WorkletGlobalScope::*;
 mod gen_WorkletOptions;
 #[cfg(feature = "WorkletOptions")]
 pub use gen_WorkletOptions::*;
+
+#[cfg(feature = "WriteCommandType")]
+#[allow(non_snake_case)]
+mod gen_WriteCommandType;
+#[cfg(feature = "WriteCommandType")]
+pub use gen_WriteCommandType::*;
+
+#[cfg(feature = "WriteParams")]
+#[allow(non_snake_case)]
+mod gen_WriteParams;
+#[cfg(feature = "WriteParams")]
+pub use gen_WriteParams::*;
 
 #[cfg(feature = "XPathExpression")]
 #[allow(non_snake_case)]

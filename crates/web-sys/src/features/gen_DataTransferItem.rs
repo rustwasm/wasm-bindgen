@@ -33,6 +33,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItem`, `File`*"]
     pub fn get_as_file(this: &DataTransferItem) -> Result<Option<File>, JsValue>;
+    # [wasm_bindgen (method , structural , js_class = "DataTransferItem" , js_name = getAsFileSystemHandle)]
+    #[doc = "The `getAsFileSystemHandle()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/getAsFileSystemHandle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DataTransferItem`*"]
+    pub fn get_as_file_system_handle(this: &DataTransferItem) -> ::js_sys::Promise;
     # [wasm_bindgen (catch , method , structural , js_class = "DataTransferItem" , js_name = getAsString)]
     #[doc = "The `getAsString()` method."]
     #[doc = ""]

@@ -2279,6 +2279,60 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`, `Window`*"]
     pub fn scroll_to_with_scroll_to_options(this: &Window, options: &ScrollToOptions);
+    # [wasm_bindgen (method , structural , js_class = "Window" , js_name = showDirectoryPicker)]
+    #[doc = "The `showDirectoryPicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn show_directory_picker(this: &Window) -> ::js_sys::Promise;
+    #[cfg(feature = "DirectoryPickerOptions")]
+    # [wasm_bindgen (method , structural , js_class = "Window" , js_name = showDirectoryPicker)]
+    #[doc = "The `showDirectoryPicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DirectoryPickerOptions`, `Window`*"]
+    pub fn show_directory_picker_with_options(
+        this: &Window,
+        options: &DirectoryPickerOptions,
+    ) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "Window" , js_name = showOpenFilePicker)]
+    #[doc = "The `showOpenFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn show_open_file_picker(this: &Window) -> ::js_sys::Promise;
+    #[cfg(feature = "OpenFilePickerOptions")]
+    # [wasm_bindgen (method , structural , js_class = "Window" , js_name = showOpenFilePicker)]
+    #[doc = "The `showOpenFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OpenFilePickerOptions`, `Window`*"]
+    pub fn show_open_file_picker_with_options(
+        this: &Window,
+        options: &OpenFilePickerOptions,
+    ) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "Window" , js_name = showSaveFilePicker)]
+    #[doc = "The `showSaveFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn show_save_file_picker(this: &Window) -> ::js_sys::Promise;
+    #[cfg(feature = "SaveFilePickerOptions")]
+    # [wasm_bindgen (method , structural , js_class = "Window" , js_name = showSaveFilePicker)]
+    #[doc = "The `showSaveFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SaveFilePickerOptions`, `Window`*"]
+    pub fn show_save_file_picker_with_options(
+        this: &Window,
+        options: &SaveFilePickerOptions,
+    ) -> ::js_sys::Promise;
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = stop)]
     #[doc = "The `stop()` method."]
     #[doc = ""]
