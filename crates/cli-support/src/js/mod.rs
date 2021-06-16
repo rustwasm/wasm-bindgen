@@ -322,22 +322,22 @@ impl<'a> Context<'a> {
         // Deno removed support for .wasm imports in https://github.com/denoland/deno/pull/5135
         // the issue for bringing it back is https://github.com/denoland/deno/issues/5609.
         format!(
-            "const url = new URL(import.meta.url);
-            let wasm_url = (new URL('{module_name}_bg.wasm', url)).pathname;
+            "const wasm_url = new URL('{module_name}_bg.wasm', import.meta.url);
             let wasmCode = '';
-            switch (url.protocol) {{
+            switch (wasm_url.protocol) {{
                 case 'file:':
-                    if (Deno.build.os === 'windows' && wasm_url.startsWith('/')) {{
-                        wasm_url = wasm_url.substr(1);
+                    let wasm_pathname = wasm_url.pathname;
+                    if (Deno.build.os === 'windows' && wasm_pathname.startsWith('/')) {{
+                        wasm_pathname = wasm_pathname.substr(1);
                     }}
-                    wasmCode = await Deno.readFile(wasm_url);
+                    wasmCode = await Deno.readFile(wasm_pathname);
                     break
                 case 'https:':
                 case 'http:':
                     wasmCode = await (await fetch(wasm_url)).arrayBuffer();
                     break
                 default:
-                    throw new Error(`Unsupported protocol: ${{url.protocol}}`);
+                    throw new Error(`Unsupported protocol: ${{wasm_url.protocol}}`);
                     break
             }}
 
