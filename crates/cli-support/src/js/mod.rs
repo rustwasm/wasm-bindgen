@@ -327,7 +327,7 @@ impl<'a> Context<'a> {
             let wasmCode = '';
             switch (url.protocol) {{
                 case 'file:':
-                    let file = new URL(import.meta.url).pathname;
+                    let file = url.pathname;
                     if (Deno.build.os === 'windows') {{
                         if (file.startsWith('/')) file = file.substr(1);
                         file = await Deno.realPath(file + '/../{module_name}_bg.wasm');
