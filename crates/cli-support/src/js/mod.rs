@@ -342,7 +342,7 @@ impl<'a> Context<'a> {
                     wasmCode = await (await fetch(wasm_url)).arrayBuffer();
                     break
                 default:
-                    throw `Unsupported protocol: ${{url.protocol}}`;
+                    throw new Error(`Unsupported protocol: ${{url.protocol}}`);
                     break
             }}
 
