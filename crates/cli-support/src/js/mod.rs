@@ -203,6 +203,7 @@ impl<'a> Context<'a> {
 
         let mut shim = String::new();
 
+        shim.push_str("/** @type {WebAssembly.Imports} */\n");
         shim.push_str("let imports = {};\n");
 
         if self.config.mode.nodejs_experimental_modules() {
