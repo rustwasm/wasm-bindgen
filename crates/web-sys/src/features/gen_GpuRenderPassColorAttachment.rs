@@ -16,17 +16,22 @@ extern "C" {
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassColorAttachment {
-    #[cfg(feature = "GpuTextureView")]
+    #[cfg(all(feature = "GpuStoreOp", feature = "GpuTextureView",))]
     #[doc = "Construct a new `GpuRenderPassColorAttachment`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`, `GpuTextureView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`, `GpuStoreOp`, `GpuTextureView`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(load_value: &::wasm_bindgen::JsValue, view: &GpuTextureView) -> Self {
+    pub fn new(
+        load_value: &::wasm_bindgen::JsValue,
+        store_op: GpuStoreOp,
+        view: &GpuTextureView,
+    ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.load_value(load_value);
+        ret.store_op(store_op);
         ret.view(view);
         ret
     }

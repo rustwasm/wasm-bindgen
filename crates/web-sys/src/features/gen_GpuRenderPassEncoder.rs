@@ -109,31 +109,34 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn execute_bundles(this: &GpuRenderPassEncoder, bundles: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPURenderPassEncoder" , js_name = setBlendColor)]
-    #[doc = "The `setBlendColor()` method."]
+    # [wasm_bindgen (method , structural , js_class = "GPURenderPassEncoder" , js_name = setBlendConstant)]
+    #[doc = "The `setBlendConstant()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder/setBlendColor)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder/setBlendConstant)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassEncoder`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_blend_color_with_f64_sequence(
+    pub fn set_blend_constant_with_f64_sequence(
         this: &GpuRenderPassEncoder,
         color: &::wasm_bindgen::JsValue,
     );
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuColorDict")]
-    # [wasm_bindgen (method , structural , js_class = "GPURenderPassEncoder" , js_name = setBlendColor)]
-    #[doc = "The `setBlendColor()` method."]
+    # [wasm_bindgen (method , structural , js_class = "GPURenderPassEncoder" , js_name = setBlendConstant)]
+    #[doc = "The `setBlendConstant()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder/setBlendColor)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder/setBlendConstant)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`, `GpuRenderPassEncoder`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_blend_color_with_gpu_color_dict(this: &GpuRenderPassEncoder, color: &GpuColorDict);
+    pub fn set_blend_constant_with_gpu_color_dict(
+        this: &GpuRenderPassEncoder,
+        color: &GpuColorDict,
+    );
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "GPURenderPassEncoder" , js_name = setScissorRect)]
     #[doc = "The `setScissorRect()` method."]

@@ -1,0 +1,68 @@
+#![allow(unused_imports)]
+use super::*;
+use wasm_bindgen::prelude::*;
+#[cfg(web_sys_unstable_apis)]
+#[wasm_bindgen]
+extern "C" {
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUPresentationContext , typescript_type = "GPUPresentationContext")]
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    #[doc = "The `GpuPresentationContext` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUPresentationContext)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationContext`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub type GpuPresentationContext;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuPresentationConfiguration")]
+    # [wasm_bindgen (method , structural , js_class = "GPUPresentationContext" , js_name = configure)]
+    #[doc = "The `configure()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUPresentationContext/configure)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationConfiguration`, `GpuPresentationContext`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn configure(this: &GpuPresentationContext, configuration: &GpuPresentationConfiguration);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTexture")]
+    # [wasm_bindgen (method , structural , js_class = "GPUPresentationContext" , js_name = getCurrentTexture)]
+    #[doc = "The `getCurrentTexture()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUPresentationContext/getCurrentTexture)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationContext`, `GpuTexture`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_current_texture(this: &GpuPresentationContext) -> GpuTexture;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "GpuAdapter", feature = "GpuTextureFormat",))]
+    # [wasm_bindgen (method , structural , js_class = "GPUPresentationContext" , js_name = getPreferredFormat)]
+    #[doc = "The `getPreferredFormat()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUPresentationContext/getPreferredFormat)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuAdapter`, `GpuPresentationContext`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_preferred_format(
+        this: &GpuPresentationContext,
+        adapter: &GpuAdapter,
+    ) -> GpuTextureFormat;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "GPUPresentationContext" , js_name = unconfigure)]
+    #[doc = "The `unconfigure()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUPresentationContext/unconfigure)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationContext`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn unconfigure(this: &GpuPresentationContext);
+}
