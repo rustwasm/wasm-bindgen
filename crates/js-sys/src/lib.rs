@@ -3561,7 +3561,6 @@ pub mod WebAssembly {
         pub fn set(this: &Table, index: u32, function: &Function) -> Result<(), JsValue>;
     }
 
-    
     // WebAssembly.Global
     #[wasm_bindgen]
     extern "C" {
@@ -3578,14 +3577,16 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Global)
         #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
-        pub fn new(global_descriptor: &Object, value: Option<usize>) -> Result<Global, JsValue>;
+        pub fn new(global_descriptor: &Object, value: Option<&JSValue>) -> Result<Global, JsValue>;
 
         /// The value prototype property of the `WebAssembly.Global` object
         /// returns the value of the global.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Global)
-        #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, getter, structural, js_namespace = WebAssembly)]
         pub fn value(this: &Global) -> JsValue;
+        #[wasm_bindgen(method, setter = value, structural, js_namespace = WebAssembly)]
+        pub fn set_value(this: &Global, value: &JsValue);
     }
 
     // WebAssembly.Memory
