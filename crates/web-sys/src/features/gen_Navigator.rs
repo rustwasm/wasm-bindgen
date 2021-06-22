@@ -127,7 +127,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn clipboard(this: &Navigator) -> Clipboard;
+    pub fn clipboard(this: &Navigator) -> Option<Clipboard>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WakeLock")]
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = wakeLock)]
