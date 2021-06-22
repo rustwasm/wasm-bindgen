@@ -38,41 +38,44 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_label(this: &GpuQueue, value: Option<&str>);
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuImageCopyImageBitmap", feature = "GpuImageCopyTexture",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = copyImageBitmapToTexture)]
-    #[doc = "The `copyImageBitmapToTexture()` method."]
+    #[cfg(all(
+        feature = "GpuImageCopyExternalImage",
+        feature = "GpuImageCopyTextureTagged",
+    ))]
+    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
+    #[doc = "The `copyExternalImageToTexture()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyImageBitmapToTexture)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyImageBitmap`, `GpuImageCopyTexture`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyExternalImage`, `GpuImageCopyTextureTagged`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn copy_image_bitmap_to_texture_with_u32_sequence(
+    pub fn copy_external_image_to_texture_with_u32_sequence(
         this: &GpuQueue,
-        source: &GpuImageCopyImageBitmap,
-        destination: &GpuImageCopyTexture,
+        source: &GpuImageCopyExternalImage,
+        destination: &GpuImageCopyTextureTagged,
         copy_size: &::wasm_bindgen::JsValue,
     );
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuExtent3dDict",
-        feature = "GpuImageCopyImageBitmap",
-        feature = "GpuImageCopyTexture",
+        feature = "GpuImageCopyExternalImage",
+        feature = "GpuImageCopyTextureTagged",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = copyImageBitmapToTexture)]
-    #[doc = "The `copyImageBitmapToTexture()` method."]
+    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
+    #[doc = "The `copyExternalImageToTexture()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyImageBitmapToTexture)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyImageBitmap`, `GpuImageCopyTexture`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyExternalImage`, `GpuImageCopyTextureTagged`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn copy_image_bitmap_to_texture_with_gpu_extent_3d_dict(
+    pub fn copy_external_image_to_texture_with_gpu_extent_3d_dict(
         this: &GpuQueue,
-        source: &GpuImageCopyImageBitmap,
-        destination: &GpuImageCopyTexture,
+        source: &GpuImageCopyExternalImage,
+        destination: &GpuImageCopyTextureTagged,
         copy_size: &GpuExtent3dDict,
     );
     #[cfg(web_sys_unstable_apis)]

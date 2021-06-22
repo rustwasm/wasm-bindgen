@@ -2236,18 +2236,6 @@ mod gen_GpuAdapter;
 #[cfg(feature = "GpuAdapter")]
 pub use gen_GpuAdapter::*;
 
-#[cfg(feature = "GpuAdapterFeatures")]
-#[allow(non_snake_case)]
-mod gen_GpuAdapterFeatures;
-#[cfg(feature = "GpuAdapterFeatures")]
-pub use gen_GpuAdapterFeatures::*;
-
-#[cfg(feature = "GpuAdapterLimits")]
-#[allow(non_snake_case)]
-mod gen_GpuAdapterLimits;
-#[cfg(feature = "GpuAdapterLimits")]
-pub use gen_GpuAdapterLimits::*;
-
 #[cfg(feature = "GpuAddressMode")]
 #[allow(non_snake_case)]
 mod gen_GpuAddressMode;
@@ -2350,11 +2338,11 @@ mod gen_GpuBufferUsage;
 #[cfg(feature = "GpuBufferUsage")]
 pub use gen_GpuBufferUsage::*;
 
-#[cfg(feature = "GpuCanvasContext")]
+#[cfg(feature = "GpuCanvasCompositingAlphaMode")]
 #[allow(non_snake_case)]
-mod gen_GpuCanvasContext;
-#[cfg(feature = "GpuCanvasContext")]
-pub use gen_GpuCanvasContext::*;
+mod gen_GpuCanvasCompositingAlphaMode;
+#[cfg(feature = "GpuCanvasCompositingAlphaMode")]
+pub use gen_GpuCanvasCompositingAlphaMode::*;
 
 #[cfg(feature = "GpuColorDict")]
 #[allow(non_snake_case)]
@@ -2494,6 +2482,24 @@ mod gen_GpuExtent3dDict;
 #[cfg(feature = "GpuExtent3dDict")]
 pub use gen_GpuExtent3dDict::*;
 
+#[cfg(feature = "GpuExternalTexture")]
+#[allow(non_snake_case)]
+mod gen_GpuExternalTexture;
+#[cfg(feature = "GpuExternalTexture")]
+pub use gen_GpuExternalTexture::*;
+
+#[cfg(feature = "GpuExternalTextureBindingLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuExternalTextureBindingLayout;
+#[cfg(feature = "GpuExternalTextureBindingLayout")]
+pub use gen_GpuExternalTextureBindingLayout::*;
+
+#[cfg(feature = "GpuExternalTextureDescriptor")]
+#[allow(non_snake_case)]
+mod gen_GpuExternalTextureDescriptor;
+#[cfg(feature = "GpuExternalTextureDescriptor")]
+pub use gen_GpuExternalTextureDescriptor::*;
+
 #[cfg(feature = "GpuFeatureName")]
 #[allow(non_snake_case)]
 mod gen_GpuFeatureName;
@@ -2524,17 +2530,23 @@ mod gen_GpuImageCopyBuffer;
 #[cfg(feature = "GpuImageCopyBuffer")]
 pub use gen_GpuImageCopyBuffer::*;
 
-#[cfg(feature = "GpuImageCopyImageBitmap")]
+#[cfg(feature = "GpuImageCopyExternalImage")]
 #[allow(non_snake_case)]
-mod gen_GpuImageCopyImageBitmap;
-#[cfg(feature = "GpuImageCopyImageBitmap")]
-pub use gen_GpuImageCopyImageBitmap::*;
+mod gen_GpuImageCopyExternalImage;
+#[cfg(feature = "GpuImageCopyExternalImage")]
+pub use gen_GpuImageCopyExternalImage::*;
 
 #[cfg(feature = "GpuImageCopyTexture")]
 #[allow(non_snake_case)]
 mod gen_GpuImageCopyTexture;
 #[cfg(feature = "GpuImageCopyTexture")]
 pub use gen_GpuImageCopyTexture::*;
+
+#[cfg(feature = "GpuImageCopyTextureTagged")]
+#[allow(non_snake_case)]
+mod gen_GpuImageCopyTextureTagged;
+#[cfg(feature = "GpuImageCopyTextureTagged")]
+pub use gen_GpuImageCopyTextureTagged::*;
 
 #[cfg(feature = "GpuImageDataLayout")]
 #[allow(non_snake_case)]
@@ -2625,6 +2637,24 @@ pub use gen_GpuPipelineStatisticName::*;
 mod gen_GpuPowerPreference;
 #[cfg(feature = "GpuPowerPreference")]
 pub use gen_GpuPowerPreference::*;
+
+#[cfg(feature = "GpuPredefinedColorSpace")]
+#[allow(non_snake_case)]
+mod gen_GpuPredefinedColorSpace;
+#[cfg(feature = "GpuPredefinedColorSpace")]
+pub use gen_GpuPredefinedColorSpace::*;
+
+#[cfg(feature = "GpuPresentationConfiguration")]
+#[allow(non_snake_case)]
+mod gen_GpuPresentationConfiguration;
+#[cfg(feature = "GpuPresentationConfiguration")]
+pub use gen_GpuPresentationConfiguration::*;
+
+#[cfg(feature = "GpuPresentationContext")]
+#[allow(non_snake_case)]
+mod gen_GpuPresentationContext;
+#[cfg(feature = "GpuPresentationContext")]
+pub use gen_GpuPresentationContext::*;
 
 #[cfg(feature = "GpuPrimitiveState")]
 #[allow(non_snake_case)]
@@ -2806,17 +2836,17 @@ mod gen_GpuStoreOp;
 #[cfg(feature = "GpuStoreOp")]
 pub use gen_GpuStoreOp::*;
 
-#[cfg(feature = "GpuSwapChain")]
+#[cfg(feature = "GpuSupportedFeatures")]
 #[allow(non_snake_case)]
-mod gen_GpuSwapChain;
-#[cfg(feature = "GpuSwapChain")]
-pub use gen_GpuSwapChain::*;
+mod gen_GpuSupportedFeatures;
+#[cfg(feature = "GpuSupportedFeatures")]
+pub use gen_GpuSupportedFeatures::*;
 
-#[cfg(feature = "GpuSwapChainDescriptor")]
+#[cfg(feature = "GpuSupportedLimits")]
 #[allow(non_snake_case)]
-mod gen_GpuSwapChainDescriptor;
-#[cfg(feature = "GpuSwapChainDescriptor")]
-pub use gen_GpuSwapChainDescriptor::*;
+mod gen_GpuSupportedLimits;
+#[cfg(feature = "GpuSupportedLimits")]
+pub use gen_GpuSupportedLimits::*;
 
 #[cfg(feature = "GpuTexture")]
 #[allow(non_snake_case)]
