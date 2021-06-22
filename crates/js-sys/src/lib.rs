@@ -3577,7 +3577,7 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Global)
         #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
-        pub fn new(global_descriptor: &Object, value: Option<&JsValue>) -> Result<Global, JsValue>;
+        pub fn new(global_descriptor: &Object, value: &JsValue) -> Result<Global, JsValue>;
 
         /// The value prototype property of the `WebAssembly.Global` object
         /// returns the value of the global.
