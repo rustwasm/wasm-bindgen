@@ -1,22 +1,23 @@
 /* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
  * Clipboard API and events
- * W3C Working Draft, 5 June 2019
+ * W3C Working Draft, 4 June 2021
  * The origin of this IDL file is:
- * https://www.w3.org/TR/2019/WD-clipboard-apis-20190605/
+ * https://www.w3.org/TR/2021/WD-clipboard-apis-20210604/
  */
 
 dictionary ClipboardEventInit : EventInit {
   DataTransfer? clipboardData = null;
 };
 
-[Constructor(DOMString type, optional ClipboardEventInit eventInitDict), Exposed=Window]
+[Exposed=Window]
 interface ClipboardEvent : Event {
+  constructor(DOMString type, optional ClipboardEventInit eventInitDict = {});
   readonly attribute DataTransfer? clipboardData;
 };
 
 partial interface Navigator {
-  [SecureContext, SameObject] readonly attribute Clipboard clipboard;
+  [SecureContext, SameObject] readonly attribute Clipboard? clipboard;
 };
 
 typedef sequence<ClipboardItem> ClipboardItems;
@@ -33,12 +34,12 @@ typedef Promise<ClipboardItemDataType> ClipboardItemData;
 
 callback ClipboardItemDelayedCallback = ClipboardItemData ();
 
-[Constructor(record<DOMString, ClipboardItemData> items,
-    optional ClipboardItemOptions options),
- Exposed=Window] interface ClipboardItem {
+[Exposed=Window] interface ClipboardItem {
+  constructor(record<DOMString, ClipboardItemData> items,
+    optional ClipboardItemOptions options = {});
   static ClipboardItem createDelayed(
       record<DOMString, ClipboardItemDelayedCallback> items,
-      optional ClipboardItemOptions options);
+      optional ClipboardItemOptions options = {});
 
   readonly attribute PresentationStyle presentationStyle;
   readonly attribute long long lastModified;
