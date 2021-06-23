@@ -326,11 +326,7 @@ impl<'a> Context<'a> {
             let wasmCode = '';
             switch (wasm_url.protocol) {{
                 case 'file:':
-                    let wasm_pathname = wasm_url.pathname;
-                    if (Deno.build.os === 'windows' && wasm_pathname.startsWith('/')) {{
-                        wasm_pathname = wasm_pathname.substr(1);
-                    }}
-                    wasmCode = await Deno.readFile(wasm_pathname);
+                    wasmCode = await Deno.readFile(wasm_url);
                     break
                 case 'https:':
                 case 'http:':
