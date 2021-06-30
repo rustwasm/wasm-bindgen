@@ -537,7 +537,11 @@ impl<'a> Context<'a> {
                             imports.push_str(other)
                         }
                     }
-                    imports.push_str(" } = require(String.raw`");
+                    if module.starts_with(".") || PathBuf::from(module).is_absolute() {
+                        imports.push_str(" } = require(String.raw`");
+                    } else {
+                        imports.push_str(" } = require(`");
+                    }
                     imports.push_str(module);
                     imports.push_str("`);\n");
                 }
