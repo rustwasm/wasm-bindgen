@@ -32,7 +32,7 @@ wasm-bindgen-shared = { path = "../shared", version = "=0.2.74" }
 [dev-dependencies]
 assert_cmd = "1.0"
 diff = "0.1"
-predicates = "1.0.0"
+predicates = "2.0.0"
 rayon = "1.0"
 tempfile = "3.0"
 wit-printer = "0.2"
