@@ -23,5 +23,5 @@ syn = { version = '1.0', features = ['full'] }
 wasm-bindgen-backend = { version = "=0.2.74", path = "../backend" }
 weedle = "0.12"
 lazy_static = "1.0.2"
-sourcefile = "0.1"
+sourcefile = "0.2"
 structopt = "0.3.9"
