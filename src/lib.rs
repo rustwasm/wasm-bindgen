@@ -63,6 +63,7 @@ pub mod describe;
 
 mod cast;
 pub use crate::cast::JsCast;
+pub use crate::cast::JsObject;
 
 if_std! {
     extern crate std;
