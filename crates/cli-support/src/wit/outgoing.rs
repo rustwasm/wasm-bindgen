@@ -139,7 +139,11 @@ impl InstructionBuilder<'_, '_> {
                 let free = self.cx.free()?;
                 self.instruction(
                     &[AdapterType::I32, AdapterType::I32],
-                    Instruction::VectorLoad { kind, mem, free },
+                    Instruction::VectorLoad {
+                        kind: kind.clone(),
+                        mem,
+                        free,
+                    },
                     &[AdapterType::Vector(kind)],
                 );
             }
@@ -196,7 +200,10 @@ impl InstructionBuilder<'_, '_> {
                 let mem = self.cx.memory()?;
                 self.instruction(
                     &[AdapterType::I32, AdapterType::I32],
-                    Instruction::View { kind, mem },
+                    Instruction::View {
+                        kind: kind.clone(),
+                        mem,
+                    },
                     &[AdapterType::Vector(kind)],
                 );
             }
@@ -313,7 +320,11 @@ impl InstructionBuilder<'_, '_> {
                 let free = self.cx.free()?;
                 self.instruction(
                     &[AdapterType::I32, AdapterType::I32],
-                    Instruction::OptionVectorLoad { kind, mem, free },
+                    Instruction::OptionVectorLoad {
+                        kind: kind.clone(),
+                        mem,
+                        free,
+                    },
                     &[AdapterType::Vector(kind).option()],
                 );
             }
@@ -355,7 +366,10 @@ impl InstructionBuilder<'_, '_> {
                 let mem = self.cx.memory()?;
                 self.instruction(
                     &[AdapterType::I32, AdapterType::I32],
-                    Instruction::OptionView { kind, mem },
+                    Instruction::OptionView {
+                        kind: kind.clone(),
+                        mem,
+                    },
                     &[AdapterType::Vector(kind).option()],
                 );
             }

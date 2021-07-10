@@ -351,31 +351,31 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
         };
         instructions.iter().any(|instr| match instr.instr {
             VectorToMemory {
-                kind: VectorKind::Externref,
+                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
             }
             | MutableSliceToMemory {
-                kind: VectorKind::Externref,
+                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
             }
             | OptionVector {
-                kind: VectorKind::Externref,
+                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
             }
             | VectorLoad {
-                kind: VectorKind::Externref,
+                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
             }
             | OptionVectorLoad {
-                kind: VectorKind::Externref,
+                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
             }
             | View {
-                kind: VectorKind::Externref,
+                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
             }
             | OptionView {
-                kind: VectorKind::Externref,
+                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
             } => true,
             _ => false,

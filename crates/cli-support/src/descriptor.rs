@@ -86,7 +86,7 @@ pub struct Closure {
     pub mutable: bool,
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub enum VectorKind {
     I8,
     U8,
@@ -101,6 +101,7 @@ pub enum VectorKind {
     F64,
     String,
     Externref,
+    NamedExternref(String),
 }
 
 impl Descriptor {
@@ -193,6 +194,7 @@ impl Descriptor {
             Descriptor::F32 => Some(VectorKind::F32),
             Descriptor::F64 => Some(VectorKind::F64),
             Descriptor::Externref => Some(VectorKind::Externref),
+            Descriptor::NamedExternref(ref name) => Some(VectorKind::NamedExternref(name.clone())),
             _ => None,
         }
     }
@@ -240,21 +242,26 @@ impl Function {
 }
 
 impl VectorKind {
-    pub fn js_ty(&self) -> &str {
+    pub fn js_ty(&self) -> String {
         match *self {
-            VectorKind::String => "string",
-            VectorKind::I8 => "Int8Array",
-            VectorKind::U8 => "Uint8Array",
-            VectorKind::ClampedU8 => "Uint8ClampedArray",
-            VectorKind::I16 => "Int16Array",
-            VectorKind::U16 => "Uint16Array",
-            VectorKind::I32 => "Int32Array",
-            VectorKind::U32 => "Uint32Array",
-            VectorKind::I64 => "BigInt64Array",
-            VectorKind::U64 => "BigUint64Array",
-            VectorKind::F32 => "Float32Array",
-            VectorKind::F64 => "Float64Array",
-            VectorKind::Externref => "any[]",
+            VectorKind::String => "string".to_string(),
+            VectorKind::I8 => "Int8Array".to_string(),
+            VectorKind::U8 => "Uint8Array".to_string(),
+            VectorKind::ClampedU8 => "Uint8ClampedArray".to_string(),
+            VectorKind::I16 => "Int16Array".to_string(),
+            VectorKind::U16 => "Uint16Array".to_string(),
+            VectorKind::I32 => "Int32Array".to_string(),
+            VectorKind::U32 => "Uint32Array".to_string(),
+            VectorKind::I64 => "BigInt64Array".to_string(),
+            VectorKind::U64 => "BigUint64Array".to_string(),
+            VectorKind::F32 => "Float32Array".to_string(),
+            VectorKind::F64 => "Float64Array".to_string(),
+            VectorKind::Externref => "any[]".to_string(),
+            VectorKind::NamedExternref(ref name) => {
+                let mut type_str = name.clone();
+                type_str.push_str("[]");
+                type_str
+            }
         }
     }
 
@@ -273,6 +280,7 @@ impl VectorKind {
             VectorKind::F32 => 4,
             VectorKind::F64 => 8,
             VectorKind::Externref => 4,
+            VectorKind::NamedExternref(_) => 4,
         }
     }
 }
