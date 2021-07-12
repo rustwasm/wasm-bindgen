@@ -74,7 +74,16 @@ pub async fn start() -> Result<(), JsValue> {
         dc2.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
         onmessage_callback.forget();
 
-        dc2.send_with_str("Ping from pc2.dc!").unwrap();
+        let dc2_clone = dc2.clone();
+        let onopen_callback =
+            Closure::wrap(
+                Box::new(move || {
+                    dc2_clone.send_with_str("Ping from pc2.dc!").unwrap();
+                }) as Box<dyn FnMut()>,
+            );
+        dc2.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
+        onopen_callback.forget();
+
     }) as Box<dyn FnMut(RtcDataChannelEvent)>);
     pc2.set_ondatachannel(Some(ondatachannel_callback.as_ref().unchecked_ref()));
     ondatachannel_callback.forget();
