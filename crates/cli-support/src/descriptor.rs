@@ -258,8 +258,9 @@ impl VectorKind {
             VectorKind::F64 => "Float64Array".to_string(),
             VectorKind::Externref => "any[]".to_string(),
             VectorKind::NamedExternref(ref name) => {
-                let mut type_str = name.clone();
-                type_str.push_str("[]");
+                let mut type_str = "(".to_string();
+                type_str.push_str(name);
+                type_str.push_str(")[]");
                 type_str
             }
         }
