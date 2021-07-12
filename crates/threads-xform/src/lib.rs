@@ -113,7 +113,6 @@ impl Config {
         mem.maximum = Some(cmp::max(self.maximum_memory / PAGE_SIZE, prev_max));
         assert!(mem.data_segments.is_empty());
 
-        delete_synthetic_func(module, "__wasm_init_memory")?;
         let tls = Tls {
             init: delete_synthetic_func(module, "__wasm_init_tls")?,
             size: delete_synthetic_global(module, "__tls_size")?,

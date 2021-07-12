@@ -5,7 +5,9 @@ attribute](structural.html). It configures how `wasm-bindgen` will generate JS
 imports to call the imported function. Notably a function imported by `final`
 never changes after it was imported, whereas a function imported by default (or
 with `structural`) is subject to runtime lookup rules such as walking the
-prototype chain of an object.
+prototype chain of an object. Note that `final` is not suitable for accessing
+data descriptor properties of JS objects; to accomplish this, use the `structural`
+attribute.
 
 [host-bindings]: https://github.com/WebAssembly/host-bindings
 [reference-types]: https://github.com/WebAssembly/reference-types

@@ -11,5 +11,5 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GpuStoreOp {
     Store = "store",
-    Clear = "clear",
+    Discard = "discard",
 }

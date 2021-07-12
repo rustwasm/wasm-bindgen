@@ -143,7 +143,7 @@ interface RTCPeerConnection : EventTarget  {
 
 partial interface RTCPeerConnection {
 
-  // Dummy Promise<undefined> return values aundefined "WebIDL.WebIDLError: error:
+  // Dummy Promise<undefined> return values avoid "WebIDL.WebIDLError: error:
   // We have overloads with both Promise and non-Promise return types"
 
   Promise<undefined> createOffer (RTCSessionDescriptionCallback successCallback,

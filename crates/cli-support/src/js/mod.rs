@@ -322,12 +322,24 @@ impl<'a> Context<'a> {
         // Deno removed support for .wasm imports in https://github.com/denoland/deno/pull/5135
         // the issue for bringing it back is https://github.com/denoland/deno/issues/5609.
         format!(
-            "const file = new URL(import.meta.url).pathname;
-            const wasmFile = file.substring(0, file.lastIndexOf(Deno.build.os === 'windows' ? '\\\\' : '/') + 1) + '{}_bg.wasm';
-            const wasmModule = new WebAssembly.Module(Deno.readFileSync(wasmFile));
-            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            "const wasm_url = new URL('{module_name}_bg.wasm', import.meta.url);
+            let wasmCode = '';
+            switch (wasm_url.protocol) {{
+                case 'file:':
+                    wasmCode = await Deno.readFile(wasm_url);
+                    break
+                case 'https:':
+                case 'http:':
+                    wasmCode = await (await fetch(wasm_url)).arrayBuffer();
+                    break
+                default:
+                    throw new Error(`Unsupported protocol: ${{wasm_url.protocol}}`);
+                    break
+            }}
+
+            const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
             const wasm = wasmInstance.exports;",
-            module_name
+            module_name = module_name
         )
     }
 
@@ -525,7 +537,11 @@ impl<'a> Context<'a> {
                             imports.push_str(other)
                         }
                     }
-                    imports.push_str(" } = require(String.raw`");
+                    if module.starts_with(".") || PathBuf::from(module).is_absolute() {
+                        imports.push_str(" } = require(String.raw`");
+                    } else {
+                        imports.push_str(" } = require(`");
+                    }
                     imports.push_str(module);
                     imports.push_str("`);\n");
                 }
@@ -1764,13 +1780,13 @@ impl<'a> Context<'a> {
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
                     "\
-                    function handleError(f, args) {{                       
+                    function handleError(f, args) {{
                         try {{
                             return f.apply(this, args);
                         }} catch (e) {{
                             const idx = {}(e);
                             wasm.{}(idx);
-                        }}                      
+                        }}
                     }}
                     ",
                     add, store,
@@ -1801,7 +1817,7 @@ impl<'a> Context<'a> {
         }
         self.global(
             "\
-            function logError(f, args) {            
+            function logError(f, args) {
                 try {
                     return f.apply(this, args);
                 } catch (e) {
@@ -3316,6 +3332,9 @@ impl<'a> Context<'a> {
         let default_name = format!("__wbindgen_export_{}", self.next_export_idx);
         self.next_export_idx += 1;
         let name = match id {
+            walrus::ExportItem::Memory(_) if self.module.memories.iter().count() == 1 => {
+                "memory".to_owned()
+            }
             walrus::ExportItem::Function(f) => match &self.module.funcs.get(f).name {
                 Some(s) => to_js_identifier(s),
                 None => default_name,

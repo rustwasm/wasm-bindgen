@@ -151,7 +151,7 @@ interface TCPSocket : EventTarget {
   /**
    * After send has buffered more than 64k of data, it returns false to
    * indicate that the client should pause before sending more data, to
-   * aundefined accumulating large buffers. This is only advisory, and the client
+   * avoid accumulating large buffers. This is only advisory, and the client
    * is free to ignore it and buffer as much data as desired, but if reducing
    * the size of buffers is important (especially for a streaming application)
    * the "drain" event will be dispatched once the previously-buffered data has

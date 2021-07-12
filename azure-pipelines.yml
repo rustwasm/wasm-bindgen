@@ -87,7 +87,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2021-03-28
+          toolchain: nightly-2021-05-09
       - template: ci/azure-install-node.yml
       - script: cargo test --target wasm32-unknown-unknown --features nightly --test wasm
 
@@ -178,7 +178,7 @@ jobs:
       - script: mv _package.json package.json && npm install && rm package.json
         displayName: "run npm install"
       - script: |
-          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v websockets | grep -v webxr | grep -v deno`; do
+          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v wasm-in-web-worker | grep -v websockets | grep -v webxr | grep -v deno`; do
             (cd examples/$dir &&
             ln -fs ../../node_modules . &&
             npm run build -- --output-path $BUILD_ARTIFACTSTAGINGDIRECTORY/exbuild/$dir) || exit 1;
@@ -204,7 +204,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2020-08-27
+          toolchain: nightly-2021-05-09
       - script: rustup component add rust-src
         displayName: "install rust-src"
       - script: |
@@ -287,7 +287,7 @@ jobs:
           curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.3.0/mdbook-v0.3.0-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
           echo "##vso[task.prependpath]$PWD"
         displayName: "Install mdbook"
-      - script: (cd guide && mv _theme theme && mdbook build)
+      - script: (cd guide && mdbook build)
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: doc_book

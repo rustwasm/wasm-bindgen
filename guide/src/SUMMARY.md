@@ -25,6 +25,7 @@
   - [web-sys: WebRTC DataChannel](./examples/webrtc_datachannel.md)
   - [web-sys: `requestAnimationFrame`](./examples/request-animation-frame.md)
   - [web-sys: A Simple Paint Program](./examples/paint.md)
+  - [web-sys: WASM in Web Worker](./examples/wasm-in-web-worker.md)
   - [Parallel Raytracing](./examples/raytrace.md)
   - [web-sys: A TODO MVC App](./examples/todomvc.md)
 - [Reference](./reference/index.md)
