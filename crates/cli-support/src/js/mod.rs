@@ -655,14 +655,14 @@ impl<'a> Context<'a> {
                         ASSIGNMENT_STRING,
                     ),
                     OutputMode::NoModules { .. } => (
-                        r"\
+                        "\
                             // Document#currentScript is a getter,
                             // it's value changes upon evaluating each script,
                             // therefore it must be cached
                             const default_wasm_source_url = (typeof document !== 'undefined'
                                 ? document.currentScript.src
                                 : location.href
-                            ).replace(/\.js$/, '_bg.wasm');
+                            ).replace(/\\.js$/, '_bg.wasm');
                         "
                         .to_string(),
                         ASSIGNMENT_STRING,
