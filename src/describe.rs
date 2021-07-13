@@ -155,6 +155,12 @@ if_std! {
             <Box<[T]>>::describe();
         }
     }
+
+    impl<T, const N: usize> WasmDescribe for [T; N] where Box<[T]>: WasmDescribe {
+        fn describe() {
+            <Box<[T]>>::describe();
+        }
+    }
 }
 
 impl<T: WasmDescribe> WasmDescribe for Option<T> {
