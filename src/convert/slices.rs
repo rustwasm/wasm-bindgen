@@ -146,6 +146,8 @@ cfg_if! {
 }
 
 if_std! {
+    use std::convert::TryFrom;
+
     impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
 
@@ -170,6 +172,38 @@ if_std! {
     }
 
     impl<T> OptionFromWasmAbi for Vec<T> where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
+        #[inline]
+        fn is_none(abi: &WasmSlice) -> bool { abi.ptr == 0 }
+    }
+
+    impl<T, const N: usize> IntoWasmAbi for [T; N] where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
+        type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
+
+        #[inline]
+        fn into_abi(self) -> Self::Abi {
+            <Box<[T]>>::from(self).into_abi()
+        }
+    }
+
+    impl<T, const N: usize> OptionIntoWasmAbi for [T; N] where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
+        #[inline]
+        fn none() -> WasmSlice { null_slice() }
+    }
+
+    impl<T, const N: usize> FromWasmAbi for [T; N] where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
+        type Abi = <Box<[T]> as FromWasmAbi>::Abi;
+
+        #[inline]
+        unsafe fn from_abi(js: Self::Abi) -> Self {
+            let result = <[T; N]>::try_from(<Vec<T>>::from(<Box<[T]>>::from_abi(js)));
+            return match result {
+                Ok(arr) => arr,
+                Err(_) => panic!("JS array length does not match Rust array")
+            }
+        }
+    }
+
+    impl<T, const N: usize> OptionFromWasmAbi for [T; N] where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
         #[inline]
         fn is_none(abi: &WasmSlice) -> bool { abi.ptr == 0 }
     }
