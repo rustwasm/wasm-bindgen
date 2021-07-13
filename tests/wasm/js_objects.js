@@ -83,6 +83,18 @@ exports.js_another_vector_return = () => {
     assert.deepStrictEqual(wasm.another_vector_return_get_array(), [1, 2, 3, 4, 5, 6]);
 };
 
+exports.returning_vector_string_foo = () => {
+    return "This is the mostest awesomest string that can possibly exist.";
+};
+
+exports.js_returning_vector_string = () => {
+    assert.strictEqual(wasm.returning_vector_string_bar().length, 10);
+};
+
+exports.js_another_vector_string_return = () => {
+    assert.deepStrictEqual(wasm.another_vector_string_return_get_array(), ["1", "2", "3", "4", "5", "6"]);
+};
+
 exports.verify_serde = function(a) {
   assert.deepStrictEqual(a, {
     a: 0,
