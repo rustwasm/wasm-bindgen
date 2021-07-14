@@ -3004,6 +3004,78 @@ mod gen_HeadersGuardEnum;
 #[cfg(feature = "HeadersGuardEnum")]
 pub use gen_HeadersGuardEnum::*;
 
+#[cfg(feature = "Hid")]
+#[allow(non_snake_case)]
+mod gen_Hid;
+#[cfg(feature = "Hid")]
+pub use gen_Hid::*;
+
+#[cfg(feature = "HidCollectionInfo")]
+#[allow(non_snake_case)]
+mod gen_HidCollectionInfo;
+#[cfg(feature = "HidCollectionInfo")]
+pub use gen_HidCollectionInfo::*;
+
+#[cfg(feature = "HidConnectionEvent")]
+#[allow(non_snake_case)]
+mod gen_HidConnectionEvent;
+#[cfg(feature = "HidConnectionEvent")]
+pub use gen_HidConnectionEvent::*;
+
+#[cfg(feature = "HidConnectionEventInit")]
+#[allow(non_snake_case)]
+mod gen_HidConnectionEventInit;
+#[cfg(feature = "HidConnectionEventInit")]
+pub use gen_HidConnectionEventInit::*;
+
+#[cfg(feature = "HidDevice")]
+#[allow(non_snake_case)]
+mod gen_HidDevice;
+#[cfg(feature = "HidDevice")]
+pub use gen_HidDevice::*;
+
+#[cfg(feature = "HidDeviceFilter")]
+#[allow(non_snake_case)]
+mod gen_HidDeviceFilter;
+#[cfg(feature = "HidDeviceFilter")]
+pub use gen_HidDeviceFilter::*;
+
+#[cfg(feature = "HidDeviceRequestOptions")]
+#[allow(non_snake_case)]
+mod gen_HidDeviceRequestOptions;
+#[cfg(feature = "HidDeviceRequestOptions")]
+pub use gen_HidDeviceRequestOptions::*;
+
+#[cfg(feature = "HidInputReportEvent")]
+#[allow(non_snake_case)]
+mod gen_HidInputReportEvent;
+#[cfg(feature = "HidInputReportEvent")]
+pub use gen_HidInputReportEvent::*;
+
+#[cfg(feature = "HidInputReportEventInit")]
+#[allow(non_snake_case)]
+mod gen_HidInputReportEventInit;
+#[cfg(feature = "HidInputReportEventInit")]
+pub use gen_HidInputReportEventInit::*;
+
+#[cfg(feature = "HidReportInfo")]
+#[allow(non_snake_case)]
+mod gen_HidReportInfo;
+#[cfg(feature = "HidReportInfo")]
+pub use gen_HidReportInfo::*;
+
+#[cfg(feature = "HidReportItem")]
+#[allow(non_snake_case)]
+mod gen_HidReportItem;
+#[cfg(feature = "HidReportItem")]
+pub use gen_HidReportItem::*;
+
+#[cfg(feature = "HidUnitSystem")]
+#[allow(non_snake_case)]
+mod gen_HidUnitSystem;
+#[cfg(feature = "HidUnitSystem")]
+pub use gen_HidUnitSystem::*;
+
 #[cfg(feature = "HiddenPluginEventInit")]
 #[allow(non_snake_case)]
 mod gen_HiddenPluginEventInit;
