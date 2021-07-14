@@ -121,7 +121,7 @@ impl InstructionBuilder<'_, '_> {
                     format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
                 })?;
                 self.instruction(
-                    &[AdapterType::Vector(kind)],
+                    &[AdapterType::Vector(kind.clone())],
                     Instruction::VectorToMemory {
                         kind,
                         malloc: self.cx.malloc()?,
@@ -198,7 +198,7 @@ impl InstructionBuilder<'_, '_> {
                 })?;
                 if mutable {
                     self.instruction(
-                        &[AdapterType::Vector(kind)],
+                        &[AdapterType::Vector(kind.clone())],
                         Instruction::MutableSliceToMemory {
                             kind,
                             malloc: self.cx.malloc()?,
@@ -209,7 +209,7 @@ impl InstructionBuilder<'_, '_> {
                     );
                 } else {
                     self.instruction(
-                        &[AdapterType::Vector(kind)],
+                        &[AdapterType::Vector(kind.clone())],
                         Instruction::VectorToMemory {
                             kind,
                             malloc: self.cx.malloc()?,
@@ -322,7 +322,7 @@ impl InstructionBuilder<'_, '_> {
                 let malloc = self.cx.malloc()?;
                 let mem = self.cx.memory()?;
                 self.instruction(
-                    &[AdapterType::Vector(kind).option()],
+                    &[AdapterType::Vector(kind.clone()).option()],
                     Instruction::OptionVector { kind, malloc, mem },
                     &[AdapterType::I32, AdapterType::I32],
                 );

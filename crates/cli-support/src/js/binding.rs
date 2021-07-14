@@ -762,7 +762,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::VectorToMemory { kind, malloc, mem } => {
             let val = js.pop();
-            let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
+            let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
             js.prelude(&format!(
@@ -805,7 +805,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::OptionVector { kind, mem, malloc } => {
-            let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
+            let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             js.cx.expose_is_like_none();
             let i = js.tmp();
             let malloc = js.cx.export_name_of(*malloc);
@@ -832,7 +832,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             // a length. These two pointer/length values get pushed onto the
             // value stack.
             let val = js.pop();
-            let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
+            let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
             js.prelude(&format!(
@@ -850,7 +850,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             // original mutable slice with any modifications, and then free the
             // Rust-backed memory.
             let free = js.cx.export_name_of(*free);
-            let get = js.cx.memview_function(*kind, *mem);
+            let get = js.cx.memview_function(kind.clone(), *mem);
             js.finally(&format!(
                 "
                     {val}.set({get}().subarray(ptr{i} / {size}, ptr{i} / {size} + len{i}));
@@ -1003,7 +1003,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::VectorLoad { kind, mem, free } => {
             let len = js.pop();
             let ptr = js.pop();
-            let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
+            let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
             let i = js.tmp();
             let free = js.cx.export_name_of(*free);
             js.prelude(&format!("var v{} = {}({}, {}).slice();", i, f, ptr, len));
@@ -1020,7 +1020,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::OptionVectorLoad { kind, mem, free } => {
             let len = js.pop();
             let ptr = js.pop();
-            let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
+            let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
             let i = js.tmp();
             let free = js.cx.export_name_of(*free);
             js.prelude(&format!("let v{};", i));
@@ -1040,14 +1040,14 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::View { kind, mem } => {
             let len = js.pop();
             let ptr = js.pop();
-            let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
+            let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
             js.push(format!("{f}({ptr}, {len})", ptr = ptr, len = len, f = f));
         }
 
         Instruction::OptionView { kind, mem } => {
             let len = js.pop();
             let ptr = js.pop();
-            let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
+            let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
             js.push(format!(
                 "{ptr} === 0 ? undefined : {f}({ptr}, {len})",
                 ptr = ptr,
@@ -1226,7 +1226,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::String => dst.push_str("string"),
         AdapterType::Externref => dst.push_str("any"),
         AdapterType::Bool => dst.push_str("boolean"),
-        AdapterType::Vector(kind) => dst.push_str(kind.js_ty()),
+        AdapterType::Vector(kind) => dst.push_str(&kind.js_ty()),
         AdapterType::Option(ty) => {
             adapter2ts(ty, dst);
             dst.push_str(" | undefined");

@@ -1621,6 +1621,7 @@ impl<'a> Context<'a> {
             VectorKind::F32 => self.expose_f32_memory(memory),
             VectorKind::F64 => self.expose_f64_memory(memory),
             VectorKind::Externref => self.expose_uint32_memory(memory),
+            VectorKind::NamedExternref(_) => self.expose_uint32_memory(memory),
         }
     }
 
@@ -1842,6 +1843,7 @@ impl<'a> Context<'a> {
             VectorKind::F32 => self.expose_pass_array_f32_to_wasm(memory),
             VectorKind::F64 => self.expose_pass_array_f64_to_wasm(memory),
             VectorKind::Externref => self.expose_pass_array_jsvalue_to_wasm(memory),
+            VectorKind::NamedExternref(_) => self.expose_pass_array_jsvalue_to_wasm(memory),
         }
     }
 
@@ -1864,6 +1866,7 @@ impl<'a> Context<'a> {
             VectorKind::F32 => self.expose_get_array_f32_from_wasm(memory),
             VectorKind::F64 => self.expose_get_array_f64_from_wasm(memory),
             VectorKind::Externref => self.expose_get_array_js_value_from_wasm(memory)?,
+            VectorKind::NamedExternref(_) => self.expose_get_array_js_value_from_wasm(memory)?,
         })
     }
 

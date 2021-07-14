@@ -624,7 +624,7 @@ impl ToTokens for ast::ImportType {
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
                 use wasm_bindgen::convert::RefFromWasmAbi;
                 use wasm_bindgen::describe::WasmDescribe;
-                use wasm_bindgen::{JsValue, JsCast};
+                use wasm_bindgen::{JsValue, JsCast, JsObject};
                 use wasm_bindgen::__rt::core;
 
                 impl WasmDescribe for #rust_name {
@@ -760,6 +760,8 @@ impl ToTokens for ast::ImportType {
                         unsafe { &*(val as *const JsValue as *const #rust_name) }
                     }
                 }
+
+                impl JsObject for #rust_name {}
 
                 ()
             };

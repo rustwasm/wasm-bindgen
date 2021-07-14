@@ -4,6 +4,7 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
+use crate::cast::JsObject;
 use crate::convert::OptionIntoWasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
 use cfg_if::cfg_if;
@@ -267,6 +268,43 @@ if_std! {
     }
 
     impl OptionFromWasmAbi for Box<[JsValue]> {
+        #[inline]
+        fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
+    }
+
+    impl<T> IntoWasmAbi for Box<[T]> where T: JsObject {
+        type Abi = WasmSlice;
+
+        #[inline]
+        fn into_abi(self) -> WasmSlice {
+            let ptr = self.as_ptr();
+            let len = self.len();
+            mem::forget(self);
+            WasmSlice {
+                ptr: ptr.into_abi(),
+                len: len as u32,
+            }
+        }
+    }
+
+    impl<T> OptionIntoWasmAbi for Box<[T]> where T: JsObject {
+        #[inline]
+        fn none() -> WasmSlice { null_slice() }
+    }
+
+    impl<T> FromWasmAbi for Box<[T]> where T: JsObject {
+        type Abi = WasmSlice;
+
+        #[inline]
+        unsafe fn from_abi(js: WasmSlice) -> Self {
+            let ptr = <*mut JsValue>::from_abi(js.ptr);
+            let len = js.len as usize;
+            let vec: Vec<T> = Vec::from_raw_parts(ptr, len, len).drain(..).map(|js_value| T::unchecked_from_js(js_value)).collect();
+            return vec.into_boxed_slice();
+        }
+    }
+
+    impl<T> OptionFromWasmAbi for Box<[T]> where T: JsObject {
         #[inline]
         fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
