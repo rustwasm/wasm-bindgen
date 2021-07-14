@@ -4,6 +4,8 @@
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Yes | No | No | Yes | Yes | Yes | A JavaScript `Array` object |
 
+Boxed slices of imported JS types and exported Rust types are also supported. `Vec<T>` is supported wherever `Box<[T]>` is.
+
 ## Example Rust Usage
 
 ```rust
