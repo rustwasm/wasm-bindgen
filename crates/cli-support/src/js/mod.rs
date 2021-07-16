@@ -508,9 +508,8 @@ impl<'a> Context<'a> {
         }
 
         match &self.config.mode {
-            OutputMode::NoModules { .. } =>
-            {
-                #[allow(clippy::never_loop)]
+            OutputMode::NoModules { .. } => {
+                #[allow(clippy::never_loop)] // TODO: Revisit this
                 for (module, _items) in self.js_imports.iter() {
                     bail!(
                         "importing from `{}` isn't supported with `--target no-modules`",
@@ -2454,6 +2453,10 @@ impl<'a> Context<'a> {
     /// error, log it, and rethrow it. This is only intended for user-defined
     /// imports, not all imports of everything.
     fn import_never_log_error(&self, import: &AuxImport) -> bool {
+        // Some intrinsics are intended to exactly throw errors, and in
+        // general we shouldn't have exceptions in our intrinsics to debug,
+        // so skip these; otherwise assume everything else gets a debug log of errors
+        // thrown in debug mode.
         matches!(import, AuxImport::Intrinsic(_))
     }
 

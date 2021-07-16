@@ -33,7 +33,7 @@ fn item_id(mut element: Element) -> Option<String> {
     element.parent_element().map(|mut parent| {
         let mut res = None;
         let parent_id = parent.dataset_get("id");
-        if parent_id.is_empty() {
+        if !parent_id.is_empty() {
             res = Some(parent_id);
         } else if let Some(mut ep) = parent.parent_element() {
             res = Some(ep.dataset_get("id"));

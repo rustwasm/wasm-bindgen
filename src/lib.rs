@@ -1001,6 +1001,7 @@ pub mod __rt {
             malloc_failure();
         }
 
+        #[allow(clippy::missing_safety_doc)] // TODO
         #[no_mangle]
         pub unsafe extern "C" fn __wbindgen_realloc(ptr: *mut u8, old_size: usize, new_size: usize) -> *mut u8 {
             let align = mem::align_of::<usize>();
@@ -1024,6 +1025,7 @@ pub mod __rt {
             }
         }
 
+        #[allow(clippy::missing_safety_doc)] // TODO
         #[no_mangle]
         pub unsafe extern "C" fn __wbindgen_free(ptr: *mut u8, size: usize) {
             // This happens for zero-length slices, and in that case `ptr` is
@@ -1076,6 +1078,7 @@ pub mod __rt {
 
     static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];
 
+    #[allow(clippy::missing_safety_doc)] // TODO
     #[no_mangle]
     pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
         debug_assert_eq!(GLOBAL_EXNDATA[0], 0);

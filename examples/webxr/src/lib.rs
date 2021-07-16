@@ -1,20 +1,26 @@
 #[macro_use]
 mod utils;
 
-use js_sys::Promise;
-use std::cell::RefCell;
 use std::collections::HashMap;
-use std::rc::Rc;
-use utils::set_panic_hook;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use wasm_bindgen_futures::future_to_promise;
 use web_sys::*;
 
+#[cfg(web_sys_unstable_apis)]
+use js_sys::Promise;
+#[cfg(web_sys_unstable_apis)]
+use std::cell::RefCell;
+#[cfg(web_sys_unstable_apis)]
+use std::rc::Rc;
+#[cfg(web_sys_unstable_apis)]
+use utils::set_panic_hook;
+#[cfg(web_sys_unstable_apis)]
+use wasm_bindgen_futures::future_to_promise;
 #[cfg(web_sys_unstable_apis)]
 use wasm_bindgen_futures::JsFuture;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
+#[cfg(web_sys_unstable_apis)]
 macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
@@ -152,6 +158,7 @@ impl XrApp {
     }
 }
 
+#[cfg(web_sys_unstable_apis)]
 impl Default for XrApp {
     fn default() -> Self {
         Self::new()

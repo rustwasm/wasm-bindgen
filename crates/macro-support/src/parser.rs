@@ -841,7 +841,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     if !f.sig.generics.params.is_empty() {
                         bail_span!(&f.sig.generics, "the start function cannot have generics",);
                     }
-                    if !f.sig.generics.params.is_empty() {
+                    if !f.sig.inputs.is_empty() {
                         bail_span!(&f.sig.inputs, "the start function cannot have arguments",);
                     }
                 }
