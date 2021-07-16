@@ -22,32 +22,24 @@ impl From<web_sys::EventTarget> for Element {
 
 impl From<Element> for Option<web_sys::Node> {
     fn from(obj: Element) -> Option<web_sys::Node> {
-        if let Some(el) = obj.el {
-            Some(el.into())
-        } else {
-            None
-        }
+        obj.el.map(|el| el.into())
     }
 }
 
 impl From<Element> for Option<EventTarget> {
     fn from(obj: Element) -> Option<EventTarget> {
-        if let Some(el) = obj.el {
-            Some(el.into())
-        } else {
-            None
-        }
+        obj.el.map(|el| el.into())
     }
 }
 
 impl Element {
     // Create an element from a tag name
     pub fn create_element(tag: &str) -> Option<Element> {
-        if let Some(el) = web_sys::window()?.document()?.create_element(tag).ok() {
-            Some(el.into())
-        } else {
-            None
-        }
+        web_sys::window()?
+            .document()?
+            .create_element(tag)
+            .ok()
+            .map(|el| el.into())
     }
 
     pub fn qs(selector: &str) -> Option<Element> {
@@ -82,7 +74,7 @@ impl Element {
         mut handler: T,
         use_capture: bool,
     ) where
-        T: 'static + FnMut(web_sys::Event) -> (),
+        T: 'static + FnMut(web_sys::Event),
     {
         let el = match self.el.take() {
             Some(e) => e,

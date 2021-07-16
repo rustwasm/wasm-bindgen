@@ -53,6 +53,7 @@ pub struct Output {
     generated: Generated,
 }
 
+#[allow(clippy::large_enum_variant)] // TODO: Revisit this
 enum Generated {
     InterfaceTypes,
     Js(JsGenerated),
@@ -78,6 +79,7 @@ enum OutputMode {
     Deno,
 }
 
+#[allow(clippy::large_enum_variant)] // TODO: Revisit this
 enum Input {
     Path(PathBuf),
     Module(Module, String),
@@ -144,7 +146,7 @@ impl Bindgen {
     pub fn input_module(&mut self, name: &str, module: Module) -> &mut Bindgen {
         let name = name.to_string();
         self.input = Input::Module(module, name);
-        return self;
+        self
     }
 
     fn switch_mode(&mut self, mode: OutputMode, flag: &str) -> Result<(), Error> {
@@ -452,7 +454,7 @@ impl Bindgen {
                 local_modules: aux.local_modules.clone(),
                 mode: self.mode.clone(),
                 typescript: self.typescript,
-                npm_dependencies: cx.npm_dependencies.clone(),
+                npm_dependencies: cx.npm_dependencies,
                 js,
                 ts,
                 start,
@@ -502,13 +504,19 @@ fn reset_indentation(s: &str) -> String {
             }
             dst.push_str(line);
         }
-        dst.push_str("\n");
+        dst.push('\n');
         // Ignore { inside of comments and if it's an exported enum
         if line.ends_with('{') && !line.starts_with('*') && !line.ends_with("Object.freeze({") {
             indent += 1;
         }
     }
-    return dst;
+    dst
+}
+
+impl Default for Bindgen {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 // Eventually these will all be CLI options, but while they're unstable features
@@ -539,15 +547,15 @@ fn demangle(module: &mut Module) {
 
 impl OutputMode {
     fn uses_es_modules(&self) -> bool {
-        match self {
+        matches!(
+            self,
             OutputMode::Bundler { .. }
-            | OutputMode::Web
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
-            | OutputMode::Deno => true,
-            _ => false,
-        }
+                | OutputMode::Web
+                | OutputMode::Node {
+                    experimental_modules: true,
+                }
+                | OutputMode::Deno
+        )
     }
 
     fn nodejs_experimental_modules(&self) -> bool {
@@ -560,34 +568,25 @@ impl OutputMode {
     }
 
     fn nodejs(&self) -> bool {
-        match self {
-            OutputMode::Node { .. } => true,
-            _ => false,
-        }
+        matches!(self, OutputMode::Node { .. })
     }
 
     fn no_modules(&self) -> bool {
-        match self {
-            OutputMode::NoModules { .. } => true,
-            _ => false,
-        }
+        matches!(self, OutputMode::NoModules { .. })
     }
 
     fn web(&self) -> bool {
-        match self {
-            OutputMode::Web => true,
-            _ => false,
-        }
+        matches!(self, OutputMode::Web)
     }
 
     fn esm_integration(&self) -> bool {
-        match self {
+        matches!(
+            self,
             OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            } => true,
-            _ => false,
-        }
+                | OutputMode::Node {
+                    experimental_modules: true,
+                }
+        )
     }
 }
 
@@ -664,7 +663,7 @@ impl Output {
                 .with_context(|| format!("failed to write `{}`", path.display()))?;
         }
 
-        if gen.npm_dependencies.len() > 0 {
+        if !gen.npm_dependencies.is_empty() {
             let map = gen
                 .npm_dependencies
                 .iter()

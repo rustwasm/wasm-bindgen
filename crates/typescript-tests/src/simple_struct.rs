@@ -20,3 +20,9 @@ impl A {
     pub fn take_bool(&self, _: bool) {}
     pub fn take_many(&self, _: bool, _: f64, _: u32) {}
 }
+
+impl Default for A {
+    fn default() -> Self {
+        Self::new()
+    }
+}

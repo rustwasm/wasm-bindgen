@@ -44,9 +44,9 @@ impl Store {
                 let completed = item_array.shift().as_bool()?;
                 let id = item_array.shift().as_string()?;
                 let temp_item = Item {
+                    id,
                     title,
                     completed,
-                    id,
                 };
                 item_list.push(temp_item);
             }
@@ -79,7 +79,7 @@ impl Store {
     ///
     /// ```
     ///  let data = db.find(ItemQuery::Completed {completed: true});
-    ///	 // data will contain items whose completed properties are true
+    ///  // data will contain items whose completed properties are true
     /// ```
     pub fn find(&mut self, query: ItemQuery) -> Option<ItemListSlice<'_>> {
         Some(
@@ -238,10 +238,10 @@ impl<'a> FromIterator<&'a Item> for ItemListSlice<'a> {
     }
 }
 
-impl<'a> Into<ItemList> for ItemListSlice<'a> {
-    fn into(self) -> ItemList {
+impl<'a> From<ItemListSlice<'a>> for ItemList {
+    fn from(slice: ItemListSlice<'a>) -> ItemList {
         let mut i = ItemList::new();
-        let items = self.list.into_iter();
+        let items = slice.list.into_iter();
         for j in items {
             // TODO neaten this cloning?
             let item = Item {

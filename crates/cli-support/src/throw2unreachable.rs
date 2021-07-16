@@ -26,10 +26,10 @@ pub fn run(module: &mut Module) {
     // Find the adapter ID which is the import for the call to the throw
     // intrinsic.
     let aux = module.customs.get_typed::<WasmBindgenAux>().unwrap();
-    let throw_import = aux.import_map.iter().find(|(_, import)| match import {
-        AuxImport::Intrinsic(Intrinsic::Throw) => true,
-        _ => false,
-    });
+    let throw_import = aux
+        .import_map
+        .iter()
+        .find(|(_, import)| matches!(import, AuxImport::Intrinsic(Intrinsic::Throw)));
     let throw_adapter = match throw_import {
         Some((id, _)) => *id,
         None => return,

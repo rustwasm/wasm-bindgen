@@ -1,9 +1,11 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
+#[allow(clippy::boxed_local)]
 pub fn take_boxed_js_value_slice_by_value(x: Box<[JsValue]>) {}
 
 #[wasm_bindgen]
+#[allow(clippy::boxed_local)]
 pub fn return_boxed_js_value_slice() -> Box<[JsValue]> {
     vec![JsValue::NULL, JsValue::UNDEFINED].into_boxed_slice()
 }

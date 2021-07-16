@@ -64,7 +64,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
                 import.module, import.name
             );
         }
-        format!("in adapter function")
+        "in adapter function".to_string()
     };
 
     let mut us2walrus = HashMap::new();
@@ -148,7 +148,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         );
     }
 
-    if let Some((name, _)) = snippets.iter().filter(|(_, v)| !v.is_empty()).next() {
+    if let Some((name, _)) = snippets.iter().find(|(_, v)| !v.is_empty()) {
         bail!(
             "generating a bindings section is currently incompatible with \
              local JS snippets being specified as well, `{}` cannot be used \
@@ -182,7 +182,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         );
     }
 
-    if let Some(enum_) = enums.iter().next() {
+    if let Some(enum_) = enums.get(0) {
         bail!(
             "generating a bindings section is currently incompatible with \
              exporting an `enum` from the wasm file, cannot export `{}`",
@@ -190,7 +190,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         );
     }
 
-    if let Some(struct_) = structs.iter().next() {
+    if let Some(struct_) = structs.get(0) {
         bail!(
             "generating a bindings section is currently incompatible with \
              exporting a `struct` from the wasm file, cannot export `{}`",
@@ -291,7 +291,7 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
     let desc_js = |js: &JsImport| {
         let mut extra = String::new();
         for field in js.fields.iter() {
-            extra.push_str(".");
+            extra.push('.');
             extra.push_str(field);
         }
         match &js.name {
@@ -317,7 +317,7 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
 
     let item = match import {
         AuxImport::Value(AuxValue::Bare(js)) => {
-            if js.fields.len() == 0 {
+            if js.fields.is_empty() {
                 if let JsImportName::Module { .. } = js.name {
                     return Ok(());
                 }
@@ -345,14 +345,14 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
         | AuxImport::IndexingGetterOfClass(_)
         | AuxImport::IndexingGetterOfObject
         | AuxImport::IndexingSetterOfClass(_)
-        | AuxImport::IndexingSetterOfObject => format!("indexing getters/setters/deleters"),
+        | AuxImport::IndexingSetterOfObject => "indexing getters/setters/deleters".to_string(),
         AuxImport::WrapInExportedClass(name) => {
             format!("wrapping a pointer in a `{}` js class wrapper", name)
         }
         AuxImport::Intrinsic(intrinsic) => {
             format!("wasm-bindgen specific intrinsic `{}`", intrinsic.name())
         }
-        AuxImport::Closure { .. } => format!("creating a `Closure` wrapper"),
+        AuxImport::Closure { .. } => "creating a `Closure` wrapper".to_string(),
     };
     bail!("import of {} requires JS glue", item);
 }

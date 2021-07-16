@@ -88,7 +88,7 @@ pub fn spawn(
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
-        return response;
+        response
     })
     .map_err(|e| anyhow!("{}", e))?;
     return Ok(srv);
@@ -104,7 +104,7 @@ pub fn spawn(
         // 'foo'` instead of `from 'foo.js'`. Fixup those paths here to see if a
         // `js` file exists.
         if let Some(part) = request.url().split('/').last() {
-            if !part.contains(".") {
+            if !part.contains('.') {
                 let new_request = Request::fake_http(
                     request.method(),
                     format!("{}.js", request.url()),

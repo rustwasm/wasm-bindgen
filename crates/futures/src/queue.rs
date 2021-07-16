@@ -24,11 +24,7 @@ impl QueueState {
         // stuck in an infinite loop, so we may want to yield back to the main
         // event loop occasionally. For now though greedy execution should get
         // the job done.
-        loop {
-            let task = match self.tasks.borrow_mut().pop_front() {
-                Some(task) => task,
-                None => break,
-            };
+        while let Some(task) = self.tasks.borrow_mut().pop_front() {
             task.run();
         }
 

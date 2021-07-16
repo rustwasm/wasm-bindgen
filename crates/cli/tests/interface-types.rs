@@ -29,7 +29,7 @@ fn main() -> Result<()> {
         .filter_map(|t| runtest(t).err().map(|e| (t, e)))
         .collect::<Vec<_>>();
 
-    if errs.len() == 0 {
+    if errs.is_empty() {
         println!("{} tests passed", tests.len());
         return Ok(());
     }

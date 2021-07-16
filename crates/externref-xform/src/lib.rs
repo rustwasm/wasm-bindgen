@@ -175,7 +175,7 @@ impl Context {
     }
 
     fn function(&self, externref: &[(usize, bool)], ret_externref: bool) -> Option<Function> {
-        if !ret_externref && externref.len() == 0 {
+        if !ret_externref && externref.is_empty() {
             return None;
         }
         Some(Function {
@@ -416,16 +416,15 @@ impl Transform<'_> {
         // Create shims for all our functions and append them all to the segment
         // which places elements at the end.
         let mut new_segment = Vec::new();
-        for (idx, function) in mem::replace(&mut self.cx.new_elements, Vec::new()) {
+        for (idx, function) in mem::take(&mut self.cx.new_elements) {
             let (&offset, &orig_element) = self
                 .cx
                 .elements
                 .range(..=idx)
                 .next_back()
-                .ok_or(anyhow!("failed to find segment defining index {}", idx))?;
-            let target = module.elements.get(orig_element).members[(idx - offset) as usize].ok_or(
-                anyhow!("function index {} not present in element segment", idx),
-            )?;
+                .ok_or_else(|| anyhow!("failed to find segment defining index {}", idx))?;
+            let target = module.elements.get(orig_element).members[(idx - offset) as usize]
+                .ok_or_else(|| anyhow!("function index {} not present in element segment", idx))?;
             let (shim, _externref_ty) = self.append_shim(
                 target,
                 &format!("closure{}", idx),
@@ -489,8 +488,8 @@ impl Transform<'_> {
             let is_owned = func.args.remove(&i);
             let new_ty = is_owned
                 .map(|_which| ValType::Externref)
-                .unwrap_or(old_ty.clone());
-            param_tys.push(new_ty.clone());
+                .unwrap_or_else(|| *old_ty);
+            param_tys.push(new_ty);
             if new_ty == *old_ty {
                 param_convert.push(Convert::None);
             } else if is_export {

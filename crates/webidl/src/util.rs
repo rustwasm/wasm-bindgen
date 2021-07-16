@@ -7,9 +7,7 @@ use std::ptr;
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
-use syn;
 use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident};
-use weedle;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
 use weedle::common::Identifier;
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
@@ -87,7 +85,7 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     if let Some(method) = method {
         link.push_str(&format!("/{}", method));
     }
-    format!("[MDN Documentation]({})", link).into()
+    format!("[MDN Documentation]({})", link)
 }
 
 // Array type is borrowed for arguments (`&mut [T]` or `&[T]`) and owned for return value (`Vec<T>`).
@@ -119,8 +117,8 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> InterfaceConstValue 
         }
         ConstValue::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
-                let (negative, text) = if orig_text.starts_with("-") {
-                    (true, &orig_text[1..])
+                let (negative, text) = if let Some(stripped) = orig_text.strip_prefix('-') {
+                    (true, stripped)
                 } else {
                     (false, orig_text)
                 };
@@ -344,10 +342,10 @@ impl<'src> FirstPassRecord<'src> {
                 let mut any_different = false;
                 let arg_name = signature.orig.args[i].name;
                 for other in actual_signatures.iter() {
-                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) {
-                        if !ptr::eq(signature, other) {
-                            any_same_name = true;
-                        }
+                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name)
+                        && !ptr::eq(signature, other)
+                    {
+                        any_same_name = true;
                     }
                     if let Some(other) = other.args.get(i) {
                         if other != arg {
@@ -394,7 +392,7 @@ impl<'src> FirstPassRecord<'src> {
                 // otherwise be marked with catch).
                 match ret_ty {
                     IdlType::Nullable(_) => ret_ty,
-                    ref ty @ _ => {
+                    ref ty => {
                         if catch {
                             ret_ty
                         } else {
@@ -502,7 +500,7 @@ impl<'src> FirstPassRecord<'src> {
                 }
             }
         }
-        return ret;
+        ret
     }
 
     /// When generating our web_sys APIs we default to setting slice references that
@@ -552,6 +550,7 @@ fn has_named_attribute(list: Option<&ExtendedAttributeList>, attribute: &str) ->
     })
 }
 
+/*
 fn has_ident_attribute(list: Option<&ExtendedAttributeList>, ident: &str) -> bool {
     let list = match list {
         Some(list) => list,
@@ -563,6 +562,7 @@ fn has_ident_attribute(list: Option<&ExtendedAttributeList>, ident: &str) -> boo
         _ => false,
     })
 }
+*/
 
 /// ChromeOnly is for things that are only exposed to privileged code in Firefox.
 pub fn is_chrome_only(ext_attrs: &Option<ExtendedAttributeList>) -> bool {
@@ -594,6 +594,7 @@ pub fn get_rust_deprecated<'a>(ext_attrs: &Option<ExtendedAttributeList<'a>>) ->
 }
 
 /// Whether a webidl object is marked as structural.
+#[allow(unused_variables)]
 pub fn is_structural(
     item_attrs: Option<&ExtendedAttributeList>,
     container_attrs: Option<&ExtendedAttributeList>,
@@ -601,9 +602,9 @@ pub fn is_structural(
     // Note that once host bindings is implemented we'll want to switch this
     // from `true` to `false`, and then we'll want to largely read information
     // from the WebIDL about whether to use structural bindings or not.
-    true || has_named_attribute(item_attrs, "Unforgeable")
-        || has_named_attribute(container_attrs, "Unforgeable")
-        || has_ident_attribute(container_attrs, "Global")
+    true /* || has_named_attribute(item_attrs, "Unforgeable")
+         || has_named_attribute(container_attrs, "Unforgeable")
+         || has_ident_attribute(container_attrs, "Global") */
 }
 
 /// Whether a webidl object is marked as throwing.
@@ -643,7 +644,7 @@ fn flag_slices_immutable(ty: &mut IdlType) {
 }
 
 pub fn required_doc_string(options: &Options, features: &BTreeSet<String>) -> Option<String> {
-    if !options.features || features.len() == 0 {
+    if !options.features || features.is_empty() {
         return None;
     }
     let list = features
@@ -665,7 +666,7 @@ pub fn get_cfg_features(options: &Options, features: &BTreeSet<String>) -> Optio
         None
     } else {
         let features = features
-            .into_iter()
+            .iter()
             .map(|feature| quote!( feature = #feature, ))
             .collect::<TokenStream>();
 

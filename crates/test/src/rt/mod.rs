@@ -241,7 +241,7 @@ impl Context {
         let mut filter = self.state.filter.borrow_mut();
         for arg in args {
             let arg = arg.as_string().unwrap();
-            if arg.starts_with("-") {
+            if arg.starts_with('-') {
                 panic!("flag {} not supported", arg);
             } else if filter.is_some() {
                 panic!("more than one filter argument cannot be passed");
@@ -291,6 +291,12 @@ impl Context {
             let passed = ExecuteTests(state).await;
             Ok(JsValue::from(passed))
         })
+    }
+}
+
+impl Default for Context {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -347,11 +353,11 @@ fn record(args: &Array, dst: impl FnOnce(&mut Output) -> &mut String) {
         let dst = dst(&mut out);
         args.for_each(&mut |val, idx, _array| {
             if idx != 0 {
-                dst.push_str(" ");
+                dst.push(' ');
             }
             dst.push_str(&stringify(&val));
         });
-        dst.push_str("\n");
+        dst.push('\n');
     });
 }
 
@@ -587,7 +593,7 @@ fn tab(s: &str) -> String {
     for line in s.lines() {
         result.push_str("    ");
         result.push_str(line);
-        result.push_str("\n");
+        result.push('\n');
     }
-    return result;
+    result
 }

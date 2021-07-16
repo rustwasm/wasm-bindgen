@@ -1,3 +1,5 @@
+#![allow(clippy::large_enum_variant)] // TODO: Revisit this
+
 use std::cell::Cell;
 use std::char;
 use std::str::Chars;
@@ -8,8 +10,6 @@ use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
-use shared;
-use syn;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
 
@@ -329,7 +329,7 @@ impl Parse for BindgenAttr {
 
         attrgen!(parsers);
 
-        return Err(original.error("unknown attribute"));
+        Err(original.error("unknown attribute"))
     }
 }
 
@@ -361,7 +361,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
-        if self.generics.params.len() > 0 {
+        if !self.generics.params.is_empty() {
             bail_span!(
                 self.generics,
                 "structs with #[wasm_bindgen] cannot have lifetime or \
@@ -372,7 +372,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
         let js_name = attrs
             .js_name()
             .map(|s| s.0.to_string())
-            .unwrap_or(self.ident.to_string());
+            .unwrap_or_else(|| self.ident.to_string());
         let is_inspectable = attrs.inspectable().is_some();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
@@ -547,7 +547,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 .unwrap_or_else(|| class_name.to_string());
 
             ast::ImportFunctionKind::Method {
-                class: class_name.to_string(),
+                class: class_name,
                 ty: class.clone(),
                 kind: ast::MethodKind::Constructor,
             }
@@ -585,7 +585,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             catch,
             variadic,
             structural: opts.structural().is_some() || opts.r#final().is_none(),
-            rust_name: self.sig.ident.clone(),
+            rust_name: self.sig.ident,
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,
         });
@@ -717,7 +717,7 @@ fn function_from_decl(
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
     }
-    if sig.generics.params.len() > 0 {
+    if !sig.generics.params.is_empty() {
         bail_span!(
             sig.generics,
             "can't #[wasm_bindgen] functions with lifetime or type parameters",
@@ -831,20 +831,17 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     .enumerate()
                     .filter_map(|(i, m)| m.parse_meta().ok().map(|m| (i, m)))
                     .find(|(_, m)| m.path().is_ident("no_mangle"));
-                match no_mangle {
-                    Some((i, _)) => {
-                        f.attrs.remove(i);
-                    }
-                    _ => {}
+                if let Some((i, _)) = no_mangle {
+                    f.attrs.remove(i);
                 }
                 let comments = extract_doc_comments(&f.attrs);
                 f.to_tokens(tokens);
                 let opts = opts.unwrap_or_default();
                 if opts.start().is_some() {
-                    if f.sig.generics.params.len() > 0 {
+                    if !f.sig.generics.params.is_empty() {
                         bail_span!(&f.sig.generics, "the start function cannot have generics",);
                     }
-                    if f.sig.inputs.len() > 0 {
+                    if !f.sig.generics.params.is_empty() {
                         bail_span!(&f.sig.inputs, "the start function cannot have arguments",);
                     }
                 }
@@ -930,7 +927,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
         if let Some((_, path, _)) = &self.trait_ {
             bail_span!(path, "#[wasm_bindgen] trait impls are not supported");
         }
-        if self.generics.params.len() > 0 {
+        if !self.generics.params.is_empty() {
             bail_span!(
                 self.generics,
                 "#[wasm_bindgen] generic impls aren't supported"
@@ -999,7 +996,7 @@ fn prepare_for_impl_recursion(
     let js_class = impl_opts
         .js_class()
         .map(|s| s.0.to_string())
-        .unwrap_or(ident.to_string());
+        .unwrap_or_else(|| ident.to_string());
 
     method.attrs.insert(
         0,
@@ -1008,7 +1005,7 @@ fn prepare_for_impl_recursion(
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
             path: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker },
-            tokens: quote::quote! { (#class = #js_class) }.into(),
+            tokens: quote::quote! { (#class = #js_class) },
         },
     );
 
@@ -1123,22 +1120,20 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         program: &mut ast::Program,
         (tokens, opts): (&'a mut TokenStream, BindgenAttrs),
     ) -> Result<(), Diagnostic> {
-        if self.variants.len() == 0 {
+        if self.variants.is_empty() {
             bail_span!(self, "cannot export empty enums to JS");
         }
         let generate_typescript = opts.skip_typescript().is_none();
 
         // Check if the first value is a string literal
         if let Some((_, expr)) = &self.variants[0].discriminant {
-            match get_expr(expr) {
-                syn::Expr::Lit(syn::ExprLit {
-                    attrs: _,
-                    lit: syn::Lit::Str(_),
-                }) => {
-                    opts.check_used()?;
-                    return import_enum(self, program);
-                }
-                _ => {}
+            if let syn::Expr::Lit(syn::ExprLit {
+                attrs: _,
+                lit: syn::Lit::Str(_),
+            }) = get_expr(expr)
+            {
+                opts.check_used()?;
+                return import_enum(self, program);
             }
         }
         let js_name = opts
@@ -1208,7 +1203,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             .collect::<Result<Vec<_>, Diagnostic>>()?;
 
         let mut values = variants.iter().map(|v| v.value).collect::<Vec<_>>();
-        values.sort();
+        values.sort_unstable();
         let hole = values
             .windows(2)
             .filter_map(|window| {
@@ -1375,7 +1370,7 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, D
         other => bail_span!(other, "must be a type parameter"),
     };
     match get_ty(&ty) {
-        syn::Type::Tuple(t) if t.elems.len() == 0 => return Ok(None),
+        syn::Type::Tuple(t) if t.elems.is_empty() => return Ok(None),
         _ => {}
     }
     Ok(Some(ty.clone()))
@@ -1388,13 +1383,13 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
         .filter_map(|a| {
             // if the path segments include an ident of "doc" we know this
             // this is a doc comment
-            if a.path.segments.iter().any(|s| s.ident.to_string() == "doc") {
+            if a.path.segments.iter().any(|s| s.ident == "doc") {
                 Some(
                     // We want to filter out any Puncts so just grab the Literals
                     a.tokens.clone().into_iter().filter_map(|t| match t {
                         TokenTree::Literal(lit) => {
                             let quoted = lit.to_string();
-                            Some(try_unescape(&quoted).unwrap_or_else(|| quoted))
+                            Some(try_unescape(&quoted).unwrap_or(quoted))
                         }
                         _ => None,
                     }),
@@ -1459,11 +1454,11 @@ fn unescape_unicode(chars: &mut Chars) -> Option<(char, char)> {
     let mut value = 0;
     for i in 0..7 {
         let c = chars.next()?;
-        let num = if c >= '0' && c <= '9' {
+        let num = if ('0'..='9').contains(&c) {
             c as u32 - '0' as u32
-        } else if c >= 'a' && c <= 'f' {
+        } else if ('a'..='f').contains(&c) {
             c as u32 - 'a' as u32 + 10
-        } else if c >= 'A' && c <= 'F' {
+        } else if ('A'..='F').contains(&c) {
             c as u32 - 'A' as u32 + 10
         } else {
             if i == 0 {

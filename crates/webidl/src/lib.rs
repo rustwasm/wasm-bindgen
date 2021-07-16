@@ -37,7 +37,7 @@ use std::collections::{BTreeMap, BTreeSet, HashSet};
 use std::ffi::OsStr;
 use std::fmt;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::Command;
 use wasm_bindgen_backend::util::rust_ident;
 use weedle::attribute::ExtendedAttributeList;
@@ -223,8 +223,8 @@ pub fn compile(
             Some((
                 name,
                 Feature {
-                    required_features,
                     code,
+                    required_features,
                 },
             ))
         })
@@ -356,7 +356,7 @@ impl<'src> FirstPassRecord<'src> {
         }
         dst[start..].sort_by_key(|f| f.js_name.clone());
 
-        return true;
+        true
     }
 
     fn dictionary_field(
@@ -380,10 +380,11 @@ impl<'src> FirstPassRecord<'src> {
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
         match ty {
-            syn::Type::Reference(ref i) => match &*i.elem {
-                syn::Type::Slice(_) => return None,
-                _ => (),
-            },
+            syn::Type::Reference(ref i) => {
+                if let syn::Type::Slice(_) = &*i.elem {
+                    return None;
+                }
+            }
             syn::Type::Path(ref path, ..) =>
             // check that our inner don't contains slices either
             {
@@ -391,9 +392,8 @@ impl<'src> FirstPassRecord<'src> {
                     if let syn::PathArguments::AngleBracketed(ref arg) = seg.arguments {
                         for elem in &arg.args {
                             if let syn::GenericArgument::Type(syn::Type::Reference(ref i)) = elem {
-                                match &*i.elem {
-                                    syn::Type::Slice(_) => return None,
-                                    _ => (),
+                                if let syn::Type::Slice(_) = &*i.elem {
+                                    return None;
                                 }
                             }
                         }
@@ -408,10 +408,8 @@ impl<'src> FirstPassRecord<'src> {
         let mut any_64bit = false;
 
         ty.traverse_type(&mut |ident| {
-            if !any_64bit {
-                if ident == "u64" || ident == "i64" {
-                    any_64bit = true;
-                }
+            if !any_64bit && (ident == "u64" || ident == "i64") {
+                any_64bit = true;
             }
         });
 
@@ -568,11 +566,9 @@ impl<'src> FirstPassRecord<'src> {
                 let member = member.definition;
                 self.member_attribute(
                     &mut attributes,
-                    if let Some(s) = member.stringifier {
-                        Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
-                    } else {
-                        None
-                    },
+                    member
+                        .stringifier
+                        .map(weedle::interface::StringifierOrInheritOrStatic::Stringifier),
                     member.readonly.is_some(),
                     &member.type_,
                     member.identifier.0.to_string(),
@@ -602,6 +598,7 @@ impl<'src> FirstPassRecord<'src> {
         .to_tokens(&mut program.tokens);
     }
 
+    #[allow(clippy::too_many_arguments)] // TODO: Revisit this
     fn member_attribute(
         &self,
         attributes: &mut Vec<InterfaceAttribute>,
@@ -657,11 +654,11 @@ impl<'src> FirstPassRecord<'src> {
             if let Some(ty) = ty {
                 let kind = InterfaceAttributeKind::Setter;
                 attributes.push(InterfaceAttribute {
+                    js_name,
+                    ty,
                     is_static,
                     structural,
                     catch,
-                    ty,
-                    js_name,
                     kind,
                     unstable,
                 });
@@ -815,7 +812,7 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         Ok(source)
     }
 
-    fn rustfmt(path: &PathBuf, name: &str) -> Result<()> {
+    fn rustfmt(path: &Path, name: &str) -> Result<()> {
         // run rustfmt on the generated file - really handy for debugging
         let result = Command::new("rustfmt")
             .arg("--edition")
@@ -851,11 +848,9 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
                             pos.col + 1
                         );
                         return Err(e.context(ctx));
-                    } else {
-                        return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
                     }
                 }
-                return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
+                Err(e.context("compiling WebIDL into wasm-bindgen bindings"))
             }
         }
     }

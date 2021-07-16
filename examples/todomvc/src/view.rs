@@ -14,6 +14,8 @@ const ESCAPE_KEY: u32 = 27;
 
 use wasm_bindgen::prelude::*;
 
+type FnClosure = Closure<dyn FnMut()>;
+
 /// Messages that represent the methods to be called on the View
 pub enum ViewMessage {
     UpdateFilterButtons(String),
@@ -31,12 +33,10 @@ fn item_id(mut element: Element) -> Option<String> {
     element.parent_element().map(|mut parent| {
         let mut res = None;
         let parent_id = parent.dataset_get("id");
-        if parent_id != "" {
+        if parent_id.is_empty() {
             res = Some(parent_id);
-        } else {
-            if let Some(mut ep) = parent.parent_element() {
-                res = Some(ep.dataset_get("id"));
-            }
+        } else if let Some(mut ep) = parent.parent_element() {
+            res = Some(ep.dataset_get("id"));
         }
         res.unwrap()
     })
@@ -52,7 +52,7 @@ pub struct View {
     main: Element,
     toggle_all: Element,
     new_todo: Element,
-    callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)>,
+    callbacks: Vec<(web_sys::EventTarget, String, FnClosure)>,
 }
 
 impl View {
@@ -261,7 +261,7 @@ impl View {
                 {
                     let v = input_el.value(); // TODO remove with nll
                     let title = v.trim();
-                    if title != "" {
+                    if !title.is_empty() {
                         if let Ok(sched) = &(sched.try_borrow_mut()) {
                             sched.add_message(Message::Controller(ControllerMessage::AddItem(
                                 String::from(title),
@@ -421,7 +421,7 @@ impl View {
 impl Drop for View {
     fn drop(&mut self) {
         exit("calling drop on view");
-        let callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)> =
+        let callbacks: Vec<(web_sys::EventTarget, String, FnClosure)> =
             self.callbacks.drain(..).collect();
         for callback in callbacks {
             callback

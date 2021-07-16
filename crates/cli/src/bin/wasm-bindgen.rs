@@ -9,7 +9,7 @@ use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 #[global_allocator]
 static ALLOC: std::alloc::System = std::alloc::System;
 
-const USAGE: &'static str = "
+const USAGE: &str = "
 Generating JS bindings for a wasm file
 
 Usage:

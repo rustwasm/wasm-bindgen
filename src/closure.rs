@@ -345,7 +345,7 @@ where
 
         #[inline(never)]
         unsafe fn breaks_if_inlined<T: WasmClosure + ?Sized>(a: usize, b: usize) -> u32 {
-            super::__wbindgen_describe_closure(a as u32, b as u32, describe::<T> as u32)
+            super::__wbindgen_describe_closure(a as u32, b as u32, describe::<T> as usize as u32) // TODO: support wasm64
         }
 
         let idx = unsafe { breaks_if_inlined::<T>(a, b) };
@@ -749,7 +749,7 @@ where
             ret.return_abi()
         }
 
-        inform(invoke::<A, R> as u32);
+        inform(invoke::<A, R> as usize as u32); // TODO: support wasm64
 
         unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
@@ -760,7 +760,7 @@ where
                 FatPtr::<dyn Fn(&A) -> R> { fields: (a, b) }.ptr,
             ));
         }
-        inform(destroy::<A, R> as u32);
+        inform(destroy::<A, R> as usize as u32); // TODO: support wasm64
 
         <&Self>::describe();
     }
@@ -793,7 +793,7 @@ where
             ret.return_abi()
         }
 
-        inform(invoke::<A, R> as u32);
+        inform(invoke::<A, R> as usize as u32); // TODO: support wasm64
 
         unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
@@ -804,7 +804,7 @@ where
                 FatPtr::<dyn FnMut(&A) -> R> { fields: (a, b) }.ptr,
             ));
         }
-        inform(destroy::<A, R> as u32);
+        inform(destroy::<A, R> as usize as u32); // TODO: support wasm64
 
         <&mut Self>::describe();
     }

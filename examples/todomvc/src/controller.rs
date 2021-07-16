@@ -92,7 +92,7 @@ impl Controller {
                 id: id.clone(),
                 title: title.clone(),
             });
-            self.add_message(ViewMessage::EditItemDone(id.to_string(), title.to_string()));
+            self.add_message(ViewMessage::EditItemDone(id, title));
         } else {
             self.remove_item(&id);
         }
@@ -104,7 +104,7 @@ impl Controller {
         if let Some(data) = self.store.find(ItemQuery::Id { id: id.clone() }) {
             if let Some(todo) = data.get(0) {
                 let title = todo.title.to_string();
-                let citem = id.to_string();
+                let citem = id;
                 message = Some(ViewMessage::EditItemDone(citem, title));
             }
         }
@@ -114,8 +114,8 @@ impl Controller {
     }
 
     /// Remove the data and elements related to an Item.
-    fn remove_item(&mut self, id: &String) {
-        self.store.remove(ItemQuery::Id { id: id.clone() });
+    fn remove_item(&mut self, id: &str) {
+        self.store.remove(ItemQuery::Id { id: id.to_string() });
         self._filter(false);
         let ritem = id.to_string();
         self.add_message(ViewMessage::RemoveItem(ritem));
@@ -133,18 +133,18 @@ impl Controller {
             id: id.clone(),
             completed,
         });
-        let tid = id.to_string();
+        let tid = id;
         self.add_message(ViewMessage::SetItemComplete(tid, completed));
     }
 
     /// Set all items to complete or active.
     fn toggle_all(&mut self, completed: bool) {
         let mut vals = Vec::new();
-        self.store.find(ItemQuery::EmptyItemQuery).map(|data| {
+        if let Some(data) = self.store.find(ItemQuery::EmptyItemQuery) {
             for item in data.iter() {
                 vals.push(item.id.clone());
             }
-        });
+        }
         for id in vals.iter() {
             self.toggle_completed(id.to_string(), completed);
         }
@@ -155,7 +155,7 @@ impl Controller {
     fn _filter(&mut self, force: bool) {
         let route = &self.active_route;
 
-        if force || self.last_active_route != "" || &self.last_active_route != route {
+        if force || !self.last_active_route.is_empty() || &self.last_active_route != route {
             let query = match route.as_str() {
                 "completed" => ItemQuery::Completed { completed: true },
                 "active" => ItemQuery::Completed { completed: false },

@@ -8,7 +8,7 @@ use std::path::PathBuf;
 #[global_allocator]
 static ALLOC: std::alloc::System = std::alloc::System;
 
-const USAGE: &'static str = "
+const USAGE: &str = "
 Converts a wasm file to an ES6 JS module
 
 Usage:

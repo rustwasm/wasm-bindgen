@@ -10,7 +10,6 @@
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 
-use weedle;
 use weedle::argument::Argument;
 use weedle::attribute::*;
 use weedle::interface::*;
@@ -268,6 +267,7 @@ enum FirstPassOperationType {
     Namespace,
 }
 
+#[allow(clippy::too_many_arguments)] // TODO: Revisit this
 fn first_pass_operation<'src>(
     record: &mut FirstPassRecord<'src>,
     first_pass_operation_type: FirstPassOperationType,
@@ -294,21 +294,21 @@ fn first_pass_operation<'src>(
             let x = record
                 .interfaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} interface", self_name));
+                .unwrap_or_else(|| panic!("not found {} interface", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Mixin => {
             let x = record
                 .mixins
                 .get_mut(self_name)
-                .expect(&format!("not found {} mixin", self_name));
+                .unwrap_or_else(|| panic!("not found {} mixin", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Namespace => {
             let x = record
                 .namespaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} namespace", self_name));
+                .unwrap_or_else(|| panic!("not found {} namespace", self_name));
             &mut x.operations
         }
     };
@@ -670,7 +670,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             record,
             FirstPassOperationType::Mixin,
             ctx.0,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -780,7 +780,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceM
             record,
             FirstPassOperationType::Namespace,
             self_name,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -840,11 +840,9 @@ impl<'a> FirstPassRecord<'a> {
             Some(class) => class,
             None => return,
         };
-        if self.interfaces.contains_key(superclass) {
-            if set.insert(superclass) {
-                list.push(camel_case_ident(superclass));
-                self.fill_superclasses(superclass, set, list);
-            }
+        if self.interfaces.contains_key(superclass) && set.insert(superclass) {
+            list.push(camel_case_ident(superclass));
+            self.fill_superclasses(superclass, set, list);
         }
     }
 

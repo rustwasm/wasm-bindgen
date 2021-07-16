@@ -64,7 +64,8 @@ pub trait RefMutFromWasmAbi: WasmDescribe {
     type Abi: WasmAbi;
     /// Same as `RefFromWasmAbi::Anchor`
     type Anchor: DerefMut<Target = Self>;
-    /// Same as `RefFromWasmAbi::ref_from_abi`
+    /// Same as [`RefFromWasmAbi::ref_from_abi`](RefFromWasmAbi::ref_from_abi)
+    #[allow(clippy::missing_safety_doc)]
     unsafe fn ref_mut_from_abi(js: Self::Abi) -> Self::Anchor;
 }
 

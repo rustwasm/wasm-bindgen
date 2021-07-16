@@ -10,10 +10,12 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 #![cfg_attr(feature = "nightly", feature(unsize))]
 
+use core::convert::Infallible;
 use core::fmt;
 use core::marker;
 use core::mem;
 use core::ops::{Deref, DerefMut};
+use core::str::FromStr;
 
 use crate::convert::{FromWasmAbi, WasmOptionalF64, WasmSlice};
 
@@ -86,7 +88,7 @@ pub struct JsValue {
 }
 
 const JSIDX_OFFSET: u32 = 32; // keep in sync with js/mod.rs
-const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET + 0;
+const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET;
 const JSIDX_NULL: u32 = JSIDX_OFFSET + 1;
 const JSIDX_TRUE: u32 = JSIDX_OFFSET + 2;
 const JSIDX_FALSE: u32 = JSIDX_OFFSET + 3;
@@ -130,6 +132,7 @@ impl JsValue {
     /// The utf-8 string provided is copied to the JS heap and the string will
     /// be owned by the JS garbage collector.
     #[inline]
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> JsValue {
         unsafe { JsValue::_new(__wbindgen_string_new(s.as_ptr(), s.len())) }
     }
@@ -222,6 +225,7 @@ impl JsValue {
     ///
     /// Returns any error encountered when parsing the JSON into a `T`.
     #[cfg(feature = "serde-serialize")]
+    #[allow(clippy::wrong_self_convention)]
     pub fn into_serde<T>(&self) -> serde_json::Result<T>
     where
         T: for<'a> serde::de::Deserialize<'a>,
@@ -392,6 +396,14 @@ impl<'a> From<&'a str> for JsValue {
     #[inline]
     fn from(s: &'a str) -> JsValue {
         JsValue::from_str(s)
+    }
+}
+
+impl FromStr for JsValue {
+    type Err = Infallible;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(JsValue::from_str(s))
     }
 }
 
@@ -1080,7 +1092,7 @@ pub mod __rt {
             };
             GLOBAL_EXNDATA[0] = 0;
             GLOBAL_EXNDATA[1] = 0;
-            return ret;
+            ret
         }
     }
 

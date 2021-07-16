@@ -149,8 +149,7 @@ impl<'a> Context<'a> {
             }
             | OutputMode::Web
             | OutputMode::Deno => {
-                if contents.starts_with("function") {
-                    let body = &contents[8..];
+                if let Some(body) = contents.strip_prefix("function") {
                     if export_name == definition_name {
                         format!("export function {}{}\n", export_name, body)
                     } else {
@@ -219,12 +218,10 @@ impl<'a> Context<'a> {
                     "imports['{0}'] = module.exports;\n",
                     PLACEHOLDER_MODULE
                 ));
+            } else if self.config.mode.nodejs_experimental_modules() {
+                shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
             } else {
-                if self.config.mode.nodejs_experimental_modules() {
-                    shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
-                } else {
-                    shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
-                }
+                shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
             }
         }
 
@@ -431,19 +428,17 @@ impl<'a> Context<'a> {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
-                    if js.starts_with("function") {
-                        let body = &js[8..];
+                    if let Some(body) = js.strip_prefix("function") {
                         footer.push_str("\nexport function ");
                         footer.push_str(&import.name);
                         footer.push_str(body.trim());
-                        footer.push_str(";\n");
                     } else {
                         footer.push_str("\nexport const ");
                         footer.push_str(&import.name);
                         footer.push_str(" = ");
                         footer.push_str(js.trim());
-                        footer.push_str(";\n");
                     }
+                    footer.push_str(";\n");
                 }
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -481,19 +476,19 @@ impl<'a> Context<'a> {
             "ES modules require imports to be at the start of the file"
         );
         js.push_str(&imports);
-        js.push_str("\n");
+        js.push('\n');
         js.push_str(&self.imports_post);
-        js.push_str("\n");
+        js.push('\n');
 
         // Emit all our exports from this module
         js.push_str(&self.globals);
-        js.push_str("\n");
+        js.push('\n');
 
         // Generate the initialization glue, if there was any
         js.push_str(&init_js);
-        js.push_str("\n");
+        js.push('\n');
         js.push_str(&footer);
-        js.push_str("\n");
+        js.push('\n');
         if self.config.mode.no_modules() {
             js.push_str("})();\n");
         }
@@ -513,7 +508,9 @@ impl<'a> Context<'a> {
         }
 
         match &self.config.mode {
-            OutputMode::NoModules { .. } => {
+            OutputMode::NoModules { .. } =>
+            {
+                #[allow(clippy::never_loop)]
                 for (module, _items) in self.js_imports.iter() {
                     bail!(
                         "importing from `{}` isn't supported with `--target no-modules`",
@@ -537,7 +534,7 @@ impl<'a> Context<'a> {
                             imports.push_str(other)
                         }
                     }
-                    if module.starts_with(".") || PathBuf::from(module).is_absolute() {
+                    if module.starts_with('.') || PathBuf::from(module).is_absolute() {
                         imports.push_str(" } = require(String.raw`");
                     } else {
                         imports.push_str(" } = require(`");
@@ -690,7 +687,7 @@ impl<'a> Context<'a> {
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
         let mut imports_init = String::new();
-        if self.wasm_import_definitions.len() > 0 {
+        if !self.wasm_import_definitions.is_empty() {
             imports_init.push_str("imports.");
             imports_init.push_str(module_name);
             imports_init.push_str(" = {};\n");
@@ -700,7 +697,7 @@ impl<'a> Context<'a> {
             import.module = module_name.to_string();
             imports_init.push_str("imports.");
             imports_init.push_str(module_name);
-            imports_init.push_str(".");
+            imports_init.push('.');
             imports_init.push_str(&import.name);
             imports_init.push_str(" = ");
             imports_init.push_str(js.trim());
@@ -715,10 +712,7 @@ impl<'a> Context<'a> {
             .filter(|i| {
                 // Importing memory is handled specially in this area, so don't
                 // consider this a candidate for importing from extra modules.
-                match i.kind {
-                    walrus::ImportKind::Memory(_) => false,
-                    _ => true,
-                }
+                !matches!(i.kind, walrus::ImportKind::Memory(_))
             })
             .map(|i| &i.module)
             .collect::<BTreeSet<_>>();
@@ -1022,28 +1016,30 @@ impl<'a> Context<'a> {
         if !self.should_write_global("assert_num") {
             return;
         }
-        self.global(&format!(
-            "
-            function _assertNum(n) {{
+        self.global(
+            &"
+            function _assertNum(n) {
                 if (typeof(n) !== 'number') throw new Error('expected a number argument');
-            }}
+            }
             "
-        ));
+            .to_string(),
+        );
     }
 
     fn expose_assert_bool(&mut self) {
         if !self.should_write_global("assert_bool") {
             return;
         }
-        self.global(&format!(
-            "
-            function _assertBoolean(n) {{
-                if (typeof(n) !== 'boolean') {{
+        self.global(
+            &"
+            function _assertBoolean(n) {
+                if (typeof(n) !== 'boolean') {
                     throw new Error('expected a boolean argument');
-                }}
-            }}
+                }
+            }
             "
-        ));
+            .to_string(),
+        );
     }
 
     fn expose_wasm_vector_len(&mut self) {
@@ -1559,7 +1555,7 @@ impl<'a> Context<'a> {
             mem = view,
             size = size,
         ));
-        return ret;
+        ret
     }
 
     fn expose_int8_memory(&mut self, memory: MemoryId) -> MemView {
@@ -1645,7 +1641,7 @@ impl<'a> Context<'a> {
             js = js,
             mem = mem,
         ));
-        return view;
+        view
     }
 
     fn memview_memory(&mut self, name: &'static str, memory: walrus::MemoryId) -> MemView {
@@ -2079,10 +2075,10 @@ impl<'a> Context<'a> {
         // Ensure a blank line between adjacent items, and ensure everything is
         // terminated with a newline.
         while !self.globals.ends_with("\n\n\n") && !self.globals.ends_with("*/\n") {
-            self.globals.push_str("\n");
+            self.globals.push('\n');
         }
         self.globals.push_str(s);
-        self.globals.push_str("\n");
+        self.globals.push('\n');
     }
 
     fn require_class_wrap(&mut self, name: &str) {
@@ -2097,7 +2093,7 @@ impl<'a> Context<'a> {
         };
         self.js_imports
             .entry(module)
-            .or_insert(Vec::new())
+            .or_insert_with(Vec::new)
             .push((name.to_string(), rename));
     }
 
@@ -2105,10 +2101,10 @@ impl<'a> Context<'a> {
         if let Some(name) = self.imported_names.get(&import.name) {
             let mut name = name.clone();
             for field in import.fields.iter() {
-                name.push_str(".");
+                name.push('.');
                 name.push_str(field);
             }
-            return Ok(name.clone());
+            return Ok(name);
         }
 
         let mut name = match &import.name {
@@ -2158,7 +2154,7 @@ impl<'a> Context<'a> {
                     } else {
                         switch(dst, name, &left[0], &left[1..]);
                     }
-                    dst.push_str(")");
+                    dst.push(')');
                 }
                 format!("l{}", name)
             }
@@ -2176,7 +2172,7 @@ impl<'a> Context<'a> {
 
         // After we've got an actual name handle field projections
         for field in import.fields.iter() {
-            name.push_str(".");
+            name.push('.');
             name.push_str(field);
         }
         Ok(name)
@@ -2362,15 +2358,15 @@ impl<'a> Context<'a> {
                         i.module, i.name
                     )
                 }
-                Kind::Adapter => format!("failed to generates bindings for adapter"),
+                Kind::Adapter => "failed to generates bindings for adapter".to_string(),
             })?;
 
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match kind {
             Kind::Export(export) => {
-                assert_eq!(catch, false);
-                assert_eq!(log_error, false);
+                assert!(!catch);
+                assert!(!log_error);
 
                 let ts_sig = match export.generate_typescript {
                     true => Some(ts_sig.as_str()),
@@ -2388,7 +2384,7 @@ impl<'a> Context<'a> {
                             self.typescript.push_str(";\n");
                         }
                         self.export(&name, &format!("function{}", code), Some(&docs))?;
-                        self.globals.push_str("\n");
+                        self.globals.push('\n');
                     }
                     AuxExportKind::Constructor(class) => {
                         let exported = require_class(&mut self.exported_classes, class);
@@ -2400,10 +2396,7 @@ impl<'a> Context<'a> {
                     }
                     AuxExportKind::Getter { class, field, .. } => {
                         let ret_ty = match export.generate_typescript {
-                            true => match &ts_ret_ty {
-                                Some(s) => Some(s.as_str()),
-                                _ => None,
-                            },
+                            true => ts_ret_ty.as_deref(),
                             false => None,
                         };
                         let exported = require_class(&mut self.exported_classes, class);
@@ -2445,8 +2438,8 @@ impl<'a> Context<'a> {
                 self.wasm_import_definitions.insert(core, code);
             }
             Kind::Adapter => {
-                assert_eq!(catch, false);
-                assert_eq!(log_error, false);
+                assert!(!catch);
+                assert!(!log_error);
 
                 self.globals.push_str("function ");
                 self.globals.push_str(&self.adapter_name(id));
@@ -2454,23 +2447,14 @@ impl<'a> Context<'a> {
                 self.globals.push_str("\n\n");
             }
         }
-        return Ok(());
+        Ok(())
     }
 
     /// Returns whether we should disable the logic, in debug mode, to catch an
     /// error, log it, and rethrow it. This is only intended for user-defined
     /// imports, not all imports of everything.
     fn import_never_log_error(&self, import: &AuxImport) -> bool {
-        match import {
-            // Some intrinsics are intended to exactly throw errors, and in
-            // general we shouldn't have exceptions in our intrinsics to debug,
-            // so skip these.
-            AuxImport::Intrinsic(_) => true,
-
-            // Otherwise assume everything else gets a debug log of errors
-            // thrown in debug mode.
-            _ => false,
-        }
+        matches!(import, AuxImport::Intrinsic(_))
     }
 
     /// Attempts to directly hook up the `id` import in the wasm module with
@@ -2552,7 +2536,7 @@ impl<'a> Context<'a> {
         //   listed on each wasm import.
         // * `no-modules` - imports aren't allowed here anyway from other
         //   modules and an error is generated.
-        if js.fields.len() == 0 {
+        if js.fields.is_empty() {
             match &js.name {
                 JsImportName::Module { module, name } => {
                     let import = self.module.imports.get_mut(id);
@@ -2650,7 +2634,7 @@ impl<'a> Context<'a> {
             }
         }
 
-        return true;
+        true
     }
 
     /// Generates a JS snippet appropriate for invoking `import`.
@@ -2673,13 +2657,13 @@ impl<'a> Context<'a> {
     ) -> Result<String, Error> {
         let variadic_args = |js_arguments: &[String]| {
             Ok(if !variadic {
-                format!("{}", js_arguments.join(", "))
+                js_arguments.join(", ")
             } else {
                 let (last_arg, args) = match js_arguments.split_last() {
                     Some(pair) => pair,
                     None => bail!("a function with no arguments cannot be variadic"),
                 };
-                if args.len() > 0 {
+                if !args.is_empty() {
                     format!("{}, ...{}", args.join(", "), last_arg)
                 } else {
                     format!("...{}", last_arg)
@@ -2923,7 +2907,7 @@ impl<'a> Context<'a> {
             Intrinsic::IsObject => {
                 assert_eq!(args.len(), 1);
                 prelude.push_str(&format!("const val = {};\n", args[0]));
-                format!("typeof(val) === 'object' && val !== null")
+                "typeof(val) === 'object' && val !== null".to_string()
             }
 
             Intrinsic::IsSymbol => {
@@ -2984,19 +2968,19 @@ impl<'a> Context<'a> {
             Intrinsic::NumberGet => {
                 assert_eq!(args.len(), 1);
                 prelude.push_str(&format!("const obj = {};\n", args[0]));
-                format!("typeof(obj) === 'number' ? obj : undefined")
+                "typeof(obj) === 'number' ? obj : undefined".to_string()
             }
 
             Intrinsic::StringGet => {
                 assert_eq!(args.len(), 1);
                 prelude.push_str(&format!("const obj = {};\n", args[0]));
-                format!("typeof(obj) === 'string' ? obj : undefined")
+                "typeof(obj) === 'string' ? obj : undefined".to_string()
             }
 
             Intrinsic::BooleanGet => {
                 assert_eq!(args.len(), 1);
                 prelude.push_str(&format!("const v = {};\n", args[0]));
-                format!("typeof(v) === 'boolean' ? (v ? 1 : 0) : 2")
+                "typeof(v) === 'boolean' ? (v ? 1 : 0) : 2".to_string()
             }
 
             Intrinsic::Throw => {
@@ -3017,7 +3001,7 @@ impl<'a> Context<'a> {
                          `--target no-modules` and `--target web`"
                     );
                 }
-                format!("init.__wbindgen_wasm_module")
+                "init.__wbindgen_wasm_module".to_string()
             }
 
             Intrinsic::Memory => {
@@ -3127,13 +3111,13 @@ impl<'a> Context<'a> {
                 format_doc_comments(&comments, None)
             };
             if !variant_docs.is_empty() {
-                variants.push_str("\n");
+                variants.push('\n');
                 variants.push_str(&variant_docs);
             }
             variants.push_str(&format!("{}:{},", name, value));
             variants.push_str(&format!("\"{}\":\"{}\",", value, name));
             if enum_.generate_typescript {
-                self.typescript.push_str("\n");
+                self.typescript.push('\n');
                 if !variant_docs.is_empty() {
                     self.typescript.push_str(&variant_docs);
                 }
@@ -3178,9 +3162,9 @@ impl<'a> Context<'a> {
                 path.display()
             ),
         };
-        let mut iter = object.iter();
+        let iter = object.iter();
         let mut value = None;
-        while let Some((key, v)) = iter.next() {
+        for (key, v) in iter {
             if key == "dependencies" {
                 value = Some(v);
                 break;
@@ -3495,7 +3479,7 @@ impl ExportedClass {
         self.contents.push_str(function_prefix);
         self.contents.push_str(function_name);
         self.contents.push_str(js);
-        self.contents.push_str("\n");
+        self.contents.push('\n');
         if let Some(ts) = ts {
             self.typescript.push_str(docs);
             self.typescript.push_str("  ");
@@ -3559,7 +3543,7 @@ impl ExportedClass {
         self.contents.push_str(prefix);
         self.contents.push_str(field);
         self.contents.push_str(js);
-        self.contents.push_str("\n");
+        self.contents.push('\n');
     }
 }
 

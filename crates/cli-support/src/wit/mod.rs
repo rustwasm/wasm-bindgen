@@ -165,7 +165,7 @@ impl<'a> Context<'a> {
 
             // If any closures exist we need to prevent the function table from
             // getting gc'd
-            if closure_imports.len() > 0 {
+            if !closure_imports.is_empty() {
                 self.aux.function_table = self.module.tables.main_function_table()?;
             }
 
@@ -363,12 +363,12 @@ impl<'a> Context<'a> {
         // apply to all the imports.
         for import in imports.iter() {
             if let decode::ImportKind::Type(ty) = &import.kind {
-                if ty.vendor_prefixes.len() == 0 {
+                if ty.vendor_prefixes.is_empty() {
                     continue;
                 }
                 self.vendor_prefixes
                     .entry(ty.name.to_string())
-                    .or_insert(Vec::new())
+                    .or_insert_with(Vec::new)
                     .extend(ty.vendor_prefixes.iter().map(|s| s.to_string()));
             }
         }
@@ -389,7 +389,7 @@ impl<'a> Context<'a> {
         self.aux
             .snippets
             .entry(unique_crate_identifier.to_string())
-            .or_insert(Vec::new())
+            .or_insert_with(Vec::new)
             .extend(inline_js.iter().map(|s| s.to_string()));
         Ok(())
     }
@@ -878,7 +878,7 @@ impl<'a> Context<'a> {
         // packages or other imported items.
         let vendor_prefixes = self.vendor_prefixes.get(item);
         if let Some(vendor_prefixes) = vendor_prefixes {
-            assert!(vendor_prefixes.len() > 0);
+            assert!(!vendor_prefixes.is_empty());
 
             if is_local_snippet {
                 bail!(
@@ -926,12 +926,12 @@ impl<'a> Context<'a> {
         let name = match import.module {
             decode::ImportModule::Named(module) if is_local_snippet => JsImportName::LocalModule {
                 module: module.to_string(),
-                name: name.to_string(),
+                name,
             },
             decode::ImportModule::Named(module) | decode::ImportModule::RawNamed(module) => {
                 JsImportName::Module {
                     module: module.to_string(),
-                    name: name.to_string(),
+                    name,
                 }
             }
             decode::ImportModule::Inline(idx) => {
@@ -944,12 +944,10 @@ impl<'a> Context<'a> {
                 JsImportName::InlineJs {
                     unique_crate_identifier: self.unique_crate_identifier.to_string(),
                     snippet_idx_in_crate: idx as usize + offset,
-                    name: name.to_string(),
+                    name,
                 }
             }
-            decode::ImportModule::None => JsImportName::Global {
-                name: name.to_string(),
-            },
+            decode::ImportModule::None => JsImportName::Global { name },
         };
         Ok(JsImport { name, fields })
     }
@@ -1116,7 +1114,7 @@ impl<'a> Context<'a> {
                 bail!("import of `{}` doesn't have an adapter listed", import.name);
             }
         }
-        if implemented.len() != 0 {
+        if !implemented.is_empty() {
             bail!("more implementations listed than imports");
         }
 
@@ -1264,7 +1262,7 @@ impl<'a> Context<'a> {
     fn table_element_adapter(&mut self, idx: u32, signature: Function) -> Result<AdapterId, Error> {
         let call = Instruction::CallTableElement(idx);
         // like above, largely just defer the work elsewhere
-        Ok(self.register_export_adapter(call, signature)?)
+        self.register_export_adapter(call, signature)
     }
 
     fn register_export_adapter(
@@ -1490,10 +1488,10 @@ to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
 }
 
 fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
-    if data.len() == 0 {
+    if data.is_empty() {
         return None;
     }
-    let len = ((data[0] as usize) << 0)
+    let len = (data[0] as usize)
         | ((data[1] as usize) << 8)
         | ((data[2] as usize) << 16)
         | ((data[3] as usize) << 24);
@@ -1502,7 +1500,7 @@ fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
     Some(a)
 }
 
-fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
+fn verify_schema_matches(data: &[u8]) -> Result<Option<&str>, Error> {
     macro_rules! bad {
         () => {
             bail!("failed to decode what looked like wasm-bindgen data")
@@ -1513,7 +1511,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Err(_) => bad!(),
     };
     log::debug!("found version specifier {}", data);
-    if !data.starts_with("{") || !data.ends_with("}") {
+    if !data.starts_with('{') || !data.ends_with('}') {
         bad!()
     }
     let needle = "\"schema_version\":\"";
@@ -1521,7 +1519,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Some(i) => &data[i + needle.len()..],
         None => bad!(),
     };
-    let their_schema_version = match rest.find("\"") {
+    let their_schema_version = match rest.find('\"') {
         Some(i) => &rest[..i],
         None => bad!(),
     };
@@ -1533,7 +1531,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Some(i) => &data[i + needle.len()..],
         None => bad!(),
     };
-    let their_version = match rest.find("\"") {
+    let their_version = match rest.find('\"') {
         Some(i) => &rest[..i],
         None => bad!(),
     };
@@ -1541,5 +1539,5 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
 }
 
 fn concatenate_comments(comments: &[&str]) -> String {
-    comments.iter().map(|&s| s).collect::<Vec<_>>().join("\n")
+    comments.iter().copied().collect::<Vec<_>>().join("\n")
 }

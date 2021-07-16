@@ -306,7 +306,7 @@ fn xform_one(
 mod tests {
     #[test]
     fn round_up_to_alignment_works() {
-        for (n, align, expected) in vec![
+        let slice: &[(u32, u32, u32)] = &[
             (0, 1, 0),
             (1, 1, 1),
             (2, 1, 2),
@@ -320,13 +320,14 @@ mod tests {
             (3, 4, 4),
             (4, 4, 4),
             (5, 4, 8),
-        ] {
-            let actual = super::round_up_to_alignment(n, align);
+        ];
+        for (n, align, expected) in slice {
+            let actual = super::round_up_to_alignment(*n, *align);
             println!(
                 "round_up_to_alignment(n = {}, align = {}) = {} (expected {})",
                 n, align, actual, expected
             );
-            assert_eq!(actual, expected);
+            assert_eq!(actual, *expected);
         }
     }
 }

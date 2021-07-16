@@ -65,10 +65,11 @@ pub fn expand_class_marker(
     // We manually implement `ToTokens for ImplItemMethod` here, injecting our
     // program's tokens before the actual method's inner body tokens.
     let mut tokens = proc_macro2::TokenStream::new();
-    tokens.append_all(item.attrs.iter().filter(|attr| match attr.style {
-        syn::AttrStyle::Outer => true,
-        _ => false,
-    }));
+    tokens.append_all(
+        item.attrs
+            .iter()
+            .filter(|attr| matches!(attr.style, syn::AttrStyle::Outer)),
+    );
     item.vis.to_tokens(&mut tokens);
     item.sig.to_tokens(&mut tokens);
     let mut err = None;
@@ -76,10 +77,11 @@ pub fn expand_class_marker(
         if let Err(e) = program.try_to_tokens(tokens) {
             err = Some(e);
         }
-        tokens.append_all(item.attrs.iter().filter(|attr| match attr.style {
-            syn::AttrStyle::Inner(_) => true,
-            _ => false,
-        }));
+        tokens.append_all(
+            item.attrs
+                .iter()
+                .filter(|attr| matches!(attr.style, syn::AttrStyle::Inner(_))),
+        );
         tokens.append_all(&item.block.stmts);
     });
 

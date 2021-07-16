@@ -71,10 +71,7 @@ impl InstructionBuilder<'_, '_> {
             }
 
             Descriptor::I64 | Descriptor::U64 => {
-                let signed = match arg {
-                    Descriptor::I64 => true,
-                    _ => false,
-                };
+                let signed = matches!(arg, Descriptor::I64);
                 self.instruction(
                     &[AdapterType::I32, AdapterType::I32],
                     Instruction::I64FromLoHi { signed },

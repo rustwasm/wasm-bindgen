@@ -1960,7 +1960,7 @@ macro_rules! number_from {
         impl PartialEq<$x> for Number {
             #[inline]
             fn eq(&self, other: &$x) -> bool {
-                self.value_of() == f64::from(*other)
+                self.value_of() == *other as f64
             }
         }
     )*)
@@ -4199,9 +4199,9 @@ impl JsString {
     ///
     /// This method will call `char_code_at` for each code in this JS string,
     /// returning an iterator of the codes in sequence.
-    pub fn iter<'a>(
-        &'a self,
-    ) -> impl ExactSizeIterator<Item = u16> + DoubleEndedIterator<Item = u16> + 'a {
+    pub fn iter(
+        &'_ self,
+    ) -> impl ExactSizeIterator<Item = u16> + DoubleEndedIterator<Item = u16> + '_ {
         (0..self.length()).map(move |i| self.char_code_at(i) as u16)
     }
 
@@ -4238,7 +4238,7 @@ impl JsString {
 
 impl PartialEq<str> for JsString {
     fn eq(&self, other: &str) -> bool {
-        String::from(self) == other
+        self == other
     }
 }
 
@@ -4943,7 +4943,7 @@ macro_rules! arrays {
             /// This function returns a new typed array which is a view into
             /// wasm's memory. This view does not copy the underlying data.
             ///
-            /// # Unsafety
+            /// # Safety
             ///
             /// Views into WebAssembly memory are only valid so long as the
             /// backing buffer isn't resized in JS. Once this function is called
@@ -4972,7 +4972,7 @@ macro_rules! arrays {
             /// This function returns a new typed array which is a view into
             /// wasm's memory. This view does not copy the underlying data.
             ///
-            /// # Unsafety
+            /// # Safety
             ///
             /// Views into WebAssembly memory are only valid so long as the
             /// backing buffer isn't resized in JS. Once this function is called

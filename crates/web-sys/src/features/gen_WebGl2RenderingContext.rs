@@ -7301,7 +7301,7 @@ impl WebGl2RenderingContext {
     #[doc = "The `WebGL2RenderingContext.TIMEOUT_IGNORED` const."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]
-    pub const TIMEOUT_IGNORED: f64 = -1i64 as f64;
+    pub const TIMEOUT_IGNORED: f64 = -1_f64;
     #[doc = "The `WebGL2RenderingContext.MAX_CLIENT_WAIT_TIMEOUT_WEBGL` const."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`*"]

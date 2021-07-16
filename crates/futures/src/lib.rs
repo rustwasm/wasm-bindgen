@@ -81,10 +81,11 @@ where
     task::Task::spawn(Box::pin(future));
 }
 
+type JSValueFn = Closure<dyn FnMut(JsValue)>;
 struct Inner {
     result: Option<Result<JsValue, JsValue>>,
     task: Option<Waker>,
-    callbacks: Option<(Closure<dyn FnMut(JsValue)>, Closure<dyn FnMut(JsValue)>)>,
+    callbacks: Option<(JSValueFn, JSValueFn)>,
 }
 
 /// A Rust `Future` backed by a JavaScript `Promise`.

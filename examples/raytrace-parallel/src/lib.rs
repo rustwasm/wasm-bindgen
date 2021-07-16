@@ -61,7 +61,10 @@ impl Scene {
         // `pool`.
         let thread_pool = rayon::ThreadPoolBuilder::new()
             .num_threads(concurrency)
-            .spawn_handler(|thread| Ok(pool.run(|| thread.run()).unwrap()))
+            .spawn_handler(|thread| {
+                pool.run(|| thread.run()).unwrap();
+                Ok(())
+            })
             .build()
             .unwrap();
 

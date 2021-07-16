@@ -7,7 +7,6 @@ use quote::{quote, ToTokens};
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
-use syn;
 use wasm_bindgen_shared as shared;
 
 /// A trait for converting AST structs into Tokens and adding them to a TokenStream,
@@ -94,11 +93,12 @@ impl TryToTokens for ast::Program {
             shared::version()
         );
         let encoded = encode::encode(self)?;
-        let mut bytes = Vec::new();
-        bytes.push((prefix_json.len() >> 0) as u8);
-        bytes.push((prefix_json.len() >> 8) as u8);
-        bytes.push((prefix_json.len() >> 16) as u8);
-        bytes.push((prefix_json.len() >> 24) as u8);
+        let mut bytes = vec![
+            prefix_json.len() as u8,
+            (prefix_json.len() >> 8) as u8,
+            (prefix_json.len() >> 16) as u8,
+            (prefix_json.len() >> 24) as u8,
+        ];
         bytes.extend_from_slice(prefix_json.as_bytes());
         bytes.extend_from_slice(&encoded.custom_section);
 

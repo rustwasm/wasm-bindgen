@@ -299,8 +299,8 @@ if_std! {
         unsafe fn from_abi(js: WasmSlice) -> Self {
             let ptr = <*mut JsValue>::from_abi(js.ptr);
             let len = js.len as usize;
-            let vec: Vec<T> = Vec::from_raw_parts(ptr, len, len).drain(..).map(|js_value| T::unchecked_from_js(js_value)).collect();
-            return vec.into_boxed_slice();
+            let vec: Vec<T> = Vec::from_raw_parts(ptr, len, len).drain(..).map(T::unchecked_from_js).collect();
+            vec.into_boxed_slice()
         }
     }
 

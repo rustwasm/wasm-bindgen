@@ -168,10 +168,7 @@ fn import_xform(
         match instr.instr {
             Instruction::CallAdapter(_) => break,
             Instruction::ExternrefLoadOwned | Instruction::TableGet => {
-                let owned = match instr.instr {
-                    Instruction::TableGet => false,
-                    _ => true,
-                };
+                let owned = !matches!(instr.instr, Instruction::TableGet);
                 let mut arg: Arg = match args.pop().unwrap() {
                     Some(arg) => arg,
                     None => panic!("previous instruction must be `arg.get`"),
@@ -208,19 +205,16 @@ fn import_xform(
     }
 
     let mut ret_externref = false;
-    while let Some((i, instr)) = iter.next() {
-        match instr.instr {
-            Instruction::I32FromExternrefOwned => {
-                assert_eq!(results.len(), 1);
-                match results[0] {
-                    AdapterType::I32 => {}
-                    _ => panic!("must be `i32` type"),
-                }
-                results[0] = AdapterType::Externref;
-                ret_externref = true;
-                to_delete.push(i);
+    for (i, instr) in iter {
+        if let Instruction::I32FromExternrefOwned = instr.instr {
+            assert_eq!(results.len(), 1);
+            match results[0] {
+                AdapterType::I32 => {}
+                _ => panic!("must be `i32` type"),
             }
-            _ => {}
+            results[0] = AdapterType::Externref;
+            ret_externref = true;
+            to_delete.push(i);
         }
     }
 
@@ -293,13 +287,10 @@ fn export_xform(cx: &mut Context, export: Export, instrs: &mut Vec<InstructionDa
     // know that the function returned an externref. Currently `&'static Externref`
     // can't be done as a return value, so this is the only case we handle here.
     let mut ret_externref = false;
-    while let Some((i, instr)) = iter.next() {
-        match instr.instr {
-            Instruction::ExternrefLoadOwned => {
-                ret_externref = true;
-                to_delete.push(i);
-            }
-            _ => {}
+    for (i, instr) in iter {
+        if let Instruction::ExternrefLoadOwned = instr.instr {
+            ret_externref = true;
+            to_delete.push(i);
         }
     }
 
@@ -337,7 +328,7 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
 
     // our `handleError` intrinsic uses a few pieces of metadata to store
     // indices directly into the wasm module.
-    if aux.imports_with_catch.len() > 0 {
+    if !aux.imports_with_catch.is_empty() {
         return true;
     }
 
@@ -349,36 +340,32 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
             AdapterKind::Local { instructions } => instructions,
             AdapterKind::Import { .. } => return false,
         };
-        instructions.iter().any(|instr| match instr.instr {
-            VectorToMemory {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | MutableSliceToMemory {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | OptionVector {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | VectorLoad {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | OptionVectorLoad {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | View {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | OptionView {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            } => true,
-            _ => false,
+        instructions.iter().any(|instr| {
+            matches!(
+                instr.instr,
+                VectorToMemory {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | MutableSliceToMemory {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | OptionVector {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | VectorLoad {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | OptionVectorLoad {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | View {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | OptionView {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                }
+            )
         })
     })
 }

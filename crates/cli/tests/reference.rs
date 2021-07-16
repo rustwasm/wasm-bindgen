@@ -41,7 +41,7 @@ fn main() -> Result<()> {
         .filter_map(|t| runtest(t).err().map(|e| (t, e)))
         .collect::<Vec<_>>();
 
-    if errs.len() == 0 {
+    if errs.is_empty() {
         println!("{} tests passed", tests.len());
         return Ok(());
     }
@@ -162,10 +162,7 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     let ids = module
         .exports
         .iter()
-        .filter(|e| match e.item {
-            walrus::ExportItem::Global(_) => true,
-            _ => false,
-        })
+        .filter(|e| matches!(e.item, walrus::ExportItem::Global(_)))
         .map(|d| d.id())
         .collect::<Vec<_>>();
     for id in ids {
@@ -173,7 +170,7 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     }
     walrus::passes::gc::run(&mut module);
     let mut wat = wit_printer::print_bytes(&module.emit_wasm())?;
-    wat.push_str("\n");
+    wat.push('\n');
     Ok(wat)
 }
 
@@ -185,31 +182,31 @@ fn diff(a: &str, b: &str) -> Result<()> {
     for result in diff::lines(a, b) {
         match result {
             diff::Result::Both(l, _) => {
-                s.push_str(" ");
+                s.push(' ');
                 s.push_str(l);
             }
             diff::Result::Left(l) => {
-                s.push_str("-");
+                s.push('-');
                 s.push_str(l);
             }
             diff::Result::Right(l) => {
-                s.push_str("+");
+                s.push('+');
                 s.push_str(l);
             }
         }
-        s.push_str("\n");
+        s.push('\n');
     }
     bail!("found a difference:\n\n{}", s);
 }
 
 fn target_dir() -> PathBuf {
-    let mut dir = PathBuf::from(env::current_exe().unwrap());
+    let mut dir = env::current_exe().unwrap();
     dir.pop(); // current exe
     if dir.ends_with("deps") {
         dir.pop();
     }
     dir.pop(); // debug and/or release
-    return dir;
+    dir
 }
 
 fn repo_root() -> PathBuf {

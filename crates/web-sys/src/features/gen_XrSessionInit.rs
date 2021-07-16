@@ -14,6 +14,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type XrSessionInit;
 }
+
 #[cfg(web_sys_unstable_apis)]
 impl XrSessionInit {
     #[doc = "Construct a new `XrSessionInit`."]
@@ -68,5 +69,11 @@ impl XrSessionInit {
         );
         let _ = r;
         self
+    }
+}
+
+impl Default for XrSessionInit {
+    fn default() -> Self {
+        Self::new()
     }
 }

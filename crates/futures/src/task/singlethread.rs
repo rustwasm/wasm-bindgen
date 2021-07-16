@@ -3,7 +3,7 @@ use std::future::Future;
 use std::mem::ManuallyDrop;
 use std::pin::Pin;
 use std::rc::Rc;
-use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
+use std::task::{Context, RawWaker, RawWakerVTable, Waker};
 
 struct Inner {
     future: Pin<Box<dyn Future<Output = ()> + 'static>>,
@@ -106,7 +106,7 @@ impl Task {
         // actually go away until all wakers referencing us go away, which may
         // take quite some time, so ensure that the heaviest of resources are
         // released early.
-        if let Poll::Ready(_) = poll {
+        if poll.is_ready() {
             *borrow = None;
         }
     }

@@ -5,15 +5,15 @@ pub trait Decode<'src>: Sized {
 
     fn decode_all(mut data: &'src [u8]) -> Self {
         let ret = Self::decode(&mut data);
-        assert!(data.len() == 0);
-        return ret;
+        assert!(data.is_empty());
+        ret
     }
 }
 
-fn get<'a>(b: &mut &'a [u8]) -> u8 {
+fn get(b: &mut &[u8]) -> u8 {
     let r = b[0];
     *b = &b[1..];
-    return r;
+    r
 }
 
 impl<'src> Decode<'src> for bool {

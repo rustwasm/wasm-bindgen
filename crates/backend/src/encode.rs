@@ -79,8 +79,8 @@ impl Interner {
             return Ok(self.intern_str(&file.new_identifier));
         }
         self.check_for_package_json();
-        let path = if id.starts_with("/") {
-            self.root.join(&id[1..])
+        let path = if let Some(stripped) = id.strip_prefix('/') {
+            self.root.join(&stripped)
         } else if id.starts_with("./") || id.starts_with("../") {
             let msg = "relative module paths aren't supported yet";
             return Err(Diagnostic::span_error(span, msg));
@@ -176,13 +176,10 @@ fn shared_export<'a>(
     export: &'a ast::Export,
     intern: &'a Interner,
 ) -> Result<Export<'a>, Diagnostic> {
-    let consumed = match export.method_self {
-        Some(ast::MethodSelf::ByValue) => true,
-        _ => false,
-    };
+    let consumed = matches!(export.method_self, Some(ast::MethodSelf::ByValue));
     let method_kind = from_ast_method_kind(&export.function, intern, &export.method_kind)?;
     Ok(Export {
-        class: export.js_class.as_ref().map(|s| &**s),
+        class: export.js_class.as_deref(),
         comments: export.comments.iter().map(|s| &**s).collect(),
         consumed,
         function: shared_function(&export.function, intern),
@@ -340,7 +337,7 @@ impl Encoder {
 
     fn finish(mut self) -> Vec<u8> {
         let len = self.dst.len() - 4;
-        self.dst[0] = (len >> 0) as u8;
+        self.dst[0] = len as u8;
         self.dst[1] = (len >> 8) as u8;
         self.dst[2] = (len >> 16) as u8;
         self.dst[3] = (len >> 24) as u8;

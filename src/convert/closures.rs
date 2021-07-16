@@ -162,7 +162,7 @@ where
 {
     fn describe() {
         inform(FUNCTION);
-        inform(invoke1_ref::<A, R> as u32);
+        inform(invoke1_ref::<A, R> as usize as u32); // TODO: support wasm64
         inform(1);
         <&A as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();
@@ -213,7 +213,7 @@ where
 {
     fn describe() {
         inform(FUNCTION);
-        inform(invoke1_mut_ref::<A, R> as u32);
+        inform(invoke1_mut_ref::<A, R> as usize as u32); // TODO: support wasm64
         inform(1);
         <&A as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();

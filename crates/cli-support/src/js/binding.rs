@@ -119,22 +119,17 @@ impl<'a, 'b> Builder<'a, 'b> {
         // method, so the leading parameter is the this pointer stored on
         // the JS object, so synthesize that here.
         let mut js = JsBuilder::new(self.cx);
-        match self.method {
-            Some(consumes_self) => {
-                drop(params.next());
-                if js.cx.config.debug {
-                    js.prelude(
-                        "if (this.ptr == 0) throw new Error('Attempt to use a moved value');",
-                    );
-                }
-                if consumes_self {
-                    js.prelude("const ptr = this.__destroy_into_raw();");
-                    js.args.push("ptr".into());
-                } else {
-                    js.args.push("this.ptr".into());
-                }
+        if let Some(consumes_self) = self.method {
+            params.next();
+            if js.cx.config.debug {
+                js.prelude("if (this.ptr == 0) throw new Error('Attempt to use a moved value');");
             }
-            None => {}
+            if consumes_self {
+                js.prelude("const ptr = this.__destroy_into_raw();");
+                js.args.push("ptr".into());
+            } else {
+                js.args.push("this.ptr".into());
+            }
         }
         for (i, param) in params.enumerate() {
             let arg = match explicit_arg_names {
@@ -191,12 +186,12 @@ impl<'a, 'b> Builder<'a, 'b> {
         // }
 
         let mut code = String::new();
-        code.push_str("(");
+        code.push('(');
         code.push_str(&function_args.join(", "));
         code.push_str(") {\n");
 
         let mut call = js.prelude;
-        if js.finally.len() != 0 {
+        if !js.finally.is_empty() {
             call = format!("try {{\n{}}} finally {{\n{}}}\n", call, js.finally);
         }
 
@@ -213,7 +208,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
 
         code.push_str(&call);
-        code.push_str("}");
+        code.push('}');
 
         // Rust Structs' fields converted into Getter and Setter functions before
         // we decode them from webassembly, finding if a function is a field
@@ -301,7 +296,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             ts.push_str(&ret);
             ts_ret = Some(ret);
         }
-        return (ts, ts_arg_tys, ts_ret);
+        (ts, ts_arg_tys, ts_ret)
     }
 
     /// Returns a helpful JS doc comment which lists types for all parameters
@@ -318,7 +313,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
-            ret.push_str("\n");
+            ret.push('\n');
         }
         if let Some(ts) = ts_ret {
             if ts != "void" {
@@ -349,7 +344,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         for line in prelude.trim().lines().map(|l| l.trim()) {
             if !line.is_empty() {
                 self.prelude.push_str(line);
-                self.prelude.push_str("\n");
+                self.prelude.push('\n');
             }
         }
     }
@@ -358,7 +353,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         for line in finally.trim().lines().map(|l| l.trim()) {
             if !line.is_empty() {
                 self.finally.push_str(line);
-                self.finally.push_str("\n");
+                self.finally.push('\n');
             }
         }
     }
@@ -366,7 +361,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     pub fn tmp(&mut self) -> usize {
         let ret = self.tmp;
         self.tmp += 1;
-        return ret;
+        ret
     }
 
     fn pop(&mut self) -> String {

@@ -14,6 +14,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type XrRenderStateInit;
 }
+
 #[cfg(web_sys_unstable_apis)]
 impl XrRenderStateInit {
     #[doc = "Construct a new `XrRenderStateInit`."]
@@ -111,5 +112,12 @@ impl XrRenderStateInit {
         );
         let _ = r;
         self
+    }
+}
+
+#[cfg(web_sys_unstable_apis)]
+impl Default for XrRenderStateInit {
+    fn default() -> Self {
+        Self::new()
     }
 }

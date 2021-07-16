@@ -79,3 +79,9 @@ impl super::Formatter for Browser {
         format!("{}\n{}", header, stack)
     }
 }
+
+impl Default for Browser {
+    fn default() -> Self {
+        Self::new()
+    }
+}

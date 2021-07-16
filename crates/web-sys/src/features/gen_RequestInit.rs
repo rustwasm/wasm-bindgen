@@ -213,3 +213,9 @@ impl RequestInit {
         self
     }
 }
+
+impl Default for RequestInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

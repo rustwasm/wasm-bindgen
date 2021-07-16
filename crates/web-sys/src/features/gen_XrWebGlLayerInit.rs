@@ -14,6 +14,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type XrWebGlLayerInit;
 }
+
 #[cfg(web_sys_unstable_apis)]
 impl XrWebGlLayerInit {
     #[doc = "Construct a new `XrWebGlLayerInit`."]
@@ -144,5 +145,12 @@ impl XrWebGlLayerInit {
         );
         let _ = r;
         self
+    }
+}
+
+#[cfg(web_sys_unstable_apis)]
+impl Default for XrWebGlLayerInit {
+    fn default() -> Self {
+        Self::new()
     }
 }

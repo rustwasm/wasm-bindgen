@@ -135,9 +135,9 @@ impl Test {
                         break;
                     }
                     pattern.push_str(line);
-                    pattern.push_str("\n");
+                    pattern.push('\n');
                 }
-                while pattern.ends_with("\n") {
+                while pattern.ends_with('\n') {
                     pattern.pop();
                 }
                 if iter.next().is_some() {
@@ -185,12 +185,14 @@ impl Test {
 
 fn update_output(path: &Path, output: &str) -> Result<()> {
     let contents = fs::read_to_string(path)?;
-    let start = contents.find("(; CHECK-ALL:").unwrap_or(contents.len());
+    let start = contents
+        .find("(; CHECK-ALL:")
+        .unwrap_or_else(|| contents.len());
 
     let mut new_output = String::new();
     for line in output.lines() {
         new_output.push_str(line);
-        new_output.push_str("\n");
+        new_output.push('\n');
     }
     let new = format!(
         "{}\n\n(; CHECK-ALL:\n{}\n;)\n",

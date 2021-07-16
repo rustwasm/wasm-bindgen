@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
+#[allow(clippy::boxed_local)]
 pub fn take_boxed_number_slice_by_value(x: Box<[f64]>) {}
 
 #[wasm_bindgen]

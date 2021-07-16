@@ -131,6 +131,12 @@ impl Config {
     }
 }
 
+impl Default for Config {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 fn delete_synthetic_func(module: &mut Module, name: &str) -> Result<FunctionId, Error> {
     match delete_synthetic_export(module, name)? {
         walrus::ExportItem::Function(f) => Ok(f),
