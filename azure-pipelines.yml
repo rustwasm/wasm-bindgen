@@ -11,6 +11,12 @@ jobs:
       - template: ci/azure-install-rust.yml
       - script: cargo fmt --all -- --check
 
+  - job: test_clippy
+    displayName: "Run cargo clippy"
+    steps:
+      - template: ci/azure-install-rust.yml
+      - script: cargo clippy --all -- -D clippy::all
+
   - job: test_wasm_bindgen
     displayName: "Run wasm-bindgen crate tests (unix)"
     steps:

@@ -12,6 +12,7 @@ steps:
         curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $TOOLCHAIN
         echo "##vso[task.prependpath]$HOME/.cargo/bin"
       fi
+      rustup component add clippy
     displayName: Install rust - Unix
     condition: ne( variables['Agent.OS'], 'Windows_NT' )
     env:
