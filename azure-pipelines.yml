@@ -11,6 +11,12 @@ jobs:
       - template: ci/azure-install-rust.yml
       - script: cargo fmt --all -- --check
 
+  - job: cargo_check
+    displayName: "Run cargo check"
+    steps:
+      - template: ci/azure-install-rust.yml
+      - script: cargo check --all
+
   - job: test_wasm_bindgen
     displayName: "Run wasm-bindgen crate tests (unix)"
     steps:
