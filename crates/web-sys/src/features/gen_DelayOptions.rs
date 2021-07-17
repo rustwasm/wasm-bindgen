@@ -107,3 +107,8 @@ impl DelayOptions {
         self
     }
 }
+impl Default for DelayOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -438,3 +438,8 @@ impl KeyboardEventInit {
         self
     }
 }
+impl Default for KeyboardEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

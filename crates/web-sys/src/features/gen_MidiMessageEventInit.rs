@@ -71,3 +71,8 @@ impl MidiMessageEventInit {
         self
     }
 }
+impl Default for MidiMessageEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

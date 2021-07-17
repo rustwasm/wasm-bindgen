@@ -98,3 +98,8 @@ impl DnsCacheEntry {
         self
     }
 }
+impl Default for DnsCacheEntry {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -313,3 +313,8 @@ impl PannerOptions {
         self
     }
 }
+impl Default for PannerOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

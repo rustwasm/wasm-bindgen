@@ -53,3 +53,8 @@ impl CredentialRequestOptions {
         self
     }
 }
+impl Default for CredentialRequestOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

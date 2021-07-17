@@ -50,3 +50,8 @@ impl FilePropertyBag {
         self
     }
 }
+impl Default for FilePropertyBag {
+    fn default() -> Self {
+        Self::new()
+    }
+}

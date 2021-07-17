@@ -37,3 +37,8 @@ impl XPathNsResolver {
         self
     }
 }
+impl Default for XPathNsResolver {
+    fn default() -> Self {
+        Self::new()
+    }
+}

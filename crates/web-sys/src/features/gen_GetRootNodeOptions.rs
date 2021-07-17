@@ -37,3 +37,8 @@ impl GetRootNodeOptions {
         self
     }
 }
+impl Default for GetRootNodeOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

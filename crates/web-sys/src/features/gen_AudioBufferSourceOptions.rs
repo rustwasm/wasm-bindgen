@@ -113,3 +113,8 @@ impl AudioBufferSourceOptions {
         self
     }
 }
+impl Default for AudioBufferSourceOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

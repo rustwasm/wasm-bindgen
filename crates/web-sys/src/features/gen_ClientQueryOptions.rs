@@ -51,3 +51,8 @@ impl ClientQueryOptions {
         self
     }
 }
+impl Default for ClientQueryOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

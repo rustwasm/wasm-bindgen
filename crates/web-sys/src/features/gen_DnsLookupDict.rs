@@ -64,3 +64,8 @@ impl DnsLookupDict {
         self
     }
 }
+impl Default for DnsLookupDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

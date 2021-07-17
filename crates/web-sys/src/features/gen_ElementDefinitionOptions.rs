@@ -37,3 +37,8 @@ impl ElementDefinitionOptions {
         self
     }
 }
+impl Default for ElementDefinitionOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

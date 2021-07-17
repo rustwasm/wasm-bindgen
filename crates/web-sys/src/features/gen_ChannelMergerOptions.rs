@@ -90,3 +90,8 @@ impl ChannelMergerOptions {
         self
     }
 }
+impl Default for ChannelMergerOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

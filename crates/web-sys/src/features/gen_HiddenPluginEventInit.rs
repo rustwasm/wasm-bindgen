@@ -71,3 +71,8 @@ impl HiddenPluginEventInit {
         self
     }
 }
+impl Default for HiddenPluginEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

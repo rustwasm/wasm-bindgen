@@ -285,3 +285,8 @@ impl MediaTrackConstraintSet {
         self
     }
 }
+impl Default for MediaTrackConstraintSet {
+    fn default() -> Self {
+        Self::new()
+    }
+}

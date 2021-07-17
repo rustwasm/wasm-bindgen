@@ -37,3 +37,8 @@ impl NodeFilter {
         self
     }
 }
+impl Default for NodeFilter {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -102,3 +102,8 @@ impl SpeechRecognitionErrorInit {
         self
     }
 }
+impl Default for SpeechRecognitionErrorInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

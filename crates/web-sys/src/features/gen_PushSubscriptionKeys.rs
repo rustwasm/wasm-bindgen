@@ -47,3 +47,8 @@ impl PushSubscriptionKeys {
         self
     }
 }
+impl Default for PushSubscriptionKeys {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -47,3 +47,8 @@ impl DisplayNameResult {
         self
     }
 }
+impl Default for DisplayNameResult {
+    fn default() -> Self {
+        Self::new()
+    }
+}

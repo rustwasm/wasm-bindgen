@@ -79,3 +79,9 @@ impl GpuOrigin3dDict {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuOrigin3dDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

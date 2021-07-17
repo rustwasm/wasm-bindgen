@@ -51,3 +51,8 @@ impl LocaleInfo {
         self
     }
 }
+impl Default for LocaleInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}

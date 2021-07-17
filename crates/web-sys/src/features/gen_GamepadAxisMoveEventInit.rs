@@ -115,3 +115,8 @@ impl GamepadAxisMoveEventInit {
         self
     }
 }
+impl Default for GamepadAxisMoveEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

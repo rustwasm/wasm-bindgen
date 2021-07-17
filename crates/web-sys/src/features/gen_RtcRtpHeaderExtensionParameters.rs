@@ -63,3 +63,8 @@ impl RtcRtpHeaderExtensionParameters {
         self
     }
 }
+impl Default for RtcRtpHeaderExtensionParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

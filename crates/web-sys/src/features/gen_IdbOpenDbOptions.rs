@@ -55,3 +55,8 @@ impl IdbOpenDbOptions {
         self
     }
 }
+impl Default for IdbOpenDbOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

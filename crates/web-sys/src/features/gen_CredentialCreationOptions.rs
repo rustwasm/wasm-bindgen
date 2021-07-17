@@ -53,3 +53,8 @@ impl CredentialCreationOptions {
         self
     }
 }
+impl Default for CredentialCreationOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

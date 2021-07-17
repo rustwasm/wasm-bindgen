@@ -65,3 +65,8 @@ impl HitRegionOptions {
         self
     }
 }
+impl Default for HitRegionOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -147,3 +147,8 @@ impl OptionalEffectTiming {
         self
     }
 }
+impl Default for OptionalEffectTiming {
+    fn default() -> Self {
+        Self::new()
+    }
+}

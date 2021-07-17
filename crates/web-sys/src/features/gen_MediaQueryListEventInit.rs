@@ -101,3 +101,8 @@ impl MediaQueryListEventInit {
         self
     }
 }
+impl Default for MediaQueryListEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

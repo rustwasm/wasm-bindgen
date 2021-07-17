@@ -82,3 +82,8 @@ impl RtcRtpParameters {
         self
     }
 }
+impl Default for RtcRtpParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -34,3 +34,8 @@ impl ReadableStreamGetReaderOptions {
         self
     }
 }
+impl Default for ReadableStreamGetReaderOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

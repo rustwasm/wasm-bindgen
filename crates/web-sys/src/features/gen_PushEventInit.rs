@@ -84,3 +84,8 @@ impl PushEventInit {
         self
     }
 }
+impl Default for PushEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

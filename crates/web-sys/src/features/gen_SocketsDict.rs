@@ -67,3 +67,8 @@ impl SocketsDict {
         self
     }
 }
+impl Default for SocketsDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

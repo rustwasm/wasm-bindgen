@@ -52,3 +52,8 @@ impl ConvertCoordinateOptions {
         self
     }
 }
+impl Default for ConvertCoordinateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

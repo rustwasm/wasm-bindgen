@@ -65,3 +65,8 @@ impl IdbIndexParameters {
         self
     }
 }
+impl Default for IdbIndexParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

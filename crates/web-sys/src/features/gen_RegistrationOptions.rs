@@ -51,3 +51,8 @@ impl RegistrationOptions {
         self
     }
 }
+impl Default for RegistrationOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

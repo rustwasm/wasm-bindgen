@@ -46,3 +46,8 @@ impl ConsoleCounter {
         self
     }
 }
+impl Default for ConsoleCounter {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -98,3 +98,8 @@ impl RtcTransportStats {
         self
     }
 }
+impl Default for RtcTransportStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

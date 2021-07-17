@@ -45,3 +45,9 @@ impl GpuRenderBundleDescriptor {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuRenderBundleDescriptor {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -71,3 +71,8 @@ impl RcwnPerfStats {
         self
     }
 }
+impl Default for RcwnPerfStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -73,3 +73,8 @@ impl AuthenticatorSelectionCriteria {
         self
     }
 }
+impl Default for AuthenticatorSelectionCriteria {
+    fn default() -> Self {
+        Self::new()
+    }
+}

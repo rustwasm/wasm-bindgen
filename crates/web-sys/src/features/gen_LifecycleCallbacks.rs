@@ -88,3 +88,8 @@ impl LifecycleCallbacks {
         self
     }
 }
+impl Default for LifecycleCallbacks {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -67,3 +67,8 @@ impl PerformanceEntryFilterOptions {
         self
     }
 }
+impl Default for PerformanceEntryFilterOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

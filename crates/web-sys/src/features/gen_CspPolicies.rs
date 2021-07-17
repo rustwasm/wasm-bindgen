@@ -37,3 +37,8 @@ impl CspPolicies {
         self
     }
 }
+impl Default for CspPolicies {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -51,3 +51,8 @@ impl FileSystemFlags {
         self
     }
 }
+impl Default for FileSystemFlags {
+    fn default() -> Self {
+        Self::new()
+    }
+}

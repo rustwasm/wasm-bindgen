@@ -47,3 +47,8 @@ impl DomWindowResizeEventDetail {
         self
     }
 }
+impl Default for DomWindowResizeEventDetail {
+    fn default() -> Self {
+        Self::new()
+    }
+}

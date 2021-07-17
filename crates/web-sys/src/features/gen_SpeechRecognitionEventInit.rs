@@ -137,3 +137,8 @@ impl SpeechRecognitionEventInit {
         self
     }
 }
+impl Default for SpeechRecognitionEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

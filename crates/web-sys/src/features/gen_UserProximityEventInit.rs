@@ -84,3 +84,8 @@ impl UserProximityEventInit {
         self
     }
 }
+impl Default for UserProximityEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

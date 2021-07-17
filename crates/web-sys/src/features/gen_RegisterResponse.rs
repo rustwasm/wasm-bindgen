@@ -105,3 +105,8 @@ impl RegisterResponse {
         self
     }
 }
+impl Default for RegisterResponse {
+    fn default() -> Self {
+        Self::new()
+    }
+}

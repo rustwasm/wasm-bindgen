@@ -191,3 +191,8 @@ impl MutationObservingInfo {
         self
     }
 }
+impl Default for MutationObservingInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}

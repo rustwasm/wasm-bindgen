@@ -486,3 +486,8 @@ impl DragEventInit {
         self
     }
 }
+impl Default for DragEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

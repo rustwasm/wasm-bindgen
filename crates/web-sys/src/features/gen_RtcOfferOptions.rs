@@ -71,3 +71,8 @@ impl RtcOfferOptions {
         self
     }
 }
+impl Default for RtcOfferOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

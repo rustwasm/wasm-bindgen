@@ -105,3 +105,8 @@ impl MediaKeyNeededEventInit {
         self
     }
 }
+impl Default for MediaKeyNeededEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

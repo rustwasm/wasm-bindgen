@@ -67,3 +67,8 @@ impl AddEventListenerOptions {
         self
     }
 }
+impl Default for AddEventListenerOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

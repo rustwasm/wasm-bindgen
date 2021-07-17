@@ -81,3 +81,8 @@ impl OpenWindowEventDetail {
         self
     }
 }
+impl Default for OpenWindowEventDetail {
+    fn default() -> Self {
+        Self::new()
+    }
+}

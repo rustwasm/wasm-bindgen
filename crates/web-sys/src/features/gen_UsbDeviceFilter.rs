@@ -154,3 +154,9 @@ impl UsbDeviceFilter {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for UsbDeviceFilter {
+    fn default() -> Self {
+        Self::new()
+    }
+}

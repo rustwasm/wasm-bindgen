@@ -38,3 +38,8 @@ impl ServerSocketOptions {
         self
     }
 }
+impl Default for ServerSocketOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

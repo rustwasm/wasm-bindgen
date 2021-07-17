@@ -54,3 +54,8 @@ impl BrowserElementDownloadOptions {
         self
     }
 }
+impl Default for BrowserElementDownloadOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

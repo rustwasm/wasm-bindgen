@@ -73,3 +73,8 @@ impl DomRectInit {
         self
     }
 }
+impl Default for DomRectInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

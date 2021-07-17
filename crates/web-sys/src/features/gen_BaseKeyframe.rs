@@ -83,3 +83,8 @@ impl BaseKeyframe {
         self
     }
 }
+impl Default for BaseKeyframe {
+    fn default() -> Self {
+        Self::new()
+    }
+}

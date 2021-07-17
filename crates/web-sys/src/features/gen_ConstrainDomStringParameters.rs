@@ -46,3 +46,8 @@ impl ConstrainDomStringParameters {
         self
     }
 }
+impl Default for ConstrainDomStringParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

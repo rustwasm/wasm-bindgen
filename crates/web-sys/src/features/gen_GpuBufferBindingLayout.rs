@@ -88,3 +88,9 @@ impl GpuBufferBindingLayout {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuBufferBindingLayout {
+    fn default() -> Self {
+        Self::new()
+    }
+}

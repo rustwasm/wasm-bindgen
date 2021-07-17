@@ -87,3 +87,8 @@ impl CacheBatchOperation {
         self
     }
 }
+impl Default for CacheBatchOperation {
+    fn default() -> Self {
+        Self::new()
+    }
+}

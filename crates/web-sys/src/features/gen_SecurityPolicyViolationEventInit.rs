@@ -273,3 +273,8 @@ impl SecurityPolicyViolationEventInit {
         self
     }
 }
+impl Default for SecurityPolicyViolationEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

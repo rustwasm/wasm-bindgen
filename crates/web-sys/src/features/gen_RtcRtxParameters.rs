@@ -33,3 +33,8 @@ impl RtcRtxParameters {
         self
     }
 }
+impl Default for RtcRtxParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

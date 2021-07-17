@@ -98,3 +98,8 @@ impl RtcIceServer {
         self
     }
 }
+impl Default for RtcIceServer {
+    fn default() -> Self {
+        Self::new()
+    }
+}

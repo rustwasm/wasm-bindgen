@@ -76,3 +76,8 @@ impl DomQuadInit {
         self
     }
 }
+impl Default for DomQuadInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

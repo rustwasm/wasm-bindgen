@@ -82,3 +82,8 @@ impl CheckerboardReport {
         self
     }
 }
+impl Default for CheckerboardReport {
+    fn default() -> Self {
+        Self::new()
+    }
+}

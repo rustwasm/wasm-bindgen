@@ -104,3 +104,8 @@ impl WaveShaperOptions {
         self
     }
 }
+impl Default for WaveShaperOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

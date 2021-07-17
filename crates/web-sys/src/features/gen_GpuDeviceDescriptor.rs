@@ -66,3 +66,9 @@ impl GpuDeviceDescriptor {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuDeviceDescriptor {
+    fn default() -> Self {
+        Self::new()
+    }
+}

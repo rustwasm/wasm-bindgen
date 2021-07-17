@@ -37,3 +37,8 @@ impl MediaKeysPolicy {
         self
     }
 }
+impl Default for MediaKeysPolicy {
+    fn default() -> Self {
+        Self::new()
+    }
+}

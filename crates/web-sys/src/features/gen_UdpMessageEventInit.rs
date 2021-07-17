@@ -118,3 +118,8 @@ impl UdpMessageEventInit {
         self
     }
 }
+impl Default for UdpMessageEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

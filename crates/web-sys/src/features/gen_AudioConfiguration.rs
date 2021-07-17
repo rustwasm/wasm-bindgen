@@ -88,3 +88,8 @@ impl AudioConfiguration {
         self
     }
 }
+impl Default for AudioConfiguration {
+    fn default() -> Self {
+        Self::new()
+    }
+}

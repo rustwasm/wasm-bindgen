@@ -86,3 +86,8 @@ impl MediaStreamEventInit {
         self
     }
 }
+impl Default for MediaStreamEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

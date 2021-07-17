@@ -55,3 +55,8 @@ impl RtcRtpTransceiverInit {
         self
     }
 }
+impl Default for RtcRtpTransceiverInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -141,3 +141,8 @@ impl AudioWorkletNodeOptions {
         self
     }
 }
+impl Default for AudioWorkletNodeOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -166,3 +166,8 @@ impl WebGlContextAttributes {
         self
     }
 }
+impl Default for WebGlContextAttributes {
+    fn default() -> Self {
+        Self::new()
+    }
+}

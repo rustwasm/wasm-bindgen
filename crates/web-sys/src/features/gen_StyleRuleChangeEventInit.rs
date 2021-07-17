@@ -103,3 +103,8 @@ impl StyleRuleChangeEventInit {
         self
     }
 }
+impl Default for StyleRuleChangeEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

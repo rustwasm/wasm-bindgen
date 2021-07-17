@@ -91,3 +91,9 @@ impl RequestDeviceOptions {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for RequestDeviceOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

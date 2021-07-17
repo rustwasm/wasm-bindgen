@@ -28,3 +28,9 @@ impl GpuExternalTextureBindingLayout {
         ret
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuExternalTextureBindingLayout {
+    fn default() -> Self {
+        Self::new()
+    }
+}

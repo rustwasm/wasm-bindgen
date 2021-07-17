@@ -46,3 +46,8 @@ impl RtcIdentityAssertion {
         self
     }
 }
+impl Default for RtcIdentityAssertion {
+    fn default() -> Self {
+        Self::new()
+    }
+}

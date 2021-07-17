@@ -64,3 +64,8 @@ impl U2fClientData {
         self
     }
 }
+impl Default for U2fClientData {
+    fn default() -> Self {
+        Self::new()
+    }
+}

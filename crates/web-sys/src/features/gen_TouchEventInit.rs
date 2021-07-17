@@ -368,3 +368,8 @@ impl TouchEventInit {
         self
     }
 }
+impl Default for TouchEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

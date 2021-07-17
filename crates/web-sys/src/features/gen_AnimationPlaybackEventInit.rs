@@ -105,3 +105,8 @@ impl AnimationPlaybackEventInit {
         self
     }
 }
+impl Default for AnimationPlaybackEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

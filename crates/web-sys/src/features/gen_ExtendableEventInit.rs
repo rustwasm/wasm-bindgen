@@ -71,3 +71,8 @@ impl ExtendableEventInit {
         self
     }
 }
+impl Default for ExtendableEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -93,3 +93,8 @@ impl MediaStreamConstraints {
         self
     }
 }
+impl Default for MediaStreamConstraints {
+    fn default() -> Self {
+        Self::new()
+    }
+}

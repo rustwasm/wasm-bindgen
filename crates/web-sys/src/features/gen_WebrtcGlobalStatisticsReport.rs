@@ -37,3 +37,8 @@ impl WebrtcGlobalStatisticsReport {
         self
     }
 }
+impl Default for WebrtcGlobalStatisticsReport {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -89,3 +89,8 @@ impl GroupedHistoryEventInit {
         self
     }
 }
+impl Default for GroupedHistoryEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

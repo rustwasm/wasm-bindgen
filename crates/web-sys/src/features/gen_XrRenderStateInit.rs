@@ -113,3 +113,9 @@ impl XrRenderStateInit {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for XrRenderStateInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

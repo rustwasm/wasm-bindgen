@@ -100,3 +100,8 @@ impl BaseComputedKeyframe {
         self
     }
 }
+impl Default for BaseComputedKeyframe {
+    fn default() -> Self {
+        Self::new()
+    }
+}

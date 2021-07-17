@@ -122,3 +122,8 @@ impl WebSocketElement {
         self
     }
 }
+impl Default for WebSocketElement {
+    fn default() -> Self {
+        Self::new()
+    }
+}

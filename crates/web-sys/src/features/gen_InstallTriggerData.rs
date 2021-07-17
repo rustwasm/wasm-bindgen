@@ -63,3 +63,8 @@ impl InstallTriggerData {
         self
     }
 }
+impl Default for InstallTriggerData {
+    fn default() -> Self {
+        Self::new()
+    }
+}

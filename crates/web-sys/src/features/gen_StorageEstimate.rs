@@ -46,3 +46,8 @@ impl StorageEstimate {
         self
     }
 }
+impl Default for StorageEstimate {
+    fn default() -> Self {
+        Self::new()
+    }
+}

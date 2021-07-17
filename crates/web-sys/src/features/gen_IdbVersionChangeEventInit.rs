@@ -105,3 +105,8 @@ impl IdbVersionChangeEventInit {
         self
     }
 }
+impl Default for IdbVersionChangeEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

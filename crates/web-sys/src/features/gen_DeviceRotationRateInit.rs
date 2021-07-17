@@ -59,3 +59,8 @@ impl DeviceRotationRateInit {
         self
     }
 }
+impl Default for DeviceRotationRateInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

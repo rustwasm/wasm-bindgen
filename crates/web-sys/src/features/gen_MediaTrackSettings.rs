@@ -166,3 +166,8 @@ impl MediaTrackSettings {
         self
     }
 }
+impl Default for MediaTrackSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}

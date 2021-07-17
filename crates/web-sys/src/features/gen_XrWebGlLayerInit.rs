@@ -146,3 +146,9 @@ impl XrWebGlLayerInit {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for XrWebGlLayerInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -37,3 +37,8 @@ impl ObserverCallback {
         self
     }
 }
+impl Default for ObserverCallback {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -101,3 +101,8 @@ impl TcpSocketErrorEventInit {
         self
     }
 }
+impl Default for TcpSocketErrorEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

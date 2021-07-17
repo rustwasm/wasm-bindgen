@@ -33,3 +33,8 @@ impl TextDecoderOptions {
         self
     }
 }
+impl Default for TextDecoderOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

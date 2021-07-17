@@ -260,3 +260,8 @@ impl ProfileTimelineMarker {
         self
     }
 }
+impl Default for ProfileTimelineMarker {
+    fn default() -> Self {
+        Self::new()
+    }
+}

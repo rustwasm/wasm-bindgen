@@ -142,3 +142,8 @@ impl MessageEventInit {
         self
     }
 }
+impl Default for MessageEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

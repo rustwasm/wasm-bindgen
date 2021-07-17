@@ -50,3 +50,9 @@ impl ClipboardItemOptions {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for ClipboardItemOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

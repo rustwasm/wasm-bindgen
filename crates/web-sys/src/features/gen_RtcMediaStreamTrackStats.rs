@@ -302,3 +302,8 @@ impl RtcMediaStreamTrackStats {
         self
     }
 }
+impl Default for RtcMediaStreamTrackStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

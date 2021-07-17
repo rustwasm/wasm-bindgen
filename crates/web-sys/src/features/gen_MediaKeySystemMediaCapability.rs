@@ -54,3 +54,8 @@ impl MediaKeySystemMediaCapability {
         self
     }
 }
+impl Default for MediaKeySystemMediaCapability {
+    fn default() -> Self {
+        Self::new()
+    }
+}

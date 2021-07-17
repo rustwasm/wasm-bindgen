@@ -37,3 +37,8 @@ impl VoidCallback {
         self
     }
 }
+impl Default for VoidCallback {
+    fn default() -> Self {
+        Self::new()
+    }
+}

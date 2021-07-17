@@ -149,3 +149,8 @@ impl RtcIceComponentStats {
         self
     }
 }
+impl Default for RtcIceComponentStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

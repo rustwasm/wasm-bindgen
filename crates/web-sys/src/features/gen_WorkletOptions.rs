@@ -38,3 +38,8 @@ impl WorkletOptions {
         self
     }
 }
+impl Default for WorkletOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -98,3 +98,8 @@ impl RtcMediaStreamStats {
         self
     }
 }
+impl Default for RtcMediaStreamStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

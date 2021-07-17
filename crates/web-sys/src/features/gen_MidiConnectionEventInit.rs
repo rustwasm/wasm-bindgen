@@ -85,3 +85,8 @@ impl MidiConnectionEventInit {
         self
     }
 }
+impl Default for MidiConnectionEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -106,3 +106,8 @@ impl StyleSheetChangeEventInit {
         self
     }
 }
+impl Default for StyleSheetChangeEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

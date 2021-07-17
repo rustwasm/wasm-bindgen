@@ -85,3 +85,8 @@ impl ScrollViewChangeEventInit {
         self
     }
 }
+impl Default for ScrollViewChangeEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

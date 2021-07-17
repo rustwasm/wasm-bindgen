@@ -106,3 +106,8 @@ impl StyleSheetApplicableStateChangeEventInit {
         self
     }
 }
+impl Default for StyleSheetApplicableStateChangeEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

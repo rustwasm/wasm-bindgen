@@ -20,3 +20,8 @@ impl RtcOfferAnswerOptions {
         ret
     }
 }
+impl Default for RtcOfferAnswerOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

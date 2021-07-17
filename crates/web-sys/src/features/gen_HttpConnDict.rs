@@ -37,3 +37,8 @@ impl HttpConnDict {
         self
     }
 }
+impl Default for HttpConnDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

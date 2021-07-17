@@ -98,3 +98,8 @@ impl RtcrtpContributingSourceStats {
         self
     }
 }
+impl Default for RtcrtpContributingSourceStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

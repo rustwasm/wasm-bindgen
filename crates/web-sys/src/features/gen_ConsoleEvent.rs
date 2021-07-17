@@ -291,3 +291,8 @@ impl ConsoleEvent {
         self
     }
 }
+impl Default for ConsoleEvent {
+    fn default() -> Self {
+        Self::new()
+    }
+}

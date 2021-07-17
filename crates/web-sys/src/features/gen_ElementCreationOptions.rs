@@ -47,3 +47,8 @@ impl ElementCreationOptions {
         self
     }
 }
+impl Default for ElementCreationOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

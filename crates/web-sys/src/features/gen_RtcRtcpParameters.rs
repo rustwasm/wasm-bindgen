@@ -50,3 +50,8 @@ impl RtcRtcpParameters {
         self
     }
 }
+impl Default for RtcRtcpParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

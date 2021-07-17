@@ -45,3 +45,9 @@ impl GpuCommandBufferDescriptor {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuCommandBufferDescriptor {
+    fn default() -> Self {
+        Self::new()
+    }
+}

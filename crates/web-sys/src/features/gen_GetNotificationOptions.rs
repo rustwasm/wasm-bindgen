@@ -33,3 +33,8 @@ impl GetNotificationOptions {
         self
     }
 }
+impl Default for GetNotificationOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

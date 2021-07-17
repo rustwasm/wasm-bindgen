@@ -63,3 +63,8 @@ impl PeriodicWaveOptions {
         self
     }
 }
+impl Default for PeriodicWaveOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

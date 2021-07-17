@@ -49,3 +49,9 @@ impl UsbPermissionStorage {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for UsbPermissionStorage {
+    fn default() -> Self {
+        Self::new()
+    }
+}

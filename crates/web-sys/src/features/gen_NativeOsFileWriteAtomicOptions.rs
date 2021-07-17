@@ -97,3 +97,8 @@ impl NativeOsFileWriteAtomicOptions {
         self
     }
 }
+impl Default for NativeOsFileWriteAtomicOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

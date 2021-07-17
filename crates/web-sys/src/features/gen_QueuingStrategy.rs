@@ -66,3 +66,9 @@ impl QueuingStrategy {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for QueuingStrategy {
+    fn default() -> Self {
+        Self::new()
+    }
+}

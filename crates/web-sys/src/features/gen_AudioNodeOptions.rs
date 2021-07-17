@@ -73,3 +73,8 @@ impl AudioNodeOptions {
         self
     }
 }
+impl Default for AudioNodeOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

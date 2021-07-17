@@ -86,3 +86,8 @@ impl StereoPannerOptions {
         self
     }
 }
+impl Default for StereoPannerOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
