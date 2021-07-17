@@ -570,6 +570,12 @@ impl Drop for JsValue {
     }
 }
 
+impl Default for JsValue {
+    fn default() -> Self {
+        Self::UNDEFINED
+    }
+}
+
 /// Wrapper type for imported statics.
 ///
 /// This type is used whenever a `static` is imported from a JS module, for
