@@ -500,6 +500,12 @@ where
     }
 }
 
+impl Default for Array {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // ArrayBuffer
 #[wasm_bindgen]
 extern "C" {
@@ -815,6 +821,12 @@ impl fmt::Debug for Boolean {
     }
 }
 
+impl Default for Boolean {
+    fn default() -> Self {
+        Self::from(bool::default())
+    }
+}
+
 // DataView
 #[wasm_bindgen]
 extern "C" {
@@ -1086,6 +1098,12 @@ extern "C" {
     pub fn to_string(this: &Error) -> JsString;
 }
 
+impl Default for Error {
+    fn default() -> Self {
+        Self::new("")
+    }
+}
+
 // EvalError
 #[wasm_bindgen]
 extern "C" {
@@ -1100,6 +1118,12 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError)
     #[wasm_bindgen(constructor)]
     pub fn new(message: &str) -> EvalError;
+}
+
+impl Default for EvalError {
+    fn default() -> Self {
+        Self::new("")
+    }
 }
 
 // Function
@@ -1251,6 +1275,12 @@ impl Function {
     }
 }
 
+impl Default for Function {
+    fn default() -> Self {
+        Self::new_no_args("")
+    }
+}
+
 // Generator
 #[wasm_bindgen]
 extern "C" {
@@ -1346,6 +1376,12 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/size)
     #[wasm_bindgen(method, getter, structural)]
     pub fn size(this: &Map) -> u32;
+}
+
+impl Default for Map {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 // Map Iterator
@@ -1980,6 +2016,12 @@ impl fmt::Debug for Number {
     }
 }
 
+impl Default for Number {
+    fn default() -> Self {
+        Self::from(f64::default())
+    }
+}
+
 // Date.
 #[wasm_bindgen]
 extern "C" {
@@ -2422,6 +2464,12 @@ extern "C" {
     pub fn value_of(this: &Date) -> f64;
 }
 
+impl Default for Date {
+    fn default() -> Self {
+        Self::new_0()
+    }
+}
+
 // Object.
 #[wasm_bindgen]
 extern "C" {
@@ -2690,6 +2738,12 @@ impl PartialEq for Object {
 
 impl Eq for Object {}
 
+impl Default for Object {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // Proxy
 #[wasm_bindgen]
 extern "C" {
@@ -2732,6 +2786,12 @@ extern "C" {
     pub fn new(message: &str) -> RangeError;
 }
 
+impl Default for RangeError {
+    fn default() -> Self {
+        Self::new("")
+    }
+}
+
 // ReferenceError
 #[wasm_bindgen]
 extern "C" {
@@ -2749,6 +2809,12 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
     #[wasm_bindgen(constructor)]
     pub fn new(message: &str) -> ReferenceError;
+}
+
+impl Default for ReferenceError {
+    fn default() -> Self {
+        Self::new("")
+    }
 }
 
 #[allow(non_snake_case)]
@@ -3160,6 +3226,12 @@ extern "C" {
     pub fn size(this: &Set) -> u32;
 }
 
+impl Default for Set {
+    fn default() -> Self {
+        Self::new(&JsValue::UNDEFINED)
+    }
+}
+
 // SetIterator
 #[wasm_bindgen]
 extern "C" {
@@ -3210,6 +3282,12 @@ extern "C" {
     pub fn new(message: &str) -> SyntaxError;
 }
 
+impl Default for SyntaxError {
+    fn default() -> Self {
+        Self::new("")
+    }
+}
+
 // TypeError
 #[wasm_bindgen]
 extern "C" {
@@ -3229,6 +3307,12 @@ extern "C" {
     pub fn new(message: &str) -> TypeError;
 }
 
+impl Default for TypeError {
+    fn default() -> Self {
+        Self::new("")
+    }
+}
+
 // URIError
 #[wasm_bindgen]
 extern "C" {
@@ -3246,6 +3330,12 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError)
     #[wasm_bindgen(constructor, js_class = "URIError")]
     pub fn new(message: &str) -> UriError;
+}
+
+impl Default for UriError {
+    fn default() -> Self {
+        Self::new("")
+    }
 }
 
 // WeakMap
@@ -3292,6 +3382,12 @@ extern "C" {
     pub fn delete(this: &WeakMap, key: &Object) -> bool;
 }
 
+impl Default for WeakMap {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // WeakSet
 #[wasm_bindgen]
 extern "C" {
@@ -3324,6 +3420,12 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/delete)
     #[wasm_bindgen(method)]
     pub fn delete(this: &WeakSet, value: &Object) -> bool;
+}
+
+impl Default for WeakSet {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[allow(non_snake_case)]
@@ -3395,6 +3497,12 @@ pub mod WebAssembly {
         pub fn new(message: &str) -> CompileError;
     }
 
+    impl Default for CompileError {
+        fn default() -> Self {
+            Self::new("")
+        }
+    }
+
     // WebAssembly.Instance
     #[wasm_bindgen]
     extern "C" {
@@ -3448,6 +3556,12 @@ pub mod WebAssembly {
         pub fn new(message: &str) -> LinkError;
     }
 
+    impl Default for LinkError {
+        fn default() -> Self {
+            Self::new("")
+        }
+    }
+
     // WebAssembly.RuntimeError
     #[wasm_bindgen]
     extern "C" {
@@ -3467,6 +3581,12 @@ pub mod WebAssembly {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError)
         #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
         pub fn new(message: &str) -> RuntimeError;
+    }
+
+    impl Default for RuntimeError {
+        fn default() -> Self {
+            Self::new("")
+        }
     }
 
     // WebAssembly.Module
@@ -4493,6 +4613,15 @@ pub mod Intl {
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
+    impl Default for Collator {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
+    }
+
     // Intl.DateTimeFormat
     #[wasm_bindgen]
     extern "C" {
@@ -4542,6 +4671,15 @@ pub mod Intl {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/supportedLocalesOf)
         #[wasm_bindgen(static_method_of = DateTimeFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
+
+    impl Default for DateTimeFormat {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
     }
 
     // Intl.NumberFormat
@@ -4594,6 +4732,15 @@ pub mod Intl {
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
+    impl Default for NumberFormat {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
+    }
+
     // Intl.PluralRules
     #[wasm_bindgen]
     extern "C" {
@@ -4634,6 +4781,15 @@ pub mod Intl {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/supportedLocalesOf)
         #[wasm_bindgen(static_method_of = PluralRules, js_namespace = Intl, js_name = supportedLocalesOf)]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
+
+    impl Default for PluralRules {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
     }
 }
 
@@ -5044,6 +5200,12 @@ macro_rules! arrays {
             fn from(slice: &'a [$ty]) -> $name {
                 // This is safe because the `new` function makes a copy if its argument is a TypedArray
                 unsafe { $name::new(&$name::view(slice)) }
+            }
+        }
+
+        impl Default for $name {
+            fn default() -> Self {
+                Self::new(&JsValue::UNDEFINED.unchecked_into())
             }
         }
     )*);
