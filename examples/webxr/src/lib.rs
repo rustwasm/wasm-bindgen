@@ -1,3 +1,5 @@
+#![cfg(web_sys_unstable_apis)]
+
 #[macro_use]
 mod utils;
 
