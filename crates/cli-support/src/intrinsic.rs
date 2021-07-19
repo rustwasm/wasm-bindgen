@@ -88,9 +88,6 @@ intrinsics! {
         #[symbol = "__wbindgen_jsval_loose_eq"]
         #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
         JsvalLooseEq,
-        #[symbol = "__wbindgen_jsval_is"]
-        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
-        JsvalStrictEq,
         #[symbol = "__wbindgen_is_function"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsFunction,

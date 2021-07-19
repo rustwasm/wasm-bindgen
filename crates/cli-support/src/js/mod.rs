@@ -2912,11 +2912,6 @@ impl<'a> Context<'a> {
                 format!("{} == {}", args[0], args[1])
             }
 
-            Intrinsic::JsvalStrictEq => {
-                assert_eq!(args.len(), 2);
-                format!("Object.is({}, {})", args[0], args[1])
-            }
-
             Intrinsic::IsFunction => {
                 assert_eq!(args.len(), 1);
                 format!("typeof({}) === 'function'", args[0])
