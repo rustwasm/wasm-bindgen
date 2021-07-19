@@ -13,7 +13,10 @@
 use core::fmt;
 use core::marker;
 use core::mem;
-use core::ops::{Deref, DerefMut};
+use core::ops::{
+    Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
+};
+use core::u32;
 
 use crate::convert::{FromWasmAbi, WasmOptionalF64, WasmSlice};
 
@@ -317,6 +320,12 @@ impl JsValue {
         unsafe { __wbindgen_is_function(self.idx) == 1 }
     }
 
+    /// Tests whether the type of this JS value is `function`.
+    #[inline]
+    pub fn is_bigint(&self) -> bool {
+        unsafe { __wbindgen_is_bigint(self.idx) == 1 }
+    }
+
     /// Tests whether the value is ["truthy"].
     ///
     /// ["truthy"]: https://developer.mozilla.org/en-US/docs/Glossary/Truthy
@@ -343,11 +352,51 @@ impl JsValue {
             String::from_utf8_unchecked(data)
         }
     }
+
+    /// Compare two `JsValue`s for equality, using the `==` operator in JS.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Equality)
+    pub fn loose_eq(&self, other: &Self) -> bool {
+        unsafe { __wbindgen_jsval_loose_eq(self.idx, other.idx) != 0 }
+    }
+
+    /// Compares two `JsValue`s for equality, using `Object.is`.
+    /// This comparison method fulfills the requirements of the [`Eq`](std::cmp::Eq) trait.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
+    pub fn is(&self, other: &Self) -> bool {
+        unsafe { __wbindgen_jsval_is(self.idx, other.idx) != 0 }
+    }
+
+    /// Applies the unary `~` JS operator on a `JsValue`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_NOT)
+    #[inline]
+    pub fn bit_not(self) -> JsValue {
+        unsafe { JsValue::_new( __wbindgen_bit_not(self.idx)) }
+    }
+
+    /// Applies the binary `>>>` JS operator on the two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unsigned_right_shift)
+    pub fn unsigned_shr(self, rhs: &Self) -> u32 {
+        unsafe { __wbindgen_unsigned_shr(self.idx, rhs.idx) }
+    }
+
+    /// Applies the binary `**` JS operator on the two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Exponentiation)
+    pub fn pow(self, rhs: &Self) -> Self {
+        unsafe { JsValue::_new(__wbindgen_pow(self.idx, rhs.idx)) }
+    }
 }
 
 impl PartialEq for JsValue {
+    /// Compares two `JsValue`s for equality, using the `===` operator in JS.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality)
     #[inline]
-    fn eq(&self, other: &JsValue) -> bool {
+    fn eq(&self, other: &Self) -> bool {
         unsafe { __wbindgen_jsval_eq(self.idx, other.idx) != 0 }
     }
 }
@@ -387,6 +436,224 @@ if_std! {
         }
     }
 }
+
+macro_rules! forward_deref_unop {
+    (impl $imp:ident, $method:ident for $t:ty) => {
+        impl $imp for $t {
+            type Output = <&'static $t as $imp>::Output;
+
+            #[inline]
+            fn $method(self) -> <&'static $t as $imp>::Output {
+                $imp::$method(&self)
+            }
+        }
+    };
+}
+
+macro_rules! forward_deref_binop {
+    (impl $imp:ident, $method:ident for $t:ty, $u:ty) => {
+        impl<'a> $imp<$u> for &'a $t {
+            type Output = <&'static $t as $imp<&'static $u>>::Output;
+            #[inline]
+            fn $method(self, other: $u) -> <&'static $t as $imp<&'static $u>>::Output {
+                $imp::$method(self, &other)
+            }
+        }
+
+        impl $imp<&$u> for $t {
+            type Output = <&'static $t as $imp<&'static $u>>::Output;
+
+            #[inline]
+            fn $method(self, other: &$u) -> <&'static $t as $imp<&'static $u>>::Output {
+                $imp::$method(&self, other)
+            }
+        }
+
+        impl $imp<$u> for $t {
+            type Output = <&'static $t as $imp<&'static $u>>::Output;
+
+            #[inline]
+            fn $method(self, other: $u) -> <&'static $t as $imp<&'static $u>>::Output {
+                $imp::$method(&self, &other)
+            }
+        }
+    };
+}
+
+impl Not for &JsValue {
+    type Output = bool;
+
+    /// Applies the `!` JS operator on a `JsValue`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_NOT)
+    #[inline]
+    fn not(self) -> Self::Output {
+        JsValue::is_falsy(self)
+    }
+}
+
+forward_deref_unop!(impl Not, not for JsValue);
+
+impl From<JsValue> for f64 {
+    /// Applies the unary `+` JS operator on a `JsValue`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
+    fn from(val: JsValue) -> Self {
+        (&val).into()
+    }
+}
+
+impl From<&JsValue> for f64 {
+    /// Applies the unary `+` JS operator on a `JsValue`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
+    fn from(val: &JsValue) -> Self {
+        unsafe { __wbindgen_as_number(val.idx) }
+    }
+}
+
+impl Neg for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the unary `-` JS operator on a `JsValue`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_negation)
+    fn neg(self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_neg(self.idx)) }
+    }
+}
+
+forward_deref_unop!(impl Neg, neg for JsValue);
+
+impl BitAnd for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `&` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_AND)
+    fn bitand(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_bit_and(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl BitAnd, bitand for JsValue, JsValue);
+
+impl BitOr for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `|` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_OR)
+    fn bitor(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_bit_or(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl BitOr, bitor for JsValue, JsValue);
+
+impl BitXor for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `^` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR)
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_bit_xor(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl BitXor, bitxor for JsValue, JsValue);
+
+impl Shl for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `<<` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift)
+    fn shl(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_shl(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl Shl, shl for JsValue, JsValue);
+
+impl Shr for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `>>` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift)
+    fn shr(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_shr(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl Shr, shr for JsValue, JsValue);
+
+impl Add for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `+` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Addition)
+    fn add(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_add(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl Add, add for JsValue, JsValue);
+
+impl Sub for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `-` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Subtraction)
+    fn sub(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_sub(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl Sub, sub for JsValue, JsValue);
+
+impl Div for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `/` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Division)
+    fn div(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_div(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl Div, div for JsValue, JsValue);
+
+impl Mul for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `*` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Multiplication)
+    fn mul(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_mul(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl Mul, mul for JsValue, JsValue);
+
+impl Rem for &JsValue {
+    type Output = JsValue;
+
+    /// Applies the binary `%` JS operator on two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder)
+    fn rem(self, rhs: Self) -> Self::Output {
+        unsafe { JsValue::_new(__wbindgen_rem(self.idx, rhs.idx)) }
+    }
+}
+
+forward_deref_binop!(impl Rem, rem for JsValue, JsValue);
 
 impl<'a> From<&'a str> for JsValue {
     #[inline]
@@ -503,7 +770,23 @@ externs! {
         fn __wbindgen_is_object(idx: u32) -> u32;
         fn __wbindgen_is_function(idx: u32) -> u32;
         fn __wbindgen_is_string(idx: u32) -> u32;
+        fn __wbindgen_is_bigint(idx: u32) -> u32;
         fn __wbindgen_is_falsy(idx: u32) -> u32;
+        fn __wbindgen_as_number(idx: u32) -> f64;
+        fn __wbindgen_neg(idx: u32) -> u32;
+        fn __wbindgen_bit_and(a: u32, b: u32) -> u32;
+        fn __wbindgen_bit_or(a: u32, b: u32) -> u32;
+        fn __wbindgen_bit_xor(a: u32, b: u32) -> u32;
+        fn __wbindgen_bit_not(idx: u32) -> u32;
+        fn __wbindgen_shl(a: u32, b: u32) -> u32;
+        fn __wbindgen_shr(a: u32, b: u32) -> u32;
+        fn __wbindgen_unsigned_shr(a: u32, b: u32) -> u32;
+        fn __wbindgen_add(a: u32, b: u32) -> u32;
+        fn __wbindgen_sub(a: u32, b: u32) -> u32;
+        fn __wbindgen_div(a: u32, b: u32) -> u32;
+        fn __wbindgen_mul(a: u32, b: u32) -> u32;
+        fn __wbindgen_rem(a: u32, b: u32) -> u32;
+        fn __wbindgen_pow(a: u32, b: u32) -> u32;
 
         fn __wbindgen_number_get(idx: u32) -> WasmOptionalF64;
         fn __wbindgen_boolean_get(idx: u32) -> u32;
@@ -522,6 +805,10 @@ externs! {
         fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_json_serialize(idx: u32) -> WasmSlice;
         fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
+        fn __wbindgen_jsval_loose_eq(a: u32, b: u32) -> u32;
+        fn __wbindgen_jsval_is(a: u32, b: u32) -> u32;
+
+        fn __wbindgen_not(idx: u32) -> u32;
 
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
