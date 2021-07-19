@@ -112,6 +112,12 @@ intrinsics! {
         #[symbol = "__wbindgen_is_bigint"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsBigint,
+        #[symbol = "__wbindgen_typeof"]
+        #[signature = fn(ref_externref()) -> Externref]
+        Typeof,
+        #[symbol = "__wbindgen_in"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        In,
         #[symbol = "__wbindgen_is_falsy"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsFalsy,

@@ -2953,6 +2953,16 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'bigint'", args[0])
             }
 
+            Intrinsic::Typeof => {
+                assert_eq!(args.len(), 1);
+                format!("typeof {}", args[0])
+            }
+
+            Intrinsic::In => {
+                assert_eq!(args.len(), 2);
+                format!("{} in {}", args[0], args[1])
+            }
+
             Intrinsic::IsFalsy => {
                 assert_eq!(args.len(), 1);
                 format!("!{}", args[0])
