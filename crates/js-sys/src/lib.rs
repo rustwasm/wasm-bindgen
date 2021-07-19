@@ -1098,12 +1098,6 @@ extern "C" {
     pub fn to_string(this: &Error) -> JsString;
 }
 
-impl Default for Error {
-    fn default() -> Self {
-        Self::new("")
-    }
-}
-
 // EvalError
 #[wasm_bindgen]
 extern "C" {
@@ -1118,12 +1112,6 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError)
     #[wasm_bindgen(constructor)]
     pub fn new(message: &str) -> EvalError;
-}
-
-impl Default for EvalError {
-    fn default() -> Self {
-        Self::new("")
-    }
 }
 
 // Function
@@ -2464,12 +2452,6 @@ extern "C" {
     pub fn value_of(this: &Date) -> f64;
 }
 
-impl Default for Date {
-    fn default() -> Self {
-        Self::new_0()
-    }
-}
-
 // Object.
 #[wasm_bindgen]
 extern "C" {
@@ -2786,12 +2768,6 @@ extern "C" {
     pub fn new(message: &str) -> RangeError;
 }
 
-impl Default for RangeError {
-    fn default() -> Self {
-        Self::new("")
-    }
-}
-
 // ReferenceError
 #[wasm_bindgen]
 extern "C" {
@@ -2809,12 +2785,6 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
     #[wasm_bindgen(constructor)]
     pub fn new(message: &str) -> ReferenceError;
-}
-
-impl Default for ReferenceError {
-    fn default() -> Self {
-        Self::new("")
-    }
 }
 
 #[allow(non_snake_case)]
@@ -3282,12 +3252,6 @@ extern "C" {
     pub fn new(message: &str) -> SyntaxError;
 }
 
-impl Default for SyntaxError {
-    fn default() -> Self {
-        Self::new("")
-    }
-}
-
 // TypeError
 #[wasm_bindgen]
 extern "C" {
@@ -3307,12 +3271,6 @@ extern "C" {
     pub fn new(message: &str) -> TypeError;
 }
 
-impl Default for TypeError {
-    fn default() -> Self {
-        Self::new("")
-    }
-}
-
 // URIError
 #[wasm_bindgen]
 extern "C" {
@@ -3330,12 +3288,6 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError)
     #[wasm_bindgen(constructor, js_class = "URIError")]
     pub fn new(message: &str) -> UriError;
-}
-
-impl Default for UriError {
-    fn default() -> Self {
-        Self::new("")
-    }
 }
 
 // WeakMap
@@ -3497,12 +3449,6 @@ pub mod WebAssembly {
         pub fn new(message: &str) -> CompileError;
     }
 
-    impl Default for CompileError {
-        fn default() -> Self {
-            Self::new("")
-        }
-    }
-
     // WebAssembly.Instance
     #[wasm_bindgen]
     extern "C" {
@@ -3556,12 +3502,6 @@ pub mod WebAssembly {
         pub fn new(message: &str) -> LinkError;
     }
 
-    impl Default for LinkError {
-        fn default() -> Self {
-            Self::new("")
-        }
-    }
-
     // WebAssembly.RuntimeError
     #[wasm_bindgen]
     extern "C" {
@@ -3581,12 +3521,6 @@ pub mod WebAssembly {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError)
         #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
         pub fn new(message: &str) -> RuntimeError;
-    }
-
-    impl Default for RuntimeError {
-        fn default() -> Self {
-            Self::new("")
-        }
     }
 
     // WebAssembly.Module
