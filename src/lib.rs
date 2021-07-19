@@ -326,6 +326,22 @@ impl JsValue {
         unsafe { __wbindgen_is_bigint(self.idx) == 1 }
     }
 
+    /// Applies the unary `typeof` JS operator on a `JsValue`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof)
+    #[inline]
+    pub fn js_typeof(&self) -> JsValue {
+        unsafe { JsValue::_new(__wbindgen_typeof(self.idx)) }
+    }
+
+    /// Applies the binary `in` JS operator on the two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof)
+    #[inline]
+    pub fn js_in(&self, obj: &JsValue) -> bool {
+        unsafe { __wbindgen_in(self.idx, obj.idx) == 1 }
+    }
+
     /// Tests whether the value is ["truthy"].
     ///
     /// ["truthy"]: https://developer.mozilla.org/en-US/docs/Glossary/Truthy
@@ -342,7 +358,7 @@ impl JsValue {
         unsafe { __wbindgen_is_falsy(self.idx) == 1 }
     }
 
-    /// Get a string representation of the JavaScript object for debugging
+    /// Get a string representation of the JavaScript object for debugging.
     #[cfg(feature = "std")]
     fn as_debug_string(&self) -> String {
         unsafe {
@@ -771,6 +787,10 @@ externs! {
         fn __wbindgen_is_function(idx: u32) -> u32;
         fn __wbindgen_is_string(idx: u32) -> u32;
         fn __wbindgen_is_bigint(idx: u32) -> u32;
+        fn __wbindgen_typeof(idx: u32) -> u32;
+
+        fn __wbindgen_in(prop: u32, obj: u32) -> u32;
+
         fn __wbindgen_is_falsy(idx: u32) -> u32;
         fn __wbindgen_as_number(idx: u32) -> f64;
         fn __wbindgen_neg(idx: u32) -> u32;
