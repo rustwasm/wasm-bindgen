@@ -376,14 +376,6 @@ impl JsValue {
         unsafe { __wbindgen_jsval_loose_eq(self.idx, other.idx) != 0 }
     }
 
-    /// Compares two `JsValue`s for equality, using `Object.is`.
-    /// This comparison method fulfills the requirements of the [`Eq`](std::cmp::Eq) trait.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
-    pub fn is(&self, other: &Self) -> bool {
-        unsafe { __wbindgen_jsval_is(self.idx, other.idx) != 0 }
-    }
-
     /// Applies the unary `~` JS operator on a `JsValue`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_NOT)
@@ -858,7 +850,6 @@ externs! {
         fn __wbindgen_json_serialize(idx: u32) -> WasmSlice;
         fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
         fn __wbindgen_jsval_loose_eq(a: u32, b: u32) -> u32;
-        fn __wbindgen_jsval_is(a: u32, b: u32) -> u32;
 
         fn __wbindgen_not(idx: u32) -> u32;
 
