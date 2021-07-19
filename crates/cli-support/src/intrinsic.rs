@@ -166,6 +166,18 @@ intrinsics! {
         #[symbol = "__wbindgen_pow"]
         #[signature = fn(ref_externref(), ref_externref()) -> Externref]
         Pow,
+        #[symbol = "__wbindgen_lt"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        LT,
+        #[symbol = "__wbindgen_le"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        LE,
+        #[symbol = "__wbindgen_ge"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        GE,
+        #[symbol = "__wbindgen_gt"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        GT,
         #[symbol = "__wbindgen_object_clone_ref"]
         #[signature = fn(ref_externref()) -> Externref]
         ObjectCloneRef,

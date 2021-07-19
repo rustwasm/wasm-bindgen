@@ -405,6 +405,34 @@ impl JsValue {
     pub fn pow(self, rhs: &Self) -> Self {
         unsafe { JsValue::_new(__wbindgen_pow(self.idx, rhs.idx)) }
     }
+
+    /// Applies the binary `<` JS operator on the two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Less_than)
+    pub fn lt(&self, other: &Self) -> bool {
+        unsafe { __wbindgen_lt(self.idx, other.idx) == 1 }
+    }
+
+    /// Applies the binary `<=` JS operator on the two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Less_than_or_equal)
+    pub fn le(&self, other: &Self) -> bool {
+        unsafe { __wbindgen_le(self.idx, other.idx) == 1 }
+    }
+
+    /// Applies the binary `>=` JS operator on the two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Greater_than_or_equal)
+    pub fn ge(&self, other: &Self) -> bool {
+        unsafe { __wbindgen_ge(self.idx, other.idx) == 1 }
+    }
+
+    /// Applies the binary `>` JS operator on the two `JsValue`s.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Greater_than)
+    pub fn gt(&self, other: &Self) -> bool {
+        unsafe { __wbindgen_gt(self.idx, other.idx) == 1 }
+    }
 }
 
 impl PartialEq for JsValue {
@@ -807,6 +835,10 @@ externs! {
         fn __wbindgen_mul(a: u32, b: u32) -> u32;
         fn __wbindgen_rem(a: u32, b: u32) -> u32;
         fn __wbindgen_pow(a: u32, b: u32) -> u32;
+        fn __wbindgen_lt(a: u32, b: u32) -> u32;
+        fn __wbindgen_le(a: u32, b: u32) -> u32;
+        fn __wbindgen_ge(a: u32, b: u32) -> u32;
+        fn __wbindgen_gt(a: u32, b: u32) -> u32;
 
         fn __wbindgen_number_get(idx: u32) -> WasmOptionalF64;
         fn __wbindgen_boolean_get(idx: u32) -> u32;

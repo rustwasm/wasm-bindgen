@@ -3043,6 +3043,26 @@ impl<'a> Context<'a> {
                 format!("{} ** {}", args[0], args[1])
             }
 
+            Intrinsic::LT => {
+                assert_eq!(args.len(), 2);
+                format!("{} < {}", args[0], args[1])
+            }
+
+            Intrinsic::LE => {
+                assert_eq!(args.len(), 2);
+                format!("{} <= {}", args[0], args[1])
+            }
+
+            Intrinsic::GE => {
+                assert_eq!(args.len(), 2);
+                format!("{} >= {}", args[0], args[1])
+            }
+
+            Intrinsic::GT => {
+                assert_eq!(args.len(), 2);
+                format!("{} > {}", args[0], args[1])
+            }
+
             Intrinsic::ObjectCloneRef => {
                 assert_eq!(args.len(), 1);
                 args[0].clone()
