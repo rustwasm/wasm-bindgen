@@ -2907,6 +2907,16 @@ impl<'a> Context<'a> {
                 format!("{} === {}", args[0], args[1])
             }
 
+            Intrinsic::JsvalLooseEq => {
+                assert_eq!(args.len(), 2);
+                format!("{} == {}", args[0], args[1])
+            }
+
+            Intrinsic::JsvalStrictEq => {
+                assert_eq!(args.len(), 2);
+                format!("Object.is({}, {})", args[0], args[1])
+            }
+
             Intrinsic::IsFunction => {
                 assert_eq!(args.len(), 1);
                 format!("typeof({}) === 'function'", args[0])
@@ -2938,9 +2948,89 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'string'", args[0])
             }
 
+            Intrinsic::IsBigint => {
+                assert_eq!(args.len(), 1);
+                format!("typeof({}) === 'bigint'", args[0])
+            }
+
             Intrinsic::IsFalsy => {
                 assert_eq!(args.len(), 1);
                 format!("!{}", args[0])
+            }
+
+            Intrinsic::AsNumber => {
+                assert_eq!(args.len(), 1);
+                format!("+{}", args[0])
+            }
+
+            Intrinsic::Neg => {
+                assert_eq!(args.len(), 1);
+                format!("-{}", args[0])
+            }
+
+            Intrinsic::BitAnd => {
+                assert_eq!(args.len(), 2);
+                format!("{} & {}", args[0], args[1])
+            }
+
+            Intrinsic::BitOr => {
+                assert_eq!(args.len(), 2);
+                format!("{} | {}", args[0], args[1])
+            }
+
+            Intrinsic::BitXor => {
+                assert_eq!(args.len(), 2);
+                format!("{} ^ {}", args[0], args[1])
+            }
+
+            Intrinsic::BitNot => {
+                assert_eq!(args.len(), 1);
+                format!("~{}", args[0])
+            }
+
+            Intrinsic::Shl => {
+                assert_eq!(args.len(), 2);
+                format!("{} << {}", args[0], args[1])
+            }
+
+            Intrinsic::Shr => {
+                assert_eq!(args.len(), 2);
+                format!("{} >> {}", args[0], args[1])
+            }
+
+            Intrinsic::UnsignedShr => {
+                assert_eq!(args.len(), 2);
+                format!("{} >>> {}", args[0], args[1])
+            }
+
+            Intrinsic::Add => {
+                assert_eq!(args.len(), 2);
+                format!("{} + {}", args[0], args[1])
+            }
+
+            Intrinsic::Sub => {
+                assert_eq!(args.len(), 2);
+                format!("{} - {}", args[0], args[1])
+            }
+
+            Intrinsic::Div => {
+                assert_eq!(args.len(), 2);
+                format!("{} / {}", args[0], args[1])
+            }
+
+            Intrinsic::Mul => {
+                assert_eq!(args.len(), 2);
+                format!("{} * {}", args[0], args[1])
+            }
+
+            Intrinsic::Rem => {
+                assert_eq!(args.len(), 2);
+                format!("{} % {}", args[0], args[1])
+            }
+
+            Intrinsic::Pow => {
+                assert_eq!(args.len(), 2);
+                format!("{} ** {}", args[0], args[1])
             }
 
             Intrinsic::ObjectCloneRef => {
