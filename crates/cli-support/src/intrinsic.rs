@@ -121,6 +121,9 @@ intrinsics! {
         #[symbol = "__wbindgen_as_number"]
         #[signature = fn(ref_externref()) -> F64]
         AsNumber,
+        #[symbol = "__wbindgen_try_into_number"]
+        #[signature = fn(ref_externref()) -> Externref]
+        TryIntoNumber,
         #[symbol = "__wbindgen_neg"]
         #[signature = fn(ref_externref()) -> Externref]
         Neg,

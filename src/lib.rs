@@ -10,6 +10,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 #![cfg_attr(feature = "nightly", feature(unsize))]
 
+use core::convert::TryFrom;
 use core::fmt;
 use core::marker;
 use core::mem;
@@ -425,6 +426,13 @@ impl JsValue {
     pub fn gt(&self, other: &Self) -> bool {
         unsafe { __wbindgen_gt(self.idx, other.idx) == 1 }
     }
+
+    /// Applies the unary `+` JS operator on a `JsValue`. Can throw.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
+    pub fn unchecked_into_f64(&self) -> f64 {
+        unsafe { __wbindgen_as_number(self.idx) }
+    }
 }
 
 impl PartialEq for JsValue {
@@ -530,21 +538,31 @@ impl Not for &JsValue {
 
 forward_deref_unop!(impl Not, not for JsValue);
 
-impl From<JsValue> for f64 {
+impl TryFrom<JsValue> for f64 {
+    type Error = JsValue;
+
     /// Applies the unary `+` JS operator on a `JsValue`.
+    /// Returns the numeric result on success, or the JS error value on error.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
-    fn from(val: JsValue) -> Self {
-        (&val).into()
+    fn try_from(val: JsValue) -> Result<Self, Self::Error> {
+        f64::try_from(&val)
     }
 }
 
-impl From<&JsValue> for f64 {
+impl TryFrom<&JsValue> for f64 {
+    type Error = JsValue;
+
     /// Applies the unary `+` JS operator on a `JsValue`.
+    /// Returns the numeric result on success, or the JS error value on error.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
-    fn from(val: &JsValue) -> Self {
-        unsafe { __wbindgen_as_number(val.idx) }
+    fn try_from(val: &JsValue) -> Result<Self, Self::Error> {
+        let jsval = unsafe { JsValue::_new(__wbindgen_try_into_number(val.idx)) };
+        return match jsval.as_f64() {
+            Some(num) => Ok(num),
+            None => Err(jsval),
+        };
     }
 }
 
@@ -813,6 +831,7 @@ externs! {
 
         fn __wbindgen_is_falsy(idx: u32) -> u32;
         fn __wbindgen_as_number(idx: u32) -> f64;
+        fn __wbindgen_try_into_number(idx: u32) -> u32;
         fn __wbindgen_neg(idx: u32) -> u32;
         fn __wbindgen_bit_and(a: u32, b: u32) -> u32;
         fn __wbindgen_bit_or(a: u32, b: u32) -> u32;

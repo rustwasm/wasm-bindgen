@@ -2968,6 +2968,11 @@ impl<'a> Context<'a> {
                 format!("+{}", args[0])
             }
 
+            Intrinsic::TryIntoNumber => {
+                assert_eq!(args.len(), 1);
+                format!("try {{ +{} }} catch(e) {{ e }}", args[0])
+            }
+
             Intrinsic::Neg => {
                 assert_eq!(args.len(), 1);
                 format!("-{}", args[0])
