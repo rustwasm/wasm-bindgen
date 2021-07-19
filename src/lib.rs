@@ -242,11 +242,13 @@ impl JsValue {
     ///
     /// If this JS value is not an instance of a number then this returns
     /// `None`.
+    #[inline]
     pub fn as_f64(&self) -> Option<f64> {
         unsafe { FromWasmAbi::from_abi(__wbindgen_number_get(self.idx)) }
     }
 
     /// Tests whether this JS value is a JS string.
+    #[inline]
     pub fn is_string(&self) -> bool {
         unsafe { __wbindgen_is_string(self.idx) == 1 }
     }
@@ -272,6 +274,7 @@ impl JsValue {
     ///
     /// [caveats]: https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html
     #[cfg(feature = "std")]
+    #[inline]
     pub fn as_string(&self) -> Option<String> {
         unsafe { FromWasmAbi::from_abi(__wbindgen_string_get(self.idx)) }
     }
@@ -281,6 +284,7 @@ impl JsValue {
     ///
     /// If this JS value is not an instance of a boolean then this returns
     /// `None`.
+    #[inline]
     pub fn as_bool(&self) -> Option<bool> {
         unsafe {
             match __wbindgen_boolean_get(self.idx) {
@@ -373,6 +377,7 @@ impl JsValue {
     /// Compare two `JsValue`s for equality, using the `==` operator in JS.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Equality)
+    #[inline]
     pub fn loose_eq(&self, other: &Self) -> bool {
         unsafe { __wbindgen_jsval_loose_eq(self.idx, other.idx) != 0 }
     }
@@ -388,6 +393,7 @@ impl JsValue {
     /// Applies the binary `>>>` JS operator on the two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unsigned_right_shift)
+    #[inline]
     pub fn unsigned_shr(self, rhs: &Self) -> u32 {
         unsafe { __wbindgen_unsigned_shr(self.idx, rhs.idx) }
     }
@@ -395,6 +401,7 @@ impl JsValue {
     /// Applies the binary `**` JS operator on the two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Exponentiation)
+    #[inline]
     pub fn pow(self, rhs: &Self) -> Self {
         unsafe { JsValue::_new(__wbindgen_pow(self.idx, rhs.idx)) }
     }
@@ -402,6 +409,7 @@ impl JsValue {
     /// Applies the binary `<` JS operator on the two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Less_than)
+    #[inline]
     pub fn lt(&self, other: &Self) -> bool {
         unsafe { __wbindgen_lt(self.idx, other.idx) == 1 }
     }
@@ -409,6 +417,7 @@ impl JsValue {
     /// Applies the binary `<=` JS operator on the two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Less_than_or_equal)
+    #[inline]
     pub fn le(&self, other: &Self) -> bool {
         unsafe { __wbindgen_le(self.idx, other.idx) == 1 }
     }
@@ -416,6 +425,7 @@ impl JsValue {
     /// Applies the binary `>=` JS operator on the two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Greater_than_or_equal)
+    #[inline]
     pub fn ge(&self, other: &Self) -> bool {
         unsafe { __wbindgen_ge(self.idx, other.idx) == 1 }
     }
@@ -423,6 +433,7 @@ impl JsValue {
     /// Applies the binary `>` JS operator on the two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Greater_than)
+    #[inline]
     pub fn gt(&self, other: &Self) -> bool {
         unsafe { __wbindgen_gt(self.idx, other.idx) == 1 }
     }
@@ -430,6 +441,7 @@ impl JsValue {
     /// Applies the unary `+` JS operator on a `JsValue`. Can throw.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
+    #[inline]
     pub fn unchecked_into_f64(&self) -> f64 {
         unsafe { __wbindgen_as_number(self.idx) }
     }
@@ -545,6 +557,7 @@ impl TryFrom<JsValue> for f64 {
     /// Returns the numeric result on success, or the JS error value on error.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
+    #[inline]
     fn try_from(val: JsValue) -> Result<Self, Self::Error> {
         f64::try_from(&val)
     }
@@ -557,6 +570,7 @@ impl TryFrom<&JsValue> for f64 {
     /// Returns the numeric result on success, or the JS error value on error.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus)
+    #[inline]
     fn try_from(val: &JsValue) -> Result<Self, Self::Error> {
         let jsval = unsafe { JsValue::_new(__wbindgen_try_into_number(val.idx)) };
         return match jsval.as_f64() {
@@ -572,6 +586,7 @@ impl Neg for &JsValue {
     /// Applies the unary `-` JS operator on a `JsValue`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_negation)
+    #[inline]
     fn neg(self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_neg(self.idx)) }
     }
@@ -585,6 +600,7 @@ impl BitAnd for &JsValue {
     /// Applies the binary `&` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_AND)
+    #[inline]
     fn bitand(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_bit_and(self.idx, rhs.idx)) }
     }
@@ -598,6 +614,7 @@ impl BitOr for &JsValue {
     /// Applies the binary `|` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_OR)
+    #[inline]
     fn bitor(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_bit_or(self.idx, rhs.idx)) }
     }
@@ -611,6 +628,7 @@ impl BitXor for &JsValue {
     /// Applies the binary `^` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR)
+    #[inline]
     fn bitxor(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_bit_xor(self.idx, rhs.idx)) }
     }
@@ -624,6 +642,7 @@ impl Shl for &JsValue {
     /// Applies the binary `<<` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift)
+    #[inline]
     fn shl(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_shl(self.idx, rhs.idx)) }
     }
@@ -637,6 +656,7 @@ impl Shr for &JsValue {
     /// Applies the binary `>>` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift)
+    #[inline]
     fn shr(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_shr(self.idx, rhs.idx)) }
     }
@@ -650,6 +670,7 @@ impl Add for &JsValue {
     /// Applies the binary `+` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Addition)
+    #[inline]
     fn add(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_add(self.idx, rhs.idx)) }
     }
@@ -663,6 +684,7 @@ impl Sub for &JsValue {
     /// Applies the binary `-` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Subtraction)
+    #[inline]
     fn sub(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_sub(self.idx, rhs.idx)) }
     }
@@ -676,6 +698,7 @@ impl Div for &JsValue {
     /// Applies the binary `/` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Division)
+    #[inline]
     fn div(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_div(self.idx, rhs.idx)) }
     }
@@ -689,6 +712,7 @@ impl Mul for &JsValue {
     /// Applies the binary `*` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Multiplication)
+    #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_mul(self.idx, rhs.idx)) }
     }
@@ -702,6 +726,7 @@ impl Rem for &JsValue {
     /// Applies the binary `%` JS operator on two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder)
+    #[inline]
     fn rem(self, rhs: Self) -> Self::Output {
         unsafe { JsValue::_new(__wbindgen_rem(self.idx, rhs.idx)) }
     }
