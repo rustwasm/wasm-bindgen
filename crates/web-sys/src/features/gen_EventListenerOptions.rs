@@ -37,3 +37,8 @@ impl EventListenerOptions {
         self
     }
 }
+impl Default for EventListenerOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

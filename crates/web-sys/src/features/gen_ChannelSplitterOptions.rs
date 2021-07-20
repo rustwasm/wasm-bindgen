@@ -90,3 +90,8 @@ impl ChannelSplitterOptions {
         self
     }
 }
+impl Default for ChannelSplitterOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

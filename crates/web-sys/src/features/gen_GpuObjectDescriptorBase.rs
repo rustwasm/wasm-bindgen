@@ -45,3 +45,9 @@ impl GpuObjectDescriptorBase {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuObjectDescriptorBase {
+    fn default() -> Self {
+        Self::new()
+    }
+}

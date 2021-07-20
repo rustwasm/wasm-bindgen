@@ -64,3 +64,8 @@ impl ScrollToOptions {
         self
     }
 }
+impl Default for ScrollToOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

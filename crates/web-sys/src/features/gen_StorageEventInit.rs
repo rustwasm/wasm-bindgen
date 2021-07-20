@@ -149,3 +149,8 @@ impl StorageEventInit {
         self
     }
 }
+impl Default for StorageEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

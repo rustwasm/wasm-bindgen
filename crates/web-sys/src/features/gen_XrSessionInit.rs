@@ -70,3 +70,9 @@ impl XrSessionInit {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for XrSessionInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -37,3 +37,8 @@ impl HalfOpenInfoDict {
         self
     }
 }
+impl Default for HalfOpenInfoDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -206,3 +206,8 @@ impl CaretStateChangedEventInit {
         self
     }
 }
+impl Default for CaretStateChangedEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

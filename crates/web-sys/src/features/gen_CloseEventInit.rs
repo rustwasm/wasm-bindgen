@@ -115,3 +115,8 @@ impl CloseEventInit {
         self
     }
 }
+impl Default for CloseEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

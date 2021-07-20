@@ -145,3 +145,8 @@ impl RtcCodecStats {
         self
     }
 }
+impl Default for RtcCodecStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

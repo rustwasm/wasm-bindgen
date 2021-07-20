@@ -88,3 +88,8 @@ impl MediaRecorderOptions {
         self
     }
 }
+impl Default for MediaRecorderOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

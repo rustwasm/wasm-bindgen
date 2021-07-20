@@ -298,3 +298,8 @@ impl RtcrtpStreamStats {
         self
     }
 }
+impl Default for RtcrtpStreamStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

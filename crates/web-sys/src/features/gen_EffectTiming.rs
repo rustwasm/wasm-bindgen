@@ -147,3 +147,8 @@ impl EffectTiming {
         self
     }
 }
+impl Default for EffectTiming {
+    fn default() -> Self {
+        Self::new()
+    }
+}

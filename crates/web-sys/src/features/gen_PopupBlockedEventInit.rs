@@ -123,3 +123,8 @@ impl PopupBlockedEventInit {
         self
     }
 }
+impl Default for PopupBlockedEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

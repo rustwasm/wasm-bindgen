@@ -33,3 +33,8 @@ impl AuthenticationExtensionsClientInputs {
         self
     }
 }
+impl Default for AuthenticationExtensionsClientInputs {
+    fn default() -> Self {
+        Self::new()
+    }
+}

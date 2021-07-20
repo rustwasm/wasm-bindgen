@@ -86,3 +86,8 @@ impl DateTimeValue {
         self
     }
 }
+impl Default for DateTimeValue {
+    fn default() -> Self {
+        Self::new()
+    }
+}

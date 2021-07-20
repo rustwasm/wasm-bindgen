@@ -48,3 +48,8 @@ impl MediaConfiguration {
         self
     }
 }
+impl Default for MediaConfiguration {
+    fn default() -> Self {
+        Self::new()
+    }
+}

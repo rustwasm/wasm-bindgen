@@ -37,3 +37,8 @@ impl PeriodicWaveConstraints {
         self
     }
 }
+impl Default for PeriodicWaveConstraints {
+    fn default() -> Self {
+        Self::new()
+    }
+}

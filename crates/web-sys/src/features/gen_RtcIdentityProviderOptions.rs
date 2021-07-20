@@ -71,3 +71,8 @@ impl RtcIdentityProviderOptions {
         self
     }
 }
+impl Default for RtcIdentityProviderOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

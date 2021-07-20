@@ -37,3 +37,8 @@ impl DocumentTimelineOptions {
         self
     }
 }
+impl Default for DocumentTimelineOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

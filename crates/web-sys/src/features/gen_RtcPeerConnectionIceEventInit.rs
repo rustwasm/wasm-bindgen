@@ -89,3 +89,8 @@ impl RtcPeerConnectionIceEventInit {
         self
     }
 }
+impl Default for RtcPeerConnectionIceEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

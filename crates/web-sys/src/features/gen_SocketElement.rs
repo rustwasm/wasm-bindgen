@@ -103,3 +103,8 @@ impl SocketElement {
         self
     }
 }
+impl Default for SocketElement {
+    fn default() -> Self {
+        Self::new()
+    }
+}

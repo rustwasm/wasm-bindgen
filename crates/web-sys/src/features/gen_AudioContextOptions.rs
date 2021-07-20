@@ -37,3 +37,8 @@ impl AudioContextOptions {
         self
     }
 }
+impl Default for AudioContextOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

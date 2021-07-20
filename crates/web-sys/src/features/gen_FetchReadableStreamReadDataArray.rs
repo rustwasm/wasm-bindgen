@@ -20,3 +20,8 @@ impl FetchReadableStreamReadDataArray {
         ret
     }
 }
+impl Default for FetchReadableStreamReadDataArray {
+    fn default() -> Self {
+        Self::new()
+    }
+}

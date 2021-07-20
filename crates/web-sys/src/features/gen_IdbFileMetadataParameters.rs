@@ -50,3 +50,8 @@ impl IdbFileMetadataParameters {
         self
     }
 }
+impl Default for IdbFileMetadataParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

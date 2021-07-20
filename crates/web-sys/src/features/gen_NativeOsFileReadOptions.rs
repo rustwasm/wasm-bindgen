@@ -50,3 +50,8 @@ impl NativeOsFileReadOptions {
         self
     }
 }
+impl Default for NativeOsFileReadOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

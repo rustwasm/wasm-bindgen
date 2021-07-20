@@ -112,3 +112,8 @@ impl CompositionEventInit {
         self
     }
 }
+impl Default for CompositionEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

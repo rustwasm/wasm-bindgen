@@ -394,3 +394,8 @@ impl Csp {
         self
     }
 }
+impl Default for Csp {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -50,3 +50,8 @@ impl ContextAttributes2d {
         self
     }
 }
+impl Default for ContextAttributes2d {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -232,3 +232,8 @@ impl ComputedEffectTiming {
         self
     }
 }
+impl Default for ComputedEffectTiming {
+    fn default() -> Self {
+        Self::new()
+    }
+}

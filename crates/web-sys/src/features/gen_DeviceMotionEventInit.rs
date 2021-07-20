@@ -142,3 +142,8 @@ impl DeviceMotionEventInit {
         self
     }
 }
+impl Default for DeviceMotionEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

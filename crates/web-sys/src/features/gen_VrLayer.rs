@@ -69,3 +69,8 @@ impl VrLayer {
         self
     }
 }
+impl Default for VrLayer {
+    fn default() -> Self {
+        Self::new()
+    }
+}

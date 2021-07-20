@@ -46,3 +46,8 @@ impl ConsoleCounterError {
         self
     }
 }
+impl Default for ConsoleCounterError {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -117,3 +117,8 @@ impl FocusEventInit {
         self
     }
 }
+impl Default for FocusEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

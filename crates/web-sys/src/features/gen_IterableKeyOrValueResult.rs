@@ -46,3 +46,8 @@ impl IterableKeyOrValueResult {
         self
     }
 }
+impl Default for IterableKeyOrValueResult {
+    fn default() -> Self {
+        Self::new()
+    }
+}

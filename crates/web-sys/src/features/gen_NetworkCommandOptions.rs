@@ -681,3 +681,8 @@ impl NetworkCommandOptions {
         self
     }
 }
+impl Default for NetworkCommandOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

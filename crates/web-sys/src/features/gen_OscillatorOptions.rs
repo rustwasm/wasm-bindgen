@@ -136,3 +136,8 @@ impl OscillatorOptions {
         self
     }
 }
+impl Default for OscillatorOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

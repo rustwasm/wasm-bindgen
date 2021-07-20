@@ -84,3 +84,8 @@ impl TcpSocketEventInit {
         self
     }
 }
+impl Default for TcpSocketEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

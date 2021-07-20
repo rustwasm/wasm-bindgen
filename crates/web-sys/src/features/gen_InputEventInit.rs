@@ -181,3 +181,8 @@ impl InputEventInit {
         self
     }
 }
+impl Default for InputEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

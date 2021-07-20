@@ -33,3 +33,8 @@ impl RtcFecParameters {
         self
     }
 }
+impl Default for RtcFecParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

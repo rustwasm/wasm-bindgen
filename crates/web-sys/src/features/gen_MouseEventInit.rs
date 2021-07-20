@@ -468,3 +468,8 @@ impl MouseEventInit {
         self
     }
 }
+impl Default for MouseEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

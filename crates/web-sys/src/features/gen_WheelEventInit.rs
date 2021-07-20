@@ -527,3 +527,8 @@ impl WheelEventInit {
         self
     }
 }
+impl Default for WheelEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

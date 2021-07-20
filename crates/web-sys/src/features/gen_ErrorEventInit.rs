@@ -145,3 +145,8 @@ impl ErrorEventInit {
         self
     }
 }
+impl Default for ErrorEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

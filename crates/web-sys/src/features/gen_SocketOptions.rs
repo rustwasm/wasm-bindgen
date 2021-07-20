@@ -55,3 +55,8 @@ impl SocketOptions {
         self
     }
 }
+impl Default for SocketOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

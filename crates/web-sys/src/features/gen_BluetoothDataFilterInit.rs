@@ -66,3 +66,9 @@ impl BluetoothDataFilterInit {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for BluetoothDataFilterInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

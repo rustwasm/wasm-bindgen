@@ -50,3 +50,8 @@ impl TreeCellInfo {
         self
     }
 }
+impl Default for TreeCellInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}

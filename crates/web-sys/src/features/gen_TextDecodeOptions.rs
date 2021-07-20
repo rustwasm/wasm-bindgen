@@ -34,3 +34,8 @@ impl TextDecodeOptions {
         self
     }
 }
+impl Default for TextDecodeOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

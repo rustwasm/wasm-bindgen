@@ -127,3 +127,8 @@ impl DeviceOrientationEventInit {
         self
     }
 }
+impl Default for DeviceOrientationEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

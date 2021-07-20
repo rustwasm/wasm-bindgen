@@ -370,3 +370,8 @@ impl RtcStatsReportInternal {
         self
     }
 }
+impl Default for RtcStatsReportInternal {
+    fn default() -> Self {
+        Self::new()
+    }
+}

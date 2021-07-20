@@ -98,3 +98,8 @@ impl VideoConfiguration {
         self
     }
 }
+impl Default for VideoConfiguration {
+    fn default() -> Self {
+        Self::new()
+    }
+}

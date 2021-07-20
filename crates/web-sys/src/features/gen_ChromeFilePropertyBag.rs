@@ -80,3 +80,8 @@ impl ChromeFilePropertyBag {
         self
     }
 }
+impl Default for ChromeFilePropertyBag {
+    fn default() -> Self {
+        Self::new()
+    }
+}

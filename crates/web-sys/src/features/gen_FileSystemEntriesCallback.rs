@@ -37,3 +37,8 @@ impl FileSystemEntriesCallback {
         self
     }
 }
+impl Default for FileSystemEntriesCallback {
+    fn default() -> Self {
+        Self::new()
+    }
+}

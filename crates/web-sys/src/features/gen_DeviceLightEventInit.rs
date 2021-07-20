@@ -84,3 +84,8 @@ impl DeviceLightEventInit {
         self
     }
 }
+impl Default for DeviceLightEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

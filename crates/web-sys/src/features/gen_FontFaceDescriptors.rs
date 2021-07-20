@@ -149,3 +149,8 @@ impl FontFaceDescriptors {
         self
     }
 }
+impl Default for FontFaceDescriptors {
+    fn default() -> Self {
+        Self::new()
+    }
+}

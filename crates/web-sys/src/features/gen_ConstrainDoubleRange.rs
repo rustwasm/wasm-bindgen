@@ -72,3 +72,8 @@ impl ConstrainDoubleRange {
         self
     }
 }
+impl Default for ConstrainDoubleRange {
+    fn default() -> Self {
+        Self::new()
+    }
+}

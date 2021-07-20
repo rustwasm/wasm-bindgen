@@ -85,3 +85,8 @@ impl CustomEventInit {
         self
     }
 }
+impl Default for CustomEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

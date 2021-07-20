@@ -46,3 +46,8 @@ impl ConsoleTimerError {
         self
     }
 }
+impl Default for ConsoleTimerError {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -173,3 +173,8 @@ impl MutationObserverInit {
         self
     }
 }
+impl Default for MutationObserverInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

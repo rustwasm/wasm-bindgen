@@ -116,3 +116,8 @@ impl NotificationOptions {
         self
     }
 }
+impl Default for NotificationOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -76,3 +76,8 @@ impl DomQuadJson {
         self
     }
 }
+impl Default for DomQuadJson {
+    fn default() -> Self {
+        Self::new()
+    }
+}

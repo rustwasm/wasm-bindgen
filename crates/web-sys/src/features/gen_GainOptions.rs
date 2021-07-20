@@ -86,3 +86,8 @@ impl GainOptions {
         self
     }
 }
+impl Default for GainOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

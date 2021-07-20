@@ -51,3 +51,8 @@ impl PushSubscriptionJson {
         self
     }
 }
+impl Default for PushSubscriptionJson {
+    fn default() -> Self {
+        Self::new()
+    }
+}

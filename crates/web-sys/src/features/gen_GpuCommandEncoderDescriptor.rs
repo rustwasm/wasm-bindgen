@@ -66,3 +66,9 @@ impl GpuCommandEncoderDescriptor {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuCommandEncoderDescriptor {
+    fn default() -> Self {
+        Self::new()
+    }
+}

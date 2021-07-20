@@ -317,3 +317,8 @@ impl EventModifierInit {
         self
     }
 }
+impl Default for EventModifierInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

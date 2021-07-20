@@ -71,3 +71,8 @@ impl EventInit {
         self
     }
 }
+impl Default for EventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

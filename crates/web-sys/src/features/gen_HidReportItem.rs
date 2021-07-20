@@ -610,3 +610,9 @@ impl HidReportItem {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for HidReportItem {
+    fn default() -> Self {
+        Self::new()
+    }
+}

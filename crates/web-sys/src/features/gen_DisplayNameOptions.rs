@@ -46,3 +46,8 @@ impl DisplayNameOptions {
         self
     }
 }
+impl Default for DisplayNameOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -71,3 +71,8 @@ impl PositionOptions {
         self
     }
 }
+impl Default for PositionOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

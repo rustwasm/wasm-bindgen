@@ -37,3 +37,8 @@ impl ReadableStreamIteratorOptions {
         self
     }
 }
+impl Default for ReadableStreamIteratorOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

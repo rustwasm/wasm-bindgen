@@ -135,3 +135,8 @@ impl RtcDataChannelInit {
         self
     }
 }
+impl Default for RtcDataChannelInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

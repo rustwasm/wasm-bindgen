@@ -68,3 +68,8 @@ impl IntersectionObserverInit {
         self
     }
 }
+impl Default for IntersectionObserverInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

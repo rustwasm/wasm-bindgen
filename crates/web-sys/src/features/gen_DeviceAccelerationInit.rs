@@ -59,3 +59,8 @@ impl DeviceAccelerationInit {
         self
     }
 }
+impl Default for DeviceAccelerationInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

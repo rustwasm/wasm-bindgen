@@ -99,3 +99,8 @@ impl HashChangeEventInit {
         self
     }
 }
+impl Default for HashChangeEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

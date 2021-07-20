@@ -37,3 +37,8 @@ impl FileCallback {
         self
     }
 }
+impl Default for FileCallback {
+    fn default() -> Self {
+        Self::new()
+    }
+}

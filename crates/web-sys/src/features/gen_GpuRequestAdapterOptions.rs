@@ -71,3 +71,9 @@ impl GpuRequestAdapterOptions {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuRequestAdapterOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

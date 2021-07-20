@@ -86,3 +86,8 @@ impl StreamPipeOptions {
         self
     }
 }
+impl Default for StreamPipeOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -147,3 +147,8 @@ impl DynamicsCompressorOptions {
         self
     }
 }
+impl Default for DynamicsCompressorOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

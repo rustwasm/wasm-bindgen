@@ -37,3 +37,8 @@ impl IdleRequestOptions {
         self
     }
 }
+impl Default for IdleRequestOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

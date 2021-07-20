@@ -50,3 +50,8 @@ impl L10nValue {
         self
     }
 }
+impl Default for L10nValue {
+    fn default() -> Self {
+        Self::new()
+    }
+}

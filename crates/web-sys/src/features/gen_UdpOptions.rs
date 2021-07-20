@@ -122,3 +122,8 @@ impl UdpOptions {
         self
     }
 }
+impl Default for UdpOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

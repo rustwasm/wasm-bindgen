@@ -37,3 +37,8 @@ impl RtcCertificateExpiration {
         self
     }
 }
+impl Default for RtcCertificateExpiration {
+    fn default() -> Self {
+        Self::new()
+    }
+}

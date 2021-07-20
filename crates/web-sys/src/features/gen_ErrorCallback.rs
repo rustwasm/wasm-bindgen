@@ -37,3 +37,8 @@ impl ErrorCallback {
         self
     }
 }
+impl Default for ErrorCallback {
+    fn default() -> Self {
+        Self::new()
+    }
+}

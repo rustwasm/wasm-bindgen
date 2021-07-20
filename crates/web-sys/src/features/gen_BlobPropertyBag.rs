@@ -51,3 +51,8 @@ impl BlobPropertyBag {
         self
     }
 }
+impl Default for BlobPropertyBag {
+    fn default() -> Self {
+        Self::new()
+    }
+}

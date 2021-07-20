@@ -549,3 +549,8 @@ impl NetworkResultOptions {
         self
     }
 }
+impl Default for NetworkResultOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -72,3 +72,8 @@ impl DomPointInit {
         self
     }
 }
+impl Default for DomPointInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

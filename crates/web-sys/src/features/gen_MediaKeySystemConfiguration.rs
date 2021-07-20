@@ -137,3 +137,8 @@ impl MediaKeySystemConfiguration {
         self
     }
 }
+impl Default for MediaKeySystemConfiguration {
+    fn default() -> Self {
+        Self::new()
+    }
+}

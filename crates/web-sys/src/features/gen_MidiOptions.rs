@@ -50,3 +50,8 @@ impl MidiOptions {
         self
     }
 }
+impl Default for MidiOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -141,3 +141,8 @@ impl AnalyserOptions {
         self
     }
 }
+impl Default for AnalyserOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

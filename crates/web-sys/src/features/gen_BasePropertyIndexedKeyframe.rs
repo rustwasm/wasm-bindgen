@@ -65,3 +65,8 @@ impl BasePropertyIndexedKeyframe {
         self
     }
 }
+impl Default for BasePropertyIndexedKeyframe {
+    fn default() -> Self {
+        Self::new()
+    }
+}

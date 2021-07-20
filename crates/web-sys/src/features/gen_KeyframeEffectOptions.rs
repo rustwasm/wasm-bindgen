@@ -183,3 +183,8 @@ impl KeyframeEffectOptions {
         self
     }
 }
+impl Default for KeyframeEffectOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

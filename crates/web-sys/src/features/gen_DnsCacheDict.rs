@@ -37,3 +37,8 @@ impl DnsCacheDict {
         self
     }
 }
+impl Default for DnsCacheDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

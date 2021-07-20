@@ -88,3 +88,8 @@ impl WebGlContextEventInit {
         self
     }
 }
+impl Default for WebGlContextEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

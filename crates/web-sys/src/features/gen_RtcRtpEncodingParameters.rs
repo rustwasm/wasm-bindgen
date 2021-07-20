@@ -158,3 +158,8 @@ impl RtcRtpEncodingParameters {
         self
     }
 }
+impl Default for RtcRtpEncodingParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

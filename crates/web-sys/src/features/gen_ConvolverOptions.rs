@@ -105,3 +105,8 @@ impl ConvolverOptions {
         self
     }
 }
+impl Default for ConvolverOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

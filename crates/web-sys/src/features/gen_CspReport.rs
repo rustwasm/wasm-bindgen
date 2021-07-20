@@ -38,3 +38,8 @@ impl CspReport {
         self
     }
 }
+impl Default for CspReport {
+    fn default() -> Self {
+        Self::new()
+    }
+}

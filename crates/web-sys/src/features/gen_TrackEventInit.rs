@@ -84,3 +84,8 @@ impl TrackEventInit {
         self
     }
 }
+impl Default for TrackEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

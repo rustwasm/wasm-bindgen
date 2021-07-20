@@ -67,3 +67,8 @@ impl ScrollIntoViewOptions {
         self
     }
 }
+impl Default for ScrollIntoViewOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

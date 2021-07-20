@@ -84,3 +84,8 @@ impl PopStateEventInit {
         self
     }
 }
+impl Default for PopStateEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -502,6 +502,12 @@ where
     }
 }
 
+impl Default for Array {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // ArrayBuffer
 #[wasm_bindgen]
 extern "C" {
@@ -814,6 +820,12 @@ impl PartialEq<bool> for Boolean {
 impl fmt::Debug for Boolean {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.value_of().fmt(f)
+    }
+}
+
+impl Default for Boolean {
+    fn default() -> Self {
+        Self::from(bool::default())
     }
 }
 
@@ -1253,6 +1265,12 @@ impl Function {
     }
 }
 
+impl Default for Function {
+    fn default() -> Self {
+        Self::new_no_args("")
+    }
+}
+
 // Generator
 #[wasm_bindgen]
 extern "C" {
@@ -1348,6 +1366,12 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/size)
     #[wasm_bindgen(method, getter, structural)]
     pub fn size(this: &Map) -> u32;
+}
+
+impl Default for Map {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 // Map Iterator
@@ -1979,6 +2003,12 @@ impl From<Number> for f64 {
 impl fmt::Debug for Number {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.value_of().fmt(f)
+    }
+}
+
+impl Default for Number {
+    fn default() -> Self {
+        Self::from(f64::default())
     }
 }
 
@@ -2692,6 +2722,12 @@ impl PartialEq for Object {
 
 impl Eq for Object {}
 
+impl Default for Object {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // Proxy
 #[wasm_bindgen]
 extern "C" {
@@ -3162,6 +3198,12 @@ extern "C" {
     pub fn size(this: &Set) -> u32;
 }
 
+impl Default for Set {
+    fn default() -> Self {
+        Self::new(&JsValue::UNDEFINED)
+    }
+}
+
 // SetIterator
 #[wasm_bindgen]
 extern "C" {
@@ -3294,6 +3336,12 @@ extern "C" {
     pub fn delete(this: &WeakMap, key: &Object) -> bool;
 }
 
+impl Default for WeakMap {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // WeakSet
 #[wasm_bindgen]
 extern "C" {
@@ -3326,6 +3374,12 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/delete)
     #[wasm_bindgen(method)]
     pub fn delete(this: &WeakSet, value: &Object) -> bool;
+}
+
+impl Default for WeakSet {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[allow(non_snake_case)]
@@ -4502,6 +4556,15 @@ pub mod Intl {
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
+    impl Default for Collator {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
+    }
+
     // Intl.DateTimeFormat
     #[wasm_bindgen]
     extern "C" {
@@ -4551,6 +4614,15 @@ pub mod Intl {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/supportedLocalesOf)
         #[wasm_bindgen(static_method_of = DateTimeFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
+
+    impl Default for DateTimeFormat {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
     }
 
     // Intl.NumberFormat
@@ -4603,6 +4675,15 @@ pub mod Intl {
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
+    impl Default for NumberFormat {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
+    }
+
     // Intl.PluralRules
     #[wasm_bindgen]
     extern "C" {
@@ -4643,6 +4724,15 @@ pub mod Intl {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/supportedLocalesOf)
         #[wasm_bindgen(static_method_of = PluralRules, js_namespace = Intl, js_name = supportedLocalesOf)]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
+
+    impl Default for PluralRules {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
     }
 }
 
@@ -5053,6 +5143,12 @@ macro_rules! arrays {
             fn from(slice: &'a [$ty]) -> $name {
                 // This is safe because the `new` function makes a copy if its argument is a TypedArray
                 unsafe { $name::new(&$name::view(slice)) }
+            }
+        }
+
+        impl Default for $name {
+            fn default() -> Self {
+                Self::new(&JsValue::UNDEFINED.unchecked_into())
             }
         }
     )*);

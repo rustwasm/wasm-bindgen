@@ -63,3 +63,8 @@ impl HttpConnInfo {
         self
     }
 }
+impl Default for HttpConnInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}

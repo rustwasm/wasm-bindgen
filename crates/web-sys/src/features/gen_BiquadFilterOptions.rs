@@ -144,3 +144,8 @@ impl BiquadFilterOptions {
         self
     }
 }
+impl Default for BiquadFilterOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

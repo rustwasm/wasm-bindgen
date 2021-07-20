@@ -116,3 +116,8 @@ impl ConsoleInstanceOptions {
         self
     }
 }
+impl Default for ConsoleInstanceOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

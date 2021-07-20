@@ -73,3 +73,8 @@ impl ProfileTimelineLayerRect {
         self
     }
 }
+impl Default for ProfileTimelineLayerRect {
+    fn default() -> Self {
+        Self::new()
+    }
+}

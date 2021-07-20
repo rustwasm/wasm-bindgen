@@ -122,3 +122,8 @@ impl TransitionEventInit {
         self
     }
 }
+impl Default for TransitionEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

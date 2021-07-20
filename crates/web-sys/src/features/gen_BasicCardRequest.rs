@@ -54,3 +54,8 @@ impl BasicCardRequest {
         self
     }
 }
+impl Default for BasicCardRequest {
+    fn default() -> Self {
+        Self::new()
+    }
+}

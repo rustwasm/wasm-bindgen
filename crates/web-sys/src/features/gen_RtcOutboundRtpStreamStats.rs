@@ -383,3 +383,8 @@ impl RtcOutboundRtpStreamStats {
         self
     }
 }
+impl Default for RtcOutboundRtpStreamStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

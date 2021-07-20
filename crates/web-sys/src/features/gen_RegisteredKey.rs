@@ -84,3 +84,8 @@ impl RegisteredKey {
         self
     }
 }
+impl Default for RegisteredKey {
+    fn default() -> Self {
+        Self::new()
+    }
+}

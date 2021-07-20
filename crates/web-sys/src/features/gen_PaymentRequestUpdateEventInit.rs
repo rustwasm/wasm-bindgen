@@ -71,3 +71,8 @@ impl PaymentRequestUpdateEventInit {
         self
     }
 }
+impl Default for PaymentRequestUpdateEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

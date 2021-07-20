@@ -105,3 +105,8 @@ impl PageTransitionEventInit {
         self
     }
 }
+impl Default for PageTransitionEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

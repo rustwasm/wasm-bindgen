@@ -51,3 +51,8 @@ impl ConsoleProfileEvent {
         self
     }
 }
+impl Default for ConsoleProfileEvent {
+    fn default() -> Self {
+        Self::new()
+    }
+}

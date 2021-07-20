@@ -105,3 +105,8 @@ impl RtcRtpCodecParameters {
         self
     }
 }
+impl Default for RtcRtpCodecParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

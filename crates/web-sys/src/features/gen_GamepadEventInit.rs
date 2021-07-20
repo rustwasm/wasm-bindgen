@@ -89,3 +89,8 @@ impl GamepadEventInit {
         self
     }
 }
+impl Default for GamepadEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

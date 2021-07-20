@@ -739,7 +739,7 @@ impl Dictionary {
             .map(|field| field.generate_rust(options, name.to_string()))
             .collect::<Vec<_>>();
 
-        quote! {
+        let mut base_stream = quote! {
             #![allow(unused_imports)]
             use super::*;
             use wasm_bindgen::prelude::*;
@@ -770,7 +770,22 @@ impl Dictionary {
 
                 #(#fields)*
             }
+        };
+
+        if required_args.is_empty() {
+            let default_impl = quote! {
+                #unstable_attr
+                impl Default for #name {
+                    fn default() -> Self {
+                        Self::new()
+                    }
+                }
+            };
+
+            base_stream.extend(default_impl.into_iter());
         }
+
+        base_stream
     }
 }
 

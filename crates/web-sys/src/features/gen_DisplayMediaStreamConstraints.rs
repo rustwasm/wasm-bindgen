@@ -46,3 +46,8 @@ impl DisplayMediaStreamConstraints {
         self
     }
 }
+impl Default for DisplayMediaStreamConstraints {
+    fn default() -> Self {
+        Self::new()
+    }
+}

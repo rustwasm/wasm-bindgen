@@ -54,3 +54,8 @@ impl PushSubscriptionOptionsInit {
         self
     }
 }
+impl Default for PushSubscriptionOptionsInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

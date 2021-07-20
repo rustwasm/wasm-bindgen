@@ -50,3 +50,8 @@ impl ConsoleTimerLogOrEnd {
         self
     }
 }
+impl Default for ConsoleTimerLogOrEnd {
+    fn default() -> Self {
+        Self::new()
+    }
+}

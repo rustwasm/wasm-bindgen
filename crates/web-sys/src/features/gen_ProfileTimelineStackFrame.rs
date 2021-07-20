@@ -126,3 +126,8 @@ impl ProfileTimelineStackFrame {
         self
     }
 }
+impl Default for ProfileTimelineStackFrame {
+    fn default() -> Self {
+        Self::new()
+    }
+}

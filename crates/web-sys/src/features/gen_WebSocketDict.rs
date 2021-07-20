@@ -37,3 +37,8 @@ impl WebSocketDict {
         self
     }
 }
+impl Default for WebSocketDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

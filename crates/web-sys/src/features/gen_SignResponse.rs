@@ -105,3 +105,8 @@ impl SignResponse {
         self
     }
 }
+impl Default for SignResponse {
+    fn default() -> Self {
+        Self::new()
+    }
+}

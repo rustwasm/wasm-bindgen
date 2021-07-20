@@ -37,3 +37,8 @@ impl EventSourceInit {
         self
     }
 }
+impl Default for EventSourceInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

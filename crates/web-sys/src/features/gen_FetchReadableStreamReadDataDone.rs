@@ -33,3 +33,8 @@ impl FetchReadableStreamReadDataDone {
         self
     }
 }
+impl Default for FetchReadableStreamReadDataDone {
+    fn default() -> Self {
+        Self::new()
+    }
+}

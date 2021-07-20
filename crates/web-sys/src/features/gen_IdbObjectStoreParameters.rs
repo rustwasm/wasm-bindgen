@@ -54,3 +54,8 @@ impl IdbObjectStoreParameters {
         self
     }
 }
+impl Default for IdbObjectStoreParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

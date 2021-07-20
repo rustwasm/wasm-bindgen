@@ -162,3 +162,8 @@ impl PerformanceEntryEventInit {
         self
     }
 }
+impl Default for PerformanceEntryEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

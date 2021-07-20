@@ -37,3 +37,8 @@ impl BlockParsingOptions {
         self
     }
 }
+impl Default for BlockParsingOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

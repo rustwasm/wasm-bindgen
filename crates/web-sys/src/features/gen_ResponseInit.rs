@@ -68,3 +68,8 @@ impl ResponseInit {
         self
     }
 }
+impl Default for ResponseInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

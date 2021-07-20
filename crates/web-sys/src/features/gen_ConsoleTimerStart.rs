@@ -33,3 +33,8 @@ impl ConsoleTimerStart {
         self
     }
 }
+impl Default for ConsoleTimerStart {
+    fn default() -> Self {
+        Self::new()
+    }
+}

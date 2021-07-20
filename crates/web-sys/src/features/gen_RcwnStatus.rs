@@ -122,3 +122,8 @@ impl RcwnStatus {
         self
     }
 }
+impl Default for RcwnStatus {
+    fn default() -> Self {
+        Self::new()
+    }
+}

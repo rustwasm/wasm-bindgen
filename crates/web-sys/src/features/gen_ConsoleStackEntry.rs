@@ -105,3 +105,8 @@ impl ConsoleStackEntry {
         self
     }
 }
+impl Default for ConsoleStackEntry {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -115,3 +115,8 @@ impl ProgressEventInit {
         self
     }
 }
+impl Default for ProgressEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

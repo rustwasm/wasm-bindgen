@@ -262,3 +262,9 @@ impl GpuSamplerDescriptor {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuSamplerDescriptor {
+    fn default() -> Self {
+        Self::new()
+    }
+}

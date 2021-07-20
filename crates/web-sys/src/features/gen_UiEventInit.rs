@@ -99,3 +99,8 @@ impl UiEventInit {
         self
     }
 }
+impl Default for UiEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

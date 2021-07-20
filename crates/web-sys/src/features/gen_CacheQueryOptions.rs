@@ -88,3 +88,8 @@ impl CacheQueryOptions {
         self
     }
 }
+impl Default for CacheQueryOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

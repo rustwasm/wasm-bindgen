@@ -108,3 +108,9 @@ impl ValueEventInit {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for ValueEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -33,3 +33,8 @@ impl WorkerOptions {
         self
     }
 }
+impl Default for WorkerOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

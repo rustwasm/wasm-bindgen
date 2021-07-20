@@ -72,3 +72,8 @@ impl ConstrainLongRange {
         self
     }
 }
+impl Default for ConstrainLongRange {
+    fn default() -> Self {
+        Self::new()
+    }
+}

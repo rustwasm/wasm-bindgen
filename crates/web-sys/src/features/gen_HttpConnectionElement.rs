@@ -116,3 +116,8 @@ impl HttpConnectionElement {
         self
     }
 }
+impl Default for HttpConnectionElement {
+    fn default() -> Self {
+        Self::new()
+    }
+}

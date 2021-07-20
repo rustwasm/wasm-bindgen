@@ -110,3 +110,8 @@ impl DeviceProximityEventInit {
         self
     }
 }
+impl Default for DeviceProximityEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

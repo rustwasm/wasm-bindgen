@@ -142,3 +142,8 @@ impl ExtendableMessageEventInit {
         self
     }
 }
+impl Default for ExtendableMessageEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

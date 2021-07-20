@@ -47,3 +47,8 @@ impl BrowserElementExecuteScriptOptions {
         self
     }
 }
+impl Default for BrowserElementExecuteScriptOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

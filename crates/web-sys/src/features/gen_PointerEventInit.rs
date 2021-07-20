@@ -636,3 +636,8 @@ impl PointerEventInit {
         self
     }
 }
+impl Default for PointerEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

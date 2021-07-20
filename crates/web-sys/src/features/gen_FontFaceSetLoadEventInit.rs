@@ -88,3 +88,8 @@ impl FontFaceSetLoadEventInit {
         self
     }
 }
+impl Default for FontFaceSetLoadEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

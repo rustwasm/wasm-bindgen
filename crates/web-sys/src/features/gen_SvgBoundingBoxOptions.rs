@@ -81,3 +81,8 @@ impl SvgBoundingBoxOptions {
         self
     }
 }
+impl Default for SvgBoundingBoxOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

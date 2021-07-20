@@ -105,3 +105,8 @@ impl NotificationBehavior {
         self
     }
 }
+impl Default for NotificationBehavior {
+    fn default() -> Self {
+        Self::new()
+    }
+}

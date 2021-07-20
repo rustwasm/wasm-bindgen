@@ -122,3 +122,8 @@ impl AnimationEventInit {
         self
     }
 }
+impl Default for AnimationEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

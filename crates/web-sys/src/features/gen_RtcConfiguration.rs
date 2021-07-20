@@ -107,3 +107,8 @@ impl RtcConfiguration {
         self
     }
 }
+impl Default for RtcConfiguration {
+    fn default() -> Self {
+        Self::new()
+    }
+}

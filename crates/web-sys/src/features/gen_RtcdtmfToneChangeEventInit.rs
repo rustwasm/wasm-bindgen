@@ -84,3 +84,8 @@ impl RtcdtmfToneChangeEventInit {
         self
     }
 }
+impl Default for RtcdtmfToneChangeEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

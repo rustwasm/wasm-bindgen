@@ -54,3 +54,8 @@ impl RegisterRequest {
         self
     }
 }
+impl Default for RegisterRequest {
+    fn default() -> Self {
+        Self::new()
+    }
+}

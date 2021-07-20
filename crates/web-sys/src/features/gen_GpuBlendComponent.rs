@@ -94,3 +94,9 @@ impl GpuBlendComponent {
         self
     }
 }
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuBlendComponent {
+    fn default() -> Self {
+        Self::new()
+    }
+}

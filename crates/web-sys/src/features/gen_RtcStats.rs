@@ -64,3 +64,8 @@ impl RtcStats {
         self
     }
 }
+impl Default for RtcStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

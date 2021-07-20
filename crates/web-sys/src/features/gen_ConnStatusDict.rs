@@ -34,3 +34,8 @@ impl ConnStatusDict {
         self
     }
 }
+impl Default for ConnStatusDict {
+    fn default() -> Self {
+        Self::new()
+    }
+}

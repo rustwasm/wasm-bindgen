@@ -46,3 +46,8 @@ impl ConstrainBooleanParameters {
         self
     }
 }
+impl Default for ConstrainBooleanParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}

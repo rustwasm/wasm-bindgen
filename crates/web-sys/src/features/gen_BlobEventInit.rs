@@ -85,3 +85,8 @@ impl BlobEventInit {
         self
     }
 }
+impl Default for BlobEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

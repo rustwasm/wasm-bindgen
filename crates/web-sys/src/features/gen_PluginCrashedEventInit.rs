@@ -190,3 +190,8 @@ impl PluginCrashedEventInit {
         self
     }
 }
+impl Default for PluginCrashedEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

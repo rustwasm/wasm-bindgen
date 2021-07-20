@@ -299,3 +299,8 @@ impl RtcIceCandidatePairStats {
         self
     }
 }
+impl Default for RtcIceCandidatePairStats {
+    fn default() -> Self {
+        Self::new()
+    }
+}

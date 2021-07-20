@@ -89,3 +89,8 @@ impl ImageCaptureErrorEventInit {
         self
     }
 }
+impl Default for ImageCaptureErrorEventInit {
+    fn default() -> Self {
+        Self::new()
+    }
+}

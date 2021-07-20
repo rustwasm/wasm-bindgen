@@ -37,3 +37,8 @@ impl AssignedNodesOptions {
         self
     }
 }
+impl Default for AssignedNodesOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -38,3 +38,8 @@ impl ScrollOptions {
         self
     }
 }
+impl Default for ScrollOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

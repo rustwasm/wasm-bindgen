@@ -51,3 +51,8 @@ impl BoxQuadOptions {
         self
     }
 }
+impl Default for BoxQuadOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

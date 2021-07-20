@@ -34,3 +34,8 @@ impl ConstantSourceOptions {
         self
     }
 }
+impl Default for ConstantSourceOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -88,3 +88,8 @@ impl AutocompleteInfo {
         self
     }
 }
+impl Default for AutocompleteInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}

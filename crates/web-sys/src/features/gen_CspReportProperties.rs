@@ -173,3 +173,8 @@ impl CspReportProperties {
         self
     }
 }
+impl Default for CspReportProperties {
+    fn default() -> Self {
+        Self::new()
+    }
+}
