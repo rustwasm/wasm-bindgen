@@ -18,9 +18,11 @@
 
 #![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
 
+use std::convert;
 use std::f64;
 use std::fmt;
 use std::mem;
+use std::str;
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -4294,6 +4296,13 @@ impl From<JsString> for String {
 impl fmt::Debug for JsString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         String::from(self).fmt(f)
+    }
+}
+
+impl str::FromStr for JsString {
+    type Err = convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(JsString::from(s))
     }
 }
 
