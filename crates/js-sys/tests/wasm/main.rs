@@ -4,6 +4,7 @@
 pub mod Array;
 pub mod ArrayBuffer;
 pub mod ArrayIterator;
+pub mod AsyncIterator;
 pub mod Boolean;
 pub mod DataView;
 pub mod Date;
