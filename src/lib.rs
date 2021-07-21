@@ -386,7 +386,7 @@ impl JsValue {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_NOT)
     #[inline]
-    pub fn bit_not(self) -> JsValue {
+    pub fn bit_not(&self) -> JsValue {
         unsafe { JsValue::_new( __wbindgen_bit_not(self.idx)) }
     }
 
@@ -394,7 +394,7 @@ impl JsValue {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unsigned_right_shift)
     #[inline]
-    pub fn unsigned_shr(self, rhs: &Self) -> u32 {
+    pub fn unsigned_shr(&self, rhs: &Self) -> u32 {
         unsafe { __wbindgen_unsigned_shr(self.idx, rhs.idx) }
     }
 
@@ -402,7 +402,7 @@ impl JsValue {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Exponentiation)
     #[inline]
-    pub fn pow(self, rhs: &Self) -> Self {
+    pub fn pow(&self, rhs: &Self) -> Self {
         unsafe { JsValue::_new(__wbindgen_pow(self.idx, rhs.idx)) }
     }
 
