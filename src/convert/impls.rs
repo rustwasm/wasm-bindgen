@@ -407,3 +407,16 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
         }
     }
 }
+
+if_std! {
+    use std::string::ToString;
+
+     impl<T: IntoWasmAbi, E: std::error::Error> ReturnWasmAbi for Result<T, E> {
+        type Abi = T::Abi;
+
+        #[inline]
+        fn return_abi(self) -> Self::Abi {
+            self.map_err(|err| JsValue::error(&err.to_string())).return_abi()
+        }
+    }
+}

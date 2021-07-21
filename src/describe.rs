@@ -178,6 +178,14 @@ impl<T: WasmDescribe> WasmDescribe for Result<T, JsValue> {
     }
 }
 
+if_std! {
+    impl<T: WasmDescribe, E: std::error::Error> WasmDescribe for Result<T, E> {
+        fn describe() {
+            T::describe()
+        }
+    }
+}
+
 impl<T: WasmDescribe> WasmDescribe for Clamped<T> {
     fn describe() {
         inform(CLAMPED);
