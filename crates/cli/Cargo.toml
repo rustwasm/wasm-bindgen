@@ -17,7 +17,7 @@ default-run = 'wasm-bindgen'
 [dependencies]
 curl = "0.4.13"
 docopt = "1.0"
-env_logger = "0.8"
+env_logger = "0.9"
 anyhow = "1.0"
 log = "0.4"
 openssl = { version = '0.10.11', optional = true }
