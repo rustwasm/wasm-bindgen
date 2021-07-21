@@ -99,7 +99,18 @@ impl InstructionBuilder<'_, '_> {
                 self.get(AdapterType::F64);
                 self.output.push(AdapterType::F64);
             }
-            Descriptor::Enum { .. } => self.number(WitVT::U32, WasmVT::I32),
+            Descriptor::Enum { name, .. } => {
+                let std = wit_walrus::Instruction::IntToWasm {
+                    input: WitVT::U32,
+                    output: WasmVT::I32,
+                    trap: false,
+                };
+                self.instruction(
+                    &[AdapterType::Enum(name.clone())],
+                    Instruction::Standard(std),
+                    &[AdapterType::I32],
+                );
+            }
             Descriptor::Ref(d) => self.incoming_ref(false, d)?,
             Descriptor::RefMut(d) => self.incoming_ref(true, d)?,
             Descriptor::Option(d) => self.incoming_option(d)?,
@@ -280,9 +291,9 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::Enum { hole } => {
+            Descriptor::Enum { name, hole } => {
                 self.instruction(
-                    &[AdapterType::U32.option()],
+                    &[AdapterType::Enum(name.clone()).option()],
                     Instruction::I32FromOptionEnum { hole: *hole },
                     &[AdapterType::I32],
                 );
