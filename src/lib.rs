@@ -147,6 +147,15 @@ impl JsValue {
         unsafe { JsValue::_new(__wbindgen_number_new(n)) }
     }
 
+    /// Creates a new JS value which is a bigint from a string representing a number.
+    ///
+    /// This function creates a JS value representing a bigint (a heap
+    /// allocated large integer) and returns a handle to the JS version of it.
+    #[inline]
+    pub fn bigint_from_str(s: &str) -> JsValue {
+        unsafe { JsValue::_new(__wbindgen_bigint_new(s.as_ptr(), s.len())) }
+    }
+
     /// Creates a new JS value which is a boolean.
     ///
     /// This function creates a JS object representing a boolean (a heap
@@ -507,29 +516,29 @@ macro_rules! forward_deref_unop {
 }
 
 macro_rules! forward_deref_binop {
-    (impl $imp:ident, $method:ident for $t:ty, $u:ty) => {
-        impl<'a> $imp<$u> for &'a $t {
-            type Output = <&'static $t as $imp<&'static $u>>::Output;
+    (impl $imp:ident, $method:ident for $t:ty) => {
+        impl<'a> $imp<$t> for &'a $t {
+            type Output = <&'static $t as $imp<&'static $t>>::Output;
             #[inline]
-            fn $method(self, other: $u) -> <&'static $t as $imp<&'static $u>>::Output {
+            fn $method(self, other: $t) -> <&'static $t as $imp<&'static $t>>::Output {
                 $imp::$method(self, &other)
             }
         }
 
-        impl $imp<&$u> for $t {
-            type Output = <&'static $t as $imp<&'static $u>>::Output;
+        impl $imp<&$t> for $t {
+            type Output = <&'static $t as $imp<&'static $t>>::Output;
 
             #[inline]
-            fn $method(self, other: &$u) -> <&'static $t as $imp<&'static $u>>::Output {
+            fn $method(self, other: &$t) -> <&'static $t as $imp<&'static $t>>::Output {
                 $imp::$method(&self, other)
             }
         }
 
-        impl $imp<$u> for $t {
-            type Output = <&'static $t as $imp<&'static $u>>::Output;
+        impl $imp<$t> for $t {
+            type Output = <&'static $t as $imp<&'static $t>>::Output;
 
             #[inline]
-            fn $method(self, other: $u) -> <&'static $t as $imp<&'static $u>>::Output {
+            fn $method(self, other: $t) -> <&'static $t as $imp<&'static $t>>::Output {
                 $imp::$method(&self, &other)
             }
         }
@@ -606,7 +615,7 @@ impl BitAnd for &JsValue {
     }
 }
 
-forward_deref_binop!(impl BitAnd, bitand for JsValue, JsValue);
+forward_deref_binop!(impl BitAnd, bitand for JsValue);
 
 impl BitOr for &JsValue {
     type Output = JsValue;
@@ -620,7 +629,7 @@ impl BitOr for &JsValue {
     }
 }
 
-forward_deref_binop!(impl BitOr, bitor for JsValue, JsValue);
+forward_deref_binop!(impl BitOr, bitor for JsValue);
 
 impl BitXor for &JsValue {
     type Output = JsValue;
@@ -634,7 +643,7 @@ impl BitXor for &JsValue {
     }
 }
 
-forward_deref_binop!(impl BitXor, bitxor for JsValue, JsValue);
+forward_deref_binop!(impl BitXor, bitxor for JsValue);
 
 impl Shl for &JsValue {
     type Output = JsValue;
@@ -648,7 +657,7 @@ impl Shl for &JsValue {
     }
 }
 
-forward_deref_binop!(impl Shl, shl for JsValue, JsValue);
+forward_deref_binop!(impl Shl, shl for JsValue);
 
 impl Shr for &JsValue {
     type Output = JsValue;
@@ -662,7 +671,7 @@ impl Shr for &JsValue {
     }
 }
 
-forward_deref_binop!(impl Shr, shr for JsValue, JsValue);
+forward_deref_binop!(impl Shr, shr for JsValue);
 
 impl Add for &JsValue {
     type Output = JsValue;
@@ -676,7 +685,7 @@ impl Add for &JsValue {
     }
 }
 
-forward_deref_binop!(impl Add, add for JsValue, JsValue);
+forward_deref_binop!(impl Add, add for JsValue);
 
 impl Sub for &JsValue {
     type Output = JsValue;
@@ -690,7 +699,7 @@ impl Sub for &JsValue {
     }
 }
 
-forward_deref_binop!(impl Sub, sub for JsValue, JsValue);
+forward_deref_binop!(impl Sub, sub for JsValue);
 
 impl Div for &JsValue {
     type Output = JsValue;
@@ -704,7 +713,7 @@ impl Div for &JsValue {
     }
 }
 
-forward_deref_binop!(impl Div, div for JsValue, JsValue);
+forward_deref_binop!(impl Div, div for JsValue);
 
 impl Mul for &JsValue {
     type Output = JsValue;
@@ -718,7 +727,7 @@ impl Mul for &JsValue {
     }
 }
 
-forward_deref_binop!(impl Mul, mul for JsValue, JsValue);
+forward_deref_binop!(impl Mul, mul for JsValue);
 
 impl Rem for &JsValue {
     type Output = JsValue;
@@ -732,7 +741,7 @@ impl Rem for &JsValue {
     }
 }
 
-forward_deref_binop!(impl Rem, rem for JsValue, JsValue);
+forward_deref_binop!(impl Rem, rem for JsValue);
 
 impl<'a> From<&'a str> for JsValue {
     #[inline]
@@ -830,6 +839,26 @@ macro_rules! numbers {
 
 numbers! { i8 u8 i16 u16 i32 u32 f32 f64 }
 
+macro_rules! big_numbers {
+    ($($n:ident)*) => ($(
+        impl PartialEq<$n> for JsValue {
+            #[inline]
+            fn eq(&self, other: &$n) -> bool {
+                self == &JsValue::from(*other)
+            }
+        }
+
+        impl From<$n> for JsValue {
+            #[inline]
+            fn from(n: $n) -> JsValue {
+                JsValue::bigint_from_str(&n.to_string())
+            }
+        }
+    )*)
+}
+
+big_numbers! { i64 u64 i128 u128 isize usize }
+
 externs! {
     #[link(wasm_import_module = "__wbindgen_placeholder__")]
     extern "C" {
@@ -838,6 +867,7 @@ externs! {
 
         fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_number_new(f: f64) -> u32;
+        fn __wbindgen_bigint_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_symbol_named_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_symbol_anonymous_new() -> u32;
 
