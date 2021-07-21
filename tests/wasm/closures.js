@@ -136,3 +136,11 @@ exports.js_store_forgotten_closure = f => {
 exports.js_call_forgotten_closure = () => {
   FORGOTTEN_CLOSURE();
 };
+
+exports.option_works = a => {
+  if (a) {
+    a(2);
+  } else {
+    1;
+  }
+};
