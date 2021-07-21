@@ -2943,7 +2943,7 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'string'", args[0])
             }
 
-            Intrinsic::IsBigint => {
+            Intrinsic::IsBigInt => {
                 assert_eq!(args.len(), 1);
                 format!("typeof({}) === 'bigint'", args[0])
             }
@@ -3086,6 +3086,11 @@ impl<'a> Context<'a> {
             Intrinsic::NumberNew => {
                 assert_eq!(args.len(), 1);
                 args[0].clone()
+            }
+
+            Intrinsic::BigIntNew => {
+                assert_eq!(args.len(), 1);
+                format!("BigInt({})", args[0])
             }
 
             Intrinsic::StringNew => {

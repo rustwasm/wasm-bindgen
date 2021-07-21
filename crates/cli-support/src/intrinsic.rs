@@ -108,7 +108,7 @@ intrinsics! {
         IsString,
         #[symbol = "__wbindgen_is_bigint"]
         #[signature = fn(ref_externref()) -> Boolean]
-        IsBigint,
+        IsBigInt,
         #[symbol = "__wbindgen_typeof"]
         #[signature = fn(ref_externref()) -> Externref]
         Typeof,
@@ -190,6 +190,9 @@ intrinsics! {
         #[symbol = "__wbindgen_number_new"]
         #[signature = fn(F64) -> Externref]
         NumberNew,
+        #[symbol = "__wbindgen_bigint_new"]
+        #[signature = fn(ref_string()) -> Externref]
+        BigIntNew,
         #[symbol = "__wbindgen_string_new"]
         #[signature = fn(ref_string()) -> Externref]
         StringNew,
