@@ -369,6 +369,8 @@ pub struct Enum {
 pub struct Variant {
     /// The name of this variant
     pub name: Ident,
+    /// The fields of this variant
+    pub fields: syn::Fields,
     /// The backing value of this variant
     pub value: u32,
     /// The doc comments on this variant, if any

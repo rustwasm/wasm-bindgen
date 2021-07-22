@@ -1165,8 +1165,9 @@ impl ToTokens for ast::Enum {
         let hole = &self.hole;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
+            let variant_value = &variant.value;
             quote! {
-                if js == #enum_name::#variant_name as u32 {
+                if js == #variant_value {
                     #enum_name::#variant_name
                 }
             }
@@ -1178,7 +1179,9 @@ impl ToTokens for ast::Enum {
 
                 #[inline]
                 fn into_abi(self) -> u32 {
-                    self as u32
+                    use wasm_bindgen::__rt::std::boxed::Box;
+                    use wasm_bindgen::__rt::WasmRefCell;
+                    Box::into_raw(Box::new(WasmRefCell::new(self))) as u32
                 }
             }
 
@@ -1188,9 +1191,14 @@ impl ToTokens for ast::Enum {
 
                 #[inline]
                 unsafe fn from_abi(js: u32) -> Self {
-                    #(#cast_clauses else)* {
-                        wasm_bindgen::throw_str("invalid enum value passed")
-                    }
+                    use wasm_bindgen::__rt::std::boxed::Box;
+                    use wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
+
+                    let ptr = js as *mut WasmRefCell<#enum_name>;
+                    assert_not_null(ptr);
+                    let js = Box::from_raw(ptr);
+                    (*js).borrow_mut(); // make sure no one's borrowing
+                    js.into_inner()
                 }
             }
 
