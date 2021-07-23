@@ -923,7 +923,7 @@ macro_rules! bigint_from {
         impl PartialEq<$x> for BigInt {
             #[inline]
             fn eq(&self, other: &$x) -> bool {
-                JsValue::from(self) == JsValue::from(BigInt::from(*other))
+                JsValue::from(self) == BigInt::from(*other).unchecked_into::<JsValue>()
             }
         }
     )*)
