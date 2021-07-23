@@ -1161,11 +1161,14 @@ impl<'a> ToTokens for DescribeImport<'a> {
 
 impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut TokenStream) {
+        use quote::format_ident;
+
         let enum_name = &self.rust_name;
         let hole = &self.hole;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
             let variant_value = &variant.value;
+
             let fields = &variant.fields.clone();
             let variant_fields_into_array = fields.iter().enumerate().map(|(index, field)| {
                 quote! {
@@ -1175,20 +1178,52 @@ impl ToTokens for ast::Enum {
 
             quote! {
                 if variant[0] == #variant_value {
-                    #enum_name::#variant_name(#(#variant_fields_into_array)*,)
+                    #enum_name::#variant_name(#(#variant_fields_into_array),*)
                 }
             }
         });
+        let into_clauses = self.variants.iter().map(|variant| {
+            let variant_name = &variant.name;
+            let variant_value = &variant.value;
+
+            let fields = &variant.fields.clone();
+            let variant_array_into_tuple = fields.iter().enumerate().map(|(index, _)| {
+                let varname = format_ident!("arg{}", index);
+               quote! {
+                   #varname
+               }
+            });
+
+            let variant_types_into_vector = fields.iter().enumerate().map(|(index, field)| {
+                let varname = format_ident!("arg{}", index);
+               quote! {
+                   #field::into_abi(#varname)
+               }
+            });
+
+            quote! {
+                #enum_name::#variant_name(#(#variant_array_into_tuple),*) => vec![#variant_value, #(#variant_types_into_vector),*]
+            }
+        });
         (quote! {
-            use wasm_bindgen::convert::{WasmAbi, traits::*};
+            use wasm_bindgen::convert::{WasmAbi, WasmSlice};
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::IntoWasmAbi for #enum_name {
                 type Abi = WasmSlice;
 
-                #[inline]
                 fn into_abi(self) -> WasmSlice {
-                    WasmSlice::null_slice()
+                    let vector = match self {
+                        #(#into_clauses),*
+                    };
+
+                    let ptr = vector.as_ptr();
+                    let len = vector.len();
+                    core::mem::forget(vector);
+                    WasmSlice {
+                        ptr: ptr.into_abi(),
+                        len: len as u32,
+                    }
                 }
             }
 
@@ -1212,7 +1247,7 @@ impl ToTokens for ast::Enum {
             impl wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
                 #[inline]
                 fn is_none(val: &WasmSlice) -> bool {
-                    <*mut u32>::from_abi(val.ptr) == (#hole as u32)
+                    val.ptr == (#hole as u32)
                 }
             }
 
