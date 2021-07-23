@@ -882,8 +882,8 @@ extern "C" {
     /// Returns a string representing this BigInt value in the specified radix (base). Overrides the [`Object.prototype.toString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString) method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/toString)
-    #[wasm_bindgen(method, js_name = toString)]
-    pub fn to_string(this: &BigInt, radix: u8) -> JsString;
+    #[wasm_bindgen(catch, method, js_name = toString)]
+    pub fn to_string(this: &BigInt, radix: u8) -> Result<JsString, RangeError>;
 
     /// Returns this BigInt value. Overrides the [`Object.prototype.valueOf()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf) method.
     ///
