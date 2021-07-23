@@ -519,6 +519,7 @@ macro_rules! forward_deref_binop {
     (impl $imp:ident, $method:ident for $t:ty) => {
         impl<'a> $imp<$t> for &'a $t {
             type Output = <&'static $t as $imp<&'static $t>>::Output;
+
             #[inline]
             fn $method(self, other: $t) -> <&'static $t as $imp<&'static $t>>::Output {
                 $imp::$method(self, &other)
