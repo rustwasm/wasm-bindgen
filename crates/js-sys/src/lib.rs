@@ -896,6 +896,7 @@ impl BigInt {
     /// Creates a new BigInt value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/BigInt)
+    #[inline]
     pub fn new(value: &JsValue) -> BigInt {
         new_bigint(value)
     }
@@ -958,6 +959,7 @@ impl PartialEq<Number> for BigInt {
 impl Not for &BigInt {
     type Output = BigInt;
 
+    #[inline]
     fn not(self) -> Self::Output {
         JsValue::as_ref(self).bit_not().unchecked_into()
     }
@@ -977,28 +979,34 @@ forward_js_binop!(impl Mul, mul for BigInt);
 forward_js_binop!(impl Rem, rem for BigInt);
 
 impl PartialOrd for BigInt {
+    #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 
+    #[inline]
     fn lt(&self, other: &Self) -> bool {
         JsValue::as_ref(self).lt(JsValue::as_ref(other))
     }
 
+    #[inline]
     fn le(&self, other: &Self) -> bool {
         JsValue::as_ref(self).le(JsValue::as_ref(other))
     }
 
+    #[inline]
     fn ge(&self, other: &Self) -> bool {
         JsValue::as_ref(self).ge(JsValue::as_ref(other))
     }
 
+    #[inline]
     fn gt(&self, other: &Self) -> bool {
         JsValue::as_ref(self).gt(JsValue::as_ref(other))
     }
 }
 
 impl Ord for BigInt {
+    #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         if self == other {
             Ordering::Equal
