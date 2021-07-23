@@ -28,7 +28,6 @@ use std::mem;
 use std::str;
 use std::str::FromStr;
 
-use wasm_bindgen::JsStatic;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
