@@ -1024,6 +1024,14 @@ impl Default for BigInt {
     }
 }
 
+impl FromStr for BigInt {
+    type Err = Infallible;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(BigInt::new(&s.into()))
+    }
+}
+
 // Boolean
 #[wasm_bindgen]
 extern "C" {
