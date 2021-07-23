@@ -858,12 +858,8 @@ extern "C" {
     #[derive(Clone, PartialEq, Eq)]
     pub type BigInt;
 
-    /*/// Creates a new BigInt value.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/BigInt)
-    //#[wasm_bindgen(js_name = "BigInt")]
-    #[wasm_bindgen(static_method_of = BigInt, js_name = "")]
-    pub fn new(value: &JsValue) -> BigInt;*/
+    #[wasm_bindgen(js_name = BigInt)]
+    fn new_bigint(value: &JsValue) -> BigInt;
 
     /// Clamps a BigInt value to a signed integer value, and returns that value.
     ///
@@ -897,6 +893,13 @@ extern "C" {
 }
 
 impl BigInt {
+    /// Creates a new BigInt value.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/BigInt)
+    pub fn new(value: &JsValue) -> BigInt {
+        new_bigint(value)
+    }
+
     /// Applies the binary `**` JS operator on the two `BigInt`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Exponentiation)
@@ -907,7 +910,6 @@ impl BigInt {
     }
 }
 
-/*
 macro_rules! bigint_from {
     ($($x:ident)*) => ($(
         impl From<$x> for BigInt {
@@ -945,7 +947,6 @@ macro_rules! bigint_from_big {
     )*)
 }
 bigint_from_big!(i64 u64 i128 u128 isize usize);
-*/
 
 impl PartialEq<Number> for BigInt {
     #[inline]
@@ -1006,6 +1007,12 @@ impl Ord for BigInt {
         } else {
             Ordering::Greater
         }
+    }
+}
+
+impl Default for BigInt {
+    fn default() -> Self {
+        BigInt::from(i32::default())
     }
 }
 
@@ -5551,7 +5558,6 @@ arrays! {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array
     Float64Array: f64,
 
-    /*
     /// `BigInt64Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array
     BigInt64Array: BigInt,
@@ -5559,5 +5565,4 @@ arrays! {
     /// `BigUint64Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array
     BigUint64Array: BigInt,
-    */
 }
