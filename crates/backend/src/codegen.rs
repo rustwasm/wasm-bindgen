@@ -1166,52 +1166,60 @@ impl ToTokens for ast::Enum {
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
             let variant_value = &variant.value;
+            let fields = &variant.fields.clone();
+            let variant_fields_into_array = fields.iter().enumerate().map(|(index, field)| {
+                quote! {
+                    #field::from_abi(variant[(#index + 1)])
+                }
+            });
+
             quote! {
-                if js == #variant_value {
-                    #enum_name::#variant_name
+                if variant[0] == #variant_value {
+                    #enum_name::#variant_name(#(#variant_fields_into_array)*,)
                 }
             }
         });
         (quote! {
+            use wasm_bindgen::convert::{WasmAbi, traits::*};
+
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::IntoWasmAbi for #enum_name {
-                type Abi = u32;
+                type Abi = WasmSlice;
 
                 #[inline]
-                fn into_abi(self) -> u32 {
-                    use wasm_bindgen::__rt::std::boxed::Box;
-                    use wasm_bindgen::__rt::WasmRefCell;
-                    Box::into_raw(Box::new(WasmRefCell::new(self))) as u32
+                fn into_abi(self) -> WasmSlice {
+                    WasmSlice::null_slice()
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::FromWasmAbi for #enum_name {
-                type Abi = u32;
+                type Abi = WasmSlice;
 
                 #[inline]
-                unsafe fn from_abi(js: u32) -> Self {
-                    use wasm_bindgen::__rt::std::boxed::Box;
-                    use wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
+                unsafe fn from_abi(js: WasmSlice) -> Self {
+                    let ptr = <*mut u32>::from_abi(js.ptr);
+                    let len = js.len as usize;
+                    let variant = Vec::from_raw_parts(ptr, len, len).into_boxed_slice();
 
-                    let ptr = js as *mut WasmRefCell<#enum_name>;
-                    assert_not_null(ptr);
-                    let js = Box::from_raw(ptr);
-                    (*js).borrow_mut(); // make sure no one's borrowing
-                    js.into_inner()
+                    #(#cast_clauses else)* {
+                        wasm_bindgen::throw_str("invalid enum value passed")
+                    }
                 }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
                 #[inline]
-                fn is_none(val: &u32) -> bool { *val == #hole }
+                fn is_none(val: &WasmSlice) -> bool {
+                    <*mut u32>::from_abi(val.ptr) == (#hole as u32)
+                }
             }
 
             #[allow(clippy::all)]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
                 #[inline]
-                fn none() -> Self::Abi { #hole }
+                fn none() -> Self::Abi { WasmSlice { ptr: 0, len: 0 } }
             }
 
             #[allow(clippy::all)]
