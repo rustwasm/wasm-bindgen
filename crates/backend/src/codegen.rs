@@ -1187,14 +1187,14 @@ impl ToTokens for ast::Enum {
             let variant_value = &variant.value;
 
             let fields = &variant.fields.clone();
-            let variant_array_into_tuple = fields.iter().enumerate().map(|(index, _)| {
+            let field_vector_into_tuple = fields.iter().enumerate().map(|(index, _)| {
                 let varname = format_ident!("arg{}", index);
                quote! {
                    #varname
                }
             });
 
-            let variant_types_into_vector = fields.iter().enumerate().map(|(index, field)| {
+            let fields_into_vector = fields.iter().enumerate().map(|(index, field)| {
                 let varname = format_ident!("arg{}", index);
                quote! {
                    #field::into_abi(#varname)
@@ -1202,7 +1202,7 @@ impl ToTokens for ast::Enum {
             });
 
             quote! {
-                #enum_name::#variant_name(#(#variant_array_into_tuple),*) => vec![#variant_value, #(#variant_types_into_vector),*]
+                #enum_name::#variant_name(#(#field_vector_into_tuple),*) => vec![#variant_value, #(#fields_into_vector),*]
             }
         });
         (quote! {
