@@ -59,6 +59,7 @@ macro_rules! attrgen {
             (start, Start(Span)),
             (skip, Skip(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
+            (getter_with_clone, GetterWithClone(Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -374,6 +375,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
         let is_inspectable = attrs.inspectable().is_some();
+        let getter_with_clone = attrs.getter_with_clone().is_some();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
@@ -410,6 +412,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 setter: Ident::new(&setter, Span::call_site()),
                 comments,
                 generate_typescript: attrs.skip_typescript().is_none(),
+                getter_with_clone: getter_with_clone || attrs.getter_with_clone().is_some(),
             });
             attrs.check_used()?;
         }
