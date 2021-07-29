@@ -343,6 +343,8 @@ pub struct StructField {
     pub comments: Vec<String>,
     /// Whether to generate a typescript definition for this field
     pub generate_typescript: bool,
+    /// Whether to use .clone() in the auto-generated getter for this field
+    pub getter_with_clone: bool,
 }
 
 /// Information about an Enum being exported

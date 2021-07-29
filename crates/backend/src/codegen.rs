@@ -274,8 +274,19 @@ impl ToTokens for ast::StructField {
         let getter = &self.getter;
         let setter = &self.setter;
 
-        let assert_copy = quote! { assert_copy::<#ty>() };
-        let assert_copy = respan(assert_copy, ty);
+        let maybe_assert_copy = if self.getter_with_clone {
+            quote! {}
+        } else {
+            quote! { assert_copy::<#ty>() }
+        };
+        let maybe_assert_copy = respan(maybe_assert_copy, ty);
+
+        let maybe_clone = if self.getter_with_clone {
+            quote! { .clone() }
+        } else {
+            quote! {}
+        };
+
         (quote! {
             #[doc(hidden)]
             #[allow(clippy::all)]
@@ -287,11 +298,11 @@ impl ToTokens for ast::StructField {
                 use wasm_bindgen::convert::IntoWasmAbi;
 
                 fn assert_copy<T: Copy>(){}
-                #assert_copy;
+                #maybe_assert_copy;
 
                 let js = js as *mut WasmRefCell<#struct_name>;
                 assert_not_null(js);
-                let val = (*js).borrow().#rust_name;
+                let val = (*js).borrow().#rust_name#maybe_clone;
                 <#ty as IntoWasmAbi>::into_abi(val)
             }
         })
