@@ -8,7 +8,7 @@ error[E0277]: the trait bound `Result<(), ()>: IntoJsResult` is not satisfied
              <Result<(), E> as IntoJsResult>
              <Result<T, E> as IntoJsResult>
    = note: required by `into_js_result`
-   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Result<(), BadType>: IntoJsResult` is not satisfied
   --> $DIR/async-errors.rs:32:1
@@ -20,7 +20,7 @@ error[E0277]: the trait bound `Result<(), BadType>: IntoJsResult` is not satisfi
              <Result<(), E> as IntoJsResult>
              <Result<T, E> as IntoJsResult>
    = note: required by `into_js_result`
-   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `wasm_bindgen::JsValue: From<BadType>` is not satisfied
   --> $DIR/async-errors.rs:34:1
@@ -37,7 +37,7 @@ error[E0277]: the trait bound `wasm_bindgen::JsValue: From<BadType>` is not sati
    = note: required because of the requirements on the impl of `Into<wasm_bindgen::JsValue>` for `BadType`
    = note: required because of the requirements on the impl of `IntoJsResult` for `BadType`
    = note: required by `into_js_result`
-   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Result<BadType, wasm_bindgen::JsValue>: IntoJsResult` is not satisfied
   --> $DIR/async-errors.rs:36:1
@@ -49,4 +49,4 @@ error[E0277]: the trait bound `Result<BadType, wasm_bindgen::JsValue>: IntoJsRes
              <Result<(), E> as IntoJsResult>
              <Result<T, E> as IntoJsResult>
    = note: required by `into_js_result`
-   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
