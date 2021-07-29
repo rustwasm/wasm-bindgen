@@ -87,6 +87,7 @@
       - [`inspectable`](./reference/attributes/on-rust-exports/inspectable.md)
       - [`skip_typescript`](./reference/attributes/on-rust-exports/skip_typescript.md)
       - [`typescript_type`](./reference/attributes/on-rust-exports/typescript_type.md)
+      - [`getter_with_clone`](./reference/attributes/on-rust-exports/getter_with_clone.md)
 
 - [`web-sys`](./web-sys/index.md)
   - [Using `web-sys`](./web-sys/using-web-sys.md)
