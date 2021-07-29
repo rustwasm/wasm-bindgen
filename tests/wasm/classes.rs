@@ -16,6 +16,7 @@ extern "C" {
     fn js_constructors();
     fn js_empty_structs();
     fn js_public_fields();
+    fn js_getter_with_clone();
     fn js_using_self();
     fn js_readonly_fields();
     fn js_double_consume();
@@ -285,6 +286,38 @@ pub struct PublicFields {
 impl PublicFields {
     pub fn new() -> PublicFields {
         PublicFields::default()
+    }
+}
+
+#[wasm_bindgen_test]
+fn getter_with_clone() {
+    js_getter_with_clone();
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Default)]
+pub struct GetterWithCloneStruct {
+    pub a: String,
+}
+
+#[wasm_bindgen]
+impl GetterWithCloneStruct {
+    pub fn new() -> GetterWithCloneStruct {
+        GetterWithCloneStruct::default()
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Default)]
+pub struct GetterWithCloneStructField {
+    #[wasm_bindgen(getter_with_clone)]
+    pub a: String,
+}
+
+#[wasm_bindgen]
+impl GetterWithCloneStructField {
+    pub fn new() -> GetterWithCloneStructField {
+        GetterWithCloneStructField::default()
     }
 }
 

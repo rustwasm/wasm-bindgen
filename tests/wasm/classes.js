@@ -112,6 +112,18 @@ exports.js_public_fields = () => {
     assert.strictEqual(a.skipped, undefined);
 };
 
+exports.js_getter_with_clone = () => {
+    const a = wasm.GetterWithCloneStruct.new();
+    assert.strictEqual(a.a, '');
+    a.a = 'foo';
+    assert.strictEqual(a.a, 'foo');
+
+    const b = wasm.GetterWithCloneStructField.new();
+    assert.strictEqual(b.a, '');
+    b.a = 'foo';
+    assert.strictEqual(b.a, 'foo');
+};
+
 exports.js_using_self = () => {
     wasm.UseSelf.new().free();
 };
