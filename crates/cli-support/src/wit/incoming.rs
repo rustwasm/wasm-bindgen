@@ -99,7 +99,17 @@ impl InstructionBuilder<'_, '_> {
                 self.get(AdapterType::F64);
                 self.output.push(AdapterType::F64);
             }
-            Descriptor::Enum { .. } => self.number(WitVT::U32, WasmVT::I32),
+            Descriptor::Enum { .. } => {
+                let kind = crate::descriptor::VectorKind::U32;
+
+                let malloc = self.cx.malloc()?;
+                let mem = self.cx.memory()?;
+                self.instruction(
+                    &[AdapterType::Enum.option()],
+                    Instruction::OptionVector { kind, malloc, mem },
+                    &[AdapterType::I32, AdapterType::I32],
+                );
+            }
             Descriptor::Ref(d) => self.incoming_ref(false, d)?,
             Descriptor::RefMut(d) => self.incoming_ref(true, d)?,
             Descriptor::Option(d) => self.incoming_option(d)?,
@@ -280,11 +290,15 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::Enum { hole } => {
+            Descriptor::Enum { .. } => {
+                let kind = crate::descriptor::VectorKind::U32;
+
+                let malloc = self.cx.malloc()?;
+                let mem = self.cx.memory()?;
                 self.instruction(
-                    &[AdapterType::U32.option()],
-                    Instruction::I32FromOptionEnum { hole: *hole },
-                    &[AdapterType::I32],
+                    &[AdapterType::Enum.option()],
+                    Instruction::OptionVector { kind, malloc, mem },
+                    &[AdapterType::I32, AdapterType::I32],
                 );
             }
             Descriptor::RustStruct(name) => {

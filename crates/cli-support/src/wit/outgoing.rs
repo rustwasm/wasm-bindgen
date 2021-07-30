@@ -60,7 +60,6 @@ impl InstructionBuilder<'_, '_> {
                 self.get(AdapterType::F64);
                 self.output.push(AdapterType::F64);
             }
-            Descriptor::Enum { .. } => self.outgoing_i32(AdapterType::U32),
 
             Descriptor::Char => {
                 self.instruction(
@@ -154,6 +153,22 @@ impl InstructionBuilder<'_, '_> {
                 "unsupported argument type for calling JS function from Rust: {:?}",
                 arg
             ),
+
+            Descriptor::Enum { .. } => {
+                let kind = crate::descriptor::VectorKind::U32;
+
+                let mem = self.cx.memory()?;
+                let free = self.cx.free()?;
+                self.instruction(
+                    &[AdapterType::I32, AdapterType::I32],
+                    Instruction::VectorLoad {
+                        kind,
+                        mem,
+                        free,
+                    },
+                    &[AdapterType::Enum],
+                );
+            }
 
             // nothing to do
             Descriptor::Unit => {}
@@ -288,13 +303,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::String.option()],
                 );
             }
-            Descriptor::Enum { hole } => {
-                self.instruction(
-                    &[AdapterType::I32],
-                    Instruction::OptionEnumFromI32 { hole: *hole },
-                    &[AdapterType::U32.option()],
-                );
-            }
+            // Descriptor::Enum => {
+            //     self.instruction(
+            //         &[AdapterType::I32],
+            //         Instruction::OptionEnumFromI32 { hole: *hole },
+            //         &[AdapterType::U32.option()],
+            //     );
+            // }
             Descriptor::RustStruct(name) => {
                 self.instruction(
                     &[AdapterType::I32],

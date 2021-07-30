@@ -64,7 +64,7 @@ pub enum Descriptor {
     String,
     Externref,
     NamedExternref(String),
-    Enum { hole: u32 },
+    Enum,
     RustStruct(String),
     Char,
     Option(Box<Descriptor>),
@@ -104,6 +104,12 @@ pub enum VectorKind {
     NamedExternref(String),
 }
 
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub struct EnumVariant {
+    pub name: String,
+    pub fields: Vec<Descriptor>
+}
+
 impl Descriptor {
     pub fn decode(mut data: &[u32]) -> Descriptor {
         let descriptor = Descriptor::_decode(&mut data, false);
@@ -135,7 +141,7 @@ impl Descriptor {
             CACHED_STRING => Descriptor::CachedString,
             STRING => Descriptor::String,
             EXTERNREF => Descriptor::Externref,
-            ENUM => Descriptor::Enum { hole: get(data) },
+            ENUM => Descriptor::Enum,
             RUST_STRUCT => {
                 let name = get_string(data);
                 Descriptor::RustStruct(name)
@@ -211,6 +217,26 @@ fn get_string(data: &mut &[u32]) -> String {
         .map(|_| char::from_u32(get(data)).unwrap())
         .collect()
 }
+
+// fn get_enum(data: &mut &[u32]) -> Descriptor {
+//     let name = get_string(data);
+//     let hole = get(data);
+//     let variants = (0..get(data)).map(|_| {
+
+//         let variant_name = get_string(data);
+//         let variant_fields = (0..get(data)).map(|_| {
+//             Descriptor::_decode(data, false)
+//         }).collect();
+
+//         EnumVariant {
+//             name: variant_name,
+//             fields: variant_fields
+//         }
+
+//     }).collect();
+
+//     Descriptor::Enum {name, variants, hole}
+// }
 
 impl Closure {
     fn decode(data: &mut &[u32]) -> Closure {

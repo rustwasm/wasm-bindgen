@@ -309,3 +309,76 @@ if_std! {
         fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
 }
+
+pub trait VectorEncoding {
+    fn push_into_u32_vector(self, vector: &mut Vec<u32>);
+
+    fn pop_from_u32_vector(vector: &mut Vec<u32>) -> Self;
+}
+
+impl VectorEncoding for u32 {
+    fn push_into_u32_vector(self, vector: &mut Vec<u32>) {
+        vector.push(self)
+    }
+
+    fn pop_from_u32_vector(vector: &mut Vec<u32>) -> Self {
+        vector.pop().unwrap()
+    }
+}
+
+impl VectorEncoding for () {
+    fn push_into_u32_vector(self, vector: &mut Vec<u32>) {
+        vector.push(0)
+    }
+
+    fn pop_from_u32_vector(vector: &mut Vec<u32>) -> Self {
+        vector.pop().unwrap();
+        ()
+    }
+}
+
+impl VectorEncoding for f32 {
+    fn push_into_u32_vector(self, vector: &mut Vec<u32>) {
+        let as_u32 = self.to_bits();
+        vector.push(as_u32);
+    }
+
+    fn pop_from_u32_vector(vector: &mut Vec<u32>) -> Self {
+        f32::from_bits(vector.pop().unwrap())
+    }
+}
+
+impl VectorEncoding for f64 {
+    fn push_into_u32_vector(self, vector: &mut Vec<u32>) {
+        let as_u64 = self.to_bits();
+        let hi = (as_u64 >> 32) as u32;
+        let lo = as_u64 as u32;
+        vector.push(hi);
+        vector.push(lo);
+    }
+
+    fn pop_from_u32_vector(vector: &mut Vec<u32>) -> Self {
+        let hi = vector.pop().unwrap();
+        let lo = vector.pop().unwrap();
+        let as_u64 = (hi as u64) << 32 | (lo as u64);
+        f64::from_bits(as_u64)
+    }
+}
+
+impl VectorEncoding for WasmSlice {
+    fn push_into_u32_vector(self, vector: &mut Vec<u32>) {
+        let WasmSlice { ptr, len } = self;
+
+        vector.push(ptr);
+        vector.push(len);
+    }
+
+    fn pop_from_u32_vector(vector: &mut Vec<u32>) -> Self {
+        let ptr = vector.pop().unwrap();
+        let len = vector.pop().unwrap();
+        WasmSlice {
+            ptr,
+            len
+        }
+    }
+}
