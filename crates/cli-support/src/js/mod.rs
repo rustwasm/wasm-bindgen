@@ -3028,6 +3028,11 @@ impl<'a> Context<'a> {
                 format!("{} / {}", args[0], args[1])
             }
 
+            Intrinsic::CheckedDiv => {
+                assert_eq!(args.len(), 2);
+                format!("try {{ {} / {} }} catch (e) {{ if (e instanceof RangeError) {{ e }} else {{ throw e }} }}", args[0], args[1])
+            }
+
             Intrinsic::Mul => {
                 assert_eq!(args.len(), 2);
                 format!("{} * {}", args[0], args[1])

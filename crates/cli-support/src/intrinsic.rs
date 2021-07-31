@@ -157,6 +157,9 @@ intrinsics! {
         #[symbol = "__wbindgen_div"]
         #[signature = fn(ref_externref(), ref_externref()) -> Externref]
         Div,
+        #[symbol = "__wbindgen_checked_div"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        CheckedDiv,
         #[symbol = "__wbindgen_mul"]
         #[signature = fn(ref_externref(), ref_externref()) -> Externref]
         Mul,

@@ -407,6 +407,14 @@ impl JsValue {
         unsafe { __wbindgen_unsigned_shr(self.idx, rhs.idx) }
     }
 
+    /// Applies the binary `/` JS operator on two `JsValue`s, catching and returning any `RangeError` thrown.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Division)
+    #[inline]
+    pub fn checked_div(&self, rhs: &Self) -> Self {
+        unsafe { JsValue::_new(__wbindgen_checked_div(self.idx, rhs.idx)) }
+    }
+
     /// Applies the binary `**` JS operator on the two `JsValue`s.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Exponentiation)
@@ -744,6 +752,22 @@ impl Rem for &JsValue {
 
 forward_deref_binop!(impl Rem, rem for JsValue);
 
+#[cfg(feature = "num-traits")]
+use num_traits::Pow;
+
+#[cfg(feature = "num-traits")]
+impl num_traits::Pow<&JsValue> for &JsValue {
+    type Output = JsValue;
+
+    #[inline]
+    fn pow(self, rhs: &JsValue) -> Self::Output {
+        JsValue::pow(self, rhs)
+    }
+}
+
+#[cfg(feature = "num-traits")]
+forward_deref_binop!(impl Pow, pow for JsValue);
+
 impl<'a> From<&'a str> for JsValue {
     #[inline]
     fn from(s: &'a str) -> JsValue {
@@ -899,6 +923,7 @@ externs! {
         fn __wbindgen_add(a: u32, b: u32) -> u32;
         fn __wbindgen_sub(a: u32, b: u32) -> u32;
         fn __wbindgen_div(a: u32, b: u32) -> u32;
+        fn __wbindgen_checked_div(a: u32, b: u32) -> u32;
         fn __wbindgen_mul(a: u32, b: u32) -> u32;
         fn __wbindgen_rem(a: u32, b: u32) -> u32;
         fn __wbindgen_pow(a: u32, b: u32) -> u32;

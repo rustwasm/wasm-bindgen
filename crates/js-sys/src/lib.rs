@@ -20,16 +20,23 @@
 
 use core::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub};
 use std::cmp::Ordering;
-use std::convert;
-use std::convert::Infallible;
+use std::convert::{self, Infallible};
 use std::f64;
 use std::fmt;
+use std::iter::{self, Product, Sum};
 use std::mem;
 use std::str;
 use std::str::FromStr;
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+
+#[cfg(feature = "rust-num")]
+use num_traits::Num;
+#[cfg(feature = "num-traits-full")]
+use num_traits::Pow;
+#[cfg(feature = "num-traits")]
+use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, One, Zero};
 
 // When adding new imports:
 //
@@ -112,7 +119,7 @@ macro_rules! forward_js_unop {
 
 macro_rules! forward_js_binop {
     (impl $imp:ident, $method:ident for $t:ty) => {
-        impl $imp for &$t {
+        impl $imp<&$t> for &$t {
             type Output = $t;
 
             #[inline]
@@ -123,6 +130,49 @@ macro_rules! forward_js_binop {
 
         forward_deref_binop!(impl $imp, $method for $t);
     };
+}
+
+macro_rules! sum_product {
+    ($($a:ident)*) => ($(
+        impl Sum for $a {
+            #[inline]
+            fn sum<I: iter::Iterator<Item=Self>>(iter: I) -> Self {
+                iter.fold(
+                    $a::from(0),
+                    |a, b| a + b,
+                )
+            }
+        }
+
+        impl Product for $a {
+            #[inline]
+            fn product<I: iter::Iterator<Item=Self>>(iter: I) -> Self {
+                iter.fold(
+                    $a::from(1),
+                    |a, b| a * b,
+                )
+            }
+        }
+
+        impl<'a> Sum<&'a $a> for $a {
+            fn sum<I: iter::Iterator<Item=&'a Self>>(iter: I) -> Self {
+                iter.fold(
+                    $a::from(0),
+                    |a, b| a + b,
+                )
+            }
+        }
+
+        impl<'a> Product<&'a $a> for $a {
+            #[inline]
+            fn product<I: iter::Iterator<Item=&'a Self>>(iter: I) -> Self {
+                iter.fold(
+                    $a::from(1),
+                    |a, b| a * b,
+                )
+            }
+        }
+    )*)
 }
 
 #[wasm_bindgen]
@@ -859,8 +909,11 @@ extern "C" {
     #[derive(Clone, PartialEq, Eq)]
     pub type BigInt;
 
+    #[wasm_bindgen(catch, js_name = BigInt)]
+    fn new_bigint(value: &JsValue) -> Result<BigInt, Error>;
+
     #[wasm_bindgen(js_name = BigInt)]
-    fn new_bigint(value: &JsValue) -> BigInt;
+    fn new_bigint_unchecked(value: &JsValue) -> BigInt;
 
     /// Clamps a BigInt value to a signed integer value, and returns that value.
     ///
@@ -886,6 +939,9 @@ extern "C" {
     #[wasm_bindgen(catch, method, js_name = toString)]
     pub fn to_string(this: &BigInt, radix: u8) -> Result<JsString, RangeError>;
 
+    #[wasm_bindgen(method, js_name = toString)]
+    fn to_string_unchecked(this: &BigInt, radix: u8) -> String;
+
     /// Returns this BigInt value. Overrides the [`Object.prototype.valueOf()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf) method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/valueOf)
@@ -898,8 +954,21 @@ impl BigInt {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/BigInt)
     #[inline]
-    pub fn new(value: &JsValue) -> BigInt {
+    pub fn new(value: &JsValue) -> Result<BigInt, Error> {
         new_bigint(value)
+    }
+
+    /// Applies the binary `/` JS operator on two `BigInt`s, catching and returning any `RangeError` thrown.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Division)
+    pub fn checked_div(&self, rhs: &Self) -> Result<Self, RangeError> {
+        let result = JsValue::as_ref(self).checked_div(JsValue::as_ref(rhs));
+
+        if result.is_instance_of::<RangeError>() {
+            Err(result.unchecked_into())
+        } else {
+            Ok(result.unchecked_into())
+        }
     }
 
     /// Applies the binary `**` JS operator on the two `BigInt`s.
@@ -918,7 +987,7 @@ macro_rules! bigint_from {
         impl From<$x> for BigInt {
             #[inline]
             fn from(x: $x) -> BigInt {
-                BigInt::new(&JsValue::from(x))
+                new_bigint_unchecked(&JsValue::from(x))
             }
         }
 
@@ -979,6 +1048,7 @@ forward_js_binop!(impl Sub, sub for BigInt);
 forward_js_binop!(impl Div, div for BigInt);
 forward_js_binop!(impl Mul, mul for BigInt);
 forward_js_binop!(impl Rem, rem for BigInt);
+sum_product!(BigInt);
 
 impl PartialOrd for BigInt {
     #[inline]
@@ -1027,11 +1097,243 @@ impl Default for BigInt {
 }
 
 impl FromStr for BigInt {
-    type Err = Infallible;
+    type Err = Error;
 
     #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(BigInt::new(&s.into()))
+        BigInt::new(&s.into())
+    }
+}
+
+impl fmt::Debug for BigInt {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(self, f)
+    }
+}
+
+impl fmt::Display for BigInt {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.pad_integral(self >= &BigInt::from(0), "", &self.to_string_unchecked(10))
+    }
+}
+
+impl fmt::Binary for BigInt {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.pad_integral(self >= &BigInt::from(0), "0b", &self.to_string_unchecked(2))
+    }
+}
+
+impl fmt::Octal for BigInt {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.pad_integral(self >= &BigInt::from(0), "0o", &self.to_string_unchecked(8))
+    }
+}
+
+impl fmt::LowerHex for BigInt {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.pad_integral(
+            self >= &BigInt::from(0),
+            "0x",
+            &self.to_string_unchecked(16),
+        )
+    }
+}
+
+impl fmt::UpperHex for BigInt {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut s: String = self.to_string_unchecked(16);
+        s.make_ascii_uppercase();
+        f.pad_integral(self >= &BigInt::from(0), "0x", &s)
+    }
+}
+
+#[cfg(feature = "num-traits-full")]
+forward_js_binop!(impl Pow, pow for BigInt);
+
+#[cfg(feature = "num-traits")]
+impl CheckedAdd for BigInt {
+    #[inline]
+    fn checked_add(&self, v: &Self) -> Option<Self> {
+        Some(self + v)
+    }
+}
+
+#[cfg(feature = "num-traits")]
+impl CheckedSub for BigInt {
+    #[inline]
+    fn checked_sub(&self, v: &Self) -> Option<Self> {
+        Some(self - v)
+    }
+}
+
+#[cfg(feature = "num-traits")]
+impl CheckedMul for BigInt {
+    #[inline]
+    fn checked_mul(&self, v: &Self) -> Option<Self> {
+        Some(self * v)
+    }
+}
+
+#[cfg(feature = "num-traits")]
+impl CheckedDiv for BigInt {
+    #[inline]
+    fn checked_div(&self, v: &Self) -> Option<Self> {
+        BigInt::checked_div(&self, v).ok()
+    }
+}
+
+#[cfg(feature = "num-traits")]
+impl FromPrimitive for BigInt {
+    #[inline]
+    fn from_i8(n: i8) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_i16(n: i16) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_i32(n: i32) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_i64(n: i64) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_i128(n: i128) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_isize(n: isize) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_u8(n: u8) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_u16(n: u16) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_u32(n: u32) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_u64(n: u64) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_u128(n: u128) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_usize(n: usize) -> Option<Self> {
+        Some(Self::from(n))
+    }
+
+    #[inline]
+    fn from_f32(n: f32) -> Option<Self> {
+        Self::new(&n.into()).ok()
+    }
+
+    #[inline]
+    fn from_f64(n: f64) -> Option<Self> {
+        Self::new(&n.into()).ok()
+    }
+}
+
+#[cfg(feature = "num-traits")]
+impl Zero for BigInt {
+    #[inline]
+    fn zero() -> Self {
+        Self::from(0)
+    }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        self == &Self::zero()
+    }
+}
+
+#[cfg(feature = "num-traits")]
+impl One for BigInt {
+    #[inline]
+    fn one() -> Self {
+        Self::from(1)
+    }
+}
+
+#[cfg(feature = "rust-num")]
+impl From<BigInt> for num_bigint::BigInt {
+    #[inline]
+    fn from(value: BigInt) -> Self {
+        num_bigint::BigInt::from(&value)
+    }
+}
+#[cfg(feature = "rust-num")]
+impl From<&BigInt> for num_bigint::BigInt {
+    #[inline]
+    fn from(value: &BigInt) -> Self {
+        num_bigint::BigInt::from_str_radix(&value.to_string_unchecked(36), 36).unwrap()
+    }
+}
+
+#[cfg(feature = "rust-num")]
+impl num_bigint::ToBigInt for BigInt {
+    #[inline]
+    fn to_bigint(&self) -> Option<num_bigint::BigInt> {
+        Some(num_bigint::BigInt::from(self))
+    }
+}
+
+#[cfg(feature = "num-bigint")]
+impl From<&num_bigint::BigInt> for BigInt {
+    #[inline]
+    fn from(value: &num_bigint::BigInt) -> Self {
+        BigInt::from(JsValue::from(value.to_str_radix(10)))
+    }
+}
+
+#[cfg(feature = "num-bigint")]
+impl From<num_bigint::BigInt> for BigInt {
+    #[inline]
+    fn from(value: num_bigint::BigInt) -> Self {
+        BigInt::from(&value)
+    }
+}
+
+#[cfg(feature = "num-bigint")]
+impl From<&num_bigint::BigUint> for BigInt {
+    #[inline]
+    fn from(value: &num_bigint::BigUint) -> Self {
+        BigInt::from(JsValue::from(value.to_str_radix(10)))
+    }
+}
+
+#[cfg(feature = "num-bigint")]
+impl From<num_bigint::BigUint> for BigInt {
+    #[inline]
+    fn from(value: num_bigint::BigUint) -> Self {
+        BigInt::from(&value)
     }
 }
 
@@ -1080,7 +1382,13 @@ impl PartialEq<bool> for Boolean {
 
 impl fmt::Debug for Boolean {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.value_of().fmt(f)
+        fmt::Debug::fmt(&self.value_of(), f)
+    }
+}
+
+impl fmt::Display for Boolean {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&self.value_of(), f)
     }
 }
 
@@ -2308,8 +2616,16 @@ impl From<Number> for f64 {
 }
 
 impl fmt::Debug for Number {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.value_of().fmt(f)
+        fmt::Debug::fmt(&self.value_of(), f)
+    }
+}
+
+impl fmt::Display for Number {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&self.value_of(), f)
     }
 }
 
@@ -2347,6 +2663,8 @@ forward_js_binop!(impl Sub, sub for Number);
 forward_js_binop!(impl Div, div for Number);
 forward_js_binop!(impl Mul, mul for Number);
 forward_js_binop!(impl Rem, rem for Number);
+
+sum_product!(Number);
 
 impl PartialOrd for Number {
     #[inline]
@@ -2390,6 +2708,30 @@ impl FromStr for Number {
     #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Number::new_from_str(s))
+    }
+}
+
+#[cfg(feature = "num-traits-full")]
+forward_js_binop!(impl Pow, pow for Number);
+
+#[cfg(feature = "num-traits")]
+impl Zero for Number {
+    #[inline]
+    fn zero() -> Self {
+        Self::from(0.0)
+    }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        self == &Self::zero()
+    }
+}
+
+#[cfg(feature = "num-traits")]
+impl One for Number {
+    #[inline]
+    fn one() -> Self {
+        Self::from(1.0)
     }
 }
 
@@ -4729,8 +5071,16 @@ impl From<JsString> for String {
 }
 
 impl fmt::Debug for JsString {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        String::from(self).fmt(f)
+        fmt::Debug::fmt(&String::from(self), f)
+    }
+}
+
+impl fmt::Display for JsString {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&String::from(self), f)
     }
 }
 
