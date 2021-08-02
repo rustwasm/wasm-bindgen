@@ -57,7 +57,6 @@ fn runtest(test: &Path) -> Result<()> {
     exec(
         Command::new("node")
             .arg("--experimental-wasm-reftypes")
-            .arg("--experimental-wasm-mv")
             .arg(&js)
             .env("NODE_PATH", td.path()),
     )?;
