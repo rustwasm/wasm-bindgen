@@ -175,6 +175,50 @@ macro_rules! sum_product {
     )*)
 }
 
+macro_rules! partialord_ord {
+    ($t:ident) => {
+        impl PartialOrd for $t {
+            #[inline]
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+                Some(self.cmp(other))
+            }
+        
+            #[inline]
+            fn lt(&self, other: &Self) -> bool {
+                JsValue::as_ref(self).lt(JsValue::as_ref(other))
+            }
+        
+            #[inline]
+            fn le(&self, other: &Self) -> bool {
+                JsValue::as_ref(self).le(JsValue::as_ref(other))
+            }
+        
+            #[inline]
+            fn ge(&self, other: &Self) -> bool {
+                JsValue::as_ref(self).ge(JsValue::as_ref(other))
+            }
+        
+            #[inline]
+            fn gt(&self, other: &Self) -> bool {
+                JsValue::as_ref(self).gt(JsValue::as_ref(other))
+            }
+        }
+        
+        impl Ord for $t {
+            #[inline]
+            fn cmp(&self, other: &Self) -> Ordering {
+                if self == other {
+                    Ordering::Equal
+                } else if self.lt(other) {
+                    Ordering::Less
+                } else {
+                    Ordering::Greater
+                }
+            }
+        }
+    };
+}
+
 #[wasm_bindgen]
 extern "C" {
     /// The `decodeURI()` function decodes a Uniform Resource Identifier (URI)
@@ -1050,45 +1094,7 @@ forward_js_binop!(impl Mul, mul for BigInt);
 forward_js_binop!(impl Rem, rem for BigInt);
 sum_product!(BigInt);
 
-impl PartialOrd for BigInt {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-
-    #[inline]
-    fn lt(&self, other: &Self) -> bool {
-        JsValue::as_ref(self).lt(JsValue::as_ref(other))
-    }
-
-    #[inline]
-    fn le(&self, other: &Self) -> bool {
-        JsValue::as_ref(self).le(JsValue::as_ref(other))
-    }
-
-    #[inline]
-    fn ge(&self, other: &Self) -> bool {
-        JsValue::as_ref(self).ge(JsValue::as_ref(other))
-    }
-
-    #[inline]
-    fn gt(&self, other: &Self) -> bool {
-        JsValue::as_ref(self).gt(JsValue::as_ref(other))
-    }
-}
-
-impl Ord for BigInt {
-    #[inline]
-    fn cmp(&self, other: &Self) -> Ordering {
-        if self == other {
-            Ordering::Equal
-        } else if self.lt(other) {
-            Ordering::Less
-        } else {
-            Ordering::Greater
-        }
-    }
-}
+partialord_ord!(BigInt);
 
 impl Default for BigInt {
     fn default() -> Self {
@@ -1409,6 +1415,8 @@ impl Not for &Boolean {
 
 forward_deref_unop!(impl Not, not for Boolean);
 
+partialord_ord!(Boolean);
+
 // DataView
 #[wasm_bindgen]
 extern "C" {
@@ -1679,6 +1687,8 @@ extern "C" {
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Error) -> JsString;
 }
+
+partialord_ord!(JsString);
 
 // EvalError
 #[wasm_bindgen]
