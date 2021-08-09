@@ -169,7 +169,7 @@ pub fn run() -> Result<(), JsValue> {
                 ".png'>",
                 "  ",
             ]
-                .concat();
+            .concat();
             let temp = ((&parsed["main"]["temp"]).to_owned().as_f64().unwrap() - 273.15) as i64;
 
             let content = [src, temp.to_string()].concat();
