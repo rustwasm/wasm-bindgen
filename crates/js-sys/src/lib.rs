@@ -5090,11 +5090,23 @@ macro_rules! arrays {
                 )
             }
 
-            fn raw_copy_to(&self, dst: &mut [$ty]) {
+
+            /// Copy the contents of this JS typed array into the destination
+            /// Rust pointer.
+            ///
+            /// This function will efficiently copy the memory from a typed
+            /// array into this wasm module's own linear memory, initializing
+            /// the memory destination provided.
+            ///
+            /// # Unsafety
+            ///
+            /// This function requires `dst` to point to a buffer
+            /// large enough to fit this array's contents.
+            pub unsafe fn raw_copy_to_ptr(&self, dst: *mut $ty) {
                 let buf = wasm_bindgen::memory();
                 let mem = buf.unchecked_ref::<WebAssembly::Memory>();
                 let all_wasm_memory = $name::new(&mem.buffer());
-                let offset = dst.as_ptr() as usize / mem::size_of::<$ty>();
+                let offset = dst as usize / mem::size_of::<$ty>();
                 all_wasm_memory.set(self, offset as u32);
             }
 
@@ -5111,7 +5123,7 @@ macro_rules! arrays {
             /// different than the length of the provided `dst` array.
             pub fn copy_to(&self, dst: &mut [$ty]) {
                 assert_eq!(self.length() as usize, dst.len());
-                self.raw_copy_to(dst);
+                unsafe { self.raw_copy_to_ptr(dst.as_mut_ptr()); }
             }
 
             /// Copy the contents of the source Rust slice into this
@@ -5132,8 +5144,11 @@ macro_rules! arrays {
 
             /// Efficiently copies the contents of this JS typed array into a new Vec.
             pub fn to_vec(&self) -> Vec<$ty> {
-                let mut output = vec![$ty::default(); self.length() as usize];
-                self.raw_copy_to(&mut output);
+                let mut output = Vec::with_capacity(self.length() as usize);
+                unsafe {
+                    self.raw_copy_to_ptr(output.as_mut_ptr());
+                    output.set_len(self.length() as usize);
+                }
                 output
             }
         }
