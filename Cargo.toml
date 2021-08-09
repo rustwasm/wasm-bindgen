@@ -22,7 +22,7 @@ test = false
 [features]
 default = ["spans", "std"]
 spans = ["wasm-bindgen-macro/spans"]
-std = []
+std = ["array-init"]
 serde-serialize = ["serde", "serde_json", "std"]
 nightly = []
 enable-interning = ["std"]
@@ -40,6 +40,7 @@ wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.75" }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 cfg-if = "1.0.0"
+array-init = { version = "2.0.0", optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 js-sys = { path = 'crates/js-sys', version = '0.3.52' }

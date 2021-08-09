@@ -146,7 +146,7 @@ cfg_if! {
 }
 
 if_std! {
-    use std::convert::TryFrom;
+    use std::{hint, iter};
 
     impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
@@ -190,20 +190,21 @@ if_std! {
         fn none() -> WasmSlice { null_slice() }
     }
 
-    impl<T, const N: usize> FromWasmAbi for [T; N] where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
+    impl<T: Default, const N: usize> FromWasmAbi for [T; N] where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as FromWasmAbi>::Abi;
 
         #[inline]
         unsafe fn from_abi(js: Self::Abi) -> Self {
-            let result = <[T; N]>::try_from(<Vec<T>>::from(<Box<[T]>>::from_abi(js)));
-            return match result {
-                Ok(arr) => arr,
-                Err(_) => panic!("JS array length does not match Rust array")
+            let vec = <Vec<T>>::from(<Box<[T]>>::from_abi(js));
+            let iter = vec.into_iter().chain(iter::repeat_with(T::default));
+            match array_init::from_iter(iter) {
+                Some(arr) => arr,
+                None => hint::unreachable_unchecked(),
             }
         }
     }
 
-    impl<T, const N: usize> OptionFromWasmAbi for [T; N] where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
+    impl<T: Default, const N: usize> OptionFromWasmAbi for [T; N] where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
         #[inline]
         fn is_none(abi: &WasmSlice) -> bool { abi.ptr == 0 }
     }
