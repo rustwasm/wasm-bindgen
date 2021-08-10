@@ -261,6 +261,8 @@ pub struct ImportType {
     pub extends: Vec<syn::Path>,
     /// A custom prefix to add and attempt to fall back to, if the type isn't found
     pub vendor_prefixes: Vec<Ident>,
+    /// If present, don't generate a `Deref` impl
+    pub no_deref: bool,
 }
 
 /// The metadata for an Enum being imported
