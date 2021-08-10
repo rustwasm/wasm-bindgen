@@ -618,6 +618,8 @@ impl ToTokens for ast::ImportType {
             }
         });
 
+        let no_deref = self.no_deref;
+
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
@@ -641,15 +643,6 @@ impl ToTokens for ast::ImportType {
                 impl WasmDescribe for #rust_name {
                     fn describe() {
                         #description
-                    }
-                }
-
-                impl core::ops::Deref for #rust_name {
-                    type Target = #internal_obj;
-
-                    #[inline]
-                    fn deref(&self) -> &#internal_obj {
-                        &self.obj
                     }
                 }
 
@@ -778,6 +771,21 @@ impl ToTokens for ast::ImportType {
             };
         })
         .to_tokens(tokens);
+
+        if !no_deref {
+            (quote! {
+                #[allow(clippy::all)]
+                impl core::ops::Deref for #rust_name {
+                    type Target = #internal_obj;
+
+                    #[inline]
+                    fn deref(&self) -> &#internal_obj {
+                        &self.obj
+                    }
+                }
+            })
+            .to_tokens(tokens);
+        }
 
         for superclass in self.extends.iter() {
             (quote! {

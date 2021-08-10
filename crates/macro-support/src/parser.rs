@@ -52,6 +52,7 @@ macro_rules! attrgen {
             (inspectable, Inspectable(Span)),
             (is_type_of, IsTypeOf(Span, syn::Expr)),
             (extends, Extends(Span, syn::Path)),
+            (no_deref, NoDeref(Span)),
             (vendor_prefix, VendorPrefix(Span, Ident)),
             (variadic, Variadic(Span)),
             (typescript_custom_section, TypescriptCustomSection(Span)),
@@ -612,6 +613,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         let mut extends = Vec::new();
         let mut vendor_prefixes = Vec::new();
+        let no_deref = attrs.no_deref().is_some();
         for (used, attr) in attrs.attrs.iter() {
             match attr {
                 BindgenAttr::Extends(_, e) => {
@@ -637,6 +639,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             js_name,
             extends,
             vendor_prefixes,
+            no_deref,
         }))
     }
 }
