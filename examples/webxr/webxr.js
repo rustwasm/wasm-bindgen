@@ -1,4 +1,4 @@
-import * as wasm from "webxr";
+import * as wasm from "./pkg";
 
 var xrApp = new wasm.XrApp();
 xrApp.init()
