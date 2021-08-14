@@ -27,10 +27,12 @@ interface Worker : EventTarget {
 Worker includes AbstractWorker;
 
 dictionary WorkerOptions {
-  // WorkerType type = "classic"; TODO: Bug 1247687
-  // RequestCredentials credentials = "omit"; // credentials is only used if type is "module" TODO: Bug 1247687
+  WorkerType type = "classic";
+  RequestCredentials credentials = "omit"; // credentials is only used if type is "module"
   DOMString name = "";
 };
+
+enum WorkerType { "classic", "module" };
 
 [Constructor(USVString scriptURL),
  Func="mozilla::dom::ChromeWorker::WorkerAvailable",
