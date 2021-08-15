@@ -10,6 +10,5 @@ use wasm_bindgen::prelude::*;
 #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GpuStorageTextureAccess {
-    ReadOnly = "read-only",
     WriteOnly = "write-only",
 }

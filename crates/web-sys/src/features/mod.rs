@@ -2344,6 +2344,18 @@ mod gen_GpuCanvasCompositingAlphaMode;
 #[cfg(feature = "GpuCanvasCompositingAlphaMode")]
 pub use gen_GpuCanvasCompositingAlphaMode::*;
 
+#[cfg(feature = "GpuCanvasConfiguration")]
+#[allow(non_snake_case)]
+mod gen_GpuCanvasConfiguration;
+#[cfg(feature = "GpuCanvasConfiguration")]
+pub use gen_GpuCanvasConfiguration::*;
+
+#[cfg(feature = "GpuCanvasContext")]
+#[allow(non_snake_case)]
+mod gen_GpuCanvasContext;
+#[cfg(feature = "GpuCanvasContext")]
+pub use gen_GpuCanvasContext::*;
+
 #[cfg(feature = "GpuColorDict")]
 #[allow(non_snake_case)]
 mod gen_GpuColorDict;
@@ -2560,12 +2572,6 @@ mod gen_GpuIndexFormat;
 #[cfg(feature = "GpuIndexFormat")]
 pub use gen_GpuIndexFormat::*;
 
-#[cfg(feature = "GpuInputStepMode")]
-#[allow(non_snake_case)]
-mod gen_GpuInputStepMode;
-#[cfg(feature = "GpuInputStepMode")]
-pub use gen_GpuInputStepMode::*;
-
 #[cfg(feature = "GpuLoadOp")]
 #[allow(non_snake_case)]
 mod gen_GpuLoadOp;
@@ -2643,18 +2649,6 @@ pub use gen_GpuPowerPreference::*;
 mod gen_GpuPredefinedColorSpace;
 #[cfg(feature = "GpuPredefinedColorSpace")]
 pub use gen_GpuPredefinedColorSpace::*;
-
-#[cfg(feature = "GpuPresentationConfiguration")]
-#[allow(non_snake_case)]
-mod gen_GpuPresentationConfiguration;
-#[cfg(feature = "GpuPresentationConfiguration")]
-pub use gen_GpuPresentationConfiguration::*;
-
-#[cfg(feature = "GpuPresentationContext")]
-#[allow(non_snake_case)]
-mod gen_GpuPresentationContext;
-#[cfg(feature = "GpuPresentationContext")]
-pub use gen_GpuPresentationContext::*;
 
 #[cfg(feature = "GpuPrimitiveState")]
 #[allow(non_snake_case)]
@@ -2745,6 +2739,12 @@ pub use gen_GpuRenderPassDescriptor::*;
 mod gen_GpuRenderPassEncoder;
 #[cfg(feature = "GpuRenderPassEncoder")]
 pub use gen_GpuRenderPassEncoder::*;
+
+#[cfg(feature = "GpuRenderPassLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuRenderPassLayout;
+#[cfg(feature = "GpuRenderPassLayout")]
+pub use gen_GpuRenderPassLayout::*;
 
 #[cfg(feature = "GpuRenderPipeline")]
 #[allow(non_snake_case)]
@@ -2955,6 +2955,12 @@ pub use gen_GpuVertexFormat::*;
 mod gen_GpuVertexState;
 #[cfg(feature = "GpuVertexState")]
 pub use gen_GpuVertexState::*;
+
+#[cfg(feature = "GpuVertexStepMode")]
+#[allow(non_snake_case)]
+mod gen_GpuVertexStepMode;
+#[cfg(feature = "GpuVertexStepMode")]
+pub use gen_GpuVertexStepMode::*;
 
 #[cfg(feature = "GridDeclaration")]
 #[allow(non_snake_case)]
