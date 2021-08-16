@@ -1,4 +1,5 @@
 use std::collections::hash_map::DefaultHasher;
+use std::env;
 use std::hash::Hasher;
 use std::path::PathBuf;
 use std::process::Command;
@@ -21,7 +22,10 @@ fn main() {
 }
 
 fn set_schema_version_env_var() {
-    let schema_file = PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/src/lib.rs"));
+    let cargo_manifest_dir = env::var("CARGO_MANIFEST_DIR").expect(
+        "The `CARGO_MANIFEST_DIR` environment variable is needed to locate the schema file",
+    );
+    let schema_file = PathBuf::from(cargo_manifest_dir).join("src/lib.rs");
     let schema_file = std::fs::read(schema_file).unwrap();
 
     let mut hasher = DefaultHasher::new();
