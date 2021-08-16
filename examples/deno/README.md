@@ -13,4 +13,4 @@ $ deno run --allow-read test.ts
 ```
 
 The `--allow-read` flag is needed because the wasm file is read during runtime.
-This will be fixed when https://github.com/denoland/deno/issues/5609 is resolved.
+This will be fixed when https://github.com/denoland/deno/issues/2552 is resolved.
