@@ -4,22 +4,22 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUPresentationConfiguration)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUCanvasConfiguration)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuPresentationConfiguration` dictionary."]
+    #[doc = "The `GpuCanvasConfiguration` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationConfiguration`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuPresentationConfiguration;
+    pub type GpuCanvasConfiguration;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuPresentationConfiguration {
+impl GpuCanvasConfiguration {
     #[cfg(all(feature = "GpuDevice", feature = "GpuTextureFormat",))]
-    #[doc = "Construct a new `GpuPresentationConfiguration`."]
+    #[doc = "Construct a new `GpuCanvasConfiguration`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuDevice`, `GpuPresentationConfiguration`, `GpuTextureFormat`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`, `GpuDevice`, `GpuTextureFormat`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -31,15 +31,20 @@ impl GpuPresentationConfiguration {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `label` field of this object."]
+    #[cfg(feature = "GpuPredefinedColorSpace")]
+    #[doc = "Change the `colorSpace` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationConfiguration`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`, `GpuPredefinedColorSpace`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn label(&mut self, val: &str) -> &mut Self {
+    pub fn color_space(&mut self, val: GpuPredefinedColorSpace) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("colorSpace"),
+            &JsValue::from(val),
+        );
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"
@@ -51,7 +56,7 @@ impl GpuPresentationConfiguration {
     #[cfg(feature = "GpuCanvasCompositingAlphaMode")]
     #[doc = "Change the `compositingAlphaMode` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasCompositingAlphaMode`, `GpuPresentationConfiguration`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasCompositingAlphaMode`, `GpuCanvasConfiguration`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -73,7 +78,7 @@ impl GpuPresentationConfiguration {
     #[cfg(feature = "GpuDevice")]
     #[doc = "Change the `device` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuDevice`, `GpuPresentationConfiguration`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`, `GpuDevice`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -92,7 +97,7 @@ impl GpuPresentationConfiguration {
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Change the `format` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationConfiguration`, `GpuTextureFormat`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`, `GpuTextureFormat`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -110,7 +115,7 @@ impl GpuPresentationConfiguration {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `size` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationConfiguration`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -127,7 +132,7 @@ impl GpuPresentationConfiguration {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `usage` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuPresentationConfiguration`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

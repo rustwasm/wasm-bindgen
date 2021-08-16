@@ -35,21 +35,21 @@ impl GpuTextureUsage {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub const COPY_DST: u32 = 2u64 as u32;
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "The `GPUTextureUsage.SAMPLED` const."]
+    #[doc = "The `GPUTextureUsage.TEXTURE_BINDING` const."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuTextureUsage`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub const SAMPLED: u32 = 4u64 as u32;
+    pub const TEXTURE_BINDING: u32 = 4u64 as u32;
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "The `GPUTextureUsage.STORAGE` const."]
+    #[doc = "The `GPUTextureUsage.STORAGE_BINDING` const."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuTextureUsage`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub const STORAGE: u32 = 8u64 as u32;
+    pub const STORAGE_BINDING: u32 = 8u64 as u32;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "The `GPUTextureUsage.RENDER_ATTACHMENT` const."]
     #[doc = ""]

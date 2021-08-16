@@ -72,14 +72,14 @@ impl GpuVertexBufferLayout {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuInputStepMode")]
+    #[cfg(feature = "GpuVertexStepMode")]
     #[doc = "Change the `stepMode` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuInputStepMode`, `GpuVertexBufferLayout`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexBufferLayout`, `GpuVertexStepMode`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn step_mode(&mut self, val: GpuInputStepMode) -> &mut Self {
+    pub fn step_mode(&mut self, val: GpuVertexStepMode) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
