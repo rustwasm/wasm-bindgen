@@ -8140,6 +8140,12 @@ mod gen_WorkerOptions;
 #[cfg(feature = "WorkerOptions")]
 pub use gen_WorkerOptions::*;
 
+#[cfg(feature = "WorkerType")]
+#[allow(non_snake_case)]
+mod gen_WorkerType;
+#[cfg(feature = "WorkerType")]
+pub use gen_WorkerType::*;
+
 #[cfg(feature = "Worklet")]
 #[allow(non_snake_case)]
 mod gen_Worklet;
