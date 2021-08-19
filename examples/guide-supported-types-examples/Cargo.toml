@@ -8,5 +8,5 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.75"
-js-sys = "0.3.52"
+wasm-bindgen = "0.2.76"
+js-sys = "0.3.53"
