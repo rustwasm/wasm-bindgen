@@ -25,7 +25,6 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-test-macro",
     "wasm-bindgen-test",
     "wasm-bindgen-wasm-interpreter",
-    "wasm-bindgen-webidl",
     "wasm-bindgen-wasm-conventions",
     "wasm-bindgen-threads-xform",
     "wasm-bindgen-multi-value-xform",
@@ -46,6 +45,7 @@ const CRATES_TO_AVOID_PUBLISH: &[&str] = &[
     "sample",
     "webidl-tests",
     "typescript-tests",
+    "wasm-bindgen-webidl",
 ];
 
 struct Crate {
