@@ -188,6 +188,7 @@ impl<'a> Context<'a> {
                     shim_idx: 0,
                     arguments: vec![Descriptor::I32; 3],
                     ret: Descriptor::Externref,
+                    inner_ret: None,
                 };
                 let id = self.import_adapter(*id, signature, AdapterJsImportKind::Normal)?;
                 // Synthesize the two integer pointers we pass through which
@@ -455,6 +456,7 @@ impl<'a> Context<'a> {
                 debug_name: wasm_name,
                 comments: concatenate_comments(&export.comments),
                 arg_names: Some(export.function.arg_names),
+                asyncness: export.function.asyncness,
                 kind,
                 generate_typescript: export.function.generate_typescript,
             },
@@ -720,6 +722,7 @@ impl<'a> Context<'a> {
                 arguments: Vec::new(),
                 shim_idx: 0,
                 ret: descriptor,
+                inner_ret: None,
             },
             AdapterJsImportKind::Normal,
         )?;
@@ -748,6 +751,7 @@ impl<'a> Context<'a> {
                 arguments: vec![Descriptor::Ref(Box::new(Descriptor::Externref))],
                 shim_idx: 0,
                 ret: Descriptor::Boolean,
+                inner_ret: None,
             },
             AdapterJsImportKind::Normal,
         )?;
@@ -797,6 +801,7 @@ impl<'a> Context<'a> {
                 arguments: vec![Descriptor::I32],
                 shim_idx: 0,
                 ret: descriptor.clone(),
+                inner_ret: None,
             };
             let getter_id = self.export_adapter(getter_id, getter_descriptor)?;
             self.aux.export_map.insert(
@@ -804,6 +809,7 @@ impl<'a> Context<'a> {
                 AuxExport {
                     debug_name: format!("getter for `{}::{}`", struct_.name, field.name),
                     arg_names: None,
+                    asyncness: false,
                     comments: concatenate_comments(&field.comments),
                     kind: AuxExportKind::Getter {
                         class: struct_.name.to_string(),
@@ -824,6 +830,7 @@ impl<'a> Context<'a> {
                 arguments: vec![Descriptor::I32, descriptor],
                 shim_idx: 0,
                 ret: Descriptor::Unit,
+                inner_ret: None,
             };
             let setter_id = self.export_adapter(setter_id, setter_descriptor)?;
             self.aux.export_map.insert(
@@ -831,6 +838,7 @@ impl<'a> Context<'a> {
                 AuxExport {
                     debug_name: format!("setter for `{}::{}`", struct_.name, field.name),
                     arg_names: None,
+                    asyncness: false,
                     comments: concatenate_comments(&field.comments),
                     kind: AuxExportKind::Setter {
                         class: struct_.name.to_string(),
@@ -855,6 +863,7 @@ impl<'a> Context<'a> {
                 shim_idx: 0,
                 arguments: vec![Descriptor::I32],
                 ret: Descriptor::Externref,
+                inner_ret: None,
             };
             let id = self.import_adapter(import_id, signature, AdapterJsImportKind::Normal)?;
             self.aux
@@ -981,6 +990,7 @@ impl<'a> Context<'a> {
             let id = self.adapters.append(
                 params,
                 results,
+                vec![],
                 AdapterKind::Import {
                     module: import.module.clone(),
                     name: import.name.clone(),
@@ -1015,6 +1025,7 @@ impl<'a> Context<'a> {
                 self.adapters.append(
                     params,
                     results,
+                    vec![],
                     AdapterKind::Local {
                         instructions: Vec::new(),
                     },
@@ -1066,6 +1077,7 @@ impl<'a> Context<'a> {
                 debug_name: format!("standard export {:?}", id),
                 comments: String::new(),
                 arg_names: None,
+                asyncness: false,
                 kind,
                 generate_typescript: true,
             };
@@ -1204,6 +1216,7 @@ impl<'a> Context<'a> {
         let f = args.cx.adapters.append(
             args.output,
             ret.input,
+            vec![],
             AdapterKind::Import {
                 module: import_module,
                 name: import_name,
@@ -1237,10 +1250,12 @@ impl<'a> Context<'a> {
         } else {
             ret.output
         };
-        let id = args
-            .cx
-            .adapters
-            .append(args.input, results, AdapterKind::Local { instructions });
+        let id = args.cx.adapters.append(
+            args.input,
+            results,
+            vec![],
+            AdapterKind::Local { instructions },
+        );
         args.cx.adapters.implements.push((import_id, core_id, id));
         Ok(f)
     }
@@ -1279,6 +1294,15 @@ impl<'a> Context<'a> {
         }
 
         // ... then the returned value being translated back
+
+        let inner_ret_output = if signature.inner_ret.is_some() {
+            let mut inner_ret = args.cx.instruction_builder(true);
+            inner_ret.outgoing(&signature.inner_ret.unwrap())?;
+            inner_ret.output
+        } else {
+            vec![]
+        };
+
         let mut ret = args.cx.instruction_builder(true);
         ret.outgoing(&signature.ret)?;
         let uses_retptr = ret.input.len() > 1;
@@ -1334,10 +1358,12 @@ impl<'a> Context<'a> {
         }
         instructions.extend(ret.instructions);
 
-        Ok(ret
-            .cx
-            .adapters
-            .append(args.input, ret.output, AdapterKind::Local { instructions }))
+        Ok(ret.cx.adapters.append(
+            args.input,
+            ret.output,
+            inner_ret_output,
+            AdapterKind::Local { instructions },
+        ))
     }
 
     fn instruction_builder<'b>(&'b mut self, return_position: bool) -> InstructionBuilder<'b, 'a> {

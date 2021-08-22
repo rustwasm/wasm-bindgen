@@ -71,6 +71,8 @@ pub struct AuxExport {
     /// Argument names in Rust forwarded here to configure the names that show
     /// up in TypeScript bindings.
     pub arg_names: Option<Vec<String>>,
+    /// Whether this is an async function, to configure the TypeScript return value.
+    pub asyncness: bool,
     /// What kind of function this is and where it shows up
     pub kind: AuxExportKind,
     /// Whether typescript bindings should be generated for this export.

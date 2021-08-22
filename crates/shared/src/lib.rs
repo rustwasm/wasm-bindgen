@@ -115,6 +115,7 @@ macro_rules! shared_api {
 
         struct Function<'a> {
             arg_names: Vec<String>,
+            asyncness: bool,
             name: &'a str,
             generate_typescript: bool,
         }

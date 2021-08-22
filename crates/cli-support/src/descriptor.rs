@@ -76,6 +76,7 @@ pub struct Function {
     pub arguments: Vec<Descriptor>,
     pub shim_idx: u32,
     pub ret: Descriptor,
+    pub inner_ret: Option<Descriptor>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -237,6 +238,7 @@ impl Function {
             arguments,
             shim_idx,
             ret: Descriptor::_decode(data, false),
+            inner_ret: Some(Descriptor::_decode(data, false)),
         }
     }
 }

@@ -205,6 +205,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         .collect::<Vec<_>>();
     Function {
         arg_names,
+        asyncness: func.r#async,
         name: &func.name,
         generate_typescript: func.generate_typescript,
     }

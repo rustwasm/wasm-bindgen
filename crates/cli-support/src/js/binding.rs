@@ -101,6 +101,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         adapter: &Adapter,
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
+        asyncness: bool,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -223,10 +224,11 @@ impl<'a, 'b> Builder<'a, 'b> {
         let (ts_sig, ts_arg_tys, ts_ret_ty) = self.typescript_signature(
             &function_args,
             &arg_tys,
-            &adapter.results,
+            &adapter.inner_results,
             &mut might_be_optional_field,
+            asyncness,
         );
-        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
+        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, asyncness);
         Ok(JsFunction {
             code,
             ts_sig,
@@ -250,6 +252,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_tys: &[&AdapterType],
         result_tys: &[AdapterType],
         might_be_optional_field: &mut bool,
+        asyncness: bool,
     ) -> (String, Vec<String>, Option<String>) {
         // Build up the typescript signature as well
         let mut omittable = true;
@@ -298,7 +301,13 @@ impl<'a, 'b> Builder<'a, 'b> {
                 1 => adapter2ts(&result_tys[0], &mut ret),
                 _ => ret.push_str("[any]"),
             }
+            if asyncness {
+                ts.push_str("Promise<");
+            }
             ts.push_str(&ret);
+            if asyncness {
+                ts.push_str(">");
+            }
             ts_ret = Some(ret);
         }
         return (ts, ts_arg_tys, ts_ret);
@@ -311,6 +320,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_names: &[String],
         arg_tys: &[&AdapterType],
         ts_ret: &Option<String>,
+        asyncness: bool,
     ) -> String {
         let mut ret = String::new();
         for (name, ty) in arg_names.iter().zip(arg_tys) {
@@ -322,7 +332,15 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         if let Some(ts) = ts_ret {
             if ts != "void" {
-                ret.push_str(&format!("@returns {{{}}}", ts));
+                ret.push_str("@returns {");
+                if asyncness {
+                    ret.push_str("Promise<");
+                }
+                ret.push_str(ts);
+                if asyncness {
+                    ret.push_str(">");
+                }
+                ret.push_str("}");
             }
         }
         ret
