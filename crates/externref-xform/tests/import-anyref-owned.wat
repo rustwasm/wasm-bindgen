@@ -16,7 +16,7 @@
   (type (;1;) (func (param i32)))
   (type (;2;) (func (param externref)))
   (import "" "a" (func $a (type 2)))
-  (func $a_externref_shim (@name "a externref shim") (type 1) (param i32)
+  (func $#func1<a_externref_shim> (@name "a externref shim") (type 1) (param i32)
     local.get 0
     table.get 0
     local.get 0
@@ -24,7 +24,7 @@
     call $a)
   (func (;2;) (type 0)
     i32.const 0
-    call $a_externref_shim)
+    call $#func1<a_externref_shim>)
   (func $dealloc (type 1) (param i32))
   (table (;0;) 32 externref)
   (export "foo" (func 2)))
