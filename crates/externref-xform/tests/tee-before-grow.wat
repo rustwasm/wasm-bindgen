@@ -28,7 +28,7 @@
     local.get 1
     table.grow 0
     drop)
-  (func $foo_externref_shim (@name "foo externref shim") (type 2) (param externref)
+  (func $#func1<foo_externref_shim> (@name "foo externref shim") (type 2) (param externref)
     (local i32)
     call $alloc
     local.tee 1
@@ -39,5 +39,5 @@
   (func $alloc (type 0) (result i32)
     i32.const 0)
   (table (;0;) 32 externref)
-  (export "foo" (func $foo_externref_shim)))
+  (export "foo" (func $#func1<foo_externref_shim>)))
 ;)
