@@ -228,7 +228,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             &mut might_be_optional_field,
             asyncness,
         );
-        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, asyncness);
+        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
         Ok(JsFunction {
             code,
             ts_sig,
@@ -317,7 +317,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_names: &[String],
         arg_tys: &[&AdapterType],
         ts_ret: &Option<String>,
-        asyncness: bool,
     ) -> String {
         let mut ret = String::new();
         for (name, ty) in arg_names.iter().zip(arg_tys) {
@@ -328,7 +327,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             ret.push_str("\n");
         }
         if let Some(ts) = ts_ret {
-            if ts != "void" || asyncness == true {
+            if ts != "void" {
                 ret.push_str(&format!("@returns {{{}}}", ts));
             }
         }
