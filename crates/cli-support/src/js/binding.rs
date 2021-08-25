@@ -302,12 +302,9 @@ impl<'a, 'b> Builder<'a, 'b> {
                 _ => ret.push_str("[any]"),
             }
             if asyncness {
-                ts.push_str("Promise<");
+                ret = format!("Promise<{}>", ret);
             }
             ts.push_str(&ret);
-            if asyncness {
-                ts.push_str(">");
-            }
             ts_ret = Some(ret);
         }
         return (ts, ts_arg_tys, ts_ret);
@@ -331,16 +328,8 @@ impl<'a, 'b> Builder<'a, 'b> {
             ret.push_str("\n");
         }
         if let Some(ts) = ts_ret {
-            if ts != "void" {
-                ret.push_str("@returns {");
-                if asyncness {
-                    ret.push_str("Promise<");
-                }
-                ret.push_str(ts);
-                if asyncness {
-                    ret.push_str(">");
-                }
-                ret.push_str("}");
+            if ts != "void" || asyncness == true {
+                ret.push_str(&format!("@returns {{{}}}", ts));
             }
         }
         ret
