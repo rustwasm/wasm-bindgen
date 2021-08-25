@@ -66,11 +66,13 @@ fn runtest(test: &Path) -> Result<()> {
 
             [dependencies]
             wasm-bindgen = {{ path = '{}' }}
+            wasm-bindgen-futures = {{ path = '{}/crates/futures' }}
 
             [lib]
             crate-type = ['cdylib']
             path = '{}'
         ",
+        repo_root().display(),
         repo_root().display(),
         test.display(),
     );
