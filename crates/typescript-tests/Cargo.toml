@@ -6,6 +6,7 @@ edition = "2018"
 
 [dependencies]
 wasm-bindgen = { path = '../..' }
+wasm-bindgen-futures = { path = '../futures' }
 web-sys = { path = '../web-sys', features = [ 'HtmlElement', 'Node', 'Document' ] }
 js-sys = { path = '../js-sys' }
 
