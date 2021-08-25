@@ -93,11 +93,7 @@ fn runtest(test: &Path) -> Result<()> {
         .join("reference_test.wasm");
 
     let mut bindgen = Command::cargo_bin("wasm-bindgen")?;
-    bindgen
-        .arg("--out-dir")
-        .arg(td.path())
-        .arg(&wasm)
-        .arg("--no-typescript");
+    bindgen.arg("--out-dir").arg(td.path()).arg(&wasm);
     if contents.contains("// enable-externref") {
         bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
     }
@@ -114,6 +110,8 @@ fn runtest(test: &Path) -> Result<()> {
     } else {
         let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
         assert_same(&js, &test.with_extension("js"))?;
+        let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
+        assert_same(&d_ts, &test.with_extension("d.ts"))?;
         let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
         assert_same(&wat, &test.with_extension("wat"))?;
     }
