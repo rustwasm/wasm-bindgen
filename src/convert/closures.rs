@@ -53,6 +53,7 @@ macro_rules! stack_closures {
                 inform($cnt);
                 $(<$var as WasmDescribe>::describe();)*
                 <R as WasmDescribe>::describe();
+                <R as WasmDescribe>::describe();
             }
         }
 
@@ -100,6 +101,7 @@ macro_rules! stack_closures {
                 inform($invoke_mut::<$($var,)* R> as u32);
                 inform($cnt);
                 $(<$var as WasmDescribe>::describe();)*
+                <R as WasmDescribe>::describe();
                 <R as WasmDescribe>::describe();
             }
         }
@@ -166,6 +168,7 @@ where
         inform(1);
         <&A as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();
+        <R as WasmDescribe>::describe();
     }
 }
 
@@ -216,6 +219,7 @@ where
         inform(invoke1_mut_ref::<A, R> as u32);
         inform(1);
         <&A as WasmDescribe>::describe();
+        <R as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();
     }
 }

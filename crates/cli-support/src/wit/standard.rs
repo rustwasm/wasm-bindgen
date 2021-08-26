@@ -26,6 +26,7 @@ pub struct Adapter {
     pub id: AdapterId,
     pub params: Vec<AdapterType>,
     pub results: Vec<AdapterType>,
+    pub inner_results: Vec<AdapterType>,
     pub kind: AdapterKind,
 }
 
@@ -368,6 +369,7 @@ impl NonstandardWitSection {
         &mut self,
         params: Vec<AdapterType>,
         results: Vec<AdapterType>,
+        inner_results: Vec<AdapterType>,
         kind: AdapterKind,
     ) -> AdapterId {
         let id = AdapterId(self.adapters.len());
@@ -377,6 +379,7 @@ impl NonstandardWitSection {
                 id,
                 params,
                 results,
+                inner_results,
                 kind,
             },
         );

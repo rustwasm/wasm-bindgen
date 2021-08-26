@@ -101,6 +101,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         adapter: &Adapter,
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
+        asyncness: bool,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -223,8 +224,9 @@ impl<'a, 'b> Builder<'a, 'b> {
         let (ts_sig, ts_arg_tys, ts_ret_ty) = self.typescript_signature(
             &function_args,
             &arg_tys,
-            &adapter.results,
+            &adapter.inner_results,
             &mut might_be_optional_field,
+            asyncness,
         );
         let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
         Ok(JsFunction {
@@ -250,6 +252,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_tys: &[&AdapterType],
         result_tys: &[AdapterType],
         might_be_optional_field: &mut bool,
+        asyncness: bool,
     ) -> (String, Vec<String>, Option<String>) {
         // Build up the typescript signature as well
         let mut omittable = true;
@@ -297,6 +300,9 @@ impl<'a, 'b> Builder<'a, 'b> {
                 0 => ret.push_str("void"),
                 1 => adapter2ts(&result_tys[0], &mut ret),
                 _ => ret.push_str("[any]"),
+            }
+            if asyncness {
+                ret = format!("Promise<{}>", ret);
             }
             ts.push_str(&ret);
             ts_ret = Some(ret);

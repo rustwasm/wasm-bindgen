@@ -459,9 +459,10 @@ impl TryToTokens for ast::Export {
         // For an `async` function we always run it through `future_to_promise`
         // since we're returning a promise to JS, and this will implicitly
         // require that the function returns a `Future<Output = Result<...>>`
-        let (ret_ty, ret_expr) = if self.function.r#async {
+        let (ret_ty, inner_ret_ty, ret_expr) = if self.function.r#async {
             if self.start {
                 (
+                    quote! { () },
                     quote! { () },
                     quote! {
                         wasm_bindgen_futures::spawn_local(async move {
@@ -472,6 +473,7 @@ impl TryToTokens for ast::Export {
             } else {
                 (
                     quote! { wasm_bindgen::JsValue },
+                    quote! { #syn_ret },
                     quote! {
                         wasm_bindgen_futures::future_to_promise(async move {
                             <#syn_ret as wasm_bindgen::__rt::IntoJsResult>::into_js_result(#ret.await)
@@ -482,16 +484,18 @@ impl TryToTokens for ast::Export {
         } else if self.start {
             (
                 quote! { () },
+                quote! { () },
                 quote! { <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret) },
             )
         } else {
-            (quote! { #syn_ret }, quote! { #ret })
+            (quote! { #syn_ret }, quote! { #syn_ret }, quote! { #ret })
         };
 
         let projection = quote! { <#ret_ty as wasm_bindgen::convert::ReturnWasmAbi> };
         let convert_ret = quote! { #projection::return_abi(#ret_expr) };
         let describe_ret = quote! {
             <#ret_ty as WasmDescribe>::describe();
+            <#inner_ret_ty as WasmDescribe>::describe();
         };
         let nargs = self.function.arguments.len() as u32;
         let attrs = &self.function.rust_attrs;
@@ -1170,6 +1174,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
                 inform(0);
                 inform(#nargs);
                 #(<#argtys as WasmDescribe>::describe();)*
+                #inform_ret
                 #inform_ret
             },
             attrs: f.function.rust_attrs.clone(),
