@@ -19,8 +19,7 @@ test = false
 doctest = false
 
 [features]
-rust-num = ["num-bigint", "num-traits", "wasm-bindgen/num-traits"]
-num-traits-full = ["num-traits", "wasm-bindgen/num-traits"]
+rust-num = ["num-bigint", "num-traits"]
 
 [dependencies]
 wasm-bindgen = { path = "../..", version = "0.2.75" }

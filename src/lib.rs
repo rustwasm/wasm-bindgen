@@ -752,22 +752,6 @@ impl Rem for &JsValue {
 
 forward_deref_binop!(impl Rem, rem for JsValue);
 
-#[cfg(feature = "num-traits")]
-use num_traits::Pow;
-
-#[cfg(feature = "num-traits")]
-impl num_traits::Pow<&JsValue> for &JsValue {
-    type Output = JsValue;
-
-    #[inline]
-    fn pow(self, rhs: &JsValue) -> Self::Output {
-        JsValue::pow(self, rhs)
-    }
-}
-
-#[cfg(feature = "num-traits")]
-forward_deref_binop!(impl Pow, pow for JsValue);
-
 impl<'a> From<&'a str> for JsValue {
     #[inline]
     fn from(s: &'a str) -> JsValue {
