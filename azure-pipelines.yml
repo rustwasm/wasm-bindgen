@@ -93,7 +93,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2021-05-09
+          toolchain: nightly-2021-09-02
       - template: ci/azure-install-node.yml
       - script: cargo test --target wasm32-unknown-unknown --features nightly --test wasm
 
@@ -210,7 +210,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2021-05-09
+          toolchain: nightly-2021-09-02
       - script: rustup component add rust-src
         displayName: "install rust-src"
       - script: |
