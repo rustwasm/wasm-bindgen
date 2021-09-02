@@ -85,6 +85,9 @@ intrinsics! {
         #[symbol = "__wbindgen_jsval_eq"]
         #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
         JsvalEq,
+        #[symbol = "__wbindgen_jsval_loose_eq"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        JsvalLooseEq,
         #[symbol = "__wbindgen_is_function"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsFunction,
@@ -103,9 +106,81 @@ intrinsics! {
         #[symbol = "__wbindgen_is_string"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsString,
+        #[symbol = "__wbindgen_is_bigint"]
+        #[signature = fn(ref_externref()) -> Boolean]
+        IsBigInt,
+        #[symbol = "__wbindgen_typeof"]
+        #[signature = fn(ref_externref()) -> Externref]
+        Typeof,
+        #[symbol = "__wbindgen_in"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        In,
         #[symbol = "__wbindgen_is_falsy"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsFalsy,
+        #[symbol = "__wbindgen_as_number"]
+        #[signature = fn(ref_externref()) -> F64]
+        AsNumber,
+        #[symbol = "__wbindgen_try_into_number"]
+        #[signature = fn(ref_externref()) -> Externref]
+        TryIntoNumber,
+        #[symbol = "__wbindgen_neg"]
+        #[signature = fn(ref_externref()) -> Externref]
+        Neg,
+        #[symbol = "__wbindgen_bit_and"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        BitAnd,
+        #[symbol = "__wbindgen_bit_or"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        BitOr,
+        #[symbol = "__wbindgen_bit_xor"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        BitXor,
+        #[symbol = "__wbindgen_bit_not"]
+        #[signature = fn(ref_externref()) -> Externref]
+        BitNot,
+        #[symbol = "__wbindgen_shl"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Shl,
+        #[symbol = "__wbindgen_shr"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Shr,
+        #[symbol = "__wbindgen_unsigned_shr"]
+        #[signature = fn(ref_externref(), ref_externref()) -> U32]
+        UnsignedShr,
+        #[symbol = "__wbindgen_add"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Add,
+        #[symbol = "__wbindgen_sub"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Sub,
+        #[symbol = "__wbindgen_div"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Div,
+        #[symbol = "__wbindgen_checked_div"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        CheckedDiv,
+        #[symbol = "__wbindgen_mul"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Mul,
+        #[symbol = "__wbindgen_rem"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Rem,
+        #[symbol = "__wbindgen_pow"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Externref]
+        Pow,
+        #[symbol = "__wbindgen_lt"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        LT,
+        #[symbol = "__wbindgen_le"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        LE,
+        #[symbol = "__wbindgen_ge"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        GE,
+        #[symbol = "__wbindgen_gt"]
+        #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
+        GT,
         #[symbol = "__wbindgen_object_clone_ref"]
         #[signature = fn(ref_externref()) -> Externref]
         ObjectCloneRef,
@@ -118,6 +193,9 @@ intrinsics! {
         #[symbol = "__wbindgen_number_new"]
         #[signature = fn(F64) -> Externref]
         NumberNew,
+        #[symbol = "__wbindgen_bigint_new"]
+        #[signature = fn(ref_string()) -> Externref]
+        BigIntNew,
         #[symbol = "__wbindgen_string_new"]
         #[signature = fn(ref_string()) -> Externref]
         StringNew,

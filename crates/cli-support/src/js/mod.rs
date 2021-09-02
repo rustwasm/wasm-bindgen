@@ -2907,6 +2907,11 @@ impl<'a> Context<'a> {
                 format!("{} === {}", args[0], args[1])
             }
 
+            Intrinsic::JsvalLooseEq => {
+                assert_eq!(args.len(), 2);
+                format!("{} == {}", args[0], args[1])
+            }
+
             Intrinsic::IsFunction => {
                 assert_eq!(args.len(), 1);
                 format!("typeof({}) === 'function'", args[0])
@@ -2938,9 +2943,129 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'string'", args[0])
             }
 
+            Intrinsic::IsBigInt => {
+                assert_eq!(args.len(), 1);
+                format!("typeof({}) === 'bigint'", args[0])
+            }
+
+            Intrinsic::Typeof => {
+                assert_eq!(args.len(), 1);
+                format!("typeof {}", args[0])
+            }
+
+            Intrinsic::In => {
+                assert_eq!(args.len(), 2);
+                format!("{} in {}", args[0], args[1])
+            }
+
             Intrinsic::IsFalsy => {
                 assert_eq!(args.len(), 1);
                 format!("!{}", args[0])
+            }
+
+            Intrinsic::AsNumber => {
+                assert_eq!(args.len(), 1);
+                format!("+{}", args[0])
+            }
+
+            Intrinsic::TryIntoNumber => {
+                assert_eq!(args.len(), 1);
+                format!("try {{ +{} }} catch(e) {{ e }}", args[0])
+            }
+
+            Intrinsic::Neg => {
+                assert_eq!(args.len(), 1);
+                format!("-{}", args[0])
+            }
+
+            Intrinsic::BitAnd => {
+                assert_eq!(args.len(), 2);
+                format!("{} & {}", args[0], args[1])
+            }
+
+            Intrinsic::BitOr => {
+                assert_eq!(args.len(), 2);
+                format!("{} | {}", args[0], args[1])
+            }
+
+            Intrinsic::BitXor => {
+                assert_eq!(args.len(), 2);
+                format!("{} ^ {}", args[0], args[1])
+            }
+
+            Intrinsic::BitNot => {
+                assert_eq!(args.len(), 1);
+                format!("~{}", args[0])
+            }
+
+            Intrinsic::Shl => {
+                assert_eq!(args.len(), 2);
+                format!("{} << {}", args[0], args[1])
+            }
+
+            Intrinsic::Shr => {
+                assert_eq!(args.len(), 2);
+                format!("{} >> {}", args[0], args[1])
+            }
+
+            Intrinsic::UnsignedShr => {
+                assert_eq!(args.len(), 2);
+                format!("{} >>> {}", args[0], args[1])
+            }
+
+            Intrinsic::Add => {
+                assert_eq!(args.len(), 2);
+                format!("{} + {}", args[0], args[1])
+            }
+
+            Intrinsic::Sub => {
+                assert_eq!(args.len(), 2);
+                format!("{} - {}", args[0], args[1])
+            }
+
+            Intrinsic::Div => {
+                assert_eq!(args.len(), 2);
+                format!("{} / {}", args[0], args[1])
+            }
+
+            Intrinsic::CheckedDiv => {
+                assert_eq!(args.len(), 2);
+                format!("try {{ {} / {} }} catch (e) {{ if (e instanceof RangeError) {{ e }} else {{ throw e }} }}", args[0], args[1])
+            }
+
+            Intrinsic::Mul => {
+                assert_eq!(args.len(), 2);
+                format!("{} * {}", args[0], args[1])
+            }
+
+            Intrinsic::Rem => {
+                assert_eq!(args.len(), 2);
+                format!("{} % {}", args[0], args[1])
+            }
+
+            Intrinsic::Pow => {
+                assert_eq!(args.len(), 2);
+                format!("{} ** {}", args[0], args[1])
+            }
+
+            Intrinsic::LT => {
+                assert_eq!(args.len(), 2);
+                format!("{} < {}", args[0], args[1])
+            }
+
+            Intrinsic::LE => {
+                assert_eq!(args.len(), 2);
+                format!("{} <= {}", args[0], args[1])
+            }
+
+            Intrinsic::GE => {
+                assert_eq!(args.len(), 2);
+                format!("{} >= {}", args[0], args[1])
+            }
+
+            Intrinsic::GT => {
+                assert_eq!(args.len(), 2);
+                format!("{} > {}", args[0], args[1])
             }
 
             Intrinsic::ObjectCloneRef => {
@@ -2966,6 +3091,11 @@ impl<'a> Context<'a> {
             Intrinsic::NumberNew => {
                 assert_eq!(args.len(), 1);
                 args[0].clone()
+            }
+
+            Intrinsic::BigIntNew => {
+                assert_eq!(args.len(), 1);
+                format!("BigInt({})", args[0])
             }
 
             Intrinsic::StringNew => {
