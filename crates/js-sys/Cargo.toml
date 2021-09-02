@@ -18,13 +18,8 @@ edition = "2018"
 test = false
 doctest = false
 
-[features]
-rust-num = ["num-bigint", "num-traits"]
-
 [dependencies]
 wasm-bindgen = { path = "../..", version = "0.2.76" }
-num-bigint = { version = "0.4.1", optional = true }
-num-traits = { version = "0.2.14", optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = { path = '../test', version = '=0.3.26' }
