@@ -5,7 +5,7 @@
 //! APIs. Only the things that are guaranteed to exist in the global scope by
 //! the ECMAScript standard.
 //!
-//! https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+//! <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>
 //!
 //! ## A Note About `camelCase`, `snake_case`, and Naming Conventions
 //!
