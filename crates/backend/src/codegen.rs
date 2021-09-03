@@ -7,7 +7,6 @@ use quote::{quote, ToTokens};
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
-use syn;
 use wasm_bindgen_shared as shared;
 
 /// A trait for converting AST structs into Tokens and adding them to a TokenStream,
@@ -145,9 +144,12 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
+
+        let (impl_generics, ty_generics, where_clause) = self.generics.split_for_impl();
+
         (quote! {
             #[allow(clippy::all)]
-            impl wasm_bindgen::describe::WasmDescribe for #name {
+            impl #impl_generics wasm_bindgen::describe::WasmDescribe for #name #ty_generics #where_clause {
                 fn describe() {
                     use wasm_bindgen::__wbindgen_if_not_std;
                     __wbindgen_if_not_std! {
@@ -164,7 +166,7 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl wasm_bindgen::convert::IntoWasmAbi for #name {
+            impl #impl_generics wasm_bindgen::convert::IntoWasmAbi for #name #ty_generics #where_clause {
                 type Abi = u32;
 
                 fn into_abi(self) -> u32 {
@@ -175,14 +177,14 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl wasm_bindgen::convert::FromWasmAbi for #name {
+            impl #impl_generics wasm_bindgen::convert::FromWasmAbi for #name #ty_generics #where_clause {
                 type Abi = u32;
 
                 unsafe fn from_abi(js: u32) -> Self {
                     use wasm_bindgen::__rt::std::boxed::Box;
                     use wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
 
-                    let ptr = js as *mut WasmRefCell<#name>;
+                    let ptr = js as *mut WasmRefCell<#name #ty_generics>;
                     assert_not_null(ptr);
                     let js = Box::from_raw(ptr);
                     (*js).borrow_mut(); // make sure no one's borrowing
@@ -191,10 +193,10 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl wasm_bindgen::__rt::core::convert::From<#name> for
-                wasm_bindgen::JsValue
+            impl #impl_generics wasm_bindgen::__rt::core::convert::From<#name #ty_generics> for
+                wasm_bindgen::JsValue #where_clause
             {
-                fn from(value: #name) -> Self {
+                fn from(value: #name #ty_generics) -> Self {
                     let ptr = wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -224,35 +226,35 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl wasm_bindgen::convert::RefFromWasmAbi for #name {
+            impl #impl_generics wasm_bindgen::convert::RefFromWasmAbi for #name #ty_generics #where_clause {
                 type Abi = u32;
-                type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
+                type Anchor = wasm_bindgen::__rt::Ref<'static, #name #ty_generics>;
 
                 unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
+                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name #ty_generics>;
                     wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow()
                 }
             }
 
             #[allow(clippy::all)]
-            impl wasm_bindgen::convert::RefMutFromWasmAbi for #name {
+            impl #impl_generics wasm_bindgen::convert::RefMutFromWasmAbi for #name #ty_generics #where_clause {
                 type Abi = u32;
-                type Anchor = wasm_bindgen::__rt::RefMut<'static, #name>;
+                type Anchor = wasm_bindgen::__rt::RefMut<'static, #name #ty_generics>;
 
                 unsafe fn ref_mut_from_abi(js: Self::Abi) -> Self::Anchor {
-                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
+                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name #ty_generics>;
                     wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow_mut()
                 }
             }
 
-            impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
+            impl #impl_generics wasm_bindgen::convert::OptionIntoWasmAbi for #name #ty_generics #where_clause {
                 #[inline]
                 fn none() -> Self::Abi { 0 }
             }
 
-            impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
+            impl #impl_generics wasm_bindgen::convert::OptionFromWasmAbi for #name #ty_generics #where_clause {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
             }
@@ -624,14 +626,53 @@ impl ToTokens for ast::ImportType {
 
         let no_deref = self.no_deref;
 
+        let tuple;
+
+        let mut generic_tuple_type = syn::TypeTuple {
+            paren_token: syn::token::Paren::default(),
+            elems: syn::punctuated::Punctuated::new(),
+        };
+
+        let (impl_generics, ty_generics, where_clause) = match self.generics {
+            Some(ref generic) => {
+                if generic.lifetimes().next().is_some() {
+                    panic!("Imported JS types can't have lifetime parameters")
+                }
+
+                generic.type_params().for_each(|type_param| {
+                    generic_tuple_type
+                        .elems
+                        .push(syn::Type::Reference(syn::TypeReference {
+                            and_token: syn::Token![&](Span::call_site()),
+                            lifetime: Some(syn::Lifetime::new("'static", Span::call_site())),
+                            mutability: None,
+                            elem: Box::new(
+                                syn::parse2(type_param.ident.to_token_stream()).unwrap(),
+                            ),
+                        }))
+                });
+
+                tuple = generic.split_for_impl();
+                (Some(tuple.0), Some(tuple.1), tuple.2)
+            }
+            None => (None, None, None),
+        };
+
+        let mut lifetime_generics = self.generics.clone().unwrap_or_default();
+        let lifetime = syn::Lifetime::new("'a", Span::call_site());
+        let generic_param: syn::GenericParam = syn::LifetimeDef::new(lifetime.clone()).into();
+        lifetime_generics.params.push(generic_param);
+        let (lifetime_impl_generics, _, _) = lifetime_generics.split_for_impl();
+
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
             #[doc = #doc_comment]
             #[repr(transparent)]
             #[allow(clippy::all)]
-            #vis struct #rust_name {
-                obj: #internal_obj
+            #vis struct #rust_name #ty_generics #where_clause {
+                obj: #internal_obj,
+                phantom: ::std::marker::PhantomData<#generic_tuple_type>,
             }
 
             #[allow(bad_style)]
@@ -644,13 +685,13 @@ impl ToTokens for ast::ImportType {
                 use wasm_bindgen::{JsValue, JsCast, JsObject};
                 use wasm_bindgen::__rt::core;
 
-                impl WasmDescribe for #rust_name {
+                impl #impl_generics WasmDescribe for #rust_name #ty_generics #where_clause {
                     fn describe() {
                         #description
                     }
                 }
 
-                impl IntoWasmAbi for #rust_name {
+                impl #impl_generics IntoWasmAbi for #rust_name #ty_generics #where_clause {
                     type Abi = <JsValue as IntoWasmAbi>::Abi;
 
                     #[inline]
@@ -659,38 +700,38 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
-                impl OptionIntoWasmAbi for #rust_name {
+                impl #impl_generics OptionIntoWasmAbi for #rust_name #ty_generics #where_clause {
                     #[inline]
                     fn none() -> Self::Abi {
                         0
                     }
                 }
 
-                impl<'a> OptionIntoWasmAbi for &'a #rust_name {
+                impl #lifetime_impl_generics OptionIntoWasmAbi for & #lifetime #rust_name #ty_generics #where_clause {
                     #[inline]
                     fn none() -> Self::Abi {
                         0
                     }
                 }
 
-                impl FromWasmAbi for #rust_name {
+                impl #impl_generics FromWasmAbi for #rust_name #ty_generics #where_clause {
                     type Abi = <JsValue as FromWasmAbi>::Abi;
 
                     #[inline]
                     unsafe fn from_abi(js: Self::Abi) -> Self {
-                        #rust_name {
+                        #rust_name #ty_generics {
                             obj: JsValue::from_abi(js).into(),
                         }
                     }
                 }
 
-                impl OptionFromWasmAbi for #rust_name {
+                impl #impl_generics OptionFromWasmAbi for #rust_name #ty_generics #where_clause {
                     #[inline]
                     fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
                 }
 
-                impl<'a> IntoWasmAbi for &'a #rust_name {
-                    type Abi = <&'a JsValue as IntoWasmAbi>::Abi;
+                impl #lifetime_impl_generics IntoWasmAbi for & #lifetime #rust_name #ty_generics #where_clause {
+                    type Abi = <& #lifetime JsValue as IntoWasmAbi>::Abi;
 
                     #[inline]
                     fn into_abi(self) -> Self::Abi {
@@ -698,9 +739,9 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
-                impl RefFromWasmAbi for #rust_name {
+                impl #impl_generics RefFromWasmAbi for #rust_name #ty_generics #where_clause {
                     type Abi = <JsValue as RefFromWasmAbi>::Abi;
-                    type Anchor = core::mem::ManuallyDrop<#rust_name>;
+                    type Anchor = core::mem::ManuallyDrop<#rust_name #ty_generics>;
 
                     #[inline]
                     unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
@@ -712,32 +753,32 @@ impl ToTokens for ast::ImportType {
                 }
 
                 // TODO: remove this on the next major version
-                impl From<JsValue> for #rust_name {
+                impl #impl_generics From<JsValue> for #rust_name #ty_generics #where_clause {
                     #[inline]
-                    fn from(obj: JsValue) -> #rust_name {
-                        #rust_name { obj: obj.into() }
+                    fn from(obj: JsValue) -> Self {
+                        #rust_name #ty_generics { obj: obj.into() }
                     }
                 }
 
-                impl AsRef<JsValue> for #rust_name {
+                impl #impl_generics AsRef<JsValue> for #rust_name #ty_generics #where_clause {
                     #[inline]
                     fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
                 }
 
-                impl AsRef<#rust_name> for #rust_name {
+                impl #impl_generics AsRef<#rust_name #ty_generics> for #rust_name #ty_generics #where_clause {
                     #[inline]
-                    fn as_ref(&self) -> &#rust_name { self }
+                    fn as_ref(&self) -> &#rust_name #ty_generics { self }
                 }
 
 
-                impl From<#rust_name> for JsValue {
+                impl #impl_generics From<#rust_name #ty_generics> for JsValue #where_clause {
                     #[inline]
-                    fn from(obj: #rust_name) -> JsValue {
+                    fn from(obj: #rust_name #ty_generics) -> JsValue {
                         obj.obj.into()
                     }
                 }
 
-                impl JsCast for #rust_name {
+                impl #impl_generics JsCast for #rust_name #ty_generics #where_clause {
                     fn instanceof(val: &JsValue) -> bool {
                         #[link(wasm_import_module = "__wbindgen_placeholder__")]
                         #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
@@ -758,18 +799,18 @@ impl ToTokens for ast::ImportType {
 
                     #[inline]
                     fn unchecked_from_js(val: JsValue) -> Self {
-                        #rust_name { obj: val.into() }
+                        #rust_name #ty_generics { obj: val.into() }
                     }
 
                     #[inline]
                     fn unchecked_from_js_ref(val: &JsValue) -> &Self {
                         // Should be safe because `#rust_name` is a transparent
                         // wrapper around `val`
-                        unsafe { &*(val as *const JsValue as *const #rust_name) }
+                        unsafe { &*(val as *const JsValue as *const #rust_name #ty_generics) }
                     }
                 }
 
-                impl JsObject for #rust_name {}
+                impl #impl_generics JsObject for #rust_name #ty_generics #where_clause {}
 
                 ()
             };
@@ -779,7 +820,7 @@ impl ToTokens for ast::ImportType {
         if !no_deref {
             (quote! {
                 #[allow(clippy::all)]
-                impl core::ops::Deref for #rust_name {
+                impl #impl_generics core::ops::Deref for #rust_name #ty_generics #where_clause {
                     type Target = #internal_obj;
 
                     #[inline]
@@ -794,16 +835,16 @@ impl ToTokens for ast::ImportType {
         for superclass in self.extends.iter() {
             (quote! {
                 #[allow(clippy::all)]
-                impl From<#rust_name> for #superclass {
+                impl #impl_generics From<#rust_name #ty_generics> for #superclass #where_clause {
                     #[inline]
-                    fn from(obj: #rust_name) -> #superclass {
+                    fn from(obj: #rust_name #ty_generics) -> #superclass {
                         use wasm_bindgen::JsCast;
                         #superclass::unchecked_from_js(obj.into())
                     }
                 }
 
                 #[allow(clippy::all)]
-                impl AsRef<#superclass> for #rust_name {
+                impl #impl_generics AsRef<#superclass> for #rust_name #ty_generics #where_clause {
                     #[inline]
                     fn as_ref(&self) -> &#superclass {
                         use wasm_bindgen::JsCast;

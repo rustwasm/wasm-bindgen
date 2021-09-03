@@ -9,7 +9,6 @@ use backend::Diagnostic;
 use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
-use syn;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
 
@@ -363,13 +362,6 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
-        if self.generics.params.len() > 0 {
-            bail_span!(
-                self.generics,
-                "structs with #[wasm_bindgen] cannot have lifetime or \
-                 type parameters currently"
-            );
-        }
         let mut fields = Vec::new();
         let js_name = attrs
             .js_name()
@@ -427,6 +419,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             comments,
             is_inspectable,
             generate_typescript,
+            generics: self.generics.clone(),
         })
     }
 }
@@ -640,6 +633,53 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             extends,
             vendor_prefixes,
             no_deref,
+            generics: None,
+        }))
+    }
+}
+
+impl ConvertToAst<BindgenAttrs> for GenericForeignItemType {
+    type Target = ast::ImportKind;
+
+    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+        assert_not_variadic(&attrs)?;
+        let js_name = attrs
+            .js_name()
+            .map(|s| s.0)
+            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
+        let is_type_of = attrs.is_type_of().cloned();
+        let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
+        let mut extends = Vec::new();
+        let mut vendor_prefixes = Vec::new();
+        let no_deref = attrs.no_deref().is_some();
+        for (used, attr) in attrs.attrs.iter() {
+            match attr {
+                BindgenAttr::Extends(_, e) => {
+                    extends.push(e.clone());
+                    used.set(true);
+                }
+                BindgenAttr::VendorPrefix(_, e) => {
+                    vendor_prefixes.push(e.clone());
+                    used.set(true);
+                }
+                _ => {}
+            }
+        }
+        attrs.check_used()?;
+        Ok(ast::ImportKind::Type(ast::ImportType {
+            vis: self.vis,
+            attrs: self.attrs,
+            doc_comment: None,
+            instanceof_shim: shim,
+            is_type_of,
+            rust_name: self.ident,
+            typescript_type,
+            js_name,
+            extends,
+            vendor_prefixes,
+            no_deref,
+            generics: Some(self.generics),
         }))
     }
 }
@@ -1318,6 +1358,47 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
     }
 }
 
+struct GenericForeignItemType {
+    pub attrs: Vec<syn::Attribute>,
+    pub vis: syn::Visibility,
+    pub type_token: Token![type],
+    pub ident: Ident,
+    pub generics: syn::Generics,
+    pub semi_token: Token![;],
+}
+
+impl Clone for GenericForeignItemType {
+    fn clone(&self) -> Self {
+        GenericForeignItemType {
+            attrs: self.attrs.clone(),
+            vis: self.vis.clone(),
+            type_token: self.type_token.clone(),
+            ident: self.ident.clone(),
+            generics: self.generics.clone(),
+            semi_token: self.semi_token.clone(),
+        }
+    }
+}
+
+impl Parse for GenericForeignItemType {
+    fn parse(input: ParseStream) -> Result<Self, syn::Error> {
+        let attrs = input.call(syn::Attribute::parse_outer)?;
+        let vis = input.parse()?;
+        let type_token = input.parse()?;
+        let ident = input.parse()?;
+        let mut generics: syn::Generics = input.parse()?;
+        generics.where_clause = input.parse()?;
+        Ok(GenericForeignItemType {
+            attrs,
+            vis,
+            type_token,
+            ident,
+            generics,
+            semi_token: input.parse()?,
+        })
+    }
+}
+
 impl MacroParse<ast::ImportModule> for syn::ForeignItem {
     fn macro_parse(
         mut self,
@@ -1325,19 +1406,31 @@ impl MacroParse<ast::ImportModule> for syn::ForeignItem {
         module: ast::ImportModule,
     ) -> Result<(), Diagnostic> {
         let item_opts = {
+            let mut verbatim;
             let attrs = match self {
                 syn::ForeignItem::Fn(ref mut f) => &mut f.attrs,
                 syn::ForeignItem::Type(ref mut t) => &mut t.attrs,
                 syn::ForeignItem::Static(ref mut s) => &mut s.attrs,
+                syn::ForeignItem::Verbatim(ref mut tokens) => {
+                    verbatim = syn::parse2::<GenericForeignItemType>(tokens.clone())
+                        .expect("only foreign functions/types allowed for now yo");
+                    &mut verbatim.attrs
+                }
                 _ => panic!("only foreign functions/types allowed for now"),
             };
             BindgenAttrs::find(attrs)?
         };
         let js_namespace = item_opts.js_namespace().map(|(s, _)| s.to_owned());
+        let verbatim;
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
             syn::ForeignItem::Type(t) => t.convert(item_opts)?,
             syn::ForeignItem::Static(s) => s.convert((item_opts, &module))?,
+            syn::ForeignItem::Verbatim(ref mut tokens) => {
+                verbatim = syn::parse2::<GenericForeignItemType>(tokens.clone())
+                    .expect("only foreign functions/types allowed for now yo");
+                verbatim.convert(item_opts)?
+            }
             _ => panic!("only foreign functions/types allowed for now"),
         };
 

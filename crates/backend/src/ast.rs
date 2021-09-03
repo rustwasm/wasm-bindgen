@@ -263,6 +263,8 @@ pub struct ImportType {
     pub vendor_prefixes: Vec<Ident>,
     /// If present, don't generate a `Deref` impl
     pub no_deref: bool,
+    /// Generic arguments, if present
+    pub generics: Option<syn::Generics>,
 }
 
 /// The metadata for an Enum being imported
@@ -321,6 +323,8 @@ pub struct Struct {
     pub is_inspectable: bool,
     /// Whether to generate a typescript definition for this struct
     pub generate_typescript: bool,
+    /// Generic arguments
+    pub generics: syn::Generics,
 }
 
 /// The field of a struct
