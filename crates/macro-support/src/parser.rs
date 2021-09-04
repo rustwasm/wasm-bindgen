@@ -8,7 +8,6 @@ use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
-use shared;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
 
@@ -412,6 +411,11 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
         let generate_typescript = attrs.skip_typescript().is_none();
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
         attrs.check_used()?;
+
+        if let Some(lifetime) = self.generics.lifetimes().next() {
+            bail_span!(lifetime, "Imported JS types can't have lifetime parameters");
+        }
+
         Ok(ast::Struct {
             rust_name: self.ident.clone(),
             js_name,
@@ -667,6 +671,19 @@ impl ConvertToAst<BindgenAttrs> for GenericForeignItemType {
             }
         }
         attrs.check_used()?;
+
+        let mut generics = self.generics;
+
+        generics.type_params_mut().for_each(|param| {
+            param.colon_token = Some(<Token![:]>::default());
+            param
+                .bounds
+                .push(syn::TypeParamBound::Lifetime(syn::Lifetime::new(
+                    "'static",
+                    Span::call_site(),
+                )))
+        });
+
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
             attrs: self.attrs,
@@ -679,7 +696,7 @@ impl ConvertToAst<BindgenAttrs> for GenericForeignItemType {
             extends,
             vendor_prefixes,
             no_deref,
-            generics: Some(self.generics),
+            generics: Some(generics),
         }))
     }
 }
@@ -763,16 +780,22 @@ fn function_from_decl(
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
     }
-    if sig.generics.params.len() > 0 {
+
+    if let Some(lifetime) = sig.generics.lifetimes().next() {
         bail_span!(
-            sig.generics,
-            "can't #[wasm_bindgen] functions with lifetime or type parameters",
-        );
+            lifetime,
+            "can't #[wasm_bindgen] functions with lifetime parameters"
+        )
     }
 
     assert_no_lifetimes(&sig)?;
 
-    let syn::Signature { inputs, output, .. } = sig;
+    let syn::Signature {
+        inputs,
+        output,
+        generics,
+        ..
+    } = sig;
 
     let replace_self = |t: syn::Type| {
         let self_ty = match self_ty {
@@ -850,6 +873,7 @@ fn function_from_decl(
             rust_vis: vis,
             r#async: sig.asyncness.is_some(),
             generate_typescript: opts.skip_typescript().is_none(),
+            generics,
         },
         method_self,
     ))
@@ -1613,13 +1637,6 @@ fn assert_not_variadic(attrs: &BindgenAttrs) -> Result<(), Diagnostic> {
 
 /// Extracts the last ident from the path
 fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
-    for segment in path.segments.iter() {
-        match segment.arguments {
-            syn::PathArguments::None => {}
-            _ => bail_span!(path, "paths with type parameters are not supported yet"),
-        }
-    }
-
     match path.segments.last() {
         Some(value) => Ok(value.ident.clone()),
         None => {

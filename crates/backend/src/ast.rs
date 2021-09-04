@@ -305,6 +305,8 @@ pub struct Function {
     pub r#async: bool,
     /// Whether to generate a typescript definition for this function
     pub generate_typescript: bool,
+    /// Generic args for this function
+    pub generics: syn::Generics,
 }
 
 /// Information about a Struct being exported

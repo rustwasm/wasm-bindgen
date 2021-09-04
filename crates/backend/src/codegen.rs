@@ -221,8 +221,8 @@ impl ToTokens for ast::Struct {
             #[no_mangle]
             #[doc(hidden)]
             #[allow(clippy::all)]
-            pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
+            pub unsafe extern "C" fn #free_fn #impl_generics (ptr: u32) {
+                drop(<#name #ty_generics as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
             }
 
             #[allow(clippy::all)]
@@ -628,17 +628,15 @@ impl ToTokens for ast::ImportType {
 
         let tuple;
 
+        let generics = self.generics.as_ref();
+
         let mut generic_tuple_type = syn::TypeTuple {
             paren_token: syn::token::Paren::default(),
             elems: syn::punctuated::Punctuated::new(),
         };
 
-        let (impl_generics, ty_generics, where_clause) = match self.generics {
-            Some(ref generic) => {
-                if generic.lifetimes().next().is_some() {
-                    panic!("Imported JS types can't have lifetime parameters")
-                }
-
+        let (impl_generics, ty_generics, where_clause) = match generics {
+            Some(generic) => {
                 generic.type_params().for_each(|type_param| {
                     generic_tuple_type
                         .elems
@@ -651,6 +649,12 @@ impl ToTokens for ast::ImportType {
                             ),
                         }))
                 });
+
+                if !generic_tuple_type.elems.empty_or_trailing() {
+                    generic_tuple_type
+                        .elems
+                        .push_punct(<syn::Token![,]>::default());
+                }
 
                 tuple = generic.split_for_impl();
                 (Some(tuple.0), Some(tuple.1), tuple.2)
@@ -670,9 +674,9 @@ impl ToTokens for ast::ImportType {
             #[doc = #doc_comment]
             #[repr(transparent)]
             #[allow(clippy::all)]
-            #vis struct #rust_name #ty_generics #where_clause {
+            #vis struct #rust_name #generics #where_clause {
                 obj: #internal_obj,
-                phantom: ::std::marker::PhantomData<#generic_tuple_type>,
+                phantom: ::core::marker::PhantomData<#generic_tuple_type>,
             }
 
             #[allow(bad_style)]
@@ -719,8 +723,9 @@ impl ToTokens for ast::ImportType {
 
                     #[inline]
                     unsafe fn from_abi(js: Self::Abi) -> Self {
-                        #rust_name #ty_generics {
+                        #rust_name {
                             obj: JsValue::from_abi(js).into(),
+                            phantom: ::core::marker::PhantomData,
                         }
                     }
                 }
@@ -748,6 +753,7 @@ impl ToTokens for ast::ImportType {
                         let tmp = <JsValue as RefFromWasmAbi>::ref_from_abi(js);
                         core::mem::ManuallyDrop::new(#rust_name {
                             obj: core::mem::ManuallyDrop::into_inner(tmp).into(),
+                            phantom: ::core::marker::PhantomData,
                         })
                     }
                 }
@@ -756,7 +762,10 @@ impl ToTokens for ast::ImportType {
                 impl #impl_generics From<JsValue> for #rust_name #ty_generics #where_clause {
                     #[inline]
                     fn from(obj: JsValue) -> Self {
-                        #rust_name #ty_generics { obj: obj.into() }
+                        #rust_name {
+                            obj: obj.into(),
+                            phantom: ::core::marker::PhantomData,
+                        }
                     }
                 }
 
@@ -799,7 +808,10 @@ impl ToTokens for ast::ImportType {
 
                     #[inline]
                     fn unchecked_from_js(val: JsValue) -> Self {
-                        #rust_name #ty_generics { obj: val.into() }
+                        #rust_name {
+                            obj: val.into(),
+                            phantom: ::core::marker::PhantomData,
+                        }
                     }
 
                     #[inline]
@@ -1152,12 +1164,16 @@ impl TryToTokens for ast::ImportFunction {
         } else {
             None
         };
+
+        let generics = &self.function.generics;
+        let where_clause = generics.where_clause.as_ref();
+
         let invocation = quote! {
             #(#attrs)*
             #[allow(bad_style)]
             #[doc = #doc_comment]
             #[allow(clippy::all)]
-            #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
+            #vis #maybe_async fn #generics #rust_name(#me #(#arguments),*) #ret #where_clause {
                 #extern_fn
 
                 unsafe {
