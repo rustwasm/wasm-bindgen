@@ -674,6 +674,10 @@ impl ConvertToAst<BindgenAttrs> for GenericForeignItemType {
 
         let mut generics = self.generics;
 
+        if let Some(lifetime) = generics.lifetimes().next() {
+            bail_span!(lifetime, "Imported JS types can't have lifetime parameters");
+        }
+
         generics.type_params_mut().for_each(|param| {
             param.colon_token = Some(<Token![:]>::default());
             param
@@ -785,6 +789,13 @@ fn function_from_decl(
         bail_span!(
             lifetime,
             "can't #[wasm_bindgen] functions with lifetime parameters"
+        )
+    }
+
+    if let Some(lifetime) = sig.generics.const_params().next() {
+        bail_span!(
+            lifetime,
+            "can't #[wasm_bindgen] functions with const parameters"
         )
     }
 
@@ -1437,7 +1448,7 @@ impl MacroParse<ast::ImportModule> for syn::ForeignItem {
                 syn::ForeignItem::Static(ref mut s) => &mut s.attrs,
                 syn::ForeignItem::Verbatim(ref mut tokens) => {
                     verbatim = syn::parse2::<GenericForeignItemType>(tokens.clone())
-                        .expect("only foreign functions/types allowed for now yo");
+                        .expect("only foreign functions/types allowed for now");
                     &mut verbatim.attrs
                 }
                 _ => panic!("only foreign functions/types allowed for now"),

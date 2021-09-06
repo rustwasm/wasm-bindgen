@@ -221,6 +221,7 @@ impl ToTokens for ast::Struct {
             #[no_mangle]
             #[doc(hidden)]
             #[allow(clippy::all)]
+            // TODO no_mangle extern fn can't have generics
             pub unsafe extern "C" fn #free_fn #impl_generics (ptr: u32) {
                 drop(<#name #ty_generics as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
             }
@@ -982,6 +983,193 @@ impl ToTokens for ast::ImportEnum {
     }
 }
 
+/*fn is_type_generic(ty: &syn::Type, ident: &Ident) -> bool {
+    match ty {
+        syn::Type::Array(array) => is_type_generic(&array.elem, ident),
+        syn::Type::BareFn(bare_fn) => {
+            if let syn::ReturnType::Type(_, ref type_box) = bare_fn.output {
+                if is_type_generic(&type_box, ident) {
+                    return true;
+                }
+            }
+
+            let mut is_generic = false;
+            for bare_fn_arg in bare_fn.inputs.iter() {
+                if is_type_generic(&bare_fn_arg.ty, ident) {
+                    is_generic = true;
+                    break;
+                }
+            }
+            is_generic
+        }
+        syn::Type::Group(group) => is_type_generic(&group.elem, ident),
+        syn::Type::ImplTrait(impl_trait) => {
+            let mut is_generic = false;
+            for type_param_bound in impl_trait.bounds.iter() {
+                if let syn::TypeParamBound::Trait(trait_bound) = type_param_bound {
+                    if is_path_generic(&trait_bound.path, ident) {
+                        is_generic = true;
+                        break;
+                    }
+                }
+            }
+            is_generic
+        }
+        syn::Type::Infer(_) => true,
+        syn::Type::Macro(_) => true,
+        syn::Type::Never(_) => false,
+        syn::Type::Paren(paren) => is_type_generic(&paren.elem, ident),
+        syn::Type::Path(type_path) => {
+            if let Some(ref qself) = type_path.qself {
+                if is_type_generic(&qself.ty, ident) {
+                    return true;
+                }
+            }
+
+            return is_path_generic(&type_path.path, ident);
+        }
+        syn::Type::Ptr(ptr) => is_type_generic(&ptr.elem, ident),
+        syn::Type::Reference(reference) => is_type_generic(&reference.elem, ident),
+        syn::Type::Slice(slice) => is_type_generic(&slice.elem, ident),
+        syn::Type::TraitObject(trait_object) => {
+            let mut is_generic = false;
+            for type_param_bound in trait_object.bounds.iter() {
+                if let syn::TypeParamBound::Trait(trait_bound) = type_param_bound {
+                    if is_path_generic(&trait_bound.path, ident) {
+                        is_generic = true;
+                        break;
+                    }
+                }
+            }
+            is_generic
+        }
+        syn::Type::Tuple(tuple) => {
+            let mut is_generic = false;
+            for type_arg in tuple.elems.iter() {
+                if is_type_generic(type_arg, ident) {
+                    is_generic = true;
+                    break;
+                }
+            }
+            is_generic
+        }
+        syn::Type::Verbatim(_) => true,
+        syn::Type::__TestExhaustive(_) => true,
+    }
+}*/
+
+fn is_type_generic(ty: &syn::Type, ident: &Ident) -> bool {
+    struct WalkType<'a> {
+        is_generic: bool,
+        ident: &'a Ident,
+    }
+
+    impl<'ast, 'a> syn::visit::Visit<'ast> for WalkType<'a> {
+        fn visit_ident(&mut self, i: &'ast syn::Ident) {
+            if i == self.ident {
+                self.is_generic = true;
+            }
+        }
+    }
+
+    let mut walk_type = WalkType {
+        is_generic: false,
+        ident,
+    };
+    syn::visit::Visit::visit_type(&mut walk_type, ty);
+    walk_type.is_generic
+}
+
+fn param_has_ident(param: &syn::GenericParam, ident: &Ident) -> bool {
+    struct WalkParam<'a> {
+        has_ident: bool,
+        ident: &'a Ident,
+    }
+
+    impl<'ast, 'a> syn::visit::Visit<'ast> for WalkParam<'a> {
+        fn visit_ident(&mut self, i: &'ast syn::Ident) {
+            if i == self.ident {
+                self.has_ident = true;
+            }
+        }
+    }
+
+    let mut walk_param = WalkParam {
+        has_ident: false,
+        ident,
+    };
+    syn::visit::Visit::visit_generic_param(&mut walk_param, param);
+    walk_param.has_ident
+}
+
+/*fn is_path_generic(path: &syn::Path, ident: &Ident) -> bool {
+    let mut is_generic = false;
+    for segment in path.segments.iter() {
+        if match segment.arguments {
+            syn::PathArguments::None => false,
+            syn::PathArguments::AngleBracketed(ref generic_args) => {
+                let mut is_generic = false;
+                for arg in generic_args.args.iter() {
+                    if match arg {
+                        syn::GenericArgument::Lifetime(_) => false,
+                        syn::GenericArgument::Type(ty) => is_type_generic(ty, ident),
+                        syn::GenericArgument::Binding(binding) => {
+                            is_type_generic(&binding.ty, ident)
+                        }
+                        syn::GenericArgument::Constraint(constraint) => {
+                            let mut is_generic = false;
+                            for bound in constraint.bounds.iter() {
+                                if let syn::TypeParamBound::Trait(trait_bound) = bound {
+                                    if is_path_generic(&trait_bound.path, ident) {
+                                        is_generic = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            is_generic
+                        }
+                        syn::GenericArgument::Const(_) => false,
+                    } {
+                        is_generic = true;
+                        break;
+                    }
+                }
+                is_generic
+            }
+            syn::PathArguments::Parenthesized(ref generic_args) => {
+                let mut is_generic = false;
+                if let syn::ReturnType::Type(_, ref ty) = generic_args.output {
+                    if is_type_generic(&ty, ident) {
+                        is_generic = true;
+                    }
+                }
+
+                if !is_generic {
+                    for input in generic_args.inputs.iter() {
+                        if is_type_generic(input, ident) {
+                            is_generic = true;
+                        }
+                    }
+                }
+
+                is_generic
+            }
+        } {
+            is_generic = true;
+            break;
+        }
+    }
+
+    if !is_generic && path.segments.len() == 1 {
+        let segment = path.segments.first().unwrap();
+        if format!("{}", segment.ident) == format!("{}", ident) {
+            is_generic = true;
+        }
+    }
+
+    is_generic
+}*/
+
 impl TryToTokens for ast::ImportFunction {
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
         let mut class_ty = None;
@@ -1012,8 +1200,43 @@ impl TryToTokens for ast::ImportFunction {
         let mut arguments = Vec::new();
         let ret_ident = Ident::new("_ret", Span::call_site());
 
+        let mut generics = self.function.generics.clone();
+        let generic_idents: Vec<Ident> = generics
+            .type_params()
+            .map(|p| p.ident.clone())
+            .chain(generics.const_params().map(|p| p.ident.clone()))
+            .collect();
+
+        let mut generics_cloned = generics.clone();
+        let where_clause = generics_cloned.make_where_clause();
+
+        let mut impl_generics = syn::Generics::default();
+
+        let mut is_self_arg = is_method;
         for (i, arg) in self.function.arguments.iter().enumerate() {
             let ty = &arg.ty;
+            let mut is_generic = false;
+            for ident in &generic_idents {
+                if is_type_generic(ty, ident) {
+                    is_generic = true;
+                    if is_self_arg {
+                        let generic_params_iter = generics.params.into_iter();
+                        generics.params = Default::default();
+                        for param in generic_params_iter {
+                            if param_has_ident(&param, ident) {
+                                impl_generics.params.push(param);
+                            } else {
+                                generics.params.push(param);
+                            }
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            is_self_arg = false;
+
             let name = match &*arg.pat {
                 syn::Pat::Ident(syn::PatIdent {
                     by_ref: None,
@@ -1029,20 +1252,93 @@ impl TryToTokens for ast::ImportFunction {
             };
 
             abi_argument_names.push(name.clone());
-            abi_arguments.push(quote! {
-                #name: <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
-            });
+            if is_generic {
+                abi_arguments.push(quote! {
+                    #name: <::wasm_bindgen::JsValue as wasm_bindgen::convert::IntoWasmAbi>::Abi
+                });
+            } else {
+                abi_arguments.push(quote! {
+                    #name: <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
+                });
+            }
             let var = if i == 0 && is_method {
                 quote! { self }
             } else {
                 arguments.push(quote! { #name: #ty });
                 quote! { #name }
             };
-            arg_conversions.push(quote! {
-                let #name = <#ty as wasm_bindgen::convert::IntoWasmAbi>
-                    ::into_abi(#var);
-            });
+            if is_generic {
+                match **ty {
+                    syn::Type::Reference(_) => {
+                        arg_conversions.push(quote! {
+                            let #name = <&::wasm_bindgen::JsValue as wasm_bindgen::convert::IntoWasmAbi>
+                                ::into_abi(::core::convert::AsRef::as_ref(#var));
+                        });
+                    }
+                    _ => {
+                        arg_conversions.push(quote! {
+                            let #name = <::wasm_bindgen::JsValue as wasm_bindgen::convert::IntoWasmAbi>
+                                ::into_abi(::core::convert::Into::into(#var));
+                        });
+                    }
+                }
+            } else {
+                arg_conversions.push(quote! {
+                    let #name = <#ty as wasm_bindgen::convert::IntoWasmAbi>
+                        ::into_abi(#var);
+                });
+            }
+            if is_generic {
+                where_clause
+                    .predicates
+                    .push(syn::WherePredicate::Type(syn::PredicateType {
+                        lifetimes: None,
+                        bounded_ty: match &**ty {
+                            syn::Type::Reference(reference) => (*reference.elem).clone(),
+                            _ => (**ty).clone(),
+                        },
+                        colon_token: <syn::Token![:]>::default(),
+                        bounds: {
+                            let mut punct = syn::punctuated::Punctuated::new();
+                            punct.push(syn::TypeParamBound::Trait(
+                                syn::parse2(quote! { ::wasm_bindgen::JsCast }).unwrap(),
+                            ));
+                            punct
+                        },
+                    }));
+            }
         }
+
+        let mut is_ret_generic = false;
+        if let Some(ref ret_ty) = self.function.ret {
+            for ident in &generic_idents {
+                if is_type_generic(ret_ty, ident) {
+                    is_ret_generic = true;
+                    break;
+                }
+            }
+
+            if is_ret_generic {
+                where_clause
+                    .predicates
+                    .push(syn::WherePredicate::Type(syn::PredicateType {
+                        lifetimes: None,
+                        bounded_ty: match ret_ty {
+                            syn::Type::Reference(reference) => (*reference.elem).clone(),
+                            _ => ret_ty.clone(),
+                        },
+                        colon_token: <syn::Token![:]>::default(),
+                        bounds: {
+                            let mut punct = syn::punctuated::Punctuated::new();
+                            punct.push(syn::TypeParamBound::Trait(
+                                syn::parse2(quote! { ::wasm_bindgen::JsCast }).unwrap(),
+                            ));
+                            punct
+                        },
+                    }));
+            }
+        }
+
         let abi_ret;
         let mut convert_ret;
         match &self.js_ret {
@@ -1067,10 +1363,20 @@ impl TryToTokens for ast::ImportFunction {
                     } else {
                         quote! { #future.expect("unexpected exception") }
                     };
+                } else if is_ret_generic {
+                    abi_ret = quote! {
+                        <::wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>::Abi
+                    };
+
+                    convert_ret = quote! {
+                        ::wasm_bindgen::JsCast::unchecked_from_js(<::wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>
+                            ::from_abi(#ret_ident))
+                    };
                 } else {
                     abi_ret = quote! {
                         <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi
                     };
+
                     convert_ret = quote! {
                         <#ty as wasm_bindgen::convert::FromWasmAbi>
                             ::from_abi(#ret_ident)
@@ -1148,7 +1454,7 @@ impl TryToTokens for ast::ImportFunction {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
                 #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-                unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
+                unsafe fn #import_name (#(#abi_arguments),*) -> #abi_ret {
                     #(
                         drop(#abi_argument_names);
                     )*
@@ -1165,15 +1471,12 @@ impl TryToTokens for ast::ImportFunction {
             None
         };
 
-        let generics = &self.function.generics;
-        let where_clause = generics.where_clause.as_ref();
-
         let invocation = quote! {
             #(#attrs)*
             #[allow(bad_style)]
             #[doc = #doc_comment]
             #[allow(clippy::all)]
-            #vis #maybe_async fn #generics #rust_name(#me #(#arguments),*) #ret #where_clause {
+            #vis #maybe_async fn #rust_name #generics(#me #(#arguments),*) #ret #where_clause {
                 #extern_fn
 
                 unsafe {
@@ -1189,7 +1492,7 @@ impl TryToTokens for ast::ImportFunction {
 
         if let Some(class) = class_ty {
             (quote! {
-                impl #class {
+                impl #impl_generics #class {
                     #invocation
                 }
             })
@@ -1215,10 +1518,35 @@ impl<'a> ToTokens for DescribeImport<'a> {
             ast::ImportKind::Type(_) => return,
             ast::ImportKind::Enum(_) => return,
         };
-        let argtys = f.function.arguments.iter().map(|arg| &arg.ty);
+        let arg_jsvalue = syn::parse2(quote! { ::wasm_bindgen::JsValue }).unwrap();
+        let argtys = f.function.arguments.iter().map(|arg| {
+            let mut is_generic = false;
+            for type_param in f.function.generics.type_params() {
+                if is_type_generic(&arg.ty, &type_param.ident) {
+                    is_generic = true;
+                }
+            }
+            if is_generic {
+                &arg_jsvalue
+            } else {
+                &*arg.ty
+            }
+        });
         let nargs = f.function.arguments.len() as u32;
         let inform_ret = match &f.js_ret {
-            Some(ref t) => quote! { <#t as WasmDescribe>::describe(); },
+            Some(ref t) => {
+                let mut is_generic = false;
+                for type_param in f.function.generics.type_params() {
+                    if is_type_generic(t, &type_param.ident) {
+                        is_generic = true;
+                    }
+                }
+                if is_generic {
+                    quote! { <::wasm_bindgen::JsValue as WasmDescribe>::describe(); }
+                } else {
+                    quote! { <#t as WasmDescribe>::describe(); }
+                }
+            }
             // async functions always return a JsValue, even if they say to return ()
             None if f.function.r#async => quote! { <JsValue as WasmDescribe>::describe(); },
             None => quote! { <() as WasmDescribe>::describe(); },
