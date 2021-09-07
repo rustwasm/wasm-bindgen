@@ -411,11 +411,6 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
         let generate_typescript = attrs.skip_typescript().is_none();
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
         attrs.check_used()?;
-
-        if let Some(lifetime) = self.generics.lifetimes().next() {
-            bail_span!(lifetime, "Imported JS types can't have lifetime parameters");
-        }
-
         Ok(ast::Struct {
             rust_name: self.ident.clone(),
             js_name,
@@ -423,7 +418,6 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             comments,
             is_inspectable,
             generate_typescript,
-            generics: self.generics.clone(),
         })
     }
 }
@@ -789,13 +783,6 @@ fn function_from_decl(
         bail_span!(
             lifetime,
             "can't #[wasm_bindgen] functions with lifetime parameters"
-        )
-    }
-
-    if let Some(lifetime) = sig.generics.const_params().next() {
-        bail_span!(
-            lifetime,
-            "can't #[wasm_bindgen] functions with const parameters"
         )
     }
 
@@ -1434,39 +1421,51 @@ impl Parse for GenericForeignItemType {
     }
 }
 
+enum BindgenForeignItem {
+    Fn(syn::ForeignItemFn),
+    Type(syn::ForeignItemType),
+    Static(syn::ForeignItemStatic),
+    GenericType(GenericForeignItemType),
+}
+
+impl From<syn::ForeignItem> for BindgenForeignItem {
+    fn from(item: syn::ForeignItem) -> Self {
+        match item {
+            syn::ForeignItem::Fn(function) => BindgenForeignItem::Fn(function),
+            syn::ForeignItem::Static(static_val) => BindgenForeignItem::Static(static_val),
+            syn::ForeignItem::Type(ty) => BindgenForeignItem::Type(ty),
+            syn::ForeignItem::Verbatim(tokens) => {
+                let generic_ty = syn::parse2::<GenericForeignItemType>(tokens)
+                    .expect("only foreign functions/types allowed for now");
+                BindgenForeignItem::GenericType(generic_ty)
+            }
+            _ => panic!("only foreign functions/types allowed for now"),
+        }
+    }
+}
+
 impl MacroParse<ast::ImportModule> for syn::ForeignItem {
     fn macro_parse(
-        mut self,
+        self,
         program: &mut ast::Program,
         module: ast::ImportModule,
     ) -> Result<(), Diagnostic> {
+        let mut item: BindgenForeignItem = self.into();
         let item_opts = {
-            let mut verbatim;
-            let attrs = match self {
-                syn::ForeignItem::Fn(ref mut f) => &mut f.attrs,
-                syn::ForeignItem::Type(ref mut t) => &mut t.attrs,
-                syn::ForeignItem::Static(ref mut s) => &mut s.attrs,
-                syn::ForeignItem::Verbatim(ref mut tokens) => {
-                    verbatim = syn::parse2::<GenericForeignItemType>(tokens.clone())
-                        .expect("only foreign functions/types allowed for now");
-                    &mut verbatim.attrs
-                }
-                _ => panic!("only foreign functions/types allowed for now"),
+            let attrs = match item {
+                BindgenForeignItem::Fn(ref mut f) => &mut f.attrs,
+                BindgenForeignItem::Type(ref mut t) => &mut t.attrs,
+                BindgenForeignItem::Static(ref mut s) => &mut s.attrs,
+                BindgenForeignItem::GenericType(ref mut g) => &mut g.attrs,
             };
             BindgenAttrs::find(attrs)?
         };
         let js_namespace = item_opts.js_namespace().map(|(s, _)| s.to_owned());
-        let verbatim;
-        let kind = match self {
-            syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
-            syn::ForeignItem::Type(t) => t.convert(item_opts)?,
-            syn::ForeignItem::Static(s) => s.convert((item_opts, &module))?,
-            syn::ForeignItem::Verbatim(ref mut tokens) => {
-                verbatim = syn::parse2::<GenericForeignItemType>(tokens.clone())
-                    .expect("only foreign functions/types allowed for now yo");
-                verbatim.convert(item_opts)?
-            }
-            _ => panic!("only foreign functions/types allowed for now"),
+        let kind = match item {
+            BindgenForeignItem::Fn(f) => f.convert((item_opts, &module))?,
+            BindgenForeignItem::Type(t) => t.convert(item_opts)?,
+            BindgenForeignItem::Static(s) => s.convert((item_opts, &module))?,
+            BindgenForeignItem::GenericType(g) => g.convert(item_opts)?,
         };
 
         program.imports.push(ast::Import {

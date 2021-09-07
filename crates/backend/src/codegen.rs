@@ -144,12 +144,9 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
-
-        let (impl_generics, ty_generics, where_clause) = self.generics.split_for_impl();
-
         (quote! {
             #[allow(clippy::all)]
-            impl #impl_generics wasm_bindgen::describe::WasmDescribe for #name #ty_generics #where_clause {
+            impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     use wasm_bindgen::__wbindgen_if_not_std;
                     __wbindgen_if_not_std! {
@@ -166,7 +163,7 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl #impl_generics wasm_bindgen::convert::IntoWasmAbi for #name #ty_generics #where_clause {
+            impl wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = u32;
 
                 fn into_abi(self) -> u32 {
@@ -177,14 +174,14 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl #impl_generics wasm_bindgen::convert::FromWasmAbi for #name #ty_generics #where_clause {
+            impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = u32;
 
                 unsafe fn from_abi(js: u32) -> Self {
                     use wasm_bindgen::__rt::std::boxed::Box;
                     use wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
 
-                    let ptr = js as *mut WasmRefCell<#name #ty_generics>;
+                    let ptr = js as *mut WasmRefCell<#name>;
                     assert_not_null(ptr);
                     let js = Box::from_raw(ptr);
                     (*js).borrow_mut(); // make sure no one's borrowing
@@ -193,10 +190,10 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl #impl_generics wasm_bindgen::__rt::core::convert::From<#name #ty_generics> for
-                wasm_bindgen::JsValue #where_clause
+            impl wasm_bindgen::__rt::core::convert::From<#name> for
+                wasm_bindgen::JsValue
             {
-                fn from(value: #name #ty_generics) -> Self {
+                fn from(value: #name) -> Self {
                     let ptr = wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -221,41 +218,40 @@ impl ToTokens for ast::Struct {
             #[no_mangle]
             #[doc(hidden)]
             #[allow(clippy::all)]
-            // TODO no_mangle extern fn can't have generics
-            pub unsafe extern "C" fn #free_fn #impl_generics (ptr: u32) {
-                drop(<#name #ty_generics as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
+            pub unsafe extern "C" fn #free_fn(ptr: u32) {
+                drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
             }
 
             #[allow(clippy::all)]
-            impl #impl_generics wasm_bindgen::convert::RefFromWasmAbi for #name #ty_generics #where_clause {
+            impl wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = u32;
-                type Anchor = wasm_bindgen::__rt::Ref<'static, #name #ty_generics>;
+                type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
 
                 unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name #ty_generics>;
+                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
                     wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow()
                 }
             }
 
             #[allow(clippy::all)]
-            impl #impl_generics wasm_bindgen::convert::RefMutFromWasmAbi for #name #ty_generics #where_clause {
+            impl wasm_bindgen::convert::RefMutFromWasmAbi for #name {
                 type Abi = u32;
-                type Anchor = wasm_bindgen::__rt::RefMut<'static, #name #ty_generics>;
+                type Anchor = wasm_bindgen::__rt::RefMut<'static, #name>;
 
                 unsafe fn ref_mut_from_abi(js: Self::Abi) -> Self::Anchor {
-                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name #ty_generics>;
+                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
                     wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow_mut()
                 }
             }
 
-            impl #impl_generics wasm_bindgen::convert::OptionIntoWasmAbi for #name #ty_generics #where_clause {
+            impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
                 fn none() -> Self::Abi { 0 }
             }
 
-            impl #impl_generics wasm_bindgen::convert::OptionFromWasmAbi for #name #ty_generics #where_clause {
+            impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
             }
@@ -983,81 +979,6 @@ impl ToTokens for ast::ImportEnum {
     }
 }
 
-/*fn is_type_generic(ty: &syn::Type, ident: &Ident) -> bool {
-    match ty {
-        syn::Type::Array(array) => is_type_generic(&array.elem, ident),
-        syn::Type::BareFn(bare_fn) => {
-            if let syn::ReturnType::Type(_, ref type_box) = bare_fn.output {
-                if is_type_generic(&type_box, ident) {
-                    return true;
-                }
-            }
-
-            let mut is_generic = false;
-            for bare_fn_arg in bare_fn.inputs.iter() {
-                if is_type_generic(&bare_fn_arg.ty, ident) {
-                    is_generic = true;
-                    break;
-                }
-            }
-            is_generic
-        }
-        syn::Type::Group(group) => is_type_generic(&group.elem, ident),
-        syn::Type::ImplTrait(impl_trait) => {
-            let mut is_generic = false;
-            for type_param_bound in impl_trait.bounds.iter() {
-                if let syn::TypeParamBound::Trait(trait_bound) = type_param_bound {
-                    if is_path_generic(&trait_bound.path, ident) {
-                        is_generic = true;
-                        break;
-                    }
-                }
-            }
-            is_generic
-        }
-        syn::Type::Infer(_) => true,
-        syn::Type::Macro(_) => true,
-        syn::Type::Never(_) => false,
-        syn::Type::Paren(paren) => is_type_generic(&paren.elem, ident),
-        syn::Type::Path(type_path) => {
-            if let Some(ref qself) = type_path.qself {
-                if is_type_generic(&qself.ty, ident) {
-                    return true;
-                }
-            }
-
-            return is_path_generic(&type_path.path, ident);
-        }
-        syn::Type::Ptr(ptr) => is_type_generic(&ptr.elem, ident),
-        syn::Type::Reference(reference) => is_type_generic(&reference.elem, ident),
-        syn::Type::Slice(slice) => is_type_generic(&slice.elem, ident),
-        syn::Type::TraitObject(trait_object) => {
-            let mut is_generic = false;
-            for type_param_bound in trait_object.bounds.iter() {
-                if let syn::TypeParamBound::Trait(trait_bound) = type_param_bound {
-                    if is_path_generic(&trait_bound.path, ident) {
-                        is_generic = true;
-                        break;
-                    }
-                }
-            }
-            is_generic
-        }
-        syn::Type::Tuple(tuple) => {
-            let mut is_generic = false;
-            for type_arg in tuple.elems.iter() {
-                if is_type_generic(type_arg, ident) {
-                    is_generic = true;
-                    break;
-                }
-            }
-            is_generic
-        }
-        syn::Type::Verbatim(_) => true,
-        syn::Type::__TestExhaustive(_) => true,
-    }
-}*/
-
 fn is_type_generic(ty: &syn::Type, ident: &Ident) -> bool {
     struct WalkType<'a> {
         is_generic: bool,
@@ -1101,74 +1022,6 @@ fn param_has_ident(param: &syn::GenericParam, ident: &Ident) -> bool {
     syn::visit::Visit::visit_generic_param(&mut walk_param, param);
     walk_param.has_ident
 }
-
-/*fn is_path_generic(path: &syn::Path, ident: &Ident) -> bool {
-    let mut is_generic = false;
-    for segment in path.segments.iter() {
-        if match segment.arguments {
-            syn::PathArguments::None => false,
-            syn::PathArguments::AngleBracketed(ref generic_args) => {
-                let mut is_generic = false;
-                for arg in generic_args.args.iter() {
-                    if match arg {
-                        syn::GenericArgument::Lifetime(_) => false,
-                        syn::GenericArgument::Type(ty) => is_type_generic(ty, ident),
-                        syn::GenericArgument::Binding(binding) => {
-                            is_type_generic(&binding.ty, ident)
-                        }
-                        syn::GenericArgument::Constraint(constraint) => {
-                            let mut is_generic = false;
-                            for bound in constraint.bounds.iter() {
-                                if let syn::TypeParamBound::Trait(trait_bound) = bound {
-                                    if is_path_generic(&trait_bound.path, ident) {
-                                        is_generic = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            is_generic
-                        }
-                        syn::GenericArgument::Const(_) => false,
-                    } {
-                        is_generic = true;
-                        break;
-                    }
-                }
-                is_generic
-            }
-            syn::PathArguments::Parenthesized(ref generic_args) => {
-                let mut is_generic = false;
-                if let syn::ReturnType::Type(_, ref ty) = generic_args.output {
-                    if is_type_generic(&ty, ident) {
-                        is_generic = true;
-                    }
-                }
-
-                if !is_generic {
-                    for input in generic_args.inputs.iter() {
-                        if is_type_generic(input, ident) {
-                            is_generic = true;
-                        }
-                    }
-                }
-
-                is_generic
-            }
-        } {
-            is_generic = true;
-            break;
-        }
-    }
-
-    if !is_generic && path.segments.len() == 1 {
-        let segment = path.segments.first().unwrap();
-        if format!("{}", segment.ident) == format!("{}", ident) {
-            is_generic = true;
-        }
-    }
-
-    is_generic
-}*/
 
 impl TryToTokens for ast::ImportFunction {
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
