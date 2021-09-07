@@ -22,7 +22,7 @@ struct AttributeParseState {
 }
 
 /// Parsed attributes from a `#[wasm_bindgen(..)]`.
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 pub struct BindgenAttrs {
     /// List of parsed attributes
     pub attrs: Vec<(Cell<bool>, BindgenAttr)>,
@@ -229,7 +229,7 @@ impl Parse for BindgenAttrs {
 macro_rules! gen_bindgen_attr {
     ($(($method:ident, $($variants:tt)*),)*) => {
         /// The possible attributes in the `#[wasm_bindgen]`.
-        #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+        #[cfg_attr(feature = "extra-traits", derive(Debug))]
         pub enum BindgenAttr {
             $($($variants)*,)*
         }
