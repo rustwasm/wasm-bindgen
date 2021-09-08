@@ -1190,7 +1190,6 @@ impl TryToTokens for ast::ImportFunction {
                             }
                         }
                     }
-                    break;
                 }
             }
 
@@ -1212,6 +1211,23 @@ impl TryToTokens for ast::ImportFunction {
                             punct
                         },
                     }));
+            }
+        }
+
+        if fn_kind == FnKind::Static {
+            let class_ty = class_ty.unwrap();
+            for ident in &generic_idents {
+                if is_type_generic(class_ty, ident) {
+                    let generic_params_iter = generics.params.into_iter();
+                    generics.params = Default::default();
+                    for param in generic_params_iter {
+                        if param_has_ident(&param, ident) {
+                            impl_generics.params.push(param);
+                        } else {
+                            generics.params.push(param);
+                        }
+                    }
+                }
             }
         }
 
