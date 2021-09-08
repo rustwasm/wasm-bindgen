@@ -1001,45 +1001,57 @@ fn is_type_generic(ty: &syn::Type, ident: &Ident) -> bool {
     walk_type.is_generic
 }
 
-fn param_has_ident(param: &syn::GenericParam, ident: &Ident) -> bool {
-    struct WalkParam<'a> {
-        has_ident: bool,
-        ident: &'a Ident,
-    }
-
-    impl<'ast, 'a> syn::visit::Visit<'ast> for WalkParam<'a> {
-        fn visit_ident(&mut self, i: &'ast syn::Ident) {
-            if i == self.ident {
-                self.has_ident = true;
-            }
-        }
-    }
-
-    let mut walk_param = WalkParam {
-        has_ident: false,
-        ident,
-    };
-    syn::visit::Visit::visit_generic_param(&mut walk_param, param);
-    walk_param.has_ident
-}
-
 impl TryToTokens for ast::ImportFunction {
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
+        fn param_has_ident(param: &syn::GenericParam, ident: &Ident) -> bool {
+            struct WalkParam<'a> {
+                has_ident: bool,
+                ident: &'a Ident,
+            }
+
+            impl<'ast, 'a> syn::visit::Visit<'ast> for WalkParam<'a> {
+                fn visit_ident(&mut self, i: &'ast syn::Ident) {
+                    if i == self.ident {
+                        self.has_ident = true;
+                    }
+                }
+            }
+
+            let mut walk_param = WalkParam {
+                has_ident: false,
+                ident,
+            };
+            syn::visit::Visit::visit_generic_param(&mut walk_param, param);
+            walk_param.has_ident
+        }
+
+        #[derive(PartialEq, Eq, Clone, Copy, Debug)]
+        enum FnKind {
+            Normal,
+            Method,
+            Static,
+            Constructor,
+        }
+
         let mut class_ty = None;
-        let mut is_method = false;
+        let fn_kind;
         match self.kind {
             ast::ImportFunctionKind::Method {
                 ref ty, ref kind, ..
             } => {
-                if let ast::MethodKind::Operation(ast::Operation {
-                    is_static: false, ..
-                }) = kind
-                {
-                    is_method = true;
+                match kind {
+                    ast::MethodKind::Operation(ast::Operation { is_static, .. }) => {
+                        if *is_static {
+                            fn_kind = FnKind::Static;
+                        } else {
+                            fn_kind = FnKind::Method;
+                        }
+                    }
+                    ast::MethodKind::Constructor => fn_kind = FnKind::Constructor,
                 }
                 class_ty = Some(ty);
             }
-            ast::ImportFunctionKind::Normal => {}
+            ast::ImportFunctionKind::Normal => fn_kind = FnKind::Normal,
         }
         let vis = &self.function.rust_vis;
         let ret = match &self.function.ret {
@@ -1065,7 +1077,7 @@ impl TryToTokens for ast::ImportFunction {
 
         let mut impl_generics = syn::Generics::default();
 
-        let mut is_self_arg = is_method;
+        let mut is_self_arg = fn_kind == FnKind::Method;
         for (i, arg) in self.function.arguments.iter().enumerate() {
             let ty = &arg.ty;
             let mut is_generic = false;
@@ -1114,7 +1126,7 @@ impl TryToTokens for ast::ImportFunction {
                     #name: <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
                 });
             }
-            let var = if i == 0 && is_method {
+            let var = if i == 0 && fn_kind == FnKind::Method {
                 quote! { self }
             } else {
                 arguments.push(quote! { #name: #ty });
@@ -1167,6 +1179,17 @@ impl TryToTokens for ast::ImportFunction {
             for ident in &generic_idents {
                 if is_type_generic(ret_ty, ident) {
                     is_ret_generic = true;
+                    if fn_kind == FnKind::Constructor {
+                        let generic_params_iter = generics.params.into_iter();
+                        generics.params = Default::default();
+                        for param in generic_params_iter {
+                            if param_has_ident(&param, ident) {
+                                impl_generics.params.push(param);
+                            } else {
+                                generics.params.push(param);
+                            }
+                        }
+                    }
                     break;
                 }
             }
@@ -1277,7 +1300,7 @@ impl TryToTokens for ast::ImportFunction {
             None => "",
             Some(doc_string) => doc_string,
         };
-        let me = if is_method {
+        let me = if fn_kind == FnKind::Method {
             quote! { &self, }
         } else {
             quote!()

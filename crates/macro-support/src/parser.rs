@@ -4,7 +4,7 @@ use std::str::Chars;
 
 use ast::OperationKind;
 use backend::ast;
-use backend::util::{ident_ty, ShortHash};
+use backend::util::ShortHash;
 use backend::Diagnostic;
 use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
@@ -32,7 +32,7 @@ macro_rules! attrgen {
             (catch, Catch(Span)),
             (constructor, Constructor(Span)),
             (method, Method(Span)),
-            (static_method_of, StaticMethodOf(Span, Ident)),
+            (static_method_of, StaticMethodOf(Span, syn::Path)),
             (js_namespace, JsNamespace(Span, Vec<String>, Vec<Span>)),
             (module, Module(Span, String, Span)),
             (raw_module, RawModule(Span, String, Span)),
@@ -514,8 +514,12 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             let class = opts
                 .js_class()
                 .map(|p| p.0.into())
-                .unwrap_or_else(|| cls.to_string());
-            let ty = ident_ty(cls.clone());
+                .unwrap_or_else(|| cls.segments.last().unwrap().ident.to_string());
+            let ty = syn::TypePath {
+                qself: None,
+                path: cls.clone(),
+            }
+            .into();
 
             let kind = ast::MethodKind::Operation(ast::Operation {
                 is_static: true,
