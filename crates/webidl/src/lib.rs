@@ -737,7 +737,7 @@ impl<'src> FirstPassRecord<'src> {
     }
 }
 
-/// Generates Rust source code with #[wasm_bindgen] annotations.
+/// Generates Rust source code with #\[wasm_bindgen\] annotations.
 ///
 /// * Reads WebIDL files in `from`
 /// * Generates Rust source code in the directory `to`

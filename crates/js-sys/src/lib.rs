@@ -291,103 +291,110 @@ extern "C" {
     pub fn unescape(string: &str) -> JsString;
 }
 
+pub type Array = GenericArray<JsValue>;
+
 // Array
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = Array::is_array, typescript_type = "Array<any>")]
+    #[wasm_bindgen(js_name = Array, extends = Object, is_type_of = Array::is_array, typescript_type = "Array<any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type Array<T = JsValue>;
+    pub type GenericArray<T = JsValue>;
 
     /// Creates a new empty array.
-    #[wasm_bindgen(constructor)]
-    pub fn new<T>() -> Array<T>;
+    #[wasm_bindgen(constructor, js_class = Array)]
+    pub fn new<T>() -> GenericArray<T>;
 
     /// Creates a new array with the specified length (elements are initialized to `undefined`).
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length<T>(len: u32) -> Array<T>;
+    #[wasm_bindgen(constructor, js_class = Array)]
+    pub fn new_with_length<T>(len: u32) -> GenericArray<T>;
 
     /// Retrieves the element at the index (returns `undefined` if the index is out of range).
-    #[wasm_bindgen(method, structural, indexing_getter)]
-    pub fn get<T>(this: &Array<T>, index: u32) -> T;
+    #[wasm_bindgen(method, structural, indexing_getter, js_class = Array)]
+    pub fn get<T>(this: &GenericArray<T>, index: u32) -> T;
 
     /// Sets the element at the index (auto-enlarges the array if the index is out of range).
-    #[wasm_bindgen(method, structural, indexing_setter)]
-    pub fn set<T>(this: &Array<T>, index: u32, value: T);
+    #[wasm_bindgen(method, structural, indexing_setter, js_class = Array)]
+    pub fn set<T>(this: &GenericArray<T>, index: u32, value: T);
 
     /// Deletes the element at the index (does nothing if the index is out of range).
     ///
     /// The element at the index is set to `undefined`.
     ///
     /// This does not resize the array, the array will still be the same length.
-    #[wasm_bindgen(method, structural, indexing_deleter)]
-    pub fn delete<T>(this: &Array<T>, index: u32);
+    #[wasm_bindgen(method, structural, indexing_deleter, js_class = Array)]
+    pub fn delete<T>(this: &GenericArray<T>, index: u32);
 
     /// The `Array.from()` method creates a new, shallow-copied `Array` instance
     /// from an array-like or iterable object.
-    #[wasm_bindgen(static_method_of = Array)]
+    #[wasm_bindgen(static_method_of = Array, js_class = Array)]
     pub fn from(val: &JsValue) -> Array;
 
     /// The `copyWithin()` method shallow copies part of an array to another
     /// location in the same array and returns it, without modifying its size.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
-    #[wasm_bindgen(method, js_name = copyWithin)]
-    pub fn copy_within<T>(this: &Array<T>, target: i32, start: i32, end: i32) -> Array<T>;
+    #[wasm_bindgen(method, js_name = copyWithin, js_class = Array)]
+    pub fn copy_within<T>(
+        this: &GenericArray<T>,
+        target: i32,
+        start: i32,
+        end: i32,
+    ) -> GenericArray<T>;
 
     /// The `concat()` method is used to merge two or more arrays. This method
     /// does not change the existing arrays, but instead returns a new array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)
-    #[wasm_bindgen(method)]
-    pub fn concat<T>(this: &Array<T>, array: &Array<T>) -> Array<T>;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn concat<T>(this: &GenericArray<T>, array: &GenericArray<T>) -> GenericArray<T>;
 
     /// The `every()` method tests whether all elements in the array pass the test
     /// implemented by the provided function.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = Array)]
     pub fn every(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> bool;
 
     /// The `fill()` method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill<T>(this: &Array<T>, value: &T, start: u32, end: u32) -> Array<T>;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn fill<T>(this: &GenericArray<T>, value: &T, start: u32, end: u32) -> GenericArray<T>;
 
     /// The `filter()` method creates a new array with all elements that pass the
     /// test implemented by the provided function.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = Array)]
     pub fn filter(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> Array;
 
     /// The `find()` method returns the value of the first element in the array that satisfies
     ///  the provided testing function. Otherwise `undefined` is returned.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = Array)]
     pub fn find(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> JsValue;
 
     /// The `findIndex()` method returns the index of the first element in the array that
     /// satisfies the provided testing function. Otherwise -1 is returned.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
-    #[wasm_bindgen(method, js_name = findIndex)]
+    #[wasm_bindgen(method, js_name = findIndex, js_class = Array)]
     pub fn find_index(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> i32;
 
     /// The `flat()` method creates a new array with all sub-array elements concatenated into it
     /// recursively up to the specified depth.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = Array)]
     pub fn flat(this: &Array, depth: i32) -> Array;
 
     /// The `flatMap()` method first maps each element using a mapping function, then flattens
     /// the result into a new array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap)
-    #[wasm_bindgen(method, js_name = flatMap)]
+    #[wasm_bindgen(method, js_name = flatMap, js_class = Array)]
     pub fn flat_map(
         this: &Array,
         callback: &mut dyn FnMut(JsValue, u32, Array) -> Vec<JsValue>,
@@ -396,43 +403,43 @@ extern "C" {
     /// The `forEach()` method executes a provided function once for each array element.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
-    #[wasm_bindgen(method, js_name = forEach)]
+    #[wasm_bindgen(method, js_name = forEach, js_class = Array)]
     pub fn for_each(this: &Array, callback: &mut dyn FnMut(JsValue, u32, Array));
 
     /// The `includes()` method determines whether an array includes a certain
     /// element, returning true or false as appropriate.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
-    #[wasm_bindgen(method)]
-    pub fn includes<T>(this: &Array<T>, value: &T, from_index: i32) -> bool;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn includes<T>(this: &GenericArray<T>, value: &T, from_index: i32) -> bool;
 
     /// The `indexOf()` method returns the first index at which a given element
     /// can be found in the array, or -1 if it is not present.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
-    #[wasm_bindgen(method, js_name = indexOf)]
-    pub fn index_of<T>(this: &Array<T>, value: &T, from_index: i32) -> i32;
+    #[wasm_bindgen(method, js_name = indexOf, js_class = Array)]
+    pub fn index_of<T>(this: &GenericArray<T>, value: &T, from_index: i32) -> i32;
 
     /// The `Array.isArray()` method determines whether the passed value is an Array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray)
-    #[wasm_bindgen(static_method_of = Array, js_name = isArray)]
+    #[wasm_bindgen(static_method_of = Array, js_name = isArray, js_class = Array)]
     pub fn is_array(value: &JsValue) -> bool;
 
     /// The `join()` method joins all elements of an array (or an array-like object)
     /// into a string and returns this string.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
-    #[wasm_bindgen(method)]
-    pub fn join<T>(this: &Array<T>, delimiter: &str) -> JsString;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn join<T>(this: &GenericArray<T>, delimiter: &str) -> JsString;
 
     /// The `lastIndexOf()` method returns the last index at which a given element
     /// can be found in the array, or -1 if it is not present. The array is
     /// searched backwards, starting at fromIndex.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
-    #[wasm_bindgen(method, js_name = lastIndexOf)]
-    pub fn last_index_of<T>(this: &Array<T>, value: &T, from_index: i32) -> i32;
+    #[wasm_bindgen(method, js_name = lastIndexOf, js_class = Array)]
+    pub fn last_index_of<T>(this: &GenericArray<T>, value: &T, from_index: i32) -> i32;
 
     /// The length property of an object which is an instance of type Array
     /// sets or returns the number of elements in that array. The value is an
@@ -440,8 +447,8 @@ extern "C" {
     /// highest index in the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn length<T>(this: &Array<T>) -> u32;
+    #[wasm_bindgen(method, getter, structural, js_class = Array)]
+    pub fn length<T>(this: &GenericArray<T>) -> u32;
 
     /// `map()` calls a provided callback function once for each element in an array,
     /// in order, and constructs a new array from the results. callback is invoked
@@ -450,7 +457,7 @@ extern "C" {
     /// never been set, which have been deleted or which have never been assigned a value).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = Array)]
     pub fn map(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> JsValue) -> Array;
 
     /// The `Array.of()` method creates a new Array instance with a variable
@@ -468,44 +475,44 @@ extern "C" {
     ///
     /// There are a few bindings to `of` in `js-sys`: `of1`, `of2`, etc...
     /// with different arities.
-    #[wasm_bindgen(static_method_of = Array<T>, js_name = of)]
-    pub fn of1<T>(a: &T) -> Array<T>;
+    #[wasm_bindgen(static_method_of = GenericArray<T>, js_name = of, js_class = Array)]
+    pub fn of1<T>(a: &T) -> GenericArray<T>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array<T>, js_name = of)]
-    pub fn of2<T>(a: &T, b: &T) -> Array<T>;
+    #[wasm_bindgen(static_method_of = GenericArray<T>, js_name = of, js_class = Array)]
+    pub fn of2<T>(a: &T, b: &T) -> GenericArray<T>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array<T>, js_name = of)]
-    pub fn of3<T>(a: &T, b: &T, c: &T) -> Array<T>;
+    #[wasm_bindgen(static_method_of = GenericArray<T>, js_name = of, js_class = Array)]
+    pub fn of3<T>(a: &T, b: &T, c: &T) -> GenericArray<T>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array<T>, js_name = of)]
-    pub fn of4<T>(a: &T, b: &T, c: &T, d: &T) -> Array<T>;
+    #[wasm_bindgen(static_method_of = GenericArray<T>, js_name = of, js_class = Array)]
+    pub fn of4<T>(a: &T, b: &T, c: &T, d: &T) -> GenericArray<T>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array<T>, js_name = of)]
-    pub fn of5<T>(a: &T, b: &T, c: &T, d: &T, e: &T) -> Array<T>;
+    #[wasm_bindgen(static_method_of = GenericArray<T>, js_name = of, js_class = Array)]
+    pub fn of5<T>(a: &T, b: &T, c: &T, d: &T, e: &T) -> GenericArray<T>;
 
     /// The `pop()` method removes the last element from an array and returns that
     /// element. This method changes the length of the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
-    #[wasm_bindgen(method)]
-    pub fn pop<T>(this: &Array<T>) -> T;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn pop<T>(this: &GenericArray<T>) -> T;
 
     /// The `push()` method adds one or more elements to the end of an array and
     /// returns the new length of the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
-    #[wasm_bindgen(method)]
-    pub fn push<T>(this: &Array<T>, value: &T) -> u32;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn push<T>(this: &GenericArray<T>, value: &T) -> u32;
 
     /// The `reduce()` method applies a function against an accumulator and each element in
     /// the array (from left to right) to reduce it to a single value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = Array)]
     pub fn reduce(
         this: &Array,
         predicate: &mut dyn FnMut(JsValue, JsValue, u32, Array) -> JsValue,
@@ -516,7 +523,7 @@ extern "C" {
     /// of the array (from right-to-left) to reduce it to a single value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/ReduceRight)
-    #[wasm_bindgen(method, js_name = reduceRight)]
+    #[wasm_bindgen(method, js_name = reduceRight, js_class = Array)]
     pub fn reduce_right(
         this: &Array,
         predicate: &mut dyn FnMut(JsValue, JsValue, u32, Array) -> JsValue,
@@ -527,29 +534,29 @@ extern "C" {
     /// element becomes the last, and the last array element becomes the first.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
-    #[wasm_bindgen(method)]
-    pub fn reverse<T>(this: &Array<T>) -> Array<T>;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn reverse<T>(this: &GenericArray<T>) -> GenericArray<T>;
 
     /// The `shift()` method removes the first element from an array and returns
     /// that removed element. This method changes the length of the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
-    #[wasm_bindgen(method)]
-    pub fn shift<T>(this: &Array<T>) -> T;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn shift<T>(this: &GenericArray<T>) -> T;
 
     /// The `slice()` method returns a shallow copy of a portion of an array into
     /// a new array object selected from begin to end (end not included).
     /// The original array will not be modified.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
-    #[wasm_bindgen(method)]
-    pub fn slice<T>(this: &Array<T>, start: u32, end: u32) -> Array<T>;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn slice<T>(this: &GenericArray<T>, start: u32, end: u32) -> GenericArray<T>;
 
     /// The `some()` method tests whether at least one element in the array passes the test implemented
     /// by the provided function.
     /// Note: This method returns false for any condition put on an empty array.
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = Array)]
     pub fn some(this: &Array, predicate: &mut dyn FnMut(JsValue) -> bool) -> bool;
 
     /// The `sort()` method sorts the elements of an array in place and returns
@@ -560,44 +567,49 @@ extern "C" {
     /// is implementation dependent.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
-    #[wasm_bindgen(method)]
-    pub fn sort<T>(this: &Array<T>) -> Array<T>;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn sort<T>(this: &GenericArray<T>) -> GenericArray<T>;
 
     /// The `splice()` method changes the contents of an array by removing existing elements and/or
     /// adding new elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-    #[wasm_bindgen(method)]
-    pub fn splice<T>(this: &Array<T>, start: u32, delete_count: u32, item: &T) -> Array<T>;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn splice<T>(
+        this: &GenericArray<T>,
+        start: u32,
+        delete_count: u32,
+        item: &T,
+    ) -> GenericArray<T>;
 
     /// The `toLocaleString()` method returns a string representing the elements of the array.
     /// The elements are converted to Strings using their toLocaleString methods and these
     /// Strings are separated by a locale-specific String (such as a comma “,”).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toLocaleString)
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = toLocaleString, js_class = Array)]
     pub fn to_locale_string(this: &Array, locales: &JsValue, options: &JsValue) -> JsString;
 
     /// The `toString()` method returns a string representing the specified array
     /// and its elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString)
-    #[wasm_bindgen(method, js_name = toString)]
-    pub fn to_string<T>(this: &Array<T>) -> JsString;
+    #[wasm_bindgen(method, js_name = toString, js_class = Array)]
+    pub fn to_string<T>(this: &GenericArray<T>) -> JsString;
 
     /// The `unshift()` method adds one or more elements to the beginning of an
     /// array and returns the new length of the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
-    #[wasm_bindgen(method)]
-    pub fn unshift<T>(this: &Array<T>, value: &T) -> u32;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn unshift<T>(this: &GenericArray<T>, value: &T) -> u32;
 }
 
 /// Iterator returned by `Array::iter`
 #[derive(Debug, Clone)]
 pub struct ArrayIter<'a, T: 'static + JsCast> {
     range: std::ops::Range<u32>,
-    array: &'a Array<T>,
+    array: &'a GenericArray<T>,
 }
 
 impl<'a, T: JsCast> std::iter::Iterator for ArrayIter<'a, T> {
@@ -625,7 +637,7 @@ impl<'a, T: JsCast> std::iter::FusedIterator for ArrayIter<'a, T> {}
 
 impl<'a, T: JsCast> std::iter::ExactSizeIterator for ArrayIter<'a, T> {}
 
-impl<T: JsCast> Array<T> {
+impl<T: JsCast> GenericArray<T> {
     /// Returns an iterator over the values of the JS array.
     pub fn iter(&self) -> ArrayIter<'_, T> {
         ArrayIter {
@@ -668,7 +680,7 @@ where
     }
 }
 
-impl<T> Default for Array<T> {
+impl<T> Default for GenericArray<T> {
     fn default() -> Self {
         Self::new()
     }
@@ -771,22 +783,22 @@ extern "C" {
     /// keys for each index in the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
-    #[wasm_bindgen(method)]
-    pub fn keys<T>(this: &Array<T>) -> Iterator;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn keys<T>(this: &GenericArray<T>) -> Iterator;
 
     /// The `entries()` method returns a new Array Iterator object that contains
     /// the key/value pairs for each index in the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries)
-    #[wasm_bindgen(method)]
-    pub fn entries<T>(this: &Array<T>) -> Iterator;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn entries<T>(this: &GenericArray<T>) -> Iterator;
 
     /// The `values()` method returns a new Array Iterator object that
     /// contains the values for each index in the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values)
-    #[wasm_bindgen(method)]
-    pub fn values<T>(this: &Array<T>) -> Iterator<T>;
+    #[wasm_bindgen(method, js_class = Array)]
+    pub fn values<T>(this: &GenericArray<T>) -> Iterator<T>;
 }
 
 /// The `Atomics` object provides atomic operations as static methods.
@@ -1699,24 +1711,26 @@ extern "C" {
     pub fn throw<T, R, N>(this: &Generator<T, R, N>, error: &Error) -> Result<JsValue, JsValue>;
 }
 
+pub type Map = GenericMap<JsValue, JsValue>;
+
 // Map
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Map<any, any>")]
+    #[wasm_bindgen(js_name = Map, extends = Object, typescript_type = "Map<any, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type Map<K = JsValue, V = JsValue>;
+    pub type GenericMap<K = JsValue, V = JsValue>;
 
     /// The `clear()` method removes all elements from a Map object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/clear)
-    #[wasm_bindgen(method)]
-    pub fn clear<K, V>(this: &Map<K, V>);
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn clear<K, V>(this: &GenericMap<K, V>);
 
     /// The `delete()` method removes the specified element from a Map object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/delete)
-    #[wasm_bindgen(method)]
-    pub fn delete<K, V>(this: &Map<K, V>, key: &K) -> bool;
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn delete<K, V>(this: &GenericMap<K, V>, key: &K) -> bool;
 
     /// The `forEach()` method executes a provided function once per each
     /// key/value pair in the Map object, in insertion order.
@@ -1729,46 +1743,46 @@ extern "C" {
     /// })
     /// ```
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
-    #[wasm_bindgen(method, js_name = forEach)]
+    #[wasm_bindgen(method, js_name = forEach, js_class = Map)]
     pub fn for_each(this: &Map, callback: &mut dyn FnMut(JsValue, JsValue));
 
     /// The `get()` method returns a specified element from a Map object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get)
-    #[wasm_bindgen(method)]
-    pub fn get<K, V>(this: &Map<K, V>, key: &K) -> V;
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn get<K, V>(this: &GenericMap<K, V>, key: &K) -> V;
 
     /// The `has()` method returns a boolean indicating whether an element with
     /// the specified key exists or not.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has)
-    #[wasm_bindgen(method)]
-    pub fn has<K, V>(this: &Map<K, V>, key: &K) -> bool;
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn has<K, V>(this: &GenericMap<K, V>, key: &K) -> bool;
 
     /// The Map object holds key-value pairs. Any value (both objects and
     /// primitive values) maybe used as either a key or a value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
-    #[wasm_bindgen(constructor)]
-    pub fn new<K, V>() -> Map<K, V>;
+    #[wasm_bindgen(constructor, js_class = Map)]
+    pub fn new<K, V>() -> GenericMap<K, V>;
 
     /// The `set()` method adds or updates an element with a specified key
     /// and value to a Map object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/set)
-    #[wasm_bindgen(method)]
-    pub fn set<K, V>(this: &Map<K, V>, key: &K, value: &V) -> Map<K, V>;
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn set<K, V>(this: &GenericMap<K, V>, key: &K, value: &V) -> GenericMap<K, V>;
 
     /// The value of size is an integer representing how many entries
     /// the Map object has. A set accessor function for size is undefined;
     /// you can not change this property.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/size)
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn size<K, V>(this: &Map<K, V>) -> u32;
+    #[wasm_bindgen(method, getter, structural, js_class = Map)]
+    pub fn size<K, V>(this: &GenericMap<K, V>) -> u32;
 }
 
-impl<K, V> Default for Map<K, V> {
+impl<K, V> Default for GenericMap<K, V> {
     fn default() -> Self {
         Self::new()
     }
@@ -1782,22 +1796,22 @@ extern "C" {
     /// insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries)
-    #[wasm_bindgen(method)]
-    pub fn entries<K, V>(this: &Map<K, V>) -> Iterator; // TODO change return type to Iterator<Array> on next major version
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn entries<K, V>(this: &GenericMap<K, V>) -> Iterator; // TODO change return type to Iterator<Array> on next major version
 
     /// The `keys()` method returns a new Iterator object that contains the
     /// keys for each element in the Map object in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys)
-    #[wasm_bindgen(method)]
-    pub fn keys<K, V>(this: &Map<K, V>) -> Iterator<K>;
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn keys<K, V>(this: &GenericMap<K, V>) -> Iterator<K>;
 
     /// The `values()` method returns a new Iterator object that contains the
     /// values for each element in the Map object in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/values)
-    #[wasm_bindgen(method)]
-    pub fn values<K, V>(this: &Map<K, V>) -> Iterator<V>;
+    #[wasm_bindgen(method, js_class = Map)]
+    pub fn values<K, V>(this: &GenericMap<K, V>) -> Iterator<V>;
 }
 
 // Iterator
@@ -3668,63 +3682,65 @@ extern "C" {
     pub fn unicode(this: &RegExp) -> bool;
 }
 
+pub type Set = GenericSet<JsValue>;
+
 // Set
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Set<any>")]
+    #[wasm_bindgen(js_name = Set, extends = Object, typescript_type = "Set<any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type Set<T = JsValue>;
+    pub type GenericSet<T = JsValue>;
 
     /// The `add()` method appends a new element with a specified value to the
     /// end of a [`Set`] object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/add)
-    #[wasm_bindgen(method)]
-    pub fn add<T>(this: &Set, value: &T) -> Set<T>;
+    #[wasm_bindgen(method, js_class = Set)]
+    pub fn add<T>(this: &GenericSet<T>, value: &T) -> GenericSet<T>;
 
     /// The `clear()` method removes all elements from a [`Set`] object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/clear)
-    #[wasm_bindgen(method)]
-    pub fn clear<T>(this: &Set<T>);
+    #[wasm_bindgen(method, js_class = Set)]
+    pub fn clear<T>(this: &GenericSet<T>);
 
     /// The `delete()` method removes the specified element from a [`Set`]
     /// object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/delete)
-    #[wasm_bindgen(method)]
-    pub fn delete<T>(this: &Set<T>, value: &T) -> bool;
+    #[wasm_bindgen(method, js_class = Set)]
+    pub fn delete<T>(this: &GenericSet<T>, value: &T) -> bool;
 
     /// The `forEach()` method executes a provided function once for each value
     /// in the Set object, in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each<T>(this: &Set<T>, callback: &mut dyn FnMut(JsValue, JsValue, Set));
+    #[wasm_bindgen(method, js_name = forEach, js_class = Set)]
+    pub fn for_each(this: &Set, callback: &mut dyn FnMut(JsValue, JsValue, Set));
 
     /// The `has()` method returns a boolean indicating whether an element with
     /// the specified value exists in a [`Set`] object or not.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has)
-    #[wasm_bindgen(method)]
-    pub fn has<T>(this: &Set<T>, value: &T) -> bool;
+    #[wasm_bindgen(method, js_class = Set)]
+    pub fn has<T>(this: &GenericSet<T>, value: &T) -> bool;
 
     /// The [`Set`] object lets you store unique values of any type, whether
     /// primitive values or object references.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
-    #[wasm_bindgen(constructor)]
-    pub fn new<T>(init: &JsValue) -> Set<T>;
+    #[wasm_bindgen(constructor, js_class = Set)]
+    pub fn new<T>(init: &JsValue) -> GenericSet<T>;
 
     /// The size accessor property returns the number of elements in a [`Set`]
     /// object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Set/size)
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn size<T>(this: &Set<T>) -> u32;
+    #[wasm_bindgen(method, getter, structural, js_class = Set)]
+    pub fn size<T>(this: &GenericSet<T>) -> u32;
 }
 
-impl<T> Default for Set<T> {
+impl<T> Default for GenericSet<T> {
     fn default() -> Self {
         Self::new(&JsValue::UNDEFINED)
     }
@@ -3740,23 +3756,23 @@ extern "C" {
     /// for its key and value here, so that an array [value, value] is returned.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries)
-    #[wasm_bindgen(method)]
-    pub fn entries<T>(set: &Set<T>) -> Iterator; // TODO make generic on next major version
+    #[wasm_bindgen(method, js_class = Set)]
+    pub fn entries<T>(set: &GenericSet<T>) -> Iterator; // TODO make generic on next major version
 
     /// The `keys()` method is an alias for this method (for similarity with
     /// Map objects); it behaves exactly the same and returns values
     /// of Set elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values)
-    #[wasm_bindgen(method)]
-    pub fn keys<T>(set: &Set<T>) -> Iterator<T>;
+    #[wasm_bindgen(method, js_class = Set)]
+    pub fn keys<T>(set: &GenericSet<T>) -> Iterator<T>;
 
     /// The `values()` method returns a new Iterator object that contains the
     /// values for each element in the Set object in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values)
-    #[wasm_bindgen(method)]
-    pub fn values<T>(set: &Set<T>) -> Iterator<T>;
+    #[wasm_bindgen(method, js_class = Set)]
+    pub fn values<T>(set: &GenericSet<T>) -> Iterator<T>;
 }
 
 // SyntaxError
@@ -3818,91 +3834,95 @@ extern "C" {
     pub fn new(message: &str) -> UriError;
 }
 
+pub type WeakMap = GenericWeakMap<Object, JsValue>;
+
 // WeakMap
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "WeakMap<object, any>")]
+    #[wasm_bindgen(js_name = WeakMap, extends = Object, typescript_type = "WeakMap<object, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type WeakMap<K = Object, V = JsValue>;
+    pub type GenericWeakMap<K = Object, V = JsValue>;
 
     /// The [`WeakMap`] object is a collection of key/value pairs in which the
     /// keys are weakly referenced.  The keys must be objects and the values can
     /// be arbitrary values.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
-    #[wasm_bindgen(constructor)]
-    pub fn new<K, V>() -> WeakMap<K, V>;
+    #[wasm_bindgen(constructor, js_class = WeakMap)]
+    pub fn new<K, V>() -> GenericWeakMap<K, V>;
 
     /// The `set()` method sets the value for the key in the [`WeakMap`] object.
     /// Returns the [`WeakMap`] object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/set)
-    #[wasm_bindgen(method, js_class = "WeakMap")]
-    pub fn set<K, V>(this: &WeakMap<K, V>, key: &K, value: &V) -> WeakMap<K, V>;
+    #[wasm_bindgen(method, js_class = WeakMap)]
+    pub fn set<K, V>(this: &GenericWeakMap<K, V>, key: &K, value: &V) -> GenericWeakMap<K, V>;
 
     /// The `get()` method returns a specified by key element
     /// from a [`WeakMap`] object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/get)
-    #[wasm_bindgen(method)]
-    pub fn get<K, V>(this: &WeakMap<K, V>, key: &K) -> V;
+    #[wasm_bindgen(method, js_class = WeakMap)]
+    pub fn get<K, V>(this: &GenericWeakMap<K, V>, key: &K) -> V;
 
     /// The `has()` method returns a boolean indicating whether an element with
     /// the specified key exists in the [`WeakMap`] object or not.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/has)
-    #[wasm_bindgen(method)]
-    pub fn has<K, V>(this: &WeakMap<K, V>, key: &K) -> bool;
+    #[wasm_bindgen(method, js_class = WeakMap)]
+    pub fn has<K, V>(this: &GenericWeakMap<K, V>, key: &K) -> bool;
 
     /// The `delete()` method removes the specified element from a [`WeakMap`]
     /// object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/delete)
-    #[wasm_bindgen(method)]
-    pub fn delete<K, V>(this: &WeakMap<K, V>, key: &K) -> bool;
+    #[wasm_bindgen(method, js_class = WeakMap)]
+    pub fn delete<K, V>(this: &GenericWeakMap<K, V>, key: &K) -> bool;
 }
 
-impl<K, V> Default for WeakMap<K, V> {
+impl<K, V> Default for GenericWeakMap<K, V> {
     fn default() -> Self {
         Self::new()
     }
 }
 
+pub type WeakSet = GenericWeakSet<Object>;
+
 // WeakSet
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "WeakSet<object>")]
+    #[wasm_bindgen(js_name = WeakSet, extends = Object, typescript_type = "WeakSet<object>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type WeakSet<T = Object>;
+    pub type GenericWeakSet<T = Object>;
 
     /// The `WeakSet` object lets you store weakly held objects in a collection.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
-    #[wasm_bindgen(constructor)]
-    pub fn new<T>() -> WeakSet<T>;
+    #[wasm_bindgen(constructor, js_class = WeakSet)]
+    pub fn new<T>() -> GenericWeakSet<T>;
 
     /// The `has()` method returns a boolean indicating whether an object exists
     /// in a WeakSet or not.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/has)
-    #[wasm_bindgen(method)]
-    pub fn has<T>(this: &WeakSet<T>, value: &T) -> bool;
+    #[wasm_bindgen(method, js_class = WeakSet)]
+    pub fn has<T>(this: &GenericWeakSet<T>, value: &T) -> bool;
 
     /// The `add()` method appends a new object to the end of a WeakSet object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/add)
-    #[wasm_bindgen(method)]
-    pub fn add<T>(this: &WeakSet<T>, value: &T) -> WeakSet<T>;
+    #[wasm_bindgen(method, js_class = WeakSet)]
+    pub fn add<T>(this: &GenericWeakSet<T>, value: &T) -> GenericWeakSet<T>;
 
     /// The `delete()` method removes the specified element from a WeakSet
     /// object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/delete)
-    #[wasm_bindgen(method)]
-    pub fn delete<T>(this: &WeakSet<T>, value: &T) -> bool;
+    #[wasm_bindgen(method, js_class = WeakSet)]
+    pub fn delete<T>(this: &GenericWeakSet<T>, value: &T) -> bool;
 }
 
-impl<T> Default for WeakSet<T> {
+impl<T> Default for GenericWeakSet<T> {
     fn default() -> Self {
         Self::new()
     }
