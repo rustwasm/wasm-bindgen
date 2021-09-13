@@ -11,45 +11,61 @@ error: the start function cannot have generics
    |            ^^^
 
 error[E0277]: the trait bound `Result<wasm_bindgen::JsValue, ()>: wasm_bindgen::__rt::Start` is not satisfied
-  --> $DIR/start-function.rs:15:1
-   |
-15 | #[wasm_bindgen(start)]
-   | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, ()>`
-   |
-   = help: the following implementations were found:
-             <Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `start`
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+    --> $DIR/start-function.rs:15:1
+     |
+15   | #[wasm_bindgen(start)]
+     | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, ()>`
+     |
+     = help: the following implementations were found:
+               <Result<(), E> as wasm_bindgen::__rt::Start>
+note: required by `start`
+    --> $DIR/lib.rs:1548:9
+     |
+1548 |         fn start(self);
+     |         ^^^^^^^^^^^^^^^
+     = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>: wasm_bindgen::__rt::Start` is not satisfied
-  --> $DIR/start-function.rs:18:1
-   |
-18 | #[wasm_bindgen(start)]
-   | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>`
-   |
-   = help: the following implementations were found:
-             <Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `start`
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+    --> $DIR/start-function.rs:18:1
+     |
+18   | #[wasm_bindgen(start)]
+     | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>`
+     |
+     = help: the following implementations were found:
+               <Result<(), E> as wasm_bindgen::__rt::Start>
+note: required by `start`
+    --> $DIR/lib.rs:1548:9
+     |
+1548 |         fn start(self);
+     |         ^^^^^^^^^^^^^^^
+     = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Result<wasm_bindgen::JsValue, ()>: wasm_bindgen::__rt::Start` is not satisfied
-  --> $DIR/start-function.rs:27:1
-   |
-27 | #[wasm_bindgen(start)]
-   | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, ()>`
-   |
-   = help: the following implementations were found:
-             <Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `start`
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+    --> $DIR/start-function.rs:27:1
+     |
+27   | #[wasm_bindgen(start)]
+     | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, ()>`
+     |
+     = help: the following implementations were found:
+               <Result<(), E> as wasm_bindgen::__rt::Start>
+note: required by `start`
+    --> $DIR/lib.rs:1548:9
+     |
+1548 |         fn start(self);
+     |         ^^^^^^^^^^^^^^^
+     = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>: wasm_bindgen::__rt::Start` is not satisfied
-  --> $DIR/start-function.rs:30:1
-   |
-30 | #[wasm_bindgen(start)]
-   | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>`
-   |
-   = help: the following implementations were found:
-             <Result<(), E> as wasm_bindgen::__rt::Start>
-   = note: required by `start`
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+    --> $DIR/start-function.rs:30:1
+     |
+30   | #[wasm_bindgen(start)]
+     | ^^^^^^^^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::Start` is not implemented for `Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>`
+     |
+     = help: the following implementations were found:
+               <Result<(), E> as wasm_bindgen::__rt::Start>
+note: required by `start`
+    --> $DIR/lib.rs:1548:9
+     |
+1548 |         fn start(self);
+     |         ^^^^^^^^^^^^^^^
+     = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
