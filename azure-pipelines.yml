@@ -41,6 +41,8 @@ jobs:
         displayName: "Futures test suite on wasm"
       - script: cargo test -p wasm-bindgen-multi-value-xform
         displayName: "multi-value xform tests on native"
+      - script: cargo test -p wasm-bindgen-shared
+        displayName: "Shared test suite on native"
       # TODO: re-enable when binary decoding for reference types is updated in
       # Node.
       # - script: |
