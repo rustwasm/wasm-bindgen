@@ -657,13 +657,23 @@ where
     where
         T: IntoIterator<Item = A>,
     {
-        let out = Array::new();
-
-        for value in iter {
-            out.push(value.as_ref());
-        }
-
+        let mut out = Array::new();
+        out.extend(iter);
         out
+    }
+}
+
+impl<A> std::iter::Extend<A> for Array
+where
+    A: AsRef<JsValue>,
+{
+    fn extend<T>(&mut self, iter: T)
+    where
+        T: IntoIterator<Item = A>,
+    {
+        for value in iter {
+            self.push(value.as_ref());
+        }
     }
 }
 

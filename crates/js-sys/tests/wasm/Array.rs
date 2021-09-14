@@ -82,6 +82,13 @@ fn from_iter() {
 }
 
 #[wasm_bindgen_test]
+fn extend() {
+    let mut array = array!["a", "b"];
+    array.extend(vec![JsValue::from("c"), JsValue::from("d")]);
+    assert_eq!(array, array!["a", "b", "c", "d"]);
+}
+
+#[wasm_bindgen_test]
 fn to_vec() {
     let array = vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]
         .into_iter()
