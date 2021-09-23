@@ -1,5 +1,6 @@
 use anyhow::{bail, Error};
 use std::collections::HashSet;
+use std::fmt::Write;
 use walrus::Module;
 
 pub struct Config {
@@ -44,6 +45,16 @@ impl Config {
     }
 }
 
+// Function to ensure we always append a valid typescript parameter name based
+// on parameter index
+fn push_index_identifier(i: usize, s: &mut String) {
+    let letter = b'a' + ((i % 26) as u8);
+    s.push(letter as char);
+    if i >= 26 {
+        write!(s, "{}", i / 26).unwrap();
+    }
+}
+
 pub fn interface(module: &Module) -> Result<String, Error> {
     let mut exports = String::new();
 
@@ -68,7 +79,8 @@ pub fn interface(module: &Module) -> Result<String, Error> {
             if i > 0 {
                 args.push_str(", ");
             }
-            args.push((b'a' + (i as u8)) as char);
+
+            push_index_identifier(i, &mut args);
             args.push_str(": number");
         }
 
@@ -89,7 +101,6 @@ pub fn interface(module: &Module) -> Result<String, Error> {
 
 pub fn typescript(module: &Module) -> Result<String, Error> {
     let mut exports = format!("/* tslint:disable */\n/* eslint-disable */\n");
-
     for entry in module.exports.iter() {
         let id = match entry.item {
             walrus::ExportItem::Function(i) => i,
@@ -117,7 +128,7 @@ pub fn typescript(module: &Module) -> Result<String, Error> {
             if i > 0 {
                 args.push_str(", ");
             }
-            args.push((b'a' + (i as u8)) as char);
+            push_index_identifier(i, &mut args);
             args.push_str(": number");
         }
 
@@ -157,7 +168,9 @@ impl Output {
                 continue;
             }
 
-            let name = (b'a' + (set.len() as u8)) as char;
+            let mut name = String::new();
+            push_index_identifier(set.len(), &mut name);
+
             js_imports.push_str(&format!(
                 "import * as import_{} from '{}';\n",
                 name, entry.module
@@ -267,5 +280,30 @@ impl Output {
         };
         self.module.exports.add("__wasm2es6js_start", start);
         true
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_push_index_identifier() {
+        fn index_identifier(i: usize) -> String {
+            let mut s = String::new();
+            push_index_identifier(i, &mut s);
+            s
+        }
+
+        assert_eq!(index_identifier(0), "a");
+        assert_eq!(index_identifier(1), "b");
+        assert_eq!(index_identifier(25), "z");
+        assert_eq!(index_identifier(26), "a1");
+        assert_eq!(index_identifier(27), "b1");
+        assert_eq!(index_identifier(51), "z1");
+        assert_eq!(index_identifier(52), "a2");
+        assert_eq!(index_identifier(53), "b2");
+        assert_eq!(index_identifier(260), "a10");
+        assert_eq!(index_identifier(261), "b10");
     }
 }
