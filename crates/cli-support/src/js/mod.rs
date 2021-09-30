@@ -777,7 +777,7 @@ impl<'a> Context<'a> {
                     {imports_init}
 
                     if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
-                        input = fetch(input);
+                        input = fetch(input, {method: 'GET', credentials: 'include',  mode: 'no-cors'});
                     }}
 
                     {init_memory}
