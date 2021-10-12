@@ -2447,7 +2447,7 @@ impl From<&Number> for f64 {
 impl From<Number> for f64 {
     #[inline]
     fn from(n: Number) -> f64 {
-        n.into()
+        <f64 as From<&'_ Number>>::from(&n)
     }
 }
 
