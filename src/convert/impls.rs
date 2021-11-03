@@ -325,12 +325,25 @@ impl FromWasmAbi for JsValue {
     }
 }
 
+impl OptionIntoWasmAbi for JsValue {
+    fn none() -> Self::Abi {
+        0
+    }
+}
+
 impl<'a> IntoWasmAbi for &'a JsValue {
     type Abi = u32;
 
     #[inline]
     fn into_abi(self) -> u32 {
         self.idx
+    }
+}
+
+impl<'a> OptionIntoWasmAbi for &'a JsValue {
+    #[inline]
+    fn none() -> Self::Abi {
+        0
     }
 }
 
@@ -398,14 +411,17 @@ impl IntoWasmAbi for () {
 
 #[repr(C)]
 pub struct ResultAbi<T> {
-    is_ok: u32,
+    // order of args here is such that we can pop() the is_ok and err first, deal with them and
+    // move on.
     abi: ResultAbiUnion<T>,
+    /// We can simply return 0 for an absent err.
+    err: u32,
 }
 
 #[repr(C)]
 pub union ResultAbiUnion<T> {
     ok: std::mem::ManuallyDrop<T>,
-    err: u32,
+    err: (),
 }
 
 unsafe impl<T: WasmAbi> WasmAbi for ResultAbi<T> {}
@@ -420,19 +436,13 @@ impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
                 let abi = ResultAbiUnion {
                     ok: std::mem::ManuallyDrop::new(v.into_abi()),
                 };
-                ResultAbi {
-                    is_ok: true.into_abi(),
-                    abi,
-                }
+                ResultAbi { abi, err: 0 }
             }
             Err(e) => {
                 let jsval = e.into();
-                let abi = ResultAbiUnion {
-                    err: jsval.into_abi(),
-                };
                 ResultAbi {
-                    is_ok: true.into_abi(),
-                    abi,
+                    abi: ResultAbiUnion { err: () },
+                    err: jsval.into_abi(),
                 }
             }
         }

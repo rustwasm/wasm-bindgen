@@ -25,4 +25,7 @@ exports.test_option_values = () => {
     const x = wasm.rust_return_some_byval();
     assert.ok(x !== null && x !== undefined);
     assert.ok(x instanceof MyType);
+
+    assert.strictEqual(wasm.rust_return_some_jsvalue(), 5);
+    assert.strictEqual(wasm.rust_return_none_jsvalue(), undefined);
 };
