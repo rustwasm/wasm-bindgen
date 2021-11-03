@@ -413,7 +413,7 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::Closure(_)
             | Descriptor::Slice(_)
             | Descriptor::Result(_) => bail!(
-                "unsupported optional argument type for calling JS function from Rust: {:?}",
+                "unsupported Result type for returning from exported Rust function: {:?}",
                 arg
             ),
         }
