@@ -151,3 +151,15 @@ pub fn return_enum_err() -> Result<MyEnum, MyError> {
     Err(MyError::Variant)
 }
 call_test!(test_enum_err, call_enum_err);
+
+// T = Unit
+#[wasm_bindgen]
+pub fn return_unit_ok() -> Result<(), MyError> {
+    Ok(())
+}
+#[wasm_bindgen]
+pub fn return_unit_err() -> Result<(), MyError> {
+    Err(MyError::Variant)
+}
+call_test!(test_unit, call_unit);
+

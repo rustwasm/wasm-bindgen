@@ -80,3 +80,13 @@ exports.call_enum_err = function() {
     })
 }
 
+exports.call_unit = function() {
+    assert.doesNotThrow(() => {
+        wasm.return_unit_ok();
+    });
+    assert.throws(() => {
+        wasm.return_unit_err();
+    }, {
+        message: "MyError::Variant"
+    });
+}

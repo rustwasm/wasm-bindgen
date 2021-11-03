@@ -404,7 +404,7 @@ impl InstructionBuilder<'_, '_> {
             }
 
             Descriptor::Unit => {
-                self.instruction(&[AdapterType::U32], Instruction::UnwrapResult, &[])
+                self.instruction(&[AdapterType::I32], Instruction::UnwrapResult, &[])
             }
 
             Descriptor::ClampedU8
