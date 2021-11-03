@@ -90,3 +90,19 @@ exports.call_unit = function() {
         message: "MyError::Variant"
     });
 }
+
+exports.call_option = function() {
+    assert.doesNotThrow(() => {
+        let o = wasm.return_option_ok_some();
+        assert.strictEqual(o, 10.0);
+    });
+    assert.doesNotThrow(() => {
+        let o = wasm.return_option_ok_none();
+        assert.strictEqual(o, undefined);
+    });
+    assert.throws(() => {
+        wasm.return_option_err();
+    }, {
+        message: "MyError::Variant"
+    });
+}

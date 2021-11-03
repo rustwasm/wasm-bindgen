@@ -383,6 +383,7 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::RefMut(_)
             | Descriptor::CachedString
             | Descriptor::String
+            | Descriptor::Option(_)
             | Descriptor::Vector(_) => {
                 // These can be of varying lengths.
                 // The structure of ResultAbi is that the err is last, so if we generically
@@ -411,7 +412,6 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::Function(_)
             | Descriptor::Closure(_)
             | Descriptor::Slice(_)
-            | Descriptor::Option(_)
             | Descriptor::Result(_) => bail!(
                 "unsupported optional argument type for calling JS function from Rust: {:?}",
                 arg

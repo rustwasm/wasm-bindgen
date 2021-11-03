@@ -163,3 +163,18 @@ pub fn return_unit_err() -> Result<(), MyError> {
 }
 call_test!(test_unit, call_unit);
 
+// T = Option<f64>
+#[wasm_bindgen]
+pub fn return_option_ok_some() -> Result<Option<f64>, MyError> {
+    Ok(Some(10f64))
+}
+#[wasm_bindgen]
+pub fn return_option_ok_none() -> Result<Option<f64>, MyError> {
+    Ok(None)
+}
+#[wasm_bindgen]
+pub fn return_option_err() -> Result<Option<f64>, MyError> {
+    Err(MyError::Variant)
+}
+call_test!(test_option, call_option);
+
