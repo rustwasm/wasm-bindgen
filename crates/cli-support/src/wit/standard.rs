@@ -219,6 +219,7 @@ pub enum Instruction {
         mem: walrus::MemoryId,
     },
 
+    /// Pops a nullable externref; if it is non-zero, throws it.
     UnwrapResult,
 
     /// pops a `i32`, pushes `bool`
