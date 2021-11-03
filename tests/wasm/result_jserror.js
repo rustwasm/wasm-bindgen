@@ -47,31 +47,8 @@ exports.all_struct_methods = function() {
 
 exports.call_return_string = function() {
     assert.doesNotThrow(() => {
-        let ok = wasm.return_string();
+        let ok = wasm.jserror_return_string();
         assert.strictEqual(ok, "string here");
     })
-}
-
-exports.call_return_enum = function() {
-    assert.doesNotThrow(() => {
-        let ok = wasm.return_enum();
-        assert.strictEqual(ok, 2);
-    })
-}
-
-exports.call_jsvalue_ok = function() {
-    assert.doesNotThrow(() => {
-        let five = wasm.return_jsvalue_ok();
-        assert.strictEqual(five, 5);
-    })
-}
-
-exports.call_jsvalue_err = function() {
-    try {
-        wasm.return_jsvalue_err();
-        assert.fail("should have thrown");
-    } catch (e) {
-        assert.strictEqual(e, -1);
-    }
 }
 
