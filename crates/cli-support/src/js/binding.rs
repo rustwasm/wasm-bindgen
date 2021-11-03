@@ -596,16 +596,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::LoadRetptr { ty, offset, mem } => {
-            let (mem, size) = match ty {
-                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
-                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
-                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
+            let (mem, quads) = match ty {
+                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 1),
+                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 1),
+                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 2),
                 other => bail!("invalid aggregate return type {:?}", other),
             };
+            let size = quads * 4;
+            // Separate the offset and the scaled offset, because otherwise you don't guarantee
+            // that the variable names will be unique. 
+            let scaled_offset = offset / quads;
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
             // here
-            let expr = format!("{}()[retptr / {} + {}]", mem, size, offset);
+            let expr = format!("{}()[retptr / {} + {}]", mem, size, scaled_offset);
             js.prelude(&format!("var r{} = {};", offset, expr));
             js.push(format!("r{}", offset));
         }
