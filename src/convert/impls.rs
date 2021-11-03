@@ -414,7 +414,6 @@ pub struct ResultAbi<T> {
     // order of args here is such that we can pop() the is_ok and err first, deal with them and
     // move on.
     abi: ResultAbiUnion<T>,
-    /// We can simply return 0 for an absent err.
     err: u32,
 }
 
@@ -436,13 +435,16 @@ impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
                 let abi = ResultAbiUnion {
                     ok: std::mem::ManuallyDrop::new(v.into_abi()),
                 };
-                ResultAbi { abi, err: 0 }
+                ResultAbi {
+                    abi,
+                    err: Option::<JsValue>::None.into_abi(),
+                }
             }
             Err(e) => {
                 let jsval = e.into();
                 ResultAbi {
                     abi: ResultAbiUnion { err: () },
-                    err: jsval.into_abi(),
+                    err: Some(jsval).into_abi(),
                 }
             }
         }

@@ -18,8 +18,15 @@ impl InstructionBuilder<'_, '_> {
         let input_before = self.input.len();
         let output_before = self.output.len();
         self._outgoing(arg)?;
-        assert_eq!(output_before + 1, self.output.len());
+
         assert!(input_before < self.input.len());
+        if let Descriptor::Result(arg) = arg {
+            if let Descriptor::Unit = &**arg {
+                assert_eq!(output_before, self.output.len());
+                return Ok(())
+            }
+        }
+        assert_eq!(output_before + 1, self.output.len());
         Ok(())
     }
 
@@ -338,8 +345,79 @@ impl InstructionBuilder<'_, '_> {
         Ok(())
     }
 
+    fn instruction_unwrap(&mut self) {
+        let decode_t = self
+            .instructions
+            .pop()
+            .expect("can't add Unwrap instruction as the first instruction");
+        self.input.push(AdapterType::I32);
+        self.instructions.push(InstructionData {
+            instr: Instruction::UnwrapResult,
+            stack_change: StackChange::Modified {
+                popped: 1,
+                pushed: 0,
+            },
+        });
+        self.instructions.push(decode_t);
+    }
+
     fn outgoing_result(&mut self, arg: &Descriptor) -> Result<(), Error> {
-        unimplemented!()
+        match arg {
+            Descriptor::Externref
+            | Descriptor::NamedExternref(_)
+            | Descriptor::I8
+            | Descriptor::U8
+            | Descriptor::I16
+            | Descriptor::U16
+            | Descriptor::I32
+            | Descriptor::U32
+            | Descriptor::F32
+            | Descriptor::F64
+            | Descriptor::I64
+            | Descriptor::U64
+            | Descriptor::Boolean
+            | Descriptor::Char
+            | Descriptor::Enum { .. }
+            | Descriptor::RustStruct(_)
+            | Descriptor::Ref(_)
+            | Descriptor::RefMut(_)
+            | Descriptor::CachedString
+            | Descriptor::String
+            | Descriptor::Vector(_) => {
+                // These can be of varying lengths.
+                // The structure of ResultAbi is that the err is last, so if we generically
+                // push an instruction that will read the Ok type, for example
+                //
+                //     LoadRetptr [f64, u32, u32]
+                //     Decode { popped: 3 }
+                //
+                self._outgoing(arg)?;
+                // then push an instruction just before that one with an extra input
+                self.instruction_unwrap();
+                // then we end up with
+                //
+                //     LoadRetptr [f64, u32, u32, u32]
+                //     UnwrapResult { popped: 1 }
+                //     Decode { popped: 3 }
+                //
+                // and the code for UnwrapResult is simple.
+            }
+
+            Descriptor::Unit => {
+                self.instruction(&[AdapterType::U32], Instruction::UnwrapResult, &[])
+            }
+
+            Descriptor::ClampedU8
+            | Descriptor::Function(_)
+            | Descriptor::Closure(_)
+            | Descriptor::Slice(_)
+            | Descriptor::Option(_)
+            | Descriptor::Result(_) => bail!(
+                "unsupported optional argument type for calling JS function from Rust: {:?}",
+                arg
+            ),
+        }
+        Ok(())
     }
 
     fn outgoing_option_ref(&mut self, _mutable: bool, arg: &Descriptor) -> Result<(), Error> {

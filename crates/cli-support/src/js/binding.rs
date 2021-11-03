@@ -784,7 +784,14 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::UnwrapResult => {
-            unimplemented!()
+            // The top of the stack is a nullable u32. If it is nonzero, takeObject and throw it.
+            let i = js.tmp();
+            let val = js.pop();
+            js.prelude(&format!("var err{i} = {val};", i = i, val = val));
+            js.prelude(&format!(
+                "if (err{i} !== 0) {{ throw takeObject(err{i}); }}",
+                i = i
+            ));
         }
 
         Instruction::OptionString {
