@@ -411,7 +411,7 @@ impl IntoWasmAbi for () {
 
 #[repr(C)]
 pub struct ResultAbi<T> {
-    // order of args here is such that we can pop() the is_ok and err first, deal with them and
+    // order of args here is such that we can pop() the err first, deal with it and
     // move on.
     abi: ResultAbiUnion<T>,
     err: u32,
