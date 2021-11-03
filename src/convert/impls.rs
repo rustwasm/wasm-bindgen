@@ -1,13 +1,10 @@
 use core::char;
 use core::mem::{self, ManuallyDrop};
 
-use std::string::ToString;
-
 use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
-use crate::describe::WasmDescribe;
-use crate::{Clamped, JsValue};
+use crate::{Clamped, JsError, JsValue};
 
 unsafe impl WasmAbi for () {}
 
@@ -403,49 +400,6 @@ impl<T: FromWasmAbi> FromWasmAbi for Clamped<T> {
     }
 }
 
-#[derive(Clone)]
-pub struct JsError {
-    value: JsValue,
-}
-
-impl JsError {
-    #[inline]
-    pub fn new(s: &str) -> JsError {
-        Self {
-            value: unsafe { JsValue::_new(crate::__wbindgen_error_new(s.as_ptr(), s.len())) },
-        }
-    }
-}
-
-impl<E> From<E> for JsError
-where
-    E: std::error::Error,
-{
-    fn from(error: E) -> Self {
-        JsError::new(&error.to_string())
-    }
-}
-
-impl From<JsError> for JsValue {
-    fn from(error: JsError) -> Self {
-        error.value
-    }
-}
-
-impl WasmDescribe for JsError {
-    fn describe() {
-        JsValue::describe();
-    }
-}
-
-impl IntoWasmAbi for JsError {
-    type Abi = <JsValue as IntoWasmAbi>::Abi;
-
-    fn into_abi(self) -> Self::Abi {
-        self.value.into_abi()
-    }
-}
-
 impl IntoWasmAbi for () {
     type Abi = ();
 
@@ -494,5 +448,13 @@ impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
                 }
             }
         }
+    }
+}
+
+impl IntoWasmAbi for JsError {
+    type Abi = <JsValue as IntoWasmAbi>::Abi;
+
+    fn into_abi(self) -> Self::Abi {
+        self.value.into_abi()
     }
 }
