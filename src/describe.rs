@@ -171,11 +171,10 @@ impl WasmDescribe for () {
     }
 }
 
-// Note that this is only for `ReturnWasmAbi for Result<T, JsValue>`, which
-// throws the result, so we only need to inform about the `T`.
-impl<T: WasmDescribe> WasmDescribe for Result<T, JsValue> {
+impl<T: WasmDescribe, E: Into<JsValue>> WasmDescribe for Result<T, E> {
     fn describe() {
-        T::describe()
+        inform(RESULT);
+        T::describe();
     }
 }
 

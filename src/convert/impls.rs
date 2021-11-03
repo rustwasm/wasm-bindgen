@@ -396,14 +396,45 @@ impl IntoWasmAbi for () {
     }
 }
 
-impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
-    type Abi = T::Abi;
+#[repr(C)]
+pub struct ResultAbi<T> {
+    is_ok: u32,
+    abi: ResultAbiUnion<T>,
+}
 
+#[repr(C)]
+pub union ResultAbiUnion<T> {
+    ok: std::mem::ManuallyDrop<T>,
+    err: u32,
+}
+
+unsafe impl<T: WasmAbi> WasmAbi for ResultAbi<T> {}
+unsafe impl<T: WasmAbi> WasmAbi for ResultAbiUnion<T> {}
+
+impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
+    type Abi = ResultAbi<T::Abi>;
     #[inline]
     fn return_abi(self) -> Self::Abi {
         match self {
-            Ok(v) => v.into_abi(),
-            Err(e) => crate::throw_val(e),
+            Ok(v) => {
+                let abi = ResultAbiUnion {
+                    ok: std::mem::ManuallyDrop::new(v.into_abi()),
+                };
+                ResultAbi {
+                    is_ok: true.into_abi(),
+                    abi,
+                }
+            }
+            Err(e) => {
+                let jsval = e.into();
+                let abi = ResultAbiUnion {
+                    err: jsval.into_abi(),
+                };
+                ResultAbi {
+                    is_ok: true.into_abi(),
+                    abi,
+                }
+            }
         }
     }
 }
