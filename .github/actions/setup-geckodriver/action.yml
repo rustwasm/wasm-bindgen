@@ -1,0 +1,6 @@
+name: 'Setup Geckodriver'
+description: 'Setup Geckodriver'
+
+runs:
+  using: node12
+  main: 'main.js'
