@@ -1,0 +1,7 @@
+name: CI
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo hello
