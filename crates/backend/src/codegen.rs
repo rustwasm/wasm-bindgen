@@ -60,7 +60,6 @@ impl TryToTokens for ast::Program {
                         };
                         (quote! {
                             #[automatically_derived]
-                            #[allow(clippy::nursery)]
                             impl #ns { #kind }
                         })
                         .to_tokens(tokens);
@@ -126,7 +125,6 @@ impl TryToTokens for ast::Program {
         (quote! {
             #[cfg(target_arch = "wasm32")]
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #[link_section = "__wasm_bindgen_unstable"]
             #[doc(hidden)]
             pub static #generated_static_name: [u8; #generated_static_length] = {
@@ -152,7 +150,6 @@ impl ToTokens for ast::Struct {
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         (quote! {
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     use wasm_bindgen::__wbindgen_if_not_std;
@@ -170,7 +167,6 @@ impl ToTokens for ast::Struct {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = u32;
 
@@ -182,7 +178,6 @@ impl ToTokens for ast::Struct {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = u32;
 
@@ -199,7 +194,6 @@ impl ToTokens for ast::Struct {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::__rt::core::convert::From<#name> for
                 wasm_bindgen::JsValue
             {
@@ -226,7 +220,6 @@ impl ToTokens for ast::Struct {
 
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #[no_mangle]
             #[doc(hidden)]
             pub unsafe extern "C" fn #free_fn(ptr: u32) {
@@ -234,7 +227,6 @@ impl ToTokens for ast::Struct {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
@@ -247,7 +239,6 @@ impl ToTokens for ast::Struct {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::RefMutFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = wasm_bindgen::__rt::RefMut<'static, #name>;
@@ -260,14 +251,12 @@ impl ToTokens for ast::Struct {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
                 fn none() -> Self::Abi { 0 }
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
@@ -304,7 +293,6 @@ impl ToTokens for ast::StructField {
 
         (quote! {
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
             #[doc(hidden)]
             pub unsafe extern "C" fn #getter(js: u32)
@@ -340,7 +328,6 @@ impl ToTokens for ast::StructField {
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #[no_mangle]
             #[doc(hidden)]
             pub unsafe extern "C" fn #setter(
@@ -525,7 +512,6 @@ impl TryToTokens for ast::Export {
 
         (quote! {
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #(#attrs)*
             #[cfg_attr(
                 all(target_arch = "wasm32", not(target_os = "emscripten")),
@@ -643,7 +629,6 @@ impl ToTokens for ast::ImportType {
 
         (quote! {
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #(#attrs)*
             #[doc = #doc_comment]
             #[repr(transparent)]
@@ -652,7 +637,6 @@ impl ToTokens for ast::ImportType {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
@@ -796,7 +780,6 @@ impl ToTokens for ast::ImportType {
         if !no_deref {
             (quote! {
                 #[automatically_derived]
-                #[allow(clippy::nursery)]
                 impl core::ops::Deref for #rust_name {
                     type Target = #internal_obj;
 
@@ -812,7 +795,6 @@ impl ToTokens for ast::ImportType {
         for superclass in self.extends.iter() {
             (quote! {
                 #[automatically_derived]
-                #[allow(clippy::nursery)]
                 impl From<#rust_name> for #superclass {
                     #[inline]
                     fn from(obj: #rust_name) -> #superclass {
@@ -822,7 +804,6 @@ impl ToTokens for ast::ImportType {
                 }
 
                 #[automatically_derived]
-                #[allow(clippy::nursery)]
                 impl AsRef<#superclass> for #rust_name {
                     #[inline]
                     fn as_ref(&self) -> &#superclass {
@@ -873,13 +854,11 @@ impl ToTokens for ast::ImportEnum {
             #vis enum #name {
                 #(#variants = #variant_indexes_ref,)*
                 #[automatically_derived]
-                #[allow(clippy::nursery)]
                 #[doc(hidden)]
                 __Nonexhaustive,
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl #name {
                 fn from_str(s: &str) -> Option<#name> {
                     match s {
@@ -902,7 +881,6 @@ impl ToTokens for ast::ImportEnum {
 
             // It should really be using &str for all of these, but that requires some major changes to cli-support
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     <wasm_bindgen::JsValue as wasm_bindgen::describe::WasmDescribe>::describe()
@@ -910,7 +888,6 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = <wasm_bindgen::JsValue as wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
@@ -921,7 +898,6 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = <wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>::Abi;
 
@@ -932,21 +908,18 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
                 fn none() -> Self::Abi { <::js_sys::Object as wasm_bindgen::convert::OptionIntoWasmAbi>::none() }
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { <::js_sys::Object as wasm_bindgen::convert::OptionFromWasmAbi>::is_none(abi) }
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl From<#name> for wasm_bindgen::JsValue {
                 fn from(obj: #name) -> wasm_bindgen::JsValue {
                     wasm_bindgen::JsValue::from(obj.to_str())
@@ -1117,7 +1090,6 @@ impl TryToTokens for ast::ImportFunction {
             quote! {
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 #[automatically_derived]
-                #[allow(clippy::nursery)]
                 #(#attrs)*
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 extern "C" {
@@ -1125,7 +1097,6 @@ impl TryToTokens for ast::ImportFunction {
                 }
                 #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
                 #[automatically_derived]
-                #[allow(clippy::nursery)]
                 unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
                     #(
                         drop(#abi_argument_names);
@@ -1144,7 +1115,6 @@ impl TryToTokens for ast::ImportFunction {
         };
         let invocation = quote! {
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #(#attrs)*
             #[doc = #doc_comment]
             #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
@@ -1164,7 +1134,6 @@ impl TryToTokens for ast::ImportFunction {
         if let Some(class) = class_ty {
             (quote! {
                 #[automatically_derived]
-                #[allow(clippy::nursery)]
                 impl #class {
                     #invocation
                 }
@@ -1230,7 +1199,6 @@ impl ToTokens for ast::Enum {
         });
         (quote! {
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::IntoWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1241,7 +1209,6 @@ impl ToTokens for ast::Enum {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::FromWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1254,21 +1221,18 @@ impl ToTokens for ast::Enum {
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
                 #[inline]
                 fn is_none(val: &u32) -> bool { *val == #hole }
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
                 #[inline]
                 fn none() -> Self::Abi { #hole }
             }
 
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             impl wasm_bindgen::describe::WasmDescribe for #enum_name {
                 fn describe() {
                     use wasm_bindgen::describe::*;
@@ -1289,7 +1253,6 @@ impl ToTokens for ast::ImportStatic {
         let vis = &self.vis;
         (quote! {
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #vis static #name: wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -1363,7 +1326,6 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[allow(clippy::nursery)]
             #(#attrs)*
             #[no_mangle]
             #[doc(hidden)]
