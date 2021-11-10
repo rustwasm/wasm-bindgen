@@ -220,10 +220,15 @@ impl ToTokens for ast::Struct {
 
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[no_mangle]
             #[doc(hidden)]
-            pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
+            pub mod #free_fn {
+                use super::*;
+
+                #[no_mangle]
+                #[doc(hidden)]
+                pub unsafe extern "C" fn #free_fn(ptr: u32) {
+                    drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
+                }
             }
 
             #[automatically_derived]
@@ -293,21 +298,26 @@ impl ToTokens for ast::StructField {
 
         (quote! {
             #[automatically_derived]
-            #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
             #[doc(hidden)]
-            pub unsafe extern "C" fn #getter(js: u32)
-                -> <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
-            {
-                use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
-                use wasm_bindgen::convert::IntoWasmAbi;
+            pub mod #getter {
+                use super::*;
 
-                fn assert_copy<T: Copy>(){}
-                #maybe_assert_copy;
+                #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
+                #[doc(hidden)]
+                pub unsafe extern "C" fn #getter(js: u32)
+                    -> <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
+                {
+                    use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
+                    use wasm_bindgen::convert::IntoWasmAbi;
 
-                let js = js as *mut WasmRefCell<#struct_name>;
-                assert_not_null(js);
-                let val = (*js).borrow().#rust_name#maybe_clone;
-                <#ty as IntoWasmAbi>::into_abi(val)
+                    fn assert_copy<T: Copy>(){}
+                    #maybe_assert_copy;
+
+                    let js = js as *mut WasmRefCell<#struct_name>;
+                    assert_not_null(js);
+                    let val = (*js).borrow().#rust_name#maybe_clone;
+                    <#ty as IntoWasmAbi>::into_abi(val)
+                }
             }
         })
         .to_tokens(tokens);
@@ -328,19 +338,24 @@ impl ToTokens for ast::StructField {
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[no_mangle]
             #[doc(hidden)]
-            pub unsafe extern "C" fn #setter(
-                js: u32,
-                val: <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi,
-            ) {
-                use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
-                use wasm_bindgen::convert::FromWasmAbi;
+            pub mod #setter {
+                use super::*;
 
-                let js = js as *mut WasmRefCell<#struct_name>;
-                assert_not_null(js);
-                let val = <#ty as FromWasmAbi>::from_abi(val);
-                (*js).borrow_mut().#rust_name = val;
+                #[no_mangle]
+                #[doc(hidden)]
+                pub unsafe extern "C" fn #setter(
+                    js: u32,
+                    val: <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi,
+                ) {
+                    use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
+                    use wasm_bindgen::convert::FromWasmAbi;
+
+                    let js = js as *mut WasmRefCell<#struct_name>;
+                    assert_not_null(js);
+                    let val = <#ty as FromWasmAbi>::from_abi(val);
+                    (*js).borrow_mut().#rust_name = val;
+                }
             }
         })
         .to_tokens(tokens);
@@ -511,7 +526,8 @@ impl TryToTokens for ast::Export {
         };
 
         (quote! {
-            #[automatically_derived]
+            #[allow(nonstandard_style)]
+            #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
             #(#attrs)*
             #[cfg_attr(
                 all(target_arch = "wasm32", not(target_os = "emscripten")),
@@ -1089,14 +1105,13 @@ impl TryToTokens for ast::ImportFunction {
         let extern_fn = respan(
             quote! {
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-                #[automatically_derived]
                 #(#attrs)*
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 extern "C" {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
+
                 #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-                #[automatically_derived]
                 unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
                     #(
                         drop(#abi_argument_names);
@@ -1114,7 +1129,8 @@ impl TryToTokens for ast::ImportFunction {
             None
         };
         let invocation = quote! {
-            #[automatically_derived]
+            #[allow(nonstandard_style)]
+            #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
             #(#attrs)*
             #[doc = #doc_comment]
             #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
@@ -1326,14 +1342,19 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #(#attrs)*
-            #[no_mangle]
             #[doc(hidden)]
-            pub extern "C" fn #name() {
-                use wasm_bindgen::describe::*;
-                // See definition of `link_mem_intrinsics` for what this is doing
-                wasm_bindgen::__rt::link_mem_intrinsics();
-                #inner
+            pub mod #name {
+                use super::*;
+
+                #(#attrs)*
+                #[no_mangle]
+                #[doc(hidden)]
+                pub extern "C" fn #name() {
+                    use wasm_bindgen::describe::*;
+                    // See definition of `link_mem_intrinsics` for what this is doing
+                    wasm_bindgen::__rt::link_mem_intrinsics();
+                    #inner
+                }
             }
         })
         .to_tokens(tokens);
