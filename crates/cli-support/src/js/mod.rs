@@ -1906,30 +1906,18 @@ impl<'a> Context<'a> {
         name
     }
 
+    /**
+     * Use 2 elements of a Uint32Array to represent high and low bytes of a u64 and reconstruct a BigInt when we need to access them.
+     */
     fn expose_int64_cvt_shim(&mut self) -> &'static str {
-        let name = "int64CvtShim";
-        if !self.should_write_global(name) {
-            return name;
-        }
-        let n = self.expose_u32_cvt_shim();
-        self.global(&format!(
-            "const {} = new BigInt64Array({}.buffer);",
-            name, n
-        ));
-        name
+        self.expose_u32_cvt_shim()
     }
 
+    /**
+     * Use 2 elements of a Uint32Array to represent high and low bytes of a u64 and reconstruct a BigInt when we need to access them.
+     */
     fn expose_uint64_cvt_shim(&mut self) -> &'static str {
-        let name = "uint64CvtShim";
-        if !self.should_write_global(name) {
-            return name;
-        }
-        let n = self.expose_u32_cvt_shim();
-        self.global(&format!(
-            "const {} = new BigUint64Array({}.buffer);",
-            name, n
-        ));
-        name
+        self.expose_u32_cvt_shim()
     }
 
     fn expose_is_like_none(&mut self) {

@@ -669,20 +669,22 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::I32Split64 { signed } => {
             let val = js.pop();
-            let f = if *signed {
-                js.cx.expose_int64_cvt_shim()
+            if *signed {
+                js.cx.expose_int64_cvt_shim();
             } else {
-                js.cx.expose_uint64_cvt_shim()
+                js.cx.expose_uint64_cvt_shim();
             };
             let i = js.tmp();
             js.prelude(&format!(
                 "
-                 {f}[0] = {val};
+                 // Mask the low 32 bytes
+                 u32CvtShim[0] = Number({val} & 0xffffffffn);
+                 // Offset the high 32 bytes
+                 u32CvtShim[1] = Number(({val} >> 32n) & 0xffffffffn);
                  const low{i} = u32CvtShim[0];
                  const high{i} = u32CvtShim[1];
                  ",
                 i = i,
-                f = f,
                 val = val,
             ));
             js.push(format!("low{}", i));
@@ -692,20 +694,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::I32SplitOption64 { signed } => {
             let val = js.pop();
             js.cx.expose_is_like_none();
-            let f = if *signed {
-                js.cx.expose_int64_cvt_shim()
+            if *signed {
+                js.cx.expose_int64_cvt_shim();
             } else {
-                js.cx.expose_uint64_cvt_shim()
+                js.cx.expose_uint64_cvt_shim();
             };
             let i = js.tmp();
             js.prelude(&format!(
                 "\
-                    {f}[0] = isLikeNone({val}) ? BigInt(0) : {val};
+                    u32CvtShim[0] = isLikeNone({val}) ? 0 : Number({val} & 0xffffffffn);
+                    u32CvtShim[1] = isLikeNone({val}) ? 0 : Number(({val} >> 32n) & 0xffffffffn);
                     const low{i} = u32CvtShim[0];
                     const high{i} = u32CvtShim[1];
                 ",
                 i = i,
-                f = f,
                 val = val,
             ));
             js.push(format!("!isLikeNone({0})", val));
@@ -887,10 +889,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::I64FromLoHi { signed } => {
-            let f = if *signed {
-                js.cx.expose_int64_cvt_shim()
+            if *signed {
+                js.cx.expose_int64_cvt_shim();
             } else {
-                js.cx.expose_uint64_cvt_shim()
+                js.cx.expose_uint64_cvt_shim();
             };
             let i = js.tmp();
             let high = js.pop();
@@ -899,11 +901,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 "\
                      u32CvtShim[0] = {low};
                      u32CvtShim[1] = {high};
-                     const n{i} = {f}[0];
+                     const n{i} = (BigInt(u32CvtShim[1]) << 32n) | BigInt(u32CvtShim[0]);
                  ",
                 low = low,
                 high = high,
-                f = f,
                 i = i,
             ));
             js.push(format!("n{}", i))
@@ -1097,7 +1098,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::Option64FromI32 { signed } => {
-            let f = if *signed {
+            if *signed {
                 js.cx.expose_int64_cvt_shim()
             } else {
                 js.cx.expose_uint64_cvt_shim()
@@ -1110,12 +1111,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 "
                     u32CvtShim[0] = {low};
                     u32CvtShim[1] = {high};
-                    const n{i} = {present} === 0 ? undefined : {f}[0];
+                    const n{i} = {present} === 0 ? undefined : (BigInt(u32CvtShim[1]) << 32n) | BigInt(u32CvtShim[0]);
                 ",
                 present = present,
                 low = low,
                 high = high,
-                f = f,
                 i = i,
             ));
             js.push(format!("n{}", i));
