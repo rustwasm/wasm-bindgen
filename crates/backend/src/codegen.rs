@@ -148,6 +148,7 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
+        let free_fn_const = Ident::new(&format!("{}__const", free_fn), free_fn.span());
         (quote! {
             #[automatically_derived]
             impl wasm_bindgen::describe::WasmDescribe for #name {
@@ -220,16 +221,15 @@ impl ToTokens for ast::Struct {
 
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[doc(hidden)]
-            pub mod #free_fn {
-                use super::*;
-
+            const #free_fn_const: () = {
                 #[no_mangle]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #free_fn(ptr: u32) {
                     drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
                 }
-            }
+
+                ()
+            };
 
             #[automatically_derived]
             impl wasm_bindgen::convert::RefFromWasmAbi for #name {
@@ -296,12 +296,11 @@ impl ToTokens for ast::StructField {
             quote! {}
         };
 
+        let getter_const = Ident::new(&format!("{}__const", getter), getter.span());
+
         (quote! {
             #[automatically_derived]
-            #[doc(hidden)]
-            pub mod #getter {
-                use super::*;
-
+            const #getter_const: () = {
                 #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #getter(js: u32)
@@ -318,7 +317,9 @@ impl ToTokens for ast::StructField {
                     let val = (*js).borrow().#rust_name#maybe_clone;
                     <#ty as IntoWasmAbi>::into_abi(val)
                 }
-            }
+
+                ()
+            };
         })
         .to_tokens(tokens);
 
@@ -335,13 +336,12 @@ impl ToTokens for ast::StructField {
             return;
         }
 
+        let setter_const = Ident::new(&format!("{}__const", setter), setter.span());
+
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[doc(hidden)]
-            pub mod #setter {
-                use super::*;
-
+            const #setter_const: () = {
                 #[no_mangle]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #setter(
@@ -356,7 +356,9 @@ impl ToTokens for ast::StructField {
                     let val = <#ty as FromWasmAbi>::from_abi(val);
                     (*js).borrow_mut().#rust_name = val;
                 }
-            }
+
+                ()
+            };
         })
         .to_tokens(tokens);
     }
@@ -1337,15 +1339,16 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         }
 
         let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
+        let const_name = Ident::new(
+            &format!("__wbindgen_const_describe_{}", ident),
+            ident.span(),
+        );
         let inner = &self.inner;
         let attrs = &self.attrs;
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            #[doc(hidden)]
-            pub mod #name {
-                use super::*;
-
+            const #const_name: () = {
                 #(#attrs)*
                 #[no_mangle]
                 #[doc(hidden)]
@@ -1355,7 +1358,9 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
                     wasm_bindgen::__rt::link_mem_intrinsics();
                     #inner
                 }
-            }
+
+                ()
+            };
         })
         .to_tokens(tokens);
     }
