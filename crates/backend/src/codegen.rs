@@ -527,25 +527,30 @@ impl TryToTokens for ast::Export {
             quote! {}
         };
 
+        let generated_name_const =
+            Ident::new(&format!("{}__const", generated_name), generated_name.span());
         (quote! {
-            #[allow(nonstandard_style)]
-            #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
-            #(#attrs)*
-            #[cfg_attr(
-                all(target_arch = "wasm32", not(target_os = "emscripten")),
-                export_name = #export_name,
-            )]
-            pub extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
-                #start_check
-                // Scope all local variables to be destroyed after we call the
-                // function to ensure that `#convert_ret`, if it panics, doesn't
-                // leak anything.
-                let #ret = {
-                    #(#arg_conversions)*
-                    #receiver(#(#converted_arguments),*)
-                };
-                #convert_ret
-            }
+            #[automatically_derived]
+            const #generated_name_const: () = {
+                #(#attrs)*
+                #[cfg_attr(
+                    all(target_arch = "wasm32", not(target_os = "emscripten")),
+                    export_name = #export_name,
+                )]
+                pub extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
+                    #start_check
+                    // Scope all local variables to be destroyed after we call
+                    // the function to ensure that `#convert_ret`, if it panics,
+                    // doesn't leak anything.
+                    let #ret = {
+                        #(#arg_conversions)*
+                        #receiver(#(#converted_arguments),*)
+                    };
+                    #convert_ret
+                }
+
+                ()
+            };
         })
         .to_tokens(into);
 
@@ -1131,6 +1136,8 @@ impl TryToTokens for ast::ImportFunction {
             None
         };
         let invocation = quote! {
+            // This is due to `#[automatically_derived]` attribute cannot be
+            // placed onto bare functions.
             #[allow(nonstandard_style)]
             #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
             #(#attrs)*
