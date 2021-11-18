@@ -58,7 +58,11 @@ impl TryToTokens for ast::Program {
                                 continue;
                             }
                         };
-                        (quote! { impl #ns { #kind } }).to_tokens(tokens);
+                        (quote! {
+                            #[automatically_derived]
+                            impl #ns { #kind }
+                        })
+                        .to_tokens(tokens);
                         continue;
                     }
                 }
@@ -119,11 +123,10 @@ impl TryToTokens for ast::Program {
         });
 
         (quote! {
-            #[allow(non_upper_case_globals)]
             #[cfg(target_arch = "wasm32")]
+            #[automatically_derived]
             #[link_section = "__wasm_bindgen_unstable"]
             #[doc(hidden)]
-            #[allow(clippy::all)]
             pub static #generated_static_name: [u8; #generated_static_length] = {
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
@@ -145,8 +148,9 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
+        let free_fn_const = Ident::new(&format!("{}__const", free_fn), free_fn.span());
         (quote! {
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     use wasm_bindgen::__wbindgen_if_not_std;
@@ -163,7 +167,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = u32;
 
@@ -174,7 +178,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = u32;
 
@@ -190,7 +194,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::__rt::core::convert::From<#name> for
                 wasm_bindgen::JsValue
             {
@@ -216,14 +220,18 @@ impl ToTokens for ast::Struct {
             }
 
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #[no_mangle]
-            #[doc(hidden)]
-            #[allow(clippy::all)]
-            pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
-            }
+            #[automatically_derived]
+            const #free_fn_const: () = {
+                #[no_mangle]
+                #[doc(hidden)]
+                pub unsafe extern "C" fn #free_fn(ptr: u32) {
+                    drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
+                }
 
-            #[allow(clippy::all)]
+                ()
+            };
+
+            #[automatically_derived]
             impl wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
@@ -235,7 +243,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::RefMutFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = wasm_bindgen::__rt::RefMut<'static, #name>;
@@ -247,16 +255,17 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[automatically_derived]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
                 fn none() -> Self::Abi { 0 }
             }
 
+            #[automatically_derived]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
             }
-
         })
         .to_tokens(tokens);
 
@@ -287,24 +296,30 @@ impl ToTokens for ast::StructField {
             quote! {}
         };
 
+        let getter_const = Ident::new(&format!("{}__const", getter), getter.span());
+
         (quote! {
-            #[doc(hidden)]
-            #[allow(clippy::all)]
-            #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
-            pub unsafe extern "C" fn #getter(js: u32)
-                -> <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
-            {
-                use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
-                use wasm_bindgen::convert::IntoWasmAbi;
+            #[automatically_derived]
+            const #getter_const: () = {
+                #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
+                #[doc(hidden)]
+                pub unsafe extern "C" fn #getter(js: u32)
+                    -> <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
+                {
+                    use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
+                    use wasm_bindgen::convert::IntoWasmAbi;
 
-                fn assert_copy<T: Copy>(){}
-                #maybe_assert_copy;
+                    fn assert_copy<T: Copy>(){}
+                    #maybe_assert_copy;
 
-                let js = js as *mut WasmRefCell<#struct_name>;
-                assert_not_null(js);
-                let val = (*js).borrow().#rust_name#maybe_clone;
-                <#ty as IntoWasmAbi>::into_abi(val)
-            }
+                    let js = js as *mut WasmRefCell<#struct_name>;
+                    assert_not_null(js);
+                    let val = (*js).borrow().#rust_name#maybe_clone;
+                    <#ty as IntoWasmAbi>::into_abi(val)
+                }
+
+                ()
+            };
         })
         .to_tokens(tokens);
 
@@ -321,23 +336,29 @@ impl ToTokens for ast::StructField {
             return;
         }
 
-        (quote! {
-            #[no_mangle]
-            #[doc(hidden)]
-            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #[allow(clippy::all)]
-            pub unsafe extern "C" fn #setter(
-                js: u32,
-                val: <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi,
-            ) {
-                use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
-                use wasm_bindgen::convert::FromWasmAbi;
+        let setter_const = Ident::new(&format!("{}__const", setter), setter.span());
 
-                let js = js as *mut WasmRefCell<#struct_name>;
-                assert_not_null(js);
-                let val = <#ty as FromWasmAbi>::from_abi(val);
-                (*js).borrow_mut().#rust_name = val;
-            }
+        (quote! {
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[automatically_derived]
+            const #setter_const: () = {
+                #[no_mangle]
+                #[doc(hidden)]
+                pub unsafe extern "C" fn #setter(
+                    js: u32,
+                    val: <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi,
+                ) {
+                    use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
+                    use wasm_bindgen::convert::FromWasmAbi;
+
+                    let js = js as *mut WasmRefCell<#struct_name>;
+                    assert_not_null(js);
+                    let val = <#ty as FromWasmAbi>::from_abi(val);
+                    (*js).borrow_mut().#rust_name = val;
+                }
+
+                ()
+            };
         })
         .to_tokens(tokens);
     }
@@ -506,25 +527,30 @@ impl TryToTokens for ast::Export {
             quote! {}
         };
 
+        let generated_name_const =
+            Ident::new(&format!("{}__const", generated_name), generated_name.span());
         (quote! {
-            #(#attrs)*
-            #[allow(non_snake_case)]
-            #[cfg_attr(
-                all(target_arch = "wasm32", not(target_os = "emscripten")),
-                export_name = #export_name,
-            )]
-            #[allow(clippy::all)]
-            pub extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
-                #start_check
-                // Scope all local variables to be destroyed after we call the
-                // function to ensure that `#convert_ret`, if it panics, doesn't
-                // leak anything.
-                let #ret = {
-                    #(#arg_conversions)*
-                    #receiver(#(#converted_arguments),*)
-                };
-                #convert_ret
-            }
+            #[automatically_derived]
+            const #generated_name_const: () = {
+                #(#attrs)*
+                #[cfg_attr(
+                    all(target_arch = "wasm32", not(target_os = "emscripten")),
+                    export_name = #export_name,
+                )]
+                pub extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
+                    #start_check
+                    // Scope all local variables to be destroyed after we call
+                    // the function to ensure that `#convert_ret`, if it panics,
+                    // doesn't leak anything.
+                    let #ret = {
+                        #(#arg_conversions)*
+                        #receiver(#(#converted_arguments),*)
+                    };
+                    #convert_ret
+                }
+
+                ()
+            };
         })
         .to_tokens(into);
 
@@ -625,17 +651,15 @@ impl ToTokens for ast::ImportType {
         let no_deref = self.no_deref;
 
         (quote! {
-            #[allow(bad_style)]
+            #[automatically_derived]
             #(#attrs)*
             #[doc = #doc_comment]
             #[repr(transparent)]
-            #[allow(clippy::all)]
             #vis struct #rust_name {
                 obj: #internal_obj
             }
 
-            #[allow(bad_style)]
-            #[allow(clippy::all)]
+            #[automatically_derived]
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
@@ -778,7 +802,7 @@ impl ToTokens for ast::ImportType {
 
         if !no_deref {
             (quote! {
-                #[allow(clippy::all)]
+                #[automatically_derived]
                 impl core::ops::Deref for #rust_name {
                     type Target = #internal_obj;
 
@@ -793,7 +817,7 @@ impl ToTokens for ast::ImportType {
 
         for superclass in self.extends.iter() {
             (quote! {
-                #[allow(clippy::all)]
+                #[automatically_derived]
                 impl From<#rust_name> for #superclass {
                     #[inline]
                     fn from(obj: #rust_name) -> #superclass {
@@ -802,7 +826,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
-                #[allow(clippy::all)]
+                #[automatically_derived]
                 impl AsRef<#superclass> for #rust_name {
                     #[inline]
                     fn as_ref(&self) -> &#superclass {
@@ -849,16 +873,15 @@ impl ToTokens for ast::ImportEnum {
         let variant_paths_ref = &variant_paths;
 
         (quote! {
-            #[allow(bad_style)]
             #(#attrs)*
-            #[allow(clippy::all)]
             #vis enum #name {
                 #(#variants = #variant_indexes_ref,)*
+                #[automatically_derived]
                 #[doc(hidden)]
                 __Nonexhaustive,
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl #name {
                 fn from_str(s: &str) -> Option<#name> {
                     match s {
@@ -880,14 +903,14 @@ impl ToTokens for ast::ImportEnum {
             }
 
             // It should really be using &str for all of these, but that requires some major changes to cli-support
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     <wasm_bindgen::JsValue as wasm_bindgen::describe::WasmDescribe>::describe()
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = <wasm_bindgen::JsValue as wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
@@ -897,7 +920,7 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = <wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>::Abi;
 
@@ -907,19 +930,19 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
                 fn none() -> Self::Abi { <::js_sys::Object as wasm_bindgen::convert::OptionIntoWasmAbi>::none() }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { <::js_sys::Object as wasm_bindgen::convert::OptionFromWasmAbi>::is_none(abi) }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl From<#name> for wasm_bindgen::JsValue {
                 fn from(obj: #name) -> wasm_bindgen::JsValue {
                     wasm_bindgen::JsValue::from(obj.to_str())
@@ -1088,12 +1111,13 @@ impl TryToTokens for ast::ImportFunction {
         // the best we can in the meantime.
         let extern_fn = respan(
             quote! {
+                #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 #(#attrs)*
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 extern "C" {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
+
                 #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
                 unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
                     #(
@@ -1112,10 +1136,12 @@ impl TryToTokens for ast::ImportFunction {
             None
         };
         let invocation = quote! {
+            // This is due to `#[automatically_derived]` attribute cannot be
+            // placed onto bare functions.
+            #[allow(nonstandard_style)]
+            #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
             #(#attrs)*
-            #[allow(bad_style)]
             #[doc = #doc_comment]
-            #[allow(clippy::all)]
             #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
                 #extern_fn
 
@@ -1132,6 +1158,7 @@ impl TryToTokens for ast::ImportFunction {
 
         if let Some(class) = class_ty {
             (quote! {
+                #[automatically_derived]
                 impl #class {
                     #invocation
                 }
@@ -1196,7 +1223,7 @@ impl ToTokens for ast::Enum {
             }
         });
         (quote! {
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::IntoWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1206,7 +1233,7 @@ impl ToTokens for ast::Enum {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::FromWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1218,19 +1245,19 @@ impl ToTokens for ast::Enum {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
                 #[inline]
                 fn is_none(val: &u32) -> bool { *val == #hole }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
                 #[inline]
                 fn none() -> Self::Abi { #hole }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl wasm_bindgen::describe::WasmDescribe for #enum_name {
                 fn describe() {
                     use wasm_bindgen::describe::*;
@@ -1250,8 +1277,7 @@ impl ToTokens for ast::ImportStatic {
         let shim_name = &self.shim;
         let vis = &self.vis;
         (quote! {
-            #[allow(bad_style)]
-            #[allow(clippy::all)]
+            #[automatically_derived]
             #vis static #name: wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -1320,21 +1346,28 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         }
 
         let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
+        let const_name = Ident::new(
+            &format!("__wbindgen_const_describe_{}", ident),
+            ident.span(),
+        );
         let inner = &self.inner;
         let attrs = &self.attrs;
         (quote! {
-            #(#attrs)*
-            #[no_mangle]
-            #[allow(non_snake_case)]
-            #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #[allow(clippy::all)]
-            pub extern "C" fn #name() {
-                use wasm_bindgen::describe::*;
-                // See definition of `link_mem_intrinsics` for what this is doing
-                wasm_bindgen::__rt::link_mem_intrinsics();
-                #inner
-            }
+            #[automatically_derived]
+            const #const_name: () = {
+                #(#attrs)*
+                #[no_mangle]
+                #[doc(hidden)]
+                pub extern "C" fn #name() {
+                    use wasm_bindgen::describe::*;
+                    // See definition of `link_mem_intrinsics` for what this is doing
+                    wasm_bindgen::__rt::link_mem_intrinsics();
+                    #inner
+                }
+
+                ()
+            };
         })
         .to_tokens(tokens);
     }
