@@ -1,3 +1,4 @@
+use std::convert::{TryFrom, TryInto};
 #[cfg(feature = "std")]
 use std::prelude::v1::*;
 
@@ -10,6 +11,8 @@ use crate::convert::OptionIntoWasmAbi;
 use crate::convert::{
     FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi,
 };
+use crate::describe;
+use crate::describe::WasmDescribe;
 use cfg_if::cfg_if;
 
 if_std! {
@@ -77,6 +80,13 @@ if_std! {
 macro_rules! vectors {
     ($($t:ident)*) => ($(
         if_std! {
+            impl WasmDescribe for Box<[$t]> {
+                fn describe() {
+                    describe::inform(describe::VECTOR);
+                    $t::describe();
+                }
+            }
+
             impl IntoWasmAbi for Box<[$t]> {
                 type Abi = WasmSlice;
 
@@ -151,7 +161,7 @@ macro_rules! vectors {
 
             #[inline]
             unsafe fn ref_from_abi(js: WasmSlice) -> Box<[$t]> {
-                <Box<[$t]>>::from_abi(js)
+                <Box<[$t]> as FromWasmAbi>::from_abi(js)
             }
         }
 
@@ -161,7 +171,7 @@ macro_rules! vectors {
 
             #[inline]
             unsafe fn ref_mut_from_abi(js: WasmMutSlice) -> MutSlice<$t> {
-                let contents = <Box<[$t]>>::from_abi(js.slice);
+                let contents = <Box<[$t]> as FromWasmAbi>::from_abi(js.slice);
                 let js = JsValue::from_abi(js.idx);
                 MutSlice { contents, js }
             }
@@ -181,6 +191,115 @@ macro_rules! vectors {
 
 vectors! {
     u8 i8 u16 i16 u32 i32 u64 i64 usize isize f32 f64
+}
+
+/// Enables blanket implementations of `WasmDescribe`, `IntoWasmAbi`,
+/// `FromWasmAbi` and `OptionIntoWasmAbi` functionality on boxed slices of
+/// types which can be converted to and from `JsValue` without conflicting
+/// implementations of those traits.
+///
+/// Implementing these traits directly with blanket implementations would
+/// be much more elegant, but unfortunately that's impossible because it
+/// conflicts with the implementations for `Box<[T]> where T: JsObject`.
+pub trait JsValueVector {
+    type ToAbi;
+    type FromAbi;
+
+    fn describe();
+    fn into_abi(self) -> Self::ToAbi;
+    fn none() -> Self::ToAbi;
+    unsafe fn from_abi(js: Self::FromAbi) -> Self;
+}
+
+/*
+ * Generates implementations for traits necessary for passing types to and from
+ * JavaScript on boxed slices of values which can be converted to and from
+ * `JsValue`.
+ */
+macro_rules! js_value_vectors {
+    ($($t:ident)*) => ($(
+        if_std! {
+            impl WasmDescribe for Box<[$t]> {
+                fn describe() {
+                    <Self as JsValueVector>::describe();
+                }
+            }
+
+            impl IntoWasmAbi for Box<[$t]> {
+                type Abi = <Self as JsValueVector>::ToAbi;
+
+                fn into_abi(self) -> Self::Abi {
+                    <Self as JsValueVector>::into_abi(self)
+                }
+            }
+
+            impl OptionIntoWasmAbi for Box<[$t]> {
+                fn none() -> Self::Abi {
+                    <Self as JsValueVector>::none()
+                }
+            }
+
+            impl FromWasmAbi for Box<[$t]> {
+                type Abi = <Self as JsValueVector>::FromAbi;
+
+                unsafe fn from_abi(js: Self::Abi) -> Self {
+                    <Self as JsValueVector>::from_abi(js)
+                }
+            }
+        }
+    )*)
+}
+
+if_std! {
+    impl<T> JsValueVector for Box<[T]> where
+        T: Into<JsValue> + TryFrom<JsValue>,
+        <T as TryFrom<JsValue>>::Error: core::fmt::Debug {
+        type ToAbi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
+        type FromAbi = <Box<[JsValue]> as FromWasmAbi>::Abi;
+
+        fn describe() {
+            describe::inform(describe::VECTOR);
+            JsValue::describe();
+        }
+
+        fn into_abi(self) -> Self::ToAbi {
+            let js_vals: Box::<[JsValue]> = self
+                .into_vec()
+                .into_iter()
+                .map(|x| x.into())
+                .collect();
+
+            IntoWasmAbi::into_abi(js_vals)
+        }
+
+        fn none() -> Self::ToAbi {
+            <Box<[JsValue]> as OptionIntoWasmAbi>::none()
+        }
+
+        unsafe fn from_abi(js: Self::FromAbi) -> Self {
+            let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
+
+            js_vals
+                .into_iter()
+                .map(|x| x.try_into().expect("Array element of wrong type"))
+                .collect()
+        }
+    }
+
+    impl TryFrom<JsValue> for String {
+        type Error = ();
+
+        fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+            match value.as_string() {
+                Some(s) => Ok(s),
+                None => Err(()),
+            }
+        }
+    }
+}
+
+js_value_vectors! {
+    String
 }
 
 cfg_if! {
