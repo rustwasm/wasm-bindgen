@@ -40,6 +40,10 @@ function getInt32Memory0() {
     }
     return cachegetInt32Memory0;
 }
+
+function getFromExternrefTable0(idx) {
+    return wasm.__wbindgen_export_0.get(idx);
+}
 /**
 */
 export function exported() {
@@ -51,7 +55,7 @@ export function exported() {
         var is_ok0 = r0;
         var err1 = r1;
         if (is_ok0 === 0) {
-            throw takeObject(err1);
+            throw getFromExternrefTable0(err1);
         }
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);

@@ -108,6 +108,11 @@ pub fn process(module: &mut Module) -> Result<()> {
                 } => {
                     *table_and_alloc = meta.alloc.map(|id| (meta.table, id));
                 }
+                Instruction::UnwrapResult {
+                    ref mut table_and_alloc,
+                } => {
+                    *table_and_alloc = meta.alloc.map(|id| (meta.table, id));
+                }
                 _ => continue,
             };
         }

@@ -787,7 +787,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("len{}", i));
         }
 
-        Instruction::UnwrapResult => {
+        Instruction::UnwrapResult { table_and_alloc } => {
             // The top of the stack is a nullable u32. If it is nonzero, takeObject and throw it.
             let i = js.tmp();
             let j = js.tmp();
@@ -798,20 +798,32 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             // }
             let err = js.pop();
             let is_ok = js.pop();
-            js.cx.expose_take_object();
-            js.prelude(&format!(
-                "
-                var is_ok{i} = {is_ok};
-                var err{j} = {err};
-                if (is_ok{i} === 0) {{
-                    throw takeObject(err{j});
-                }}
-                ",
-                i = i,
-                j = j,
-                is_ok = is_ok,
-                err = err,
-            ));
+            js.prelude(&format!("var is_ok{i} = {is_ok};", i = i, is_ok = is_ok));
+            js.prelude(&format!("var err{j} = {err};", j = j, err = err));
+            if let Some((table, alloc)) = table_and_alloc {
+                let dereference = js.cx.expose_get_from_externref_table(*table, *alloc)?;
+                js.prelude(&format!(
+                    "
+                    if (is_ok{i} === 0) {{
+                        throw {}(err{j});
+                    }}
+                    ",
+                    dereference,
+                    i = i,
+                    j = j,
+                ));
+            } else {
+                js.cx.expose_take_object();
+                js.prelude(&format!(
+                    "
+                    if (is_ok{i} === 0) {{
+                        throw takeObject(err{j});
+                    }}
+                    ",
+                    i = i,
+                    j = j,
+                ));
+            }
         }
 
         Instruction::OptionString {

@@ -220,7 +220,12 @@ pub enum Instruction {
     },
 
     /// Pops a nullable externref; if it is non-zero, throws it.
-    UnwrapResult,
+    UnwrapResult {
+        /// Like `I32FromOptionExternref`,
+        /// Set to `Some` by the externref pass of where to put it in the wasm module,
+        /// otherwise it's shoved into the JS shim.
+        table_and_alloc: Option<(walrus::TableId, walrus::FunctionId)>,
+    },
 
     /// pops a `i32`, pushes `bool`
     BoolFromI32,
@@ -501,7 +506,8 @@ impl walrus::CustomSection for NonstandardWitSection {
                             roots.push_func(id);
                         }
                     }
-                    I32FromOptionExternref { table_and_alloc } => {
+                    UnwrapResult { table_and_alloc }
+                    | I32FromOptionExternref { table_and_alloc } => {
                         if let Some((table, alloc)) = table_and_alloc {
                             roots.push_table(table);
                             roots.push_func(alloc);

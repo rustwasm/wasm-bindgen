@@ -2194,6 +2194,29 @@ impl<'a> Context<'a> {
         true
     }
 
+    fn expose_get_from_externref_table(
+        &mut self,
+        table: TableId,
+        alloc: FunctionId,
+    ) -> Result<MemView, Error> {
+        let view = self.memview_table("getFromExternrefTable", table);
+        assert!(self.config.externref);
+        if !self.should_write_global(view.to_string()) {
+            return Ok(view);
+        }
+        let table = self.export_name_of(table);
+        self.global(&format!(
+            "
+                function {}(idx) {{
+                    return wasm.{}.get(idx);
+                }}
+            ",
+            view, table,
+        ));
+
+        Ok(view)
+    }
+
     fn expose_add_to_externref_table(
         &mut self,
         table: TableId,
