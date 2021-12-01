@@ -32,10 +32,28 @@ function handleError(f, args) {
         wasm.__wbindgen_exn_store(idx);
     }
 }
+
+let cachegetInt32Memory0 = null;
+function getInt32Memory0() {
+    if (cachegetInt32Memory0 === null || cachegetInt32Memory0.buffer !== wasm.memory.buffer) {
+        cachegetInt32Memory0 = new Int32Array(wasm.memory.buffer);
+    }
+    return cachegetInt32Memory0;
+}
 /**
 */
 export function exported() {
-    wasm.exported();
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.exported(retptr);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var is_ok0 = r0;
+        var err1 = r1;
+    if (is_ok0 === 0) { throw takeObject(err1); }
+} finally {
+    wasm.__wbindgen_add_to_stack_pointer(16);
+}
 }
 
 export function __wbg_foo_8d66ddef0ff279d6() { return handleError(function () {
@@ -44,10 +62,6 @@ export function __wbg_foo_8d66ddef0ff279d6() { return handleError(function () {
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
-};
-
-export function __wbindgen_rethrow(arg0) {
-    throw arg0;
 };
 
 export function __wbindgen_init_externref_table() {
