@@ -798,12 +798,16 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             // }
             let err = js.pop();
             let is_ok = js.pop();
-            js.prelude(&format!("var is_ok{i} = {is_ok};", i = i, is_ok = is_ok));
-            js.prelude(&format!("var err{j} = {err};", j = j, err = err));
             js.prelude(&format!(
-                "if (is_ok{i} === 0) {{ throw takeObject(err{j}); }}",
-                i = i,
-                j = j
+                "
+                var is_ok{i} = {is_ok};
+                var err{j} = {err};
+                if (is_ok{i} === 0) {{
+                    throw takeObject(err{j});
+                }}
+                ",
+                i = i, j = j,
+                is_ok = is_ok, err = err,
             ));
         }
 
