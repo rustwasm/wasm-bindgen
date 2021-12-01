@@ -334,13 +334,6 @@ impl<'a> IntoWasmAbi for &'a JsValue {
     }
 }
 
-impl<'a> OptionIntoWasmAbi for &'a JsValue {
-    #[inline]
-    fn none() -> Self::Abi {
-        0
-    }
-}
-
 impl RefFromWasmAbi for JsValue {
     type Abi = u32;
     type Anchor = ManuallyDrop<JsValue>;
@@ -479,3 +472,5 @@ impl IntoWasmAbi for JsError {
         self.value.into_abi()
     }
 }
+
+
