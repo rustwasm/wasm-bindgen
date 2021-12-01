@@ -403,17 +403,41 @@ impl IntoWasmAbi for () {
     }
 }
 
+/// This is an encoding of a Result. It can only store things that can be decoded by the JS
+/// bindings.
+///
+/// At the moment, we do not write the exact struct packing layout of everything into the
+/// glue/descriptions of datatypes, so T cannot be arbitrary. The current requirements of the
+/// struct unpacker (StructUnpacker), which apply to ResultAbi<T> as a whole, are as follows:
+///
+/// - repr(C), of course
+/// - u32/i32/f32/f64 fields at the "leaf fields" of the "field tree"
+/// - layout equivalent to a completely flattened repr(C) struct, constructed by an in order
+///   traversal of all the leaf fields in it.
+///  
+/// This means that you can't embed struct A(u32, f64) as struct B(u32, A); because the "completely
+/// flattened" struct AB(u32, u32, f64) would miss the 4 byte padding that is actually present
+/// within B and then as a consequence also miss the 4 byte padding within A that repr(C) inserts.
+///
+/// The enemy is padding. Padding is only required when there is an `f64` field. So the enemy is
+/// `f64` after anything else, particularly anything arbitrary. There is no smaller sized type, so
+/// we don't need to worry about 1-byte integers, etc. It's best, therefore, to place your f64s
+/// first in your structs, that's why we have `abi` first, although here it doesn't matter as the
+/// other two fields total 8 bytes anyway.
+///
 #[repr(C)]
 pub struct ResultAbi<T> {
-    // order of args here is such that we can pop() the err first, deal with it and
-    // move on.
+    /// This field is the same size/align as `T`.
     abi: ResultAbiUnion<T>,
+    /// Order of args here is such that we can pop() the possible error first, deal with it and
+    /// move on. Later fields are popped off the stack first.
     is_ok: u32,
     err: u32,
 }
 
 #[repr(C)]
 pub union ResultAbiUnion<T> {
+    // ManuallyDrop is #[repr(transparent)]
     ok: std::mem::ManuallyDrop<T>,
     err: (),
 }
