@@ -798,6 +798,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             // }
             let err = js.pop();
             let is_ok = js.pop();
+            js.cx.expose_take_object();
             js.prelude(&format!(
                 "
                 var is_ok{i} = {is_ok};
