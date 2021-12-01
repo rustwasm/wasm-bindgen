@@ -806,8 +806,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                     throw takeObject(err{j});
                 }}
                 ",
-                i = i, j = j,
-                is_ok = is_ok, err = err,
+                i = i,
+                j = j,
+                is_ok = is_ok,
+                err = err,
             ));
         }
 

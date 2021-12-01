@@ -472,5 +472,3 @@ impl IntoWasmAbi for JsError {
         self.value.into_abi()
     }
 }
-
-

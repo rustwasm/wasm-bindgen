@@ -101,7 +101,9 @@ impl Into<JsValue> for AsyncCustomError {
 
 #[wasm_bindgen]
 pub async fn async_throw_custom_error() -> Result<AsyncCustomReturn, AsyncCustomError> {
-    Err(AsyncCustomError { val: JsValue::from("custom error") })
+    Err(AsyncCustomError {
+        val: JsValue::from("custom error"),
+    })
 }
 
 #[wasm_bindgen_test]
