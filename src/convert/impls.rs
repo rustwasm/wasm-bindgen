@@ -325,12 +325,6 @@ impl FromWasmAbi for JsValue {
     }
 }
 
-impl OptionIntoWasmAbi for JsValue {
-    fn none() -> Self::Abi {
-        0
-    }
-}
-
 impl<'a> IntoWasmAbi for &'a JsValue {
     type Abi = u32;
 
@@ -414,6 +408,7 @@ pub struct ResultAbi<T> {
     // order of args here is such that we can pop() the err first, deal with it and
     // move on.
     abi: ResultAbiUnion<T>,
+    is_ok: u32,
     err: u32,
 }
 
@@ -437,14 +432,16 @@ impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
                 };
                 ResultAbi {
                     abi,
-                    err: Option::<JsValue>::None.into_abi(),
+                    is_ok: 1,
+                    err: 0,
                 }
             }
             Err(e) => {
                 let jsval = e.into();
                 ResultAbi {
                     abi: ResultAbiUnion { err: () },
-                    err: Some(jsval).into_abi(),
+                    is_ok: 0,
+                    err: jsval.into_abi(),
                 }
             }
         }

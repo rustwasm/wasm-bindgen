@@ -59,13 +59,3 @@ fn import_by_ref() {
     take_none_byref(None);
     take_some_byref(Some(&MyType::new()));
 }
-
-#[wasm_bindgen]
-pub fn rust_return_some_jsvalue() -> Option<JsValue> {
-    Some(JsValue::from(5i32))
-}
-#[wasm_bindgen]
-pub fn rust_return_none_jsvalue() -> Option<JsValue> {
-    None
-}
-

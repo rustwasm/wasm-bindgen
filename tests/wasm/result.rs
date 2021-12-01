@@ -134,7 +134,6 @@ pub fn return_jsvalue_err() -> Result<i32, JsValue> {
 }
 call_test!(test_jsvalue_err, call_jsvalue_err);
 
-
 // test enums
 #[wasm_bindgen]
 pub enum MyEnum {
@@ -177,4 +176,3 @@ pub fn return_option_err() -> Result<Option<f64>, MyError> {
     Err(MyError::Variant)
 }
 call_test!(test_option, call_option);
-

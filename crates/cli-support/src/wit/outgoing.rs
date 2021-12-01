@@ -23,7 +23,7 @@ impl InstructionBuilder<'_, '_> {
         if let Descriptor::Result(arg) = arg {
             if let Descriptor::Unit = &**arg {
                 assert_eq!(output_before, self.output.len());
-                return Ok(())
+                return Ok(());
             }
         }
         assert_eq!(output_before + 1, self.output.len());
@@ -351,10 +351,11 @@ impl InstructionBuilder<'_, '_> {
             .pop()
             .expect("can't add Unwrap instruction as the first instruction");
         self.input.push(AdapterType::I32);
+        self.input.push(AdapterType::I32);
         self.instructions.push(InstructionData {
             instr: Instruction::UnwrapResult,
             stack_change: StackChange::Modified {
-                popped: 1,
+                popped: 2,
                 pushed: 0,
             },
         });
@@ -393,20 +394,22 @@ impl InstructionBuilder<'_, '_> {
                 //     Decode { popped: 3 }
                 //
                 self._outgoing(arg)?;
-                // then push an instruction just before that one with an extra input
+                // then push an instruction just before that one with two extra inputs
                 self.instruction_unwrap();
                 // then we end up with
                 //
-                //     LoadRetptr [f64, u32, u32, u32]
-                //     UnwrapResult { popped: 1 }
-                //     Decode { popped: 3 }
+                //     LoadRetptr [f64, u32, u32, u32, u32]
+                //     UnwrapResult { popped: 2 } (the top two u32s)
+                //     Decode { popped: 3 } (f64, u32, u32)
                 //
                 // and the code for UnwrapResult is simple.
             }
 
-            Descriptor::Unit => {
-                self.instruction(&[AdapterType::I32], Instruction::UnwrapResult, &[])
-            }
+            Descriptor::Unit => self.instruction(
+                &[AdapterType::I32, AdapterType::I32],
+                Instruction::UnwrapResult,
+                &[],
+            ),
 
             Descriptor::ClampedU8
             | Descriptor::Function(_)

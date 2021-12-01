@@ -604,7 +604,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             };
             let size = quads * 4;
             // Separate the offset and the scaled offset, because otherwise you don't guarantee
-            // that the variable names will be unique. 
+            // that the variable names will be unique.
             let scaled_offset = offset / quads;
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
@@ -790,11 +790,15 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::UnwrapResult => {
             // The top of the stack is a nullable u32. If it is nonzero, takeObject and throw it.
             let i = js.tmp();
-            let val = js.pop();
-            js.prelude(&format!("var err{i} = {val};", i = i, val = val));
+            let j = js.tmp();
+            let err = js.pop();
+            let is_ok = js.pop();
+            js.prelude(&format!("var is_ok{i} = {is_ok};", i = i, is_ok = is_ok));
+            js.prelude(&format!("var err{j} = {err};", j = j, err = err));
             js.prelude(&format!(
-                "if (err{i} !== 0) {{ throw takeObject(err{i}); }}",
-                i = i
+                "if (is_ok{i} === 0) {{ throw takeObject(err{j}); }}",
+                i = i,
+                j = j
             ));
         }
 
