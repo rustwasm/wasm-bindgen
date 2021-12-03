@@ -345,25 +345,6 @@ impl InstructionBuilder<'_, '_> {
         Ok(())
     }
 
-    fn instruction_unwrap(&mut self) {
-        let decode_t = self
-            .instructions
-            .pop()
-            .expect("can't add Unwrap instruction as the first instruction");
-        self.input.push(AdapterType::I32);
-        self.input.push(AdapterType::I32);
-        self.instructions.push(InstructionData {
-            instr: Instruction::UnwrapResult {
-                table_and_drop: None,
-            },
-            stack_change: StackChange::Modified {
-                popped: 2,
-                pushed: 0,
-            },
-        });
-        self.instructions.push(decode_t);
-    }
-
     fn outgoing_result(&mut self, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::Externref
@@ -387,33 +368,55 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::CachedString
             | Descriptor::String
             | Descriptor::Option(_)
-            | Descriptor::Vector(_) => {
-                // These can be of varying lengths.
-                // The structure of ResultAbi is that the err is last, so if we generically
-                // push an instruction that will read the Ok type, for example
+            | Descriptor::Vector(_)
+            | Descriptor::Unit => {
+                // We must throw before reading the Ok type, if there is an error. However, the
+                // structure of ResultAbi is that the Err value + discriminant come last (for
+                // alignment reasons). So the UnwrapResult instruction must come first, but the
+                // inputs must be read last.
                 //
-                //     LoadRetptr [f64, u32, u32]
-                //     Decode { popped: 3 }
+                // So first, push an UnwrapResult instruction without modifying the inputs list.
                 //
-                self._outgoing(arg)?;
-                // then push an instruction just before that one with two extra inputs
-                self.instruction_unwrap();
-                // then we end up with
+                //     []
+                //     -------------------------<
+                //     UnwrapResult { popped: 2 }
                 //
-                //     LoadRetptr [f64, u32, u32, u32, u32]
-                //     UnwrapResult { popped: 2 } (the top two u32s)
-                //     Decode { popped: 3 } (f64, u32, u32)
-                //
-                // and the code for UnwrapResult is simple.
-            }
+                self.instructions.push(InstructionData {
+                    instr: Instruction::UnwrapResult {
+                        table_and_drop: None,
+                    },
+                    stack_change: StackChange::Modified {
+                        popped: 2,
+                        pushed: 0,
+                    },
+                });
 
-            Descriptor::Unit => self.instruction(
-                &[AdapterType::I32, AdapterType::I32],
-                Instruction::UnwrapResult {
-                    table_and_drop: None,
-                },
-                &[],
-            ),
+                // Then push whatever else you were going to do, modifying the inputs and
+                // instructions.
+                //
+                //     [f64, u32, u32]
+                //     -------------------------<
+                //     UnwrapResult { popped: 2 }
+                //     SomeOtherInstruction { popped: 3 }
+                //
+                // The popped numbers don't add up yet (3 != 5), but they will.
+                self._outgoing(arg)?;
+
+                // Finally, we add the two inputs to UnwrapResult, and everything checks out
+                //
+                //     [f64, u32, u32, u32, u32]
+                //     -------------------------<
+                //     UnwrapResult { popped: 2 }
+                //     SomeOtherInstruction { popped: 3 }
+                //
+                if !self.return_position {
+                    self.get(AdapterType::I32);
+                    self.get(AdapterType::I32);
+                } else {
+                    self.input.push(AdapterType::I32);
+                    self.input.push(AdapterType::I32);
+                }
+            }
 
             Descriptor::ClampedU8
             | Descriptor::Function(_)
