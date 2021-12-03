@@ -424,8 +424,8 @@ pub struct ResultAbi<T> {
     abi: ResultAbiUnion<T>,
     /// Order of args here is such that we can pop() the possible error first, deal with it and
     /// move on. Later fields are popped off the stack first.
-    is_ok: u32,
     err: u32,
+    is_ok: u32,
 }
 
 #[repr(C)]

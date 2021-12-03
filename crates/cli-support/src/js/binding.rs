@@ -787,43 +787,33 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("len{}", i));
         }
 
-        Instruction::UnwrapResult { table_and_alloc } => {
-            // The top of the stack is a nullable u32. If it is nonzero, takeObject and throw it.
-            let i = js.tmp();
-            let j = js.tmp();
-            // Err is popped first. The original layout was: ResultAbi {
-            //    abi: ResultAbiUnion<T>,
-            //    is_ok: u32,
-            //    err: u32,
-            // }
-            let err = js.pop();
-            let is_ok = js.pop();
-            js.prelude(&format!("var is_ok{i} = {is_ok};", i = i, is_ok = is_ok));
-            js.prelude(&format!("var err{j} = {err};", j = j, err = err));
-            if let Some((table, alloc)) = table_and_alloc {
-                let dereference = js.cx.expose_get_from_externref_table(*table, *alloc)?;
-                js.prelude(&format!(
-                    "
-                    if (is_ok{i} === 0) {{
-                        throw {}(err{j});
-                    }}
-                    ",
-                    dereference,
-                    i = i,
-                    j = j,
-                ));
+        Instruction::UnwrapResult { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
             } else {
                 js.cx.expose_take_object();
-                js.prelude(&format!(
-                    "
-                    if (is_ok{i} === 0) {{
-                        throw takeObject(err{j});
-                    }}
-                    ",
-                    i = i,
-                    j = j,
-                ));
-            }
+                "takeObject".to_string()
+            };
+            // is_ok is popped first. The original layout was: ResultAbi {
+            //    abi: ResultAbiUnion<T>,
+            //    err: u32,
+            //    is_ok: u32,
+            // }
+            // So is_ok is last to be added to the stack.
+            let is_ok = js.pop();
+            let err = js.pop();
+            js.prelude(&format!(
+                "
+                if ({is_ok} === 0) {{
+                    throw {take_object}({err});
+                }}
+                ",
+                take_object = take_object,
+                is_ok = is_ok,
+                err = err,
+            ));
         }
 
         Instruction::OptionString {

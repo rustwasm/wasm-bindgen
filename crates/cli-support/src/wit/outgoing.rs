@@ -354,7 +354,7 @@ impl InstructionBuilder<'_, '_> {
         self.input.push(AdapterType::I32);
         self.instructions.push(InstructionData {
             instr: Instruction::UnwrapResult {
-                table_and_alloc: None,
+                table_and_drop: None,
             },
             stack_change: StackChange::Modified {
                 popped: 2,
@@ -410,7 +410,7 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Unit => self.instruction(
                 &[AdapterType::I32, AdapterType::I32],
                 Instruction::UnwrapResult {
-                    table_and_alloc: None,
+                    table_and_drop: None,
                 },
                 &[],
             ),

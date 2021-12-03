@@ -47,6 +47,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         // irrelevant ids used to track various internal intrinsics and such
         externref_table: _,
         externref_alloc: _,
+        externref_drop: _,
         externref_drop_slice: _,
         exn_store: _,
         shadow_stack_pointer: _,
