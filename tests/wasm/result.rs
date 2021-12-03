@@ -134,6 +134,18 @@ pub fn return_jsvalue_err() -> Result<i32, JsValue> {
 }
 call_test!(test_jsvalue_err, call_jsvalue_err);
 
+// test strings (they have a deferred free, in a finally block: tricky)
+#[wasm_bindgen]
+pub fn return_string_ok() -> Result<String, String> {
+    Ok("Ok".into())
+}
+call_test!(test_string_ok, call_string_ok);
+#[wasm_bindgen]
+pub fn return_string_err() -> Result<String, String> {
+    Err("Er".into())
+}
+call_test!(test_string_err, call_string_err);
+
 // test enums
 #[wasm_bindgen]
 pub enum MyEnum {

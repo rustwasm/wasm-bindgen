@@ -65,6 +65,24 @@ exports.call_jsvalue_err = function() {
     }
 }
 
+exports.call_string_ok = function() {
+    assert.doesNotThrow(() => {
+        let ok = wasm.return_string_ok();
+        assert.strictEqual(ok, "Ok");
+    })
+}
+
+exports.call_string_err = function() {
+    // the behaviour of Result<String, _> is so finicky that it's not obvious
+    // how to to reproduce reliably but also pass the test suite.
+    assert.throws(() => e = wasm.return_string_err(), e => {
+        // one thing we can do (uncomment to test)
+        // is to throw an error in here.
+        // throw new Error("should not cause a SIGBUS in Node")
+        return e === "Er";
+    });
+}
+
 exports.call_enum_ok = function() {
     assert.doesNotThrow(() => {
         let ok = wasm.return_enum_ok();
