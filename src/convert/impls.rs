@@ -425,7 +425,7 @@ pub struct ResultAbi<T> {
     /// Order of args here is such that we can pop() the possible error first, deal with it and
     /// move on. Later fields are popped off the stack first.
     err: u32,
-    is_ok: u32,
+    is_err: u32,
 }
 
 #[repr(C)]
@@ -449,7 +449,7 @@ impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
                 };
                 ResultAbi {
                     abi,
-                    is_ok: 1,
+                    is_err: 0,
                     err: 0,
                 }
             }
@@ -457,7 +457,7 @@ impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
                 let jsval = e.into();
                 ResultAbi {
                     abi: ResultAbiUnion { err: () },
-                    is_ok: 0,
+                    is_err: 1,
                     err: jsval.into_abi(),
                 }
             }

@@ -796,22 +796,22 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 js.cx.expose_take_object();
                 "takeObject".to_string()
             };
-            // is_ok is popped first. The original layout was: ResultAbi {
+            // is_err is popped first. The original layout was: ResultAbi {
             //    abi: ResultAbiUnion<T>,
             //    err: u32,
-            //    is_ok: u32,
+            //    is_err: u32,
             // }
-            // So is_ok is last to be added to the stack.
-            let is_ok = js.pop();
+            // So is_err is last to be added to the stack.
+            let is_err = js.pop();
             let err = js.pop();
             js.prelude(&format!(
                 "
-                if ({is_ok} === 0) {{
+                if ({is_err}) {{
                     throw {take_object}({err});
                 }}
                 ",
                 take_object = take_object,
-                is_ok = is_ok,
+                is_err = is_err,
                 err = err,
             ));
         }
