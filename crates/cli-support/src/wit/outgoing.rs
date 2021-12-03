@@ -366,7 +366,6 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::Ref(_)
             | Descriptor::RefMut(_)
             | Descriptor::CachedString
-            | Descriptor::String
             | Descriptor::Option(_)
             | Descriptor::Vector(_)
             | Descriptor::Unit => {
@@ -400,7 +399,16 @@ impl InstructionBuilder<'_, '_> {
                 //     SomeOtherInstruction { popped: 3 }
                 //
                 // The popped numbers don't add up yet (3 != 5), but they will.
+                let len = self.instructions.len();
                 self._outgoing(arg)?;
+
+                // check we did not add any deferred calls, because we have undermined the idea of
+                // running them unconditionally in a finally {} block. String does this, but we
+                // special case it.
+                assert!(!self.instructions[len..].iter().any(|idata| matches!(
+                    idata.instr,
+                    Instruction::Standard(wit_walrus::Instruction::DeferCallCore(_))
+                )));
 
                 // Finally, we add the two inputs to UnwrapResult, and everything checks out
                 //
@@ -409,13 +417,55 @@ impl InstructionBuilder<'_, '_> {
                 //     UnwrapResult { popped: 2 }
                 //     SomeOtherInstruction { popped: 3 }
                 //
-                if !self.return_position {
-                    self.get(AdapterType::I32);
-                    self.get(AdapterType::I32);
-                } else {
-                    self.input.push(AdapterType::I32);
-                    self.input.push(AdapterType::I32);
-                }
+                self.get(AdapterType::I32);
+                self.get(AdapterType::I32);
+            }
+            Descriptor::String => {
+                // fetch the ptr/length ...
+                self.get(AdapterType::I32);
+                self.get(AdapterType::I32);
+                // fetch the err/is_err
+                self.get(AdapterType::I32);
+                self.get(AdapterType::I32);
+
+                self.instructions.push(InstructionData {
+                    instr: Instruction::UnwrapResultString {
+                        table_and_drop: None,
+                    },
+                    stack_change: StackChange::Modified {
+                        // 2 from UnwrapResult, 2 from ptr/len
+                        popped: 4,
+                        // pushes the ptr/len back on
+                        pushed: 2,
+                    },
+                });
+
+                // ... then defer a call to `free` to happen later
+                // this will run string's DeferCallCore with the length parameter, but if is_err,
+                // then we have never written anything into that, so it is poison. So we'll have to
+                // make sure we call it with length 0, which according to __wbindgen_free's
+                // implementation is always safe. We do this in UnwrapResultString's
+                // implementation.
+                let free = self.cx.free()?;
+                let std = wit_walrus::Instruction::DeferCallCore(free);
+                self.instructions.push(InstructionData {
+                    instr: Instruction::Standard(std),
+                    stack_change: StackChange::Modified {
+                        popped: 2,
+                        pushed: 2,
+                    },
+                });
+
+                // ... and then convert it to a string type
+                let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
+                self.instructions.push(InstructionData {
+                    instr: Instruction::Standard(std),
+                    stack_change: StackChange::Modified {
+                        popped: 2,
+                        pushed: 1,
+                    },
+                });
+                self.output.push(AdapterType::String);
             }
 
             Descriptor::ClampedU8

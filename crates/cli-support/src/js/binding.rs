@@ -816,6 +816,40 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             ));
         }
 
+        Instruction::UnwrapResultString { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
+            } else {
+                js.cx.expose_take_object();
+                "takeObject".to_string()
+            };
+            let is_err = js.pop();
+            let err = js.pop();
+            let len = js.pop();
+            let ptr = js.pop();
+            let i = js.tmp();
+            js.prelude(&format!(
+                "
+                var ptr{i} = {ptr};
+                var len{i} = {len};
+                if ({is_err}) {{
+                    ptr{i} = 0; len{i} = 0;
+                    throw {take_object}({err});
+                }}
+                ",
+                take_object = take_object,
+                is_err = is_err,
+                err = err,
+                i = i,
+                ptr = ptr,
+                len = len,
+            ));
+            js.push(format!("ptr{}", i));
+            js.push(format!("len{}", i));
+        }
+
         Instruction::OptionString {
             mem,
             malloc,
