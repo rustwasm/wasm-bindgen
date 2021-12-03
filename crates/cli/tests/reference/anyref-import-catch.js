@@ -41,8 +41,10 @@ function getInt32Memory0() {
     return cachegetInt32Memory0;
 }
 
-function getFromExternrefTable0(idx) {
-    return wasm.__wbindgen_export_0.get(idx);
+function takeFromExternrefTable0(idx) {
+    const value = wasm.__wbindgen_export_0.get(idx);
+    wasm.__externref_table_dealloc(idx);
+    return value;
 }
 /**
 */
@@ -52,10 +54,8 @@ export function exported() {
         wasm.exported(retptr);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
-        var is_ok0 = r0;
-        var err1 = r1;
-        if (is_ok0 === 0) {
-            throw getFromExternrefTable0(err1);
+        if (r1) {
+            throw takeFromExternrefTable0(r0);
         }
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);

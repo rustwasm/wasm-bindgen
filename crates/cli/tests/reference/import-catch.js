@@ -52,10 +52,8 @@ export function exported() {
         wasm.exported(retptr);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
-        var is_ok0 = r0;
-        var err1 = r1;
-        if (is_ok0 === 0) {
-            throw takeObject(err1);
+        if (r1) {
+            throw takeObject(r0);
         }
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
