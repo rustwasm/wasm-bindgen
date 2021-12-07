@@ -336,6 +336,11 @@ pub enum AuxImport {
     /// The Option may contain the contents of the linked file, so it can be
     /// embedded.
     LinkTo(String, Option<String>),
+
+    /// This import is a generated shim which will attempt to unwrap JsValue to an
+    /// instance of the given exported class. The class name is one that is
+    /// exported from the Rust/wasm.
+    UnwrapExportedClass(String),
 }
 
 /// Values that can be imported verbatim to hook up to an import.

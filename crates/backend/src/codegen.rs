@@ -167,6 +167,7 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
+        let unwrap_fn = Ident::new(&shared::unwrap_function(&name_str), Span::call_site());
         let wasm_bindgen = &self.wasm_bindgen;
         (quote! {
             #[automatically_derived]
@@ -292,6 +293,78 @@ impl ToTokens for ast::Struct {
             impl #wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
+            }
+
+            #[allow(clippy::all)]
+            impl wasm_bindgen::__rt::core::convert::TryFrom<wasm_bindgen::JsValue> for #name {
+                type Error = ();
+
+                fn try_from(value: wasm_bindgen::JsValue)
+                    -> wasm_bindgen::__rt::std::result::Result<Self, Self::Error> {
+                    let js_ptr = wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
+
+                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+                    extern "C" {
+                        fn #unwrap_fn(ptr: u32) -> u32;
+                    }
+
+                    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+                    unsafe fn #unwrap_fn(_: u32) -> u32 {
+                        panic!("cannot convert from JsValue outside of the wasm target")
+                    }
+
+                    let ptr;
+                    unsafe {
+                        ptr = #unwrap_fn(js_ptr);
+                    }
+
+                    if(ptr == 0) {
+                        wasm_bindgen::__rt::std::result::Result::Err(())
+                    } else {
+                        unsafe {
+                            wasm_bindgen::__rt::std::result::Result::Ok(
+                                <Self as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr)
+                            )
+                        }
+                    }
+                }
+            }
+
+            impl wasm_bindgen::describe::WasmDescribeVector for #name {
+                use wasm_bindgen::__rt::std::boxed::Box;
+
+                fn describe_vector() {
+                    <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::describe();
+                }
+            }
+
+            impl wasm_bindgen::convert::VectorIntoWasmAbi for #name {
+                use wasm_bindgen::__rt::std::boxed::Box;
+
+                type Abi = <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::ToAbi;
+
+                fn vector_into_abi(vector: Box<[#name]>) -> Self::Abi {
+                    <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::into_abi(vector)
+                }
+            }
+
+            impl wasm_bindgen::convert::OptionVectorIntoWasmAbi for #name {
+                use wasm_bindgen::__rt::std::boxed::Box;
+
+                fn vector_none() -> <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::ToAbi {
+                    <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::none()
+                }
+            }
+
+            impl wasm_bindgen::convert::VectorFromWasmAbi for #name {
+                use wasm_bindgen::__rt::std::boxed::Box;
+
+                type Abi = <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::FromAbi;
+
+                unsafe fn vector_from_abi(js: Self::Abi) -> Box<[#name]> {
+                    <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::from_abi(js)
+                }
             }
         })
         .to_tokens(tokens);

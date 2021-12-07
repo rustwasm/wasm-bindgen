@@ -4,7 +4,15 @@ use core::mem::{self, ManuallyDrop};
 use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
+use crate::describe::{self, WasmDescribe};
 use crate::{Clamped, JsError, JsValue};
+
+if_std! {
+    use std::boxed::Box;
+    use std::convert::{TryFrom, TryInto};
+    use std::vec::Vec;
+    use crate::convert::JsValueVector;
+}
 
 unsafe impl WasmAbi for () {}
 
@@ -321,7 +329,7 @@ impl IntoWasmAbi for () {
 /// - u32/i32/f32/f64 fields at the "leaf fields" of the "field tree"
 /// - layout equivalent to a completely flattened repr(C) struct, constructed by an in order
 ///   traversal of all the leaf fields in it.
-///  
+///
 /// This means that you can't embed struct A(u32, f64) as struct B(u32, A); because the "completely
 /// flattened" struct AB(u32, u32, f64) would miss the 4 byte padding that is actually present
 /// within B and then as a consequence also miss the 4 byte padding within A that repr(C) inserts.
@@ -384,5 +392,42 @@ impl IntoWasmAbi for JsError {
 
     fn into_abi(self) -> Self::Abi {
         self.value.into_abi()
+    }
+}
+
+if_std! {
+    impl<T> JsValueVector for Box<[T]> where
+        T: Into<JsValue> + TryFrom<JsValue>,
+        <T as TryFrom<JsValue>>::Error: core::fmt::Debug {
+        type ToAbi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
+        type FromAbi = <Box<[JsValue]> as FromWasmAbi>::Abi;
+
+        fn describe() {
+            describe::inform(describe::VECTOR);
+            JsValue::describe();
+        }
+
+        fn into_abi(self) -> Self::ToAbi {
+            let js_vals: Box::<[JsValue]> = self
+                .into_vec()
+                .into_iter()
+                .map(|x| x.into())
+                .collect();
+
+            IntoWasmAbi::into_abi(js_vals)
+        }
+
+        fn none() -> Self::ToAbi {
+            <Box<[JsValue]> as OptionIntoWasmAbi>::none()
+        }
+
+        unsafe fn from_abi(js: Self::FromAbi) -> Self {
+            let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
+
+            js_vals
+                .into_iter()
+                .filter_map(|x| x.try_into().ok())
+                .collect()
+        }
     }
 }

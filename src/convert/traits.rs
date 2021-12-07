@@ -158,3 +158,46 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for T {
         self.into_abi()
     }
 }
+
+/// Enables blanket implementations of `WasmDescribe`, `IntoWasmAbi`,
+/// `FromWasmAbi` and `OptionIntoWasmAbi` functionality on boxed slices of
+/// types which can be converted to and from `JsValue` without conflicting
+/// implementations of those traits.
+///
+/// Implementing these traits directly with blanket implementations would
+/// be much more elegant, but unfortunately that's impossible because it
+/// conflicts with the implementations for `Box<[T]> where T: JsObject`.
+pub trait JsValueVector {
+    type ToAbi;
+    type FromAbi;
+
+    fn describe();
+    fn into_abi(self) -> Self::ToAbi;
+    fn none() -> Self::ToAbi;
+    unsafe fn from_abi(js: Self::FromAbi) -> Self;
+}
+
+if_std! {
+    use std::boxed::Box;
+    use core::marker::Sized;
+
+    pub trait VectorIntoWasmAbi: WasmDescribeVector + Sized {
+        type Abi: WasmAbi;
+
+        fn vector_into_abi(vector: Box<[Self]>) -> Self::Abi;
+    }
+
+    pub trait OptionVectorIntoWasmAbi: VectorIntoWasmAbi {
+        fn vector_none() -> Self::Abi;
+    }
+
+    pub trait VectorFromWasmAbi: WasmDescribeVector + Sized {
+        type Abi: WasmAbi;
+
+        unsafe fn vector_from_abi(js: Self::Abi) -> Box<[Self]>;
+    }
+
+    pub trait OptionVectorFromWasmAbi: VectorFromWasmAbi {
+        fn vector_is_none(abi: &Self::Abi) -> bool;
+    }
+}

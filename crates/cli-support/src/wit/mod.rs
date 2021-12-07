@@ -934,17 +934,40 @@ impl<'a> Context<'a> {
         self.aux.structs.push(aux);
 
         let wrap_constructor = wasm_bindgen_shared::new_function(struct_.name);
-        if let Some((import_id, _id)) = self.function_imports.get(&wrap_constructor).cloned() {
+        self.add_aux_import_to_import_map(
+            &wrap_constructor,
+            vec![Descriptor::I32],
+            Descriptor::Externref,
+            AuxImport::WrapInExportedClass(struct_.name.to_string()),
+        )?;
+
+        let unwrap_fn = wasm_bindgen_shared::unwrap_function(struct_.name);
+        self.add_aux_import_to_import_map(
+            &unwrap_fn,
+            vec![Descriptor::Externref],
+            Descriptor::I32,
+            AuxImport::UnwrapExportedClass(struct_.name.to_string()),
+        )?;
+
+        Ok(())
+    }
+
+    fn add_aux_import_to_import_map(
+        &mut self,
+        fn_name: &String,
+        arguments: Vec<Descriptor>,
+        ret: Descriptor,
+        aux_import: AuxImport,
+    ) -> Result<(), Error> {
+        if let Some((import_id, _id)) = self.function_imports.get(fn_name).cloned() {
             let signature = Function {
                 shim_idx: 0,
-                arguments: vec![Descriptor::I32],
-                ret: Descriptor::Externref,
+                arguments,
+                ret,
                 inner_ret: None,
             };
             let id = self.import_adapter(import_id, signature, AdapterJsImportKind::Normal)?;
-            self.aux
-                .import_map
-                .insert(id, AuxImport::WrapInExportedClass(struct_.name.to_string()));
+            self.aux.import_map.insert(id, aux_import);
         }
 
         Ok(())
