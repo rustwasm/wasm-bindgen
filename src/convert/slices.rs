@@ -1,6 +1,8 @@
 #[cfg(feature = "std")]
 use std::prelude::v1::*;
 
+use core::{slice, str};
+
 use cfg_if::cfg_if;
 
 use crate::cast::JsObject;
@@ -10,7 +12,7 @@ use crate::convert::{VectorFromWasmAbi, VectorIntoWasmAbi};
 use crate::describe::{self, WasmDescribe, WasmDescribeVector};
 
 if_std! {
-    use core::{mem, slice, str};
+    use core::mem;
     use std::convert::TryFrom;
     use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, JsValueVector};
 }
