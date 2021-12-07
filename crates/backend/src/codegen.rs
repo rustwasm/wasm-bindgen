@@ -332,37 +332,48 @@ impl ToTokens for ast::Struct {
             }
 
             impl wasm_bindgen::describe::WasmDescribeVector for #name {
-                use wasm_bindgen::__rt::std::boxed::Box;
-
                 fn describe_vector() {
+                    use wasm_bindgen::__rt::std::boxed::Box;
                     <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::describe();
                 }
             }
 
             impl wasm_bindgen::convert::VectorIntoWasmAbi for #name {
-                use wasm_bindgen::__rt::std::boxed::Box;
+                type Abi = <
+                    wasm_bindgen::__rt::std::boxed::Box<[#name]>
+                    as wasm_bindgen::convert::JsValueVector
+                >::ToAbi;
 
-                type Abi = <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::ToAbi;
+                fn vector_into_abi(
+                    vector: wasm_bindgen::__rt::std::boxed::Box<[#name]>
+                ) -> Self::Abi {
+                    use wasm_bindgen::__rt::std::boxed::Box;
 
-                fn vector_into_abi(vector: Box<[#name]>) -> Self::Abi {
                     <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::into_abi(vector)
                 }
             }
 
             impl wasm_bindgen::convert::OptionVectorIntoWasmAbi for #name {
-                use wasm_bindgen::__rt::std::boxed::Box;
-
-                fn vector_none() -> <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::ToAbi {
+                fn vector_none() -> <
+                    wasm_bindgen::__rt::std::boxed::Box<[#name]>
+                    as wasm_bindgen::convert::JsValueVector
+                >::ToAbi {
+                    use wasm_bindgen::__rt::std::boxed::Box;
                     <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::none()
                 }
             }
 
             impl wasm_bindgen::convert::VectorFromWasmAbi for #name {
-                use wasm_bindgen::__rt::std::boxed::Box;
+                type Abi = <
+                    wasm_bindgen::__rt::std::boxed::Box<[#name]>
+                    as wasm_bindgen::convert::JsValueVector
+                >::FromAbi;
 
-                type Abi = <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::FromAbi;
+                unsafe fn vector_from_abi(
+                    js: Self::Abi
+                ) -> wasm_bindgen::__rt::std::boxed::Box<[#name]> {
+                    use wasm_bindgen::__rt::std::boxed::Box;
 
-                unsafe fn vector_from_abi(js: Self::Abi) -> Box<[#name]> {
                     <Box<[#name]> as wasm_bindgen::convert::JsValueVector>::from_abi(js)
                 }
             }
