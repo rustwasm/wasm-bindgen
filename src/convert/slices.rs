@@ -16,7 +16,7 @@ use crate::describe::{self, WasmDescribe, WasmDescribeVector};
 use cfg_if::cfg_if;
 
 if_std! {
-    use core::{mem};
+    use core::mem;
     use std::convert::TryFrom;
     use crate::convert::{OptionFromWasmAbi, JsValueVector};
 }
