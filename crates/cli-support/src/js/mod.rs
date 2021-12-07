@@ -65,6 +65,7 @@ pub struct ExportedClass {
     typescript: String,
     has_constructor: bool,
     wrap_needed: bool,
+    unwrap_needed: bool,
     /// Whether to generate helper methods for inspecting the class
     is_inspectable: bool,
     /// All readable properties of the class
@@ -841,6 +842,20 @@ impl<'a> Context<'a> {
                 } else {
                     String::new()
                 },
+            ));
+        }
+
+        if class.unwrap_needed {
+            dst.push_str(&format!(
+                "
+                static __unwrap(jsValue) {{
+                    if (!(jsValue instanceof {})) {{
+                        return 0;
+                    }}
+                    return jsValue.__destroy_into_raw();
+                }}
+                ",
+                name,
             ));
         }
 
@@ -2089,6 +2104,10 @@ impl<'a> Context<'a> {
         require_class(&mut self.exported_classes, name).wrap_needed = true;
     }
 
+    fn require_class_unwrap(&mut self, name: &str) {
+        require_class(&mut self.exported_classes, name).unwrap_needed = true;
+    }
+
     fn add_module_import(&mut self, module: String, name: &str, actual: &str) {
         let rename = if name == actual {
             None
@@ -2889,6 +2908,15 @@ impl<'a> Context<'a> {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 self.invoke_intrinsic(intrinsic, args, prelude)
+            }
+
+            AuxImport::UnwrapExportedClass(class) => {
+                assert!(kind == AdapterJsImportKind::Normal);
+                assert!(!variadic);
+                assert_eq!(args.len(), 1);
+                self.require_class_unwrap(class);
+                self.expose_take_object();
+                Ok(format!("{}.__unwrap({})", class, args[0]))
             }
         }
     }

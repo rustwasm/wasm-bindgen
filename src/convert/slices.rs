@@ -1,20 +1,18 @@
-use std::convert::{TryFrom, TryInto};
 #[cfg(feature = "std")]
 use std::prelude::v1::*;
 
-use core::slice;
-use core::str;
-
-use crate::cast::JsObject;
-use crate::convert::OptionIntoWasmAbi;
-use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
-use crate::describe;
-use crate::describe::WasmDescribe;
 use cfg_if::cfg_if;
 
+use crate::cast::JsObject;
+use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
+use crate::convert::{OptionVectorFromWasmAbi, OptionVectorIntoWasmAbi};
+use crate::convert::{VectorFromWasmAbi, VectorIntoWasmAbi};
+use crate::describe::{self, WasmDescribe, WasmDescribeVector};
+
 if_std! {
-    use core::mem;
-    use crate::convert::OptionFromWasmAbi;
+    use core::{mem, slice, str};
+    use std::convert::TryFrom;
+    use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, JsValueVector};
 }
 
 #[repr(C)]
@@ -30,26 +28,24 @@ fn null_slice() -> WasmSlice {
     WasmSlice { ptr: 0, len: 0 }
 }
 
-pub trait BasicType: WasmDescribe {}
-
 macro_rules! vectors {
     ($($t:ident)*) => ($(
         if_std! {
-            impl WasmDescribe for Box<[$t]> {
-                fn describe() {
+            impl WasmDescribeVector for $t {
+                fn describe_vector() {
                     describe::inform(describe::VECTOR);
                     $t::describe();
                 }
             }
 
-            impl IntoWasmAbi for Box<[$t]> {
+            impl VectorIntoWasmAbi for $t {
                 type Abi = WasmSlice;
 
                 #[inline]
-                fn into_abi(self) -> WasmSlice {
-                    let ptr = self.as_ptr();
-                    let len = self.len();
-                    mem::forget(self);
+                fn vector_into_abi(vector: Box<[$t]>) -> WasmSlice {
+                    let ptr = vector.as_ptr();
+                    let len = vector.len();
+                    mem::forget(vector);
                     WasmSlice {
                         ptr: ptr.into_abi(),
                         len: len as u32,
@@ -57,25 +53,25 @@ macro_rules! vectors {
                 }
             }
 
-            impl OptionIntoWasmAbi for Box<[$t]> {
+            impl OptionVectorIntoWasmAbi for $t {
                 #[inline]
-                fn none() -> WasmSlice { null_slice() }
+                fn vector_none() -> WasmSlice { null_slice() }
             }
 
-            impl FromWasmAbi for Box<[$t]> {
+            impl VectorFromWasmAbi for $t {
                 type Abi = WasmSlice;
 
                 #[inline]
-                unsafe fn from_abi(js: WasmSlice) -> Self {
+                unsafe fn vector_from_abi(js: WasmSlice) -> Box<[$t]> {
                     let ptr = <*mut $t>::from_abi(js.ptr);
                     let len = js.len as usize;
                     Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
                 }
             }
 
-            impl OptionFromWasmAbi for Box<[$t]> {
+            impl OptionVectorFromWasmAbi for $t {
                 #[inline]
-                fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
+                fn vector_is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
             }
         }
 
@@ -141,24 +137,6 @@ vectors! {
     u8 i8 u16 i16 u32 i32 u64 i64 usize isize f32 f64
 }
 
-/// Enables blanket implementations of `WasmDescribe`, `IntoWasmAbi`,
-/// `FromWasmAbi` and `OptionIntoWasmAbi` functionality on boxed slices of
-/// types which can be converted to and from `JsValue` without conflicting
-/// implementations of those traits.
-///
-/// Implementing these traits directly with blanket implementations would
-/// be much more elegant, but unfortunately that's impossible because it
-/// conflicts with the implementations for `Box<[T]> where T: JsObject`.
-pub trait JsValueVector {
-    type ToAbi;
-    type FromAbi;
-
-    fn describe();
-    fn into_abi(self) -> Self::ToAbi;
-    fn none() -> Self::ToAbi;
-    unsafe fn from_abi(js: Self::FromAbi) -> Self;
-}
-
 /*
  * Generates implementations for traits necessary for passing types to and from
  * JavaScript on boxed slices of values which can be converted to and from
@@ -167,12 +145,13 @@ pub trait JsValueVector {
 macro_rules! js_value_vectors {
     ($($t:ident)*) => ($(
         if_std! {
-            impl WasmDescribe for Box<[$t]> {
-                fn describe() {
-                    <Self as JsValueVector>::describe();
+            impl WasmDescribeVector for $t {
+                fn describe_vector() {
+                    <Box<[$t]> as JsValueVector>::describe();
                 }
             }
 
+            // Can't use VectorIntoWasmAbi etc. because $t isn't necessarily Sized
             impl IntoWasmAbi for Box<[$t]> {
                 type Abi = <Self as JsValueVector>::ToAbi;
 
@@ -182,7 +161,7 @@ macro_rules! js_value_vectors {
             }
 
             impl OptionIntoWasmAbi for Box<[$t]> {
-                fn none() -> Self::Abi {
+                fn none() -> <Self as JsValueVector>::ToAbi {
                     <Self as JsValueVector>::none()
                 }
             }
@@ -199,41 +178,6 @@ macro_rules! js_value_vectors {
 }
 
 if_std! {
-    impl<T> JsValueVector for Box<[T]> where
-        T: Into<JsValue> + TryFrom<JsValue>,
-        <T as TryFrom<JsValue>>::Error: core::fmt::Debug {
-        type ToAbi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
-        type FromAbi = <Box<[JsValue]> as FromWasmAbi>::Abi;
-
-        fn describe() {
-            describe::inform(describe::VECTOR);
-            JsValue::describe();
-        }
-
-        fn into_abi(self) -> Self::ToAbi {
-            let js_vals: Box::<[JsValue]> = self
-                .into_vec()
-                .into_iter()
-                .map(|x| x.into())
-                .collect();
-
-            IntoWasmAbi::into_abi(js_vals)
-        }
-
-        fn none() -> Self::ToAbi {
-            <Box<[JsValue]> as OptionIntoWasmAbi>::none()
-        }
-
-        unsafe fn from_abi(js: Self::FromAbi) -> Self {
-            let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
-
-            js_vals
-                .into_iter()
-                .map(|x| x.try_into().expect("Array element of wrong type"))
-                .collect()
-        }
-    }
-
     impl TryFrom<JsValue> for String {
         type Error = ();
 
@@ -357,14 +301,42 @@ impl RefFromWasmAbi for str {
 if_std! {
     use crate::JsValue;
 
-    impl IntoWasmAbi for Box<[JsValue]> {
+    impl<T: VectorIntoWasmAbi> IntoWasmAbi for Box<[T]> {
+        type Abi = <T as VectorIntoWasmAbi>::Abi;
+
+        fn into_abi(self) -> Self::Abi {
+            T::vector_into_abi(self)
+        }
+    }
+
+    impl<T: OptionVectorIntoWasmAbi> OptionIntoWasmAbi for Box<[T]> {
+        fn none() -> <T as VectorIntoWasmAbi>::Abi {
+            T::vector_none()
+        }
+    }
+
+    impl<T: VectorFromWasmAbi> FromWasmAbi for Box<[T]> {
+        type Abi = <T as VectorFromWasmAbi>::Abi;
+
+        unsafe fn from_abi(js: Self::Abi) -> Self {
+            T::vector_from_abi(js)
+        }
+    }
+
+    impl<T: OptionVectorFromWasmAbi> OptionFromWasmAbi for Box<[T]> {
+        fn is_none(slice: &<T as VectorFromWasmAbi>::Abi) -> bool {
+            T::vector_is_none(slice)
+        }
+    }
+
+    impl VectorIntoWasmAbi for JsValue {
         type Abi = WasmSlice;
 
         #[inline]
-        fn into_abi(self) -> WasmSlice {
-            let ptr = self.as_ptr();
-            let len = self.len();
-            mem::forget(self);
+        fn vector_into_abi(vector: Box<[Self]>) -> WasmSlice {
+            let ptr = vector.as_ptr();
+            let len = vector.len();
+            mem::forget(vector);
             WasmSlice {
                 ptr: ptr.into_abi(),
                 len: len as u32,
@@ -372,35 +344,35 @@ if_std! {
         }
     }
 
-    impl OptionIntoWasmAbi for Box<[JsValue]> {
+    impl OptionVectorIntoWasmAbi for JsValue {
         #[inline]
-        fn none() -> WasmSlice { null_slice() }
+        fn vector_none() -> WasmSlice { null_slice() }
     }
 
-    impl FromWasmAbi for Box<[JsValue]> {
+    impl VectorFromWasmAbi for JsValue {
         type Abi = WasmSlice;
 
         #[inline]
-        unsafe fn from_abi(js: WasmSlice) -> Self {
+        unsafe fn vector_from_abi(js: WasmSlice) -> Box<[Self]> {
             let ptr = <*mut JsValue>::from_abi(js.ptr);
             let len = js.len as usize;
             Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
         }
     }
 
-    impl OptionFromWasmAbi for Box<[JsValue]> {
+    impl OptionVectorFromWasmAbi for JsValue {
         #[inline]
-        fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
+        fn vector_is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
 
-    impl<T> IntoWasmAbi for Box<[T]> where T: JsObject {
+    impl<T> VectorIntoWasmAbi for T where T: JsObject {
         type Abi = WasmSlice;
 
         #[inline]
-        fn into_abi(self) -> WasmSlice {
-            let ptr = self.as_ptr();
-            let len = self.len();
-            mem::forget(self);
+        fn vector_into_abi(vector: Box<[T]>) -> WasmSlice {
+            let ptr = vector.as_ptr();
+            let len = vector.len();
+            mem::forget(vector);
             WasmSlice {
                 ptr: ptr.into_abi(),
                 len: len as u32,
@@ -408,16 +380,16 @@ if_std! {
         }
     }
 
-    impl<T> OptionIntoWasmAbi for Box<[T]> where T: JsObject {
+    impl<T> OptionVectorIntoWasmAbi for T where T: JsObject {
         #[inline]
-        fn none() -> WasmSlice { null_slice() }
+        fn vector_none() -> WasmSlice { null_slice() }
     }
 
-    impl<T> FromWasmAbi for Box<[T]> where T: JsObject {
+    impl<T> VectorFromWasmAbi for T where T: JsObject {
         type Abi = WasmSlice;
 
         #[inline]
-        unsafe fn from_abi(js: WasmSlice) -> Self {
+        unsafe fn vector_from_abi(js: WasmSlice) -> Box<[T]> {
             let ptr = <*mut JsValue>::from_abi(js.ptr);
             let len = js.len as usize;
             let vec: Vec<T> = Vec::from_raw_parts(ptr, len, len).drain(..).map(|js_value| T::unchecked_from_js(js_value)).collect();
@@ -425,8 +397,8 @@ if_std! {
         }
     }
 
-    impl<T> OptionFromWasmAbi for Box<[T]> where T: JsObject {
+    impl<T> OptionVectorFromWasmAbi for T where T: JsObject {
         #[inline]
-        fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
+        fn vector_is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
 }

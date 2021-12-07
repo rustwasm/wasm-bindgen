@@ -4,7 +4,15 @@ use core::mem::{self, ManuallyDrop};
 use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
+use crate::describe::{self, WasmDescribe};
 use crate::{Clamped, JsValue};
+
+if_std! {
+    use std::boxed::Box;
+    use std::convert::{TryFrom, TryInto};
+    use std::vec::Vec;
+    use crate::convert::JsValueVector;
+}
 
 unsafe impl WasmAbi for () {}
 
@@ -404,6 +412,43 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
         match self {
             Ok(v) => v.into_abi(),
             Err(e) => crate::throw_val(e),
+        }
+    }
+}
+
+if_std! {
+    impl<T> JsValueVector for Box<[T]> where
+        T: Into<JsValue> + TryFrom<JsValue>,
+        <T as TryFrom<JsValue>>::Error: core::fmt::Debug {
+        type ToAbi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
+        type FromAbi = <Box<[JsValue]> as FromWasmAbi>::Abi;
+
+        fn describe() {
+            describe::inform(describe::VECTOR);
+            JsValue::describe();
+        }
+
+        fn into_abi(self) -> Self::ToAbi {
+            let js_vals: Box::<[JsValue]> = self
+                .into_vec()
+                .into_iter()
+                .map(|x| x.into())
+                .collect();
+
+            IntoWasmAbi::into_abi(js_vals)
+        }
+
+        fn none() -> Self::ToAbi {
+            <Box<[JsValue]> as OptionIntoWasmAbi>::none()
+        }
+
+        unsafe fn from_abi(js: Self::FromAbi) -> Self {
+            let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
+
+            js_vals
+                .into_iter()
+                .filter_map(|x| x.try_into().ok())
+                .collect()
         }
     }
 }

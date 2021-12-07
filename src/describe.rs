@@ -55,6 +55,10 @@ pub trait WasmDescribe {
     fn describe();
 }
 
+pub trait WasmDescribeVector {
+    fn describe_vector();
+}
+
 macro_rules! simple {
     ($($t:ident => $d:ident)*) => ($(
         impl WasmDescribe for $t {
@@ -143,15 +147,21 @@ if_std! {
         }
     }
 
-    impl WasmDescribe for Box<[JsValue]> {
-        fn describe() {
+    impl WasmDescribeVector for JsValue {
+        fn describe_vector() {
             inform(VECTOR);
             JsValue::describe();
         }
     }
 
-    impl<T> WasmDescribe for Box<[T]> where T: JsObject {
+    impl<T: WasmDescribeVector> WasmDescribe for Box<[T]> {
         fn describe() {
+            T::describe_vector();
+        }
+    }
+
+    impl<T: JsObject> WasmDescribeVector for T {
+        fn describe_vector() {
             inform(VECTOR);
             T::describe();
         }
