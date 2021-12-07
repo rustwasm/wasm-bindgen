@@ -3238,7 +3238,6 @@ impl<'a> Context<'a> {
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 self.require_class_unwrap(class);
-                self.expose_take_object();
                 Ok(format!("{}.__unwrap({})", class, args[0]))
             }
         }
