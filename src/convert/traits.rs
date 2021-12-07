@@ -181,22 +181,30 @@ if_std! {
     use std::boxed::Box;
     use core::marker::Sized;
 
+    /// Trait for element types to implement IntoWasmAbi for vectors of
+    /// themselves.
     pub trait VectorIntoWasmAbi: WasmDescribeVector + Sized {
         type Abi: WasmAbi;
 
         fn vector_into_abi(vector: Box<[Self]>) -> Self::Abi;
     }
 
+    /// Trait for element types to implement OptionIntoWasmAbi for vectors
+    /// of themselves.
     pub trait OptionVectorIntoWasmAbi: VectorIntoWasmAbi {
         fn vector_none() -> Self::Abi;
     }
 
+    /// Trait for element types to implement FromWasmAbi for vectors of
+    /// themselves.
     pub trait VectorFromWasmAbi: WasmDescribeVector + Sized {
         type Abi: WasmAbi;
 
         unsafe fn vector_from_abi(js: Self::Abi) -> Box<[Self]>;
     }
 
+    /// Trait for element types to implement OptionFromWasmAbi for vectors
+    /// of themselves.
     pub trait OptionVectorFromWasmAbi: VectorFromWasmAbi {
         fn vector_is_none(abi: &Self::Abi) -> bool;
     }
