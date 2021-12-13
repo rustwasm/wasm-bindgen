@@ -62,6 +62,11 @@ jobs:
     - run: cargo test --target wasm32-unknown-unknown --test wasm --features serde-serialize
       env:
         WASM_BINDGEN_WEAKREF: 1
+    - run: cargo test --target wasm32-unknown-unknown
+      env:
+        WASM_BINDGEN_EXTERNREF: 1
+        NODE_ARGS: --experimental-wasm-reftypes
+
 
   test_wasm_bindgen_windows:
     name: "Run wasm-bindgen crate tests (Windows)"

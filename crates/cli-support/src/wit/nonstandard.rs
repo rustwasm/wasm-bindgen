@@ -52,6 +52,7 @@ pub struct WasmBindgenAux {
     pub externref_table: Option<walrus::TableId>,
     pub function_table: Option<walrus::TableId>,
     pub externref_alloc: Option<walrus::FunctionId>,
+    pub externref_drop: Option<walrus::FunctionId>,
     pub externref_drop_slice: Option<walrus::FunctionId>,
 
     /// Various intrinsics used for JS glue generation

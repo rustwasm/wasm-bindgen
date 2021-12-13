@@ -2213,6 +2213,34 @@ impl<'a> Context<'a> {
         true
     }
 
+    fn expose_take_from_externref_table(
+        &mut self,
+        table: TableId,
+        drop: FunctionId,
+    ) -> Result<MemView, Error> {
+        let view = self.memview_table("takeFromExternrefTable", table);
+        assert!(self.config.externref);
+        if !self.should_write_global(view.to_string()) {
+            return Ok(view);
+        }
+        let drop = self.export_name_of(drop);
+        let table = self.export_name_of(table);
+        self.global(&format!(
+            "
+                function {view}(idx) {{
+                    const value = wasm.{table}.get(idx);
+                    wasm.{drop}(idx);
+                    return value;
+                }}
+            ",
+            view = view,
+            table = table,
+            drop = drop,
+        ));
+
+        Ok(view)
+    }
+
     fn expose_add_to_externref_table(
         &mut self,
         table: TableId,
@@ -3166,6 +3194,11 @@ impl<'a> Context<'a> {
             Intrinsic::Rethrow => {
                 assert_eq!(args.len(), 1);
                 format!("throw {}", args[0])
+            }
+
+            Intrinsic::ErrorNew => {
+                assert_eq!(args.len(), 1);
+                format!("new Error({})", args[0])
             }
 
             Intrinsic::Module => {

@@ -219,6 +219,17 @@ pub enum Instruction {
         mem: walrus::MemoryId,
     },
 
+    /// Pops a nullable externref; if it is non-zero, throws it.
+    UnwrapResult {
+        /// Similar to `I32FromOptionExternref`,
+        /// Set to `Some` by the externref pass, and we then take from the externref table. If
+        /// None, we use takeObject.
+        table_and_drop: Option<(walrus::TableId, walrus::FunctionId)>,
+    },
+    UnwrapResultString {
+        table_and_drop: Option<(walrus::TableId, walrus::FunctionId)>,
+    },
+
     /// pops a `i32`, pushes `bool`
     BoolFromI32,
     /// pops `i32`, loads externref at that slot, dealloates externref, pushes `externref`
@@ -502,6 +513,12 @@ impl walrus::CustomSection for NonstandardWitSection {
                         if let Some((table, alloc)) = table_and_alloc {
                             roots.push_table(table);
                             roots.push_func(alloc);
+                        }
+                    }
+                    UnwrapResult { table_and_drop } | UnwrapResultString { table_and_drop } => {
+                        if let Some((table, drop)) = table_and_drop {
+                            roots.push_table(table);
+                            roots.push_func(drop);
                         }
                     }
                     _ => {}
