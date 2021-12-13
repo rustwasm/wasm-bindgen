@@ -56,6 +56,7 @@ pub struct Context {
 pub struct Meta {
     pub table: TableId,
     pub alloc: Option<FunctionId>,
+    pub drop: Option<FunctionId>,
     pub drop_slice: Option<FunctionId>,
     pub live_count: Option<FunctionId>,
 }
@@ -263,6 +264,7 @@ impl Context {
         Ok(Meta {
             table,
             alloc: heap_alloc,
+            drop: heap_dealloc,
             drop_slice,
             live_count,
         })

@@ -596,16 +596,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::LoadRetptr { ty, offset, mem } => {
-            let (mem, size) = match ty {
-                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
-                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
-                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
+            let (mem, quads) = match ty {
+                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 1),
+                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 1),
+                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 2),
                 other => bail!("invalid aggregate return type {:?}", other),
             };
+            let size = quads * 4;
+            // Separate the offset and the scaled offset, because otherwise you don't guarantee
+            // that the variable names will be unique.
+            let scaled_offset = offset / quads;
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
             // here
-            let expr = format!("{}()[retptr / {} + {}]", mem, size, offset);
+            let expr = format!("{}()[retptr / {} + {}]", mem, size, scaled_offset);
             js.prelude(&format!("var r{} = {};", offset, expr));
             js.push(format!("r{}", offset));
         }
@@ -779,6 +783,69 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 malloc = malloc,
             ));
             js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            js.push(format!("ptr{}", i));
+            js.push(format!("len{}", i));
+        }
+
+        Instruction::UnwrapResult { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
+            } else {
+                js.cx.expose_take_object();
+                "takeObject".to_string()
+            };
+            // is_err is popped first. The original layout was: ResultAbi {
+            //    abi: ResultAbiUnion<T>,
+            //    err: u32,
+            //    is_err: u32,
+            // }
+            // So is_err is last to be added to the stack.
+            let is_err = js.pop();
+            let err = js.pop();
+            js.prelude(&format!(
+                "
+                if ({is_err}) {{
+                    throw {take_object}({err});
+                }}
+                ",
+                take_object = take_object,
+                is_err = is_err,
+                err = err,
+            ));
+        }
+
+        Instruction::UnwrapResultString { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
+            } else {
+                js.cx.expose_take_object();
+                "takeObject".to_string()
+            };
+            let is_err = js.pop();
+            let err = js.pop();
+            let len = js.pop();
+            let ptr = js.pop();
+            let i = js.tmp();
+            js.prelude(&format!(
+                "
+                var ptr{i} = {ptr};
+                var len{i} = {len};
+                if ({is_err}) {{
+                    ptr{i} = 0; len{i} = 0;
+                    throw {take_object}({err});
+                }}
+                ",
+                take_object = take_object,
+                is_err = is_err,
+                err = err,
+                i = i,
+                ptr = ptr,
+                len = len,
+            ));
             js.push(format!("ptr{}", i));
             js.push(format!("len{}", i));
         }
