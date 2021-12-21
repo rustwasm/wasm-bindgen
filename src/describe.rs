@@ -57,7 +57,7 @@ pub trait WasmDescribe {
     fn describe();
 }
 
-/// Trait for element types to implement IntoWasmAbi for vectors of
+/// Trait for element types to implement WasmDescribe for vectors of
 /// themselves.
 pub trait WasmDescribeVector {
     fn describe_vector();
