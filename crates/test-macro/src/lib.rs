@@ -62,7 +62,7 @@ pub fn wasm_bindgen_test(
         (quote! {
             #[no_mangle]
             pub extern "C" fn #name(cx: &::wasm_bindgen_test::__rt::Context) {
-                let test_name = concat!(module_path!(), "::", stringify!(#ident));
+                let test_name = ::std::concat!(::std::module_path!(), "::", ::std::stringify!(#ident));
                 #test_body
             }
         })
