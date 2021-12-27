@@ -135,129 +135,188 @@ impl ToTokens for ast::Struct {
         let name_str = self.js_name.to_string();
         let name_len = name_str.len() as u32;
         let name_chars = name_str.chars().map(|c| c as u32);
-        let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
-        let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
-        let free_fn_const = Ident::new(&format!("{}__const", free_fn), free_fn.span());
-        (quote! {
-            #[automatically_derived]
-            impl wasm_bindgen::describe::WasmDescribe for #name {
-                fn describe() {
-                    use wasm_bindgen::__wbindgen_if_not_std;
-                    __wbindgen_if_not_std! {
-                        compile_error! {
-                            "exporting a class to JS requires the `std` feature to \
-                             be enabled in the `wasm-bindgen` crate"
+        if let Some(ref repr_ty) = self.transparent {
+            (quote! {
+                #[automatically_derived]
+                impl wasm_bindgen::describe::WasmDescribe for #name {
+                    fn describe() {
+                        #repr_ty::describe();
+                    }
+                }
+
+                #[automatically_derived]
+                impl wasm_bindgen::convert::IntoWasmAbi for #name {
+                    type Abi = <#repr_ty as wasm_bindgen::convert::IntoWasmAbi>::Abi;
+
+                    fn into_abi(self) -> Self::Abi {
+                        // SAFETY: repr(transparent) means, by definition, that we can transmute
+                        let value: #repr_ty = unsafe { std::mem::transmute(self) };
+
+                        value.into_abi()
+                    }
+                }
+
+                #[automatically_derived]
+                impl wasm_bindgen::convert::FromWasmAbi for #name {
+                    type Abi = <#repr_ty as wasm_bindgen::convert::FromWasmAbi>::Abi;
+
+                    unsafe fn from_abi(js: Self::Abi) -> Self {
+                        let value = <#repr_ty as wasm_bindgen::convert::FromWasmAbi>::from_abi(js);
+
+                        // SAFETY: repr(transparent) means, by definition, that we can transmute
+                        unsafe { std::mem::transmute(value) }
+                    }
+                }
+
+                #[automatically_derived]
+                impl wasm_bindgen::__rt::core::convert::From<#name> for wasm_bindgen::JsValue
+                {
+                    fn from(value: #name) -> Self {
+                        // SAFETY: repr(transparent) means, by definition, that we can transmute
+                        let value: #repr_ty = unsafe { std::mem::transmute(value) };
+
+                        Self::from(value)
+                    }
+                }
+            })
+            .to_tokens(tokens);
+        } else {
+            let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
+            let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
+            let free_fn_const = Ident::new(&format!("{}__const", free_fn), free_fn.span());
+            (quote! {
+                #[automatically_derived]
+                impl wasm_bindgen::describe::WasmDescribe for #name {
+                    fn describe() {
+                        use wasm_bindgen::__wbindgen_if_not_std;
+                        __wbindgen_if_not_std! {
+                            compile_error! {
+                                "exporting a class to JS requires the `std` feature to \
+                                 be enabled in the `wasm-bindgen` crate"
+                            }
+                        }
+                        use wasm_bindgen::describe::*;
+                        inform(RUST_STRUCT);
+                        inform(#name_len);
+                        #(inform(#name_chars);)*
+                    }
+                }
+
+                #[automatically_derived]
+                impl wasm_bindgen::convert::IntoWasmAbi for #name {
+                    type Abi = u32;
+
+                    fn into_abi(self) -> u32 {
+                        use wasm_bindgen::__rt::std::boxed::Box;
+                        use wasm_bindgen::__rt::WasmRefCell;
+                        Box::into_raw(Box::new(WasmRefCell::new(self))) as u32
+                    }
+                }
+
+                #[automatically_derived]
+                impl wasm_bindgen::convert::FromWasmAbi for #name {
+                    type Abi = u32;
+
+                    unsafe fn from_abi(js: u32) -> Self {
+                        use wasm_bindgen::__rt::std::boxed::Box;
+                        use wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
+
+                        let ptr = js as *mut WasmRefCell<#name>;
+                        assert_not_null(ptr);
+                        let js = Box::from_raw(ptr);
+                        (*js).borrow_mut(); // make sure no one's borrowing
+                        js.into_inner()
+                    }
+                }
+
+                #[automatically_derived]
+                impl wasm_bindgen::__rt::core::convert::From<#name> for
+                    wasm_bindgen::JsValue
+                {
+                    fn from(value: #name) -> Self {
+                        let ptr = wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
+
+                        #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                        #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+                        extern "C" {
+                            fn #new_fn(ptr: u32) -> u32;
+                        }
+
+                        #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+                        unsafe fn #new_fn(_: u32) -> u32 {
+                            panic!("cannot convert to JsValue outside of the wasm target")
+                        }
+
+                        unsafe {
+                            <wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>
+                                ::from_abi(#new_fn(ptr))
                         }
                     }
-                    use wasm_bindgen::describe::*;
-                    inform(RUST_STRUCT);
-                    inform(#name_len);
-                    #(inform(#name_chars);)*
                 }
-            }
 
-            #[automatically_derived]
-            impl wasm_bindgen::convert::IntoWasmAbi for #name {
-                type Abi = u32;
-
-                fn into_abi(self) -> u32 {
-                    use wasm_bindgen::__rt::std::boxed::Box;
-                    use wasm_bindgen::__rt::WasmRefCell;
-                    Box::into_raw(Box::new(WasmRefCell::new(self))) as u32
-                }
-            }
-
-            #[automatically_derived]
-            impl wasm_bindgen::convert::FromWasmAbi for #name {
-                type Abi = u32;
-
-                unsafe fn from_abi(js: u32) -> Self {
-                    use wasm_bindgen::__rt::std::boxed::Box;
-                    use wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
-
-                    let ptr = js as *mut WasmRefCell<#name>;
-                    assert_not_null(ptr);
-                    let js = Box::from_raw(ptr);
-                    (*js).borrow_mut(); // make sure no one's borrowing
-                    js.into_inner()
-                }
-            }
-
-            #[automatically_derived]
-            impl wasm_bindgen::__rt::core::convert::From<#name> for
-                wasm_bindgen::JsValue
-            {
-                fn from(value: #name) -> Self {
-                    let ptr = wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
-
-                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-                    extern "C" {
-                        fn #new_fn(ptr: u32) -> u32;
+                #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+                #[automatically_derived]
+                const #free_fn_const: () = {
+                    #[no_mangle]
+                    #[doc(hidden)]
+                    pub unsafe extern "C" fn #free_fn(ptr: u32) {
+                        drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
                     }
 
-                    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-                    unsafe fn #new_fn(_: u32) -> u32 {
-                        panic!("cannot convert to JsValue outside of the wasm target")
+                    ()
+                };
+
+                #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+                #[automatically_derived]
+                const #free_fn_const: () = {
+                    #[no_mangle]
+                    #[doc(hidden)]
+                    pub unsafe extern "C" fn #free_fn(ptr: u32) {
+                        let _ = <#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr); //implicit `drop()`
                     }
+                };
 
-                    unsafe {
-                        <wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi>
-                            ::from_abi(#new_fn(ptr))
+                #[automatically_derived]
+                impl wasm_bindgen::convert::RefFromWasmAbi for #name {
+                    type Abi = u32;
+                    type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
+
+                    unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
+                        let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
+                        wasm_bindgen::__rt::assert_not_null(js);
+                        (*js).borrow()
                     }
                 }
-            }
 
-            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #[automatically_derived]
-            const #free_fn_const: () = {
-                #[no_mangle]
-                #[doc(hidden)]
-                pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                    let _ = <#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr); //implicit `drop()`
+                #[automatically_derived]
+                impl wasm_bindgen::convert::RefMutFromWasmAbi for #name {
+                    type Abi = u32;
+                    type Anchor = wasm_bindgen::__rt::RefMut<'static, #name>;
+
+                    unsafe fn ref_mut_from_abi(js: Self::Abi) -> Self::Anchor {
+                        let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
+                        wasm_bindgen::__rt::assert_not_null(js);
+                        (*js).borrow_mut()
+                    }
                 }
-            };
 
-            #[automatically_derived]
-            impl wasm_bindgen::convert::RefFromWasmAbi for #name {
-                type Abi = u32;
-                type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
-
-                unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
-                    wasm_bindgen::__rt::assert_not_null(js);
-                    (*js).borrow()
+                #[automatically_derived]
+                impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
+                    #[inline]
+                    fn none() -> Self::Abi { 0 }
                 }
-            }
 
-            #[automatically_derived]
-            impl wasm_bindgen::convert::RefMutFromWasmAbi for #name {
-                type Abi = u32;
-                type Anchor = wasm_bindgen::__rt::RefMut<'static, #name>;
-
-                unsafe fn ref_mut_from_abi(js: Self::Abi) -> Self::Anchor {
-                    let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
-                    wasm_bindgen::__rt::assert_not_null(js);
-                    (*js).borrow_mut()
+                #[automatically_derived]
+                impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
+                    #[inline]
+                    fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
                 }
-            }
+            })
+            .to_tokens(tokens);
 
-            #[automatically_derived]
-            impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
-                #[inline]
-                fn none() -> Self::Abi { 0 }
+            for field in self.fields.iter() {
+                field.to_tokens(tokens);
             }
-
-            #[automatically_derived]
-            impl wasm_bindgen::convert::OptionFromWasmAbi for #name {
-                #[inline]
-                fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
-            }
-        })
-        .to_tokens(tokens);
-
-        for field in self.fields.iter() {
-            field.to_tokens(tokens);
         }
     }
 }

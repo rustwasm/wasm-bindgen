@@ -44,6 +44,7 @@ pub mod rethrow;
 pub mod simple;
 pub mod slice;
 pub mod structural;
+pub mod transparent;
 pub mod truthy_falsy;
 pub mod usize;
 pub mod validate_prt;
