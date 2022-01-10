@@ -1134,7 +1134,7 @@ pub fn anyref_heap_live_count() -> u32 {
     externref_heap_live_count()
 }
 
-/// An extension trait for `Option<T>` and `Result<T, E>` for unwraping the `T`
+/// An extension trait for `Option<T>` and `Result<T, E>` for unwrapping the `T`
 /// value, or throwing a JS error if it is not available.
 ///
 /// These methods should have a smaller code size footprint than the normal
