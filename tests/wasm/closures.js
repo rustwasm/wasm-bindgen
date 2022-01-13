@@ -51,6 +51,18 @@ exports.many_arity_call9 = a => {
     a(1, 2, 3, 4, 5, 6, 7, 8);
 };
 
+exports.option_call1 = a => {
+    if (a) {
+        a();
+    }
+};
+exports.option_call2 = a => {
+    if (a) {
+        return a(2);
+    }
+};
+exports.option_call3 = a => !a;
+
 let LONG_LIVED_DROPPING_CACHE = null;
 
 exports.long_lived_dropping_cache = a => {

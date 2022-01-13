@@ -46,6 +46,10 @@ extern "C" {
     #[wasm_bindgen(js_name = many_arity_call9)]
     fn many_arity_call_mut9(a: &Closure<dyn FnMut(u32, u32, u32, u32, u32, u32, u32, u32)>);
 
+    fn option_call1(a: Option<&Closure<dyn Fn()>>);
+    fn option_call2(a: Option<&Closure<dyn FnMut(u32) -> u32>>) -> u32;
+    fn option_call3(a: Option<&Closure<dyn Fn()>>) -> bool;
+
     #[wasm_bindgen(js_name = many_arity_call1)]
     fn many_arity_stack1(a: &dyn Fn());
     #[wasm_bindgen(js_name = many_arity_call2)]
@@ -233,6 +237,29 @@ fn many_arity() {
     many_arity_stack9(
         &(|a, b, c, d, e, f, g, h| assert_eq!((a, b, c, d, e, f, g, h), (1, 2, 3, 4, 5, 6, 7, 8))),
     );
+}
+
+#[wasm_bindgen_test]
+fn option() {
+    let hit = Rc::new(Cell::new(false));
+    let hit2 = hit.clone();
+    let a = Closure::new(move || hit2.set(true));
+    assert!(!hit.get());
+    option_call1(Some(&a));
+    assert!(hit.get());
+
+    let hit = Rc::new(Cell::new(false));
+    {
+        let hit = hit.clone();
+        let a = Closure::new(move |x| {
+            hit.set(true);
+            x + 3
+        });
+        assert_eq!(option_call2(Some(&a)), 5);
+    }
+    assert!(hit.get());
+
+    // assert!(option_call3(None));
 }
 
 struct Dropper(Rc<Cell<bool>>);
