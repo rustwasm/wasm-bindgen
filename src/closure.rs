@@ -491,6 +491,15 @@ where
     }
 }
 
+impl<'a, T> OptionIntoWasmAbi for &'a Closure<T>
+where
+    T: WasmClosure + ?Sized,
+{
+    fn none() -> Self::Abi {
+        0
+    }
+}
+
 fn _check() {
     fn _assert<T: IntoWasmAbi>() {}
     _assert::<&Closure<dyn Fn()>>();
