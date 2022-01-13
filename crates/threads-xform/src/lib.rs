@@ -248,6 +248,9 @@ fn inject_start(
     assert!(stack_size % PAGE_SIZE == 0);
     let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
     let local = module.locals.add(ValType::I32);
+    let stack_alloc = module
+        .globals
+        .add_local(ValType::I32, true, InitExpr::Value(Value::I32(0)));
     let mut body = builder.func_body();
 
     // Call previous start function if one is available. Currently this is
@@ -256,6 +259,9 @@ fn inject_start(
     if let Some(prev) = module.start.take() {
         body.call(prev);
     }
+
+    let malloc = find_function(module, "__wbindgen_malloc")?;
+    let free = find_function(module, "__wbindgen_free")?;
 
     // Perform an if/else based on whether we're the first thread or not. Our
     // thread ID will be zero if we're the first thread, otherwise it'll be
@@ -274,31 +280,45 @@ fn inject_start(
         .if_else(
             None,
             // If our thread id is nonzero then we're the second or greater thread, so
-            // we give ourselves a stack via memory.grow and we update our stack
+            // we give ourselves a stack via malloc and we update our stack
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
-                // local0 = grow_memory(stack_size);
-                body.i32_const((stack_size / PAGE_SIZE) as i32)
-                    .memory_grow(memory)
-                    .local_set(local);
+                // local = malloc(stack_size) [aka base]
+                body.i32_const(stack_size as i32)
+                    .call(malloc)
+                    .local_tee(local);
 
-                // if local0 == -1 then trap
-                body.block(None, |body| {
-                    let target = body.id();
-                    body.local_get(local)
-                        .i32_const(-1)
-                        .binop(BinaryOp::I32Ne)
-                        .br_if(target)
-                        .unreachable();
-                });
+                // stack_alloc = base
+                body.global_set(stack_alloc);
 
-                // stack_pointer = local0 + stack_size
+                // local = (base + stack_size) [aka end]
+                body.i32_const(stack_size as i32).binop(BinaryOp::I32Add);
+
+                // The idea here is to make sure that the stack pointer we use is aligned
+                // to the page boundary.
+
+                // push `end - (end % PAGE_SIZE)`
+                body.local_get(local)
+                    .local_get(local)
+                    .i32_const(PAGE_SIZE as i32)
+                    .binop(BinaryOp::I32RemS)
+                    .binop(BinaryOp::I32Sub);
+
+                // push `end`
+                body.local_get(local);
+
+                // push `end % PAGE_SIZE`
                 body.local_get(local)
                     .i32_const(PAGE_SIZE as i32)
-                    .binop(BinaryOp::I32Mul)
-                    .i32_const(stack_size as i32)
-                    .binop(BinaryOp::I32Add)
-                    .global_set(stack_pointer);
+                    .binop(BinaryOp::I32RemS);
+
+                // pop 3, then push:
+                // - if `end` is a multiple of PAGE_SIZE: `end`
+                // - else: `end - (end % PAGE_SIZE)`
+                body.select(None);
+
+                // set that as the stack pointer
+                body.global_set(stack_pointer);
             },
             // If the thread id is zero then the default stack pointer works for
             // us.
@@ -306,7 +326,6 @@ fn inject_start(
         );
 
     // Afterwards we need to initialize our thread-local state.
-    let malloc = find_wbindgen_malloc(module)?;
     body.i32_const(tls.size as i32)
         .i32_const(tls.align as i32)
         .drop() // TODO: need to actually respect alignment
@@ -319,17 +338,36 @@ fn inject_start(
     // ... and finally flag it as the new start function
     module.start = Some(id);
 
+    // We now build a function to free the chunk allocated for thread stack
+    let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
+
+    let mut body = builder.func_body();
+
+    // call `__wbindgen_free(stack_alloc, stack_size)`
+    // TODO: should we add specific code to handle the first thread or
+    // just document the pitfall?
+    body.global_get(stack_alloc)
+        .i32_const(stack_size as i32)
+        .call(free);
+
+    let id = builder.finish(Vec::new(), &mut module.funcs);
+
+    // TODO: we can't call this simply `__wbindgen_XXX` because
+    // some later passes remove those intrinsics.
+    // See `cli_support::wit::process`, `Context::unexport_intrinsics`
+    module.exports.add("__0wbindgen_free_thread", id);
+
     Ok(())
 }
 
-fn find_wbindgen_malloc(module: &Module) -> Result<FunctionId, Error> {
+fn find_function(module: &Module, name: &str) -> Result<FunctionId, Error> {
     let e = module
         .exports
         .iter()
-        .find(|e| e.name == "__wbindgen_malloc")
-        .ok_or_else(|| anyhow!("failed to find `__wbindgen_malloc`"))?;
+        .find(|e| e.name == name)
+        .ok_or_else(|| anyhow!("failed to find `{}`", name))?;
     match e.item {
         walrus::ExportItem::Function(f) => Ok(f),
-        _ => bail!("`__wbindgen_malloc` wasn't a funtion"),
+        _ => bail!("`{}` wasn't a funtion", name),
     }
 }
