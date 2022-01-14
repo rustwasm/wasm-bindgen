@@ -61,7 +61,7 @@ exports.option_call2 = a => {
         return a(2);
     }
 };
-exports.option_call3 = a => !a;
+exports.option_call3 = a => a == undefined;
 
 let LONG_LIVED_DROPPING_CACHE = null;
 
