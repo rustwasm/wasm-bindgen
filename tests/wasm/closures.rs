@@ -259,7 +259,7 @@ fn option() {
     }
     assert!(hit.get());
 
-    // assert!(option_call3(None));
+    assert!(option_call3(None));
 }
 
 struct Dropper(Rc<Cell<bool>>);
