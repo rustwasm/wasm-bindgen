@@ -73,6 +73,10 @@ extern "C" {
     #[wasm_bindgen(catch)]
     fn long_lived_dropping_call() -> Result<(), JsValue>;
 
+    fn long_lived_option_dropping_cache(a: Option<&Closure<dyn Fn()>>) -> bool;
+    #[wasm_bindgen(catch)]
+    fn long_lived_option_dropping_call() -> Result<(), JsValue>;
+
     fn long_fnmut_recursive_cache(a: &Closure<dyn FnMut()>);
     #[wasm_bindgen(catch)]
     fn long_fnmut_recursive_call() -> Result<(), JsValue>;
@@ -325,6 +329,24 @@ fn long_lived_dropping() {
     assert!(hit.get());
     drop(a);
     assert!(long_lived_dropping_call().is_err());
+}
+
+#[wasm_bindgen_test]
+fn long_lived_option_dropping() {
+    let hit = Rc::new(Cell::new(false));
+    let hit2 = hit.clone();
+
+    let a = Closure::new(move || hit2.set(true));
+
+    assert!(!long_lived_option_dropping_cache(None));
+    assert!(long_lived_option_dropping_cache(Some(&a)));
+
+    assert!(!hit.get());
+    assert!(long_lived_option_dropping_call().is_ok());
+    assert!(hit.get());
+
+    drop(a);
+    assert!(long_lived_option_dropping_call().is_err());
 }
 
 #[wasm_bindgen_test]

@@ -72,6 +72,20 @@ exports.long_lived_dropping_call = () => {
     LONG_LIVED_DROPPING_CACHE();
 };
 
+let LONG_LIVED_OPTION_DROPPING_CACHE = null;
+
+exports.long_lived_option_dropping_cache = a => {
+    if (a) {
+        LONG_LIVED_OPTION_DROPPING_CACHE = a;
+        return true;
+    } else {
+        return false;
+    }
+}
+exports.long_lived_option_dropping_call = () => {
+    LONG_LIVED_OPTION_DROPPING_CACHE();
+}
+
 let LONG_FNMUT_RECURSIVE_CACHE = null;
 
 exports.long_fnmut_recursive_cache = a => {
