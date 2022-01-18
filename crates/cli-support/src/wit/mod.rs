@@ -211,6 +211,8 @@ impl<'a> Context<'a> {
             }
         }
 
+        self.aux.thread_destroy = self.thread_destroy();
+
         Ok(())
     }
 
@@ -1399,6 +1401,13 @@ impl<'a> Context<'a> {
             .cloned()
             .map(|p| p.1)
             .ok_or_else(|| anyhow!("failed to find declaration of `__wbindgen_free` in module"))
+    }
+
+    fn thread_destroy(&self) -> Option<FunctionId> {
+        self.function_exports
+            .get("__wbindgen_thread_destroy")
+            .cloned()
+            .map(|p| p.1)
     }
 
     fn memory(&self) -> Result<MemoryId, Error> {

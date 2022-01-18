@@ -2276,7 +2276,18 @@ impl<'a> Context<'a> {
             self.process_package_json(path)?;
         }
 
+        self.export_destructor();
+
         Ok(())
+    }
+
+    fn export_destructor(&mut self) {
+        let thread_destroy = match self.aux.thread_destroy {
+            Some(id) => id,
+            None => return,
+        };
+
+        self.export_name_of(thread_destroy);
     }
 
     /// Registers import names for all `Global` imports first before we actually

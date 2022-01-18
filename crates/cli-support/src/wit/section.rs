@@ -52,6 +52,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         exn_store: _,
         shadow_stack_pointer: _,
         function_table: _,
+        thread_destroy: _,
     } = *aux;
 
     let adapter_context = |id: AdapterId| {

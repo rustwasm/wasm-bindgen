@@ -21,6 +21,7 @@ pub struct Config {
     maximum_memory: u32,
     thread_stack_size: u32,
     enabled: bool,
+    stack_dealloc: bool,
 }
 
 impl Config {
@@ -30,6 +31,7 @@ impl Config {
             maximum_memory: 1 << 30,    // 1GB
             thread_stack_size: 1 << 20, // 1MB
             enabled: env::var("WASM_BINDGEN_THREADS").is_ok(),
+            stack_dealloc: env::var("WASM_BINDGEN_THREADS_STACK_DEALLOC").is_ok(),
         }
     }
 
@@ -145,17 +147,18 @@ impl Config {
             temp_lock: thread_counter_addr + 4,
             alloc: stack_alloc,
             size: self.thread_stack_size,
+            dealloc: self.stack_dealloc,
         };
 
         inject_start(module, tls, &stack, thread_counter_addr, memory)?;
 
-        // we expose a `__TODO_free()` helper function that deallocates stack space.
+        // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
         //
         // ## Safety
         // After calling this function in a given agent, the instance should be considered
         // "destroyed" and any further invocations into it will trigger UB. This function
         // should not be called from an agent that cannot block (e.g. the main document thread).
-        inject_free(module, &stack, memory)?;
+        inject_destroy(module, &stack, memory)?;
 
         Ok(())
     }
@@ -270,6 +273,8 @@ struct Stack {
     alloc: GlobalId,
     /// The size of the stack
     size: u32,
+    /// Whether the dealloc helper should be exposed
+    dealloc: bool,
 }
 
 fn inject_start(
@@ -305,9 +310,27 @@ fn inject_start(
         .if_else(
             None,
             // If our thread id is nonzero then we're the second or greater thread, so
-            // we give ourselves a stack via malloc and we update our stack
+            // we give ourselves a stack and we update our stack
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
+                if !stack.dealloc {
+                    let target = body.id();
+
+                    // local = memory.grow(stack_size [in pages]);
+                    body.i32_const((stack.size / PAGE_SIZE) as i32)
+                        .memory_grow(memory)
+                        .local_set(local);
+
+                    // if local == -1, trap
+                    body.local_get(local)
+                        .i32_const(-1)
+                        .binop(BinaryOp::I32Ne)
+                        .br_if(target)
+                        .unreachable();
+
+                    return;
+                }
+
                 // local = malloc(stack.size) [aka base]
                 with_temp_stack(body, memory, &stack, |body| {
                     body.i32_const(stack.size as i32)
@@ -352,10 +375,16 @@ fn inject_start(
     Ok(())
 }
 
-fn inject_free(module: &mut Module, stack: &Stack, memory: MemoryId) -> Result<(), Error> {
+fn inject_destroy(module: &mut Module, stack: &Stack, memory: MemoryId) -> Result<(), Error> {
+    if !stack.dealloc {
+        return Ok(());
+    }
+
     let free = find_function(module, "__wbindgen_free")?;
 
     let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
+
+    builder.name("__wbindgen_thread_destroy".into());
 
     let mut body = builder.func_body();
 
@@ -378,11 +407,7 @@ fn inject_free(module: &mut Module, stack: &Stack, memory: MemoryId) -> Result<(
 
     let free_id = builder.finish(Vec::new(), &mut module.funcs);
 
-    // TODO: we can't call this simply `__wbindgen_XXX` because
-    // some later passes remove those intrinsics.
-    // See `cli_support::wit::process`, `Context::unexport_intrinsics`
-
-    module.exports.add("__0wbindgen_free_thread", free_id);
+    module.exports.add("__wbindgen_thread_destroy", free_id);
 
     Ok(())
 }
