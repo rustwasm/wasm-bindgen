@@ -21,7 +21,6 @@ pub struct Config {
     maximum_memory: u32,
     thread_stack_size: u32,
     enabled: bool,
-    stack_dealloc: bool,
 }
 
 impl Config {
@@ -31,7 +30,6 @@ impl Config {
             maximum_memory: 1 << 30,    // 1GB
             thread_stack_size: 1 << 20, // 1MB
             enabled: env::var("WASM_BINDGEN_THREADS").is_ok(),
-            stack_dealloc: env::var("WASM_BINDGEN_THREADS_STACK_DEALLOC").is_ok(),
         }
     }
 
@@ -147,7 +145,6 @@ impl Config {
             temp_lock: thread_counter_addr + 4,
             alloc: stack_alloc,
             size: self.thread_stack_size,
-            dealloc: self.stack_dealloc,
         };
 
         inject_start(module, tls, &stack, thread_counter_addr, memory)?;
@@ -273,8 +270,6 @@ struct Stack {
     alloc: GlobalId,
     /// The size of the stack
     size: u32,
-    /// Whether the dealloc helper should be exposed
-    dealloc: bool,
 }
 
 fn inject_start(
@@ -313,24 +308,6 @@ fn inject_start(
             // we give ourselves a stack and we update our stack
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
-                if !stack.dealloc {
-                    let target = body.id();
-
-                    // local = memory.grow(stack_size [in pages]);
-                    body.i32_const((stack.size / PAGE_SIZE) as i32)
-                        .memory_grow(memory)
-                        .local_set(local);
-
-                    // if local == -1, trap
-                    body.local_get(local)
-                        .i32_const(-1)
-                        .binop(BinaryOp::I32Ne)
-                        .br_if(target)
-                        .unreachable();
-
-                    return;
-                }
-
                 // local = malloc(stack.size) [aka base]
                 with_temp_stack(body, memory, &stack, |body| {
                     body.i32_const(stack.size as i32)
@@ -376,10 +353,6 @@ fn inject_start(
 }
 
 fn inject_destroy(module: &mut Module, stack: &Stack, memory: MemoryId) -> Result<(), Error> {
-    if !stack.dealloc {
-        return Ok(());
-    }
-
     let free = find_function(module, "__wbindgen_free")?;
 
     let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
