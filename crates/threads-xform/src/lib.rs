@@ -129,6 +129,8 @@ impl Config {
             init: delete_synthetic_func(module, "__wasm_init_tls")?,
             size: delete_synthetic_global(module, "__tls_size")?,
             align: delete_synthetic_global(module, "__tls_align")?,
+            base: wasm_conventions::get_tls_base(module)
+                .ok_or_else(|| anyhow!("failed to find tls base"))?,
         };
 
         let thread_counter_addr = addr as i32;
@@ -147,7 +149,7 @@ impl Config {
             size: self.thread_stack_size,
         };
 
-        inject_start(module, tls, &stack, thread_counter_addr, memory)?;
+        inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
 
         // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
         //
@@ -155,7 +157,7 @@ impl Config {
         // After calling this function in a given agent, the instance should be considered
         // "destroyed" and any further invocations into it will trigger UB. This function
         // should not be called from an agent that cannot block (e.g. the main document thread).
-        inject_destroy(module, &stack, memory)?;
+        inject_destroy(module, &tls, &stack, memory)?;
 
         Ok(())
     }
@@ -257,6 +259,7 @@ struct Tls {
     init: walrus::FunctionId,
     size: u32,
     align: u32,
+    base: GlobalId,
 }
 
 struct Stack {
@@ -274,7 +277,7 @@ struct Stack {
 
 fn inject_start(
     module: &mut Module,
-    tls: Tls,
+    tls: &Tls,
     stack: &Stack,
     thread_counter_addr: i32,
     memory: MemoryId,
@@ -352,7 +355,12 @@ fn inject_start(
     Ok(())
 }
 
-fn inject_destroy(module: &mut Module, stack: &Stack, memory: MemoryId) -> Result<(), Error> {
+fn inject_destroy(
+    module: &mut Module,
+    tls: &Tls,
+    stack: &Stack,
+    memory: MemoryId,
+) -> Result<(), Error> {
     let free = find_function(module, "__wbindgen_free")?;
 
     let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
@@ -361,7 +369,25 @@ fn inject_destroy(module: &mut Module, stack: &Stack, memory: MemoryId) -> Resul
 
     let mut body = builder.func_body();
 
-    // if stack.alloc == 0, this is the first thread and its stack cannot be freed
+    // Ideally, at this point, we would destroy the values stored in TLS.
+    // We can't really do that without help from the standard library.
+    // See https://github.com/rustwasm/wasm-bindgen/pull/2769#issuecomment-1015775467.
+
+    // if tls.base != 0, the TLS space needs to be freed
+    body.global_get(tls.base).if_else(
+        None,
+        |body| {
+            body.global_get(tls.base)
+                .i32_const(tls.size as i32)
+                .call(free);
+        },
+        |_| {},
+    );
+
+    // set tls.base = 0 for idempotency
+    body.i32_const(0).global_set(tls.base);
+
+    // if stack.alloc != 0, the stack needs to be freed
     body.global_get(stack.alloc).if_else(
         None,
         |body| {
