@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen"
-version = "0.2.78"
+version = "0.2.79"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
