@@ -116,7 +116,10 @@ impl Config {
         // - A lock to synchronize usage of the above stack.
         // For this, we allocate 1 extra page of memory (should be enough as temporary
         // stack) and grab the first 2 _aligned_ i32 words to use as counter and lock.
-        let (base, addr) = allocate_static_data(module, memory, 1, 4)?;
+        let static_data_align = 4;
+        let static_data_pages = 1;
+        let (base, addr) =
+            allocate_static_data(module, memory, static_data_pages, static_data_align)?;
 
         let mem = module.memories.get_mut(memory);
         assert!(mem.shared);
@@ -140,10 +143,13 @@ impl Config {
                 .globals
                 .add_local(ValType::I32, true, InitExpr::Value(Value::I32(0)));
 
+        // Make sure the temporary stack is aligned down
+        let temp_stack = (base + static_data_pages * PAGE_SIZE) & !(static_data_align - 1);
+
         let stack = Stack {
             pointer: wasm_conventions::get_shadow_stack_pointer(module)
                 .ok_or_else(|| anyhow!("failed to find shadow stack pointer"))?,
-            temp: (base + PAGE_SIZE) as i32,
+            temp: temp_stack as i32,
             temp_lock: thread_counter_addr + 4,
             alloc: stack_alloc,
             size: self.thread_stack_size,
@@ -242,10 +248,11 @@ fn allocate_static_data(
         };
 
         let address = (*offset as u32 + (align - 1)) & !(align - 1); // align up
+        let base = *offset;
 
         *offset = *offset + (pages * PAGE_SIZE) as i32;
 
-        (*offset, address)
+        (base, address)
     };
 
     let memory = module.memories.get_mut(memory);
@@ -344,6 +351,8 @@ fn inject_start(
         .i32_const(tls.align as i32)
         .drop() // TODO: need to actually respect alignment
         .call(malloc)
+        .global_set(tls.base)
+        .global_get(tls.base)
         .call(tls.init);
 
     // Finish off our newly generated function.
@@ -373,19 +382,22 @@ fn inject_destroy(
     // We can't really do that without help from the standard library.
     // See https://github.com/rustwasm/wasm-bindgen/pull/2769#issuecomment-1015775467.
 
-    // if tls.base != 0, the TLS space needs to be freed
-    body.global_get(tls.base).if_else(
-        None,
-        |body| {
-            body.global_get(tls.base)
-                .i32_const(tls.size as i32)
-                .call(free);
-        },
-        |_| {},
-    );
+    // if tls.base != i32::MIN, the TLS space needs to be freed
+    body.global_get(tls.base)
+        .i32_const(i32::MIN)
+        .binop(walrus::ir::BinaryOp::I32Ne)
+        .if_else(
+            None,
+            |body| {
+                body.global_get(tls.base)
+                    .i32_const(tls.size as i32)
+                    .call(free);
+            },
+            |_| {},
+        );
 
-    // set tls.base = 0 for idempotency
-    body.i32_const(0).global_set(tls.base);
+    // set tls.base = i32::MIN for idempotency
+    body.i32_const(i32::MIN).global_set(tls.base);
 
     // if stack.alloc != 0, the stack needs to be freed
     body.global_get(stack.alloc).if_else(
