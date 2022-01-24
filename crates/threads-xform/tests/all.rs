@@ -19,10 +19,24 @@ fn main() {
 fn runtest(test: &Test) -> Result<String> {
     let wasm = wat::parse_file(&test.file)?;
     let mut module = walrus::Module::from_buffer(&wasm)?;
+
     let config = wasm_bindgen_threads_xform::Config::new();
+
     config.run(&mut module)?;
     walrus::passes::gc::run(&mut module);
+
+    let features = {
+        let mut features = wasmparser::WasmFeatures::default();
+        features.threads = true;
+        features
+    };
+
+    wasmparser::Validator::new()
+        .wasm_features(features)
+        .validate_all(&module.emit_wasm())?;
+
     let printed = wasmprinter::print_bytes(&module.emit_wasm())?;
+
     Ok(printed)
 }
 

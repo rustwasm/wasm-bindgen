@@ -325,13 +325,6 @@ fn inject_start(
                         .local_tee(local);
                 });
 
-                // if base == 0 then trap
-                body.block(None, |body| {
-                    let target = body.id();
-
-                    body.local_get(local).br_if(target).unreachable();
-                });
-
                 // stack.alloc = base
                 body.global_set(stack.alloc);
 
@@ -382,38 +375,22 @@ fn inject_destroy(
     // We can't really do that without help from the standard library.
     // See https://github.com/rustwasm/wasm-bindgen/pull/2769#issuecomment-1015775467.
 
-    // if tls.base != i32::MIN, the TLS space needs to be freed
+    // free the TLS space
     body.global_get(tls.base)
-        .i32_const(i32::MIN)
-        .binop(walrus::ir::BinaryOp::I32Ne)
-        .if_else(
-            None,
-            |body| {
-                body.global_get(tls.base)
-                    .i32_const(tls.size as i32)
-                    .call(free);
-            },
-            |_| {},
-        );
+        .i32_const(tls.size as i32)
+        .call(free);
 
-    // set tls.base = i32::MIN for idempotency
+    // set tls.base = i32::MIN to trigger invalid memory
     body.i32_const(i32::MIN).global_set(tls.base);
 
-    // if stack.alloc != 0, the stack needs to be freed
-    body.global_get(stack.alloc).if_else(
-        None,
-        |body| {
-            // call `__wbindgen_free(stack.alloc, stack.size)`
-            with_temp_stack(body, memory, stack, |body| {
-                body.global_get(stack.alloc)
-                    .i32_const(stack.size as i32)
-                    .call(free);
-            });
-        },
-        |_| {},
-    );
+    // free the stack callin `__wbindgen_free(stack.alloc, stack.size)`
+    with_temp_stack(&mut body, memory, stack, |body| {
+        body.global_get(stack.alloc)
+            .i32_const(stack.size as i32)
+            .call(free);
+    });
 
-    // set stack.alloc = 0 for idempotency
+    // set stack.alloc = 0 to trigger invalid memory
     body.i32_const(0).global_set(stack.alloc);
 
     let free_id = builder.finish(Vec::new(), &mut module.funcs);

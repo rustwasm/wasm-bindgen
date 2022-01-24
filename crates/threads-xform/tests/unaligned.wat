@@ -1,5 +1,3 @@
-;; @xform export "foo" (externref_borrowed)
-
 (module
   (import "env" "memory" (memory 6 1024 shared))
   (func $__wasm_init_tls (export "__wasm_init_tls") (param i32)
@@ -64,11 +62,6 @@
       i32.const 1
       memory.atomic.notify
       drop
-      block  ;; label = @2
-        local.get 0
-        br_if 0 (;@2;)
-        unreachable
-      end
       global.set 3
       global.get 3
       i32.const 1048576
@@ -85,47 +78,37 @@
     call $__wasm_init_tls)
   (func $__wbindgen_thread_destroy (type 0)
     global.get 1
-    i32.const -2147483648
-    i32.ne
-    if  ;; label = @1
-      global.get 1
-      i32.const 128
-      call $__wbindgen_free
-    else
-    end
+    i32.const 128
+    call $__wbindgen_free
     i32.const -2147483648
     global.set 1
-    global.get 3
-    if  ;; label = @1
-      i32.const 393216
-      global.set 2
-      loop  ;; label = @2
-        i32.const 327688
-        i32.const 0
-        i32.const 1
-        i32.atomic.rmw.cmpxchg
-        if  ;; label = @3
-          i32.const 327688
-          i32.const 1
-          i64.const -1
-          memory.atomic.wait32
-          drop
-          br 1 (;@2;)
-        else
-        end
-      end
-      global.get 3
-      i32.const 1048576
-      call $__wbindgen_free
+    i32.const 393216
+    global.set 2
+    loop  ;; label = @1
       i32.const 327688
       i32.const 0
-      i32.atomic.store
-      i32.const 327688
       i32.const 1
-      memory.atomic.notify
-      drop
-    else
+      i32.atomic.rmw.cmpxchg
+      if  ;; label = @2
+        i32.const 327688
+        i32.const 1
+        i64.const -1
+        memory.atomic.wait32
+        drop
+        br 1 (;@1;)
+      else
+      end
     end
+    global.get 3
+    i32.const 1048576
+    call $__wbindgen_free
+    i32.const 327688
+    i32.const 0
+    i32.atomic.store
+    i32.const 327688
+    i32.const 1
+    memory.atomic.notify
+    drop
     i32.const 0
     global.set 3)
   (func $__wasm_init_tls (type 1) (param i32)
