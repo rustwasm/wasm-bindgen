@@ -58,6 +58,7 @@ pub struct WasmBindgenAux {
     /// Various intrinsics used for JS glue generation
     pub exn_store: Option<walrus::FunctionId>,
     pub shadow_stack_pointer: Option<walrus::GlobalId>,
+    pub thread_destroy: Option<walrus::FunctionId>,
 }
 
 pub type WasmBindgenAuxId = TypedCustomSectionId<WasmBindgenAux>;
@@ -401,6 +402,9 @@ impl walrus::CustomSection for WasmBindgenAux {
         }
         if let Some(id) = self.shadow_stack_pointer {
             roots.push_global(id);
+        }
+        if let Some(id) = self.thread_destroy {
+            roots.push_func(id);
         }
     }
 }
