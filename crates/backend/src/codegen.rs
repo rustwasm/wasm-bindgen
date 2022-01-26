@@ -227,8 +227,6 @@ impl ToTokens for ast::Struct {
                 pub unsafe extern "C" fn #free_fn(ptr: u32) {
                     drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
                 }
-
-                ()
             };
 
             #[automatically_derived]
@@ -317,8 +315,6 @@ impl ToTokens for ast::StructField {
                     let val = (*js).borrow().#rust_name#maybe_clone;
                     <#ty as IntoWasmAbi>::into_abi(val)
                 }
-
-                ()
             };
         })
         .to_tokens(tokens);
@@ -356,8 +352,6 @@ impl ToTokens for ast::StructField {
                     let val = <#ty as FromWasmAbi>::from_abi(val);
                     (*js).borrow_mut().#rust_name = val;
                 }
-
-                ()
             };
         })
         .to_tokens(tokens);
@@ -548,8 +542,6 @@ impl TryToTokens for ast::Export {
                     };
                     #convert_ret
                 }
-
-                ()
             };
         })
         .to_tokens(into);
@@ -794,8 +786,6 @@ impl ToTokens for ast::ImportType {
                 }
 
                 impl JsObject for #rust_name {}
-
-                ()
             };
         })
         .to_tokens(tokens);
@@ -1365,8 +1355,6 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
                     wasm_bindgen::__rt::link_mem_intrinsics();
                     #inner
                 }
-
-                ()
             };
         })
         .to_tokens(tokens);
