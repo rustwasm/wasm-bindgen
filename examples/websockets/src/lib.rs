@@ -15,7 +15,7 @@ extern "C" {
 #[wasm_bindgen(start)]
 pub fn start_websocket() -> Result<(), JsValue> {
     // Connect to an echo server
-    let ws = WebSocket::new("wss://echo.websocket.org")?;
+    let ws = WebSocket::new("wss://echo.websocket.events")?;
     // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
     ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
     // create callback
