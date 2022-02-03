@@ -161,6 +161,9 @@ jobs:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test -p js-sys --target wasm32-unknown-unknown
+    - run: cargo test -p js-sys --target wasm32-unknown-unknown
+      env:
+        RUSTFLAGS: --cfg=js_sys_unstable_apis
 
   test_webidl:
     name: "Run wasm-bindgen-webidl crate tests"

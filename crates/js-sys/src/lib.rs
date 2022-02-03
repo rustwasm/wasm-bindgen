@@ -3917,6 +3917,10 @@ impl Default for WeakSet {
     }
 }
 
+#[cfg(js_sys_unstable_apis)]
+#[allow(non_snake_case)]
+pub mod Temporal;
+
 #[allow(non_snake_case)]
 pub mod WebAssembly {
     use super::*;
