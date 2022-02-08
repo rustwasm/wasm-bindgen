@@ -114,7 +114,7 @@ use crate::UnwrapThrowExt;
 /// #[wasm_bindgen]
 /// pub fn run() -> Result<IntervalHandle, JsValue> {
 ///     let cb = Closure::wrap(Box::new(|| {
-///         web_sys::console::log_1(&"inverval elapsed!".into());
+///         web_sys::console::log_1(&"interval elapsed!".into());
 ///     }) as Box<dyn FnMut()>);
 ///
 ///     let window = web_sys::window().unwrap();
