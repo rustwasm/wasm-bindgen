@@ -334,7 +334,6 @@ impl<'a> Context<'a> {
                     break
                 default:
                     throw new Error(`Unsupported protocol: ${{wasm_url.protocol}}`);
-                    break
             }}
 
             const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
@@ -1360,7 +1359,7 @@ impl<'a> Context<'a> {
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("let cached{0} = new {0}{1};", s, args))
+                self.global(&format!("const cached{0} = new {0}{1};", s, args))
             }
         };
 
