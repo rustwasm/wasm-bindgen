@@ -453,14 +453,14 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             None => String::new(),
         };
         self.prelude(&format!(
-            "var ptr{i} = {f}({0}, wasm.{malloc}{realloc});",
+            "const ptr{i} = {f}({0}, wasm.{malloc}{realloc});",
             val,
             i = i,
             f = pass,
             malloc = malloc,
             realloc = realloc,
         ));
-        self.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+        self.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
         self.push(format!("ptr{}", i));
         self.push(format!("len{}", i));
         Ok(())
@@ -507,7 +507,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),
                 (false, n) => {
-                    js.prelude(&format!("var ret = {};", call));
+                    js.prelude(&format!("const ret = {};", call));
                     if n == 1 {
                         js.push("ret".to_string());
                     } else {
@@ -776,13 +776,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
             js.prelude(&format!(
-                "var ptr{i} = {f}({0}, wasm.{malloc});",
+                "const ptr{i} = {f}({0}, wasm.{malloc});",
                 val,
                 i = i,
                 f = func,
                 malloc = malloc,
             ));
-            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
             js.push(format!("ptr{}", i));
             js.push(format!("len{}", i));
         }
