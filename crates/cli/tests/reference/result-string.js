@@ -79,7 +79,7 @@ export function exported() {
 }
 
 export function __wbindgen_number_new(arg0) {
-    var ret = arg0;
+    const ret = arg0;
     return addHeapObject(ret);
 };
 
