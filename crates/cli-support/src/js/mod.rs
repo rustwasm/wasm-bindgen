@@ -334,7 +334,6 @@ impl<'a> Context<'a> {
                     break
                 default:
                     throw new Error(`Unsupported protocol: ${{wasm_url.protocol}}`);
-                    break
             }}
 
             const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
