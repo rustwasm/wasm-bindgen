@@ -6256,6 +6256,12 @@ mod gen_SharedWorkerGlobalScope;
 #[cfg(feature = "SharedWorkerGlobalScope")]
 pub use gen_SharedWorkerGlobalScope::*;
 
+#[cfg(feature = "ShareData")]
+#[allow(non_snake_case)]
+mod gen_ShareData;
+#[cfg(feature = "ShareData")]
+pub use gen_ShareData::*;
+
 #[cfg(feature = "SignResponse")]
 #[allow(non_snake_case)]
 mod gen_SignResponse;

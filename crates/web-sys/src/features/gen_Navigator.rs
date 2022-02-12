@@ -466,4 +466,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     pub fn taint_enabled(this: &Navigator) -> bool;
+    #[cfg(feature = "ShareData")]
+    # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = share)]
+    #[doc = "The `share()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `ShareData`*"]
+    pub fn share(this: &Navigator, data: ShareData) -> ::js_sys::Promise;
+    #[cfg(feature = "ShareData")]
+    # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = canShare)]
+    #[doc = "The `canShare()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `ShareData`*"]
+    pub fn can_share(this: &Navigator, data: ShareData) -> bool;
 }

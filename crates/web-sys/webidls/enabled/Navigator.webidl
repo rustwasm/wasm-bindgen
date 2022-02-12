@@ -244,3 +244,17 @@ interface NavigatorAutomationInformation {
   [Pref="dom.webdriver.enabled"]
   readonly attribute boolean webdriver;
 };
+
+// https://www.w3.org/TR/web-share/#idl-index
+partial interface Navigator {
+  [SecureContext] Promise<undefined> share(optional ShareData data = {});
+
+  [SecureContext] boolean canShare(optional ShareData data = {});
+};
+
+dictionary ShareData {
+  sequence<File> files;
+  USVString title;
+  USVString text;
+  USVString url;
+};
