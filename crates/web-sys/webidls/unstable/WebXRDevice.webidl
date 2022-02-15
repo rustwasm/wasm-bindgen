@@ -163,6 +163,7 @@ enum XRTargetRayMode {
 
 [SecureContext, Exposed=Window]
 interface XRInputSource {
+  readonly attribute Gamepad? gamepad;
   readonly attribute XRHandedness handedness;
   readonly attribute XRTargetRayMode targetRayMode;
   [SameObject] readonly attribute XRSpace targetRaySpace;
