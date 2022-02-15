@@ -7,10 +7,10 @@
  */
 
 partial interface Navigator {
-  [SecureContext, SameObject] readonly attribute XR xr;
+  [SecureContext, SameObject] readonly attribute XRSystem xr;
 };
 
-[SecureContext, Exposed=Window] interface XR : EventTarget {
+[SecureContext, Exposed=Window] interface XRSystem : EventTarget {
   // Methods
   Promise<boolean> isSessionSupported(XRSessionMode mode);
   [NewObject] Promise<XRSession> requestSession(XRSessionMode mode, optional XRSessionInit options = {});

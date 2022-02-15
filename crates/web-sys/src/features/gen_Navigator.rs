@@ -165,17 +165,17 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usb(this: &Navigator) -> Usb;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "Xr")]
+    #[cfg(feature = "XrSystem")]
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = xr)]
     #[doc = "Getter for the `xr` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/xr)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `Xr`*"]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `XrSystem`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn xr(this: &Navigator) -> Xr;
+    pub fn xr(this: &Navigator) -> XrSystem;
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = hardwareConcurrency)]
     #[doc = "Getter for the `hardwareConcurrency` field of this object."]
     #[doc = ""]

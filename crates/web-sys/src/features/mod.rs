@@ -8260,12 +8260,6 @@ mod gen_XmlSerializer;
 #[cfg(feature = "XmlSerializer")]
 pub use gen_XmlSerializer::*;
 
-#[cfg(feature = "Xr")]
-#[allow(non_snake_case)]
-mod gen_Xr;
-#[cfg(feature = "Xr")]
-pub use gen_Xr::*;
-
 #[cfg(feature = "XrBoundedReferenceSpace")]
 #[allow(non_snake_case)]
 mod gen_XrBoundedReferenceSpace;
@@ -8409,6 +8403,12 @@ pub use gen_XrSessionMode::*;
 mod gen_XrSpace;
 #[cfg(feature = "XrSpace")]
 pub use gen_XrSpace::*;
+
+#[cfg(feature = "XrSystem")]
+#[allow(non_snake_case)]
+mod gen_XrSystem;
+#[cfg(feature = "XrSystem")]
+pub use gen_XrSystem::*;
 
 #[cfg(feature = "XrTargetRayMode")]
 #[allow(non_snake_case)]
