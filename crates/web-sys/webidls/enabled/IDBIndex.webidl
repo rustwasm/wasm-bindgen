@@ -18,7 +18,7 @@ dictionary IDBIndexParameters {
     DOMString? locale = null;
 };
 
-[Exposed=(Window,Worker,System)]
+[Exposed=(Window,Worker)]
 interface IDBIndex {
     [SetterThrows]
     attribute DOMString name;
@@ -58,8 +58,8 @@ interface IDBIndex {
 
 partial interface IDBIndex {
     [Throws]
-    IDBRequest getAll (optional any key, [EnforceRange] optional unsigned long limit);
+    IDBRequest getAll (optional any key, optional [EnforceRange] unsigned long limit);
 
     [Throws]
-    IDBRequest getAllKeys (optional any key, [EnforceRange] optional unsigned long limit);
+    IDBRequest getAllKeys (optional any key, optional [EnforceRange] unsigned long limit);
 };
