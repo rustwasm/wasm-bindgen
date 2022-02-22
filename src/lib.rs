@@ -336,7 +336,7 @@ impl JsValue {
         unsafe { __wbindgen_is_function(self.idx) == 1 }
     }
 
-    /// Tests whether the type of this JS value is `function`.
+    /// Tests whether the type of this JS value is `bigint`.
     #[inline]
     pub fn is_bigint(&self) -> bool {
         unsafe { __wbindgen_is_bigint(self.idx) == 1 }
