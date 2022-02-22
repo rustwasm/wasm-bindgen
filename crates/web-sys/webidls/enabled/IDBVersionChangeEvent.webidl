@@ -16,9 +16,11 @@ dictionary IDBVersionChangeEventInit : EventInit {
 };
 
 [Constructor(DOMString type, optional IDBVersionChangeEventInit eventInitDict),
- Exposed=(Window,Worker,System)]
+ Exposed=(Window,Worker)]
 interface IDBVersionChangeEvent : Event {
+    constructor(DOMString type,
+                optional IDBVersionChangeEventInit eventInitDict = {});
+
     readonly    attribute unsigned long long  oldVersion;
     readonly    attribute unsigned long long? newVersion;
 };
-
