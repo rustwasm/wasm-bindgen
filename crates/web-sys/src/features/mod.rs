@@ -6244,6 +6244,12 @@ mod gen_ShadowRootMode;
 #[cfg(feature = "ShadowRootMode")]
 pub use gen_ShadowRootMode::*;
 
+#[cfg(feature = "ShareData")]
+#[allow(non_snake_case)]
+mod gen_ShareData;
+#[cfg(feature = "ShareData")]
+pub use gen_ShareData::*;
+
 #[cfg(feature = "SharedWorker")]
 #[allow(non_snake_case)]
 mod gen_SharedWorker;
