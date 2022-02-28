@@ -20,6 +20,14 @@ pub fn return_named_struct(inner: u32) -> ExportedNamedStruct {
 }
 
 #[wasm_bindgen]
+pub fn named_struct_by_optional_value(x: Option<ExportedNamedStruct>) {}
+
+#[wasm_bindgen]
+pub fn return_optional_named_struct(inner: u32) -> Option<ExportedNamedStruct> {
+    Some(ExportedNamedStruct { inner })
+}
+
+#[wasm_bindgen]
 pub struct ExportedTupleStruct(pub u32, pub u32);
 
 #[wasm_bindgen]
