@@ -4528,6 +4528,36 @@ extern "C" {
         replacement: &Function,
     ) -> JsString;
 
+    /// The `replace_all()` method returns a new string with all matches of a pattern
+    /// replaced by a replacement. The pattern can be a string or a global RegExp, and
+    /// the replacement can be a string or a function to be called for each match.
+    ///
+    /// Note: The original string will remain unchanged.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all(this: &JsString, pattern: &str, replacement: &str) -> JsString;
+
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all_with_function(
+        this: &JsString,
+        pattern: &str,
+        replacement: &Function,
+    ) -> JsString;
+
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all_by_pattern(this: &JsString, pattern: &RegExp, replacement: &str)
+        -> JsString;
+
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all_by_pattern_with_function(
+        this: &JsString,
+        pattern: &RegExp,
+        replacement: &Function,
+    ) -> JsString;
+
     /// The `search()` method executes a search for a match between
     /// a regular expression and this String object.
     ///

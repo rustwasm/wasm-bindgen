@@ -358,6 +358,38 @@ fn replace() {
 }
 
 #[wasm_bindgen_test]
+fn replace_all() {
+    let js = JsString::from(
+        "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
+    );
+    let result = js.replace_all("dog", "ferret");
+
+    assert_eq!(
+        result,
+        "The quick brown fox jumped over the lazy ferret. If the ferret reacted, was it really lazy?"
+    );
+
+    let js = JsString::from("borderTopTest");
+    let result = js.replace_all_with_function("T", &get_replacer_function());
+
+    assert_eq!(result, "border-top-test");
+
+    let js = JsString::from(
+        "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
+    );
+    let re = RegExp::new("dog", "g");
+    let result = js.replace_all_by_pattern(&re, "ferret");
+
+    assert_eq!(result, "The quick brown fox jumped over the lazy ferret. If the ferret reacted, was it really lazy?");
+
+    let js = JsString::from("borderTopTest");
+    let re = RegExp::new("[A-Z]", "g");
+    let result = js.replace_all_by_pattern_with_function(&re, &get_replacer_function());
+
+    assert_eq!(result, "border-top-test");
+}
+
+#[wasm_bindgen_test]
 fn search() {
     let js = JsString::from(
         "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
