@@ -306,6 +306,11 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new_with_length(len: u32) -> Array;
 
+    /// Retrieves the element at the index, counting from the end if negative
+    /// (returns `undefined` if the index is out of range).
+    #[wasm_bindgen(method)]
+    pub fn at(this: &Array, index: i32) -> JsValue;
+
     /// Retrieves the element at the index (returns `undefined` if the index is out of range).
     #[wasm_bindgen(method, structural, indexing_getter)]
     pub fn get(this: &Array, index: u32) -> JsValue;
@@ -4304,6 +4309,14 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &JsString) -> u32;
 
+    /// The 'at()' method returns a new string consisting of the single UTF-16
+    /// code unit located at the specified offset into the string, counting from
+    /// the end if it's negative.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/at)
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn at(this: &JsString, index: i32) -> Option<JsString>;
+
     /// The String object's `charAt()` method returns a new string consisting of
     /// the single UTF-16 code unit located at the specified offset into the
     /// string.
@@ -5625,6 +5638,10 @@ macro_rules! arrays {
             /// input values from a specified array.
             #[wasm_bindgen(method)]
             pub fn set(this: &$name, src: &JsValue, offset: u32);
+
+            /// Gets the value at `idx`, counting from the end if negative.
+            #[wasm_bindgen(method)]
+            pub fn at(this: &$name, idx: i32) -> Option<$ty>;
 
             /// Gets the value at `idx`, equivalent to the javascript `my_var = arr[idx]`.
             #[wasm_bindgen(method, structural, indexing_getter)]
