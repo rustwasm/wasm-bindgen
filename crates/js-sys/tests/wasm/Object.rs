@@ -192,6 +192,13 @@ fn has_own_property() {
 }
 
 #[wasm_bindgen_test]
+fn has_own() {
+    assert!(Object::has_own(&foo_42(), &"foo".into()));
+    assert!(!Object::has_own(&foo_42(), &"bar".into()));
+    assert!(Object::has_own(&map_with_symbol_key(), &symbol_key()));
+}
+
+#[wasm_bindgen_test]
 fn to_string() {
     assert_eq!(Object::new().to_string(), "[object Object]");
     assert_eq!(foo_42().to_string(), "[object Object]");

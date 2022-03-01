@@ -188,6 +188,13 @@ fn match_() {
     assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "T");
     assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "I");
 
+    let re = RegExp::new("[A-Z]([a-z]*)", "g");
+    let result = JsString::from(s).match_(&re);
+    let obj = result.unwrap();
+
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "The");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "It");
+
     let result = JsString::from("foo").match_(&re);
     assert!(result.is_none());
 
@@ -206,6 +213,66 @@ fn match_() {
     );
     assert_eq!(Reflect::get(obj.as_ref(), &"2".into()).unwrap(), ".1");
     assert_eq!(Reflect::get(obj.as_ref(), &"index".into()).unwrap(), 22);
+    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()).unwrap(), s);
+}
+
+#[wasm_bindgen_test]
+fn match_all() {
+    let s = "The quick brown fox jumped over the lazy dog. It barked.";
+    let re = RegExp::new("[A-Z]([a-z]*)", "g");
+    let result: Vec<_> = JsString::from(s)
+        .match_all(&re)
+        .into_iter()
+        .collect::<Result<_, _>>()
+        .unwrap();
+
+    let obj = &result[0];
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "The");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "he");
+
+    let obj = &result[1];
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "It");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "t");
+
+    let result: Vec<_> = JsString::from("foo")
+        .match_all(&re)
+        .into_iter()
+        .collect::<Result<_, _>>()
+        .unwrap();
+    assert_eq!(result.len(), 0);
+
+    let s = "For more information, see Chapter 3.4.5.1. Also see Chapter 3.1.4";
+    let re = RegExp::new("see (chapter \\d+(\\.\\d)*)", "gi");
+    let result: Vec<_> = JsString::from(s)
+        .match_all(&re)
+        .into_iter()
+        .collect::<Result<_, _>>()
+        .unwrap();
+
+    let obj = &result[0];
+    assert_eq!(
+        Reflect::get(obj.as_ref(), &"0".into()).unwrap(),
+        "see Chapter 3.4.5.1"
+    );
+    assert_eq!(
+        Reflect::get(obj.as_ref(), &"1".into()).unwrap(),
+        "Chapter 3.4.5.1"
+    );
+    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()).unwrap(), ".1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()).unwrap(), 22);
+    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()).unwrap(), s);
+
+    let obj = &result[1];
+    assert_eq!(
+        Reflect::get(obj.as_ref(), &"0".into()).unwrap(),
+        "see Chapter 3.1.4"
+    );
+    assert_eq!(
+        Reflect::get(obj.as_ref(), &"1".into()).unwrap(),
+        "Chapter 3.1.4"
+    );
+    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()).unwrap(), ".4");
+    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()).unwrap(), 48);
     assert_eq!(Reflect::get(obj.as_ref(), &"input".into()).unwrap(), s);
 }
 
@@ -288,6 +355,38 @@ fn replace() {
     let result = js.replace_by_pattern_with_function(&re, &get_replacer_function());
 
     assert_eq!(result, "border-top");
+}
+
+#[wasm_bindgen_test]
+fn replace_all() {
+    let js = JsString::from(
+        "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
+    );
+    let result = js.replace_all("dog", "ferret");
+
+    assert_eq!(
+        result,
+        "The quick brown fox jumped over the lazy ferret. If the ferret reacted, was it really lazy?"
+    );
+
+    let js = JsString::from("borderTopTest");
+    let result = js.replace_all_with_function("T", &get_replacer_function());
+
+    assert_eq!(result, "border-top-test");
+
+    let js = JsString::from(
+        "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
+    );
+    let re = RegExp::new("dog", "g");
+    let result = js.replace_all_by_pattern(&re, "ferret");
+
+    assert_eq!(result, "The quick brown fox jumped over the lazy ferret. If the ferret reacted, was it really lazy?");
+
+    let js = JsString::from("borderTopTest");
+    let re = RegExp::new("[A-Z]", "g");
+    let result = js.replace_all_by_pattern_with_function(&re, &get_replacer_function());
+
+    assert_eq!(result, "border-top-test");
 }
 
 #[wasm_bindgen_test]
