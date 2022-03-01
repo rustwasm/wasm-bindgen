@@ -4461,6 +4461,12 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = match)]
     pub fn match_(this: &JsString, pattern: &RegExp) -> Option<Object>;
 
+    /// The `match_all()` method is similar to `match()`, but gives an iterator of `exec()` arrays, which preserve capture groups.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = matchAll)]
+    pub fn match_all(this: &JsString, pattern: &RegExp) -> Iterator;
+
     /// The `normalize()` method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).
     ///
