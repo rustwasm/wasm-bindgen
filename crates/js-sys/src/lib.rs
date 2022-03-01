@@ -3130,6 +3130,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
 
+    /// The `Object.hasOwn()` method returns a boolean indicating whether the
+    /// object passed in has the specified property as its own property (as
+    /// opposed to inheriting it).
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn)
+    #[wasm_bindgen(static_method_of = Object, js_name = hasOwn)]
+    pub fn has_own(instance: &Object, property: &JsValue) -> bool;
+
     /// The `Object.is()` method determines whether two values are the same value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
