@@ -10,6 +10,32 @@ fn new() {
 }
 
 #[wasm_bindgen_test]
+fn new_with_cause() {
+    let options = Object::new();
+    Reflect::set(
+        options.as_ref(),
+        &JsValue::from("cause"),
+        &JsValue::from("some cause"),
+    )
+    .unwrap();
+    let error = Error::new_with_options("some message", &options);
+    assert_eq!(error.cause(), "some cause");
+}
+
+#[wasm_bindgen_test]
+fn empty_cause() {
+    let error = Error::new("test");
+    assert_eq!(error.cause(), JsValue::UNDEFINED);
+}
+
+#[wasm_bindgen_test]
+fn set_cause() {
+    let error = Error::new("test");
+    error.set_cause(&JsValue::from("different"));
+    assert_eq!(error.cause(), "different");
+}
+
+#[wasm_bindgen_test]
 fn set_message() {
     let error = Error::new("test");
     error.set_message("another");
