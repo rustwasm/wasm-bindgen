@@ -1488,6 +1488,17 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
     #[wasm_bindgen(constructor)]
     pub fn new(message: &str) -> Error;
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_options(message: &str, options: &Object) -> Error;
+
+    /// The cause property is the underlying cause of the error.
+    /// Usually this is used to add context to re-thrown errors.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#differentiate_between_similar_errors)
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn cause(this: &Error) -> JsValue;
+    #[wasm_bindgen(method, setter, structural)]
+    pub fn set_cause(this: &Error, cause: &JsValue);
 
     /// The message property is a human-readable description of the error.
     ///
