@@ -5367,6 +5367,15 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Promise, js_name = allSettled)]
     pub fn all_settled(obj: &JsValue) -> Promise;
 
+    /// The `Promise.any(iterable)` method returns a single `Promise` that
+    /// resolves when any of the promises in the iterable argument have resolved
+    /// or when the iterable argument contains no promises. It rejects with an
+    /// `AggregateError` if all promises in the iterable rejected.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any)
+    #[wasm_bindgen(static_method_of = Promise)]
+    pub fn any(obj: &JsValue) -> Promise;
+
     /// The `Promise.race(iterable)` method returns a promise that resolves or
     /// rejects as soon as one of the promises in the iterable resolves or
     /// rejects, with the value or reason from that promise.
