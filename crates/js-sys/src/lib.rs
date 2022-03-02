@@ -1872,7 +1872,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of)
     #[derive(Clone, Debug)]
-    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "Iterator<Promise<any>>")]
+    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "AsyncIterator<any>")]
     pub type AsyncIterator;
 
     /// The `next()` method always has to return a Promise which resolves to an object
