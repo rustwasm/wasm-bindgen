@@ -11,6 +11,7 @@ use std::io::{self, Read};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::sync::Arc;
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -52,10 +53,15 @@ pub struct LegacyNewSessionParameters {
 /// address.
 ///
 /// This function will take care of everything from spawning the WebDriver
-/// binary, controlling it, running tests, scraping output, displaying output,
-/// etc. It will return `Ok` if all tests finish successfully, and otherwise it
-/// will return an error if some tests failed.
-pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error> {
+/// binary, controlling it, running tests and returning output.
+/// It will return `Ok` if whole process went seamlessly, regardless of what
+/// tests result was.
+pub fn execute_tests(
+    server: &SocketAddr,
+    shell: Arc<Shell>,
+    timeout: u64,
+    debug: bool,
+) -> Result<(String, String, String), Error> {
     let driver = Driver::find()?;
     let mut drop_log: Box<dyn FnMut()> = Box::new(|| ());
     let driver_url = match driver.location() {
@@ -71,7 +77,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             let mut cmd = Command::new(path);
             cmd.args(args)
                 .arg(format!("--port={}", driver_addr.port().to_string()));
-            let mut child = BackgroundChild::spawn(&path, &mut cmd, shell)?;
+            let mut child = BackgroundChild::spawn(&path, &mut cmd, shell.clone())?;
             drop_log = Box::new(move || child.print_stdio_on_drop = false);
 
             // Wait for the driver to come online and bind its port before we try to
@@ -92,25 +98,33 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             Url::parse(&format!("http://{}", driver_addr)).map_err(Error::from)
         }
     }?;
-    println!(
-        "Running headless tests in {} on `{}`",
-        driver.browser(),
-        driver_url.as_str(),
-    );
+    if debug {
+        println!(
+            "Running headless tests in {} on `{}`",
+            driver.browser(),
+            driver_url.as_str(),
+        )
+    };
 
     let mut client = Client {
         handle: Easy::new(),
         driver_url,
         session: None,
     };
-    println!("Try find `webdriver.json` for configure browser's capabilities:");
+    if debug {
+        println!("Try find `webdriver.json` for configure browser's capabilities:");
+    }
     let capabilities: Capabilities = match File::open("webdriver.json") {
         Ok(file) => {
-            println!("Ok");
+            if debug {
+                println!("Ok");
+            }
             serde_json::from_reader(file)
         }
         Err(_) => {
-            println!("Not found");
+            if debug {
+                println!("Not found");
+            }
             Ok(Capabilities::new())
         }
     }?;
@@ -148,6 +162,10 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
     let max = Duration::new(timeout, 0);
     while start.elapsed() < max {
         if client.text(&id, &output)?.contains("test result: ") {
+            // If the tests harness finished (either successfully or unsuccessfully)
+            // then in theory all the info needed to debug the failure is in its own
+            // output, so we shouldn't need the driver logs to get printed.
+            drop_log();
             break;
         }
         thread::sleep(Duration::from_millis(100));
@@ -162,31 +180,109 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
     let logs = client.text(&id, &logs)?;
     let errors = client.text(&id, &errors)?;
 
-    if output.contains("test result: ") {
-        println!("{}", output);
+    Ok((output, logs, errors))
+}
 
-        // If the tests harness finished (either successfully or unsuccessfully)
-        // then in theory all the info needed to debug the failure is in its own
-        // output, so we shouldn't need the driver logs to get printed.
-        drop_log();
+/// Run all tests and present their results to user
+pub fn run(server: &SocketAddr, shell: Arc<Shell>, timeout: u64, debug: bool) -> Result<(), Error> {
+    let (output, logs, errors) = execute_tests(server, shell, timeout, debug)?;
+
+    if output.contains("test result: ok") {
+        // All tests succeeded.
+        println!("{output}");
+    } else if output.contains("test result") {
+        // At least one test has failed but whole process managed to finish by itself.
+        // We can still only show output as it aggregates errors and logs
+        println!("{output}");
+        bail!("some tests failed")
     } else {
-        println!("Failed to detect test as having been run. It might have timed out.");
-        if output.len() > 0 {
+        // Testing process hasn't finished, so we most probably timeouted.
+        // In that case output may not contain all informations so we print
+        // everything we can.
+        println!("Failed to detect test as having been run. It might have timed out.\n");
+        if !output.is_empty() {
             println!("output div contained:\n{}", tab(&output));
         }
-    }
-    if logs.len() > 0 {
-        println!("console.log div contained:\n{}", tab(&logs));
-    }
-    if errors.len() > 0 {
-        println!("console.log div contained:\n{}", tab(&errors));
-    }
-
-    if !output.contains("test result: ok") {
+        if !errors.is_empty() {
+            println!("errors div contained:\n{}", tab(&errors));
+        }
+        if !logs.is_empty() {
+            println!("logs div contained:\n{}", tab(&logs));
+        }
         bail!("some tests failed")
     }
-
     Ok(())
+}
+
+/// Possible outcomes of single test
+#[derive(Clone, Debug, PartialEq)]
+pub enum TestResult {
+    Passed,
+    Failed {
+        details: String,
+    },
+    Ignored,
+    Timeouted {
+        output: String,
+        errors: String,
+        logs: String,
+    },
+}
+
+/// Run single isolated test and postprocess it's output
+/// In a way that it can be combined with other results of
+/// isolated tests
+pub fn run_isolated(
+    server: &SocketAddr,
+    shell: Arc<Shell>,
+    timeout: u64,
+    debug: bool,
+) -> Result<TestResult, Error> {
+    let (output, logs, errors) = execute_tests(server, shell, timeout, debug)?;
+
+    if !output.contains("test result:") {
+        // Testing process hasn't finished, so we most probably timeouted.
+        return Ok(TestResult::Timeouted {
+            output,
+            logs,
+            errors,
+        });
+    }
+
+    // Isolated tests are running parallelly, so we want to return all info instead
+    // of printing it right now. Doing the latter could result in interleaving prints
+    // from multiple tests and lead to confusion.
+    // We can tho print the short outcome of the test right now.
+    for line in output.lines() {
+        if line.starts_with("test ") && (line.ends_with("... ok") || line.ends_with("... FAIL")) {
+            println!("{line}");
+        }
+    }
+
+    if output.contains("test result: ok") {
+        if output.contains("1 ignored") {
+            // The test has been ignored
+            Ok(TestResult::Ignored)
+        } else {
+            // The test has succeeded.
+            Ok(TestResult::Passed)
+        }
+    } else {
+        // The test has failed. Whole testing process went good tho as we have the final
+        // summary. Test suite already did a job of providing the failure context, we
+        // only need to extract it.
+        let details = output
+            .lines()
+            // Skip until we find a line indicating the start of failure summary
+            .skip_while(|&line| line != "failures:")
+            // and also this line itself with the empty one after it.
+            .skip(2)
+            // Take all lines until we reach the ending summary of all failed tests.
+            .take_while(|&line| line != "failures:")
+            .fold(String::new(), |a, b| a + b + "\n");
+
+        Ok(TestResult::Failed { details })
+    }
 }
 
 enum Driver {
@@ -577,7 +673,7 @@ fn read<R: Read>(r: &mut R) -> io::Result<Vec<u8>> {
     Ok(dst)
 }
 
-fn tab(s: &str) -> String {
+pub fn tab(s: &str) -> String {
     let mut result = String::new();
     for line in s.lines() {
         result.push_str("    ");
@@ -587,20 +683,16 @@ fn tab(s: &str) -> String {
     return result;
 }
 
-struct BackgroundChild<'a> {
+struct BackgroundChild {
     child: Child,
     stdout: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
     stderr: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
-    shell: &'a Shell,
+    shell: Arc<Shell>,
     print_stdio_on_drop: bool,
 }
 
-impl<'a> BackgroundChild<'a> {
-    fn spawn(
-        path: &Path,
-        cmd: &mut Command,
-        shell: &'a Shell,
-    ) -> Result<BackgroundChild<'a>, Error> {
+impl BackgroundChild {
+    fn spawn(path: &Path, cmd: &mut Command, shell: Arc<Shell>) -> Result<BackgroundChild, Error> {
         cmd.stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .stdin(Stdio::null());
@@ -622,7 +714,7 @@ impl<'a> BackgroundChild<'a> {
     }
 }
 
-impl<'a> Drop for BackgroundChild<'a> {
+impl Drop for BackgroundChild {
     fn drop(&mut self) {
         self.child.kill().unwrap();
         let status = self.child.wait().unwrap();

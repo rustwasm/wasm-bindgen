@@ -15,6 +15,7 @@ edition = '2018'
 default-run = 'wasm-bindgen'
 
 [dependencies]
+rayon = "1.5"
 curl = "0.4.13"
 docopt = "1.0"
 env_logger = "0.8"
@@ -33,7 +34,6 @@ wasm-bindgen-shared = { path = "../shared", version = "=0.2.79" }
 assert_cmd = "1.0"
 diff = "0.1"
 predicates = "1.0.0"
-rayon = "1.0"
 tempfile = "3.0"
 wit-printer = "0.2"
 wit-text = "0.8"

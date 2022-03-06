@@ -15,13 +15,13 @@ use anyhow::{anyhow, bail, Context};
 use std::env;
 use std::fs;
 use std::path::PathBuf;
-use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
 
 // no need for jemalloc bloat in this binary (and we don't need speed)
 #[global_allocator]
 static ALLOC: std::alloc::System = std::alloc::System;
 
+mod browser;
 mod deno;
 mod headless;
 mod node;
@@ -68,14 +68,13 @@ fn main() -> anyhow::Result<()> {
     let wasm = fs::read(&wasm_file_to_test).context("failed to read wasm file")?;
     let mut wasm =
         walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
-    let mut tests = Vec::new();
 
-    for export in wasm.exports.iter() {
-        if !export.name.starts_with("__wbgt_") {
-            continue;
-        }
-        tests.push(export.name.to_string());
-    }
+    let tests = wasm
+        .exports
+        .iter()
+        .filter(|exp| exp.name.starts_with("__wbgt_"))
+        .map(|exp| exp.name.to_string())
+        .collect::<Vec<_>>();
 
     // Right now there's a bug where if no tests are present then the
     // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
@@ -97,9 +96,6 @@ fn main() -> anyhow::Result<()> {
         None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
         None => TestMode::Node,
     };
-
-    let headless = env::var("NO_HEADLESS").is_err();
-    let debug = env::var("WASM_BINDGEN_NO_DEBUG").is_err();
 
     // Gracefully handle requests to execute only node or only web tests.
     let node = test_mode == TestMode::Node;
@@ -131,18 +127,6 @@ integration test.\
         }
     }
 
-    let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
-        .map(|timeout| {
-            timeout
-                .parse()
-                .expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'")
-        })
-        .unwrap_or(20);
-
-    if debug {
-        println!("Set timeout to {} seconds...", timeout);
-    }
-
     // Make the generated bindings available for the tests to execute against.
     shell.status("Executing bindgen...");
     let mut b = Bindgen::new();
@@ -152,6 +136,7 @@ integration test.\
         TestMode::Browser => b.web(true)?,
     };
 
+    let debug = env::var("WASM_BINDGEN_DEBUG").is_ok();
     b.debug(debug)
         .input_module(module, wasm)
         .keep_debug(false)
@@ -163,42 +148,9 @@ integration test.\
     let args: Vec<_> = args.collect();
 
     match test_mode {
-        TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
-        TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
-        TestMode::Browser => {
-            let srv = server::spawn(
-                &if headless {
-                    "127.0.0.1:0".parse().unwrap()
-                } else {
-                    "127.0.0.1:8000".parse().unwrap()
-                },
-                headless,
-                &module,
-                &tmpdir,
-                &args,
-                &tests,
-            )
-            .context("failed to spawn server")?;
-            let addr = srv.server_addr();
-
-            // TODO: eventually we should provide the ability to exit at some point
-            // (gracefully) here, but for now this just runs forever.
-            if !headless {
-                println!(
-                    "Interactive browsers tests are now available at http://{}",
-                    addr
-                );
-                println!("");
-                println!("Note that interactive mode is enabled because `NO_HEADLESS`");
-                println!("is specified in the environment of this process. Once you're");
-                println!("done with testing you'll need to kill this server with");
-                println!("Ctrl-C.");
-                return Ok(srv.run());
-            }
-
-            thread::spawn(|| srv.run());
-            headless::run(&addr, &shell, timeout)?;
-        }
+        TestMode::Node => node::execute(module, &tmpdir, &args, &tests)?,
+        TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests)?,
+        TestMode::Browser => browser::execute(shell, module, &tmpdir, &args, tests)?,
     }
     Ok(())
 }

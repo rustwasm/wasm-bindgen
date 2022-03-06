@@ -1,5 +1,6 @@
 use std::ffi::OsString;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::net::SocketAddr;
 use std::path::Path;
 
@@ -59,11 +60,18 @@ pub fn spawn(
     }
     js_to_execute.push_str("main(tests);\n");
 
-    let js_path = tmpdir.join("run.js");
+    // As headless tests may be executed parallely, we need to ensure
+    // that js script for each of them has unique name
+    let script_name = create_script_name(tests);
+    let js_path = tmpdir.join(&script_name);
     fs::write(&js_path, js_to_execute).context("failed to write JS file")?;
 
-    // For now, always run forever on this port. We may update this later!
     let tmpdir = tmpdir.to_path_buf();
+    // And here we make sure that correct script is served by this instance
+    let index_headless =
+        include_str!("index-headless.html").replace("%%SCRIPT_NAME%%", &script_name);
+    let index_regular = include_str!("index.html");
+    // For now, always run forever on this port. We may update this later!
     let srv = Server::new(addr, move |request| {
         // The root path gets our canned `index.html`. The two templates here
         // differ slightly in the default routing of `console.log`, going to an
@@ -71,9 +79,9 @@ pub fn spawn(
         // output.
         if request.url() == "/" {
             let s = if headless {
-                include_str!("index-headless.html")
+                &index_headless
             } else {
-                include_str!("index.html")
+                index_regular
             };
             return Response::from_data("text/html", s);
         }
@@ -122,4 +130,14 @@ pub fn spawn(
         }
         response
     }
+}
+
+// If we are running multiple tests parallely, we need to ensure
+// that each script will have a unique name. Hashing the tests slice
+// seems to be the easiest sollution that's kinda safe. Joining test
+// names could hit max path length easily when there are a lot of them.
+fn create_script_name(tests: &[String]) -> String {
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    tests.hash(&mut hasher);
+    format!("run_{:x}.js", hasher.finish())
 }
