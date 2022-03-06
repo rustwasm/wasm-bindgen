@@ -245,7 +245,10 @@ fn translate_instruction(
         I32FromStringFirstChar | StringFromChar => {
             bail!("chars aren't supported in wasm interface types");
         }
-        I32FromExternrefOwned | I32FromExternrefBorrow | ExternrefLoadOwned | TableGet => {
+        // Note: if `ExternrefLoadOwned` contained `Some`, this error message wouldn't make sense,
+        // but that can only occur when returning `Result`,
+        // in which case there'll be an earlier `UnwrapResult` instruction and we'll bail before reaching this point.
+        I32FromExternrefOwned | I32FromExternrefBorrow | ExternrefLoadOwned { .. } | TableGet => {
             bail!("externref pass failed to sink into wasm module");
         }
         I32FromExternrefRustOwned { .. }

@@ -942,10 +942,17 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("{} !== 0", val));
         }
 
-        Instruction::ExternrefLoadOwned => {
-            js.cx.expose_take_object();
+        Instruction::ExternrefLoadOwned { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
+            } else {
+                js.cx.expose_take_object();
+                "takeObject".to_string()
+            };
             let val = js.pop();
-            js.push(format!("takeObject({})", val));
+            js.push(format!("{}({})", take_object, val));
         }
 
         Instruction::StringFromChar => {

@@ -42,14 +42,18 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Externref => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::Externref],
                 );
             }
             Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::NamedExternref(name.clone())],
                 );
             }
@@ -252,14 +256,18 @@ impl InstructionBuilder<'_, '_> {
                 // is the valid owned index.
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::Externref.option()],
                 );
             }
             Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::NamedExternref(name.clone()).option()],
                 );
             }
