@@ -24,6 +24,8 @@ struct Context<'a> {
     aux: WasmBindgenAux,
     function_exports: HashMap<String, (ExportId, FunctionId)>,
     function_imports: HashMap<String, (ImportId, FunctionId)>,
+    /// A map from the signature of a function in the function table to its adapter, if we've already created it.
+    table_adapters: HashMap<Function, AdapterId>,
     memory: Option<MemoryId>,
     vendor_prefixes: HashMap<String, Vec<String>>,
     unique_crate_identifier: &'a str,
@@ -55,6 +57,7 @@ pub fn process(
         aux: Default::default(),
         function_exports: Default::default(),
         function_imports: Default::default(),
+        table_adapters: Default::default(),
         vendor_prefixes: Default::default(),
         descriptors: Default::default(),
         unique_crate_identifier: "",
@@ -1278,10 +1281,47 @@ impl<'a> Context<'a> {
         Ok(id)
     }
 
-    fn table_element_adapter(&mut self, idx: u32, signature: Function) -> Result<AdapterId, Error> {
+    fn table_element_adapter(&mut self, idx: u32, mut signature: Function) -> Result<AdapterId, Error> {
+        fn strip_externref_names(descriptor: &mut Descriptor) {
+            match descriptor {
+                Descriptor::NamedExternref(_) => *descriptor = Descriptor::Externref,
+
+                Descriptor::Function(function) => strip_function_externref_names(&mut **function),
+                Descriptor::Closure(closure) => {
+                    strip_function_externref_names(&mut closure.function)
+                }
+                Descriptor::Ref(descriptor)
+                | Descriptor::RefMut(descriptor)
+                | Descriptor::Slice(descriptor)
+                | Descriptor::Vector(descriptor)
+                | Descriptor::Option(descriptor)
+                | Descriptor::Result(descriptor) => strip_externref_names(&mut **descriptor),
+
+                _ => {}
+            }
+        }
+
+        fn strip_function_externref_names(descriptor: &mut Function) {
+            descriptor
+                .arguments
+                .iter_mut()
+                .for_each(strip_externref_names);
+            strip_externref_names(&mut descriptor.ret);
+            descriptor.inner_ret.as_mut().map(strip_externref_names);
+        }
+
+        // We don't care about the names of externrefs here; we only care whether
+        // the compiler will actually keep them as separate functions.
+        strip_function_externref_names(&mut signature);
+
+        if let Some(&id) = self.table_adapters.get(&signature) {
+            return Ok(id);
+        }
         let call = Instruction::CallTableElement(idx);
         // like above, largely just defer the work elsewhere
-        Ok(self.register_export_adapter(call, signature)?)
+        let id = self.register_export_adapter(call, signature.clone())?;
+        self.table_adapters.insert(signature, id);
+        Ok(id)
     }
 
     fn register_export_adapter(
