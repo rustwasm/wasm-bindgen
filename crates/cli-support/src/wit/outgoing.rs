@@ -551,6 +551,7 @@ impl InstructionBuilder<'_, '_> {
                 optional,
                 mem,
                 free,
+                table: None,
             },
             &[AdapterType::String],
         );

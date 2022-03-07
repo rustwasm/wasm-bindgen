@@ -1003,12 +1003,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             optional: _,
             mem,
             free,
+            table,
         } => {
             let len = js.pop();
             let ptr = js.pop();
             let tmp = js.tmp();
 
-            let get = js.cx.expose_get_cached_string_from_wasm(*mem)?;
+            let get = js.cx.expose_get_cached_string_from_wasm(*mem, *table)?;
 
             js.prelude(&format!("var v{} = {}({}, {});", tmp, get, ptr, len));
 

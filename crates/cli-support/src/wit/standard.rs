@@ -257,6 +257,8 @@ pub enum Instruction {
         optional: bool,
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
+        /// If we're in reference-types mode, the externref table ID to get the cached string from.
+        table: Option<walrus::TableId>,
     },
     /// pops ptr/length, pushes a vector, frees the original data
     VectorLoad {

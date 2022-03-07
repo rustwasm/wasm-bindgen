@@ -121,6 +121,7 @@ pub fn process(module: &mut Module) -> Result<()> {
                 } => {
                     *table_and_drop = meta.drop.map(|id| (meta.table, id));
                 }
+                Instruction::CachedStringLoad { ref mut table, .. } => *table = Some(meta.table),
                 _ => continue,
             };
         }
