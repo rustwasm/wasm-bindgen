@@ -1281,7 +1281,11 @@ impl<'a> Context<'a> {
         Ok(id)
     }
 
-    fn table_element_adapter(&mut self, idx: u32, mut signature: Function) -> Result<AdapterId, Error> {
+    fn table_element_adapter(
+        &mut self,
+        idx: u32,
+        mut signature: Function,
+    ) -> Result<AdapterId, Error> {
         fn strip_externref_names(descriptor: &mut Descriptor) {
             match descriptor {
                 Descriptor::NamedExternref(_) => *descriptor = Descriptor::Externref,
