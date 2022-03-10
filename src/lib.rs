@@ -10,6 +10,8 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 #![cfg_attr(feature = "nightly", feature(unsize))]
 
+extern crate alloc;
+
 use core::convert::TryFrom;
 use core::fmt;
 use core::marker;
@@ -1166,22 +1168,40 @@ pub fn anyref_heap_live_count() -> u32 {
 pub trait UnwrapThrowExt<T>: Sized {
     /// Unwrap this `Option` or `Result`, but instead of panicking on failure,
     /// throw an exception to JavaScript.
-    fn unwrap_throw(self) -> T {
-        self.expect_throw("`unwrap_throw` failed")
-    }
+    #[track_caller]
+    fn unwrap_throw(self) -> T;
 
     /// Unwrap this container's `T` value, or throw an error to JS with the
     /// given message if the `T` value is unavailable (e.g. an `Option<T>` is
     /// `None`).
+    #[track_caller]
     fn expect_throw(self, message: &str) -> T;
 }
 
 impl<T> UnwrapThrowExt<T> for Option<T> {
+    fn unwrap_throw(self) -> T {
+        if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
+            match self {
+                Some(val) => val,
+                None => throw_str(&alloc::format!(
+                    "called `Option::unwrap()` on a `None` value, {}",
+                    core::panic::Location::caller()
+                )),
+            }
+        } else {
+            self.unwrap()
+        }
+    }
+
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
             match self {
                 Some(val) => val,
-                None => throw_str(message),
+                None => throw_str(&alloc::format!(
+                    "{}, {}",
+                    message,
+                    core::panic::Location::caller()
+                )),
             }
         } else {
             self.expect(message)
@@ -1193,11 +1213,31 @@ impl<T, E> UnwrapThrowExt<T> for Result<T, E>
 where
     E: core::fmt::Debug,
 {
+    fn unwrap_throw(self) -> T {
+        if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
+            match self {
+                Ok(val) => val,
+                Err(err) => throw_str(&alloc::format!(
+                    "called `Result::unwrap()` on an `Err` value: {:?}, {}",
+                    err,
+                    core::panic::Location::caller(),
+                )),
+            }
+        } else {
+            self.unwrap()
+        }
+    }
+
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
             match self {
                 Ok(val) => val,
-                Err(_) => throw_str(message),
+                Err(err) => throw_str(&alloc::format!(
+                    "{}: {:?}, {}",
+                    message,
+                    err,
+                    core::panic::Location::caller()
+                )),
             }
         } else {
             self.expect(message)
