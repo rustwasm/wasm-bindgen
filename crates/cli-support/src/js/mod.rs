@@ -455,6 +455,23 @@ impl<'a> Context<'a> {
             // as the default export of the module.
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
+                for (id, vjs) in crate::sorted_iter(&self.wasm_import_definitions) {
+                    let import = self.module.imports.get(*id);
+                    // import.module = format!("./{}_bg.js", module_name);
+                    if vjs.starts_with("function") {
+                        let body = &vjs[8..];
+                        footer.push_str("\nexport function ");
+                        footer.push_str(&import.name);
+                        footer.push_str(body.trim());
+                        footer.push_str(";\n");
+                    } else {
+                        footer.push_str("\nexport const ");
+                        footer.push_str(&import.name);
+                        footer.push_str(" = ");
+                        footer.push_str(vjs.trim());
+                        footer.push_str(";\n");
+                    }
+                }
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 footer.push_str("export default init;\n");
             }
@@ -694,7 +711,7 @@ impl<'a> Context<'a> {
             imports_init.push_str(module_name);
             imports_init.push_str(" = {};\n");
         }
-        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+        for (id, _js) in crate::sorted_iter(&self.wasm_import_definitions) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
             imports_init.push_str("imports.");
@@ -702,7 +719,7 @@ impl<'a> Context<'a> {
             imports_init.push_str(".");
             imports_init.push_str(&import.name);
             imports_init.push_str(" = ");
-            imports_init.push_str(js.trim());
+            imports_init.push_str(&import.name);
             imports_init.push_str(";\n");
         }
 
@@ -771,20 +788,26 @@ impl<'a> Context<'a> {
                 }}
 
                 async function init(input{init_memory_arg}) {{
+                    let js = false;
+                    if (input === 'js') {{
+                        js = true;
+                    }}
                     {default_module_path}
                     const imports = {{}};
                     {imports_init}
+                    
+                    if (!js) {{
+                        if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
+                            input = fetch(input);
+                        }}
 
-                    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
-                        input = fetch(input);
+                        {init_memory}
+
+                        const {{ instance, module }} = await load(await input, imports);
+
+                        wasm = instance.exports;
+                        init.__wbindgen_wasm_module = module;
                     }}
-
-                    {init_memory}
-
-                    const {{ instance, module }} = await load(await input, imports);
-
-                    wasm = instance.exports;
-                    init.__wbindgen_wasm_module = module;
                     {start}
                     return wasm;
                 }}
