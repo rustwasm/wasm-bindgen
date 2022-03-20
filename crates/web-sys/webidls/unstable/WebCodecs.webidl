@@ -287,11 +287,10 @@ enum AudioSampleFormat {
   "f32-planar",
 };
 
-[Exposed=(Window,DedicatedWorker), Serializable, Transferable]
+[Constructor(CanvasImageSource image, optional VideoFrameInit init = {}),
+Constructor([AllowShared] BufferSource data, VideoFrameBufferInit init),
+Exposed=(Window,DedicatedWorker), Serializable, Transferable]
 interface VideoFrame {
-  constructor(CanvasImageSource image, optional VideoFrameInit init = {});
-  constructor([AllowShared] BufferSource data, VideoFrameBufferInit init);
-
   readonly attribute VideoPixelFormat? format;
   readonly attribute unsigned long codedWidth;
   readonly attribute unsigned long codedHeight;

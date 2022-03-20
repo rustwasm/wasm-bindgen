@@ -130,6 +130,171 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn color_space(this: &VideoFrame) -> VideoColorSpace;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "HtmlImageElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_html_image_element(image: &HtmlImageElement) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "SvgImageElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgImageElement`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_svg_image_element(image: &SvgImageElement) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "HtmlCanvasElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_html_canvas_element(image: &HtmlCanvasElement) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "HtmlVideoElement")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_html_video_element(image: &HtmlVideoElement) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "ImageBitmap")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_image_bitmap(image: &ImageBitmap) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "HtmlImageElement", feature = "VideoFrameInit",))]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlImageElement`, `VideoFrame`, `VideoFrameInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_html_image_element_and_video_frame_init(
+        image: &HtmlImageElement,
+        init: &VideoFrameInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "SvgImageElement", feature = "VideoFrameInit",))]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgImageElement`, `VideoFrame`, `VideoFrameInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_svg_image_element_and_video_frame_init(
+        image: &SvgImageElement,
+        init: &VideoFrameInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "HtmlCanvasElement", feature = "VideoFrameInit",))]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VideoFrame`, `VideoFrameInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_html_canvas_element_and_video_frame_init(
+        image: &HtmlCanvasElement,
+        init: &VideoFrameInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "HtmlVideoElement", feature = "VideoFrameInit",))]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`, `VideoFrame`, `VideoFrameInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_html_video_element_and_video_frame_init(
+        image: &HtmlVideoElement,
+        init: &VideoFrameInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "ImageBitmap", feature = "VideoFrameInit",))]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `VideoFrame`, `VideoFrameInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_image_bitmap_and_video_frame_init(
+        image: &ImageBitmap,
+        init: &VideoFrameInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoFrameBufferInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrame`, `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_buffer_source_and_video_frame_buffer_init(
+        data: &::js_sys::Object,
+        init: &VideoFrameBufferInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoFrameBufferInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrame`, `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_u8_array_and_video_frame_buffer_init(
+        data: &mut [u8],
+        init: &VideoFrameBufferInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = allocationSize)]
     #[doc = "The `allocationSize()` method."]
     #[doc = ""]
