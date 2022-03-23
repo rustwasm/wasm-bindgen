@@ -39,6 +39,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn encode_queue_size(this: &VideoEncoder) -> u32;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoEncoderInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoEncoder")]
+    #[doc = "The `new VideoEncoder(..)` constructor, creating a new instance of `VideoEncoder`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/VideoEncoder)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoder`, `VideoEncoderInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(init: &VideoEncoderInit) -> Result<VideoEncoder, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "VideoEncoder" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]

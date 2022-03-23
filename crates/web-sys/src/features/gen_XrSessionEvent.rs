@@ -27,4 +27,19 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn session(this: &XrSessionEvent) -> XrSession;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "XrSessionEventInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "XRSessionEvent")]
+    #[doc = "The `new XrSessionEvent(..)` constructor, creating a new instance of `XrSessionEvent`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRSessionEvent/XRSessionEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrSessionEvent`, `XrSessionEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(
+        type_: &str,
+        event_init_dict: &XrSessionEventInit,
+    ) -> Result<XrSessionEvent, JsValue>;
 }
