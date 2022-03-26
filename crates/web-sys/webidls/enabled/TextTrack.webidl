@@ -40,3 +40,7 @@ interface TextTrack : EventTarget {
 
            attribute EventHandler oncuechange;
 };
+
+partial interface TextTrack {
+    readonly attribute SourceBuffer? sourceBuffer;
+};
