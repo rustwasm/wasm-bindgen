@@ -39,6 +39,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn decode_queue_size(this: &AudioDecoder) -> u32;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "AudioDecoderInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "AudioDecoder")]
+    #[doc = "The `new AudioDecoder(..)` constructor, creating a new instance of `AudioDecoder`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/AudioDecoder)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDecoder`, `AudioDecoderInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(init: &AudioDecoderInit) -> Result<AudioDecoder, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "AudioDecoder" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]

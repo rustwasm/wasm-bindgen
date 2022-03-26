@@ -7,8 +7,7 @@
  * Source: https://streams.spec.whatwg.org/#transformstream
  */
  
-[Constructor(optional object transformer, optional QueuingStrategy writableStrategy, optional QueuingStrategy readableStrategy),
- Exposed=(Window,Worker,Worklet), Transferable]
+[Exposed=(Window,Worker,Worklet), Transferable]
 interface TransformStream {
   constructor(optional object transformer, optional QueuingStrategy writableStrategy = {}, optional QueuingStrategy readableStrategy = {});
 

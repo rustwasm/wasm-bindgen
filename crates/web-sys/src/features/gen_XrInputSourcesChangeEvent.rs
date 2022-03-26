@@ -49,4 +49,19 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn removed(this: &XrInputSourcesChangeEvent) -> ::js_sys::Array;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "XrInputSourcesChangeEventInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "XRInputSourcesChangeEvent")]
+    #[doc = "The `new XrInputSourcesChangeEvent(..)` constructor, creating a new instance of `XrInputSourcesChangeEvent`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRInputSourcesChangeEvent/XRInputSourcesChangeEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrInputSourcesChangeEvent`, `XrInputSourcesChangeEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(
+        type_: &str,
+        event_init_dict: &XrInputSourcesChangeEventInit,
+    ) -> Result<XrInputSourcesChangeEvent, JsValue>;
 }
