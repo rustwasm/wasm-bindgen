@@ -30,7 +30,7 @@ interface MediaSource : EventTarget {
   attribute unrestricted double duration;
   attribute EventHandler onsourceopen;
   attribute EventHandler onsourceended;
-  attribute EventHandler onsourceclosed;
+  attribute EventHandler onsourceclose;
   [NewObject, Throws]
   SourceBuffer addSourceBuffer(DOMString type);
   [Throws]
