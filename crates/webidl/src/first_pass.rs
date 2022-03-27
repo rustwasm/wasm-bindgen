@@ -476,13 +476,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
                     .push(const_);
                 Ok(())
             }
-            InterfaceMember::Constructor(_) => {
-                log::warn!(
-                    "Unsupported WebIDL Constructor interface member: {:?}",
-                    self
-                );
-                Ok(())
-            }
+            InterfaceMember::Constructor(constr) => constr.first_pass(record, ctx.0),
             InterfaceMember::Iterable(_iterable) => {
                 log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
                 Ok(())
@@ -548,6 +542,37 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             &self.attributes,
             is_static,
         );
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, &'src str> for weedle::interface::ConstructorInterfaceMember<'src> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        self_name: &'src str,
+    ) -> Result<()> {
+        let ident = weedle::common::Identifier(self_name);
+        let non_null = weedle::types::MayBeNull {
+            type_: ident,
+            q_mark: None,
+        };
+        let non_any = weedle::types::NonAnyType::Identifier(non_null);
+        let single = weedle::types::SingleType::NonAny(non_any);
+        let ty = weedle::types::Type::Single(single);
+        let return_ty = weedle::types::ReturnType::Type(ty);
+
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            self_name,
+            &[OperationId::Constructor(Some(self_name))],
+            &self.args.body.list,
+            &return_ty,
+            &self.attributes,
+            false,
+        );
+
         Ok(())
     }
 }

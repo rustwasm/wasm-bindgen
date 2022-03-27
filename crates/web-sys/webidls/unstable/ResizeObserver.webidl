@@ -6,9 +6,7 @@ dictionary ResizeObserverOptions {
     ResizeObserverBoxOptions box = "content-box";
 };
 
-// TODO: remove this once the `constructor()` syntax is supported.
-[Constructor(ResizeObserverCallback callback),
- Exposed=(Window)]
+[Exposed=(Window)]
 interface ResizeObserver {
     constructor(ResizeObserverCallback callback);
     undefined observe(Element target, optional ResizeObserverOptions options = {});

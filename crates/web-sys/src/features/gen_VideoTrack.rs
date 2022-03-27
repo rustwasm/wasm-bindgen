@@ -53,4 +53,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrack`*"]
     pub fn set_selected(this: &VideoTrack, value: bool);
+    #[cfg(feature = "SourceBuffer")]
+    # [wasm_bindgen (structural , method , getter , js_class = "VideoTrack" , js_name = sourceBuffer)]
+    #[doc = "Getter for the `sourceBuffer` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrack/sourceBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`, `VideoTrack`*"]
+    pub fn source_buffer(this: &VideoTrack) -> Option<SourceBuffer>;
 }

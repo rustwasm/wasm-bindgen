@@ -21,8 +21,6 @@ interface nsIStreamListener;
 [NamedConstructor=Image(optional unsigned long width, optional unsigned long height),
  Exposed=Window]
 interface HTMLImageElement : HTMLElement {
-  [HTMLConstructor] constructor();
-
            [CEReactions, SetterThrows]
            attribute DOMString alt;
            [CEReactions, SetterNeedsSubjectPrincipal=NonSystem, SetterThrows]
