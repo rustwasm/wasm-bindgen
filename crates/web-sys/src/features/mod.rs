@@ -4474,6 +4474,18 @@ mod gen_MediaStreamTrackEventInit;
 #[cfg(feature = "MediaStreamTrackEventInit")]
 pub use gen_MediaStreamTrackEventInit::*;
 
+#[cfg(feature = "MediaStreamTrackGenerator")]
+#[allow(non_snake_case)]
+mod gen_MediaStreamTrackGenerator;
+#[cfg(feature = "MediaStreamTrackGenerator")]
+pub use gen_MediaStreamTrackGenerator::*;
+
+#[cfg(feature = "MediaStreamTrackGeneratorInit")]
+#[allow(non_snake_case)]
+mod gen_MediaStreamTrackGeneratorInit;
+#[cfg(feature = "MediaStreamTrackGeneratorInit")]
+pub use gen_MediaStreamTrackGeneratorInit::*;
+
 #[cfg(feature = "MediaStreamTrackProcessor")]
 #[allow(non_snake_case)]
 mod gen_MediaStreamTrackProcessor;
@@ -8049,12 +8061,6 @@ pub use gen_VideoStreamTrack::*;
 mod gen_VideoTrack;
 #[cfg(feature = "VideoTrack")]
 pub use gen_VideoTrack::*;
-
-#[cfg(feature = "VideoTrackGenerator")]
-#[allow(non_snake_case)]
-mod gen_VideoTrackGenerator;
-#[cfg(feature = "VideoTrackGenerator")]
-pub use gen_VideoTrackGenerator::*;
 
 #[cfg(feature = "VideoTrackList")]
 #[allow(non_snake_case)]

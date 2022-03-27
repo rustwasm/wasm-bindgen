@@ -1,4 +1,4 @@
-[Exposed=DedicatedWorker]
+[Exposed=Window,DedicatedWorker]
 interface MediaStreamTrackProcessor {
   constructor(MediaStreamTrackProcessorInit init);
   attribute ReadableStream readable;
@@ -9,10 +9,12 @@ dictionary MediaStreamTrackProcessorInit {
   [EnforceRange] unsigned short maxBufferSize;
 };
 
-[Exposed=DedicatedWorker]
-interface VideoTrackGenerator {
-  constructor();
-  readonly attribute WritableStream writable;
-  attribute boolean muted;
-  readonly attribute MediaStreamTrack track;
+[Exposed=Window,DedicatedWorker]
+interface MediaStreamTrackGenerator : MediaStreamTrack {
+    constructor(MediaStreamTrackGeneratorInit init);
+    attribute WritableStream writable;  // VideoFrame or AudioData
+};
+
+dictionary MediaStreamTrackGeneratorInit {
+  required DOMString kind;
 };

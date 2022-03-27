@@ -1,0 +1,42 @@
+#![allow(unused_imports)]
+use super::*;
+use wasm_bindgen::prelude::*;
+#[cfg(web_sys_unstable_apis)]
+#[wasm_bindgen]
+extern "C" {
+    # [wasm_bindgen (extends = MediaStreamTrack , extends = EventTarget , extends = :: js_sys :: Object , js_name = MediaStreamTrackGenerator , typescript_type = "MediaStreamTrackGenerator")]
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    #[doc = "The `MediaStreamTrackGenerator` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackGenerator)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackGenerator`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub type MediaStreamTrackGenerator;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "WritableStream")]
+    # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamTrackGenerator" , js_name = writable)]
+    #[doc = "Getter for the `writable` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackGenerator/writable)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackGenerator`, `WritableStream`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn writable(this: &MediaStreamTrackGenerator) -> WritableStream;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "WritableStream")]
+    # [wasm_bindgen (structural , method , setter , js_class = "MediaStreamTrackGenerator" , js_name = writable)]
+    #[doc = "Setter for the `writable` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackGenerator/writable)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackGenerator`, `WritableStream`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn set_writable(this: &MediaStreamTrackGenerator, value: &WritableStream);
+}
