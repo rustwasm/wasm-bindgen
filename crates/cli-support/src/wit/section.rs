@@ -47,10 +47,12 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         // irrelevant ids used to track various internal intrinsics and such
         externref_table: _,
         externref_alloc: _,
+        externref_drop: _,
         externref_drop_slice: _,
         exn_store: _,
         shadow_stack_pointer: _,
         function_table: _,
+        thread_destroy: _,
     } = *aux;
 
     let adapter_context = |id: AdapterId| {
@@ -274,6 +276,9 @@ fn translate_instruction(
         | OptionEnumFromI32 { .. }
         | Option64FromI32 { .. } => {
             bail!("optional types aren't supported in wasm bindgen");
+        }
+        UnwrapResult { .. } | UnwrapResultString { .. } => {
+            bail!("self-unwrapping result types aren't supported in wasm bindgen");
         }
         MutableSliceToMemory { .. } | VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
             bail!("vector slices aren't supported in wasm interface types yet");

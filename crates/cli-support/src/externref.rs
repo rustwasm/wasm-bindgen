@@ -70,6 +70,7 @@ pub fn process(module: &mut Module) -> Result<()> {
     aux.externref_table = Some(meta.table);
     if module_needs_externref_metadata(&aux, section) {
         aux.externref_alloc = meta.alloc;
+        aux.externref_drop = meta.drop;
         aux.externref_drop_slice = meta.drop_slice;
     }
 
@@ -107,6 +108,15 @@ pub fn process(module: &mut Module) -> Result<()> {
                     ref mut table_and_alloc,
                 } => {
                     *table_and_alloc = meta.alloc.map(|id| (meta.table, id));
+                }
+
+                Instruction::UnwrapResult {
+                    ref mut table_and_drop,
+                }
+                | Instruction::UnwrapResultString {
+                    ref mut table_and_drop,
+                } => {
+                    *table_and_drop = meta.drop.map(|id| (meta.table, id));
                 }
                 _ => continue,
             };

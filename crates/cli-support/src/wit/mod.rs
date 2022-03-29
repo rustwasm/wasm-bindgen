@@ -211,6 +211,8 @@ impl<'a> Context<'a> {
             }
         }
 
+        self.aux.thread_destroy = self.thread_destroy();
+
         Ok(())
     }
 
@@ -1346,9 +1348,11 @@ impl<'a> Context<'a> {
         });
         if uses_retptr {
             let mem = ret.cx.memory()?;
-            for (i, ty) in ret.input.into_iter().enumerate() {
+            let mut unpacker = StructUnpacker::new();
+            for ty in ret.input.into_iter() {
+                let offset = unpacker.read_ty(&ty)?;
                 instructions.push(InstructionData {
-                    instr: Instruction::LoadRetptr { offset: i, ty, mem },
+                    instr: Instruction::LoadRetptr { offset, ty, mem },
                     stack_change: StackChange::Modified {
                         pushed: 1,
                         popped: 0,
@@ -1397,6 +1401,13 @@ impl<'a> Context<'a> {
             .cloned()
             .map(|p| p.1)
             .ok_or_else(|| anyhow!("failed to find declaration of `__wbindgen_free` in module"))
+    }
+
+    fn thread_destroy(&self) -> Option<FunctionId> {
+        self.function_exports
+            .get("__wbindgen_thread_destroy")
+            .cloned()
+            .map(|p| p.1)
     }
 
     fn memory(&self) -> Result<MemoryId, Error> {
@@ -1568,4 +1579,47 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
 
 fn concatenate_comments(comments: &[&str]) -> String {
     comments.iter().map(|&s| s).collect::<Vec<_>>().join("\n")
+}
+
+/// The C struct packing algorithm, in terms of u32.
+struct StructUnpacker {
+    next_offset: usize,
+}
+
+impl StructUnpacker {
+    fn new() -> Self {
+        Self { next_offset: 0 }
+    }
+    fn align_up(&mut self, alignment_pow2: usize) -> usize {
+        let mask = alignment_pow2 - 1;
+        self.next_offset = (self.next_offset + mask) & (!mask);
+        self.next_offset
+    }
+    fn append(&mut self, quads: usize, alignment_pow2: usize) -> usize {
+        let ret = self.align_up(alignment_pow2);
+        self.next_offset += quads;
+        ret
+    }
+    /// Returns the offset for this member, with the offset in multiples of u32.
+    fn read_ty(&mut self, ty: &AdapterType) -> Result<usize, Error> {
+        let (quads, alignment) = match ty {
+            AdapterType::I32 | AdapterType::U32 | AdapterType::F32 => (1, 1),
+            AdapterType::F64 => (2, 2),
+            other => bail!("invalid aggregate return type {:?}", other),
+        };
+        Ok(self.append(quads, alignment))
+    }
+}
+
+#[test]
+fn test_struct_packer() {
+    let mut unpacker = StructUnpacker::new();
+    let i32___ = &AdapterType::I32;
+    let double = &AdapterType::F64;
+    let mut read_ty = |ty| unpacker.read_ty(ty).unwrap();
+    assert_eq!(read_ty(i32___), 0); // u32
+    assert_eq!(read_ty(i32___), 1); // u32
+    assert_eq!(read_ty(double), 2); // f64, already aligned
+    assert_eq!(read_ty(i32___), 4); // u32, already aligned
+    assert_eq!(read_ty(double), 6); // f64, NOT already aligned, skips up to offset 6
 }

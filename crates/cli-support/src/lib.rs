@@ -427,7 +427,7 @@ impl Bindgen {
 
         // We're ready for the final emission passes now. If we're in wasm
         // interface types mode then we execute the various passes there and
-        // generate a valid interface typess section into the wasm module.
+        // generate a valid interface types section into the wasm module.
         //
         // Otherwise we execute the JS generation passes to actually emit
         // JS/TypeScript/etc. The output here is unused in wasm interfac

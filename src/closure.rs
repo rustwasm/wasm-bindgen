@@ -114,7 +114,7 @@ use crate::UnwrapThrowExt;
 /// #[wasm_bindgen]
 /// pub fn run() -> Result<IntervalHandle, JsValue> {
 ///     let cb = Closure::wrap(Box::new(|| {
-///         web_sys::console::log_1(&"inverval elapsed!".into());
+///         web_sys::console::log_1(&"interval elapsed!".into());
 ///     }) as Box<dyn FnMut()>);
 ///
 ///     let window = web_sys::window().unwrap();
@@ -488,6 +488,15 @@ where
 
     fn into_abi(self) -> u32 {
         (&*self.js).into_abi()
+    }
+}
+
+impl<'a, T> OptionIntoWasmAbi for &'a Closure<T>
+where
+    T: WasmClosure + ?Sized,
+{
+    fn none() -> Self::Abi {
+        0
     }
 }
 

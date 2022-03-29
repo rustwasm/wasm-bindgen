@@ -60,6 +60,8 @@ pub mod prelude {
     if_std! {
         pub use crate::closure::Closure;
     }
+
+    pub use crate::JsError;
 }
 
 pub mod convert;
@@ -334,7 +336,7 @@ impl JsValue {
         unsafe { __wbindgen_is_function(self.idx) == 1 }
     }
 
-    /// Tests whether the type of this JS value is `function`.
+    /// Tests whether the type of this JS value is `bigint`.
     #[inline]
     pub fn is_bigint(&self) -> bool {
         unsafe { __wbindgen_is_bigint(self.idx) == 1 }
@@ -924,6 +926,7 @@ externs! {
 
         fn __wbindgen_throw(a: *const u8, b: usize) -> !;
         fn __wbindgen_rethrow(a: u32) -> !;
+        fn __wbindgen_error_new(a: *const u8, b: usize) -> u32;
 
         fn __wbindgen_cb_drop(idx: u32) -> u32;
 
@@ -1131,7 +1134,7 @@ pub fn anyref_heap_live_count() -> u32 {
     externref_heap_live_count()
 }
 
-/// An extension trait for `Option<T>` and `Result<T, E>` for unwraping the `T`
+/// An extension trait for `Option<T>` and `Result<T, E>` for unwrapping the `T`
 /// value, or throwing a JS error if it is not available.
 ///
 /// These methods should have a smaller code size footprint than the normal
@@ -1589,5 +1592,93 @@ impl<T> Deref for Clamped<T> {
 impl<T> DerefMut for Clamped<T> {
     fn deref_mut(&mut self) -> &mut T {
         &mut self.0
+    }
+}
+
+/// Convenience type for use on exported `fn() -> Result<T, JsError>` functions, where you wish to
+/// throw a JavaScript `Error` object.
+///
+/// You can get wasm_bindgen to throw basic errors by simply returning
+/// `Err(JsError::new("message"))` from such a function.
+///
+/// For more complex error handling, `JsError` implements `From<T> where T: std::error::Error` by
+/// converting it to a string, so you can use it with `?`. Many Rust error types already do this,
+/// and you can use [`thiserror`](https://crates.io/crates/thiserror) to derive Display
+/// implementations easily or use any number of boxed error types that implement it already.
+///
+///
+/// To allow JavaScript code to catch only your errors, you may wish to add a subclass of `Error`
+/// in a JS module, and then implement `Into<JsValue>` directly on a type and instantiate that
+/// subclass. In that case, you would not need `JsError` at all.
+///
+/// ### Basic example
+///
+/// ```rust,no_run
+/// use wasm_bindgen::prelude::*;
+///
+/// #[wasm_bindgen]
+/// pub fn throwing_function() -> Result<(), JsError> {
+///     Err(JsError::new("message"))
+/// }
+/// ```
+///
+/// ### Complex Example
+///
+/// ```rust,no_run
+/// use wasm_bindgen::prelude::*;
+///
+/// #[derive(Debug, Clone)]
+/// enum MyErrorType {
+///     SomeError,
+/// }
+///
+/// use core::fmt;
+/// impl std::error::Error for MyErrorType {}
+/// impl fmt::Display for MyErrorType {
+///     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+///         write!(f, "display implementation becomes the error message")
+///     }
+/// }
+///
+/// fn internal_api() -> Result<(), MyErrorType> {
+///     Err(MyErrorType::SomeError)
+/// }
+///
+/// #[wasm_bindgen]
+/// pub fn throwing_function() -> Result<(), JsError> {
+///     internal_api()?;
+///     Ok(())
+/// }
+///
+/// ```
+#[derive(Clone)]
+pub struct JsError {
+    value: JsValue,
+}
+
+impl JsError {
+    /// Construct a JavaScript `Error` object with a string message
+    #[inline]
+    pub fn new(s: &str) -> JsError {
+        Self {
+            value: unsafe { JsValue::_new(crate::__wbindgen_error_new(s.as_ptr(), s.len())) },
+        }
+    }
+}
+
+if_std! {
+    impl<E> From<E> for JsError
+    where
+        E: std::error::Error,
+    {
+        fn from(error: E) -> Self {
+            JsError::new(&error.to_string())
+        }
+    }
+}
+
+impl From<JsError> for JsValue {
+    fn from(error: JsError) -> Self {
+        error.value
     }
 }

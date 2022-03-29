@@ -334,7 +334,6 @@ impl<'a> Context<'a> {
                     break
                 default:
                     throw new Error(`Unsupported protocol: ${{wasm_url.protocol}}`);
-                    break
             }}
 
             const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
@@ -1360,7 +1359,7 @@ impl<'a> Context<'a> {
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("let cached{0} = new {0}{1};", s, args))
+                self.global(&format!("const cached{0} = new {0}{1};", s, args))
             }
         };
 
@@ -2194,6 +2193,34 @@ impl<'a> Context<'a> {
         true
     }
 
+    fn expose_take_from_externref_table(
+        &mut self,
+        table: TableId,
+        drop: FunctionId,
+    ) -> Result<MemView, Error> {
+        let view = self.memview_table("takeFromExternrefTable", table);
+        assert!(self.config.externref);
+        if !self.should_write_global(view.to_string()) {
+            return Ok(view);
+        }
+        let drop = self.export_name_of(drop);
+        let table = self.export_name_of(table);
+        self.global(&format!(
+            "
+                function {view}(idx) {{
+                    const value = wasm.{table}.get(idx);
+                    wasm.{drop}(idx);
+                    return value;
+                }}
+            ",
+            view = view,
+            table = table,
+            drop = drop,
+        ));
+
+        Ok(view)
+    }
+
     fn expose_add_to_externref_table(
         &mut self,
         table: TableId,
@@ -2248,7 +2275,18 @@ impl<'a> Context<'a> {
             self.process_package_json(path)?;
         }
 
+        self.export_destructor();
+
         Ok(())
+    }
+
+    fn export_destructor(&mut self) {
+        let thread_destroy = match self.aux.thread_destroy {
+            Some(id) => id,
+            None => return,
+        };
+
+        self.export_name_of(thread_destroy);
     }
 
     /// Registers import names for all `Global` imports first before we actually
@@ -3139,6 +3177,11 @@ impl<'a> Context<'a> {
             Intrinsic::Rethrow => {
                 assert_eq!(args.len(), 1);
                 format!("throw {}", args[0])
+            }
+
+            Intrinsic::ErrorNew => {
+                assert_eq!(args.len(), 1);
+                format!("new Error({})", args[0])
             }
 
             Intrinsic::Module => {

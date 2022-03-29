@@ -4,6 +4,8 @@ import {
   named_struct_by_shared_ref,
   named_struct_by_exclusive_ref,
   return_named_struct,
+  named_struct_by_optional_value,
+  return_optional_named_struct,
 
   ExportedTupleStruct,
   return_tuple_struct
@@ -13,9 +15,12 @@ let namedStruct = return_named_struct(42);
 console.log(namedStruct instanceof ExportedNamedStruct); // true
 console.log(namedStruct.inner); // 42
 
-named_struct_by_value(namedStruct);
 named_struct_by_shared_ref(namedStruct);
 named_struct_by_exclusive_ref(namedStruct);
+named_struct_by_value(namedStruct);
+
+let optionalNamedStruct = return_optional_named_struct(42);
+named_struct_by_optional_value(optionalNamedStruct);
 
 let tupleStruct = return_tuple_struct(10, 20);
 console.log(tupleStruct instanceof ExportedTupleStruct); // true

@@ -17,6 +17,7 @@ pub struct Foo {
 
 #[wasm_bindgen]
 impl Foo {
+    #[wasm_bindgen(constructor)]
     pub fn new(val: i32) -> Foo {
         Foo { internal: val }
     }

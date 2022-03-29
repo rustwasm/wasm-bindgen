@@ -19,7 +19,7 @@ enum IDBTransactionMode {
     "versionchange"
 };
 
-[Exposed=(Window,Worker,System)]
+[Exposed=(Window,Worker)]
 interface IDBTransaction : EventTarget {
     [Throws]
     readonly    attribute IDBTransactionMode mode;
@@ -29,6 +29,9 @@ interface IDBTransaction : EventTarget {
 
     [Throws]
     IDBObjectStore objectStore (DOMString name);
+
+    [Throws]
+    undefined           commit();
 
     [Throws]
     undefined           abort();
