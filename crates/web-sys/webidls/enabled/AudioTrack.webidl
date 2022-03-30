@@ -15,3 +15,7 @@ interface AudioTrack {
   readonly attribute DOMString language;
            attribute boolean enabled;
 };
+
+partial interface AudioTrack {
+    readonly attribute SourceBuffer? sourceBuffer;
+};

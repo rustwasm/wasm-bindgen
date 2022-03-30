@@ -15,3 +15,7 @@ interface VideoTrack {
   readonly attribute DOMString language;
            attribute boolean selected;
 };
+
+partial interface VideoTrack {
+    readonly attribute SourceBuffer? sourceBuffer;
+};

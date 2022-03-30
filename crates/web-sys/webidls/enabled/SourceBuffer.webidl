@@ -24,9 +24,9 @@ interface SourceBuffer : EventTarget {
   readonly attribute TimeRanges buffered;
   [SetterThrows]
   attribute double timestampOffset;
-  //readonly attribute AudioTrackList audioTracks;
-  //readonly attribute VideoTrackList videoTracks;
-  //readonly attribute TextTrackList textTracks;
+  readonly attribute AudioTrackList audioTracks;
+  readonly attribute VideoTrackList videoTracks;
+  readonly attribute TextTrackList textTracks;
   [SetterThrows]
   attribute double appendWindowStart;
   [SetterThrows]
@@ -46,7 +46,7 @@ interface SourceBuffer : EventTarget {
   Promise<undefined> appendBufferAsync(ArrayBuffer data);
   [Throws, Func="mozilla::dom::MediaSource::ExperimentalEnabled"]
   Promise<undefined> appendBufferAsync(ArrayBufferView data);
-  //[Throws]
+   //[Throws]
   //undefined appendStream(Stream stream, [EnforceRange] optional unsigned long long maxSize);
   [Throws]
   undefined abort();
