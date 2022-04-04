@@ -69,6 +69,54 @@ async fn spawn_local_runs() {
 }
 
 #[wasm_bindgen_test]
+async fn spawn_local_nested() {
+    use std::future::Future;
+    use std::pin::Pin;
+    use std::task::{Context, Poll};
+
+    // Yield to other running tasks once, but immediately schedule again
+    struct Yield {
+        yielded: bool,
+    }
+
+    impl Future for Yield {
+        type Output = ();
+
+        fn poll(mut self: Pin<&mut Self>, ctx: &mut Context) -> Poll<()> {
+            if self.yielded {
+                Poll::Ready(())
+            } else {
+                self.yielded = true;
+                ctx.waker().wake_by_ref();
+                Poll::Pending
+            }
+        }
+    }
+
+    let (ts, mut rs) = oneshot::channel::<u32>();
+    let (tx, rx) = oneshot::channel::<u32>();
+    spawn_local(async move {
+        spawn_local(async {
+            ts.send(0xbeaf).unwrap();
+        });
+        // This should resume in the same tick
+        Yield { yielded: false }.await;
+        assert_eq!(
+            rs.try_recv().unwrap(),
+            None,
+            "Nested task should not have run yet"
+        );
+        assert_eq!(
+            rs.await.unwrap(),
+            0xbeaf,
+            "Nested task should run eventually"
+        );
+        tx.send(42).unwrap();
+    });
+    assert_eq!(rx.await.unwrap(), 42);
+}
+
+#[wasm_bindgen_test]
 async fn spawn_local_err_no_exception() {
     let (tx, rx) = oneshot::channel::<u32>();
     spawn_local(async {});
