@@ -193,19 +193,17 @@ dictionary XRWebGLLayerInit {
   double framebufferScaleFactor = 1.0;
 };
 
-// TODO: Change constructor back to original webidl
-// [SecureContext, Exposed=Window]
-[SecureContext, Exposed=Window, Constructor(XRSession session, XRWebGLRenderingContext context, optional XRWebGLLayerInit layerInit = {})]
-interface XRWebGLLayer {
-  //constructor(XRSession session,
-  //  XRWebGLRenderingContext context,
-  //  optional XRWebGLLayerInit layerInit = {});
-
+[SecureContext, Exposed=Window]
+interface XRWebGLLayer: XRLayer {
+  constructor(XRSession session,
+             XRWebGLRenderingContext context,
+             optional XRWebGLLayerInit layerInit = {});
   // Attributes
   readonly attribute boolean antialias;
   readonly attribute boolean ignoreDepthValues;
+  attribute float? fixedFoveation;
 
-  [SameObject] readonly attribute WebGLFramebuffer framebuffer;
+  [SameObject] readonly attribute WebGLFramebuffer? framebuffer;
   readonly attribute unsigned long framebufferWidth;
   readonly attribute unsigned long framebufferHeight;
 

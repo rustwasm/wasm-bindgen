@@ -81,4 +81,19 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn endpoints(this: &UsbAlternateInterface) -> ::js_sys::Array;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "UsbInterface")]
+    #[wasm_bindgen(catch, constructor, js_class = "USBAlternateInterface")]
+    #[doc = "The `new UsbAlternateInterface(..)` constructor, creating a new instance of `UsbAlternateInterface`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBAlternateInterface/USBAlternateInterface)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbAlternateInterface`, `UsbInterface`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(
+        device_interface: &UsbInterface,
+        alternate_setting: u8,
+    ) -> Result<UsbAlternateInterface, JsValue>;
 }

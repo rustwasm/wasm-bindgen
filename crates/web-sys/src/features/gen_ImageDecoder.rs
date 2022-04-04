@@ -61,6 +61,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn tracks(this: &ImageDecoder) -> ImageTrackList;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "ImageDecoderInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "ImageDecoder")]
+    #[doc = "The `new ImageDecoder(..)` constructor, creating a new instance of `ImageDecoder`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/ImageDecoder)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageDecoder`, `ImageDecoderInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(init: &ImageDecoderInit) -> Result<ImageDecoder, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "ImageDecoder" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]
