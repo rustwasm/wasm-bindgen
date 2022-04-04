@@ -19,6 +19,8 @@ pub(crate) struct Task {
 
     // This is used to ensure that the Task will only be queued once
     is_queued: Cell<bool>,
+    // Ensure that a task will be delayed to the next tick on first run
+    first_run: Cell<bool>,
 }
 
 impl Task {
@@ -26,6 +28,7 @@ impl Task {
         let this = Rc::new(Self {
             inner: RefCell::new(None),
             is_queued: Cell::new(false),
+            first_run: Cell::new(true),
         });
 
         let waker = unsafe { Waker::from_raw(Task::into_raw_waker(Rc::clone(&this))) };
@@ -44,7 +47,8 @@ impl Task {
         }
 
         crate::queue::QUEUE.with(|queue| {
-            queue.push_task(Rc::clone(this));
+            let first_run = this.first_run.replace(false);
+            queue.push_task(Rc::clone(this), first_run);
         });
     }
 
