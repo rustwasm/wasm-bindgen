@@ -19,23 +19,20 @@ pub(crate) struct Task {
 
     // This is used to ensure that the Task will only be queued once
     is_queued: Cell<bool>,
-    // Ensure that a task will be delayed to the next tick on first run
-    first_run: Cell<bool>,
 }
 
 impl Task {
     pub(crate) fn spawn(future: Pin<Box<dyn Future<Output = ()> + 'static>>) {
         let this = Rc::new(Self {
             inner: RefCell::new(None),
-            is_queued: Cell::new(false),
-            first_run: Cell::new(true),
+            is_queued: Cell::new(true),
         });
 
         let waker = unsafe { Waker::from_raw(Task::into_raw_waker(Rc::clone(&this))) };
 
         *this.inner.borrow_mut() = Some(Inner { future, waker });
 
-        Task::wake_by_ref(&this);
+        crate::queue::QUEUE.with(|queue| queue.schedule_task(this));
     }
 
     fn wake_by_ref(this: &Rc<Self>) {
@@ -47,8 +44,7 @@ impl Task {
         }
 
         crate::queue::QUEUE.with(|queue| {
-            let first_run = this.first_run.replace(false);
-            queue.push_task(Rc::clone(this), first_run);
+            queue.push_task(Rc::clone(this));
         });
     }
 

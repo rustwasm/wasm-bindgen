@@ -63,22 +63,25 @@ pub(crate) struct Queue {
 }
 
 impl Queue {
-    pub(crate) fn push_task(&self, task: Rc<crate::task::Task>, first_run: bool) {
-        if !first_run && self.state.is_spinning.get() {
-            // On subsequent runs, if a task immediately resumes, we run it in immediately
-            self.state.front_tasks.borrow_mut().push_back(task);
+    // Schedule a task to run on the next tick
+    pub(crate) fn schedule_task(&self, task: Rc<crate::task::Task>) {
+        self.state.back_tasks.borrow_mut().push_back(task);
+        // Note that we currently use a promise and a closure to do this, but
+        // eventually we should probably use something like `queueMicrotask`:
+        // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/queueMicrotask
+        if !self.state.is_scheduled.replace(true) {
+            let _ = self.promise.then(&self.closure);
+        }
+    }
+    // Append a task to the currently running queue, or schedule it
+    pub(crate) fn push_task(&self, task: Rc<crate::task::Task>) {
+        if self.state.is_spinning.get() {
             // If we're already inside the `run_all` loop then that'll pick up the
             // task we just enqueued. If we're not in `run_all`, though, then we need
             // to schedule a microtask.
+            self.state.front_tasks.borrow_mut().push_back(task);
         } else {
-            // On the first run of a task, we ensure that it's delayed until the next tick
-            self.state.back_tasks.borrow_mut().push_back(task);
-            // Note that we currently use a promise and a closure to do this, but
-            // eventually we should probably use something like `queueMicrotask`:
-            // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/queueMicrotask
-            if !self.state.is_scheduled.replace(true) {
-                let _ = self.promise.then(&self.closure);
-            }
+            self.schedule_task(task);
         }
     }
 }
