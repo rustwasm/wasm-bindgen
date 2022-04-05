@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn domain(this: &HtmlDocument) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLDocument" , js_name = domain)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLDocument" , js_name = domain)]
     #[doc = "Setter for the `domain` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/domain)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_domain(this: &HtmlDocument, value: &str);
+    pub fn set_domain(this: &HtmlDocument, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "HTMLDocument" , js_name = cookie)]
     #[doc = "Getter for the `cookie` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDocument`*"]
     pub fn design_mode(this: &HtmlDocument) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLDocument" , js_name = designMode)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLDocument" , js_name = designMode)]
     #[doc = "Setter for the `designMode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument/designMode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDocument`*"]
-    pub fn set_design_mode(this: &HtmlDocument, value: &str);
+    pub fn set_design_mode(this: &HtmlDocument, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLDocument" , js_name = fgColor)]
     #[doc = "Getter for the `fgColor` field of this object."]
     #[doc = ""]

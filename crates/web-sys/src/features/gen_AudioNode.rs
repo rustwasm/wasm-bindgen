@@ -40,13 +40,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`*"]
     pub fn channel_count(this: &AudioNode) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "AudioNode" , js_name = channelCount)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "AudioNode" , js_name = channelCount)]
     #[doc = "Setter for the `channelCount` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelCount)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`*"]
-    pub fn set_channel_count(this: &AudioNode, value: u32);
+    pub fn set_channel_count(this: &AudioNode, value: u32) -> Result<(), JsValue>;
     #[cfg(feature = "ChannelCountMode")]
     # [wasm_bindgen (structural , method , getter , js_class = "AudioNode" , js_name = channelCountMode)]
     #[doc = "Getter for the `channelCountMode` field of this object."]
@@ -56,13 +56,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`, `ChannelCountMode`*"]
     pub fn channel_count_mode(this: &AudioNode) -> ChannelCountMode;
     #[cfg(feature = "ChannelCountMode")]
-    # [wasm_bindgen (structural , method , setter , js_class = "AudioNode" , js_name = channelCountMode)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "AudioNode" , js_name = channelCountMode)]
     #[doc = "Setter for the `channelCountMode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelCountMode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`, `ChannelCountMode`*"]
-    pub fn set_channel_count_mode(this: &AudioNode, value: ChannelCountMode);
+    pub fn set_channel_count_mode(this: &AudioNode, value: ChannelCountMode)
+        -> Result<(), JsValue>;
     #[cfg(feature = "ChannelInterpretation")]
     # [wasm_bindgen (structural , method , getter , js_class = "AudioNode" , js_name = channelInterpretation)]
     #[doc = "Getter for the `channelInterpretation` field of this object."]
@@ -72,13 +73,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`, `ChannelInterpretation`*"]
     pub fn channel_interpretation(this: &AudioNode) -> ChannelInterpretation;
     #[cfg(feature = "ChannelInterpretation")]
-    # [wasm_bindgen (structural , method , setter , js_class = "AudioNode" , js_name = channelInterpretation)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "AudioNode" , js_name = channelInterpretation)]
     #[doc = "Setter for the `channelInterpretation` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/channelInterpretation)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioNode`, `ChannelInterpretation`*"]
-    pub fn set_channel_interpretation(this: &AudioNode, value: ChannelInterpretation);
+    pub fn set_channel_interpretation(
+        this: &AudioNode,
+        value: ChannelInterpretation,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "AudioNode" , js_name = connect)]
     #[doc = "The `connect()` method."]
     #[doc = ""]

@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgNumber`*"]
     pub fn value(this: &SvgNumber) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGNumber" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGNumber" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGNumber/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgNumber`*"]
-    pub fn set_value(this: &SvgNumber, value: f32);
+    pub fn set_value(this: &SvgNumber, value: f32) -> Result<(), JsValue>;
 }

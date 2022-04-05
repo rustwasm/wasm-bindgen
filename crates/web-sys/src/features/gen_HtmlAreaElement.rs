@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn alt(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = alt)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = alt)]
     #[doc = "Setter for the `alt` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/alt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_alt(this: &HtmlAreaElement, value: &str);
+    pub fn set_alt(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = coords)]
     #[doc = "Getter for the `coords` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn coords(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = coords)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = coords)]
     #[doc = "Setter for the `coords` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/coords)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_coords(this: &HtmlAreaElement, value: &str);
+    pub fn set_coords(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = shape)]
     #[doc = "Getter for the `shape` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn shape(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = shape)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = shape)]
     #[doc = "Setter for the `shape` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/shape)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_shape(this: &HtmlAreaElement, value: &str);
+    pub fn set_shape(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = target)]
     #[doc = "Getter for the `target` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn target(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = target)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = target)]
     #[doc = "Setter for the `target` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/target)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_target(this: &HtmlAreaElement, value: &str);
+    pub fn set_target(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = download)]
     #[doc = "Getter for the `download` field of this object."]
     #[doc = ""]
@@ -74,13 +74,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn download(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = download)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = download)]
     #[doc = "Setter for the `download` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/download)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_download(this: &HtmlAreaElement, value: &str);
+    pub fn set_download(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = ping)]
     #[doc = "Getter for the `ping` field of this object."]
     #[doc = ""]
@@ -88,13 +88,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn ping(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = ping)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = ping)]
     #[doc = "Setter for the `ping` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/ping)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_ping(this: &HtmlAreaElement, value: &str);
+    pub fn set_ping(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = rel)]
     #[doc = "Getter for the `rel` field of this object."]
     #[doc = ""]
@@ -102,13 +102,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn rel(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = rel)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = rel)]
     #[doc = "Setter for the `rel` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/rel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_rel(this: &HtmlAreaElement, value: &str);
+    pub fn set_rel(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = referrerPolicy)]
     #[doc = "Getter for the `referrerPolicy` field of this object."]
     #[doc = ""]
@@ -116,13 +116,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn referrer_policy(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = referrerPolicy)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = referrerPolicy)]
     #[doc = "Setter for the `referrerPolicy` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/referrerPolicy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_referrer_policy(this: &HtmlAreaElement, value: &str);
+    pub fn set_referrer_policy(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "DomTokenList")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = relList)]
     #[doc = "Getter for the `relList` field of this object."]
@@ -138,13 +138,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn no_href(this: &HtmlAreaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = noHref)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = noHref)]
     #[doc = "Setter for the `noHref` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/noHref)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_no_href(this: &HtmlAreaElement, value: bool);
+    pub fn set_no_href(this: &HtmlAreaElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = href)]
     #[doc = "Getter for the `href` field of this object."]
     #[doc = ""]
@@ -152,13 +152,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
     pub fn href(this: &HtmlAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLAreaElement" , js_name = href)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAreaElement" , js_name = href)]
     #[doc = "Setter for the `href` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAreaElement/href)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAreaElement`*"]
-    pub fn set_href(this: &HtmlAreaElement, value: &str);
+    pub fn set_href(this: &HtmlAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAreaElement" , js_name = origin)]
     #[doc = "Getter for the `origin` field of this object."]
     #[doc = ""]

@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDListElement`*"]
     pub fn compact(this: &HtmlDListElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLDListElement" , js_name = compact)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLDListElement" , js_name = compact)]
     #[doc = "Setter for the `compact` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDListElement/compact)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDListElement`*"]
-    pub fn set_compact(this: &HtmlDListElement, value: bool);
+    pub fn set_compact(this: &HtmlDListElement, value: bool) -> Result<(), JsValue>;
 }

@@ -25,13 +25,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAngle`*"]
     pub fn value(this: &SvgAngle) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGAngle" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGAngle" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAngle/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAngle`*"]
-    pub fn set_value(this: &SvgAngle, value: f32);
+    pub fn set_value(this: &SvgAngle, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGAngle" , js_name = valueInSpecifiedUnits)]
     #[doc = "Getter for the `valueInSpecifiedUnits` field of this object."]
     #[doc = ""]
@@ -39,13 +39,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAngle`*"]
     pub fn value_in_specified_units(this: &SvgAngle) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGAngle" , js_name = valueInSpecifiedUnits)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGAngle" , js_name = valueInSpecifiedUnits)]
     #[doc = "Setter for the `valueInSpecifiedUnits` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAngle/valueInSpecifiedUnits)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAngle`*"]
-    pub fn set_value_in_specified_units(this: &SvgAngle, value: f32);
+    pub fn set_value_in_specified_units(this: &SvgAngle, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGAngle" , js_name = valueAsString)]
     #[doc = "Getter for the `valueAsString` field of this object."]
     #[doc = ""]
@@ -53,13 +53,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAngle`*"]
     pub fn value_as_string(this: &SvgAngle) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGAngle" , js_name = valueAsString)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGAngle" , js_name = valueAsString)]
     #[doc = "Setter for the `valueAsString` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAngle/valueAsString)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAngle`*"]
-    pub fn set_value_as_string(this: &SvgAngle, value: &str);
+    pub fn set_value_as_string(this: &SvgAngle, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "SVGAngle" , js_name = convertToSpecifiedUnits)]
     #[doc = "The `convertToSpecifiedUnits()` method."]
     #[doc = ""]

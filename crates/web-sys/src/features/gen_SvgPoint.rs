@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPoint`*"]
     pub fn x(this: &SvgPoint) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPoint" , js_name = x)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPoint" , js_name = x)]
     #[doc = "Setter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPoint/x)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPoint`*"]
-    pub fn set_x(this: &SvgPoint, value: f32);
+    pub fn set_x(this: &SvgPoint, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGPoint" , js_name = y)]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPoint`*"]
     pub fn y(this: &SvgPoint) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPoint" , js_name = y)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPoint" , js_name = y)]
     #[doc = "Setter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPoint/y)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPoint`*"]
-    pub fn set_y(this: &SvgPoint, value: f32);
+    pub fn set_y(this: &SvgPoint, value: f32) -> Result<(), JsValue>;
     #[cfg(feature = "SvgMatrix")]
     # [wasm_bindgen (method , structural , js_class = "SVGPoint" , js_name = matrixTransform)]
     #[doc = "The `matrixTransform()` method."]

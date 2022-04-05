@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`*"]
     pub fn name(this: &IdbIndex) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "IDBIndex" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "IDBIndex" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBIndex/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`*"]
-    pub fn set_name(this: &IdbIndex, value: &str);
+    pub fn set_name(this: &IdbIndex, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "IdbObjectStore")]
     # [wasm_bindgen (structural , method , getter , js_class = "IDBIndex" , js_name = objectStore)]
     #[doc = "Getter for the `objectStore` field of this object."]

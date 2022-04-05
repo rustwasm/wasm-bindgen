@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn disabled(this: &HtmlOptionElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = disabled)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOptionElement" , js_name = disabled)]
     #[doc = "Setter for the `disabled` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/disabled)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn set_disabled(this: &HtmlOptionElement, value: bool);
+    pub fn set_disabled(this: &HtmlOptionElement, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlFormElement")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOptionElement" , js_name = form)]
     #[doc = "Getter for the `form` field of this object."]
@@ -40,13 +40,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn label(this: &HtmlOptionElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = label)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOptionElement" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn set_label(this: &HtmlOptionElement, value: &str);
+    pub fn set_label(this: &HtmlOptionElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOptionElement" , js_name = defaultSelected)]
     #[doc = "Getter for the `defaultSelected` field of this object."]
     #[doc = ""]
@@ -54,13 +54,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn default_selected(this: &HtmlOptionElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = defaultSelected)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOptionElement" , js_name = defaultSelected)]
     #[doc = "Setter for the `defaultSelected` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/defaultSelected)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn set_default_selected(this: &HtmlOptionElement, value: bool);
+    pub fn set_default_selected(this: &HtmlOptionElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOptionElement" , js_name = selected)]
     #[doc = "Getter for the `selected` field of this object."]
     #[doc = ""]
@@ -82,13 +82,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn value(this: &HtmlOptionElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOptionElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn set_value(this: &HtmlOptionElement, value: &str);
+    pub fn set_value(this: &HtmlOptionElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOptionElement" , js_name = text)]
     #[doc = "Getter for the `text` field of this object."]
     #[doc = ""]
@@ -96,13 +96,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
     pub fn text(this: &HtmlOptionElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = text)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOptionElement" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn set_text(this: &HtmlOptionElement, value: &str);
+    pub fn set_text(this: &HtmlOptionElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOptionElement" , js_name = index)]
     #[doc = "Getter for the `index` field of this object."]
     #[doc = ""]

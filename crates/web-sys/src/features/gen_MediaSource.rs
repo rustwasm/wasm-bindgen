@@ -42,13 +42,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn duration(this: &MediaSource) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "MediaSource" , js_name = duration)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "MediaSource" , js_name = duration)]
     #[doc = "Setter for the `duration` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/duration)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
-    pub fn set_duration(this: &MediaSource, value: f64);
+    pub fn set_duration(this: &MediaSource, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaSource" , js_name = onsourceopen)]
     #[doc = "Getter for the `onsourceopen` field of this object."]
     #[doc = ""]

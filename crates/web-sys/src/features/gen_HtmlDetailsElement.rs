@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
     pub fn open(this: &HtmlDetailsElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLDetailsElement" , js_name = open)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLDetailsElement" , js_name = open)]
     #[doc = "Setter for the `open` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/open)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDetailsElement`*"]
-    pub fn set_open(this: &HtmlDetailsElement, value: bool);
+    pub fn set_open(this: &HtmlDetailsElement, value: bool) -> Result<(), JsValue>;
 }

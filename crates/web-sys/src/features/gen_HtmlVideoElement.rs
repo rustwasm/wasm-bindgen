@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
     pub fn width(this: &HtmlVideoElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLVideoElement" , js_name = width)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLVideoElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
-    pub fn set_width(this: &HtmlVideoElement, value: u32);
+    pub fn set_width(this: &HtmlVideoElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLVideoElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
     pub fn height(this: &HtmlVideoElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLVideoElement" , js_name = height)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLVideoElement" , js_name = height)]
     #[doc = "Setter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/height)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
-    pub fn set_height(this: &HtmlVideoElement, value: u32);
+    pub fn set_height(this: &HtmlVideoElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLVideoElement" , js_name = videoWidth)]
     #[doc = "Getter for the `videoWidth` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
     pub fn poster(this: &HtmlVideoElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLVideoElement" , js_name = poster)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLVideoElement" , js_name = poster)]
     #[doc = "Setter for the `poster` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/poster)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
-    pub fn set_poster(this: &HtmlVideoElement, value: &str);
+    pub fn set_poster(this: &HtmlVideoElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "VideoPlaybackQuality")]
     # [wasm_bindgen (method , structural , js_class = "HTMLVideoElement" , js_name = getVideoPlaybackQuality)]
     #[doc = "The `getVideoPlaybackQuality()` method."]

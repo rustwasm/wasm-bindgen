@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMapElement`*"]
     pub fn name(this: &HtmlMapElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMapElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMapElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMapElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMapElement`*"]
-    pub fn set_name(this: &HtmlMapElement, value: &str);
+    pub fn set_name(this: &HtmlMapElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlCollection")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMapElement" , js_name = areas)]
     #[doc = "Getter for the `areas` field of this object."]

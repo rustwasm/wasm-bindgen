@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBrElement`*"]
     pub fn clear(this: &HtmlBrElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLBRElement" , js_name = clear)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLBRElement" , js_name = clear)]
     #[doc = "Setter for the `clear` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBRElement/clear)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBrElement`*"]
-    pub fn set_clear(this: &HtmlBrElement, value: &str);
+    pub fn set_clear(this: &HtmlBrElement, value: &str) -> Result<(), JsValue>;
 }

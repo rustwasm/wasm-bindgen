@@ -71,13 +71,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgElement`*"]
     pub fn tab_index(this: &SvgElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGElement" , js_name = tabIndex)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGElement" , js_name = tabIndex)]
     #[doc = "Setter for the `tabIndex` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement/tabIndex)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgElement`*"]
-    pub fn set_tab_index(this: &SvgElement, value: i32);
+    pub fn set_tab_index(this: &SvgElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGElement" , js_name = oncopy)]
     #[doc = "Getter for the `oncopy` field of this object."]
     #[doc = ""]

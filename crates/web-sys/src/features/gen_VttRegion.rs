@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn width(this: &VttRegion) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTRegion" , js_name = width)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTRegion" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn set_width(this: &VttRegion, value: f64);
+    pub fn set_width(this: &VttRegion, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "VTTRegion" , js_name = lines)]
     #[doc = "Getter for the `lines` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn lines(this: &VttRegion) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTRegion" , js_name = lines)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTRegion" , js_name = lines)]
     #[doc = "Setter for the `lines` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/lines)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn set_lines(this: &VttRegion, value: i32);
+    pub fn set_lines(this: &VttRegion, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "VTTRegion" , js_name = regionAnchorX)]
     #[doc = "Getter for the `regionAnchorX` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn region_anchor_x(this: &VttRegion) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTRegion" , js_name = regionAnchorX)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTRegion" , js_name = regionAnchorX)]
     #[doc = "Setter for the `regionAnchorX` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/regionAnchorX)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn set_region_anchor_x(this: &VttRegion, value: f64);
+    pub fn set_region_anchor_x(this: &VttRegion, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "VTTRegion" , js_name = regionAnchorY)]
     #[doc = "Getter for the `regionAnchorY` field of this object."]
     #[doc = ""]
@@ -74,13 +74,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn region_anchor_y(this: &VttRegion) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTRegion" , js_name = regionAnchorY)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTRegion" , js_name = regionAnchorY)]
     #[doc = "Setter for the `regionAnchorY` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/regionAnchorY)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn set_region_anchor_y(this: &VttRegion, value: f64);
+    pub fn set_region_anchor_y(this: &VttRegion, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "VTTRegion" , js_name = viewportAnchorX)]
     #[doc = "Getter for the `viewportAnchorX` field of this object."]
     #[doc = ""]
@@ -88,13 +88,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn viewport_anchor_x(this: &VttRegion) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTRegion" , js_name = viewportAnchorX)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTRegion" , js_name = viewportAnchorX)]
     #[doc = "Setter for the `viewportAnchorX` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/viewportAnchorX)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn set_viewport_anchor_x(this: &VttRegion, value: f64);
+    pub fn set_viewport_anchor_x(this: &VttRegion, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "VTTRegion" , js_name = viewportAnchorY)]
     #[doc = "Getter for the `viewportAnchorY` field of this object."]
     #[doc = ""]
@@ -102,13 +102,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
     pub fn viewport_anchor_y(this: &VttRegion) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTRegion" , js_name = viewportAnchorY)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTRegion" , js_name = viewportAnchorY)]
     #[doc = "Setter for the `viewportAnchorY` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTRegion/viewportAnchorY)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttRegion`*"]
-    pub fn set_viewport_anchor_y(this: &VttRegion, value: f64);
+    pub fn set_viewport_anchor_y(this: &VttRegion, value: f64) -> Result<(), JsValue>;
     #[cfg(feature = "ScrollSetting")]
     # [wasm_bindgen (structural , method , getter , js_class = "VTTRegion" , js_name = scroll)]
     #[doc = "Getter for the `scroll` field of this object."]

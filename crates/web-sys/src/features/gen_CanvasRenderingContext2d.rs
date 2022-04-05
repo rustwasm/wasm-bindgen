@@ -85,13 +85,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
     pub fn filter(this: &CanvasRenderingContext2d) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = filter)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "CanvasRenderingContext2D" , js_name = filter)]
     #[doc = "Setter for the `filter` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn set_filter(this: &CanvasRenderingContext2d, value: &str);
+    pub fn set_filter(this: &CanvasRenderingContext2d, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "CanvasRenderingContext2D" , js_name = imageSmoothingEnabled)]
     #[doc = "Getter for the `imageSmoothingEnabled` field of this object."]
     #[doc = ""]
@@ -239,13 +239,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
     pub fn font(this: &CanvasRenderingContext2d) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = font)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "CanvasRenderingContext2D" , js_name = font)]
     #[doc = "Setter for the `font` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn set_font(this: &CanvasRenderingContext2d, value: &str);
+    pub fn set_font(this: &CanvasRenderingContext2d, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "CanvasRenderingContext2D" , js_name = textAlign)]
     #[doc = "Getter for the `textAlign` field of this object."]
     #[doc = ""]

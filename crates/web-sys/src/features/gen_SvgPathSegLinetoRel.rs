@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoRel`*"]
     pub fn x(this: &SvgPathSegLinetoRel) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegLinetoRel" , js_name = x)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegLinetoRel" , js_name = x)]
     #[doc = "Setter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegLinetoRel/x)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoRel`*"]
-    pub fn set_x(this: &SvgPathSegLinetoRel, value: f32);
+    pub fn set_x(this: &SvgPathSegLinetoRel, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGPathSegLinetoRel" , js_name = y)]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
@@ -32,11 +32,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoRel`*"]
     pub fn y(this: &SvgPathSegLinetoRel) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegLinetoRel" , js_name = y)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegLinetoRel" , js_name = y)]
     #[doc = "Setter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegLinetoRel/y)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoRel`*"]
-    pub fn set_y(this: &SvgPathSegLinetoRel, value: f32);
+    pub fn set_y(this: &SvgPathSegLinetoRel, value: f32) -> Result<(), JsValue>;
 }

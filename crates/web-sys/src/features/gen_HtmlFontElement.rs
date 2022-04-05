@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFontElement`*"]
     pub fn color(this: &HtmlFontElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFontElement" , js_name = color)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFontElement" , js_name = color)]
     #[doc = "Setter for the `color` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFontElement/color)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFontElement`*"]
-    pub fn set_color(this: &HtmlFontElement, value: &str);
+    pub fn set_color(this: &HtmlFontElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFontElement" , js_name = face)]
     #[doc = "Getter for the `face` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFontElement`*"]
     pub fn face(this: &HtmlFontElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFontElement" , js_name = face)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFontElement" , js_name = face)]
     #[doc = "Setter for the `face` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFontElement/face)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFontElement`*"]
-    pub fn set_face(this: &HtmlFontElement, value: &str);
+    pub fn set_face(this: &HtmlFontElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFontElement" , js_name = size)]
     #[doc = "Getter for the `size` field of this object."]
     #[doc = ""]
@@ -46,11 +46,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFontElement`*"]
     pub fn size(this: &HtmlFontElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFontElement" , js_name = size)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFontElement" , js_name = size)]
     #[doc = "Setter for the `size` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFontElement/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFontElement`*"]
-    pub fn set_size(this: &HtmlFontElement, value: &str);
+    pub fn set_size(this: &HtmlFontElement, value: &str) -> Result<(), JsValue>;
 }

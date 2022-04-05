@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn autocomplete(this: &HtmlTextAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = autocomplete)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = autocomplete)]
     #[doc = "Setter for the `autocomplete` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/autocomplete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_autocomplete(this: &HtmlTextAreaElement, value: &str);
+    pub fn set_autocomplete(this: &HtmlTextAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = autofocus)]
     #[doc = "Getter for the `autofocus` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn autofocus(this: &HtmlTextAreaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = autofocus)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = autofocus)]
     #[doc = "Setter for the `autofocus` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_autofocus(this: &HtmlTextAreaElement, value: bool);
+    pub fn set_autofocus(this: &HtmlTextAreaElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = cols)]
     #[doc = "Getter for the `cols` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn cols(this: &HtmlTextAreaElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = cols)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = cols)]
     #[doc = "Setter for the `cols` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/cols)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_cols(this: &HtmlTextAreaElement, value: u32);
+    pub fn set_cols(this: &HtmlTextAreaElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = disabled)]
     #[doc = "Getter for the `disabled` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn disabled(this: &HtmlTextAreaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = disabled)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = disabled)]
     #[doc = "Setter for the `disabled` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/disabled)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_disabled(this: &HtmlTextAreaElement, value: bool);
+    pub fn set_disabled(this: &HtmlTextAreaElement, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlFormElement")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = form)]
     #[doc = "Getter for the `form` field of this object."]
@@ -82,13 +82,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn max_length(this: &HtmlTextAreaElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = maxLength)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = maxLength)]
     #[doc = "Setter for the `maxLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/maxLength)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_max_length(this: &HtmlTextAreaElement, value: i32);
+    pub fn set_max_length(this: &HtmlTextAreaElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = minLength)]
     #[doc = "Getter for the `minLength` field of this object."]
     #[doc = ""]
@@ -96,13 +96,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn min_length(this: &HtmlTextAreaElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = minLength)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = minLength)]
     #[doc = "Setter for the `minLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/minLength)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_min_length(this: &HtmlTextAreaElement, value: i32);
+    pub fn set_min_length(this: &HtmlTextAreaElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
@@ -110,13 +110,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn name(this: &HtmlTextAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_name(this: &HtmlTextAreaElement, value: &str);
+    pub fn set_name(this: &HtmlTextAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = placeholder)]
     #[doc = "Getter for the `placeholder` field of this object."]
     #[doc = ""]
@@ -124,13 +124,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn placeholder(this: &HtmlTextAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = placeholder)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = placeholder)]
     #[doc = "Setter for the `placeholder` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/placeholder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_placeholder(this: &HtmlTextAreaElement, value: &str);
+    pub fn set_placeholder(this: &HtmlTextAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = readOnly)]
     #[doc = "Getter for the `readOnly` field of this object."]
     #[doc = ""]
@@ -138,13 +138,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn read_only(this: &HtmlTextAreaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = readOnly)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = readOnly)]
     #[doc = "Setter for the `readOnly` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/readOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_read_only(this: &HtmlTextAreaElement, value: bool);
+    pub fn set_read_only(this: &HtmlTextAreaElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = required)]
     #[doc = "Getter for the `required` field of this object."]
     #[doc = ""]
@@ -152,13 +152,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn required(this: &HtmlTextAreaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = required)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = required)]
     #[doc = "Setter for the `required` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/required)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_required(this: &HtmlTextAreaElement, value: bool);
+    pub fn set_required(this: &HtmlTextAreaElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = rows)]
     #[doc = "Getter for the `rows` field of this object."]
     #[doc = ""]
@@ -166,13 +166,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn rows(this: &HtmlTextAreaElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = rows)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = rows)]
     #[doc = "Setter for the `rows` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/rows)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_rows(this: &HtmlTextAreaElement, value: u32);
+    pub fn set_rows(this: &HtmlTextAreaElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = wrap)]
     #[doc = "Getter for the `wrap` field of this object."]
     #[doc = ""]
@@ -180,13 +180,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn wrap(this: &HtmlTextAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = wrap)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = wrap)]
     #[doc = "Setter for the `wrap` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/wrap)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_wrap(this: &HtmlTextAreaElement, value: &str);
+    pub fn set_wrap(this: &HtmlTextAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -215,13 +215,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
     pub fn value(this: &HtmlTextAreaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTextAreaElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
-    pub fn set_value(this: &HtmlTextAreaElement, value: &str);
+    pub fn set_value(this: &HtmlTextAreaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = textLength)]
     #[doc = "Getter for the `textLength` field of this object."]
     #[doc = ""]

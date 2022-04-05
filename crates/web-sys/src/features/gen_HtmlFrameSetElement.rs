@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameSetElement`*"]
     pub fn cols(this: &HtmlFrameSetElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameSetElement" , js_name = cols)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameSetElement" , js_name = cols)]
     #[doc = "Setter for the `cols` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameSetElement/cols)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameSetElement`*"]
-    pub fn set_cols(this: &HtmlFrameSetElement, value: &str);
+    pub fn set_cols(this: &HtmlFrameSetElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameSetElement" , js_name = rows)]
     #[doc = "Getter for the `rows` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameSetElement`*"]
     pub fn rows(this: &HtmlFrameSetElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameSetElement" , js_name = rows)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameSetElement" , js_name = rows)]
     #[doc = "Setter for the `rows` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameSetElement/rows)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameSetElement`*"]
-    pub fn set_rows(this: &HtmlFrameSetElement, value: &str);
+    pub fn set_rows(this: &HtmlFrameSetElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameSetElement" , js_name = onafterprint)]
     #[doc = "Getter for the `onafterprint` field of this object."]
     #[doc = ""]

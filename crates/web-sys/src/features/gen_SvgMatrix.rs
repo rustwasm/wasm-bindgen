@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
     pub fn a(this: &SvgMatrix) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGMatrix" , js_name = a)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGMatrix" , js_name = a)]
     #[doc = "Setter for the `a` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix/a)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
-    pub fn set_a(this: &SvgMatrix, value: f32);
+    pub fn set_a(this: &SvgMatrix, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGMatrix" , js_name = b)]
     #[doc = "Getter for the `b` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
     pub fn b(this: &SvgMatrix) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGMatrix" , js_name = b)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGMatrix" , js_name = b)]
     #[doc = "Setter for the `b` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix/b)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
-    pub fn set_b(this: &SvgMatrix, value: f32);
+    pub fn set_b(this: &SvgMatrix, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGMatrix" , js_name = c)]
     #[doc = "Getter for the `c` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
     pub fn c(this: &SvgMatrix) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGMatrix" , js_name = c)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGMatrix" , js_name = c)]
     #[doc = "Setter for the `c` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix/c)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
-    pub fn set_c(this: &SvgMatrix, value: f32);
+    pub fn set_c(this: &SvgMatrix, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGMatrix" , js_name = d)]
     #[doc = "Getter for the `d` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
     pub fn d(this: &SvgMatrix) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGMatrix" , js_name = d)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGMatrix" , js_name = d)]
     #[doc = "Setter for the `d` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix/d)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
-    pub fn set_d(this: &SvgMatrix, value: f32);
+    pub fn set_d(this: &SvgMatrix, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGMatrix" , js_name = e)]
     #[doc = "Getter for the `e` field of this object."]
     #[doc = ""]
@@ -74,13 +74,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
     pub fn e(this: &SvgMatrix) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGMatrix" , js_name = e)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGMatrix" , js_name = e)]
     #[doc = "Setter for the `e` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix/e)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
-    pub fn set_e(this: &SvgMatrix, value: f32);
+    pub fn set_e(this: &SvgMatrix, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGMatrix" , js_name = f)]
     #[doc = "Getter for the `f` field of this object."]
     #[doc = ""]
@@ -88,13 +88,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
     pub fn f(this: &SvgMatrix) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGMatrix" , js_name = f)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGMatrix" , js_name = f)]
     #[doc = "Setter for the `f` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix/f)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgMatrix`*"]
-    pub fn set_f(this: &SvgMatrix, value: f32);
+    pub fn set_f(this: &SvgMatrix, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "SVGMatrix" , js_name = flipX)]
     #[doc = "The `flipX()` method."]
     #[doc = ""]

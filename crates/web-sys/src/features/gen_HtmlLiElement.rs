@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLiElement`*"]
     pub fn value(this: &HtmlLiElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLLIElement" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLLIElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLIElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLiElement`*"]
-    pub fn set_value(this: &HtmlLiElement, value: i32);
+    pub fn set_value(this: &HtmlLiElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLLIElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -32,11 +32,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLiElement`*"]
     pub fn type_(this: &HtmlLiElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLLIElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLLIElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLIElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLiElement`*"]
-    pub fn set_type(this: &HtmlLiElement, value: &str);
+    pub fn set_type(this: &HtmlLiElement, value: &str) -> Result<(), JsValue>;
 }

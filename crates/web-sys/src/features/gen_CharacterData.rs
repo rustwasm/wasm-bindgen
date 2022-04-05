@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CharacterData`*"]
     pub fn data(this: &CharacterData) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "CharacterData" , js_name = data)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "CharacterData" , js_name = data)]
     #[doc = "Setter for the `data` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CharacterData`*"]
-    pub fn set_data(this: &CharacterData, value: &str);
+    pub fn set_data(this: &CharacterData, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "CharacterData" , js_name = length)]
     #[doc = "Getter for the `length` field of this object."]
     #[doc = ""]

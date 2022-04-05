@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub fn kind(this: &HtmlTrackElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTrackElement" , js_name = kind)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTrackElement" , js_name = kind)]
     #[doc = "Setter for the `kind` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTrackElement/kind)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
-    pub fn set_kind(this: &HtmlTrackElement, value: &str);
+    pub fn set_kind(this: &HtmlTrackElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTrackElement" , js_name = src)]
     #[doc = "Getter for the `src` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub fn src(this: &HtmlTrackElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTrackElement" , js_name = src)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTrackElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTrackElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
-    pub fn set_src(this: &HtmlTrackElement, value: &str);
+    pub fn set_src(this: &HtmlTrackElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTrackElement" , js_name = srclang)]
     #[doc = "Getter for the `srclang` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub fn srclang(this: &HtmlTrackElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTrackElement" , js_name = srclang)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTrackElement" , js_name = srclang)]
     #[doc = "Setter for the `srclang` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTrackElement/srclang)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
-    pub fn set_srclang(this: &HtmlTrackElement, value: &str);
+    pub fn set_srclang(this: &HtmlTrackElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTrackElement" , js_name = label)]
     #[doc = "Getter for the `label` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub fn label(this: &HtmlTrackElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTrackElement" , js_name = label)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTrackElement" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTrackElement/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
-    pub fn set_label(this: &HtmlTrackElement, value: &str);
+    pub fn set_label(this: &HtmlTrackElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTrackElement" , js_name = default)]
     #[doc = "Getter for the `default` field of this object."]
     #[doc = ""]
@@ -74,13 +74,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
     pub fn default(this: &HtmlTrackElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTrackElement" , js_name = default)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTrackElement" , js_name = default)]
     #[doc = "Setter for the `default` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTrackElement/default)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTrackElement`*"]
-    pub fn set_default(this: &HtmlTrackElement, value: bool);
+    pub fn set_default(this: &HtmlTrackElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTrackElement" , js_name = readyState)]
     #[doc = "Getter for the `readyState` field of this object."]
     #[doc = ""]
