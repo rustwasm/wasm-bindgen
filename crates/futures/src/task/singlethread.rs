@@ -25,14 +25,14 @@ impl Task {
     pub(crate) fn spawn(future: Pin<Box<dyn Future<Output = ()> + 'static>>) {
         let this = Rc::new(Self {
             inner: RefCell::new(None),
-            is_queued: Cell::new(false),
+            is_queued: Cell::new(true),
         });
 
         let waker = unsafe { Waker::from_raw(Task::into_raw_waker(Rc::clone(&this))) };
 
         *this.inner.borrow_mut() = Some(Inner { future, waker });
 
-        Task::wake_by_ref(&this);
+        crate::queue::QUEUE.with(|queue| queue.schedule_task(this));
     }
 
     fn wake_by_ref(this: &Rc<Self>) {
