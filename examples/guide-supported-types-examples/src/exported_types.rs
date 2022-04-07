@@ -2,7 +2,14 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub struct ExportedNamedStruct {
+    // pub value: String, // This won't work. See working example below.
     pub inner: u32,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+pub struct ExportedNamedStructNonCopy {
+    pub non_copy_value: String,
+    pub copy_value: u32,
 }
 
 #[wasm_bindgen]
