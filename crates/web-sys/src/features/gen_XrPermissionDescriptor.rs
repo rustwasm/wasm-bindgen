@@ -4,43 +4,79 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = XRReferenceSpaceEventInit)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = XRPermissionDescriptor)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `XrReferenceSpaceEventInit` dictionary."]
+    #[doc = "The `XrPermissionDescriptor` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `XrPermissionDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type XrReferenceSpaceEventInit;
+    pub type XrPermissionDescriptor;
 }
 #[cfg(web_sys_unstable_apis)]
-impl XrReferenceSpaceEventInit {
-    #[cfg(feature = "XrReferenceSpace")]
-    #[doc = "Construct a new `XrReferenceSpaceEventInit`."]
+impl XrPermissionDescriptor {
+    #[cfg(feature = "PermissionName")]
+    #[doc = "Construct a new `XrPermissionDescriptor`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpace`, `XrReferenceSpaceEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `PermissionName`, `XrPermissionDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(reference_space: &XrReferenceSpace) -> Self {
+    pub fn new(name: PermissionName) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.reference_space(reference_space);
+        ret.name(name);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `bubbles` field of this object."]
+    #[cfg(feature = "PermissionName")]
+    #[doc = "Change the `name` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `PermissionName`, `XrPermissionDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn bubbles(&mut self, val: bool) -> &mut Self {
+    pub fn name(&mut self, val: PermissionName) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "XrSessionMode")]
+    #[doc = "Change the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrPermissionDescriptor`, `XrSessionMode`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn mode(&mut self, val: XrSessionMode) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("mode"), &JsValue::from(val));
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `optionalFeatures` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrPermissionDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn optional_features(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("bubbles"),
+            &JsValue::from("optionalFeatures"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -51,82 +87,17 @@ impl XrReferenceSpaceEventInit {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = "Change the `requiredFeatures` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `XrPermissionDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn composed(&mut self, val: bool) -> &mut Self {
+    pub fn required_features(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "XrReferenceSpace")]
-    #[doc = "Change the `referenceSpace` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpace`, `XrReferenceSpaceEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn reference_space(&mut self, val: &XrReferenceSpace) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("referenceSpace"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "XrRigidTransform")]
-    #[doc = "Change the `transform` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`, `XrRigidTransform`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn transform(&mut self, val: Option<&XrRigidTransform>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("transform"),
+            &JsValue::from("requiredFeatures"),
             &JsValue::from(val),
         );
         debug_assert!(

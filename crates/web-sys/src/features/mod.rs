@@ -8632,6 +8632,24 @@ mod gen_XrInputSourcesChangeEventInit;
 #[cfg(feature = "XrInputSourcesChangeEventInit")]
 pub use gen_XrInputSourcesChangeEventInit::*;
 
+#[cfg(feature = "XrLayer")]
+#[allow(non_snake_case)]
+mod gen_XrLayer;
+#[cfg(feature = "XrLayer")]
+pub use gen_XrLayer::*;
+
+#[cfg(feature = "XrPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_XrPermissionDescriptor;
+#[cfg(feature = "XrPermissionDescriptor")]
+pub use gen_XrPermissionDescriptor::*;
+
+#[cfg(feature = "XrPermissionStatus")]
+#[allow(non_snake_case)]
+mod gen_XrPermissionStatus;
+#[cfg(feature = "XrPermissionStatus")]
+pub use gen_XrPermissionStatus::*;
+
 #[cfg(feature = "XrPose")]
 #[allow(non_snake_case)]
 mod gen_XrPose;
@@ -8709,6 +8727,12 @@ pub use gen_XrSessionInit::*;
 mod gen_XrSessionMode;
 #[cfg(feature = "XrSessionMode")]
 pub use gen_XrSessionMode::*;
+
+#[cfg(feature = "XrSessionSupportedPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_XrSessionSupportedPermissionDescriptor;
+#[cfg(feature = "XrSessionSupportedPermissionDescriptor")]
+pub use gen_XrSessionSupportedPermissionDescriptor::*;
 
 #[cfg(feature = "XrSpace")]
 #[allow(non_snake_case)]

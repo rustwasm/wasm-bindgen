@@ -12,4 +12,5 @@ use wasm_bindgen::prelude::*;
 pub enum XrSessionMode {
     Inline = "inline",
     ImmersiveVr = "immersive-vr",
+    ImmersiveAr = "immersive-ar",
 }

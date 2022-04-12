@@ -30,7 +30,6 @@ features = [
   'Response',
   'WebGl2RenderingContext',
   'Window',
-  'Xr',
   'XrBoundedReferenceSpace',
   'XrEye',
   'XrFrame',
@@ -61,5 +60,6 @@ features = [
   'XrVisibilityState',
   'XrWebGlLayer',
   'XrWebGlLayerInit',
+  'XrSystem',
   'console'
 ]
