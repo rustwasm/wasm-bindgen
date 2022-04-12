@@ -22,7 +22,7 @@ macro_rules! log {
     }
 }
 
-fn request_animation_frame(session: &XrSession, f: &Closure<dyn FnMut(f64, XrFrame)>) -> i32 {
+fn request_animation_frame(session: &XrSession, f: &Closure<dyn FnMut(f64, XrFrame)>) -> u32 {
     // This turns the Closure into a js_sys::Function
     // See https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/closure/struct.Closure.html#casting-a-closure-to-a-js_sysfunction
     session.request_animation_frame(f.as_ref().unchecked_ref())
