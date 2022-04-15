@@ -46,6 +46,10 @@ test` with the appropriate browser flags and `--headless`:
 wasm-pack test --headless --chrome --firefox --safari
 ```
 
+If you wish to use a custom WebDriver, e.g. to test an older version of a
+browser, use the environment variables detailed in [the
+appendix](#configuring-which-browser-is-used-1).
+
 ## Configuring Headless Browser capabilities
 
 Add the file `webdriver.json` to the root of your crate. Each browser has own 
