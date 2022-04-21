@@ -413,7 +413,7 @@ pub struct TraitMethod {
     /// The type of `self` (either `self`, `&self`, or `&mut self`)
     pub method_self: Option<MethodSelf>,
     /// The trait name, in Rust, this is attached to
-    pub rust_trait: Ident,
+    pub trait_name: Ident,
     /// The name of the rust method on the rust side.
     pub rust_name: Ident,
 }
