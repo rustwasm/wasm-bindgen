@@ -3354,7 +3354,7 @@ impl<'a> Context<'a> {
                 symbols.push_str("\n");
                 symbols.push_str(&method_docs);
             }
-            let name = match method.kind {
+            let name = match &method.kind {
                 AuxExportKind::Function(_) | AuxExportKind::Constructor(_) => {
                     bail!("this shouldn't be possible")
                 }
