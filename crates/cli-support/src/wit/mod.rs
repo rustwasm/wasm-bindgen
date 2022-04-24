@@ -881,44 +881,36 @@ impl<'a> Context<'a> {
     }
 
     fn trait_(&mut self, trait_: decode::Trait<'_>) -> Result<(), Error> {
-        let mut methods = vec!();
+        let mut methods = vec![];
         for export in trait_.methods {
             let wasm_name = struct_function_export_name(trait_.name, export.function.name);
-    
+
             let interface = trait_.name;
             let kind = match export.method_kind {
-                decode::MethodKind::Constructor => bail!(
-                    "traits can't have constructors"
-                ),
+                decode::MethodKind::Constructor => bail!("traits can't have constructors"),
                 decode::MethodKind::Operation(op) => match op.kind {
-                    decode::OperationKind::Getter(f) => {
-                        AuxExportKind::Getter {
-                            class: interface.to_string(),
-                            field: f.to_string(),
-                            consumed: export.consumed,
-                        }
-                    }
-                    decode::OperationKind::Setter(f) => {
-                        AuxExportKind::Setter {
-                            class: interface.to_string(),
-                            field: f.to_string(),
-                            consumed: export.consumed,
-                        }
-                    }
+                    decode::OperationKind::Getter(f) => AuxExportKind::Getter {
+                        class: interface.to_string(),
+                        field: f.to_string(),
+                        consumed: export.consumed,
+                    },
+                    decode::OperationKind::Setter(f) => AuxExportKind::Setter {
+                        class: interface.to_string(),
+                        field: f.to_string(),
+                        consumed: export.consumed,
+                    },
                     _ if op.is_static => AuxExportKind::StaticFunction {
                         class: interface.to_string(),
                         name: export.function.name.to_string(),
                     },
-                    _ => {
-                        AuxExportKind::Method {
-                            class: interface.to_string(),
-                            name: export.function.name.to_string(),
-                            consumed: export.consumed,
-                        }
-                    }
+                    _ => AuxExportKind::Method {
+                        class: interface.to_string(),
+                        name: export.function.name.to_string(),
+                        consumed: export.consumed,
+                    },
                 },
             };
-    
+
             methods.push(AuxTraitMethod {
                 debug_name: wasm_name,
                 comments: concatenate_comments(&export.comments),
@@ -928,7 +920,7 @@ impl<'a> Context<'a> {
                 generate_typescript: export.function.generate_typescript,
             });
         }
-        
+
         let aux = AuxTrait {
             name: trait_.name.to_string(),
             comments: concatenate_comments(&trait_.comments),

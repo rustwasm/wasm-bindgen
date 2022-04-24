@@ -3341,8 +3341,7 @@ impl<'a> Context<'a> {
             self.typescript
                 .push_str(&format!("export interface {}Trait {{", trait_.name));
             interface.push_str(&docs);
-            interface
-                .push_str(&format!("export interface {} {{", trait_.name));            
+            interface.push_str(&format!("export interface {} {{", trait_.name));
         }
         for method in trait_.methods.iter() {
             let method_docs = if method.comments.is_empty() {
@@ -3356,10 +3355,9 @@ impl<'a> Context<'a> {
                 symbols.push_str(&method_docs);
             }
             let name = match method.kind {
-                AuxExportKind::Function(_) 
-                | AuxExportKind::Constructor(_) => bail!(
-                    "this shouldn't be possible"
-                ),
+                AuxExportKind::Function(_) | AuxExportKind::Constructor(_) => {
+                    bail!("this shouldn't be possible")
+                }
                 AuxExportKind::Getter { field: name, .. }
                 | AuxExportKind::Setter { field: name, .. }
                 | AuxExportKind::StaticFunction { name, .. }
@@ -3368,8 +3366,12 @@ impl<'a> Context<'a> {
             symbols.push_str(&format!("{name}:Symbol(\"{name}\"),"));
             if trait_.generate_typescript {
                 self.typescript.push_str("\n");
-                self.typescript.push_str(&format_doc_comments(format!("Symbol for the {} method", name), None));
-                self.typescript.push_str(&format!("  readonly {}: unique symbol;", name));
+                self.typescript.push_str(&format_doc_comments(
+                    format!("Symbol for the {} method", name),
+                    None,
+                ));
+                self.typescript
+                    .push_str(&format!("  readonly {}: unique symbol;", name));
                 interface.push_str("\n");
                 //How do I generate ts sig for this?
                 //interface.push_str()
@@ -3377,7 +3379,10 @@ impl<'a> Context<'a> {
         }
         if trait_.generate_typescript {
             self.typescript.push_str("\n}\n");
-            self.typescript.push_str(format!("declare var {name}: {name}Trait;\n", name = trait_.name));
+            self.typescript.push_str(format!(
+                "declare var {name}: {name}Trait;\n",
+                name = trait_.name
+            ));
             self.typescript.push_str(&interface);
             self.typescript.push_str("\n}\n");
         }
