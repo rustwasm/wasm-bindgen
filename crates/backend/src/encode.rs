@@ -167,6 +167,11 @@ fn shared_program<'a>(
             .iter()
             .map(|js| intern.intern_str(js))
             .collect(),
+        traits: prog
+            .traits
+            .iter()
+            .map(|a| shared_trait(a, intern))
+            .collect::<Result<Vec<_>, _>>()?,
         unique_crate_identifier: intern.intern_str(&intern.unique_crate_identifier()),
         package_json: if intern.has_package_json.get() {
             Some(intern.intern_str(intern.root.join("package.json").to_str().unwrap()))
@@ -326,6 +331,37 @@ fn shared_struct_field<'a>(s: &'a ast::StructField, _intern: &'a Interner) -> St
         comments: s.comments.iter().map(|s| &**s).collect(),
         generate_typescript: s.generate_typescript,
     }
+}
+
+fn shared_trait<'a>(t: &'a ast::Trait, intern: &'a Interner) -> Result<Trait<'a>, Diagnostic> {
+    Ok(Trait {
+        name: &t.js_name,
+        methods: t
+            .methods
+            .iter()
+            .map(|t| shared_trait_method(t, intern))
+            .collect::<Result<Vec<_>, _>>()?,
+        comments: t.comments.iter().map(|t| &**t).collect(),
+        is_inspectable: t.is_inspectable,
+        generate_typescript: t.generate_typescript,
+    })
+}
+
+fn shared_trait_method<'a>(
+    method: &'a ast::TraitMethod,
+    intern: &'a Interner,
+) -> Result<TraitMethod<'a>, Diagnostic> {
+    let consumed = match method.method_self {
+        Some(ast::MethodSelf::ByValue) => true,
+        _ => false,
+    };
+    let method_kind = from_ast_method_kind(&method.function, intern, &method.method_kind)?;
+    Ok(TraitMethod {
+        comments: method.comments.iter().map(|s| &**s).collect(),
+        consumed,
+        function: shared_function(&method.function, intern),
+        method_kind,
+    })
 }
 
 trait Encode {

@@ -335,6 +335,7 @@ impl<'a> Context<'a> {
             enums,
             imports,
             structs,
+            traits,
             typescript_custom_sections,
             local_modules,
             inline_js,
@@ -384,6 +385,9 @@ impl<'a> Context<'a> {
         }
         for struct_ in structs {
             self.struct_(struct_)?;
+        }
+        for trait_ in traits {
+            self.trait_(trait_)?;
         }
         for section in typescript_custom_sections {
             self.aux.extra_typescript.push_str(section);
@@ -872,6 +876,66 @@ impl<'a> Context<'a> {
                 .import_map
                 .insert(id, AuxImport::WrapInExportedClass(struct_.name.to_string()));
         }
+
+        Ok(())
+    }
+
+    fn trait_(&mut self, trait_: decode::Trait<'_>) -> Result<(), Error> {
+        let mut methods = vec!();
+        for export in trait_.methods {
+            let wasm_name = struct_function_export_name(trait_.name, export.function.name);
+    
+            let interface = trait_.name;
+            let kind = match export.method_kind {
+                decode::MethodKind::Constructor => bail!(
+                    "traits can't have constructors"
+                ),
+                decode::MethodKind::Operation(op) => match op.kind {
+                    decode::OperationKind::Getter(f) => {
+                        AuxExportKind::Getter {
+                            class: interface.to_string(),
+                            field: f.to_string(),
+                            consumed: export.consumed,
+                        }
+                    }
+                    decode::OperationKind::Setter(f) => {
+                        AuxExportKind::Setter {
+                            class: interface.to_string(),
+                            field: f.to_string(),
+                            consumed: export.consumed,
+                        }
+                    }
+                    _ if op.is_static => AuxExportKind::StaticFunction {
+                        class: interface.to_string(),
+                        name: export.function.name.to_string(),
+                    },
+                    _ => {
+                        AuxExportKind::Method {
+                            class: interface.to_string(),
+                            name: export.function.name.to_string(),
+                            consumed: export.consumed,
+                        }
+                    }
+                },
+            };
+    
+            methods.push(AuxTraitMethod {
+                debug_name: wasm_name,
+                comments: concatenate_comments(&export.comments),
+                arg_names: Some(export.function.arg_names),
+                asyncness: export.function.asyncness,
+                kind,
+                generate_typescript: export.function.generate_typescript,
+            });
+        }
+        
+        let aux = AuxTrait {
+            name: trait_.name.to_string(),
+            comments: concatenate_comments(&trait_.comments),
+            methods,
+            generate_typescript: trait_.generate_typescript,
+        };
+        self.aux.traits.push(aux);
 
         Ok(())
     }
