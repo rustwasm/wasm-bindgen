@@ -3361,13 +3361,13 @@ impl<'a> Context<'a> {
                 AuxExportKind::Getter { field: name, .. }
                 | AuxExportKind::Setter { field: name, .. }
                 | AuxExportKind::StaticFunction { name, .. }
-                | AuxExportKind::Method { name, .. } => name,
+                | AuxExportKind::Method { name, .. } => name.clone(),
             };
             symbols.push_str(&format!("{name}:Symbol(\"{name}\"),"));
             if trait_.generate_typescript {
                 self.typescript.push_str("\n");
                 self.typescript.push_str(&format_doc_comments(
-                    format!("Symbol for the {} method", name),
+                    &format!("Symbol for the {} method", name),
                     None,
                 ));
                 self.typescript
@@ -3379,7 +3379,7 @@ impl<'a> Context<'a> {
         }
         if trait_.generate_typescript {
             self.typescript.push_str("\n}\n");
-            self.typescript.push_str(format!(
+            self.typescript.push_str(&format!(
                 "declare var {name}: {name}Trait;\n",
                 name = trait_.name
             ));
