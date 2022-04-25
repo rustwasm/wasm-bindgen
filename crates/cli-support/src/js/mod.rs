@@ -3344,15 +3344,18 @@ impl<'a> Context<'a> {
             interface.push_str(&format!("export interface {} {{", trait_.name));
         }
         for method in trait_.methods.iter() {
-            let method_docs = if method.comments.is_empty() {
-                String::new()
+            let (symbol_docs, method_docs) = if method.comments.is_empty() {
+                (String::new(), String::new())
             } else {
                 // How do I generate JSDoc for this
-                format_doc_comments(&method.comments, None)
+                (
+                    format_doc_comments(&method.comments, None),
+                    format_doc_comments(&method.comments, None),
+                )
             };
-            if !method_docs.is_empty() {
+            if !symbol_docs.is_empty() {
                 symbols.push_str("\n");
-                symbols.push_str(&method_docs);
+                symbols.push_str(&symbol_docs);
             }
             let name = match &method.kind {
                 AuxExportKind::Function(_) | AuxExportKind::Constructor(_) => {
@@ -3363,7 +3366,7 @@ impl<'a> Context<'a> {
                 | AuxExportKind::StaticFunction { name, .. }
                 | AuxExportKind::Method { name, .. } => name.clone(),
             };
-            symbols.push_str(&format!("{name}:Symbol(\"{name}\"),"));
+            symbols.push_str(&format!("{name}:Symbol(\"{name}\"),", name = name));
             if trait_.generate_typescript {
                 self.typescript.push_str("\n");
                 self.typescript.push_str(&format_doc_comments(
