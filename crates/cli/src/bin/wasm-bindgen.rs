@@ -46,7 +46,7 @@ Options:
 ";
 
 #[derive(Debug, Deserialize)]
-struct Args {
+pub struct Args {
     flag_nodejs: bool,
     flag_browser: bool,
     flag_web: bool,
@@ -71,7 +71,7 @@ struct Args {
     arg_input: Option<PathBuf>,
 }
 
-fn main() {
+pub fn main() {
     env_logger::init();
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
@@ -89,7 +89,7 @@ fn main() {
     process::exit(1);
 }
 
-fn rmain(args: &Args) -> Result<(), Error> {
+pub fn rmain(args: &Args) -> Result<(), Error> {
     let input = match args.arg_input {
         Some(ref s) => s,
         None => bail!("input file expected"),
