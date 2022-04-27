@@ -1641,11 +1641,13 @@ impl<'a> Context<'a> {
             return view;
         }
         let mem = self.export_name_of(memory);
+        // When a buffer becomes detached, its length returns 0,
+        // which is why we check against that.
         self.global(&format!(
             "
             let cache{name} = null;
             function {name}() {{
-                if (cache{name} === null || cache{name}.buffer !== wasm.{mem}.buffer) {{
+                if (cache{name} === null || cache{name}.byteLength === 0) {{
                     cache{name} = {js}(wasm.{mem}.buffer);
                 }}
                 return cache{name};
