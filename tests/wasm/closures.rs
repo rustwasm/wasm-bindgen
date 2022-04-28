@@ -1,5 +1,6 @@
 #![cfg(feature = "nightly")]
 
+use js_sys::Number;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
@@ -119,6 +120,11 @@ extern "C" {
 
     fn js_store_forgotten_closure(closure: &Closure<dyn Fn()>);
     fn js_call_forgotten_closure();
+
+    #[wasm_bindgen(js_name = many_arity_call2)]
+    fn externref_call(a: &Closure<dyn Fn(JsValue)>);
+    #[wasm_bindgen(js_name = many_arity_call2)]
+    fn named_externref_call(a: &Closure<dyn Fn(Number)>);
 }
 
 #[wasm_bindgen_test]
@@ -632,4 +638,10 @@ fn forget_works() {
     js_store_forgotten_closure(&a);
     a.forget();
     js_call_forgotten_closure();
+}
+
+#[wasm_bindgen_test]
+fn named_externref_no_duplicate_adapter() {
+    externref_call(&Closure::new(|a| assert_eq!(a, 1)));
+    named_externref_call(&Closure::new(|a| assert_eq!(a, 1)));
 }

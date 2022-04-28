@@ -1400,12 +1400,21 @@ impl<'a> Context<'a> {
         Ok(ret)
     }
 
-    fn expose_get_cached_string_from_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
-        self.expose_get_object();
-        let get = self.expose_get_string_from_wasm(memory)?;
+    fn expose_get_cached_string_from_wasm(
+        &mut self,
+        memory: MemoryId,
+        table: Option<TableId>,
+    ) -> Result<MemView, Error> {
+        let get_object = if let Some(table) = table {
+            self.expose_get_from_externref_table(table)?.to_string()
+        } else {
+            self.expose_get_object();
+            "getObject".to_string()
+        };
+        let get_string = self.expose_get_string_from_wasm(memory)?;
         let ret = MemView {
             name: "getCachedStringFromWasm",
-            num: get.num,
+            num: get_string.num,
         };
 
         if !self.should_write_global(ret.to_string()) {
@@ -1422,15 +1431,17 @@ impl<'a> Context<'a> {
         // the fact that `getObject(0)` is guaranteed to be `undefined`.
         self.global(&format!(
             "
-            function {}(ptr, len) {{
+            function {name}(ptr, len) {{
                 if (ptr === 0) {{
-                    return getObject(len);
+                    return {get_object}(len);
                 }} else {{
-                    return {}(ptr, len);
+                    return {get_string}(ptr, len);
                 }}
             }}
             ",
-            ret, get,
+            name = ret,
+            get_string = get_string,
+            get_object = get_object
         ));
         Ok(ret)
     }
@@ -2191,6 +2202,22 @@ impl<'a> Context<'a> {
         };
         self.module.exports.add("__wbindgen_start", start);
         true
+    }
+
+    fn expose_get_from_externref_table(&mut self, table: TableId) -> Result<MemView, Error> {
+        let view = self.memview_table("getFromExternrefTable", table);
+        assert!(self.config.externref);
+        if !self.should_write_global(view.to_string()) {
+            return Ok(view);
+        }
+        let table = self.export_name_of(table);
+        self.global(&format!(
+            "function {view}(idx) {{ return wasm.{table}.get(idx); }}",
+            view = view,
+            table = table,
+        ));
+
+        Ok(view)
     }
 
     fn expose_take_from_externref_table(

@@ -233,7 +233,11 @@ pub enum Instruction {
     /// pops a `i32`, pushes `bool`
     BoolFromI32,
     /// pops `i32`, loads externref at that slot, dealloates externref, pushes `externref`
-    ExternrefLoadOwned,
+    ExternrefLoadOwned {
+        /// This is needed solely for `Result`, since it can contain externrefs,
+        /// but has to pass them through a retptr.
+        table_and_drop: Option<(walrus::TableId, walrus::FunctionId)>,
+    },
     /// pops `i32`, pushes string from that `char`
     StringFromChar,
     /// pops two `i32`, pushes a 64-bit number
@@ -253,6 +257,8 @@ pub enum Instruction {
         optional: bool,
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
+        /// If we're in reference-types mode, the externref table ID to get the cached string from.
+        table: Option<walrus::TableId>,
     },
     /// pops ptr/length, pushes a vector, frees the original data
     VectorLoad {

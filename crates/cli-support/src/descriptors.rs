@@ -22,7 +22,6 @@ use wasm_bindgen_wasm_interpreter::Interpreter;
 pub struct WasmBindgenDescriptorsSection {
     pub descriptors: HashMap<String, Descriptor>,
     pub closure_imports: HashMap<ImportId, Closure>,
-    cached_closures: HashMap<Descriptor, FunctionId>,
 }
 
 pub type WasmBindgenDescriptorsSectionId = TypedCustomSectionId<WasmBindgenDescriptorsSection>;
@@ -120,21 +119,12 @@ impl WasmBindgenDescriptorsSection {
         let mut items = func_to_descriptor.into_iter().collect::<Vec<_>>();
         items.sort_by_key(|i| i.0);
         for (func, descriptor) in items {
-            // This uses a cache so that if the same closure exists multiple times it will
-            // deduplicate it so it only exists once.
-            let id = match self.cached_closures.get(&descriptor) {
-                Some(id) => *id,
-                None => {
-                    let import_name = format!("__wbindgen_closure_wrapper{}", func.index());
-                    let (id, import_id) =
-                        module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
-                    module.funcs.get_mut(id).name = Some(import_name);
-                    self.closure_imports
-                        .insert(import_id, descriptor.clone().unwrap_closure());
-                    self.cached_closures.insert(descriptor, id);
-                    id
-                }
-            };
+            let import_name = format!("__wbindgen_closure_wrapper{}", func.index());
+            let (id, import_id) =
+                module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
+            module.funcs.get_mut(id).name = Some(import_name);
+            self.closure_imports
+                .insert(import_id, descriptor.clone().unwrap_closure());
 
             let local = match &mut module.funcs.get_mut(func).kind {
                 walrus::FunctionKind::Local(l) => l,
