@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = ClipboardItem , typescript_type = "ClipboardItem")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "ClipboardItem",
+        typescript_type = "ClipboardItem"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ClipboardItem` class."]
     #[doc = ""]
@@ -17,7 +21,13 @@ extern "C" {
     pub type ClipboardItem;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "PresentationStyle")]
-    # [wasm_bindgen (structural , method , getter , js_class = "ClipboardItem" , js_name = presentationStyle)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ClipboardItem",
+        js_name = "presentationStyle"
+    )]
     #[doc = "Getter for the `presentationStyle` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/presentationStyle)"]
@@ -28,7 +38,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn presentation_style(this: &ClipboardItem) -> PresentationStyle;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ClipboardItem" , js_name = lastModified)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ClipboardItem",
+        js_name = "lastModified"
+    )]
     #[doc = "Getter for the `lastModified` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/lastModified)"]
@@ -39,7 +55,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn last_modified(this: &ClipboardItem) -> f64;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ClipboardItem" , js_name = delayed)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ClipboardItem",
+        js_name = "delayed"
+    )]
     #[doc = "Getter for the `delayed` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/delayed)"]
@@ -50,7 +72,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn delayed(this: &ClipboardItem) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ClipboardItem" , js_name = types)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ClipboardItem",
+        js_name = "types"
+    )]
     #[doc = "Getter for the `types` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/types)"]
@@ -61,7 +89,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn types(this: &ClipboardItem) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ClipboardItem" , js_name = getType)]
+    #[wasm_bindgen(method, structural, js_class = "ClipboardItem", js_name = "getType")]
     #[doc = "The `getType()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/getType)"]

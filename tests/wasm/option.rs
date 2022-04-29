@@ -14,9 +14,9 @@ extern "C" {
     fn return_some_byval() -> Option<MyType>;
     fn test_option_values();
 
-    #[wasm_bindgen(js_name = take_none_byval)]
+    #[wasm_bindgen(js_name = "take_none_byval")]
     fn take_none_byref(t: Option<&MyType>);
-    #[wasm_bindgen(js_name = take_some_byval)]
+    #[wasm_bindgen(js_name = "take_some_byval")]
     fn take_some_byref(t: Option<&MyType>);
 }
 

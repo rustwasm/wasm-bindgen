@@ -6,9 +6,9 @@ use wasm_bindgen_test::*;
 extern "C" {
     fn get_char_at() -> Function;
 
-    #[wasm_bindgen(js_name = Rectangle)]
+    #[wasm_bindgen(js_name = "Rectangle")]
     static RECTANGLE_CLASS: Function;
-    #[wasm_bindgen(js_name = Rectangle2)]
+    #[wasm_bindgen(js_name = "Rectangle2")]
     static RECTANGLE2_CLASS: Function;
 
     #[derive(Clone)]
@@ -17,7 +17,7 @@ extern "C" {
     fn new() -> Rectangle;
     #[wasm_bindgen(method, getter, structural)]
     fn x(this: &Rectangle) -> u32;
-    #[wasm_bindgen(method, getter, structural, js_name = x)]
+    #[wasm_bindgen(method, getter, structural, js_name = "x")]
     fn x_jsval(this: &Rectangle) -> JsValue;
     #[wasm_bindgen(method, setter, structural)]
     fn set_x(this: &Rectangle, x: u32);
@@ -27,9 +27,9 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = prototype, js_namespace = Object)]
+    #[wasm_bindgen(js_name = "prototype", js_namespace = "Object")]
     static OBJECT_PROTOTYPE: JsValue;
-    #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
+    #[wasm_bindgen(js_name = "prototype", js_namespace = "Array")]
     static ARRAY_PROTOTYPE: JsValue;
 
     type DefinePropertyAttrs;

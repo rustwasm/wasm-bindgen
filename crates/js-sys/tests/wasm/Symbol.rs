@@ -20,7 +20,7 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = Symbol)]
+    #[wasm_bindgen(js_name = "Symbol")]
     fn gensym(val: JsValue) -> Symbol;
 }
 

@@ -12,9 +12,9 @@ mod pool;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
+    #[wasm_bindgen(js_namespace = "console")]
     fn log(s: &str);
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    #[wasm_bindgen(js_namespace = "console", js_name = "log")]
     fn logv(x: &JsValue);
 }
 
@@ -134,7 +134,7 @@ impl RenderingScene {
     }
 
     /// Return a progressive rendering of the image so far
-    #[wasm_bindgen(js_name = imageSoFar)]
+    #[wasm_bindgen(js_name = "imageSoFar")]
     pub fn image_so_far(&self) -> ImageData {
         image_data(self.base, self.len, self.width, self.height)
     }

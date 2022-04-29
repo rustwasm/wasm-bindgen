@@ -1,4 +1,4 @@
-# `js_namespace = blah`
+# `js_namespace = "blah"`
 
 This attribute indicates that the JavaScript type is accessed through the given
 namespace. For example, the `WebAssembly.Module` APIs are all accessed through
@@ -9,11 +9,11 @@ name (like a class or function name) it'll be accessed through this namespace.
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
+    #[wasm_bindgen(js_namespace = "console")]
     fn log(s: &str);
-    
+
     type Foo;
-    #[wasm_bindgen(constructor, js_namespace = Bar)]
+    #[wasm_bindgen(constructor, js_namespace = "Bar")]
     fn new() -> Foo;
 }
 
@@ -31,7 +31,7 @@ It is also possible to access the JavaScript object under the nested namespace.
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = ["window", "document"])]
+    #[wasm_bindgen(js_namespace = r#"["window", "document"]"#)]
     fn write(s: &str);
 }
 

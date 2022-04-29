@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUAdapter , typescript_type = "GPUAdapter")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "GPUAdapter",
+        typescript_type = "GPUAdapter"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuAdapter` class."]
     #[doc = ""]
@@ -16,7 +20,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuAdapter;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUAdapter" , js_name = name)]
+    #[wasm_bindgen(structural, method, getter, js_class = "GPUAdapter", js_name = "name")]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/name)"]
@@ -28,7 +32,13 @@ extern "C" {
     pub fn name(this: &GpuAdapter) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuSupportedFeatures")]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUAdapter" , js_name = features)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "GPUAdapter",
+        js_name = "features"
+    )]
     #[doc = "Getter for the `features` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/features)"]
@@ -40,7 +50,13 @@ extern "C" {
     pub fn features(this: &GpuAdapter) -> GpuSupportedFeatures;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuSupportedLimits")]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUAdapter" , js_name = limits)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "GPUAdapter",
+        js_name = "limits"
+    )]
     #[doc = "Getter for the `limits` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/limits)"]
@@ -51,7 +67,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn limits(this: &GpuAdapter) -> GpuSupportedLimits;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUAdapter" , js_name = isSoftware)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "GPUAdapter",
+        js_name = "isSoftware"
+    )]
     #[doc = "Getter for the `isSoftware` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/isSoftware)"]
@@ -62,7 +84,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_software(this: &GpuAdapter) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPUAdapter" , js_name = requestDevice)]
+    #[wasm_bindgen(method, structural, js_class = "GPUAdapter", js_name = "requestDevice")]
     #[doc = "The `requestDevice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/requestDevice)"]
@@ -74,7 +96,7 @@ extern "C" {
     pub fn request_device(this: &GpuAdapter) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuDeviceDescriptor")]
-    # [wasm_bindgen (method , structural , js_class = "GPUAdapter" , js_name = requestDevice)]
+    #[wasm_bindgen(method, structural, js_class = "GPUAdapter", js_name = "requestDevice")]
     #[doc = "The `requestDevice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/requestDevice)"]

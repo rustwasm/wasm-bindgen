@@ -3,7 +3,12 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = MessageEvent , typescript_type = "MessageEvent")]
+    #[wasm_bindgen(
+        extends = "Event",
+        extends = "::js_sys::Object",
+        js_name = "MessageEvent",
+        typescript_type = "MessageEvent"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `MessageEvent` class."]
     #[doc = ""]
@@ -11,35 +16,65 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub type MessageEvent;
-    # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = data)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "MessageEvent",
+        js_name = "data"
+    )]
     #[doc = "Getter for the `data` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub fn data(this: &MessageEvent) -> ::wasm_bindgen::JsValue;
-    # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = origin)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "MessageEvent",
+        js_name = "origin"
+    )]
     #[doc = "Getter for the `origin` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/origin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub fn origin(this: &MessageEvent) -> String;
-    # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = lastEventId)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "MessageEvent",
+        js_name = "lastEventId"
+    )]
     #[doc = "Getter for the `lastEventId` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/lastEventId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub fn last_event_id(this: &MessageEvent) -> String;
-    # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = source)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "MessageEvent",
+        js_name = "source"
+    )]
     #[doc = "Getter for the `source` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/source)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub fn source(this: &MessageEvent) -> Option<::js_sys::Object>;
-    # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = ports)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "MessageEvent",
+        js_name = "ports"
+    )]
     #[doc = "Getter for the `ports` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/ports)"]
@@ -64,21 +99,36 @@ extern "C" {
         type_: &str,
         event_init_dict: &MessageEventInit,
     ) -> Result<MessageEvent, JsValue>;
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub fn init_message_event(this: &MessageEvent, type_: &str);
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
     pub fn init_message_event_with_bubbles(this: &MessageEvent, type_: &str, bubbles: bool);
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -90,7 +140,12 @@ extern "C" {
         bubbles: bool,
         cancelable: bool,
     );
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -103,7 +158,12 @@ extern "C" {
         cancelable: bool,
         data: &::wasm_bindgen::JsValue,
     );
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -117,7 +177,12 @@ extern "C" {
         data: &::wasm_bindgen::JsValue,
         origin: &str,
     );
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -133,7 +198,12 @@ extern "C" {
         last_event_id: &str,
     );
     #[cfg(feature = "Window")]
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -150,7 +220,12 @@ extern "C" {
         source: Option<&Window>,
     );
     #[cfg(feature = "MessagePort")]
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -167,7 +242,12 @@ extern "C" {
         source: Option<&MessagePort>,
     );
     #[cfg(feature = "ServiceWorker")]
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -184,7 +264,12 @@ extern "C" {
         source: Option<&ServiceWorker>,
     );
     #[cfg(feature = "Window")]
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -202,7 +287,12 @@ extern "C" {
         ports: &::wasm_bindgen::JsValue,
     );
     #[cfg(feature = "MessagePort")]
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]
@@ -220,7 +310,12 @@ extern "C" {
         ports: &::wasm_bindgen::JsValue,
     );
     #[cfg(feature = "ServiceWorker")]
-    # [wasm_bindgen (method , structural , js_class = "MessageEvent" , js_name = initMessageEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "MessageEvent",
+        js_name = "initMessageEvent"
+    )]
     #[doc = "The `initMessageEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/initMessageEvent)"]

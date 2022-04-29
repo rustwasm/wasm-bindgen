@@ -4,7 +4,12 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = Bluetooth , typescript_type = "Bluetooth")]
+    #[wasm_bindgen(
+        extends = "EventTarget",
+        extends = "::js_sys::Object",
+        js_name = "Bluetooth",
+        typescript_type = "Bluetooth"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Bluetooth` class."]
     #[doc = ""]
@@ -16,7 +21,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type Bluetooth;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = onavailabilitychanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "onavailabilitychanged"
+    )]
     #[doc = "Getter for the `onavailabilitychanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onavailabilitychanged)"]
@@ -27,7 +38,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onavailabilitychanged(this: &Bluetooth) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "Bluetooth" , js_name = onavailabilitychanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "Bluetooth",
+        js_name = "onavailabilitychanged"
+    )]
     #[doc = "Setter for the `onavailabilitychanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onavailabilitychanged)"]
@@ -39,7 +56,13 @@ extern "C" {
     pub fn set_onavailabilitychanged(this: &Bluetooth, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothDevice")]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = referringDevice)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "referringDevice"
+    )]
     #[doc = "Getter for the `referringDevice` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/referringDevice)"]
@@ -50,7 +73,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn referring_device(this: &Bluetooth) -> Option<BluetoothDevice>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = onadvertisementreceived)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "onadvertisementreceived"
+    )]
     #[doc = "Getter for the `onadvertisementreceived` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onadvertisementreceived)"]
@@ -61,7 +90,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onadvertisementreceived(this: &Bluetooth) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "Bluetooth" , js_name = onadvertisementreceived)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "Bluetooth",
+        js_name = "onadvertisementreceived"
+    )]
     #[doc = "Setter for the `onadvertisementreceived` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onadvertisementreceived)"]
@@ -72,7 +107,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onadvertisementreceived(this: &Bluetooth, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = ongattserverdisconnected)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "ongattserverdisconnected"
+    )]
     #[doc = "Getter for the `ongattserverdisconnected` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/ongattserverdisconnected)"]
@@ -83,7 +124,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn ongattserverdisconnected(this: &Bluetooth) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "Bluetooth" , js_name = ongattserverdisconnected)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "Bluetooth",
+        js_name = "ongattserverdisconnected"
+    )]
     #[doc = "Setter for the `ongattserverdisconnected` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/ongattserverdisconnected)"]
@@ -94,7 +141,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_ongattserverdisconnected(this: &Bluetooth, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = oncharacteristicvaluechanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "oncharacteristicvaluechanged"
+    )]
     #[doc = "Getter for the `oncharacteristicvaluechanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/oncharacteristicvaluechanged)"]
@@ -105,7 +158,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn oncharacteristicvaluechanged(this: &Bluetooth) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "Bluetooth" , js_name = oncharacteristicvaluechanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "Bluetooth",
+        js_name = "oncharacteristicvaluechanged"
+    )]
     #[doc = "Setter for the `oncharacteristicvaluechanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/oncharacteristicvaluechanged)"]
@@ -116,7 +175,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_oncharacteristicvaluechanged(this: &Bluetooth, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = onserviceadded)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "onserviceadded"
+    )]
     #[doc = "Getter for the `onserviceadded` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onserviceadded)"]
@@ -127,7 +192,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onserviceadded(this: &Bluetooth) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "Bluetooth" , js_name = onserviceadded)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "Bluetooth",
+        js_name = "onserviceadded"
+    )]
     #[doc = "Setter for the `onserviceadded` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onserviceadded)"]
@@ -138,7 +209,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onserviceadded(this: &Bluetooth, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = onservicechanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "onservicechanged"
+    )]
     #[doc = "Getter for the `onservicechanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onservicechanged)"]
@@ -149,7 +226,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onservicechanged(this: &Bluetooth) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "Bluetooth" , js_name = onservicechanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "Bluetooth",
+        js_name = "onservicechanged"
+    )]
     #[doc = "Setter for the `onservicechanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onservicechanged)"]
@@ -160,7 +243,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onservicechanged(this: &Bluetooth, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "Bluetooth" , js_name = onserviceremoved)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "Bluetooth",
+        js_name = "onserviceremoved"
+    )]
     #[doc = "Getter for the `onserviceremoved` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onserviceremoved)"]
@@ -171,7 +260,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onserviceremoved(this: &Bluetooth) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "Bluetooth" , js_name = onserviceremoved)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "Bluetooth",
+        js_name = "onserviceremoved"
+    )]
     #[doc = "Setter for the `onserviceremoved` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/onserviceremoved)"]
@@ -182,7 +277,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onserviceremoved(this: &Bluetooth, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "Bluetooth" , js_name = getAvailability)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "Bluetooth",
+        js_name = "getAvailability"
+    )]
     #[doc = "The `getAvailability()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/getAvailability)"]
@@ -193,7 +293,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn get_availability(this: &Bluetooth) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "Bluetooth" , js_name = getDevices)]
+    #[wasm_bindgen(method, structural, js_class = "Bluetooth", js_name = "getDevices")]
     #[doc = "The `getDevices()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/getDevices)"]
@@ -205,7 +305,7 @@ extern "C" {
     pub fn get_devices(this: &Bluetooth) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "RequestDeviceOptions")]
-    # [wasm_bindgen (method , structural , js_class = "Bluetooth" , js_name = requestDevice)]
+    #[wasm_bindgen(method, structural, js_class = "Bluetooth", js_name = "requestDevice")]
     #[doc = "The `requestDevice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice)"]

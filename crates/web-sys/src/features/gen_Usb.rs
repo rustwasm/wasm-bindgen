@@ -4,7 +4,12 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = USB , typescript_type = "USB")]
+    #[wasm_bindgen(
+        extends = "EventTarget",
+        extends = "::js_sys::Object",
+        js_name = "USB",
+        typescript_type = "USB"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Usb` class."]
     #[doc = ""]
@@ -16,7 +21,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type Usb;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USB" , js_name = onconnect)]
+    #[wasm_bindgen(structural, method, getter, js_class = "USB", js_name = "onconnect")]
     #[doc = "Getter for the `onconnect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USB/onconnect)"]
@@ -27,7 +32,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onconnect(this: &Usb) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "USB" , js_name = onconnect)]
+    #[wasm_bindgen(structural, method, setter, js_class = "USB", js_name = "onconnect")]
     #[doc = "Setter for the `onconnect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USB/onconnect)"]
@@ -38,7 +43,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onconnect(this: &Usb, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USB" , js_name = ondisconnect)]
+    #[wasm_bindgen(structural, method, getter, js_class = "USB", js_name = "ondisconnect")]
     #[doc = "Getter for the `ondisconnect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USB/ondisconnect)"]
@@ -49,7 +54,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn ondisconnect(this: &Usb) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "USB" , js_name = ondisconnect)]
+    #[wasm_bindgen(structural, method, setter, js_class = "USB", js_name = "ondisconnect")]
     #[doc = "Setter for the `ondisconnect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USB/ondisconnect)"]
@@ -60,7 +65,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_ondisconnect(this: &Usb, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "USB" , js_name = getDevices)]
+    #[wasm_bindgen(method, structural, js_class = "USB", js_name = "getDevices")]
     #[doc = "The `getDevices()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USB/getDevices)"]
@@ -72,7 +77,7 @@ extern "C" {
     pub fn get_devices(this: &Usb) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbDeviceRequestOptions")]
-    # [wasm_bindgen (method , structural , js_class = "USB" , js_name = requestDevice)]
+    #[wasm_bindgen(method, structural, js_class = "USB", js_name = "requestDevice")]
     #[doc = "The `requestDevice()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USB/requestDevice)"]

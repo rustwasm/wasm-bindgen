@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = BluetoothCharacteristicProperties , typescript_type = "BluetoothCharacteristicProperties")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "BluetoothCharacteristicProperties",
+        typescript_type = "BluetoothCharacteristicProperties"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `BluetoothCharacteristicProperties` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type BluetoothCharacteristicProperties;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = broadcast)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "broadcast"
+    )]
     #[doc = "Getter for the `broadcast` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/broadcast)"]
@@ -27,7 +37,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn broadcast(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = read)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "read"
+    )]
     #[doc = "Getter for the `read` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/read)"]
@@ -38,7 +54,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn read(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = writeWithoutResponse)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "writeWithoutResponse"
+    )]
     #[doc = "Getter for the `writeWithoutResponse` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/writeWithoutResponse)"]
@@ -49,7 +71,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_without_response(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = write)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "write"
+    )]
     #[doc = "Getter for the `write` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/write)"]
@@ -60,7 +88,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = notify)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "notify"
+    )]
     #[doc = "Getter for the `notify` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/notify)"]
@@ -71,7 +105,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn notify(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = indicate)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "indicate"
+    )]
     #[doc = "Getter for the `indicate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/indicate)"]
@@ -82,7 +122,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn indicate(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = authenticatedSignedWrites)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "authenticatedSignedWrites"
+    )]
     #[doc = "Getter for the `authenticatedSignedWrites` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/authenticatedSignedWrites)"]
@@ -93,7 +139,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn authenticated_signed_writes(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = reliableWrite)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "reliableWrite"
+    )]
     #[doc = "Getter for the `reliableWrite` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/reliableWrite)"]
@@ -104,7 +156,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn reliable_write(this: &BluetoothCharacteristicProperties) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothCharacteristicProperties" , js_name = writableAuxiliaries)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothCharacteristicProperties",
+        js_name = "writableAuxiliaries"
+    )]
     #[doc = "Getter for the `writableAuxiliaries` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothCharacteristicProperties/writableAuxiliaries)"]

@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = XRFrame , typescript_type = "XRFrame")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "XRFrame",
+        typescript_type = "XRFrame"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `XrFrame` class."]
     #[doc = ""]
@@ -17,7 +21,7 @@ extern "C" {
     pub type XrFrame;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrSession")]
-    # [wasm_bindgen (structural , method , getter , js_class = "XRFrame" , js_name = session)]
+    #[wasm_bindgen(structural, method, getter, js_class = "XRFrame", js_name = "session")]
     #[doc = "Getter for the `session` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRFrame/session)"]
@@ -28,7 +32,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn session(this: &XrFrame) -> XrSession;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "XRFrame" , js_name = predictedDisplayTime)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "XRFrame",
+        js_name = "predictedDisplayTime"
+    )]
     #[doc = "Getter for the `predictedDisplayTime` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRFrame/predictedDisplayTime)"]
@@ -40,7 +50,7 @@ extern "C" {
     pub fn predicted_display_time(this: &XrFrame) -> f64;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "XrPose", feature = "XrSpace",))]
-    # [wasm_bindgen (method , structural , js_class = "XRFrame" , js_name = getPose)]
+    #[wasm_bindgen(method, structural, js_class = "XRFrame", js_name = "getPose")]
     #[doc = "The `getPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRFrame/getPose)"]
@@ -52,7 +62,7 @@ extern "C" {
     pub fn get_pose(this: &XrFrame, space: &XrSpace, base_space: &XrSpace) -> Option<XrPose>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "XrReferenceSpace", feature = "XrViewerPose",))]
-    # [wasm_bindgen (method , structural , js_class = "XRFrame" , js_name = getViewerPose)]
+    #[wasm_bindgen(method, structural, js_class = "XRFrame", js_name = "getViewerPose")]
     #[doc = "The `getViewerPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRFrame/getViewerPose)"]

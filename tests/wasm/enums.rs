@@ -31,7 +31,7 @@ pub mod inner {
     }
 }
 
-#[wasm_bindgen(js_name = JsRenamedEnum)]
+#[wasm_bindgen(js_name = "JsRenamedEnum")]
 #[derive(Copy, Clone)]
 pub enum RenamedEnum {
     A = 10,

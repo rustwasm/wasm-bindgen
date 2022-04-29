@@ -10,17 +10,17 @@ extern "C" {
     // return value is always `f64` to faithfully capture what was sent to JS
     // (what we're interested in) because all JS numbers fit in `f64` anyway.
     // This is testing what happens when we pass numbers to JS and what it sees.
-    #[wasm_bindgen(assert_no_shim, js_name = roundtrip)]
+    #[wasm_bindgen(assert_no_shim, js_name = "roundtrip")]
     fn roundtrip_i8(a: i8) -> f64;
-    #[wasm_bindgen(assert_no_shim, js_name = roundtrip)]
+    #[wasm_bindgen(assert_no_shim, js_name = "roundtrip")]
     fn roundtrip_i16(a: i16) -> f64;
-    #[wasm_bindgen(assert_no_shim, js_name = roundtrip)]
+    #[wasm_bindgen(assert_no_shim, js_name = "roundtrip")]
     fn roundtrip_i32(a: i32) -> f64;
-    #[wasm_bindgen(assert_no_shim, js_name = roundtrip)]
+    #[wasm_bindgen(assert_no_shim, js_name = "roundtrip")]
     fn roundtrip_u8(a: u8) -> f64;
-    #[wasm_bindgen(assert_no_shim, js_name = roundtrip)]
+    #[wasm_bindgen(assert_no_shim, js_name = "roundtrip")]
     fn roundtrip_u16(a: u16) -> f64;
-    #[wasm_bindgen(js_name = roundtrip)]
+    #[wasm_bindgen(js_name = "roundtrip")]
     fn roundtrip_u32(a: u32) -> f64;
 
     fn test_js_roundtrip();

@@ -4,7 +4,12 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = Event , extends = :: js_sys :: Object , js_name = HIDInputReportEvent , typescript_type = "HIDInputReportEvent")]
+    #[wasm_bindgen(
+        extends = "Event",
+        extends = "::js_sys::Object",
+        js_name = "HIDInputReportEvent",
+        typescript_type = "HIDInputReportEvent"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `HidInputReportEvent` class."]
     #[doc = ""]
@@ -17,7 +22,13 @@ extern "C" {
     pub type HidInputReportEvent;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "HidDevice")]
-    # [wasm_bindgen (structural , method , getter , js_class = "HIDInputReportEvent" , js_name = device)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "HIDInputReportEvent",
+        js_name = "device"
+    )]
     #[doc = "Getter for the `device` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDInputReportEvent/device)"]
@@ -28,7 +39,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn device(this: &HidInputReportEvent) -> HidDevice;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "HIDInputReportEvent" , js_name = reportId)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "HIDInputReportEvent",
+        js_name = "reportId"
+    )]
     #[doc = "Getter for the `reportId` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDInputReportEvent/reportId)"]
@@ -39,7 +56,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn report_id(this: &HidInputReportEvent) -> u8;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "HIDInputReportEvent" , js_name = data)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "HIDInputReportEvent",
+        js_name = "data"
+    )]
     #[doc = "Getter for the `data` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDInputReportEvent/data)"]

@@ -4,7 +4,12 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = BluetoothRemoteGATTCharacteristic , typescript_type = "BluetoothRemoteGATTCharacteristic")]
+    #[wasm_bindgen(
+        extends = "EventTarget",
+        extends = "::js_sys::Object",
+        js_name = "BluetoothRemoteGATTCharacteristic",
+        typescript_type = "BluetoothRemoteGATTCharacteristic"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `BluetoothRemoteGattCharacteristic` class."]
     #[doc = ""]
@@ -17,7 +22,13 @@ extern "C" {
     pub type BluetoothRemoteGattCharacteristic;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothRemoteGattService")]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = service)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "service"
+    )]
     #[doc = "Getter for the `service` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/service)"]
@@ -28,7 +39,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn service(this: &BluetoothRemoteGattCharacteristic) -> BluetoothRemoteGattService;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = uuid)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "uuid"
+    )]
     #[doc = "Getter for the `uuid` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/uuid)"]
@@ -40,7 +57,13 @@ extern "C" {
     pub fn uuid(this: &BluetoothRemoteGattCharacteristic) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothCharacteristicProperties")]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = properties)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "properties"
+    )]
     #[doc = "Getter for the `properties` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/properties)"]
@@ -53,7 +76,13 @@ extern "C" {
         this: &BluetoothRemoteGattCharacteristic,
     ) -> BluetoothCharacteristicProperties;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = value)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "value"
+    )]
     #[doc = "Getter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/value)"]
@@ -64,7 +93,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn value(this: &BluetoothRemoteGattCharacteristic) -> Option<::js_sys::DataView>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = oncharacteristicvaluechanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "oncharacteristicvaluechanged"
+    )]
     #[doc = "Getter for the `oncharacteristicvaluechanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/oncharacteristicvaluechanged)"]
@@ -77,7 +112,13 @@ extern "C" {
         this: &BluetoothRemoteGattCharacteristic,
     ) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = oncharacteristicvaluechanged)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "oncharacteristicvaluechanged"
+    )]
     #[doc = "Setter for the `oncharacteristicvaluechanged` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/oncharacteristicvaluechanged)"]
@@ -91,7 +132,12 @@ extern "C" {
         value: Option<&::js_sys::Function>,
     );
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = getDescriptor)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "getDescriptor"
+    )]
     #[doc = "The `getDescriptor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/getDescriptor)"]
@@ -105,7 +151,12 @@ extern "C" {
         descriptor: &str,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = getDescriptor)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "getDescriptor"
+    )]
     #[doc = "The `getDescriptor()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/getDescriptor)"]
@@ -119,7 +170,12 @@ extern "C" {
         descriptor: u32,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = getDescriptors)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "getDescriptors"
+    )]
     #[doc = "The `getDescriptors()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/getDescriptors)"]
@@ -130,7 +186,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn get_descriptors(this: &BluetoothRemoteGattCharacteristic) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = getDescriptors)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "getDescriptors"
+    )]
     #[doc = "The `getDescriptors()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/getDescriptors)"]
@@ -144,7 +205,12 @@ extern "C" {
         descriptor: &str,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = getDescriptors)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "getDescriptors"
+    )]
     #[doc = "The `getDescriptors()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/getDescriptors)"]
@@ -158,7 +224,12 @@ extern "C" {
         descriptor: u32,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = readValue)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "readValue"
+    )]
     #[doc = "The `readValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/readValue)"]
@@ -169,7 +240,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn read_value(this: &BluetoothRemoteGattCharacteristic) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = startNotifications)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "startNotifications"
+    )]
     #[doc = "The `startNotifications()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/startNotifications)"]
@@ -180,7 +256,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn start_notifications(this: &BluetoothRemoteGattCharacteristic) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = stopNotifications)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "stopNotifications"
+    )]
     #[doc = "The `stopNotifications()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/stopNotifications)"]
@@ -191,7 +272,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stop_notifications(this: &BluetoothRemoteGattCharacteristic) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "writeValue"
+    )]
     #[doc = "The `writeValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValue)"]
@@ -205,7 +291,12 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "writeValue"
+    )]
     #[doc = "The `writeValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValue)"]
@@ -219,7 +310,12 @@ extern "C" {
         value: &mut [u8],
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "writeValueWithResponse"
+    )]
     #[doc = "The `writeValueWithResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithResponse)"]
@@ -233,7 +329,12 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "writeValueWithResponse"
+    )]
     #[doc = "The `writeValueWithResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithResponse)"]
@@ -247,7 +348,12 @@ extern "C" {
         value: &mut [u8],
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "writeValueWithoutResponse"
+    )]
     #[doc = "The `writeValueWithoutResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithoutResponse)"]
@@ -261,7 +367,12 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTCharacteristic",
+        js_name = "writeValueWithoutResponse"
+    )]
     #[doc = "The `writeValueWithoutResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithoutResponse)"]

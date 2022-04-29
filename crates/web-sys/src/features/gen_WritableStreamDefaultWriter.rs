@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = WritableStreamDefaultWriter , typescript_type = "WritableStreamDefaultWriter")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "WritableStreamDefaultWriter",
+        typescript_type = "WritableStreamDefaultWriter"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `WritableStreamDefaultWriter` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type WritableStreamDefaultWriter;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "WritableStreamDefaultWriter" , js_name = closed)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "closed"
+    )]
     #[doc = "Getter for the `closed` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/closed)"]
@@ -27,7 +37,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn closed(this: &WritableStreamDefaultWriter) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "WritableStreamDefaultWriter" , js_name = desiredSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "desiredSize"
+    )]
     #[doc = "Getter for the `desiredSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/desiredSize)"]
@@ -38,7 +54,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn desired_size(this: &WritableStreamDefaultWriter) -> Option<f64>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "WritableStreamDefaultWriter" , js_name = ready)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "ready"
+    )]
     #[doc = "Getter for the `ready` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/ready)"]
@@ -61,7 +83,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(stream: &WritableStream) -> Result<WritableStreamDefaultWriter, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = abort)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "abort"
+    )]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/abort)"]
@@ -72,7 +99,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn abort(this: &WritableStreamDefaultWriter) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = abort)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "abort"
+    )]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/abort)"]
@@ -86,7 +118,12 @@ extern "C" {
         reason: &::wasm_bindgen::JsValue,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = close)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "close"
+    )]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/close)"]
@@ -97,7 +134,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn close(this: &WritableStreamDefaultWriter) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = releaseLock)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "releaseLock"
+    )]
     #[doc = "The `releaseLock()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/releaseLock)"]
@@ -108,7 +150,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn release_lock(this: &WritableStreamDefaultWriter);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = write)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "write"
+    )]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/write)"]
@@ -119,7 +166,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write(this: &WritableStreamDefaultWriter) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = write)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "WritableStreamDefaultWriter",
+        js_name = "write"
+    )]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/write)"]

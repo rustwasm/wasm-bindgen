@@ -4,7 +4,12 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = EventTarget , extends = :: js_sys :: Object , js_name = GPUDevice , typescript_type = "GPUDevice")]
+    #[wasm_bindgen(
+        extends = "EventTarget",
+        extends = "::js_sys::Object",
+        js_name = "GPUDevice",
+        typescript_type = "GPUDevice"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `GpuDevice` class."]
     #[doc = ""]
@@ -17,7 +22,13 @@ extern "C" {
     pub type GpuDevice;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuSupportedFeatures")]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = features)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "GPUDevice",
+        js_name = "features"
+    )]
     #[doc = "Getter for the `features` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/features)"]
@@ -29,7 +40,7 @@ extern "C" {
     pub fn features(this: &GpuDevice) -> GpuSupportedFeatures;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuSupportedLimits")]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = limits)]
+    #[wasm_bindgen(structural, method, getter, js_class = "GPUDevice", js_name = "limits")]
     #[doc = "Getter for the `limits` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/limits)"]
@@ -41,7 +52,7 @@ extern "C" {
     pub fn limits(this: &GpuDevice) -> GpuSupportedLimits;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuQueue")]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = queue)]
+    #[wasm_bindgen(structural, method, getter, js_class = "GPUDevice", js_name = "queue")]
     #[doc = "Getter for the `queue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/queue)"]
@@ -52,7 +63,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn queue(this: &GpuDevice) -> GpuQueue;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = lost)]
+    #[wasm_bindgen(structural, method, getter, js_class = "GPUDevice", js_name = "lost")]
     #[doc = "Getter for the `lost` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/lost)"]
@@ -63,7 +74,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn lost(this: &GpuDevice) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = onuncapturederror)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "GPUDevice",
+        js_name = "onuncapturederror"
+    )]
     #[doc = "Getter for the `onuncapturederror` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/onuncapturederror)"]
@@ -74,7 +91,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn onuncapturederror(this: &GpuDevice) -> Option<::js_sys::Function>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "GPUDevice" , js_name = onuncapturederror)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        setter,
+        js_class = "GPUDevice",
+        js_name = "onuncapturederror"
+    )]
     #[doc = "Setter for the `onuncapturederror` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/onuncapturederror)"]
@@ -85,7 +108,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn set_onuncapturederror(this: &GpuDevice, value: Option<&::js_sys::Function>);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUDevice" , js_name = label)]
+    #[wasm_bindgen(structural, method, getter, js_class = "GPUDevice", js_name = "label")]
     #[doc = "Getter for the `label` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/label)"]
@@ -96,7 +119,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(this: &GpuDevice) -> Option<String>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , setter , js_class = "GPUDevice" , js_name = label)]
+    #[wasm_bindgen(structural, method, setter, js_class = "GPUDevice", js_name = "label")]
     #[doc = "Setter for the `label` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/label)"]
@@ -108,7 +131,12 @@ extern "C" {
     pub fn set_label(this: &GpuDevice, value: Option<&str>);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuBindGroup", feature = "GpuBindGroupDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createBindGroup)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createBindGroup"
+    )]
     #[doc = "The `createBindGroup()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createBindGroup)"]
@@ -124,7 +152,12 @@ extern "C" {
         feature = "GpuBindGroupLayout",
         feature = "GpuBindGroupLayoutDescriptor",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createBindGroupLayout)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createBindGroupLayout"
+    )]
     #[doc = "The `createBindGroupLayout()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createBindGroupLayout)"]
@@ -139,7 +172,7 @@ extern "C" {
     ) -> GpuBindGroupLayout;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuBuffer", feature = "GpuBufferDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createBuffer)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "createBuffer")]
     #[doc = "The `createBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createBuffer)"]
@@ -151,7 +184,12 @@ extern "C" {
     pub fn create_buffer(this: &GpuDevice, descriptor: &GpuBufferDescriptor) -> GpuBuffer;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuCommandEncoder")]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createCommandEncoder)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createCommandEncoder"
+    )]
     #[doc = "The `createCommandEncoder()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createCommandEncoder)"]
@@ -163,7 +201,12 @@ extern "C" {
     pub fn create_command_encoder(this: &GpuDevice) -> GpuCommandEncoder;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuCommandEncoder", feature = "GpuCommandEncoderDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createCommandEncoder)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createCommandEncoder"
+    )]
     #[doc = "The `createCommandEncoder()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createCommandEncoder)"]
@@ -181,7 +224,12 @@ extern "C" {
         feature = "GpuComputePipeline",
         feature = "GpuComputePipelineDescriptor",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createComputePipeline)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createComputePipeline"
+    )]
     #[doc = "The `createComputePipeline()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createComputePipeline)"]
@@ -196,7 +244,12 @@ extern "C" {
     ) -> GpuComputePipeline;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuComputePipelineDescriptor")]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createComputePipelineAsync)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createComputePipelineAsync"
+    )]
     #[doc = "The `createComputePipelineAsync()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createComputePipelineAsync)"]
@@ -211,7 +264,12 @@ extern "C" {
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuPipelineLayout", feature = "GpuPipelineLayoutDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createPipelineLayout)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createPipelineLayout"
+    )]
     #[doc = "The `createPipelineLayout()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createPipelineLayout)"]
@@ -226,7 +284,7 @@ extern "C" {
     ) -> GpuPipelineLayout;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuQuerySet", feature = "GpuQuerySetDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createQuerySet)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "createQuerySet")]
     #[doc = "The `createQuerySet()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createQuerySet)"]
@@ -241,7 +299,12 @@ extern "C" {
         feature = "GpuRenderBundleEncoder",
         feature = "GpuRenderBundleEncoderDescriptor",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createRenderBundleEncoder)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createRenderBundleEncoder"
+    )]
     #[doc = "The `createRenderBundleEncoder()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createRenderBundleEncoder)"]
@@ -256,7 +319,12 @@ extern "C" {
     ) -> GpuRenderBundleEncoder;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuRenderPipeline", feature = "GpuRenderPipelineDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createRenderPipeline)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createRenderPipeline"
+    )]
     #[doc = "The `createRenderPipeline()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createRenderPipeline)"]
@@ -271,7 +339,12 @@ extern "C" {
     ) -> GpuRenderPipeline;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuRenderPipelineDescriptor")]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createRenderPipelineAsync)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createRenderPipelineAsync"
+    )]
     #[doc = "The `createRenderPipelineAsync()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createRenderPipelineAsync)"]
@@ -286,7 +359,7 @@ extern "C" {
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuSampler")]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createSampler)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "createSampler")]
     #[doc = "The `createSampler()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createSampler)"]
@@ -298,7 +371,7 @@ extern "C" {
     pub fn create_sampler(this: &GpuDevice) -> GpuSampler;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuSampler", feature = "GpuSamplerDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createSampler)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "createSampler")]
     #[doc = "The `createSampler()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createSampler)"]
@@ -313,7 +386,12 @@ extern "C" {
     ) -> GpuSampler;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuShaderModule", feature = "GpuShaderModuleDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createShaderModule)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "createShaderModule"
+    )]
     #[doc = "The `createShaderModule()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createShaderModule)"]
@@ -328,7 +406,7 @@ extern "C" {
     ) -> GpuShaderModule;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuTexture", feature = "GpuTextureDescriptor",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createTexture)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "createTexture")]
     #[doc = "The `createTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createTexture)"]
@@ -339,7 +417,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn create_texture(this: &GpuDevice, descriptor: &GpuTextureDescriptor) -> GpuTexture;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = destroy)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "destroy")]
     #[doc = "The `destroy()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/destroy)"]
@@ -354,7 +432,12 @@ extern "C" {
         feature = "GpuExternalTexture",
         feature = "GpuExternalTextureDescriptor",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = importExternalTexture)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "GPUDevice",
+        js_name = "importExternalTexture"
+    )]
     #[doc = "The `importExternalTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/importExternalTexture)"]
@@ -368,7 +451,7 @@ extern "C" {
         descriptor: &GpuExternalTextureDescriptor,
     ) -> GpuExternalTexture;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = popErrorScope)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "popErrorScope")]
     #[doc = "The `popErrorScope()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/popErrorScope)"]
@@ -380,7 +463,7 @@ extern "C" {
     pub fn pop_error_scope(this: &GpuDevice) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuErrorFilter")]
-    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = pushErrorScope)]
+    #[wasm_bindgen(method, structural, js_class = "GPUDevice", js_name = "pushErrorScope")]
     #[doc = "The `pushErrorScope()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/pushErrorScope)"]

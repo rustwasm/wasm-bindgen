@@ -4,7 +4,7 @@ use web_sys::{History, ScrollRestoration};
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = history, js_namespace = window)]
+    #[wasm_bindgen(js_name = "history", js_namespace = "window")]
     static HISTORY: History;
 }
 

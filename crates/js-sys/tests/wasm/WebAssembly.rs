@@ -5,16 +5,16 @@ use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/WebAssembly.js")]
 extern "C" {
-    #[wasm_bindgen(js_name = getWasmArray)]
+    #[wasm_bindgen(js_name = "getWasmArray")]
     fn get_wasm_array() -> Uint8Array;
 
-    #[wasm_bindgen(js_name = getTableObject)]
+    #[wasm_bindgen(js_name = "getTableObject")]
     fn get_table_object() -> Object;
 
-    #[wasm_bindgen(js_name = getInvalidTableObject)]
+    #[wasm_bindgen(js_name = "getInvalidTableObject")]
     fn get_invalid_table_object() -> Object;
 
-    #[wasm_bindgen(js_name = getImports)]
+    #[wasm_bindgen(js_name = "getImports")]
     fn get_imports() -> Object;
 }
 

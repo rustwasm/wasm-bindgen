@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = USBIsochronousInTransferResult , typescript_type = "USBIsochronousInTransferResult")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "USBIsochronousInTransferResult",
+        typescript_type = "USBIsochronousInTransferResult"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `UsbIsochronousInTransferResult` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbIsochronousInTransferResult;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBIsochronousInTransferResult" , js_name = data)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBIsochronousInTransferResult",
+        js_name = "data"
+    )]
     #[doc = "Getter for the `data` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBIsochronousInTransferResult/data)"]
@@ -27,7 +37,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data(this: &UsbIsochronousInTransferResult) -> Option<::js_sys::DataView>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBIsochronousInTransferResult" , js_name = packets)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBIsochronousInTransferResult",
+        js_name = "packets"
+    )]
     #[doc = "Getter for the `packets` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBIsochronousInTransferResult/packets)"]

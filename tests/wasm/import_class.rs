@@ -9,12 +9,12 @@ use wasm_bindgen_test::*;
 extern "C" {
     fn math_log(f: f64) -> f64;
 
-    #[wasm_bindgen(js_namespace = StaticFunction)]
+    #[wasm_bindgen(js_namespace = "StaticFunction")]
     fn bar() -> u32;
 
     #[derive(Clone)]
     type Construct;
-    #[wasm_bindgen(js_namespace = Construct)]
+    #[wasm_bindgen(js_namespace = "Construct")]
     fn create() -> Construct;
     #[wasm_bindgen(method)]
     fn get_internal_string(this: &Construct) -> String;
@@ -29,7 +29,7 @@ extern "C" {
     #[wasm_bindgen(method)]
     fn get(this: &NewConstructors) -> i32;
 
-    #[wasm_bindgen(js_name = default)]
+    #[wasm_bindgen(js_name = "default")]
     type RenamedTypes;
     #[wasm_bindgen(constructor, js_class = default)]
     fn new(arg: i32) -> RenamedTypes;
@@ -42,7 +42,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     #[wasm_bindgen(final)]
     fn new() -> SwitchMethods;
-    #[wasm_bindgen(js_namespace = SwitchMethods, final)]
+    #[wasm_bindgen(js_namespace = "SwitchMethods", final)]
     fn a();
     fn switch_methods_called() -> bool;
     #[wasm_bindgen(method, final)]
@@ -59,13 +59,13 @@ extern "C" {
     type RenameProperties;
     #[wasm_bindgen(constructor)]
     fn new() -> RenameProperties;
-    #[wasm_bindgen(getter = a, method)]
+    #[wasm_bindgen(getter = "a", method)]
     fn test(this: &RenameProperties) -> i32;
-    #[wasm_bindgen(getter, method, js_name = a)]
+    #[wasm_bindgen(getter, method, js_name = "a")]
     fn test2(this: &RenameProperties) -> i32;
-    #[wasm_bindgen(setter = a, method)]
+    #[wasm_bindgen(setter = "a", method)]
     fn another(this: &RenameProperties, a: i32);
-    #[wasm_bindgen(setter, method, js_name = a)]
+    #[wasm_bindgen(setter, method, js_name = "a")]
     fn another2(this: &RenameProperties, a: i32);
 
     /// dox
@@ -74,7 +74,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new() -> AssertImportDenyDocsWorks;
     /// dox
-    #[wasm_bindgen(getter = a, method)]
+    #[wasm_bindgen(getter = "a", method)]
     pub fn test(this: &AssertImportDenyDocsWorks) -> i32;
     /// dox
     pub fn foo();
@@ -113,9 +113,9 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Math)]
+    #[wasm_bindgen(js_namespace = "Math")]
     fn random() -> f64;
-    #[wasm_bindgen(js_namespace = Math)]
+    #[wasm_bindgen(js_namespace = "Math")]
     fn log(a: f64) -> f64;
 }
 

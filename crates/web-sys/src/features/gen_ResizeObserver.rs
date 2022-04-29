@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = ResizeObserver , typescript_type = "ResizeObserver")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "ResizeObserver",
+        typescript_type = "ResizeObserver"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ResizeObserver` class."]
     #[doc = ""]
@@ -27,7 +31,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(callback: &::js_sys::Function) -> Result<ResizeObserver, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ResizeObserver" , js_name = disconnect)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "ResizeObserver",
+        js_name = "disconnect"
+    )]
     #[doc = "The `disconnect()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/disconnect)"]
@@ -39,7 +48,7 @@ extern "C" {
     pub fn disconnect(this: &ResizeObserver);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Element")]
-    # [wasm_bindgen (method , structural , js_class = "ResizeObserver" , js_name = observe)]
+    #[wasm_bindgen(method, structural, js_class = "ResizeObserver", js_name = "observe")]
     #[doc = "The `observe()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe)"]
@@ -51,7 +60,7 @@ extern "C" {
     pub fn observe(this: &ResizeObserver, target: &Element);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "Element", feature = "ResizeObserverOptions",))]
-    # [wasm_bindgen (method , structural , js_class = "ResizeObserver" , js_name = observe)]
+    #[wasm_bindgen(method, structural, js_class = "ResizeObserver", js_name = "observe")]
     #[doc = "The `observe()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe)"]
@@ -67,7 +76,7 @@ extern "C" {
     );
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Element")]
-    # [wasm_bindgen (method , structural , js_class = "ResizeObserver" , js_name = unobserve)]
+    #[wasm_bindgen(method, structural, js_class = "ResizeObserver", js_name = "unobserve")]
     #[doc = "The `unobserve()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/unobserve)"]

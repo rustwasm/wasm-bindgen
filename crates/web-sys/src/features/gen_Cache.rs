@@ -3,7 +3,11 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = Cache , typescript_type = "Cache")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "Cache",
+        typescript_type = "Cache"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Cache` class."]
     #[doc = ""]
@@ -12,21 +16,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub type Cache;
     #[cfg(feature = "Request")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = add)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "add")]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/add)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Request`*"]
     pub fn add_with_request(this: &Cache, request: &Request) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = add)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "add")]
     #[doc = "The `add()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/add)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub fn add_with_str(this: &Cache, request: &str) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = addAll)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "addAll")]
     #[doc = "The `addAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/addAll)"]
@@ -36,7 +40,7 @@ extern "C" {
         this: &Cache,
         requests: &::wasm_bindgen::JsValue,
     ) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = addAll)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "addAll")]
     #[doc = "The `addAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/addAll)"]
@@ -47,14 +51,14 @@ extern "C" {
         requests: &::wasm_bindgen::JsValue,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "Request")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = delete)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "delete")]
     #[doc = "The `delete()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/delete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Request`*"]
     pub fn delete_with_request(this: &Cache, request: &Request) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = delete)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "delete")]
     #[doc = "The `delete()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/delete)"]
@@ -62,7 +66,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub fn delete_with_str(this: &Cache, request: &str) -> ::js_sys::Promise;
     #[cfg(all(feature = "CacheQueryOptions", feature = "Request",))]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = delete)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "delete")]
     #[doc = "The `delete()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/delete)"]
@@ -74,7 +78,7 @@ extern "C" {
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "CacheQueryOptions")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = delete)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "delete")]
     #[doc = "The `delete()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/delete)"]
@@ -85,7 +89,7 @@ extern "C" {
         request: &str,
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = keys)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "keys")]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/keys)"]
@@ -93,14 +97,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub fn keys(this: &Cache) -> ::js_sys::Promise;
     #[cfg(feature = "Request")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = keys)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "keys")]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/keys)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Request`*"]
     pub fn keys_with_request(this: &Cache, request: &Request) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = keys)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "keys")]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/keys)"]
@@ -108,7 +112,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub fn keys_with_str(this: &Cache, request: &str) -> ::js_sys::Promise;
     #[cfg(all(feature = "CacheQueryOptions", feature = "Request",))]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = keys)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "keys")]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/keys)"]
@@ -120,7 +124,7 @@ extern "C" {
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "CacheQueryOptions")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = keys)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "keys")]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/keys)"]
@@ -132,14 +136,14 @@ extern "C" {
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "Request")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = match)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "match")]
     #[doc = "The `match()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/match)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Request`*"]
     pub fn match_with_request(this: &Cache, request: &Request) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = match)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "match")]
     #[doc = "The `match()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/match)"]
@@ -147,7 +151,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub fn match_with_str(this: &Cache, request: &str) -> ::js_sys::Promise;
     #[cfg(all(feature = "CacheQueryOptions", feature = "Request",))]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = match)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "match")]
     #[doc = "The `match()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/match)"]
@@ -159,7 +163,7 @@ extern "C" {
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "CacheQueryOptions")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = match)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "match")]
     #[doc = "The `match()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/match)"]
@@ -170,7 +174,7 @@ extern "C" {
         request: &str,
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = matchAll)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "matchAll")]
     #[doc = "The `matchAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/matchAll)"]
@@ -178,14 +182,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub fn match_all(this: &Cache) -> ::js_sys::Promise;
     #[cfg(feature = "Request")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = matchAll)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "matchAll")]
     #[doc = "The `matchAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/matchAll)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Cache`, `Request`*"]
     pub fn match_all_with_request(this: &Cache, request: &Request) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = matchAll)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "matchAll")]
     #[doc = "The `matchAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/matchAll)"]
@@ -193,7 +197,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Cache`*"]
     pub fn match_all_with_str(this: &Cache, request: &str) -> ::js_sys::Promise;
     #[cfg(all(feature = "CacheQueryOptions", feature = "Request",))]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = matchAll)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "matchAll")]
     #[doc = "The `matchAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/matchAll)"]
@@ -205,7 +209,7 @@ extern "C" {
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "CacheQueryOptions")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = matchAll)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "matchAll")]
     #[doc = "The `matchAll()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/matchAll)"]
@@ -217,7 +221,7 @@ extern "C" {
         options: &CacheQueryOptions,
     ) -> ::js_sys::Promise;
     #[cfg(all(feature = "Request", feature = "Response",))]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = put)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "put")]
     #[doc = "The `put()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/put)"]
@@ -229,7 +233,7 @@ extern "C" {
         response: &Response,
     ) -> ::js_sys::Promise;
     #[cfg(feature = "Response")]
-    # [wasm_bindgen (method , structural , js_class = "Cache" , js_name = put)]
+    #[wasm_bindgen(method, structural, js_class = "Cache", js_name = "put")]
     #[doc = "The `put()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Cache/put)"]

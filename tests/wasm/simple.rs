@@ -21,10 +21,10 @@ extern "C" {
     fn return_string_none() -> Option<String>;
     fn return_string_some() -> Option<String>;
     fn test_rust_optional();
-    #[wasm_bindgen(js_name = import_export_same_name)]
+    #[wasm_bindgen(js_name = "import_export_same_name")]
     fn js_import_export_same_name();
 
-    #[wasm_bindgen(js_name = RenamedInRust)]
+    #[wasm_bindgen(js_name = "RenamedInRust")]
     type Renamed;
     fn new_renamed() -> Renamed;
 

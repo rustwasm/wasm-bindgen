@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = EncodedVideoChunk , typescript_type = "EncodedVideoChunk")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "EncodedVideoChunk",
+        typescript_type = "EncodedVideoChunk"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `EncodedVideoChunk` class."]
     #[doc = ""]
@@ -17,7 +21,13 @@ extern "C" {
     pub type EncodedVideoChunk;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "EncodedVideoChunkType")]
-    # [wasm_bindgen (structural , method , getter , js_class = "EncodedVideoChunk" , js_name = type)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "EncodedVideoChunk",
+        js_name = "type"
+    )]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EncodedVideoChunk/type)"]
@@ -28,7 +38,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(this: &EncodedVideoChunk) -> EncodedVideoChunkType;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "EncodedVideoChunk" , js_name = timestamp)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "EncodedVideoChunk",
+        js_name = "timestamp"
+    )]
     #[doc = "Getter for the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EncodedVideoChunk/timestamp)"]
@@ -39,7 +55,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp(this: &EncodedVideoChunk) -> f64;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "EncodedVideoChunk" , js_name = duration)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "EncodedVideoChunk",
+        js_name = "duration"
+    )]
     #[doc = "Getter for the `duration` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EncodedVideoChunk/duration)"]
@@ -50,7 +72,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn duration(this: &EncodedVideoChunk) -> Option<f64>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "EncodedVideoChunk" , js_name = byteLength)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "EncodedVideoChunk",
+        js_name = "byteLength"
+    )]
     #[doc = "Getter for the `byteLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EncodedVideoChunk/byteLength)"]
@@ -73,7 +101,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(init: &EncodedVideoChunkInit) -> Result<EncodedVideoChunk, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "EncodedVideoChunk" , js_name = copyTo)]
+    #[wasm_bindgen(method, structural, js_class = "EncodedVideoChunk", js_name = "copyTo")]
     #[doc = "The `copyTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EncodedVideoChunk/copyTo)"]
@@ -84,7 +112,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_to_with_buffer_source(this: &EncodedVideoChunk, destination: &::js_sys::Object);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "EncodedVideoChunk" , js_name = copyTo)]
+    #[wasm_bindgen(method, structural, js_class = "EncodedVideoChunk", js_name = "copyTo")]
     #[doc = "The `copyTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EncodedVideoChunk/copyTo)"]

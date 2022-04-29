@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = ImageDecoder , typescript_type = "ImageDecoder")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "ImageDecoder",
+        typescript_type = "ImageDecoder"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ImageDecoder` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type ImageDecoder;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ImageDecoder" , js_name = type)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ImageDecoder",
+        js_name = "type"
+    )]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/type)"]
@@ -27,7 +37,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(this: &ImageDecoder) -> String;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ImageDecoder" , js_name = complete)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ImageDecoder",
+        js_name = "complete"
+    )]
     #[doc = "Getter for the `complete` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/complete)"]
@@ -38,7 +54,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn complete(this: &ImageDecoder) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ImageDecoder" , js_name = completed)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ImageDecoder",
+        js_name = "completed"
+    )]
     #[doc = "Getter for the `completed` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/completed)"]
@@ -50,7 +72,13 @@ extern "C" {
     pub fn completed(this: &ImageDecoder) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "ImageTrackList")]
-    # [wasm_bindgen (structural , method , getter , js_class = "ImageDecoder" , js_name = tracks)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ImageDecoder",
+        js_name = "tracks"
+    )]
     #[doc = "Getter for the `tracks` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/tracks)"]
@@ -73,7 +101,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(init: &ImageDecoderInit) -> Result<ImageDecoder, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ImageDecoder" , js_name = close)]
+    #[wasm_bindgen(method, structural, js_class = "ImageDecoder", js_name = "close")]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/close)"]
@@ -84,7 +112,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn close(this: &ImageDecoder);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ImageDecoder" , js_name = decode)]
+    #[wasm_bindgen(method, structural, js_class = "ImageDecoder", js_name = "decode")]
     #[doc = "The `decode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/decode)"]
@@ -96,7 +124,7 @@ extern "C" {
     pub fn decode(this: &ImageDecoder) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "ImageDecodeOptions")]
-    # [wasm_bindgen (method , structural , js_class = "ImageDecoder" , js_name = decode)]
+    #[wasm_bindgen(method, structural, js_class = "ImageDecoder", js_name = "decode")]
     #[doc = "The `decode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/decode)"]
@@ -110,7 +138,11 @@ extern "C" {
         options: &ImageDecodeOptions,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (static_method_of = ImageDecoder , js_class = "ImageDecoder" , js_name = isTypeSupported)]
+    #[wasm_bindgen(
+        static_method_of = "ImageDecoder",
+        js_class = "ImageDecoder",
+        js_name = "isTypeSupported"
+    )]
     #[doc = "The `isTypeSupported()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/isTypeSupported)"]
@@ -121,7 +153,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_type_supported(type_: &str) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ImageDecoder" , js_name = reset)]
+    #[wasm_bindgen(method, structural, js_class = "ImageDecoder", js_name = "reset")]
     #[doc = "The `reset()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/reset)"]

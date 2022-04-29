@@ -13,10 +13,10 @@ pub struct Timeout {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = setTimeout)]
+    #[wasm_bindgen(js_name = "setTimeout")]
     fn set_timeout(closure: JsValue, millis: f64) -> JsValue;
 
-    #[wasm_bindgen(js_name = clearTimeout)]
+    #[wasm_bindgen(js_name = "clearTimeout")]
     fn clear_timeout(id: &JsValue);
 }
 

@@ -3,7 +3,13 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = UiEvent , extends = Event , extends = :: js_sys :: Object , js_name = CompositionEvent , typescript_type = "CompositionEvent")]
+    #[wasm_bindgen(
+        extends = "UiEvent",
+        extends = "Event",
+        extends = "::js_sys::Object",
+        js_name = "CompositionEvent",
+        typescript_type = "CompositionEvent"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `CompositionEvent` class."]
     #[doc = ""]
@@ -11,14 +17,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`*"]
     pub type CompositionEvent;
-    # [wasm_bindgen (structural , method , getter , js_class = "CompositionEvent" , js_name = data)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "CompositionEvent",
+        js_name = "data"
+    )]
     #[doc = "Getter for the `data` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`*"]
     pub fn data(this: &CompositionEvent) -> Option<String>;
-    # [wasm_bindgen (structural , method , getter , js_class = "CompositionEvent" , js_name = locale)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "CompositionEvent",
+        js_name = "locale"
+    )]
     #[doc = "Getter for the `locale` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/locale)"]
@@ -43,14 +61,24 @@ extern "C" {
         type_: &str,
         event_init_dict: &CompositionEventInit,
     ) -> Result<CompositionEvent, JsValue>;
-    # [wasm_bindgen (method , structural , js_class = "CompositionEvent" , js_name = initCompositionEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "CompositionEvent",
+        js_name = "initCompositionEvent"
+    )]
     #[doc = "The `initCompositionEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/initCompositionEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`*"]
     pub fn init_composition_event(this: &CompositionEvent, type_arg: &str);
-    # [wasm_bindgen (method , structural , js_class = "CompositionEvent" , js_name = initCompositionEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "CompositionEvent",
+        js_name = "initCompositionEvent"
+    )]
     #[doc = "The `initCompositionEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/initCompositionEvent)"]
@@ -61,7 +89,12 @@ extern "C" {
         type_arg: &str,
         can_bubble_arg: bool,
     );
-    # [wasm_bindgen (method , structural , js_class = "CompositionEvent" , js_name = initCompositionEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "CompositionEvent",
+        js_name = "initCompositionEvent"
+    )]
     #[doc = "The `initCompositionEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/initCompositionEvent)"]
@@ -74,7 +107,12 @@ extern "C" {
         cancelable_arg: bool,
     );
     #[cfg(feature = "Window")]
-    # [wasm_bindgen (method , structural , js_class = "CompositionEvent" , js_name = initCompositionEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "CompositionEvent",
+        js_name = "initCompositionEvent"
+    )]
     #[doc = "The `initCompositionEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/initCompositionEvent)"]
@@ -88,7 +126,12 @@ extern "C" {
         view_arg: Option<&Window>,
     );
     #[cfg(feature = "Window")]
-    # [wasm_bindgen (method , structural , js_class = "CompositionEvent" , js_name = initCompositionEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "CompositionEvent",
+        js_name = "initCompositionEvent"
+    )]
     #[doc = "The `initCompositionEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/initCompositionEvent)"]
@@ -103,7 +146,12 @@ extern "C" {
         data_arg: Option<&str>,
     );
     #[cfg(feature = "Window")]
-    # [wasm_bindgen (method , structural , js_class = "CompositionEvent" , js_name = initCompositionEvent)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "CompositionEvent",
+        js_name = "initCompositionEvent"
+    )]
     #[doc = "The `initCompositionEvent()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/initCompositionEvent)"]

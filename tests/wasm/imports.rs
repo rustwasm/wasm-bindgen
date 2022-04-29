@@ -13,7 +13,7 @@ extern "C" {
     fn missing_symbol(s: &str);
     fn return_string() -> String;
     fn take_and_ret_string(s: String) -> String;
-    #[wasm_bindgen(js_name = take_and_ret_string)]
+    #[wasm_bindgen(js_name = "take_and_ret_string")]
     fn take_and_ret_string2(s: &str) -> String;
 
     fn exceptions_throw();
@@ -25,22 +25,22 @@ extern "C" {
 
     static IMPORT: JsValue;
 
-    #[wasm_bindgen(js_name = return_three)]
+    #[wasm_bindgen(js_name = "return_three")]
     fn rust_name_for_return_three() -> u32;
 
     fn underscore(_: u8);
 
-    #[wasm_bindgen(js_name = pub)]
+    #[wasm_bindgen(js_name = "pub")]
     fn js_function_named_rust_keyword() -> u32;
 
     type bar;
-    #[wasm_bindgen(js_namespace = bar, js_name = foo)]
+    #[wasm_bindgen(js_namespace = "bar", js_name = "foo")]
     static FOO: JsValue;
 
     fn take_custom_type(f: CustomType) -> CustomType;
     fn touch_custom_type();
     fn custom_type_return_2() -> CustomType;
-    #[wasm_bindgen(js_name = interpret_2_as_custom_type)]
+    #[wasm_bindgen(js_name = "interpret_2_as_custom_type")]
     fn js_interpret_2_as_custom_type();
 
     #[wasm_bindgen(js_name = "baz$")]
@@ -70,16 +70,16 @@ extern "C" {
     #[wasm_bindgen(js_name = "receive_some")]
     fn receive_some_owned(arg: Option<PassOutOptionUndefined>);
 
-    #[wasm_bindgen(js_namespace = Math)]
+    #[wasm_bindgen(js_namespace = "Math")]
     fn func_from_module_math(a: i32) -> i32;
 
-    #[wasm_bindgen(js_namespace = Number)]
+    #[wasm_bindgen(js_namespace = "Number")]
     fn func_from_module_number() -> f64;
 
     #[wasm_bindgen(js_name = "same_name_from_import")]
     fn same_name_from_import_1(s: i32) -> i32;
 
-    #[wasm_bindgen(js_namespace = same_js_namespace_from_module)]
+    #[wasm_bindgen(js_namespace = "same_js_namespace_from_module")]
     fn func_from_module_1_same_js_namespace(s: i32) -> i32;
 }
 
@@ -88,7 +88,7 @@ extern "C" {
     #[wasm_bindgen(js_name = "same_name_from_import")]
     fn same_name_from_import_2(s: i32) -> i32;
 
-    #[wasm_bindgen(js_namespace = same_js_namespace_from_module)]
+    #[wasm_bindgen(js_namespace = "same_js_namespace_from_module")]
     fn func_from_module_2_same_js_namespace(s: i32) -> i32;
 }
 
@@ -96,7 +96,7 @@ extern "C" {
 extern "C" {
     fn parseInt(a: &str) -> u32;
 
-    #[wasm_bindgen(js_namespace = Math, js_name = "sqrt")]
+    #[wasm_bindgen(js_namespace = "Math", js_name = "sqrt")]
     fn func_from_global_math(s: f64) -> f64;
 
     type Number;

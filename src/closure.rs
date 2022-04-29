@@ -51,7 +51,7 @@ use crate::UnwrapThrowExt;
 ///     fn setInterval(closure: &Closure<dyn FnMut()>, time: u32) -> i32;
 ///     fn clearInterval(id: i32);
 ///
-///     #[wasm_bindgen(js_namespace = console)]
+///     #[wasm_bindgen(js_namespace = "console")]
 ///     fn log(s: &str);
 /// }
 ///
@@ -147,7 +147,7 @@ use crate::UnwrapThrowExt;
 ///     fn requestAnimationFrame(closure: &Closure<dyn FnMut()>) -> u32;
 ///     fn cancelAnimationFrame(id: u32);
 ///
-///     #[wasm_bindgen(js_namespace = console)]
+///     #[wasm_bindgen(js_namespace = "console")]
 ///     fn log(s: &str);
 /// }
 ///
@@ -213,7 +213,7 @@ use crate::UnwrapThrowExt;
 ///     // example above for details.
 ///     fn requestAnimationFrame(callback: JsValue);
 ///
-///     #[wasm_bindgen(js_namespace = console)]
+///     #[wasm_bindgen(js_namespace = "console")]
 ///     fn log(s: &str);
 /// }
 ///

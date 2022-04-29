@@ -10,9 +10,9 @@ extern "C" {
     #[wasm_bindgen(method, setter, structural)]
     fn set_foo(this: &Foo42, val: JsValue);
 
-    #[wasm_bindgen(js_name = prototype, js_namespace = Object)]
+    #[wasm_bindgen(js_name = "prototype", js_namespace = "Object")]
     static OBJECT_PROTOTYPE: JsValue;
-    #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
+    #[wasm_bindgen(js_name = "prototype", js_namespace = "Array")]
     static ARRAY_PROTOTYPE: JsValue;
 
     type DefinePropertyAttrs;
@@ -33,9 +33,9 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     fn new() -> Foo;
 
-    #[wasm_bindgen(js_name = prototype, js_namespace = Foo)]
+    #[wasm_bindgen(js_name = "prototype", js_namespace = "Foo")]
     static FOO_PROTOTYPE: Object;
-    #[wasm_bindgen(js_name = prototype, js_namespace = Bar)]
+    #[wasm_bindgen(js_name = "prototype", js_namespace = "Bar")]
     static BAR_PROTOTYPE: Object;
 }
 

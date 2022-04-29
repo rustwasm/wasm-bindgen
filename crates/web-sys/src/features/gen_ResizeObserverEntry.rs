@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = ResizeObserverEntry , typescript_type = "ResizeObserverEntry")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "ResizeObserverEntry",
+        typescript_type = "ResizeObserverEntry"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ResizeObserverEntry` class."]
     #[doc = ""]
@@ -17,7 +21,13 @@ extern "C" {
     pub type ResizeObserverEntry;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Element")]
-    # [wasm_bindgen (structural , method , getter , js_class = "ResizeObserverEntry" , js_name = target)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ResizeObserverEntry",
+        js_name = "target"
+    )]
     #[doc = "Getter for the `target` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry/target)"]
@@ -29,7 +39,13 @@ extern "C" {
     pub fn target(this: &ResizeObserverEntry) -> Element;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectReadOnly")]
-    # [wasm_bindgen (structural , method , getter , js_class = "ResizeObserverEntry" , js_name = contentRect)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ResizeObserverEntry",
+        js_name = "contentRect"
+    )]
     #[doc = "Getter for the `contentRect` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry/contentRect)"]
@@ -40,7 +56,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn content_rect(this: &ResizeObserverEntry) -> DomRectReadOnly;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ResizeObserverEntry" , js_name = borderBoxSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ResizeObserverEntry",
+        js_name = "borderBoxSize"
+    )]
     #[doc = "Getter for the `borderBoxSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry/borderBoxSize)"]
@@ -51,7 +73,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn border_box_size(this: &ResizeObserverEntry) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ResizeObserverEntry" , js_name = contentBoxSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ResizeObserverEntry",
+        js_name = "contentBoxSize"
+    )]
     #[doc = "Getter for the `contentBoxSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry/contentBoxSize)"]
@@ -62,7 +90,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn content_box_size(this: &ResizeObserverEntry) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ResizeObserverEntry" , js_name = devicePixelContentBoxSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ResizeObserverEntry",
+        js_name = "devicePixelContentBoxSize"
+    )]
     #[doc = "Getter for the `devicePixelContentBoxSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry/devicePixelContentBoxSize)"]

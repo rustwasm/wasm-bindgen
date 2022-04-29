@@ -144,12 +144,12 @@ fn namespace_global_and_noglobal_works() {
                 use wasm_bindgen::prelude::*;
                 #[wasm_bindgen(module = "fs")]
                 extern "C" {
-                    #[wasm_bindgen(js_namespace = window)]
+                    #[wasm_bindgen(js_namespace = "window")]
                     fn t1();
                 }
                 #[wasm_bindgen]
                 extern "C" {
-                    #[wasm_bindgen(js_namespace = window)]
+                    #[wasm_bindgen(js_namespace = "window")]
                     fn t2();
                 }
                 #[wasm_bindgen]
@@ -189,7 +189,7 @@ fn bin_crate_works() {
                 use wasm_bindgen::prelude::*;
                 #[wasm_bindgen]
                 extern "C" {
-                    #[wasm_bindgen(js_namespace = console)]
+                    #[wasm_bindgen(js_namespace = "console")]
                     fn log(data: &str);
                 }
 

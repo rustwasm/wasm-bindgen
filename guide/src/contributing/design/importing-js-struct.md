@@ -16,7 +16,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     fn new(arg: i32) -> Bar;
 
-    #[wasm_bindgen(js_namespace = Bar)]
+    #[wasm_bindgen(js_namespace = "Bar")]
     fn another_function() -> i32;
 
     #[wasm_bindgen(method)]
@@ -56,7 +56,7 @@ let's go through one-by-one:
 * `#[wasm_bindgen(constructor)]` - this indicates that the binding's name isn't
   actually used in JS but rather translates to `new Bar()`. The return value of
   this function must be a bare type, like `Bar`.
-* `#[wasm_bindgen(js_namespace = Bar)]` - this attribute indicates that the
+* `#[wasm_bindgen(js_namespace = "Bar")]` - this attribute indicates that the
   function declaration is namespaced through the `Bar` class in JS.
 * `#[wasm_bindgen(static_method_of = SomeJsClass)]` - this attribute is similar
   to `js_namespace`, but instead of producing a free function, produces a static

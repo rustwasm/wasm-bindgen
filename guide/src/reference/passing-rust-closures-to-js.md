@@ -84,7 +84,7 @@ extern "C" {
     fn setInterval(closure: &Closure<dyn FnMut()>, millis: u32) -> f64;
     fn cancelInterval(token: f64);
 
-    #[wasm_bindgen(js_namespace = console)]
+    #[wasm_bindgen(js_namespace = "console")]
     fn log(s: &str);
 }
 

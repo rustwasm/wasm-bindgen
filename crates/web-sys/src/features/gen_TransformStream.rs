@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = TransformStream , typescript_type = "TransformStream")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "TransformStream",
+        typescript_type = "TransformStream"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `TransformStream` class."]
     #[doc = ""]
@@ -17,7 +21,13 @@ extern "C" {
     pub type TransformStream;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "ReadableStream")]
-    # [wasm_bindgen (structural , method , getter , js_class = "TransformStream" , js_name = readable)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "TransformStream",
+        js_name = "readable"
+    )]
     #[doc = "Getter for the `readable` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream/readable)"]
@@ -29,7 +39,13 @@ extern "C" {
     pub fn readable(this: &TransformStream) -> ReadableStream;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WritableStream")]
-    # [wasm_bindgen (structural , method , getter , js_class = "TransformStream" , js_name = writable)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "TransformStream",
+        js_name = "writable"
+    )]
     #[doc = "Getter for the `writable` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream/writable)"]

@@ -15,9 +15,9 @@ extern "C" {
     fn js_return_vec();
 
     fn js_clamped(val: Clamped<&[u8]>, offset: u8);
-    #[wasm_bindgen(js_name = js_clamped)]
+    #[wasm_bindgen(js_name = "js_clamped")]
     fn js_clamped2(val: Clamped<Vec<u8>>, offset: u8);
-    #[wasm_bindgen(js_name = js_clamped)]
+    #[wasm_bindgen(js_name = "js_clamped")]
     fn js_clamped3(val: Clamped<&mut [u8]>, offset: u8);
 }
 

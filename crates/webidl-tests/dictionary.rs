@@ -5,14 +5,14 @@ use wasm_bindgen_test::*;
 #[wasm_bindgen]
 extern "C" {
     fn assert_dict_c(c: &C);
-    #[wasm_bindgen(js_name = assert_dict_c)]
+    #[wasm_bindgen(js_name = "assert_dict_c")]
     fn assert_dict_c2(c: C);
-    #[wasm_bindgen(js_name = assert_dict_c)]
+    #[wasm_bindgen(js_name = "assert_dict_c")]
     fn assert_dict_c3(c: Option<&C>);
-    #[wasm_bindgen(js_name = assert_dict_c)]
+    #[wasm_bindgen(js_name = "assert_dict_c")]
     fn assert_dict_c4(c: Option<C>);
     fn mk_dict_a() -> A;
-    #[wasm_bindgen(js_name = mk_dict_a)]
+    #[wasm_bindgen(js_name = "mk_dict_a")]
     fn mk_dict_a2() -> Option<A>;
     fn assert_dict_required(r: &Required);
     fn assert_camel_case(dict: &PreserveNames);

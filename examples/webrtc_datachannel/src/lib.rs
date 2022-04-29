@@ -16,9 +16,9 @@ macro_rules! console_warn {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
+    #[wasm_bindgen(js_namespace = "console")]
     fn log(s: &str);
-    #[wasm_bindgen(js_namespace = console)]
+    #[wasm_bindgen(js_namespace = "console")]
     fn warn(s: &str);
 }
 

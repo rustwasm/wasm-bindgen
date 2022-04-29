@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = BluetoothRemoteGATTServer , typescript_type = "BluetoothRemoteGATTServer")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "BluetoothRemoteGATTServer",
+        typescript_type = "BluetoothRemoteGATTServer"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `BluetoothRemoteGattServer` class."]
     #[doc = ""]
@@ -17,7 +21,13 @@ extern "C" {
     pub type BluetoothRemoteGattServer;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothDevice")]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTServer" , js_name = device)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "device"
+    )]
     #[doc = "Getter for the `device` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/device)"]
@@ -28,7 +38,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn device(this: &BluetoothRemoteGattServer) -> BluetoothDevice;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "BluetoothRemoteGATTServer" , js_name = connected)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "connected"
+    )]
     #[doc = "Getter for the `connected` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/connected)"]
@@ -39,7 +55,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn connected(this: &BluetoothRemoteGattServer) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTServer" , js_name = connect)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "connect"
+    )]
     #[doc = "The `connect()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/connect)"]
@@ -50,7 +71,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn connect(this: &BluetoothRemoteGattServer) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTServer" , js_name = disconnect)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "disconnect"
+    )]
     #[doc = "The `disconnect()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/disconnect)"]
@@ -61,7 +87,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn disconnect(this: &BluetoothRemoteGattServer);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTServer" , js_name = getPrimaryService)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "getPrimaryService"
+    )]
     #[doc = "The `getPrimaryService()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/getPrimaryService)"]
@@ -75,7 +106,12 @@ extern "C" {
         service: &str,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTServer" , js_name = getPrimaryService)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "getPrimaryService"
+    )]
     #[doc = "The `getPrimaryService()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/getPrimaryService)"]
@@ -89,7 +125,12 @@ extern "C" {
         service: u32,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTServer" , js_name = getPrimaryServices)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "getPrimaryServices"
+    )]
     #[doc = "The `getPrimaryServices()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/getPrimaryServices)"]
@@ -100,7 +141,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn get_primary_services(this: &BluetoothRemoteGattServer) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTServer" , js_name = getPrimaryServices)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "getPrimaryServices"
+    )]
     #[doc = "The `getPrimaryServices()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/getPrimaryServices)"]
@@ -114,7 +160,12 @@ extern "C" {
         service: &str,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTServer" , js_name = getPrimaryServices)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "BluetoothRemoteGATTServer",
+        js_name = "getPrimaryServices"
+    )]
     #[doc = "The `getPrimaryServices()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTServer/getPrimaryServices)"]

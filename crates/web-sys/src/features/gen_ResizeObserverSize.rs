@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = ResizeObserverSize , typescript_type = "ResizeObserverSize")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "ResizeObserverSize",
+        typescript_type = "ResizeObserverSize"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ResizeObserverSize` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type ResizeObserverSize;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ResizeObserverSize" , js_name = inlineSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ResizeObserverSize",
+        js_name = "inlineSize"
+    )]
     #[doc = "Getter for the `inlineSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverSize/inlineSize)"]
@@ -27,7 +37,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn inline_size(this: &ResizeObserverSize) -> f64;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ResizeObserverSize" , js_name = blockSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ResizeObserverSize",
+        js_name = "blockSize"
+    )]
     #[doc = "Getter for the `blockSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverSize/blockSize)"]

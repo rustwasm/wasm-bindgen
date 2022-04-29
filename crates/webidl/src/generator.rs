@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use std::collections::BTreeSet;
 use syn::{Ident, Type};
-use wasm_bindgen_backend::util::{raw_ident, rust_ident};
+use wasm_bindgen_backend::util::rust_ident;
 
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
 use crate::traverse::TraverseType;
@@ -199,6 +199,7 @@ impl InterfaceAttribute {
         };
 
         let (method, this) = if *is_static {
+            let parent_name = parent_name.to_string();
             (quote!( static_method_of = #parent_name, ), None)
         } else {
             (quote!(method,), Some(quote!( this: &#parent_name, )))
@@ -247,8 +248,6 @@ impl InterfaceAttribute {
             ),
             &doc_comment,
         );
-
-        let js_name = raw_ident(js_name);
 
         quote! {
             #unstable_attr
@@ -333,7 +332,6 @@ impl InterfaceMethod {
             }
             InterfaceMethodKind::Regular => {
                 {
-                    let js_name = raw_ident(js_name);
                     extra_args.push(quote!( js_name = #js_name ));
                 }
                 format!(
@@ -396,6 +394,7 @@ impl InterfaceMethod {
 
             (quote!(constructor,), None)
         } else if *is_static {
+            let parent_name = parent_name.to_string();
             (quote!( static_method_of = #parent_name, ), None)
         } else {
             let structural = if *structural {
@@ -546,17 +545,18 @@ impl Interface {
         let is_type_of = if *has_interface {
             None
         } else {
-            Some(quote!(is_type_of = |_| false,))
+            Some(quote!(is_type_of = "|_| false",))
         };
 
         let prefixes = if POLYFILL_INTERFACES.contains(js_name.as_str()) {
-            Some(quote!(vendor_prefix = webkit,))
+            Some(quote!(vendor_prefix = "webkit",))
         } else {
             None
         };
 
         let extends = parents
             .into_iter()
+            .map(|x| x.to_string())
             .map(|x| quote!( extends = #x, ))
             .collect::<Vec<_>>();
 
@@ -586,7 +586,7 @@ impl Interface {
             .map(|x| x.generate(options, &name, js_name.to_string(), &parents))
             .collect::<Vec<_>>();
 
-        let js_ident = raw_ident(js_name);
+        let js_ident = js_name;
 
         quote! {
             #![allow(unused_imports)]
@@ -600,7 +600,7 @@ impl Interface {
                     #is_type_of
                     #prefixes
                     #(#extends)*
-                    extends = ::js_sys::Object,
+                    extends = "::js_sys::Object",
                     js_name = #js_ident,
                     typescript_type = #js_name
                 )]
@@ -694,8 +694,6 @@ impl Dictionary {
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
 
-        let js_name = raw_ident(js_name);
-
         let mut required_features = BTreeSet::new();
         let mut required_args = vec![];
         let mut required_calls = vec![];
@@ -747,7 +745,7 @@ impl Dictionary {
             #unstable_attr
             #[wasm_bindgen]
             extern "C" {
-                #[wasm_bindgen(extends = ::js_sys::Object, js_name = #js_name)]
+                #[wasm_bindgen(extends = "::js_sys::Object", js_name = #js_name)]
                 #[derive(Debug, Clone, PartialEq, Eq)]
                 #doc_comment
                 #unstable_docs
@@ -819,7 +817,7 @@ impl Function {
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
 
-        let js_namespace = raw_ident(&parent_js_name);
+        let js_namespace = &parent_js_name;
 
         let doc_comment = format!(
             "The `{}.{}()` function.\n\n{}",
@@ -861,8 +859,6 @@ impl Function {
 
         let arguments = generate_arguments(arguments, *variadic);
         let variadic = generate_variadic(*variadic);
-
-        let js_name = raw_ident(js_name);
 
         quote! {
             #unstable_attr

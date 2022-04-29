@@ -437,12 +437,12 @@ fn access_fields() {
     js_access_fields();
 }
 
-#[wasm_bindgen(js_name = JsRenamedExport)]
+#[wasm_bindgen(js_name = "JsRenamedExport")]
 pub struct RenamedExport {
     pub x: u32,
 }
 
-#[wasm_bindgen(js_class = JsRenamedExport)]
+#[wasm_bindgen(js_class = "JsRenamedExport")]
 impl RenamedExport {
     #[wasm_bindgen(constructor)]
     pub fn new() -> RenamedExport {

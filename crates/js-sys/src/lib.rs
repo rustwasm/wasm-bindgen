@@ -218,14 +218,14 @@ extern "C" {
     /// previously created by `encodeURI` or by a similar routine.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI)
-    #[wasm_bindgen(catch, js_name = decodeURI)]
+    #[wasm_bindgen(catch, js_name = "decodeURI")]
     pub fn decode_uri(encoded: &str) -> Result<JsString, JsValue>;
 
     /// The `decodeURIComponent()` function decodes a Uniform Resource Identifier (URI) component
     /// previously created by `encodeURIComponent` or by a similar routine.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent)
-    #[wasm_bindgen(catch, js_name = decodeURIComponent)]
+    #[wasm_bindgen(catch, js_name = "decodeURIComponent")]
     pub fn decode_uri_component(encoded: &str) -> Result<JsString, JsValue>;
 
     /// The `encodeURI()` function encodes a Uniform Resource Identifier (URI)
@@ -235,7 +235,7 @@ extern "C" {
     /// "surrogate" characters).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI)
-    #[wasm_bindgen(js_name = encodeURI)]
+    #[wasm_bindgen(js_name = "encodeURI")]
     pub fn encode_uri(decoded: &str) -> JsString;
 
     /// The `encodeURIComponent()` function encodes a Uniform Resource Identifier (URI) component
@@ -244,7 +244,7 @@ extern "C" {
     /// (will only be four escape sequences for characters composed of two "surrogate" characters).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent)
-    #[wasm_bindgen(js_name = encodeURIComponent)]
+    #[wasm_bindgen(js_name = "encodeURIComponent")]
     pub fn encode_uri_component(decoded: &str) -> JsString;
 
     /// The `eval()` function evaluates JavaScript code represented as a string.
@@ -257,21 +257,21 @@ extern "C" {
     /// If needed, the parameter is first converted to a number.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite)
-    #[wasm_bindgen(js_name = isFinite)]
+    #[wasm_bindgen(js_name = "isFinite")]
     pub fn is_finite(value: &JsValue) -> bool;
 
     /// The `parseInt()` function parses a string argument and returns an integer
     /// of the specified radix (the base in mathematical numeral systems), or NaN on error.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)
-    #[wasm_bindgen(js_name = parseInt)]
+    #[wasm_bindgen(js_name = "parseInt")]
     pub fn parse_int(text: &str, radix: u8) -> f64;
 
     /// The `parseFloat()` function parses an argument and returns a floating point number,
     /// or NaN on error.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat)
-    #[wasm_bindgen(js_name = parseFloat)]
+    #[wasm_bindgen(js_name = "parseFloat")]
     pub fn parse_float(text: &str) -> f64;
 
     /// The `escape()` function computes a new string in which certain characters have been
@@ -294,7 +294,11 @@ extern "C" {
 // Array
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = Array::is_array, typescript_type = "Array<any>")]
+    #[wasm_bindgen(
+        extends = "Object",
+        is_type_of = "Array::is_array",
+        typescript_type = "Array<any>"
+    )]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Array;
 
@@ -329,14 +333,14 @@ extern "C" {
 
     /// The `Array.from()` method creates a new, shallow-copied `Array` instance
     /// from an array-like or iterable object.
-    #[wasm_bindgen(static_method_of = Array)]
+    #[wasm_bindgen(static_method_of = "Array")]
     pub fn from(val: &JsValue) -> Array;
 
     /// The `copyWithin()` method shallow copies part of an array to another
     /// location in the same array and returns it, without modifying its size.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
-    #[wasm_bindgen(method, js_name = copyWithin)]
+    #[wasm_bindgen(method, js_name = "copyWithin")]
     pub fn copy_within(this: &Array, target: i32, start: i32, end: i32) -> Array;
 
     /// The `concat()` method is used to merge two or more arrays. This method
@@ -378,7 +382,7 @@ extern "C" {
     /// satisfies the provided testing function. Otherwise -1 is returned.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
-    #[wasm_bindgen(method, js_name = findIndex)]
+    #[wasm_bindgen(method, js_name = "findIndex")]
     pub fn find_index(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> i32;
 
     /// The `flat()` method creates a new array with all sub-array elements concatenated into it
@@ -392,7 +396,7 @@ extern "C" {
     /// the result into a new array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap)
-    #[wasm_bindgen(method, js_name = flatMap)]
+    #[wasm_bindgen(method, js_name = "flatMap")]
     pub fn flat_map(
         this: &Array,
         callback: &mut dyn FnMut(JsValue, u32, Array) -> Vec<JsValue>,
@@ -401,7 +405,7 @@ extern "C" {
     /// The `forEach()` method executes a provided function once for each array element.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
-    #[wasm_bindgen(method, js_name = forEach)]
+    #[wasm_bindgen(method, js_name = "forEach")]
     pub fn for_each(this: &Array, callback: &mut dyn FnMut(JsValue, u32, Array));
 
     /// The `includes()` method determines whether an array includes a certain
@@ -415,13 +419,13 @@ extern "C" {
     /// can be found in the array, or -1 if it is not present.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
-    #[wasm_bindgen(method, js_name = indexOf)]
+    #[wasm_bindgen(method, js_name = "indexOf")]
     pub fn index_of(this: &Array, value: &JsValue, from_index: i32) -> i32;
 
     /// The `Array.isArray()` method determines whether the passed value is an Array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray)
-    #[wasm_bindgen(static_method_of = Array, js_name = isArray)]
+    #[wasm_bindgen(static_method_of = "Array", js_name = "isArray")]
     pub fn is_array(value: &JsValue) -> bool;
 
     /// The `join()` method joins all elements of an array (or an array-like object)
@@ -436,7 +440,7 @@ extern "C" {
     /// searched backwards, starting at fromIndex.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
-    #[wasm_bindgen(method, js_name = lastIndexOf)]
+    #[wasm_bindgen(method, js_name = "lastIndexOf")]
     pub fn last_index_of(this: &Array, value: &JsValue, from_index: i32) -> i32;
 
     /// The length property of an object which is an instance of type Array
@@ -473,23 +477,23 @@ extern "C" {
     ///
     /// There are a few bindings to `of` in `js-sys`: `of1`, `of2`, etc...
     /// with different arities.
-    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    #[wasm_bindgen(static_method_of = "Array", js_name = "of")]
     pub fn of1(a: &JsValue) -> Array;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    #[wasm_bindgen(static_method_of = "Array", js_name = "of")]
     pub fn of2(a: &JsValue, b: &JsValue) -> Array;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    #[wasm_bindgen(static_method_of = "Array", js_name = "of")]
     pub fn of3(a: &JsValue, b: &JsValue, c: &JsValue) -> Array;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    #[wasm_bindgen(static_method_of = "Array", js_name = "of")]
     pub fn of4(a: &JsValue, b: &JsValue, c: &JsValue, d: &JsValue) -> Array;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of)
-    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    #[wasm_bindgen(static_method_of = "Array", js_name = "of")]
     pub fn of5(a: &JsValue, b: &JsValue, c: &JsValue, d: &JsValue, e: &JsValue) -> Array;
 
     /// The `pop()` method removes the last element from an array and returns that
@@ -521,7 +525,7 @@ extern "C" {
     /// of the array (from right-to-left) to reduce it to a single value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/ReduceRight)
-    #[wasm_bindgen(method, js_name = reduceRight)]
+    #[wasm_bindgen(method, js_name = "reduceRight")]
     pub fn reduce_right(
         this: &Array,
         predicate: &mut dyn FnMut(JsValue, JsValue, u32, Array) -> JsValue,
@@ -580,14 +584,14 @@ extern "C" {
     /// Strings are separated by a locale-specific String (such as a comma “,”).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toLocaleString)
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &Array, locales: &JsValue, options: &JsValue) -> JsString;
 
     /// The `toString()` method returns a string representing the specified array
     /// and its elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString)
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Array) -> JsString;
 
     /// The `unshift()` method adds one or more elements to the beginning of an
@@ -691,7 +695,7 @@ impl Default for Array {
 // ArrayBuffer
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "ArrayBuffer")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "ArrayBuffer")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type ArrayBuffer;
 
@@ -713,14 +717,14 @@ extern "C" {
     /// This property returns 0 if this ArrayBuffer has been detached.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/byteLength)
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    #[wasm_bindgen(method, getter, js_name = "byteLength")]
     pub fn byte_length(this: &ArrayBuffer) -> u32;
 
     /// The `isView()` method returns true if arg is one of the `ArrayBuffer`
     /// views, such as typed array objects or a DataView; false otherwise.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView)
-    #[wasm_bindgen(static_method_of = ArrayBuffer, js_name = isView)]
+    #[wasm_bindgen(static_method_of = "ArrayBuffer", js_name = "isView")]
     pub fn is_view(value: &JsValue) -> bool;
 
     /// The `slice()` method returns a new `ArrayBuffer` whose contents
@@ -734,14 +738,14 @@ extern "C" {
     /// Like `slice()` but with the `end` argument.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice)
-    #[wasm_bindgen(method, js_name = slice)]
+    #[wasm_bindgen(method, js_name = "slice")]
     pub fn slice_with_end(this: &ArrayBuffer, begin: u32, end: u32) -> ArrayBuffer;
 }
 
 // SharedArrayBuffer
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "SharedArrayBuffer")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "SharedArrayBuffer")]
     #[derive(Clone, Debug)]
     pub type SharedArrayBuffer;
 
@@ -760,7 +764,7 @@ extern "C" {
     /// the `SharedArrayBuffer` is constructed and cannot be changed.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer/byteLength)
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    #[wasm_bindgen(method, getter, js_name = "byteLength")]
     pub fn byte_length(this: &SharedArrayBuffer) -> u32;
 
     /// The `slice()` method returns a new `SharedArrayBuffer` whose contents
@@ -774,7 +778,7 @@ extern "C" {
     /// Like `slice()` but with the `end` argument.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer/slice)
-    #[wasm_bindgen(method, js_name = slice)]
+    #[wasm_bindgen(method, js_name = "slice")]
     pub fn slice_with_end(this: &SharedArrayBuffer, begin: u32, end: u32) -> SharedArrayBuffer;
 }
 
@@ -824,7 +828,7 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/add)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn add(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.and()` method computes a bitwise AND with a given
@@ -834,7 +838,7 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/and)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn and(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.compareExchange()` method exchanges a given
@@ -845,7 +849,7 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/compareExchange)
-        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = compareExchange)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch, js_name = "compareExchange")]
         pub fn compare_exchange(
             typed_array: &JsValue,
             index: u32,
@@ -859,7 +863,7 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/exchange)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn exchange(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.isLockFree()` method is used to determine
@@ -868,14 +872,14 @@ pub mod Atomics {
         /// of integer `TypedArray` types.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/isLockFree)
-        #[wasm_bindgen(js_namespace = Atomics, js_name = isLockFree)]
+        #[wasm_bindgen(js_namespace = "Atomics", js_name = "isLockFree")]
         pub fn is_lock_free(size: u32) -> bool;
 
         /// The static `Atomics.load()` method returns a value at a given
         /// position in the array.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/load)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn load(typed_array: &JsValue, index: u32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.notify()` method notifies up some agents that
@@ -884,11 +888,11 @@ pub mod Atomics {
         /// If `count` is not provided, notifies all the agents in the queue.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/notify)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn notify(typed_array: &Int32Array, index: u32) -> Result<u32, JsValue>;
 
         /// Notifies up to `count` agents in the wait queue.
-        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = notify)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch, js_name = "notify")]
         pub fn notify_with_count(
             typed_array: &Int32Array,
             index: u32,
@@ -901,14 +905,14 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/or)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn or(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.store()` method stores a given value at the given
         /// position in the array and returns that value.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/store)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn store(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.sub()` method substracts a given value at a
@@ -917,7 +921,7 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/sub)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn sub(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.wait()` method verifies that a given
@@ -928,13 +932,13 @@ pub mod Atomics {
         /// and may not be allowed on the main thread.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn wait(typed_array: &Int32Array, index: u32, value: i32) -> Result<JsString, JsValue>;
 
         /// Like `wait()`, but with timeout
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
-        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch, js_name = "wait")]
         pub fn wait_with_timeout(
             typed_array: &Int32Array,
             index: u32,
@@ -949,7 +953,7 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/xor)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = "Atomics", catch)]
         pub fn xor(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
     }
 }
@@ -957,47 +961,51 @@ pub mod Atomics {
 // BigInt
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = |v| v.is_bigint(), typescript_type = "bigint")]
+    #[wasm_bindgen(
+        extends = "Object",
+        is_type_of = "|v| v.is_bigint()",
+        typescript_type = "bigint"
+    )]
     #[derive(Clone, PartialEq, Eq)]
     pub type BigInt;
 
-    #[wasm_bindgen(catch, js_name = BigInt)]
+    #[wasm_bindgen(catch, js_name = "BigInt")]
     fn new_bigint(value: &JsValue) -> Result<BigInt, Error>;
 
-    #[wasm_bindgen(js_name = BigInt)]
+    #[wasm_bindgen(js_name = "BigInt")]
     fn new_bigint_unchecked(value: &JsValue) -> BigInt;
 
     /// Clamps a BigInt value to a signed integer value, and returns that value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/asIntN)
-    #[wasm_bindgen(static_method_of = BigInt, js_name = asIntN)]
+    #[wasm_bindgen(static_method_of = "BigInt", js_name = "asIntN")]
     pub fn as_int_n(bits: f64, bigint: &BigInt) -> BigInt;
 
     /// Clamps a BigInt value to an unsigned integer value, and returns that value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/asUintN)
-    #[wasm_bindgen(static_method_of = BigInt, js_name = asUintN)]
+    #[wasm_bindgen(static_method_of = "BigInt", js_name = "asUintN")]
     pub fn as_uint_n(bits: f64, bigint: &BigInt) -> BigInt;
 
     /// Returns a string with a language-sensitive representation of this BigInt value. Overrides the [`Object.prototype.toLocaleString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/toLocaleString) method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/toLocaleString)
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &BigInt, locales: &JsValue, options: &JsValue) -> JsString;
 
     /// Returns a string representing this BigInt value in the specified radix (base). Overrides the [`Object.prototype.toString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString) method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/toString)
-    #[wasm_bindgen(catch, method, js_name = toString)]
+    #[wasm_bindgen(catch, method, js_name = "toString")]
     pub fn to_string(this: &BigInt, radix: u8) -> Result<JsString, RangeError>;
 
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     fn to_string_unchecked(this: &BigInt, radix: u8) -> String;
 
     /// Returns this BigInt value. Overrides the [`Object.prototype.valueOf()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf) method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/valueOf)
-    #[wasm_bindgen(method, js_name = valueOf)]
+    #[wasm_bindgen(method, js_name = "valueOf")]
     pub fn value_of(this: &BigInt, radix: u8) -> BigInt;
 }
 
@@ -1170,7 +1178,11 @@ impl fmt::UpperHex for BigInt {
 // Boolean
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_bool().is_some(), typescript_type = "boolean")]
+    #[wasm_bindgen(
+        extends = "Object",
+        is_type_of = "|v| v.as_bool().is_some()",
+        typescript_type = "boolean"
+    )]
     #[derive(Clone, PartialEq, Eq)]
     pub type Boolean;
 
@@ -1185,7 +1197,7 @@ extern "C" {
     /// The `valueOf()` method returns the primitive value of a `Boolean` object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean/valueOf)
-    #[wasm_bindgen(method, js_name = valueOf)]
+    #[wasm_bindgen(method, js_name = "valueOf")]
     pub fn value_of(this: &Boolean) -> bool;
 }
 
@@ -1244,7 +1256,7 @@ partialord_ord!(Boolean);
 // DataView
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "DataView")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "DataView")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type DataView;
 
@@ -1266,217 +1278,217 @@ extern "C" {
     /// Fixed at construction time and thus read only.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteLength)
-    #[wasm_bindgen(method, getter, structural, js_name = byteLength)]
+    #[wasm_bindgen(method, getter, structural, js_name = "byteLength")]
     pub fn byte_length(this: &DataView) -> usize;
 
     /// The offset (in bytes) of this view from the start of its ArrayBuffer.
     /// Fixed at construction time and thus read only.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteOffset)
-    #[wasm_bindgen(method, getter, structural, js_name = byteOffset)]
+    #[wasm_bindgen(method, getter, structural, js_name = "byteOffset")]
     pub fn byte_offset(this: &DataView) -> usize;
 
     /// The `getInt8()` method gets a signed 8-bit integer (byte) at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt8)
-    #[wasm_bindgen(method, js_name = getInt8)]
+    #[wasm_bindgen(method, js_name = "getInt8")]
     pub fn get_int8(this: &DataView, byte_offset: usize) -> i8;
 
     /// The `getUint8()` method gets a unsigned 8-bit integer (byte) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint8)
-    #[wasm_bindgen(method, js_name = getUint8)]
+    #[wasm_bindgen(method, js_name = "getUint8")]
     pub fn get_uint8(this: &DataView, byte_offset: usize) -> u8;
 
     /// The `getInt16()` method gets a signed 16-bit integer (short) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt16)
-    #[wasm_bindgen(method, js_name = getInt16)]
+    #[wasm_bindgen(method, js_name = "getInt16")]
     pub fn get_int16(this: &DataView, byte_offset: usize) -> i16;
 
     /// The `getInt16()` method gets a signed 16-bit integer (short) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt16)
-    #[wasm_bindgen(method, js_name = getInt16)]
+    #[wasm_bindgen(method, js_name = "getInt16")]
     pub fn get_int16_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> i16;
 
     /// The `getUint16()` method gets an unsigned 16-bit integer (unsigned short) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint16)
-    #[wasm_bindgen(method, js_name = getUint16)]
+    #[wasm_bindgen(method, js_name = "getUint16")]
     pub fn get_uint16(this: &DataView, byte_offset: usize) -> u16;
 
     /// The `getUint16()` method gets an unsigned 16-bit integer (unsigned short) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint16)
-    #[wasm_bindgen(method, js_name = getUint16)]
+    #[wasm_bindgen(method, js_name = "getUint16")]
     pub fn get_uint16_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> u16;
 
     /// The `getInt32()` method gets a signed 32-bit integer (long) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32)
-    #[wasm_bindgen(method, js_name = getInt32)]
+    #[wasm_bindgen(method, js_name = "getInt32")]
     pub fn get_int32(this: &DataView, byte_offset: usize) -> i32;
 
     /// The `getInt32()` method gets a signed 32-bit integer (long) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32)
-    #[wasm_bindgen(method, js_name = getInt32)]
+    #[wasm_bindgen(method, js_name = "getInt32")]
     pub fn get_int32_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> i32;
 
     /// The `getUint32()` method gets an unsigned 32-bit integer (unsigned long) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32)
-    #[wasm_bindgen(method, js_name = getUint32)]
+    #[wasm_bindgen(method, js_name = "getUint32")]
     pub fn get_uint32(this: &DataView, byte_offset: usize) -> u32;
 
     /// The `getUint32()` method gets an unsigned 32-bit integer (unsigned long) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32)
-    #[wasm_bindgen(method, js_name = getUint32)]
+    #[wasm_bindgen(method, js_name = "getUint32")]
     pub fn get_uint32_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> u32;
 
     /// The `getFloat32()` method gets a signed 32-bit float (float) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat32)
-    #[wasm_bindgen(method, js_name = getFloat32)]
+    #[wasm_bindgen(method, js_name = "getFloat32")]
     pub fn get_float32(this: &DataView, byte_offset: usize) -> f32;
 
     /// The `getFloat32()` method gets a signed 32-bit float (float) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat32)
-    #[wasm_bindgen(method, js_name = getFloat32)]
+    #[wasm_bindgen(method, js_name = "getFloat32")]
     pub fn get_float32_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> f32;
 
     /// The `getFloat64()` method gets a signed 64-bit float (double) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64)
-    #[wasm_bindgen(method, js_name = getFloat64)]
+    #[wasm_bindgen(method, js_name = "getFloat64")]
     pub fn get_float64(this: &DataView, byte_offset: usize) -> f64;
 
     /// The `getFloat64()` method gets a signed 64-bit float (double) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64)
-    #[wasm_bindgen(method, js_name = getFloat64)]
+    #[wasm_bindgen(method, js_name = "getFloat64")]
     pub fn get_float64_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> f64;
 
     /// The `setInt8()` method stores a signed 8-bit integer (byte) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt8)
-    #[wasm_bindgen(method, js_name = setInt8)]
+    #[wasm_bindgen(method, js_name = "setInt8")]
     pub fn set_int8(this: &DataView, byte_offset: usize, value: i8);
 
     /// The `setUint8()` method stores an unsigned 8-bit integer (byte) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint8)
-    #[wasm_bindgen(method, js_name = setUint8)]
+    #[wasm_bindgen(method, js_name = "setUint8")]
     pub fn set_uint8(this: &DataView, byte_offset: usize, value: u8);
 
     /// The `setInt16()` method stores a signed 16-bit integer (short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt16)
-    #[wasm_bindgen(method, js_name = setInt16)]
+    #[wasm_bindgen(method, js_name = "setInt16")]
     pub fn set_int16(this: &DataView, byte_offset: usize, value: i16);
 
     /// The `setInt16()` method stores a signed 16-bit integer (short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt16)
-    #[wasm_bindgen(method, js_name = setInt16)]
+    #[wasm_bindgen(method, js_name = "setInt16")]
     pub fn set_int16_endian(this: &DataView, byte_offset: usize, value: i16, little_endian: bool);
 
     /// The `setUint16()` method stores an unsigned 16-bit integer (unsigned short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint16)
-    #[wasm_bindgen(method, js_name = setUint16)]
+    #[wasm_bindgen(method, js_name = "setUint16")]
     pub fn set_uint16(this: &DataView, byte_offset: usize, value: u16);
 
     /// The `setUint16()` method stores an unsigned 16-bit integer (unsigned short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint16)
-    #[wasm_bindgen(method, js_name = setUint16)]
+    #[wasm_bindgen(method, js_name = "setUint16")]
     pub fn set_uint16_endian(this: &DataView, byte_offset: usize, value: u16, little_endian: bool);
 
     /// The `setInt32()` method stores a signed 32-bit integer (long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt32)
-    #[wasm_bindgen(method, js_name = setInt32)]
+    #[wasm_bindgen(method, js_name = "setInt32")]
     pub fn set_int32(this: &DataView, byte_offset: usize, value: i32);
 
     /// The `setInt32()` method stores a signed 32-bit integer (long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt32)
-    #[wasm_bindgen(method, js_name = setInt32)]
+    #[wasm_bindgen(method, js_name = "setInt32")]
     pub fn set_int32_endian(this: &DataView, byte_offset: usize, value: i32, little_endian: bool);
 
     /// The `setUint32()` method stores an unsigned 32-bit integer (unsigned long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint32)
-    #[wasm_bindgen(method, js_name = setUint32)]
+    #[wasm_bindgen(method, js_name = "setUint32")]
     pub fn set_uint32(this: &DataView, byte_offset: usize, value: u32);
 
     /// The `setUint32()` method stores an unsigned 32-bit integer (unsigned long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint32)
-    #[wasm_bindgen(method, js_name = setUint32)]
+    #[wasm_bindgen(method, js_name = "setUint32")]
     pub fn set_uint32_endian(this: &DataView, byte_offset: usize, value: u32, little_endian: bool);
 
     /// The `setFloat32()` method stores a signed 32-bit float (float) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat32)
-    #[wasm_bindgen(method, js_name = setFloat32)]
+    #[wasm_bindgen(method, js_name = "setFloat32")]
     pub fn set_float32(this: &DataView, byte_offset: usize, value: f32);
 
     /// The `setFloat32()` method stores a signed 32-bit float (float) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat32)
-    #[wasm_bindgen(method, js_name = setFloat32)]
+    #[wasm_bindgen(method, js_name = "setFloat32")]
     pub fn set_float32_endian(this: &DataView, byte_offset: usize, value: f32, little_endian: bool);
 
     /// The `setFloat64()` method stores a signed 64-bit float (double) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat64)
-    #[wasm_bindgen(method, js_name = setFloat64)]
+    #[wasm_bindgen(method, js_name = "setFloat64")]
     pub fn set_float64(this: &DataView, byte_offset: usize, value: f64);
 
     /// The `setFloat64()` method stores a signed 64-bit float (double) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat64)
-    #[wasm_bindgen(method, js_name = setFloat64)]
+    #[wasm_bindgen(method, js_name = "setFloat64")]
     pub fn set_float64_endian(this: &DataView, byte_offset: usize, value: f64, little_endian: bool);
 }
 
 // Error
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Error")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "Error")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Error;
 
@@ -1519,7 +1531,7 @@ extern "C" {
     /// The `toString()` method returns a string representing the specified Error object
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/toString)
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Error) -> JsString;
 }
 
@@ -1528,7 +1540,7 @@ partialord_ord!(JsString);
 // EvalError
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, extends = Error, typescript_type = "EvalError")]
+    #[wasm_bindgen(extends = "Object", extends = "Error", typescript_type = "EvalError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type EvalError;
 
@@ -1544,7 +1556,11 @@ extern "C" {
 // Function
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = JsValue::is_function, typescript_type = "Function")]
+    #[wasm_bindgen(
+        extends = "Object",
+        is_type_of = "JsValue::is_function",
+        typescript_type = "Function"
+    )]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Function;
 
@@ -1581,21 +1597,21 @@ extern "C" {
     /// arguments provided individually.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
-    #[wasm_bindgen(method, catch, js_name = call)]
+    #[wasm_bindgen(method, catch, js_name = "call")]
     pub fn call0(this: &Function, context: &JsValue) -> Result<JsValue, JsValue>;
 
     /// The `call()` method calls a function with a given this value and
     /// arguments provided individually.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
-    #[wasm_bindgen(method, catch, js_name = call)]
+    #[wasm_bindgen(method, catch, js_name = "call")]
     pub fn call1(this: &Function, context: &JsValue, arg1: &JsValue) -> Result<JsValue, JsValue>;
 
     /// The `call()` method calls a function with a given this value and
     /// arguments provided individually.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
-    #[wasm_bindgen(method, catch, js_name = call)]
+    #[wasm_bindgen(method, catch, js_name = "call")]
     pub fn call2(
         this: &Function,
         context: &JsValue,
@@ -1607,7 +1623,7 @@ extern "C" {
     /// arguments provided individually.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
-    #[wasm_bindgen(method, catch, js_name = call)]
+    #[wasm_bindgen(method, catch, js_name = "call")]
     pub fn call3(
         this: &Function,
         context: &JsValue,
@@ -1620,35 +1636,35 @@ extern "C" {
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
-    #[wasm_bindgen(method, js_name = bind)]
+    #[wasm_bindgen(method, js_name = "bind")]
     pub fn bind(this: &Function, context: &JsValue) -> Function;
 
     /// The `bind()` method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
-    #[wasm_bindgen(method, js_name = bind)]
+    #[wasm_bindgen(method, js_name = "bind")]
     pub fn bind0(this: &Function, context: &JsValue) -> Function;
 
     /// The `bind()` method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
-    #[wasm_bindgen(method, js_name = bind)]
+    #[wasm_bindgen(method, js_name = "bind")]
     pub fn bind1(this: &Function, context: &JsValue, arg1: &JsValue) -> Function;
 
     /// The `bind()` method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
-    #[wasm_bindgen(method, js_name = bind)]
+    #[wasm_bindgen(method, js_name = "bind")]
     pub fn bind2(this: &Function, context: &JsValue, arg1: &JsValue, arg2: &JsValue) -> Function;
 
     /// The `bind()` method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
-    #[wasm_bindgen(method, js_name = bind)]
+    #[wasm_bindgen(method, js_name = "bind")]
     pub fn bind3(
         this: &Function,
         context: &JsValue,
@@ -1674,7 +1690,7 @@ extern "C" {
     /// The `toString()` method returns a string representing the source code of the function.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/toString)
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Function) -> JsString;
 }
 
@@ -1699,7 +1715,7 @@ impl Default for Function {
 // Generator
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Generator<any, any, any>")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "Generator<any, any, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Generator;
 
@@ -1713,7 +1729,7 @@ extern "C" {
     /// The `return()` method returns the given value and finishes the generator.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/return)
-    #[wasm_bindgen(method, structural, js_name = return)]
+    #[wasm_bindgen(method, structural, js_name = "return")]
     pub fn return_(this: &Generator, value: &JsValue) -> JsValue;
 
     /// The `throw()` method resumes the execution of a generator by throwing an error into it
@@ -1727,7 +1743,7 @@ extern "C" {
 // Map
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Map<any, any>")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "Map<any, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Map;
 
@@ -1754,7 +1770,7 @@ extern "C" {
     /// })
     /// ```
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
-    #[wasm_bindgen(method, js_name = forEach)]
+    #[wasm_bindgen(method, js_name = "forEach")]
     pub fn for_each(this: &Map, callback: &mut dyn FnMut(JsValue, JsValue));
 
     /// The `get()` method returns a specified element from a Map object.
@@ -1833,7 +1849,10 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
     #[derive(Clone, Debug)]
-    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "Iterator<any>")]
+    #[wasm_bindgen(
+        is_type_of = "Iterator::looks_like_iterator",
+        typescript_type = "Iterator<any>"
+    )]
     pub type Iterator;
 
     /// The `next()` method always has to return an object with appropriate
@@ -1872,7 +1891,10 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of)
     #[derive(Clone, Debug)]
-    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "AsyncIterator<any>")]
+    #[wasm_bindgen(
+        is_type_of = "Iterator::looks_like_iterator",
+        typescript_type = "AsyncIterator<any>"
+    )]
     pub type AsyncIterator;
 
     /// The `next()` method always has to return a Promise which resolves to an object
@@ -1993,7 +2015,7 @@ extern "C" {
     /// The result of calling `next()` on a JS iterator.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
-    #[wasm_bindgen(extends = Object, typescript_type = "IteratorResult<any>")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "IteratorResult<any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type IteratorNext;
 
@@ -2024,7 +2046,7 @@ pub mod Math {
         /// Math.abs(x) = |x|
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn abs(x: f64) -> f64;
 
         /// The `Math.acos()` function returns the arccosine (in radians) of a
@@ -2032,7 +2054,7 @@ pub mod Math {
         /// Math.acos(x) = arccos(x) = the unique y∊[0;π] such that cos(y)=x
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acos)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn acos(x: f64) -> f64;
 
         /// The `Math.acosh()` function returns the hyperbolic arc-cosine of a
@@ -2040,7 +2062,7 @@ pub mod Math {
         /// Math.acosh(x) = arcosh(x) = the unique y ≥ 0 such that cosh(y) = x
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acosh)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn acosh(x: f64) -> f64;
 
         /// The `Math.asin()` function returns the arcsine (in radians) of a
@@ -2048,27 +2070,27 @@ pub mod Math {
         /// Math.asin(x) = arcsin(x) = the unique y∊[-π2;π2] such that sin(y) = x
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asin)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn asin(x: f64) -> f64;
 
         /// The `Math.asinh()` function returns the hyperbolic arcsine of a
         /// number, that is Math.asinh(x) = arsinh(x) = the unique y such that sinh(y) = x
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asinh)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn asinh(x: f64) -> f64;
 
         /// The `Math.atan()` function returns the arctangent (in radians) of a
         /// number, that is Math.atan(x) = arctan(x) = the unique y ∊ [-π2;π2]such that
         /// tan(y) = x
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn atan(x: f64) -> f64;
 
         /// The `Math.atan2()` function returns the arctangent of the quotient of
         /// its arguments.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn atan2(y: f64, x: f64) -> f64;
 
         /// The `Math.atanh()` function returns the hyperbolic arctangent of a number,
@@ -2076,125 +2098,125 @@ pub mod Math {
         /// tanh(y) = x
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atanh)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn atanh(x: f64) -> f64;
 
         /// The `Math.cbrt() `function returns the cube root of a number, that is
         /// Math.cbrt(x) = ∛x = the unique y such that y^3 = x
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cbrt)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn cbrt(x: f64) -> f64;
 
         /// The `Math.ceil()` function returns the smallest integer greater than
         /// or equal to a given number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn ceil(x: f64) -> f64;
 
         /// The `Math.clz32()` function returns the number of leading zero bits in
         /// the 32-bit binary representation of a number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/clz32)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn clz32(x: i32) -> u32;
 
         /// The `Math.cos()` static function returns the cosine of the specified angle,
         /// which must be specified in radians. This value is length(adjacent)/length(hypotenuse).
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn cos(x: f64) -> f64;
 
         /// The `Math.cosh()` function returns the hyperbolic cosine of a number,
         /// that can be expressed using the constant e.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cosh)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn cosh(x: f64) -> f64;
 
         /// The `Math.exp()` function returns e^x, where x is the argument, and e is Euler's number
         /// (also known as Napier's constant), the base of the natural logarithms.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn exp(x: f64) -> f64;
 
         /// The `Math.expm1()` function returns e^x - 1, where x is the argument, and e the base of the
         /// natural logarithms.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn expm1(x: f64) -> f64;
 
         /// The `Math.floor()` function returns the largest integer less than or
         /// equal to a given number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn floor(x: f64) -> f64;
 
         /// The `Math.fround()` function returns the nearest 32-bit single precision float representation
         /// of a Number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn fround(x: f64) -> f32;
 
         /// The `Math.hypot()` function returns the square root of the sum of squares of its arguments.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn hypot(x: f64, y: f64) -> f64;
 
         /// The `Math.imul()` function returns the result of the C-like 32-bit multiplication of the
         /// two parameters.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn imul(x: i32, y: i32) -> i32;
 
         /// The `Math.log()` function returns the natural logarithm (base e) of a number.
         /// The JavaScript `Math.log()` function is equivalent to ln(x) in mathematics.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn log(x: f64) -> f64;
 
         /// The `Math.log10()` function returns the base 10 logarithm of a number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn log10(x: f64) -> f64;
 
         /// The `Math.log1p()` function returns the natural logarithm (base e) of 1 + a number.
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log1p)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn log1p(x: f64) -> f64;
 
         /// The `Math.log2()` function returns the base 2 logarithm of a number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn log2(x: f64) -> f64;
 
         /// The `Math.max()` function returns the largest of two numbers.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn max(x: f64, y: f64) -> f64;
 
         /// The static function `Math.min()` returns the lowest-valued number passed into it.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/min)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn min(x: f64, y: f64) -> f64;
 
         /// The `Math.pow()` function returns the base to the exponent power, that is, base^exponent.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn pow(base: f64, exponent: f64) -> f64;
 
         /// The `Math.random()` function returns a floating-point, pseudo-random number
@@ -2204,60 +2226,60 @@ pub mod Math {
         /// it cannot be chosen or reset by the user.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn random() -> f64;
 
         /// The `Math.round()` function returns the value of a number rounded to the nearest integer.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn round(x: f64) -> f64;
 
         /// The `Math.sign()` function returns the sign of a number, indicating whether the number is
         /// positive, negative or zero.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn sign(x: f64) -> f64;
 
         /// The `Math.sin()` function returns the sine of a number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sin)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn sin(x: f64) -> f64;
 
         /// The `Math.sinh()` function returns the hyperbolic sine of a number, that can be expressed
         /// using the constant e: Math.sinh(x) = (e^x - e^-x)/2
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sinh)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn sinh(x: f64) -> f64;
 
         /// The `Math.sqrt()` function returns the square root of a number, that is
         /// ∀x ≥ 0, Math.sqrt(x) = √x = the unique y ≥ 0 such that y^2 = x
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sqrt)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn sqrt(x: f64) -> f64;
 
         /// The `Math.tan()` function returns the tangent of a number.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tan)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn tan(x: f64) -> f64;
 
         /// The `Math.tanh()` function returns the hyperbolic tangent of a number, that is
         /// tanh x = sinh x / cosh x = (e^x - e^-x)/(e^x + e^-x) = (e^2x - 1)/(e^2x + 1)
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tanh)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn tanh(x: f64) -> f64;
 
         /// The `Math.trunc()` function returns the integer part of a number by removing any fractional
         /// digits.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc)
-        #[wasm_bindgen(js_namespace = Math)]
+        #[wasm_bindgen(js_namespace = "Math")]
         pub fn trunc(x: f64) -> f64;
     }
 }
@@ -2265,34 +2287,38 @@ pub mod Math {
 // Number.
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_f64().is_some(), typescript_type = "number")]
+    #[wasm_bindgen(
+        extends = "Object",
+        is_type_of = "|v| v.as_f64().is_some()",
+        typescript_type = "number"
+    )]
     #[derive(Clone, PartialEq)]
     pub type Number;
 
     /// The `Number.isFinite()` method determines whether the passed value is a finite number.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite)
-    #[wasm_bindgen(static_method_of = Number, js_name = isFinite)]
+    #[wasm_bindgen(static_method_of = "Number", js_name = "isFinite")]
     pub fn is_finite(value: &JsValue) -> bool;
 
     /// The `Number.isInteger()` method determines whether the passed value is an integer.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
-    #[wasm_bindgen(static_method_of = Number, js_name = isInteger)]
+    #[wasm_bindgen(static_method_of = "Number", js_name = "isInteger")]
     pub fn is_integer(value: &JsValue) -> bool;
 
     /// The `Number.isNaN()` method determines whether the passed value is `NaN` and its type is Number.
     /// It is a more robust version of the original, global isNaN().
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN)
-    #[wasm_bindgen(static_method_of = Number, js_name = isNaN)]
+    #[wasm_bindgen(static_method_of = "Number", js_name = "isNaN")]
     pub fn is_nan(value: &JsValue) -> bool;
 
     /// The `Number.isSafeInteger()` method determines whether the provided value is a number
     /// that is a safe integer.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger)
-    #[wasm_bindgen(static_method_of = Number, js_name = isSafeInteger)]
+    #[wasm_bindgen(static_method_of = "Number", js_name = "isSafeInteger")]
     pub fn is_safe_integer(value: &JsValue) -> bool;
 
     /// The `Number` JavaScript object is a wrapper object allowing
@@ -2312,56 +2338,56 @@ extern "C" {
     /// integer of the specified radix or base.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt)
-    #[wasm_bindgen(static_method_of = Number, js_name = parseInt)]
+    #[wasm_bindgen(static_method_of = "Number", js_name = "parseInt")]
     pub fn parse_int(text: &str, radix: u8) -> f64;
 
     /// The `Number.parseFloat()` method parses a string argument and returns a
     /// floating point number.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat)
-    #[wasm_bindgen(static_method_of = Number, js_name = parseFloat)]
+    #[wasm_bindgen(static_method_of = "Number", js_name = "parseFloat")]
     pub fn parse_float(text: &str) -> f64;
 
     /// The `toLocaleString()` method returns a string with a language sensitive
     /// representation of this number.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString)
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &Number, locale: &str) -> JsString;
 
     /// The `toPrecision()` method returns a string representing the Number
     /// object to the specified precision.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision)
-    #[wasm_bindgen(catch, method, js_name = toPrecision)]
+    #[wasm_bindgen(catch, method, js_name = "toPrecision")]
     pub fn to_precision(this: &Number, precision: u8) -> Result<JsString, JsValue>;
 
     /// The `toFixed()` method returns a string representing the Number
     /// object using fixed-point notation.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed)
-    #[wasm_bindgen(catch, method, js_name = toFixed)]
+    #[wasm_bindgen(catch, method, js_name = "toFixed")]
     pub fn to_fixed(this: &Number, digits: u8) -> Result<JsString, JsValue>;
 
     /// The `toExponential()` method returns a string representing the Number
     /// object in exponential notation.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential)
-    #[wasm_bindgen(catch, method, js_name = toExponential)]
+    #[wasm_bindgen(catch, method, js_name = "toExponential")]
     pub fn to_exponential(this: &Number, fraction_digits: u8) -> Result<JsString, JsValue>;
 
     /// The `toString()` method returns a string representing the
     /// specified Number object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString)
-    #[wasm_bindgen(catch, method, js_name = toString)]
+    #[wasm_bindgen(catch, method, js_name = "toString")]
     pub fn to_string(this: &Number, radix: u8) -> Result<JsString, JsValue>;
 
     /// The `valueOf()` method returns the wrapped primitive value of
     /// a Number object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf)
-    #[wasm_bindgen(method, js_name = valueOf)]
+    #[wasm_bindgen(method, js_name = "valueOf")]
     pub fn value_of(this: &Number) -> f64;
 }
 
@@ -2566,7 +2592,7 @@ impl FromStr for Number {
 // Date.
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Date")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "Date")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Date;
 
@@ -2574,117 +2600,117 @@ extern "C" {
     /// specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate)
-    #[wasm_bindgen(method, js_name = getDate)]
+    #[wasm_bindgen(method, js_name = "getDate")]
     pub fn get_date(this: &Date) -> u32;
 
     /// The `getDay()` method returns the day of the week for the specified date according to local time,
     /// where 0 represents Sunday. For the day of the month see getDate().
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay)
-    #[wasm_bindgen(method, js_name = getDay)]
+    #[wasm_bindgen(method, js_name = "getDay")]
     pub fn get_day(this: &Date) -> u32;
 
     /// The `getFullYear()` method returns the year of the specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getFullYear)
-    #[wasm_bindgen(method, js_name = getFullYear)]
+    #[wasm_bindgen(method, js_name = "getFullYear")]
     pub fn get_full_year(this: &Date) -> u32;
 
     /// The `getHours()` method returns the hour for the specified date, according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getHours)
-    #[wasm_bindgen(method, js_name = getHours)]
+    #[wasm_bindgen(method, js_name = "getHours")]
     pub fn get_hours(this: &Date) -> u32;
 
     /// The `getMilliseconds()` method returns the milliseconds in the specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMilliseconds)
-    #[wasm_bindgen(method, js_name = getMilliseconds)]
+    #[wasm_bindgen(method, js_name = "getMilliseconds")]
     pub fn get_milliseconds(this: &Date) -> u32;
 
     /// The `getMinutes()` method returns the minutes in the specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMinutes)
-    #[wasm_bindgen(method, js_name = getMinutes)]
+    #[wasm_bindgen(method, js_name = "getMinutes")]
     pub fn get_minutes(this: &Date) -> u32;
 
     /// The `getMonth()` method returns the month in the specified date according to local time,
     /// as a zero-based value (where zero indicates the first month of the year).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth)
-    #[wasm_bindgen(method, js_name = getMonth)]
+    #[wasm_bindgen(method, js_name = "getMonth")]
     pub fn get_month(this: &Date) -> u32;
 
     /// The `getSeconds()` method returns the seconds in the specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getSeconds)
-    #[wasm_bindgen(method, js_name = getSeconds)]
+    #[wasm_bindgen(method, js_name = "getSeconds")]
     pub fn get_seconds(this: &Date) -> u32;
 
     /// The `getTime()` method returns the numeric value corresponding to the time for the specified date
     /// according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime)
-    #[wasm_bindgen(method, js_name = getTime)]
+    #[wasm_bindgen(method, js_name = "getTime")]
     pub fn get_time(this: &Date) -> f64;
 
     /// The `getTimezoneOffset()` method returns the time zone difference, in minutes,
     /// from current locale (host system settings) to UTC.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset)
-    #[wasm_bindgen(method, js_name = getTimezoneOffset)]
+    #[wasm_bindgen(method, js_name = "getTimezoneOffset")]
     pub fn get_timezone_offset(this: &Date) -> f64;
 
     /// The `getUTCDate()` method returns the day (date) of the month in the specified date
     /// according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate)
-    #[wasm_bindgen(method, js_name = getUTCDate)]
+    #[wasm_bindgen(method, js_name = "getUTCDate")]
     pub fn get_utc_date(this: &Date) -> u32;
 
     /// The `getUTCDay()` method returns the day of the week in the specified date according to universal time,
     /// where 0 represents Sunday.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDay)
-    #[wasm_bindgen(method, js_name = getUTCDay)]
+    #[wasm_bindgen(method, js_name = "getUTCDay")]
     pub fn get_utc_day(this: &Date) -> u32;
 
     /// The `getUTCFullYear()` method returns the year in the specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCFullYear)
-    #[wasm_bindgen(method, js_name = getUTCFullYear)]
+    #[wasm_bindgen(method, js_name = "getUTCFullYear")]
     pub fn get_utc_full_year(this: &Date) -> u32;
 
     /// The `getUTCHours()` method returns the hours in the specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCHours)
-    #[wasm_bindgen(method, js_name = getUTCHours)]
+    #[wasm_bindgen(method, js_name = "getUTCHours")]
     pub fn get_utc_hours(this: &Date) -> u32;
 
     /// The `getUTCMilliseconds()` method returns the milliseconds in the specified date
     /// according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMilliseconds)
-    #[wasm_bindgen(method, js_name = getUTCMilliseconds)]
+    #[wasm_bindgen(method, js_name = "getUTCMilliseconds")]
     pub fn get_utc_milliseconds(this: &Date) -> u32;
 
     /// The `getUTCMinutes()` method returns the minutes in the specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMinutes)
-    #[wasm_bindgen(method, js_name = getUTCMinutes)]
+    #[wasm_bindgen(method, js_name = "getUTCMinutes")]
     pub fn get_utc_minutes(this: &Date) -> u32;
 
     /// The `getUTCMonth()` returns the month of the specified date according to universal time,
     /// as a zero-based value (where zero indicates the first month of the year).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMonth)
-    #[wasm_bindgen(method, js_name = getUTCMonth)]
+    #[wasm_bindgen(method, js_name = "getUTCMonth")]
     pub fn get_utc_month(this: &Date) -> u32;
 
     /// The `getUTCSeconds()` method returns the seconds in the specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCSeconds)
-    #[wasm_bindgen(method, js_name = getUTCSeconds)]
+    #[wasm_bindgen(method, js_name = "getUTCSeconds")]
     pub fn get_utc_seconds(this: &Date) -> u32;
 
     /// Creates a JavaScript `Date` instance that represents
@@ -2775,7 +2801,7 @@ extern "C" {
     /// elapsed since January 1, 1970 00:00:00 UTC.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now)
-    #[wasm_bindgen(static_method_of = Date)]
+    #[wasm_bindgen(static_method_of = "Date")]
     pub fn now() -> f64;
 
     /// The `Date.parse()` method parses a string representation of a date, and returns the number of milliseconds
@@ -2783,34 +2809,34 @@ extern "C" {
     /// contains illegal date values (e.g. 2015-02-31).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse)
-    #[wasm_bindgen(static_method_of = Date)]
+    #[wasm_bindgen(static_method_of = "Date")]
     pub fn parse(date: &str) -> f64;
 
     /// The `setDate()` method sets the day of the Date object relative to the beginning of the currently set month.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate)
-    #[wasm_bindgen(method, js_name = setDate)]
+    #[wasm_bindgen(method, js_name = "setDate")]
     pub fn set_date(this: &Date, day: u32) -> f64;
 
     /// The `setFullYear()` method sets the full year for a specified date according to local time.
     /// Returns new timestamp.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear)
-    #[wasm_bindgen(method, js_name = setFullYear)]
+    #[wasm_bindgen(method, js_name = "setFullYear")]
     pub fn set_full_year(this: &Date, year: u32) -> f64;
 
     /// The `setFullYear()` method sets the full year for a specified date according to local time.
     /// Returns new timestamp.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear)
-    #[wasm_bindgen(method, js_name = setFullYear)]
+    #[wasm_bindgen(method, js_name = "setFullYear")]
     pub fn set_full_year_with_month(this: &Date, year: u32, month: i32) -> f64;
 
     /// The `setFullYear()` method sets the full year for a specified date according to local time.
     /// Returns new timestamp.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear)
-    #[wasm_bindgen(method, js_name = setFullYear)]
+    #[wasm_bindgen(method, js_name = "setFullYear")]
     pub fn set_full_year_with_month_date(this: &Date, year: u32, month: i32, date: i32) -> f64;
 
     /// The `setHours()` method sets the hours for a specified date according to local time,
@@ -2818,63 +2844,63 @@ extern "C" {
     /// by the updated Date instance.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours)
-    #[wasm_bindgen(method, js_name = setHours)]
+    #[wasm_bindgen(method, js_name = "setHours")]
     pub fn set_hours(this: &Date, hours: u32) -> f64;
 
     /// The `setMilliseconds()` method sets the milliseconds for a specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMilliseconds)
-    #[wasm_bindgen(method, js_name = setMilliseconds)]
+    #[wasm_bindgen(method, js_name = "setMilliseconds")]
     pub fn set_milliseconds(this: &Date, milliseconds: u32) -> f64;
 
     /// The `setMinutes()` method sets the minutes for a specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes)
-    #[wasm_bindgen(method, js_name = setMinutes)]
+    #[wasm_bindgen(method, js_name = "setMinutes")]
     pub fn set_minutes(this: &Date, minutes: u32) -> f64;
 
     /// The `setMonth()` method sets the month for a specified date according to the currently set year.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth)
-    #[wasm_bindgen(method, js_name = setMonth)]
+    #[wasm_bindgen(method, js_name = "setMonth")]
     pub fn set_month(this: &Date, month: u32) -> f64;
 
     /// The `setSeconds()` method sets the seconds for a specified date according to local time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setSeconds)
-    #[wasm_bindgen(method, js_name = setSeconds)]
+    #[wasm_bindgen(method, js_name = "setSeconds")]
     pub fn set_seconds(this: &Date, seconds: u32) -> f64;
 
     /// The `setTime()` method sets the Date object to the time represented by a number of milliseconds
     /// since January 1, 1970, 00:00:00 UTC.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setTime)
-    #[wasm_bindgen(method, js_name = setTime)]
+    #[wasm_bindgen(method, js_name = "setTime")]
     pub fn set_time(this: &Date, time: f64) -> f64;
 
     /// The `setUTCDate()` method sets the day of the month for a specified date
     /// according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCDate)
-    #[wasm_bindgen(method, js_name = setUTCDate)]
+    #[wasm_bindgen(method, js_name = "setUTCDate")]
     pub fn set_utc_date(this: &Date, day: u32) -> f64;
 
     /// The `setUTCFullYear()` method sets the full year for a specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear)
-    #[wasm_bindgen(method, js_name = setUTCFullYear)]
+    #[wasm_bindgen(method, js_name = "setUTCFullYear")]
     pub fn set_utc_full_year(this: &Date, year: u32) -> f64;
 
     /// The `setUTCFullYear()` method sets the full year for a specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear)
-    #[wasm_bindgen(method, js_name = setUTCFullYear)]
+    #[wasm_bindgen(method, js_name = "setUTCFullYear")]
     pub fn set_utc_full_year_with_month(this: &Date, year: u32, month: i32) -> f64;
 
     /// The `setUTCFullYear()` method sets the full year for a specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear)
-    #[wasm_bindgen(method, js_name = setUTCFullYear)]
+    #[wasm_bindgen(method, js_name = "setUTCFullYear")]
     pub fn set_utc_full_year_with_month_date(this: &Date, year: u32, month: i32, date: i32) -> f64;
 
     /// The `setUTCHours()` method sets the hour for a specified date according to universal time,
@@ -2882,39 +2908,39 @@ extern "C" {
     /// represented by the updated Date instance.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours)
-    #[wasm_bindgen(method, js_name = setUTCHours)]
+    #[wasm_bindgen(method, js_name = "setUTCHours")]
     pub fn set_utc_hours(this: &Date, hours: u32) -> f64;
 
     /// The `setUTCMilliseconds()` method sets the milliseconds for a specified date
     /// according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMilliseconds)
-    #[wasm_bindgen(method, js_name = setUTCMilliseconds)]
+    #[wasm_bindgen(method, js_name = "setUTCMilliseconds")]
     pub fn set_utc_milliseconds(this: &Date, milliseconds: u32) -> f64;
 
     /// The `setUTCMinutes()` method sets the minutes for a specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes)
-    #[wasm_bindgen(method, js_name = setUTCMinutes)]
+    #[wasm_bindgen(method, js_name = "setUTCMinutes")]
     pub fn set_utc_minutes(this: &Date, minutes: u32) -> f64;
 
     /// The `setUTCMonth()` method sets the month for a specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMonth)
-    #[wasm_bindgen(method, js_name = setUTCMonth)]
+    #[wasm_bindgen(method, js_name = "setUTCMonth")]
     pub fn set_utc_month(this: &Date, month: u32) -> f64;
 
     /// The `setUTCSeconds()` method sets the seconds for a specified date according to universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCSeconds)
-    #[wasm_bindgen(method, js_name = setUTCSeconds)]
+    #[wasm_bindgen(method, js_name = "setUTCSeconds")]
     pub fn set_utc_seconds(this: &Date, seconds: u32) -> f64;
 
     /// The `toDateString()` method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toDateString)
-    #[wasm_bindgen(method, js_name = toDateString)]
+    #[wasm_bindgen(method, js_name = "toDateString")]
     pub fn to_date_string(this: &Date) -> JsString;
 
     /// The `toISOString()` method returns a string in simplified extended ISO format (ISO
@@ -2923,13 +2949,13 @@ extern "C" {
     /// as denoted by the suffix "Z"
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
-    #[wasm_bindgen(method, js_name = toISOString)]
+    #[wasm_bindgen(method, js_name = "toISOString")]
     pub fn to_iso_string(this: &Date) -> JsString;
 
     /// The `toJSON()` method returns a string representation of the Date object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON)
-    #[wasm_bindgen(method, js_name = toJSON)]
+    #[wasm_bindgen(method, js_name = "toJSON")]
     pub fn to_json(this: &Date) -> JsString;
 
     /// The `toLocaleDateString()` method returns a string with a language sensitive
@@ -2941,7 +2967,7 @@ extern "C" {
     /// returned are entirely implementation dependent.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString)
-    #[wasm_bindgen(method, js_name = toLocaleDateString)]
+    #[wasm_bindgen(method, js_name = "toLocaleDateString")]
     pub fn to_locale_date_string(this: &Date, locale: &str, options: &JsValue) -> JsString;
 
     /// The `toLocaleString()` method returns a string with a language sensitive
@@ -2953,7 +2979,7 @@ extern "C" {
     /// returned are entirely implementation dependent.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString)
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &Date, locale: &str, options: &JsValue) -> JsString;
 
     /// The `toLocaleTimeString()` method returns a string with a language sensitive
@@ -2964,28 +2990,28 @@ extern "C" {
     /// returned are entirely implementation dependent.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString)
-    #[wasm_bindgen(method, js_name = toLocaleTimeString)]
+    #[wasm_bindgen(method, js_name = "toLocaleTimeString")]
     pub fn to_locale_time_string(this: &Date, locale: &str) -> JsString;
 
     /// The `toString()` method returns a string representing
     /// the specified Date object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toString)
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Date) -> JsString;
 
     /// The `toTimeString()` method returns the time portion of a Date object in human
     /// readable form in American English.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toTimeString)
-    #[wasm_bindgen(method, js_name = toTimeString)]
+    #[wasm_bindgen(method, js_name = "toTimeString")]
     pub fn to_time_string(this: &Date) -> JsString;
 
     /// The `toUTCString()` method converts a date to a string,
     /// using the UTC time zone.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toUTCString)
-    #[wasm_bindgen(method, js_name = toUTCString)]
+    #[wasm_bindgen(method, js_name = "toUTCString")]
     pub fn to_utc_string(this: &Date) -> JsString;
 
     /// The `Date.UTC()` method accepts the same parameters as the
@@ -2994,14 +3020,14 @@ extern "C" {
     /// 00:00:00, universal time.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC)
-    #[wasm_bindgen(static_method_of = Date, js_name = UTC)]
+    #[wasm_bindgen(static_method_of = "Date", js_name = "UTC")]
     pub fn utc(year: f64, month: f64) -> f64;
 
     /// The `valueOf()` method  returns the primitive value of
     /// a Date object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/valueOf)
-    #[wasm_bindgen(method, js_name = valueOf)]
+    #[wasm_bindgen(method, js_name = "valueOf")]
     pub fn value_of(this: &Date) -> f64;
 }
 
@@ -3017,7 +3043,7 @@ extern "C" {
     /// will return the target object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn assign(target: &Object, source: &Object) -> Object;
 
     /// The `Object.assign()` method is used to copy the values of all enumerable
@@ -3025,7 +3051,7 @@ extern "C" {
     /// will return the target object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
-    #[wasm_bindgen(static_method_of = Object, js_name = assign)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "assign")]
     pub fn assign2(target: &Object, source1: &Object, source2: &Object) -> Object;
 
     /// The `Object.assign()` method is used to copy the values of all enumerable
@@ -3033,7 +3059,7 @@ extern "C" {
     /// will return the target object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
-    #[wasm_bindgen(static_method_of = Object, js_name = assign)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "assign")]
     pub fn assign3(target: &Object, source1: &Object, source2: &Object, source3: &Object)
         -> Object;
 
@@ -3048,7 +3074,7 @@ extern "C" {
     /// object to provide the newly created object's prototype.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn create(prototype: &Object) -> Object;
 
     /// The static method `Object.defineProperty()` defines a new
@@ -3056,7 +3082,7 @@ extern "C" {
     /// property on an object, and returns the object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)
-    #[wasm_bindgen(static_method_of = Object, js_name = defineProperty)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "defineProperty")]
     pub fn define_property(obj: &Object, prop: &JsValue, descriptor: &Object) -> Object;
 
     /// The `Object.defineProperties()` method defines new or modifies
@@ -3064,7 +3090,7 @@ extern "C" {
     /// object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties)
-    #[wasm_bindgen(static_method_of = Object, js_name = defineProperties)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "defineProperties")]
     pub fn define_properties(obj: &Object, props: &Object) -> Object;
 
     /// The `Object.entries()` method returns an array of a given
@@ -3074,7 +3100,7 @@ extern "C" {
     /// prototype chain as well).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn entries(object: &Object) -> Array;
 
     /// The `Object.freeze()` method freezes an object: that is, prevents new
@@ -3084,14 +3110,14 @@ extern "C" {
     /// the prototype from being changed. The method returns the passed object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn freeze(value: &Object) -> Object;
 
     /// The `Object.fromEntries()` method transforms a list of key-value pairs
     /// into an object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries)
-    #[wasm_bindgen(static_method_of = Object, catch, js_name = fromEntries)]
+    #[wasm_bindgen(static_method_of = "Object", catch, js_name = "fromEntries")]
     pub fn from_entries(iterable: &JsValue) -> Result<Object, JsValue>;
 
     /// The `Object.getOwnPropertyDescriptor()` method returns a
@@ -3100,14 +3126,14 @@ extern "C" {
     /// of a given object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor)
-    #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertyDescriptor)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "getOwnPropertyDescriptor")]
     pub fn get_own_property_descriptor(obj: &Object, prop: &JsValue) -> JsValue;
 
     /// The `Object.getOwnPropertyDescriptors()` method returns all own
     /// property descriptors of a given object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors)
-    #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertyDescriptors)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "getOwnPropertyDescriptors")]
     pub fn get_own_property_descriptors(obj: &Object) -> JsValue;
 
     /// The `Object.getOwnPropertyNames()` method returns an array of
@@ -3115,14 +3141,14 @@ extern "C" {
     /// those which use Symbol) found directly upon a given object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames)
-    #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertyNames)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "getOwnPropertyNames")]
     pub fn get_own_property_names(obj: &Object) -> Array;
 
     /// The `Object.getOwnPropertySymbols()` method returns an array of
     /// all symbol properties found directly upon a given object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols)
-    #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertySymbols)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "getOwnPropertySymbols")]
     pub fn get_own_property_symbols(obj: &Object) -> Array;
 
     /// The `Object.getPrototypeOf()` method returns the prototype
@@ -3130,7 +3156,7 @@ extern "C" {
     /// specified object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf)
-    #[wasm_bindgen(static_method_of = Object, js_name = getPrototypeOf)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "getPrototypeOf")]
     pub fn get_prototype_of(obj: &JsValue) -> Object;
 
     /// The `hasOwnProperty()` method returns a boolean indicating whether the
@@ -3138,7 +3164,7 @@ extern "C" {
     /// inheriting it).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty)
-    #[wasm_bindgen(method, js_name = hasOwnProperty)]
+    #[wasm_bindgen(method, js_name = "hasOwnProperty")]
     pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
 
     /// The `Object.hasOwn()` method returns a boolean indicating whether the
@@ -3146,46 +3172,46 @@ extern "C" {
     /// opposed to inheriting it).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn)
-    #[wasm_bindgen(static_method_of = Object, js_name = hasOwn)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "hasOwn")]
     pub fn has_own(instance: &Object, property: &JsValue) -> bool;
 
     /// The `Object.is()` method determines whether two values are the same value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn is(value_1: &JsValue, value_2: &JsValue) -> bool;
 
     /// The `Object.isExtensible()` method determines if an object is extensible
     /// (whether it can have new properties added to it).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible)
-    #[wasm_bindgen(static_method_of = Object, js_name = isExtensible)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "isExtensible")]
     pub fn is_extensible(object: &Object) -> bool;
 
     /// The `Object.isFrozen()` determines if an object is frozen.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isFrozen)
-    #[wasm_bindgen(static_method_of = Object, js_name = isFrozen)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "isFrozen")]
     pub fn is_frozen(object: &Object) -> bool;
 
     /// The `Object.isSealed()` method determines if an object is sealed.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isSealed)
-    #[wasm_bindgen(static_method_of = Object, js_name = isSealed)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "isSealed")]
     pub fn is_sealed(object: &Object) -> bool;
 
     /// The `isPrototypeOf()` method checks if an object exists in another
     /// object's prototype chain.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isPrototypeOf)
-    #[wasm_bindgen(method, js_name = isPrototypeOf)]
+    #[wasm_bindgen(method, js_name = "isPrototypeOf")]
     pub fn is_prototype_of(this: &Object, value: &JsValue) -> bool;
 
     /// The `Object.keys()` method returns an array of a given object's property
     /// names, in the same order as we get with a normal loop.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn keys(object: &Object) -> Array;
 
     /// The [`Object`] constructor creates an object wrapper.
@@ -3199,14 +3225,14 @@ extern "C" {
     /// object).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions)
-    #[wasm_bindgen(static_method_of = Object, js_name = preventExtensions)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "preventExtensions")]
     pub fn prevent_extensions(object: &Object);
 
     /// The `propertyIsEnumerable()` method returns a Boolean indicating
     /// whether the specified property is enumerable.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable)
-    #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
+    #[wasm_bindgen(method, js_name = "propertyIsEnumerable")]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 
     /// The `Object.seal()` method seals an object, preventing new properties
@@ -3215,7 +3241,7 @@ extern "C" {
     /// long as they are writable.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/seal)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn seal(value: &Object) -> Object;
 
     /// The `Object.setPrototypeOf()` method sets the prototype (i.e., the
@@ -3223,7 +3249,7 @@ extern "C" {
     /// object or `null`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf)
-    #[wasm_bindgen(static_method_of = Object, js_name = setPrototypeOf)]
+    #[wasm_bindgen(static_method_of = "Object", js_name = "setPrototypeOf")]
     pub fn set_prototype_of(object: &Object, prototype: &Object) -> Object;
 
     /// The `toLocaleString()` method returns a string representing the object.
@@ -3231,20 +3257,20 @@ extern "C" {
     /// locale-specific purposes.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toLocaleString)
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &Object) -> JsString;
 
     /// The `toString()` method returns a string representing the object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString)
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Object) -> JsString;
 
     /// The `valueOf()` method returns the primitive value of the
     /// specified object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf)
-    #[wasm_bindgen(method, js_name = valueOf)]
+    #[wasm_bindgen(method, js_name = "valueOf")]
     pub fn value_of(this: &Object) -> Object;
 
     /// The `Object.values()` method returns an array of a given object's own
@@ -3253,7 +3279,7 @@ extern "C" {
     /// properties in the prototype chain as well).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values)
-    #[wasm_bindgen(static_method_of = Object)]
+    #[wasm_bindgen(static_method_of = "Object")]
     pub fn values(object: &Object) -> Array;
 }
 
@@ -3306,7 +3332,7 @@ extern "C" {
     /// object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/revocable)
-    #[wasm_bindgen(static_method_of = Proxy)]
+    #[wasm_bindgen(static_method_of = "Proxy")]
     pub fn revocable(target: &JsValue, handler: &Object) -> Object;
 }
 
@@ -3317,7 +3343,7 @@ extern "C" {
     /// or range of allowed values.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError)
-    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "RangeError")]
+    #[wasm_bindgen(extends = "Error", extends = "Object", typescript_type = "RangeError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type RangeError;
 
@@ -3336,7 +3362,11 @@ extern "C" {
     /// variable is referenced.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
-    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "ReferenceError")]
+    #[wasm_bindgen(
+        extends = "Error",
+        extends = "Object",
+        typescript_type = "ReferenceError"
+    )]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type ReferenceError;
 
@@ -3359,7 +3389,7 @@ pub mod Reflect {
         /// arguments as specified.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply)
-        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", catch)]
         pub fn apply(
             target: &Function,
             this_argument: &JsValue,
@@ -3371,7 +3401,7 @@ pub mod Reflect {
         /// gives also the added option to specify a different prototype.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
-        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", catch)]
         pub fn construct(target: &Function, arguments_list: &Array) -> Result<JsValue, JsValue>;
 
         /// The static `Reflect.construct()` method acts like the new operator, but
@@ -3379,7 +3409,7 @@ pub mod Reflect {
         /// gives also the added option to specify a different prototype.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = construct, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "construct", catch)]
         pub fn construct_with_new_target(
             target: &Function,
             arguments_list: &Array,
@@ -3390,7 +3420,7 @@ pub mod Reflect {
         /// `Object.defineProperty()` but returns a `Boolean`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = defineProperty, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "defineProperty", catch)]
         pub fn define_property(
             target: &Object,
             property_key: &JsValue,
@@ -3401,24 +3431,24 @@ pub mod Reflect {
         /// properties.  It is like the `delete` operator as a function.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/deleteProperty)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = deleteProperty, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "deleteProperty", catch)]
         pub fn delete_property(target: &Object, key: &JsValue) -> Result<bool, JsValue>;
 
         /// The static `Reflect.get()` method works like getting a property from
         /// an object (`target[propertyKey]`) as a function.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/get)
-        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", catch)]
         pub fn get(target: &JsValue, key: &JsValue) -> Result<JsValue, JsValue>;
 
         /// The same as [`get`](fn.get.html)
         /// except the key is an `f64`, which is slightly faster.
-        #[wasm_bindgen(js_namespace = Reflect, js_name = "get", catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "get", catch)]
         pub fn get_f64(target: &JsValue, key: f64) -> Result<JsValue, JsValue>;
 
         /// The same as [`get`](fn.get.html)
         /// except the key is a `u32`, which is slightly faster.
-        #[wasm_bindgen(js_namespace = Reflect, js_name = "get", catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "get", catch)]
         pub fn get_u32(target: &JsValue, key: u32) -> Result<JsValue, JsValue>;
 
         /// The static `Reflect.getOwnPropertyDescriptor()` method is similar to
@@ -3426,7 +3456,7 @@ pub mod Reflect {
         /// of the given property if it exists on the object, `undefined` otherwise.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getOwnPropertyDescriptor)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = getOwnPropertyDescriptor, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "getOwnPropertyDescriptor", catch)]
         pub fn get_own_property_descriptor(
             target: &Object,
             property_key: &JsValue,
@@ -3438,14 +3468,14 @@ pub mod Reflect {
         /// the specified object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getPrototypeOf)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = getPrototypeOf, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "getPrototypeOf", catch)]
         pub fn get_prototype_of(target: &JsValue) -> Result<Object, JsValue>;
 
         /// The static `Reflect.has()` method works like the in operator as a
         /// function.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has)
-        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", catch)]
         pub fn has(target: &JsValue, property_key: &JsValue) -> Result<bool, JsValue>;
 
         /// The static `Reflect.isExtensible()` method determines if an object is
@@ -3453,14 +3483,14 @@ pub mod Reflect {
         /// similar to `Object.isExtensible()`, but with some differences.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/isExtensible)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = isExtensible, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "isExtensible", catch)]
         pub fn is_extensible(target: &Object) -> Result<bool, JsValue>;
 
         /// The static `Reflect.ownKeys()` method returns an array of the
         /// target object's own property keys.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = ownKeys, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "ownKeys", catch)]
         pub fn own_keys(target: &JsValue) -> Result<Array, JsValue>;
 
         /// The static `Reflect.preventExtensions()` method prevents new
@@ -3469,14 +3499,14 @@ pub mod Reflect {
         /// `Object.preventExtensions()`, but with some differences.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/preventExtensions)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = preventExtensions, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "preventExtensions", catch)]
         pub fn prevent_extensions(target: &Object) -> Result<bool, JsValue>;
 
         /// The static `Reflect.set()` method works like setting a
         /// property on an object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
-        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", catch)]
         pub fn set(
             target: &JsValue,
             property_key: &JsValue,
@@ -3485,7 +3515,7 @@ pub mod Reflect {
 
         /// The same as [`set`](fn.set.html)
         /// except the key is an `f64`, which is slightly faster.
-        #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "set", catch)]
         pub fn set_f64(
             target: &JsValue,
             property_key: f64,
@@ -3494,7 +3524,7 @@ pub mod Reflect {
 
         /// The same as [`set`](fn.set.html)
         /// except the key is a `u32`, which is slightly faster.
-        #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "set", catch)]
         pub fn set_u32(
             target: &JsValue,
             property_key: u32,
@@ -3505,7 +3535,7 @@ pub mod Reflect {
         /// property on an object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = set, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "set", catch)]
         pub fn set_with_receiver(
             target: &JsValue,
             property_key: &JsValue,
@@ -3519,7 +3549,7 @@ pub mod Reflect {
         /// object to another object or to null.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/setPrototypeOf)
-        #[wasm_bindgen(js_namespace = Reflect, js_name = setPrototypeOf, catch)]
+        #[wasm_bindgen(js_namespace = "Reflect", js_name = "setPrototypeOf", catch)]
         pub fn set_prototype_of(target: &Object, prototype: &JsValue) -> Result<bool, JsValue>;
     }
 }
@@ -3527,7 +3557,7 @@ pub mod Reflect {
 // RegExp
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "RegExp")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "RegExp")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type RegExp;
 
@@ -3558,7 +3588,7 @@ extern "C" {
     /// property of an individual regular expression instance.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/ignoreCase)
-    #[wasm_bindgen(method, getter, js_name = ignoreCase)]
+    #[wasm_bindgen(method, getter, js_name = "ignoreCase")]
     pub fn ignore_case(this: &RegExp) -> bool;
 
     /// The non-standard input property is a static property of
@@ -3567,21 +3597,21 @@ extern "C" {
     /// property.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/input)
-    #[wasm_bindgen(static_method_of = RegExp, getter)]
+    #[wasm_bindgen(static_method_of = "RegExp", getter)]
     pub fn input() -> JsString;
 
     /// The lastIndex is a read/write integer property of regular expression
     /// instances that specifies the index at which to start the next match.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)
-    #[wasm_bindgen(structural, getter = lastIndex, method)]
+    #[wasm_bindgen(structural, getter = "lastIndex", method)]
     pub fn last_index(this: &RegExp) -> u32;
 
     /// The lastIndex is a read/write integer property of regular expression
     /// instances that specifies the index at which to start the next match.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)
-    #[wasm_bindgen(structural, setter = lastIndex, method)]
+    #[wasm_bindgen(structural, setter = "lastIndex", method)]
     pub fn set_last_index(this: &RegExp, index: u32);
 
     /// The non-standard lastMatch property is a static and read-only
@@ -3589,7 +3619,7 @@ extern "C" {
     /// characters. `RegExp.$&` is an alias for this property.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastMatch)
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = lastMatch)]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "lastMatch")]
     pub fn last_match() -> JsString;
 
     /// The non-standard lastParen property is a static and read-only
@@ -3598,7 +3628,7 @@ extern "C" {
     /// for this property.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastParen)
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = lastParen)]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "lastParen")]
     pub fn last_paren() -> JsString;
 
     /// The non-standard leftContext property is a static and
@@ -3607,7 +3637,7 @@ extern "C" {
     /// alias for this property.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/leftContext)
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = leftContext)]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "leftContext")]
     pub fn left_context() -> JsString;
 
     /// The multiline property indicates whether or not the "m" flag
@@ -3623,23 +3653,23 @@ extern "C" {
     /// that contain parenthesized substring matches.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/n)
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$1")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$1")]
     pub fn n1() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$2")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$2")]
     pub fn n2() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$3")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$3")]
     pub fn n3() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$4")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$4")]
     pub fn n4() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$5")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$5")]
     pub fn n5() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$6")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$6")]
     pub fn n6() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$7")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$7")]
     pub fn n7() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$8")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$8")]
     pub fn n8() -> JsString;
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$9")]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "$9")]
     pub fn n9() -> JsString;
 
     /// The `RegExp` constructor creates a regular expression object for matching text with a pattern.
@@ -3656,7 +3686,7 @@ extern "C" {
     /// alias for this property.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/rightContext)
-    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = rightContext)]
+    #[wasm_bindgen(static_method_of = "RegExp", getter, js_name = "rightContext")]
     pub fn right_context() -> JsString;
 
     /// The source property returns a String containing the source
@@ -3689,7 +3719,7 @@ extern "C" {
     /// regular expression.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/toString)
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &RegExp) -> JsString;
 
     /// The unicode property indicates whether or not the "u" flag is
@@ -3704,7 +3734,7 @@ extern "C" {
 // Set
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "Set<any>")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "Set<any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Set;
 
@@ -3732,7 +3762,7 @@ extern "C" {
     /// in the Set object, in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
-    #[wasm_bindgen(method, js_name = forEach)]
+    #[wasm_bindgen(method, js_name = "forEach")]
     pub fn for_each(this: &Set, callback: &mut dyn FnMut(JsValue, JsValue, Set));
 
     /// The `has()` method returns a boolean indicating whether an element with
@@ -3800,7 +3830,7 @@ extern "C" {
     /// parsing code.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError)
-    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "SyntaxError")]
+    #[wasm_bindgen(extends = "Error", extends = "Object", typescript_type = "SyntaxError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type SyntaxError;
 
@@ -3820,7 +3850,7 @@ extern "C" {
     /// expected type.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError)
-    #[wasm_bindgen(extends = Error, extends = Object, typescript_type = "TypeError")]
+    #[wasm_bindgen(extends = "Error", extends = "Object", typescript_type = "TypeError")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type TypeError;
 
@@ -3839,7 +3869,12 @@ extern "C" {
     /// function was used in a wrong way.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError)
-    #[wasm_bindgen(extends = Error, extends = Object, js_name = URIError, typescript_type = "URIError")]
+    #[wasm_bindgen(
+        extends = "Error",
+        extends = "Object",
+        js_name = "URIError",
+        typescript_type = "URIError"
+    )]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type UriError;
 
@@ -3854,7 +3889,7 @@ extern "C" {
 // WeakMap
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "WeakMap<object, any>")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "WeakMap<object, any>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type WeakMap;
 
@@ -3904,7 +3939,7 @@ impl Default for WeakMap {
 // WeakSet
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, typescript_type = "WeakSet<object>")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "WeakSet<object>")]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type WeakSet;
 
@@ -3958,21 +3993,21 @@ pub mod WebAssembly {
         /// (otherwise, the `WebAssembly.instantiate()` function should be used).
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compile)
-        #[wasm_bindgen(js_namespace = WebAssembly)]
+        #[wasm_bindgen(js_namespace = "WebAssembly")]
         pub fn compile(buffer_source: &JsValue) -> Promise;
 
         /// The `WebAssembly.instantiate()` function allows you to compile and
         /// instantiate WebAssembly code.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate)
-        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiate)]
+        #[wasm_bindgen(js_namespace = "WebAssembly", js_name = "instantiate")]
         pub fn instantiate_buffer(buffer: &[u8], imports: &Object) -> Promise;
 
         /// The `WebAssembly.instantiate()` function allows you to compile and
         /// instantiate WebAssembly code.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate)
-        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiate)]
+        #[wasm_bindgen(js_namespace = "WebAssembly", js_name = "instantiate")]
         pub fn instantiate_module(module: &Module, imports: &Object) -> Promise;
 
         /// The `WebAssembly.instantiateStreaming()` function compiles and
@@ -3981,7 +4016,7 @@ pub mod WebAssembly {
         /// wasm code.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming)
-        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiateStreaming)]
+        #[wasm_bindgen(js_namespace = "WebAssembly", js_name = "instantiateStreaming")]
         pub fn instantiate_streaming(response: &Promise, imports: &Object) -> Promise;
 
         /// The `WebAssembly.validate()` function validates a given typed
@@ -3989,7 +4024,7 @@ pub mod WebAssembly {
         /// form a valid wasm module (`true`) or not (`false`).
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/validate)
-        #[wasm_bindgen(js_namespace = WebAssembly, catch)]
+        #[wasm_bindgen(js_namespace = "WebAssembly", catch)]
         pub fn validate(buffer_source: &JsValue) -> Result<bool, JsValue>;
     }
 
@@ -4001,7 +4036,11 @@ pub mod WebAssembly {
         /// WebAssembly decoding or validation.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/CompileError)
-        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly, typescript_type = "WebAssembly.CompileError")]
+        #[wasm_bindgen(
+            extends = "Error",
+            js_namespace = "WebAssembly",
+            typescript_type = "WebAssembly.CompileError"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type CompileError;
 
@@ -4010,7 +4049,7 @@ pub mod WebAssembly {
         /// WebAssembly decoding or validation.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/CompileError)
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
+        #[wasm_bindgen(constructor, js_namespace = "WebAssembly")]
         pub fn new(message: &str) -> CompileError;
     }
 
@@ -4023,7 +4062,11 @@ pub mod WebAssembly {
         /// JavaScript.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
-        #[wasm_bindgen(extends = Object, js_namespace = WebAssembly, typescript_type = "WebAssembly.Instance")]
+        #[wasm_bindgen(
+            extends = "Object",
+            js_namespace = "WebAssembly",
+            typescript_type = "WebAssembly.Instance"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Instance;
 
@@ -4033,7 +4076,7 @@ pub mod WebAssembly {
         /// asynchronous `WebAssembly.instantiateStreaming()` function.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
-        #[wasm_bindgen(catch, constructor, js_namespace = WebAssembly)]
+        #[wasm_bindgen(catch, constructor, js_namespace = "WebAssembly")]
         pub fn new(module: &Module, imports: &Object) -> Result<Instance, JsValue>;
 
         /// The `exports` readonly property of the `WebAssembly.Instance` object
@@ -4042,7 +4085,7 @@ pub mod WebAssembly {
         /// them to be accessed and used by JavaScript.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance/exports)
-        #[wasm_bindgen(getter, method, js_namespace = WebAssembly)]
+        #[wasm_bindgen(getter, method, js_namespace = "WebAssembly")]
         pub fn exports(this: &Instance) -> Object;
     }
 
@@ -4054,7 +4097,11 @@ pub mod WebAssembly {
         /// instantiation (besides traps from the start function).
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/LinkError)
-        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly, typescript_type = "WebAssembly.LinkError")]
+        #[wasm_bindgen(
+            extends = "Error",
+            js_namespace = "WebAssembly",
+            typescript_type = "WebAssembly.LinkError"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type LinkError;
 
@@ -4063,7 +4110,7 @@ pub mod WebAssembly {
         /// instantiation (besides traps from the start function).
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/LinkError)
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
+        #[wasm_bindgen(constructor, js_namespace = "WebAssembly")]
         pub fn new(message: &str) -> LinkError;
     }
 
@@ -4075,7 +4122,11 @@ pub mod WebAssembly {
         /// specifies a trap.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError)
-        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly, typescript_type = "WebAssembly.RuntimeError")]
+        #[wasm_bindgen(
+            extends = "Error",
+            js_namespace = "WebAssembly",
+            typescript_type = "WebAssembly.RuntimeError"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type RuntimeError;
 
@@ -4084,7 +4135,7 @@ pub mod WebAssembly {
         /// specifies a trap.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError)
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
+        #[wasm_bindgen(constructor, js_namespace = "WebAssembly")]
         pub fn new(message: &str) -> RuntimeError;
     }
 
@@ -4096,7 +4147,11 @@ pub mod WebAssembly {
         /// efficiently shared with Workers, and instantiated multiple times.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module)
-        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object, typescript_type = "WebAssembly.Module")]
+        #[wasm_bindgen(
+            js_namespace = "WebAssembly",
+            extends = "Object",
+            typescript_type = "WebAssembly.Module"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Module;
 
@@ -4105,7 +4160,7 @@ pub mod WebAssembly {
         /// efficiently shared with Workers, and instantiated multiple times.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module)
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        #[wasm_bindgen(constructor, js_namespace = "WebAssembly", catch)]
         pub fn new(buffer_source: &JsValue) -> Result<Module, JsValue>;
 
         /// The `WebAssembly.customSections()` function returns a copy of the
@@ -4113,21 +4168,25 @@ pub mod WebAssembly {
         /// string name.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/customSections)
-        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly, js_name = customSections)]
+        #[wasm_bindgen(
+            static_method_of = "Module",
+            js_namespace = "WebAssembly",
+            js_name = "customSections"
+        )]
         pub fn custom_sections(module: &Module, sectionName: &str) -> Array;
 
         /// The `WebAssembly.exports()` function returns an array containing
         /// descriptions of all the declared exports of the given `Module`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/exports)
-        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly)]
+        #[wasm_bindgen(static_method_of = "Module", js_namespace = "WebAssembly")]
         pub fn exports(module: &Module) -> Array;
 
         /// The `WebAssembly.imports()` function returns an array containing
         /// descriptions of all the declared imports of the given `Module`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/imports)
-        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly)]
+        #[wasm_bindgen(static_method_of = "Module", js_namespace = "WebAssembly")]
         pub fn imports(module: &Module) -> Array;
     }
 
@@ -4138,7 +4197,11 @@ pub mod WebAssembly {
         /// of the given size and element type.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table)
-        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object, typescript_type = "WebAssembly.Table")]
+        #[wasm_bindgen(
+            js_namespace = "WebAssembly",
+            extends = "Object",
+            typescript_type = "WebAssembly.Table"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Table;
 
@@ -4146,7 +4209,7 @@ pub mod WebAssembly {
         /// of the given size and element type.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table)
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        #[wasm_bindgen(constructor, js_namespace = "WebAssembly", catch)]
         pub fn new(table_descriptor: &Object) -> Result<Table, JsValue>;
 
         /// The length prototype property of the `WebAssembly.Table` object
@@ -4154,14 +4217,14 @@ pub mod WebAssembly {
         /// table.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/length)
-        #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, getter, js_namespace = "WebAssembly")]
         pub fn length(this: &Table) -> u32;
 
         /// The `get()` prototype method of the `WebAssembly.Table()` object
         /// retrieves a function reference stored at a given index.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/get)
-        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, catch, js_namespace = "WebAssembly")]
         pub fn get(this: &Table, index: u32) -> Result<Function, JsValue>;
 
         /// The `grow()` prototype method of the `WebAssembly.Table` object
@@ -4169,14 +4232,14 @@ pub mod WebAssembly {
         /// elements.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/grow)
-        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, catch, js_namespace = "WebAssembly")]
         pub fn grow(this: &Table, additional_capacity: u32) -> Result<u32, JsValue>;
 
         /// The `set()` prototype method of the `WebAssembly.Table` object mutates a
         /// reference stored at a given index to a different value.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/set)
-        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, catch, js_namespace = "WebAssembly")]
         pub fn set(this: &Table, index: u32, function: &Function) -> Result<(), JsValue>;
     }
 
@@ -4187,7 +4250,11 @@ pub mod WebAssembly {
         /// of the given type and value.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Global)
-        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object, typescript_type = "WebAssembly.Global")]
+        #[wasm_bindgen(
+            js_namespace = "WebAssembly",
+            extends = "Object",
+            typescript_type = "WebAssembly.Global"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Global;
 
@@ -4195,16 +4262,16 @@ pub mod WebAssembly {
         /// of the given type and value.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Global)
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        #[wasm_bindgen(constructor, js_namespace = "WebAssembly", catch)]
         pub fn new(global_descriptor: &Object, value: &JsValue) -> Result<Global, JsValue>;
 
         /// The value prototype property of the `WebAssembly.Global` object
         /// returns the value of the global.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Global)
-        #[wasm_bindgen(method, getter, structural, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, getter, structural, js_namespace = "WebAssembly")]
         pub fn value(this: &Global) -> JsValue;
-        #[wasm_bindgen(method, setter = value, structural, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, setter = "value", structural, js_namespace = "WebAssembly")]
         pub fn set_value(this: &Global, value: &JsValue);
     }
 
@@ -4212,7 +4279,11 @@ pub mod WebAssembly {
     #[wasm_bindgen]
     extern "C" {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory)
-        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object, typescript_type = "WebAssembly.Memory")]
+        #[wasm_bindgen(
+            js_namespace = "WebAssembly",
+            extends = "Object",
+            typescript_type = "WebAssembly.Memory"
+        )]
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Memory;
 
@@ -4224,14 +4295,14 @@ pub mod WebAssembly {
         /// accessible and mutable from both JavaScript and WebAssembly.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory)
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        #[wasm_bindgen(constructor, js_namespace = "WebAssembly", catch)]
         pub fn new(descriptor: &Object) -> Result<Memory, JsValue>;
 
         /// An accessor property that returns the buffer contained in the
         /// memory.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory/buffer)
-        #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, getter, js_namespace = "WebAssembly")]
         pub fn buffer(this: &Memory) -> JsValue;
 
         /// The `grow()` protoype method of the `Memory` object increases the
@@ -4242,7 +4313,7 @@ pub mod WebAssembly {
         /// previous size of memory, in pages.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory/grow)
-        #[wasm_bindgen(method, js_namespace = WebAssembly)]
+        #[wasm_bindgen(method, js_namespace = "WebAssembly")]
         pub fn grow(this: &Memory, pages: u32) -> u32;
     }
 }
@@ -4262,13 +4333,13 @@ pub mod JSON {
         /// JavaScript value or object described by the string.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
-        #[wasm_bindgen(catch, js_namespace = JSON)]
+        #[wasm_bindgen(catch, js_namespace = "JSON")]
         pub fn parse(text: &str) -> Result<JsValue, JsValue>;
 
         /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-        #[wasm_bindgen(catch, js_namespace = JSON)]
+        #[wasm_bindgen(catch, js_namespace = "JSON")]
         pub fn stringify(obj: &JsValue) -> Result<JsString, JsValue>;
 
         /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
@@ -4280,7 +4351,7 @@ pub mod JSON {
         /// of the object are included in the resulting JSON string.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-        #[wasm_bindgen(catch, js_namespace = JSON, js_name = stringify)]
+        #[wasm_bindgen(catch, js_namespace = "JSON", js_name = "stringify")]
         pub fn stringify_with_replacer(
             obj: &JsValue,
             replacer: &JsValue,
@@ -4304,7 +4375,7 @@ pub mod JSON {
         /// white space is used.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-        #[wasm_bindgen(catch, js_namespace = JSON, js_name = stringify)]
+        #[wasm_bindgen(catch, js_namespace = "JSON", js_name = "stringify")]
         pub fn stringify_with_replacer_and_space(
             obj: &JsValue,
             replacer: &JsValue,
@@ -4317,7 +4388,12 @@ pub mod JSON {
 // JsString
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = String, extends = Object, is_type_of = JsValue::is_string, typescript_type = "string")]
+    #[wasm_bindgen(
+        js_name = "String",
+        extends = "Object",
+        is_type_of = "JsValue::is_string",
+        typescript_type = "string"
+    )]
     #[derive(Clone, PartialEq, Eq)]
     pub type JsString;
 
@@ -4341,7 +4417,7 @@ extern "C" {
     /// string.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt)
-    #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "charAt")]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
     /// The `charCodeAt()` method returns an integer between 0 and 65535
@@ -4355,14 +4431,14 @@ extern "C" {
     /// Returns `NaN` if index is out of range.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt)
-    #[wasm_bindgen(method, js_class = "String", js_name = charCodeAt)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "charCodeAt")]
     pub fn char_code_at(this: &JsString, index: u32) -> f64;
 
     /// The `codePointAt()` method returns a non-negative integer that is the
     /// Unicode code point value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/codePointAt)
-    #[wasm_bindgen(method, js_class = "String", js_name = codePointAt)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "codePointAt")]
     pub fn code_point_at(this: &JsString, pos: u32) -> JsValue;
 
     /// The `concat()` method concatenates the string arguments to the calling
@@ -4376,7 +4452,7 @@ extern "C" {
     /// specified string, returning true or false as appropriate.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith)
-    #[wasm_bindgen(method, js_class = "String", js_name = endsWith)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "endsWith")]
     pub fn ends_with(this: &JsString, search_string: &str, length: i32) -> bool;
 
     /// The static `String.fromCharCode()` method returns a string created from
@@ -4392,27 +4468,52 @@ extern "C" {
     /// Additionally, this function accepts `u16` for character codes, but
     /// fixing others requires a breaking change release
     /// (see https://github.com/rustwasm/wasm-bindgen/issues/1460 for details).
-    #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode, variadic)]
+    #[wasm_bindgen(
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCharCode",
+        variadic
+    )]
     pub fn from_char_code(char_codes: &[u16]) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode)
-    #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
+    #[wasm_bindgen(
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCharCode"
+    )]
     pub fn from_char_code1(a: u32) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode)
-    #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
+    #[wasm_bindgen(
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCharCode"
+    )]
     pub fn from_char_code2(a: u32, b: u32) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode)
-    #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
+    #[wasm_bindgen(
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCharCode"
+    )]
     pub fn from_char_code3(a: u32, b: u32, c: u32) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode)
-    #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
+    #[wasm_bindgen(
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCharCode"
+    )]
     pub fn from_char_code4(a: u32, b: u32, c: u32, d: u32) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode)
-    #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
+    #[wasm_bindgen(
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCharCode"
+    )]
     pub fn from_char_code5(a: u32, b: u32, c: u32, d: u32, e: u32) -> JsString;
 
     /// The static `String.fromCodePoint()` method returns a string created by
@@ -4428,27 +4529,58 @@ extern "C" {
     ///
     /// There are a few bindings to `from_code_point` in `js-sys`: `from_code_point1`, `from_code_point2`, etc...
     /// with different arities.
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint, variadic)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCodePoint",
+        variadic
+    )]
     pub fn from_code_point(code_points: &[u32]) -> Result<JsString, JsValue>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCodePoint"
+    )]
     pub fn from_code_point1(a: u32) -> Result<JsString, JsValue>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCodePoint"
+    )]
     pub fn from_code_point2(a: u32, b: u32) -> Result<JsString, JsValue>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCodePoint"
+    )]
     pub fn from_code_point3(a: u32, b: u32, c: u32) -> Result<JsString, JsValue>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCodePoint"
+    )]
     pub fn from_code_point4(a: u32, b: u32, c: u32, d: u32) -> Result<JsString, JsValue>;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "fromCodePoint"
+    )]
     pub fn from_code_point5(a: u32, b: u32, c: u32, d: u32, e: u32) -> Result<JsString, JsValue>;
 
     /// The `includes()` method determines whether one string may be found
@@ -4463,7 +4595,7 @@ extern "C" {
     /// search at fromIndex.  Returns -1 if the value is not found.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf)
-    #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "indexOf")]
     pub fn index_of(this: &JsString, search_value: &str, from_index: i32) -> i32;
 
     /// The `lastIndexOf()` method returns the index within the calling String
@@ -4471,7 +4603,7 @@ extern "C" {
     /// backwards from fromIndex.  Returns -1 if the value is not found.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf)
-    #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "lastIndexOf")]
     pub fn last_index_of(this: &JsString, search_value: &str, from_index: i32) -> i32;
 
     /// The `localeCompare()` method returns a number indicating whether
@@ -4479,7 +4611,7 @@ extern "C" {
     /// the given string in sort order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare)
-    #[wasm_bindgen(method, js_class = "String", js_name = localeCompare)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "localeCompare")]
     pub fn locale_compare(
         this: &JsString,
         compare_string: &str,
@@ -4490,13 +4622,13 @@ extern "C" {
     /// The `match()` method retrieves the matches when matching a string against a regular expression.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)
-    #[wasm_bindgen(method, js_class = "String", js_name = match)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "match")]
     pub fn match_(this: &JsString, pattern: &RegExp) -> Option<Object>;
 
     /// The `match_all()` method is similar to `match()`, but gives an iterator of `exec()` arrays, which preserve capture groups.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll)
-    #[wasm_bindgen(method, js_class = "String", js_name = matchAll)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "matchAll")]
     pub fn match_all(this: &JsString, pattern: &RegExp) -> Iterator;
 
     /// The `normalize()` method returns the Unicode Normalization Form
@@ -4512,7 +4644,7 @@ extern "C" {
     /// string.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd)
-    #[wasm_bindgen(method, js_class = "String", js_name = padEnd)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "padEnd")]
     pub fn pad_end(this: &JsString, target_length: u32, pad_string: &str) -> JsString;
 
     /// The `padStart()` method pads the current string with another string
@@ -4521,7 +4653,7 @@ extern "C" {
     /// string.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart)
-    #[wasm_bindgen(method, js_class = "String", js_name = padStart)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "padStart")]
     pub fn pad_start(this: &JsString, target_length: u32, pad_string: &str) -> JsString;
 
     /// The `repeat()` method constructs and returns a new string which contains the specified
@@ -4542,18 +4674,18 @@ extern "C" {
     pub fn replace(this: &JsString, pattern: &str, replacement: &str) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
-    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "replace")]
     pub fn replace_with_function(
         this: &JsString,
         pattern: &str,
         replacement: &Function,
     ) -> JsString;
 
-    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "replace")]
     pub fn replace_by_pattern(this: &JsString, pattern: &RegExp, replacement: &str) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
-    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "replace")]
     pub fn replace_by_pattern_with_function(
         this: &JsString,
         pattern: &RegExp,
@@ -4567,23 +4699,23 @@ extern "C" {
     /// Note: The original string will remain unchanged.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
-    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "replaceAll")]
     pub fn replace_all(this: &JsString, pattern: &str, replacement: &str) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
-    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "replaceAll")]
     pub fn replace_all_with_function(
         this: &JsString,
         pattern: &str,
         replacement: &Function,
     ) -> JsString;
 
-    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "replaceAll")]
     pub fn replace_all_by_pattern(this: &JsString, pattern: &RegExp, replacement: &str)
         -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
-    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "replaceAll")]
     pub fn replace_all_by_pattern_with_function(
         this: &JsString,
         pattern: &RegExp,
@@ -4612,15 +4744,15 @@ extern "C" {
     pub fn split(this: &JsString, separator: &str) -> Array;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
-    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "split")]
     pub fn split_limit(this: &JsString, separator: &str, limit: u32) -> Array;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
-    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "split")]
     pub fn split_by_pattern(this: &JsString, pattern: &RegExp) -> Array;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
-    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "split")]
     pub fn split_by_pattern_limit(this: &JsString, pattern: &RegExp, limit: u32) -> Array;
 
     /// The `startsWith()` method determines whether a string begins with the
@@ -4628,7 +4760,7 @@ extern "C" {
     /// appropriate.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith)
-    #[wasm_bindgen(method, js_class = "String", js_name = startsWith)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "startsWith")]
     pub fn starts_with(this: &JsString, search_string: &str, position: u32) -> bool;
 
     /// The `substring()` method returns the part of the string between the
@@ -4649,35 +4781,35 @@ extern "C" {
     /// according to any locale-specific case mappings.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleLowerCase)
-    #[wasm_bindgen(method, js_class = "String", js_name = toLocaleLowerCase)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "toLocaleLowerCase")]
     pub fn to_locale_lower_case(this: &JsString, locale: Option<&str>) -> JsString;
 
     /// The `toLocaleUpperCase()` method returns the calling string value converted to upper case,
     /// according to any locale-specific case mappings.
     ///
     /// [MDN documentation](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleUpperCase)
-    #[wasm_bindgen(method, js_class = "String", js_name = toLocaleUpperCase)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "toLocaleUpperCase")]
     pub fn to_locale_upper_case(this: &JsString, locale: Option<&str>) -> JsString;
 
     /// The `toLowerCase()` method returns the calling string value
     /// converted to lower case.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase)
-    #[wasm_bindgen(method, js_class = "String", js_name = toLowerCase)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "toLowerCase")]
     pub fn to_lower_case(this: &JsString) -> JsString;
 
     /// The `toString()` method returns a string representing the specified
     /// object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString)
-    #[wasm_bindgen(method, js_class = "String", js_name = toString)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "toString")]
     pub fn to_string(this: &JsString) -> JsString;
 
     /// The `toUpperCase()` method returns the calling string value converted to
     /// uppercase (the value will be converted to a string if it isn't one).
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase)
-    #[wasm_bindgen(method, js_class = "String", js_name = toUpperCase)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "toUpperCase")]
     pub fn to_upper_case(this: &JsString) -> JsString;
 
     /// The `trim()` method removes whitespace from both ends of a string.
@@ -4693,62 +4825,77 @@ extern "C" {
     /// `trimRight()` is an alias of this method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd)
-    #[wasm_bindgen(method, js_class = "String", js_name = trimEnd)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "trimEnd")]
     pub fn trim_end(this: &JsString) -> JsString;
 
     /// The `trimEnd()` method removes whitespace from the end of a string.
     /// `trimRight()` is an alias of this method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd)
-    #[wasm_bindgen(method, js_class = "String", js_name = trimRight)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "trimRight")]
     pub fn trim_right(this: &JsString) -> JsString;
 
     /// The `trimStart()` method removes whitespace from the beginning of a
     /// string. `trimLeft()` is an alias of this method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart)
-    #[wasm_bindgen(method, js_class = "String", js_name = trimStart)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "trimStart")]
     pub fn trim_start(this: &JsString) -> JsString;
 
     /// The `trimStart()` method removes whitespace from the beginning of a
     /// string. `trimLeft()` is an alias of this method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart)
-    #[wasm_bindgen(method, js_class = "String", js_name = trimLeft)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "trimLeft")]
     pub fn trim_left(this: &JsString) -> JsString;
 
     /// The `valueOf()` method returns the primitive value of a `String` object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf)
-    #[wasm_bindgen(method, js_class = "String", js_name = valueOf)]
+    #[wasm_bindgen(method, js_class = "String", js_name = "valueOf")]
     pub fn value_of(this: &JsString) -> JsString;
 
     /// The static `raw()` method is a tag function of template literals,
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, variadic, static_method_of = JsString, js_class = "String")]
+    #[wasm_bindgen(catch, variadic, static_method_of = "JsString", js_class = "String")]
     pub fn raw(call_site: &Object, substitutions: &Array) -> Result<JsString, JsValue>;
 
     /// The static `raw()` method is a tag function of template literals,
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_0(call_site: &Object) -> Result<JsString, JsValue>;
 
     /// The static `raw()` method is a tag function of template literals,
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_1(call_site: &Object, substitutions_1: &str) -> Result<JsString, JsValue>;
 
     /// The static `raw()` method is a tag function of template literals,
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_2(
         call_site: &Object,
         substitutions_1: &str,
@@ -4759,7 +4906,12 @@ extern "C" {
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_3(
         call_site: &Object,
         substitutions_1: &str,
@@ -4771,7 +4923,12 @@ extern "C" {
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_4(
         call_site: &Object,
         substitutions_1: &str,
@@ -4784,7 +4941,12 @@ extern "C" {
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_5(
         call_site: &Object,
         substitutions_1: &str,
@@ -4798,7 +4960,12 @@ extern "C" {
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_6(
         call_site: &Object,
         substitutions_1: &str,
@@ -4813,7 +4980,12 @@ extern "C" {
     /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    #[wasm_bindgen(
+        catch,
+        static_method_of = "JsString",
+        js_class = "String",
+        js_name = "raw"
+    )]
     pub fn raw_7(
         call_site: &Object,
         substitutions_1: &str,
@@ -4978,7 +5150,7 @@ impl str::FromStr for JsString {
 // Symbol
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(is_type_of = JsValue::is_symbol, typescript_type = "Symbol")]
+    #[wasm_bindgen(is_type_of = "JsValue::is_symbol", typescript_type = "Symbol")]
     #[derive(Clone, Debug)]
     pub type Symbol;
 
@@ -4987,7 +5159,12 @@ extern "C" {
     /// The `instanceof` operator's behavior can be customized by this symbol.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = hasInstance)]
+    #[wasm_bindgen(
+        static_method_of = "Symbol",
+        getter,
+        structural,
+        js_name = "hasInstance"
+    )]
     pub fn has_instance() -> Symbol;
 
     /// The `Symbol.isConcatSpreadable` well-known symbol is used to configure
@@ -4995,21 +5172,31 @@ extern "C" {
     /// `Array.prototype.concat()` method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/isConcatSpreadable)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = isConcatSpreadable)]
+    #[wasm_bindgen(
+        static_method_of = "Symbol",
+        getter,
+        structural,
+        js_name = "isConcatSpreadable"
+    )]
     pub fn is_concat_spreadable() -> Symbol;
 
     /// The `Symbol.asyncIterator` well-known symbol specifies the default AsyncIterator for an object.
     /// If this property is set on an object, it is an async iterable and can be used in a `for await...of` loop.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncIterator)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = asyncIterator)]
+    #[wasm_bindgen(
+        static_method_of = "Symbol",
+        getter,
+        structural,
+        js_name = "asyncIterator"
+    )]
     pub fn async_iterator() -> Symbol;
 
     /// The `Symbol.iterator` well-known symbol specifies the default iterator
     /// for an object.  Used by `for...of`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    #[wasm_bindgen(static_method_of = "Symbol", getter, structural)]
     pub fn iterator() -> Symbol;
 
     /// The `Symbol.match` well-known symbol specifies the matching of a regular
@@ -5017,7 +5204,7 @@ extern "C" {
     /// `String.prototype.match()` method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/match)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = match)]
+    #[wasm_bindgen(static_method_of = "Symbol", getter, structural, js_name = "match")]
     pub fn match_() -> Symbol;
 
     /// The `Symbol.replace` well-known symbol specifies the method that
@@ -5028,7 +5215,7 @@ extern "C" {
     /// `String.prototype.replace()`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/replace)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    #[wasm_bindgen(static_method_of = "Symbol", getter, structural)]
     pub fn replace() -> Symbol;
 
     /// The `Symbol.search` well-known symbol specifies the method that returns
@@ -5039,14 +5226,14 @@ extern "C" {
     /// `String.prototype.search()`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/search)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    #[wasm_bindgen(static_method_of = "Symbol", getter, structural)]
     pub fn search() -> Symbol;
 
     /// The well-known symbol `Symbol.species` specifies a function-valued
     /// property that the constructor function uses to create derived objects.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/species)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    #[wasm_bindgen(static_method_of = "Symbol", getter, structural)]
     pub fn species() -> Symbol;
 
     /// The `Symbol.split` well-known symbol specifies the method that splits a
@@ -5056,7 +5243,7 @@ extern "C" {
     /// For more information, see `RegExp.prototype[@@split]()` and
     /// `String.prototype.split()`.
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/split)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    #[wasm_bindgen(static_method_of = "Symbol", getter, structural)]
     pub fn split() -> Symbol;
 
     /// The `Symbol.toPrimitive` is a symbol that specifies a function valued
@@ -5064,7 +5251,12 @@ extern "C" {
     /// primitive value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toPrimitive)]
+    #[wasm_bindgen(
+        static_method_of = "Symbol",
+        getter,
+        structural,
+        js_name = "toPrimitive"
+    )]
     pub fn to_primitive() -> Symbol;
 
     /// The `Symbol.toStringTag` well-known symbol is a string valued property
@@ -5073,7 +5265,12 @@ extern "C" {
     /// method.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toString)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toStringTag)]
+    #[wasm_bindgen(
+        static_method_of = "Symbol",
+        getter,
+        structural,
+        js_name = "toStringTag"
+    )]
     pub fn to_string_tag() -> Symbol;
 
     /// The `Symbol.for(key)` method searches for existing symbols in a runtime-wide symbol registry with
@@ -5081,19 +5278,19 @@ extern "C" {
     /// Otherwise a new symbol gets created in the global symbol registry with this key.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/for)
-    #[wasm_bindgen(static_method_of = Symbol, js_name = for)]
+    #[wasm_bindgen(static_method_of = "Symbol", js_name = "for")]
     pub fn for_(key: &str) -> Symbol;
 
     /// The `Symbol.keyFor(sym)` method retrieves a shared symbol key from the global symbol registry for the given symbol.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/keyFor)
-    #[wasm_bindgen(static_method_of = Symbol, js_name = keyFor)]
+    #[wasm_bindgen(static_method_of = "Symbol", js_name = "keyFor")]
     pub fn key_for(sym: &Symbol) -> JsValue;
 
     /// The `toString()` method returns a string representing the specified Symbol object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toString)
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Symbol) -> JsString;
 
     /// The `Symbol.unscopables` well-known symbol is used to specify an object
@@ -5101,13 +5298,13 @@ extern "C" {
     /// with environment bindings of the associated object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/unscopables)
-    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    #[wasm_bindgen(static_method_of = "Symbol", getter, structural)]
     pub fn unscopables() -> Symbol;
 
     /// The `valueOf()` method returns the primitive value of a Symbol object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/valueOf)
-    #[wasm_bindgen(method, js_name = valueOf)]
+    #[wasm_bindgen(method, js_name = "valueOf")]
     pub fn value_of(this: &Symbol) -> Symbol;
 }
 
@@ -5123,7 +5320,7 @@ pub mod Intl {
         /// will be validated as structurally valid language tags.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales)
-        #[wasm_bindgen(js_name = getCanonicalLocales, js_namespace = Intl)]
+        #[wasm_bindgen(js_name = "getCanonicalLocales", js_namespace = "Intl")]
         pub fn get_canonical_locales(s: &JsValue) -> Array;
     }
 
@@ -5134,7 +5331,11 @@ pub mod Intl {
         /// that enable language sensitive string comparison.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.Collator")]
+        #[wasm_bindgen(
+            extends = "Object",
+            js_namespace = "Intl",
+            typescript_type = "Intl.Collator"
+        )]
         #[derive(Clone, Debug)]
         pub type Collator;
 
@@ -5142,7 +5343,7 @@ pub mod Intl {
         /// that enable language sensitive string comparison.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator)
-        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        #[wasm_bindgen(constructor, js_namespace = "Intl")]
         pub fn new(locales: &Array, options: &Object) -> Collator;
 
         /// The Intl.Collator.prototype.compare property returns a function that
@@ -5158,7 +5359,7 @@ pub mod Intl {
         /// computed during initialization of this Collator object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/resolvedOptions)
-        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        #[wasm_bindgen(method, js_namespace = "Intl", js_name = "resolvedOptions")]
         pub fn resolved_options(this: &Collator) -> Object;
 
         /// The `Intl.Collator.supportedLocalesOf()` method returns an array
@@ -5167,7 +5368,11 @@ pub mod Intl {
         /// locale.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/supportedLocalesOf)
-        #[wasm_bindgen(static_method_of = Collator, js_namespace = Intl, js_name = supportedLocalesOf)]
+        #[wasm_bindgen(
+            static_method_of = "Collator",
+            js_namespace = "Intl",
+            js_name = "supportedLocalesOf"
+        )]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
@@ -5187,7 +5392,11 @@ pub mod Intl {
         /// that enable language-sensitive date and time formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.DateTimeFormat")]
+        #[wasm_bindgen(
+            extends = "Object",
+            js_namespace = "Intl",
+            typescript_type = "Intl.DateTimeFormat"
+        )]
         #[derive(Clone, Debug)]
         pub type DateTimeFormat;
 
@@ -5195,7 +5404,7 @@ pub mod Intl {
         /// that enable language-sensitive date and time formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat)
-        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        #[wasm_bindgen(constructor, js_namespace = "Intl")]
         pub fn new(locales: &Array, options: &Object) -> DateTimeFormat;
 
         /// The Intl.DateTimeFormat.prototype.format property returns a getter function that
@@ -5210,7 +5419,7 @@ pub mod Intl {
         /// formatting of strings produced by DateTimeFormat formatters.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/formatToParts)
-        #[wasm_bindgen(method, js_class = "Intl.DateTimeFormat", js_name = formatToParts)]
+        #[wasm_bindgen(method, js_class = "Intl.DateTimeFormat", js_name = "formatToParts")]
         pub fn format_to_parts(this: &DateTimeFormat, date: &Date) -> Array;
 
         /// The `Intl.DateTimeFormat.prototype.resolvedOptions()` method returns a new
@@ -5218,7 +5427,7 @@ pub mod Intl {
         /// options computed during initialization of this DateTimeFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/resolvedOptions)
-        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        #[wasm_bindgen(method, js_namespace = "Intl", js_name = "resolvedOptions")]
         pub fn resolved_options(this: &DateTimeFormat) -> Object;
 
         /// The `Intl.DateTimeFormat.supportedLocalesOf()` method returns an array
@@ -5227,7 +5436,11 @@ pub mod Intl {
         /// locale.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/supportedLocalesOf)
-        #[wasm_bindgen(static_method_of = DateTimeFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
+        #[wasm_bindgen(
+            static_method_of = "DateTimeFormat",
+            js_namespace = "Intl",
+            js_name = "supportedLocalesOf"
+        )]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
@@ -5247,7 +5460,11 @@ pub mod Intl {
         /// that enable language sensitive number formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.NumberFormat")]
+        #[wasm_bindgen(
+            extends = "Object",
+            js_namespace = "Intl",
+            typescript_type = "Intl.NumberFormat"
+        )]
         #[derive(Clone, Debug)]
         pub type NumberFormat;
 
@@ -5255,7 +5472,7 @@ pub mod Intl {
         /// that enable language sensitive number formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat)
-        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        #[wasm_bindgen(constructor, js_namespace = "Intl")]
         pub fn new(locales: &Array, options: &Object) -> NumberFormat;
 
         /// The Intl.NumberFormat.prototype.format property returns a getter function that
@@ -5270,7 +5487,7 @@ pub mod Intl {
         /// formatting of strings produced by NumberTimeFormat formatters.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/formatToParts)
-        #[wasm_bindgen(method, js_class = "Intl.NumberFormat", js_name = formatToParts)]
+        #[wasm_bindgen(method, js_class = "Intl.NumberFormat", js_name = "formatToParts")]
         pub fn format_to_parts(this: &NumberFormat, number: f64) -> Array;
 
         /// The `Intl.NumberFormat.prototype.resolvedOptions()` method returns a new
@@ -5278,7 +5495,7 @@ pub mod Intl {
         /// options computed during initialization of this NumberFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/resolvedOptions)
-        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        #[wasm_bindgen(method, js_namespace = "Intl", js_name = "resolvedOptions")]
         pub fn resolved_options(this: &NumberFormat) -> Object;
 
         /// The `Intl.NumberFormat.supportedLocalesOf()` method returns an array
@@ -5286,7 +5503,11 @@ pub mod Intl {
         /// formatting without having to fall back to the runtime's default locale.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/supportedLocalesOf)
-        #[wasm_bindgen(static_method_of = NumberFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
+        #[wasm_bindgen(
+            static_method_of = "NumberFormat",
+            js_namespace = "Intl",
+            js_name = "supportedLocalesOf"
+        )]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
@@ -5306,7 +5527,11 @@ pub mod Intl {
         /// that enable plural sensitive formatting and plural language rules.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules)
-        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.PluralRules")]
+        #[wasm_bindgen(
+            extends = "Object",
+            js_namespace = "Intl",
+            typescript_type = "Intl.PluralRules"
+        )]
         #[derive(Clone, Debug)]
         pub type PluralRules;
 
@@ -5314,7 +5539,7 @@ pub mod Intl {
         /// that enable plural sensitive formatting and plural language rules.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules)
-        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        #[wasm_bindgen(constructor, js_namespace = "Intl")]
         pub fn new(locales: &Array, options: &Object) -> PluralRules;
 
         /// The `Intl.PluralRules.prototype.resolvedOptions()` method returns a new
@@ -5322,14 +5547,14 @@ pub mod Intl {
         /// options computed during initialization of this PluralRules object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/resolvedOptions)
-        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        #[wasm_bindgen(method, js_namespace = "Intl", js_name = "resolvedOptions")]
         pub fn resolved_options(this: &PluralRules) -> Object;
 
         /// The `Intl.PluralRules.prototype.select()` method returns a String indicating
         /// which plural rule to use for locale-aware formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/select)
-        #[wasm_bindgen(method, js_namespace = Intl)]
+        #[wasm_bindgen(method, js_namespace = "Intl")]
         pub fn select(this: &PluralRules, number: f64) -> JsString;
 
         /// The `Intl.PluralRules.supportedLocalesOf()` method returns an array
@@ -5337,7 +5562,11 @@ pub mod Intl {
         /// formatting without having to fall back to the runtime's default locale.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/supportedLocalesOf)
-        #[wasm_bindgen(static_method_of = PluralRules, js_namespace = Intl, js_name = supportedLocalesOf)]
+        #[wasm_bindgen(
+            static_method_of = "PluralRules",
+            js_namespace = "Intl",
+            js_name = "supportedLocalesOf"
+        )]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
@@ -5359,7 +5588,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
     #[must_use]
-    #[wasm_bindgen(extends = Object, typescript_type = "Promise<any>")]
+    #[wasm_bindgen(extends = "Object", typescript_type = "Promise<any>")]
     #[derive(Clone, Debug)]
     pub type Promise;
 
@@ -5388,7 +5617,7 @@ extern "C" {
     /// reason of the first promise that rejects.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
-    #[wasm_bindgen(static_method_of = Promise)]
+    #[wasm_bindgen(static_method_of = "Promise")]
     pub fn all(obj: &JsValue) -> Promise;
 
     /// The `Promise.allSettled(iterable)` method returns a single `Promise` that
@@ -5396,7 +5625,7 @@ extern "C" {
     /// fulfilled or rejected or when the iterable argument contains no promises.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
-    #[wasm_bindgen(static_method_of = Promise, js_name = allSettled)]
+    #[wasm_bindgen(static_method_of = "Promise", js_name = "allSettled")]
     pub fn all_settled(obj: &JsValue) -> Promise;
 
     /// The `Promise.any(iterable)` method returns a single `Promise` that
@@ -5405,7 +5634,7 @@ extern "C" {
     /// `AggregateError` if all promises in the iterable rejected.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any)
-    #[wasm_bindgen(static_method_of = Promise)]
+    #[wasm_bindgen(static_method_of = "Promise")]
     pub fn any(obj: &JsValue) -> Promise;
 
     /// The `Promise.race(iterable)` method returns a promise that resolves or
@@ -5413,14 +5642,14 @@ extern "C" {
     /// rejects, with the value or reason from that promise.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race)
-    #[wasm_bindgen(static_method_of = Promise)]
+    #[wasm_bindgen(static_method_of = "Promise")]
     pub fn race(obj: &JsValue) -> Promise;
 
     /// The `Promise.reject(reason)` method returns a `Promise` object that is
     /// rejected with the given reason.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject)
-    #[wasm_bindgen(static_method_of = Promise)]
+    #[wasm_bindgen(static_method_of = "Promise")]
     pub fn reject(obj: &JsValue) -> Promise;
 
     /// The `Promise.resolve(value)` method returns a `Promise` object that is
@@ -5430,7 +5659,7 @@ extern "C" {
     /// state; otherwise the returned promise will be fulfilled with the value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)
-    #[wasm_bindgen(static_method_of = Promise)]
+    #[wasm_bindgen(static_method_of = "Promise")]
     pub fn resolve(obj: &JsValue) -> Promise;
 
     /// The `catch()` method returns a `Promise` and deals with rejected cases
@@ -5450,7 +5679,7 @@ extern "C" {
     pub fn then(this: &Promise, cb: &Closure<dyn FnMut(JsValue)>) -> Promise;
 
     /// Same as `then`, only with both arguments provided.
-    #[wasm_bindgen(method, js_name = then)]
+    #[wasm_bindgen(method, js_name = "then")]
     pub fn then2(
         this: &Promise,
         resolve: &Closure<dyn FnMut(JsValue)>,
@@ -5502,16 +5731,40 @@ pub fn global() -> Object {
         extern "C" {
             type Global;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = globalThis, js_name = globalThis)]
+            #[wasm_bindgen(
+                getter,
+                catch,
+                static_method_of = "Global",
+                js_class = "globalThis",
+                js_name = "globalThis"
+            )]
             fn get_global_this() -> Result<Object, JsValue>;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = self, js_name = self)]
+            #[wasm_bindgen(
+                getter,
+                catch,
+                static_method_of = "Global",
+                js_class = "self",
+                js_name = "self"
+            )]
             fn get_self() -> Result<Object, JsValue>;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = window, js_name = window)]
+            #[wasm_bindgen(
+                getter,
+                catch,
+                static_method_of = "Global",
+                js_class = "window",
+                js_name = "window"
+            )]
             fn get_window() -> Result<Object, JsValue>;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = global, js_name = global)]
+            #[wasm_bindgen(
+                getter,
+                catch,
+                static_method_of = "Global",
+                js_class = "global",
+                js_name = "global"
+            )]
             fn get_global() -> Result<Object, JsValue>;
         }
 
@@ -5556,7 +5809,7 @@ macro_rules! arrays {
     ($(#[doc = $ctor:literal] #[doc = $mdn:literal] $name:ident: $ty:ident,)*) => ($(
         #[wasm_bindgen]
         extern "C" {
-            #[wasm_bindgen(extends = Object, typescript_type = $name)]
+            #[wasm_bindgen(extends = "Object", typescript_type = "$name")]
             #[derive(Clone, Debug)]
             pub type $name;
 
@@ -5635,7 +5888,7 @@ macro_rules! arrays {
             /// element. This method has the same algorithm as
             /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
             /// types here.
-            #[wasm_bindgen(method, js_name = forEach)]
+            #[wasm_bindgen(method, js_name = "forEach")]
             pub fn for_each(this: &$name, callback: &mut dyn FnMut($ty, u32, $name));
 
             /// The length accessor property represents the length (in elements) of a
@@ -5645,12 +5898,12 @@ macro_rules! arrays {
 
             /// The byteLength accessor property represents the length (in bytes) of a
             /// typed array.
-            #[wasm_bindgen(method, getter, js_name = byteLength)]
+            #[wasm_bindgen(method, getter, js_name = "byteLength")]
             pub fn byte_length(this: &$name) -> u32;
 
             /// The byteOffset accessor property represents the offset (in bytes) of a
             /// typed array from the start of its `ArrayBuffer`.
-            #[wasm_bindgen(method, getter, js_name = byteOffset)]
+            #[wasm_bindgen(method, getter, js_name = "byteOffset")]
             pub fn byte_offset(this: &$name) -> u32;
 
             /// The `set()` method stores multiple values in the typed array, reading

@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = AudioDecoder , typescript_type = "AudioDecoder")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "AudioDecoder",
+        typescript_type = "AudioDecoder"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `AudioDecoder` class."]
     #[doc = ""]
@@ -17,7 +21,13 @@ extern "C" {
     pub type AudioDecoder;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "CodecState")]
-    # [wasm_bindgen (structural , method , getter , js_class = "AudioDecoder" , js_name = state)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "AudioDecoder",
+        js_name = "state"
+    )]
     #[doc = "Getter for the `state` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/state)"]
@@ -28,7 +38,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn state(this: &AudioDecoder) -> CodecState;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "AudioDecoder" , js_name = decodeQueueSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "AudioDecoder",
+        js_name = "decodeQueueSize"
+    )]
     #[doc = "Getter for the `decodeQueueSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/decodeQueueSize)"]
@@ -51,7 +67,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(init: &AudioDecoderInit) -> Result<AudioDecoder, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "AudioDecoder" , js_name = close)]
+    #[wasm_bindgen(method, structural, js_class = "AudioDecoder", js_name = "close")]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/close)"]
@@ -63,7 +79,7 @@ extern "C" {
     pub fn close(this: &AudioDecoder);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioDecoderConfig")]
-    # [wasm_bindgen (method , structural , js_class = "AudioDecoder" , js_name = configure)]
+    #[wasm_bindgen(method, structural, js_class = "AudioDecoder", js_name = "configure")]
     #[doc = "The `configure()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/configure)"]
@@ -75,7 +91,7 @@ extern "C" {
     pub fn configure(this: &AudioDecoder, config: &AudioDecoderConfig);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "EncodedAudioChunk")]
-    # [wasm_bindgen (method , structural , js_class = "AudioDecoder" , js_name = decode)]
+    #[wasm_bindgen(method, structural, js_class = "AudioDecoder", js_name = "decode")]
     #[doc = "The `decode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/decode)"]
@@ -86,7 +102,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn decode(this: &AudioDecoder, chunk: &EncodedAudioChunk);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "AudioDecoder" , js_name = flush)]
+    #[wasm_bindgen(method, structural, js_class = "AudioDecoder", js_name = "flush")]
     #[doc = "The `flush()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/flush)"]
@@ -98,7 +114,11 @@ extern "C" {
     pub fn flush(this: &AudioDecoder) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioDecoderConfig")]
-    # [wasm_bindgen (static_method_of = AudioDecoder , js_class = "AudioDecoder" , js_name = isConfigSupported)]
+    #[wasm_bindgen(
+        static_method_of = "AudioDecoder",
+        js_class = "AudioDecoder",
+        js_name = "isConfigSupported"
+    )]
     #[doc = "The `isConfigSupported()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/isConfigSupported)"]
@@ -109,7 +129,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_config_supported(config: &AudioDecoderConfig) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "AudioDecoder" , js_name = reset)]
+    #[wasm_bindgen(method, structural, js_class = "AudioDecoder", js_name = "reset")]
     #[doc = "The `reset()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/reset)"]

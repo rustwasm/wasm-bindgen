@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = ReadableStreamBYOBReader , typescript_type = "ReadableStreamBYOBReader")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "ReadableStreamBYOBReader",
+        typescript_type = "ReadableStreamBYOBReader"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `ReadableStreamByobReader` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type ReadableStreamByobReader;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "ReadableStreamBYOBReader" , js_name = closed)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "ReadableStreamBYOBReader",
+        js_name = "closed"
+    )]
     #[doc = "Getter for the `closed` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBReader/closed)"]
@@ -39,7 +49,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(stream: &ReadableStream) -> Result<ReadableStreamByobReader, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBReader" , js_name = read)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "ReadableStreamBYOBReader",
+        js_name = "read"
+    )]
     #[doc = "The `read()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBReader/read)"]
@@ -53,7 +68,12 @@ extern "C" {
         view: &::js_sys::Object,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBReader" , js_name = read)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "ReadableStreamBYOBReader",
+        js_name = "read"
+    )]
     #[doc = "The `read()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBReader/read)"]
@@ -67,7 +87,12 @@ extern "C" {
         view: &mut [u8],
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBReader" , js_name = releaseLock)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "ReadableStreamBYOBReader",
+        js_name = "releaseLock"
+    )]
     #[doc = "The `releaseLock()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBReader/releaseLock)"]
@@ -78,7 +103,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn release_lock(this: &ReadableStreamByobReader);
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBReader" , js_name = cancel)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "ReadableStreamBYOBReader",
+        js_name = "cancel"
+    )]
     #[doc = "The `cancel()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBReader/cancel)"]
@@ -89,7 +119,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn cancel(this: &ReadableStreamByobReader) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBReader" , js_name = cancel)]
+    #[wasm_bindgen(
+        method,
+        structural,
+        js_class = "ReadableStreamBYOBReader",
+        js_name = "cancel"
+    )]
     #[doc = "The `cancel()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBReader/cancel)"]

@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = USBEndpoint , typescript_type = "USBEndpoint")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "USBEndpoint",
+        typescript_type = "USBEndpoint"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `UsbEndpoint` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbEndpoint;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBEndpoint" , js_name = endpointNumber)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBEndpoint",
+        js_name = "endpointNumber"
+    )]
     #[doc = "Getter for the `endpointNumber` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBEndpoint/endpointNumber)"]
@@ -28,7 +38,13 @@ extern "C" {
     pub fn endpoint_number(this: &UsbEndpoint) -> u8;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbDirection")]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBEndpoint" , js_name = direction)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBEndpoint",
+        js_name = "direction"
+    )]
     #[doc = "Getter for the `direction` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBEndpoint/direction)"]
@@ -40,7 +56,7 @@ extern "C" {
     pub fn direction(this: &UsbEndpoint) -> UsbDirection;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbEndpointType")]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBEndpoint" , js_name = type)]
+    #[wasm_bindgen(structural, method, getter, js_class = "USBEndpoint", js_name = "type")]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBEndpoint/type)"]
@@ -51,7 +67,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(this: &UsbEndpoint) -> UsbEndpointType;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBEndpoint" , js_name = packetSize)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBEndpoint",
+        js_name = "packetSize"
+    )]
     #[doc = "Getter for the `packetSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBEndpoint/packetSize)"]

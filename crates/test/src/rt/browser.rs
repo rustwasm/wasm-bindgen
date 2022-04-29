@@ -22,9 +22,9 @@ extern "C" {
     fn getElementById(this: &HTMLDocument, id: &str) -> Element;
 
     type Element;
-    #[wasm_bindgen(method, getter = textContent, structural)]
+    #[wasm_bindgen(method, getter = "textContent", structural)]
     fn text_content(this: &Element) -> String;
-    #[wasm_bindgen(method, setter = textContent, structural)]
+    #[wasm_bindgen(method, setter = "textContent", structural)]
     fn set_text_content(this: &Element, text: &str);
 
     type BrowserError;

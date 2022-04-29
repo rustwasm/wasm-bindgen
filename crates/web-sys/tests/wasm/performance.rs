@@ -4,7 +4,7 @@ use web_sys::Performance;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = performance)]
+    #[wasm_bindgen(js_name = "performance")]
     static PERFORMANCE: Performance;
 }
 

@@ -1,11 +1,5 @@
-error: unused #[wasm_bindgen] attribute
- --> $DIR/unused-attributes.rs:7:20
+error: Unknown field: `method`
+ --> ui-tests/unused-attributes.rs:7:20
   |
 7 |     #[wasm_bindgen(method)]
-  |                    ^^^^^^
-
-error: unused #[wasm_bindgen] attribute
- --> $DIR/unused-attributes.rs:8:20
-  |
-8 |     #[wasm_bindgen(method)]
   |                    ^^^^^^

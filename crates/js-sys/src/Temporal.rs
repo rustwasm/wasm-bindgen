@@ -2,23 +2,23 @@ use super::*;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type Instant;
 
-    #[wasm_bindgen(static_method_of = Instant, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "Instant", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> Instant;
 
-    #[wasm_bindgen(static_method_of = Instant, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "Instant", js_namespace = "Temporal")]
     pub fn compare(one: &Instant, two: &Instant) -> i32;
 
-    #[wasm_bindgen(method, getter, structural, js_name = epochSeconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochSeconds")]
     pub fn epoch_seconds(this: &Instant) -> u64;
-    #[wasm_bindgen(method, getter, structural, js_name = epochMilliseconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochMilliseconds")]
     pub fn epoch_milliseconds(this: &Instant) -> u64;
-    #[wasm_bindgen(method, getter, structural, js_name = epochMicroseconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochMicroseconds")]
     pub fn epoch_microseconds(this: &Instant) -> BigInt;
-    #[wasm_bindgen(method, getter, structural, js_name = epochNanoseconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochNanoseconds")]
     pub fn epoch_nanoseconds(this: &Instant) -> BigInt;
 
     /// This method adds duration to Instant.
@@ -59,28 +59,28 @@ extern "C" {
     /// This method overrides the Object.prototype.toString() method and provides a convenient, unambiguous
     /// string representation of date. The string can be passed to Temporal.PlainDate.from() to
     /// create a new Temporal.PlainDate object.
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Instant) -> JsString;
 
     /// This method overrides `Object.prototype.toLocaleString()` to provide a human-readable,
     /// language-sensitive representation of duration.
     ///
     /// The locales and options arguments are the same as in the constructor to Intl.DateTimeFormat.
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &Instant, locales: &JsValue, options: &JsValue) -> JsString;
 
 }
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type PlainDateTime;
 
-    #[wasm_bindgen(static_method_of = PlainDateTime, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainDateTime", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> PlainDateTime;
 
-    #[wasm_bindgen(static_method_of = PlainDateTime, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainDateTime", js_namespace = "Temporal")]
     pub fn compare(one: &PlainDateTime, two: &PlainDateTime) -> i32;
 
     #[wasm_bindgen(method, getter, structural)]
@@ -109,7 +109,7 @@ extern "C" {
     /// the ISO 8601 calendar. As inputs to from or with, era and eraYear can be used instead
     /// of year. Unlike year, eraYear may decrease as time proceeds because some
     /// eras (like the BCE era in the Gregorian calendar) count years backwards.
-    #[wasm_bindgen(method, getter, structural, js_name = eraYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "eraYear")]
     pub fn era_year(this: &PlainDateTime) -> JsValue;
 
     /// In calendars that use eras, the era and eraYear read-only properties can be used
@@ -123,63 +123,63 @@ extern "C" {
     /// The dayOfWeek read-only property gives the weekday number that the date falls
     /// on. For the ISO 8601 calendar, the weekday number is defined as in the ISO 8601
     /// standard: a value between 1 and 7, inclusive, with Monday being 1, and Sunday 7.
-    #[wasm_bindgen(method, getter, structural, js_name = dayOfWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "dayOfWeek")]
     pub fn day_of_week(this: &PlainDateTime) -> u32;
 
     /// The dayOfYear read-only property gives the ordinal day of the year that the date
     /// falls on. For the ISO 8601 calendar, this is a value between 1 and 365, or 366 in
     /// a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = dayOfYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "dayOfYear")]
     pub fn day_of_year(this: &PlainDateTime) -> u32;
 
     /// The weekOfYear read-only property gives the ISO week number of the date. For the
     /// ISO 8601 calendar, this is normally a value between 1 and 52, but in a few cases it
     /// can be 53 as well. ISO week 1 is the week containing the first Thursday of the year.
-    #[wasm_bindgen(method, getter, structural, js_name = weekOfYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "weekOfYear")]
     pub fn week_of_year(this: &PlainDateTime) -> u32;
 
     /// The daysInWeek read-only property gives the number of days in the week that the
     /// date falls in. For the ISO 8601 calendar, this is always 7, but in other calendar
     /// systems it may differ from week to week.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInWeek")]
     pub fn days_in_week(this: &PlainDateTime) -> u32;
 
     /// The daysInMonth read-only property gives the number of days in the month that the
     /// date falls in. For the ISO 8601 calendar, this is 28, 29, 30, or 31, depending
     /// on the month and whether the year is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInMonth)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInMonth")]
     pub fn days_in_month(this: &PlainDateTime) -> u32;
 
     /// The daysInYear read-only property gives the number of days in the year that the date
     /// falls in. For the ISO 8601 calendar, this is 365 or 366, depending on whether the year
     /// is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInYear")]
     pub fn days_in_year(this: &PlainDateTime) -> u32;
 
     /// The monthsInYear read-only property gives the number of months in the year that the date
     /// falls in. For the ISO 8601 calendar, this is always 12, but in other calendar systems
     /// it may differ from year to year.
-    #[wasm_bindgen(method, getter, structural, js_name = monthsInWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "monthsInWeek")]
     pub fn months_in_year(this: &PlainDateTime) -> u32;
 
     /// The inLeapYear read-only property tells whether the year that the date falls in is a
     /// leap year or not. Its value is true if the year is a leap year, and false if not.
-    #[wasm_bindgen(method, getter, structural, js_name = inLeapYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "inLeapYear")]
     pub fn in_leap_year(this: &PlainDateTime) -> bool;
 
     /// This method creates a new Temporal.PlainDateTime which is a copy of zonedDateTime, but any
     /// properties present on parameter override the ones already present on zonedDateTime.
-    #[wasm_bindgen(method, js_name = withPlainDate)]
+    #[wasm_bindgen(method, js_name = "withPlainDate")]
     pub fn with(this: &PlainDateTime, parameter: &JsValue, options: &JsValue) -> PlainDateTime;
 
     /// Returns a new `Temporal.PlainDateTime` object which replaces the calendar date of zonedDateTime
     /// with the calendar date represented by plainDate.
-    #[wasm_bindgen(method, js_name = withPlainDate)]
+    #[wasm_bindgen(method, js_name = "withPlainDate")]
     pub fn with_plain_date(this: &PlainDateTime, date: &PlainDate) -> PlainDateTime;
 
     /// Returns a new `Temporal.PlainDateTime` object which is the date indicated by date, projected
     /// into calendar.
-    #[wasm_bindgen(method, js_name = withCalendar)]
+    #[wasm_bindgen(method, js_name = "withCalendar")]
     pub fn with_calendar(this: &PlainDateTime, calendar: &str) -> PlainDateTime;
 
     /// This method adds duration to zonedDateTime.
@@ -218,20 +218,20 @@ extern "C" {
     ///
     /// This is an advanced method that's mainly useful if you are implementing a custom calendar. Most
     /// developers will not need to use it.
-    #[wasm_bindgen(method, js_name = getISOFields)]
+    #[wasm_bindgen(method, js_name = "getISOFields")]
     pub fn get_iso_fields(this: &PlainDateTime) -> JsValue;
 }
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type ZonedDateTime;
 
-    #[wasm_bindgen(static_method_of = ZonedDateTime, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "ZonedDateTime", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> ZonedDateTime;
 
-    #[wasm_bindgen(static_method_of = ZonedDateTime, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "ZonedDateTime", js_namespace = "Temporal")]
     pub fn compare(one: &ZonedDateTime, two: &ZonedDateTime) -> i32;
 
     #[wasm_bindgen(method, getter, structural)]
@@ -255,13 +255,13 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn nanosecond(this: &ZonedDateTime) -> u32;
 
-    #[wasm_bindgen(method, getter, structural, js_name = epochSeconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochSeconds")]
     pub fn epoch_seconds(this: &ZonedDateTime) -> u64;
-    #[wasm_bindgen(method, getter, structural, js_name = epochMilliseconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochMilliseconds")]
     pub fn epoch_milliseconds(this: &ZonedDateTime) -> u64;
-    #[wasm_bindgen(method, getter, structural, js_name = epochMicroseconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochMicroseconds")]
     pub fn epoch_microseconds(this: &ZonedDateTime) -> BigInt;
-    #[wasm_bindgen(method, getter, structural, js_name = epochNanoseconds)]
+    #[wasm_bindgen(method, getter, structural, js_name = "epochNanoseconds")]
     pub fn epoch_nanoseconds(this: &ZonedDateTime) -> BigInt;
 
     /// In calendars that use eras, the era and eraYear read-only properties can be used
@@ -269,7 +269,7 @@ extern "C" {
     /// the ISO 8601 calendar. As inputs to from or with, era and eraYear can be used instead
     /// of year. Unlike year, eraYear may decrease as time proceeds because some
     /// eras (like the BCE era in the Gregorian calendar) count years backwards.
-    #[wasm_bindgen(method, getter, structural, js_name = eraYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "eraYear")]
     pub fn era_year(this: &ZonedDateTime) -> JsValue;
 
     /// In calendars that use eras, the era and eraYear read-only properties can be used
@@ -283,48 +283,48 @@ extern "C" {
     /// The dayOfWeek read-only property gives the weekday number that the date falls
     /// on. For the ISO 8601 calendar, the weekday number is defined as in the ISO 8601
     /// standard: a value between 1 and 7, inclusive, with Monday being 1, and Sunday 7.
-    #[wasm_bindgen(method, getter, structural, js_name = dayOfWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "dayOfWeek")]
     pub fn day_of_week(this: &ZonedDateTime) -> u32;
 
     /// The dayOfYear read-only property gives the ordinal day of the year that the date
     /// falls on. For the ISO 8601 calendar, this is a value between 1 and 365, or 366 in
     /// a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = dayOfYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "dayOfYear")]
     pub fn day_of_year(this: &ZonedDateTime) -> u32;
 
     /// The weekOfYear read-only property gives the ISO week number of the date. For the
     /// ISO 8601 calendar, this is normally a value between 1 and 52, but in a few cases it
     /// can be 53 as well. ISO week 1 is the week containing the first Thursday of the year.
-    #[wasm_bindgen(method, getter, structural, js_name = weekOfYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "weekOfYear")]
     pub fn week_of_year(this: &ZonedDateTime) -> u32;
 
     /// The daysInWeek read-only property gives the number of days in the week that the
     /// date falls in. For the ISO 8601 calendar, this is always 7, but in other calendar
     /// systems it may differ from week to week.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInWeek")]
     pub fn days_in_week(this: &ZonedDateTime) -> u32;
 
     /// The daysInMonth read-only property gives the number of days in the month that the
     /// date falls in. For the ISO 8601 calendar, this is 28, 29, 30, or 31, depending
     /// on the month and whether the year is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInMonth)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInMonth")]
     pub fn days_in_month(this: &ZonedDateTime) -> u32;
 
     /// The daysInYear read-only property gives the number of days in the year that the date
     /// falls in. For the ISO 8601 calendar, this is 365 or 366, depending on whether the year
     /// is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInYear")]
     pub fn days_in_year(this: &ZonedDateTime) -> u32;
 
     /// The monthsInYear read-only property gives the number of months in the year that the date
     /// falls in. For the ISO 8601 calendar, this is always 12, but in other calendar systems
     /// it may differ from year to year.
-    #[wasm_bindgen(method, getter, structural, js_name = monthsInWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "monthsInWeek")]
     pub fn months_in_year(this: &ZonedDateTime) -> u32;
 
     /// The inLeapYear read-only property tells whether the year that the date falls in is a
     /// leap year or not. Its value is true if the year is a leap year, and false if not.
-    #[wasm_bindgen(method, getter, structural, js_name = inLeapYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "inLeapYear")]
     pub fn in_leap_year(this: &ZonedDateTime) -> bool;
 
     /// The `hoursInDay` read-only property returns the number of real-world hours
@@ -333,10 +333,10 @@ extern "C" {
     /// long, but on days where there are DST changes or other time zone transitions, this
     /// property may return 23 or 25. In rare cases, other integers or even non-integer
     /// values may be returned, e.g. when time zone definitions change by less than one hour.
-    #[wasm_bindgen(method, getter, structural, js_name = inLeapYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "inLeapYear")]
     pub fn hours_in_day(this: &ZonedDateTime) -> u32;
 
-    #[wasm_bindgen(method, getter, structural, js_name = startOfDay)]
+    #[wasm_bindgen(method, getter, structural, js_name = "startOfDay")]
     pub fn start_of_day(this: &ZonedDateTime) -> ZonedDateTime;
 
     /// The offset read-only property is the offset (formatted as a string) relative
@@ -346,17 +346,17 @@ extern "C" {
 
     /// This method creates a new Temporal.ZonedDateTime which is a copy of zonedDateTime, but any
     /// properties present on parameter override the ones already present on zonedDateTime.
-    #[wasm_bindgen(method, js_name = withPlainDate)]
+    #[wasm_bindgen(method, js_name = "withPlainDate")]
     pub fn with(this: &ZonedDateTime, parameter: &JsValue, options: &JsValue) -> ZonedDateTime;
 
     /// Returns a new `Temporal.ZonedDateTime` object which replaces the calendar date of zonedDateTime
     /// with the calendar date represented by plainDate.
-    #[wasm_bindgen(method, js_name = withPlainDate)]
+    #[wasm_bindgen(method, js_name = "withPlainDate")]
     pub fn with_plain_date(this: &ZonedDateTime, date: &PlainDate) -> ZonedDateTime;
 
     /// Returns a new `Temporal.ZonedDateTime` object which is the date indicated by date, projected
     /// into calendar.
-    #[wasm_bindgen(method, js_name = withCalendar)]
+    #[wasm_bindgen(method, js_name = "withCalendar")]
     pub fn with_calendar(this: &ZonedDateTime, calendar: &str) -> ZonedDateTime;
 
     /// This method adds duration to zonedDateTime.
@@ -395,20 +395,20 @@ extern "C" {
     ///
     /// This is an advanced method that's mainly useful if you are implementing a custom calendar. Most
     /// developers will not need to use it.
-    #[wasm_bindgen(method, js_name = getISOFields)]
+    #[wasm_bindgen(method, js_name = "getISOFields")]
     pub fn get_iso_fields(this: &ZonedDateTime) -> JsValue;
 }
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type Duration;
 
-    #[wasm_bindgen(static_method_of = Duration, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "Duration", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> Duration;
 
-    #[wasm_bindgen(static_method_of = Duration, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "Duration", js_namespace = "Temporal")]
     pub fn compare(one: &Duration, two: &Duration) -> i32;
 
     #[wasm_bindgen(method, getter, structural)]
@@ -480,33 +480,33 @@ extern "C" {
 
     /// This method overrides `Object.prototype.toString()` and provides the ISO 8601
     /// description of the duration.
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &Duration, options: &JsValue) -> JsString;
 
     /// This method is the same as duration.toString(). It is usually not called directly, but
     /// it can be called automatically by JSON.stringify().
-    #[wasm_bindgen(method, js_name = toJson)]
+    #[wasm_bindgen(method, js_name = "toJson")]
     pub fn to_json(this: &Duration) -> JsString;
 
     /// This method overrides `Object.prototype.toLocaleString()` to provide a human-readable,
     /// language-sensitive representation of duration.
     ///
     /// The locales and options arguments are the same as in the constructor to Intl.DurationFormat.
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &Duration, locales: &JsValue, options: &JsValue) -> JsString;
 
 }
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type PlainTime;
 
-    #[wasm_bindgen(static_method_of = PlainTime, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainTime", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> PlainTime;
 
-    #[wasm_bindgen(static_method_of = PlainTime, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainTime", js_namespace = "Temporal")]
     pub fn compare(one: &PlainTime, two: &PlainTime) -> i32;
 
     #[wasm_bindgen(method, getter, structural)]
@@ -557,7 +557,7 @@ extern "C" {
     /// language-sensitive representation of duration.
     ///
     /// The locales and options arguments are the same as in the constructor to Intl.DateTimeFormat.
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &PlainTime, locales: &JsValue, options: &JsValue) -> JsString;
 
     /// Returns: a plain object with properties expressing PlainTime in the ISO 8601 calendar, including
@@ -565,7 +565,7 @@ extern "C" {
     ///
     /// This is an advanced method that's mainly useful if you are implementing a custom calendar. Most
     /// developers will not need to use it.
-    #[wasm_bindgen(method, js_name = getISOFields)]
+    #[wasm_bindgen(method, js_name = "getISOFields")]
     pub fn get_iso_fields(this: &PlainTime) -> JsValue;
 
 }
@@ -575,14 +575,14 @@ extern "C" {
     /// A Temporal.PlainYearMonth represents a particular month on the calendar. For example, it
     /// could be used to represent a particular instance of a monthly recurring event, like "the
     /// June 2019 meeting".
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type PlainYearMonth;
 
-    #[wasm_bindgen(static_method_of = PlainYearMonth, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainYearMonth", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> PlainYearMonth;
 
-    #[wasm_bindgen(static_method_of = PlainYearMonth, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainYearMonth", js_namespace = "Temporal")]
     pub fn compare(one: &PlainYearMonth, two: &PlainYearMonth) -> i32;
 
     /// `year` is a signed integer representing the number of years relative to a
@@ -611,7 +611,7 @@ extern "C" {
     /// * 'M02' => February;
     /// * 'M08L' => repeated 8th month in the Chinese calendar;
     /// * 'M05L' => Adar I in the Hebrew calendar.
-    #[wasm_bindgen(method, getter, structural, js_name = monthCode)]
+    #[wasm_bindgen(method, getter, structural, js_name = "monthCode")]
     pub fn month_code(this: &PlainYearMonth) -> JsString;
 
     /// In calendars that use eras, the era and eraYear read-only properties can be used
@@ -619,7 +619,7 @@ extern "C" {
     /// the ISO 8601 calendar. As inputs to from or with, era and eraYear can be used instead
     /// of year. Unlike year, eraYear may decrease as time proceeds because some
     /// eras (like the BCE era in the Gregorian calendar) count years backwards.
-    #[wasm_bindgen(method, getter, structural, js_name = eraYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "eraYear")]
     pub fn era_year(this: &PlainYearMonth) -> JsValue;
 
     /// In calendars that use eras, the era and eraYear read-only properties can be used
@@ -633,24 +633,24 @@ extern "C" {
     /// The daysInMonth read-only property gives the number of days in the month that the
     /// date falls in. For the ISO 8601 calendar, this is 28, 29, 30, or 31, depending
     /// on the month and whether the year is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInMonth)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInMonth")]
     pub fn days_in_month(this: &PlainYearMonth) -> u32;
 
     /// The daysInYear read-only property gives the number of days in the year that the date
     /// falls in. For the ISO 8601 calendar, this is 365 or 366, depending on whether the year
     /// is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInYear")]
     pub fn days_in_year(this: &PlainYearMonth) -> u32;
 
     /// The monthsInYear read-only property gives the number of months in the year that the date
     /// falls in. For the ISO 8601 calendar, this is always 12, but in other calendar systems
     /// it may differ from year to year.
-    #[wasm_bindgen(method, getter, structural, js_name = monthsInWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "monthsInWeek")]
     pub fn months_in_year(this: &PlainYearMonth) -> u32;
 
     /// The inLeapYear read-only property tells whether the year that the date falls in is a
     /// leap year or not. Its value is true if the year is a leap year, and false if not.
-    #[wasm_bindgen(method, getter, structural, js_name = inLeapYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "inLeapYear")]
     pub fn in_leap_year(this: &PlainYearMonth) -> bool;
 
     /// **Parameters:**
@@ -727,14 +727,14 @@ extern "C" {
     /// This method overrides the Object.prototype.toString() method and provides a convenient, unambiguous
     /// string representation of date. The string can be passed to Temporal.PlainYearMonth.from() to
     /// create a new Temporal.PlainDate object.
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &PlainYearMonth) -> JsString;
 
     /// This method overrides `Object.prototype.toLocaleString()` to provide a human-readable,
     /// language-sensitive representation of duration.
     ///
     /// The locales and options arguments are the same as in the constructor to Intl.DateTimeFormat.
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(
         this: &PlainYearMonth,
         locales: &JsValue,
@@ -746,7 +746,7 @@ extern "C" {
     ///
     /// This method is mainly useful if you are implementing a custom calendar. Most
     /// code will not need to use it.
-    #[wasm_bindgen(method, js_name = getISOFields)]
+    #[wasm_bindgen(method, js_name = "getISOFields")]
     pub fn get_iso_fields(this: &PlainYearMonth) -> JsValue;
 
 }
@@ -755,14 +755,14 @@ extern "C" {
 extern "C" {
     /// A date without a year component. This is useful to express
     /// things like "Bastille Day is on the 14th of July".
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type PlainMonthDay;
 
-    #[wasm_bindgen(static_method_of = PlainMonthDay, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainMonthDay", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> PlainMonthDay;
 
-    #[wasm_bindgen(static_method_of = PlainMonthDay, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainMonthDay", js_namespace = "Temporal")]
     pub fn compare(one: &PlainMonthDay, two: &PlainMonthDay) -> i32;
 
     /// `monthCode` is a calendar-specific string that identifies the month in
@@ -778,7 +778,7 @@ extern "C" {
     /// Note that this type has no month property, because month is ambiguous for some
     /// calendars without knowing the year. Instead, the monthCode property is used which
     /// is year-independent in all calendars.
-    #[wasm_bindgen(method, getter, structural, js_name = monthCode)]
+    #[wasm_bindgen(method, getter, structural, js_name = "monthCode")]
     pub fn month_code(this: &PlainMonthDay) -> JsString;
 
     /// day is a positive integer representing the day of the month.
@@ -800,14 +800,14 @@ extern "C" {
     /// This method overrides the Object.prototype.toString() method and provides a convenient, unambiguous
     /// string representation of date. The string can be passed to Temporal.PlainMonthDay.from() to
     /// create a new Temporal.PlainMonthDay object.
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &PlainMonthDay) -> JsString;
 
     /// This method overrides `Object.prototype.toLocaleString()` to provide a human-readable,
     /// language-sensitive representation of duration.
     ///
     /// The locales and options arguments are the same as in the constructor to Intl.DateTimeFormat.
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &PlainMonthDay, locales: &JsValue, options: &JsValue)
         -> JsString;
 
@@ -816,24 +816,24 @@ extern "C" {
     ///
     /// This method is mainly useful if you are implementing a custom calendar. Most
     /// code will not need to use it.
-    #[wasm_bindgen(method, js_name = getISOFields)]
+    #[wasm_bindgen(method, js_name = "getISOFields")]
     pub fn get_iso_fields(this: &PlainMonthDay) -> JsValue;
 
 }
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Temporal, extends = Object)]
+    #[wasm_bindgen(js_namespace = "Temporal", extends = "Object")]
     #[derive(Clone, Debug)]
     pub type PlainDate;
 
-    #[wasm_bindgen(js_namespace = Temporal, constructor)]
+    #[wasm_bindgen(js_namespace = "Temporal", constructor)]
     pub fn new(year: i32, month: u32, day: u32) -> PlainDate;
 
-    #[wasm_bindgen(static_method_of = PlainDate, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainDate", js_namespace = "Temporal")]
     pub fn from(val: &JsValue) -> PlainDate;
 
-    #[wasm_bindgen(static_method_of = PlainDate, js_namespace = Temporal)]
+    #[wasm_bindgen(static_method_of = "PlainDate", js_namespace = "Temporal")]
     pub fn compare(one: &PlainDate, two: &PlainDate) -> i32;
 
     /// `year` is a signed integer representing the number of years relative to a
@@ -862,7 +862,7 @@ extern "C" {
     /// * 'M02' => February;
     /// * 'M08L' => repeated 8th month in the Chinese calendar;
     /// * 'M05L' => Adar I in the Hebrew calendar.
-    #[wasm_bindgen(method, getter, structural, js_name = monthCode)]
+    #[wasm_bindgen(method, getter, structural, js_name = "monthCode")]
     pub fn month_code(this: &PlainDate) -> JsString;
 
     /// day is a positive integer representing the day of the month.
@@ -874,7 +874,7 @@ extern "C" {
     /// the ISO 8601 calendar. As inputs to from or with, era and eraYear can be used instead
     /// of year. Unlike year, eraYear may decrease as time proceeds because some
     /// eras (like the BCE era in the Gregorian calendar) count years backwards.
-    #[wasm_bindgen(method, getter, structural, js_name = eraYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "eraYear")]
     pub fn era_year(this: &PlainDate) -> JsValue;
 
     /// In calendars that use eras, the era and eraYear read-only properties can be used
@@ -888,53 +888,53 @@ extern "C" {
     /// The dayOfWeek read-only property gives the weekday number that the date falls
     /// on. For the ISO 8601 calendar, the weekday number is defined as in the ISO 8601
     /// standard: a value between 1 and 7, inclusive, with Monday being 1, and Sunday 7.
-    #[wasm_bindgen(method, getter, structural, js_name = dayOfWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "dayOfWeek")]
     pub fn day_of_week(this: &PlainDate) -> u32;
 
     /// The dayOfYear read-only property gives the ordinal day of the year that the date
     /// falls on. For the ISO 8601 calendar, this is a value between 1 and 365, or 366 in
     /// a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = dayOfYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "dayOfYear")]
     pub fn day_of_year(this: &PlainDate) -> u32;
 
     /// The weekOfYear read-only property gives the ISO week number of the date. For the
     /// ISO 8601 calendar, this is normally a value between 1 and 52, but in a few cases it
     /// can be 53 as well. ISO week 1 is the week containing the first Thursday of the year.
-    #[wasm_bindgen(method, getter, structural, js_name = weekOfYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "weekOfYear")]
     pub fn week_of_year(this: &PlainDate) -> u32;
 
     /// The daysInWeek read-only property gives the number of days in the week that the
     /// date falls in. For the ISO 8601 calendar, this is always 7, but in other calendar
     /// systems it may differ from week to week.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInWeek")]
     pub fn days_in_week(this: &PlainDate) -> u32;
 
     /// The daysInMonth read-only property gives the number of days in the month that the
     /// date falls in. For the ISO 8601 calendar, this is 28, 29, 30, or 31, depending
     /// on the month and whether the year is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInMonth)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInMonth")]
     pub fn days_in_month(this: &PlainDate) -> u32;
 
     /// The daysInYear read-only property gives the number of days in the year that the date
     /// falls in. For the ISO 8601 calendar, this is 365 or 366, depending on whether the year
     /// is a leap year.
-    #[wasm_bindgen(method, getter, structural, js_name = daysInYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "daysInYear")]
     pub fn days_in_year(this: &PlainDate) -> u32;
 
     /// The monthsInYear read-only property gives the number of months in the year that the date
     /// falls in. For the ISO 8601 calendar, this is always 12, but in other calendar systems
     /// it may differ from year to year.
-    #[wasm_bindgen(method, getter, structural, js_name = monthsInWeek)]
+    #[wasm_bindgen(method, getter, structural, js_name = "monthsInWeek")]
     pub fn months_in_year(this: &PlainDate) -> u32;
 
     /// The inLeapYear read-only property tells whether the year that the date falls in is a
     /// leap year or not. Its value is true if the year is a leap year, and false if not.
-    #[wasm_bindgen(method, getter, structural, js_name = inLeapYear)]
+    #[wasm_bindgen(method, getter, structural, js_name = "inLeapYear")]
     pub fn in_leap_year(this: &PlainDate) -> bool;
 
     /// Returns a new `Temporal.PlainDate` object which is the date indicated by date, projected
     /// into calendar.
-    #[wasm_bindgen(method, js_name = withCalendar)]
+    #[wasm_bindgen(method, js_name = "withCalendar")]
     pub fn with_calendar(this: &PlainDate, calendar: &str) -> PlainDate;
 
     /// **Parameters:**
@@ -1010,14 +1010,14 @@ extern "C" {
     /// This method overrides the Object.prototype.toString() method and provides a convenient, unambiguous
     /// string representation of date. The string can be passed to Temporal.PlainDate.from() to
     /// create a new Temporal.PlainDate object.
-    #[wasm_bindgen(method, js_name = toString)]
+    #[wasm_bindgen(method, js_name = "toString")]
     pub fn to_string(this: &PlainDate) -> JsString;
 
     /// This method overrides `Object.prototype.toLocaleString()` to provide a human-readable,
     /// language-sensitive representation of duration.
     ///
     /// The locales and options arguments are the same as in the constructor to Intl.DateTimeFormat.
-    #[wasm_bindgen(method, js_name = toLocaleString)]
+    #[wasm_bindgen(method, js_name = "toLocaleString")]
     pub fn to_locale_string(this: &PlainDate, locales: &JsValue, options: &JsValue) -> JsString;
 
     /// Returns: a plain object with properties expressing date in the ISO 8601
@@ -1025,7 +1025,7 @@ extern "C" {
     ///
     /// This method is mainly useful if you are implementing a custom calendar. Most
     /// code will not need to use it.
-    #[wasm_bindgen(method, js_name = getISOFields)]
+    #[wasm_bindgen(method, js_name = "getISOFields")]
     pub fn get_iso_fields(this: &PlainDate) -> JsValue;
 
 }
@@ -1038,19 +1038,19 @@ pub mod Now {
         #[wasm_bindgen(js_namespace = ["Temporal", "Now"])]
         pub fn instant() -> Instant;
 
-        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = zonedDateTime)]
+        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = "zonedDateTime")]
         pub fn zoned_date_time(calendar: &str) -> ZonedDateTime;
 
-        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = zonedDateTimeISO)]
+        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = "zonedDateTimeISO")]
         pub fn zoned_date_time_iso() -> ZonedDateTime;
 
-        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = plainDate)]
+        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = "plainDate")]
         pub fn plain_date(calendar: &str) -> PlainDate;
 
-        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = plainDateISO)]
+        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = "plainDateISO")]
         pub fn plain_date_iso() -> PlainDate;
 
-        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = plainTimeISO)]
+        #[wasm_bindgen(js_namespace = ["Temporal", "Now"], js_name = "plainTimeISO")]
         pub fn plain_time_iso() -> PlainTime;
 
     }

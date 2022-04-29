@@ -89,9 +89,9 @@ extern "C" {
     #[wasm_bindgen(assert_no_shim)]
     fn many(x: i32, y: f32, z: f64) -> i32;
 
-    #[wasm_bindgen(assert_no_shim, js_namespace = MyNamespace)]
+    #[wasm_bindgen(assert_no_shim, js_namespace = "MyNamespace")]
     fn incoming_namespaced() -> f64;
-    #[wasm_bindgen(assert_no_shim, js_namespace = MyNamespace)]
+    #[wasm_bindgen(assert_no_shim, js_namespace = "MyNamespace")]
     fn outgoing_namespaced(x: f64);
 
     // Note that this should only skip the JS shim if we have externref support

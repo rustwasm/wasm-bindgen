@@ -9,35 +9,24 @@ snake-cased Rust identifier:
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = jsOftenUsesCamelCase)]
+    #[wasm_bindgen(js_name = "jsOftenUsesCamelCase")]
     fn js_often_uses_camel_case() -> u32;
 }
 ```
 
-Sometimes, it is used to bind to JavaScript identifiers that are not valid Rust
-identifiers, in which case `js_name = "some string"` is used instead of `js_name
-= ident`:
-
-```rust
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_name = "$$$")]
-    fn cash_money() -> u32;
-}
-```
 However, you can also use `js_name` to define multiple signatures for
 polymorphic JavaScript functions:
 
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    #[wasm_bindgen(js_namespace = "console", js_name = "log")]
     fn console_log_str(s: &str);
 
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    #[wasm_bindgen(js_namespace = "console", js_name = "log")]
     fn console_log_u32(n: u32);
 
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    #[wasm_bindgen(js_namespace = "console", js_name = "log")]
     fn console_log_many(a: u32, b: &JsValue);
 }
 ```
@@ -51,7 +40,7 @@ Note that if you use `js_name` when importing a type you'll also need to use the
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = String)]
+    #[wasm_bindgen(js_name = "String")]
     type JsString;
     #[wasm_bindgen(method, getter, js_class = "String")]
     pub fn length(this: &JsString) -> u32;
@@ -77,7 +66,7 @@ Could be accessed using this definition in Rust:
 ```rust
 #[wasm_bindgen(module = "bar")]
 extern "C" {
-    #[wasm_bindgen(js_name = default)
+    #[wasm_bindgen(js_name = "default")]
     type Foo;
     #[wasm_bindgen(constructor, js_class = default)]
     pub fn new() -> Foo;

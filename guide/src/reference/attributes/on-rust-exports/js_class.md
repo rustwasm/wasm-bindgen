@@ -6,10 +6,10 @@ it from the self type in the `impl` block. The `js_class` attribute is most
 frequently paired with [the `js_name` attribute](js_name.html) on structs:
 
 ```rust
-#[wasm_bindgen(js_name = Foo)]
+#[wasm_bindgen(js_name = "Foo")]
 pub struct JsFoo { /* ... */ }
 
-#[wasm_bindgen(js_class = Foo)]
+#[wasm_bindgen(js_class = "Foo")]
 impl JsFoo {
     #[wasm_bindgen(constructor)]
     pub fn new() -> JsFoo { /* ... */ }

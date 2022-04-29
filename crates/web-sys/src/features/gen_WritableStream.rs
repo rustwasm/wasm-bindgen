@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = WritableStream , typescript_type = "WritableStream")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "WritableStream",
+        typescript_type = "WritableStream"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `WritableStream` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type WritableStream;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "WritableStream" , js_name = locked)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "WritableStream",
+        js_name = "locked"
+    )]
     #[doc = "Getter for the `locked` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/locked)"]
@@ -66,7 +76,7 @@ extern "C" {
         strategy: &QueuingStrategy,
     ) -> Result<WritableStream, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = abort)]
+    #[wasm_bindgen(method, structural, js_class = "WritableStream", js_name = "abort")]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/abort)"]
@@ -77,7 +87,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn abort(this: &WritableStream) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = abort)]
+    #[wasm_bindgen(method, structural, js_class = "WritableStream", js_name = "abort")]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/abort)"]
@@ -91,7 +101,7 @@ extern "C" {
         reason: &::wasm_bindgen::JsValue,
     ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = close)]
+    #[wasm_bindgen(method, structural, js_class = "WritableStream", js_name = "close")]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/close)"]
@@ -103,7 +113,7 @@ extern "C" {
     pub fn close(this: &WritableStream) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WritableStreamDefaultWriter")]
-    # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = getWriter)]
+    #[wasm_bindgen(method, structural, js_class = "WritableStream", js_name = "getWriter")]
     #[doc = "The `getWriter()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/getWriter)"]

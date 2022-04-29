@@ -7,7 +7,7 @@ use wasm_bindgen::JsCast;
 #[wasm_bindgen]
 extern "C" {
     type This;
-    #[wasm_bindgen(method, getter, structural, js_name = self)]
+    #[wasm_bindgen(method, getter, structural, js_name = "self")]
     fn self_(me: &This) -> JsValue;
 }
 

@@ -187,13 +187,13 @@ fn wait_async(ptr: &AtomicI32, current_value: i32) -> Option<js_sys::Promise> {
         type Atomics;
         type WaitAsyncResult;
 
-        #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync)]
+        #[wasm_bindgen(static_method_of = "Atomics", js_name = "waitAsync")]
         fn wait_async(buf: &js_sys::Int32Array, index: i32, value: i32) -> WaitAsyncResult;
 
-        #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync, getter)]
+        #[wasm_bindgen(static_method_of = "Atomics", js_name = "waitAsync", getter)]
         fn get_wait_async() -> JsValue;
 
-        #[wasm_bindgen(method, getter, structural, js_name = async)]
+        #[wasm_bindgen(method, getter, structural, js_name = "async")]
         fn async_(this: &WaitAsyncResult) -> bool;
 
         #[wasm_bindgen(method, getter, structural)]

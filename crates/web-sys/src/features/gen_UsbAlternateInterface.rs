@@ -4,7 +4,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = USBAlternateInterface , typescript_type = "USBAlternateInterface")]
+    #[wasm_bindgen(
+        extends = "::js_sys::Object",
+        js_name = "USBAlternateInterface",
+        typescript_type = "USBAlternateInterface"
+    )]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `UsbAlternateInterface` class."]
     #[doc = ""]
@@ -16,7 +20,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbAlternateInterface;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBAlternateInterface" , js_name = alternateSetting)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBAlternateInterface",
+        js_name = "alternateSetting"
+    )]
     #[doc = "Getter for the `alternateSetting` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBAlternateInterface/alternateSetting)"]
@@ -27,7 +37,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn alternate_setting(this: &UsbAlternateInterface) -> u8;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBAlternateInterface" , js_name = interfaceClass)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBAlternateInterface",
+        js_name = "interfaceClass"
+    )]
     #[doc = "Getter for the `interfaceClass` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBAlternateInterface/interfaceClass)"]
@@ -38,7 +54,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn interface_class(this: &UsbAlternateInterface) -> u8;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBAlternateInterface" , js_name = interfaceSubclass)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBAlternateInterface",
+        js_name = "interfaceSubclass"
+    )]
     #[doc = "Getter for the `interfaceSubclass` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBAlternateInterface/interfaceSubclass)"]
@@ -49,7 +71,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn interface_subclass(this: &UsbAlternateInterface) -> u8;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBAlternateInterface" , js_name = interfaceProtocol)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBAlternateInterface",
+        js_name = "interfaceProtocol"
+    )]
     #[doc = "Getter for the `interfaceProtocol` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBAlternateInterface/interfaceProtocol)"]
@@ -60,7 +88,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn interface_protocol(this: &UsbAlternateInterface) -> u8;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBAlternateInterface" , js_name = interfaceName)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBAlternateInterface",
+        js_name = "interfaceName"
+    )]
     #[doc = "Getter for the `interfaceName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBAlternateInterface/interfaceName)"]
@@ -71,7 +105,13 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn interface_name(this: &UsbAlternateInterface) -> Option<String>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "USBAlternateInterface" , js_name = endpoints)]
+    #[wasm_bindgen(
+        structural,
+        method,
+        getter,
+        js_class = "USBAlternateInterface",
+        js_name = "endpoints"
+    )]
     #[doc = "Getter for the `endpoints` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBAlternateInterface/endpoints)"]

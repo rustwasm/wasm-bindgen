@@ -5,10 +5,10 @@ use wasm_bindgen_futures::{spawn_local, JsFuture};
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
+    #[wasm_bindgen(js_namespace = "console")]
     pub(crate) fn log(a: &str);
 
-    #[wasm_bindgen(js_namespace = console)]
+    #[wasm_bindgen(js_namespace = "console")]
     pub(crate) fn error(a: &str);
 
 }

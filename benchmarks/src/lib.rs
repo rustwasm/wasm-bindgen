@@ -7,20 +7,20 @@ use web_sys::Node;
 
 #[wasm_bindgen(raw_module = "../globals.js")]
 extern "C" {
-    #[wasm_bindgen(js_name = jsthunk)]
+    #[wasm_bindgen(js_name = "jsthunk")]
     fn js_thunk();
-    #[wasm_bindgen(js_name = add)]
+    #[wasm_bindgen(js_name = "add")]
     fn js_add(a: i32, b: i32) -> i32;
 
     pub type Foo;
-    #[wasm_bindgen(method, final, js_name = bar)]
+    #[wasm_bindgen(method, final, js_name = "bar")]
     fn bar_final(this: &Foo);
-    #[wasm_bindgen(method, structural, js_name = bar)]
+    #[wasm_bindgen(method, structural, js_name = "bar")]
     fn bar_structural(this: &Foo);
 
-    #[wasm_bindgen(js_name = jsthunk)]
+    #[wasm_bindgen(js_name = "jsthunk")]
     fn doesnt_throw();
-    #[wasm_bindgen(catch, js_name = jsthunk)]
+    #[wasm_bindgen(catch, js_name = "jsthunk")]
     fn doesnt_throw_catch() -> Result<(), JsValue>;
 }
 
@@ -102,9 +102,9 @@ pub fn call_doesnt_throw_with_catch_n_times(n: usize) {
 extern "C" {
     pub type Element;
 
-    #[wasm_bindgen(method, js_name = firstChild, final, getter)]
+    #[wasm_bindgen(method, js_name = "firstChild", final, getter)]
     fn first_child_final(this: &Element) -> Element;
-    #[wasm_bindgen(method, js_name = firstChild, structural, getter)]
+    #[wasm_bindgen(method, js_name = "firstChild", structural, getter)]
     fn first_child_structural(this: &Element) -> Element;
 }
 
