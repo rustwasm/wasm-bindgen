@@ -18,11 +18,11 @@ use quote::ToTokens;
 use quote::TokenStreamExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 
-mod d;
 mod meta;
+mod opt;
 mod rhs;
 
-pub(crate) use d::ParseAttr;
+pub(crate) use opt::ParseAttr;
 
 mod parser;
 

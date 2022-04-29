@@ -10,7 +10,7 @@ use quote::ToTokens;
 use shared;
 use syn::spanned::Spanned;
 
-use crate::{d, meta, rhs::Rhs, ParseAttr};
+use crate::{meta, opt, rhs::Rhs, ParseAttr};
 
 /// Conversion trait with context.
 ///
@@ -25,10 +25,10 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl<'a> ConvertToAst<d::ItemStruct> for &'a mut syn::ItemStruct {
+impl<'a> ConvertToAst<opt::ItemStruct> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
-    fn convert(self, attrs: d::ItemStruct) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, attrs: opt::ItemStruct) -> Result<Self::Target, Diagnostic> {
         if self.generics.params.len() > 0 {
             bail_span!(
                 self.generics,
@@ -111,12 +111,12 @@ fn get_expr(mut expr: &syn::Expr) -> &syn::Expr {
     expr
 }
 
-impl<'a> ConvertToAst<(d::ForeignItemFn, &'a ast::ImportModule)> for syn::ForeignItemFn {
+impl<'a> ConvertToAst<(opt::ForeignItemFn, &'a ast::ImportModule)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (d::ForeignItemFn, &'a ast::ImportModule),
+        (opts, module): (opt::ForeignItemFn, &'a ast::ImportModule),
     ) -> Result<Self::Target, Diagnostic> {
         let wasm = function_from_decl(
             &self.sig.ident,
@@ -263,10 +263,10 @@ impl<'a> ConvertToAst<(d::ForeignItemFn, &'a ast::ImportModule)> for syn::Foreig
     }
 }
 
-impl ConvertToAst<d::ForeignItemType> for syn::ForeignItemType {
+impl ConvertToAst<opt::ForeignItemType> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
-    fn convert(self, attrs: d::ForeignItemType) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, attrs: opt::ForeignItemType) -> Result<Self::Target, Diagnostic> {
         let js_name = attrs
             .js_name
             .as_ref()
@@ -293,12 +293,12 @@ impl ConvertToAst<d::ForeignItemType> for syn::ForeignItemType {
     }
 }
 
-impl<'a> ConvertToAst<(d::ForeignItemStatic, &'a ast::ImportModule)> for syn::ForeignItemStatic {
+impl<'a> ConvertToAst<(opt::ForeignItemStatic, &'a ast::ImportModule)> for syn::ForeignItemStatic {
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (d::ForeignItemStatic, &'a ast::ImportModule),
+        (opts, module): (opt::ForeignItemStatic, &'a ast::ImportModule),
     ) -> Result<Self::Target, Diagnostic> {
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
@@ -325,10 +325,10 @@ impl<'a> ConvertToAst<(d::ForeignItemStatic, &'a ast::ImportModule)> for syn::Fo
     }
 }
 
-impl ConvertToAst<d::ItemFn> for syn::ItemFn {
+impl ConvertToAst<opt::ItemFn> for syn::ItemFn {
     type Target = ast::Function;
 
-    fn convert(self, attrs: d::ItemFn) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, attrs: opt::ItemFn) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => bail_span!(self, "can only #[wasm_bindgen] public functions"),
@@ -368,7 +368,7 @@ fn function_from_decl<O>(
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic>
 where
     for<'a> &'a O: Into<OperationKind>,
-    O: d::fields::JsName + d::fields::SkipTypescript,
+    O: opt::fields::JsName + opt::fields::SkipTypescript,
 {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -566,8 +566,12 @@ impl<'a> MacroParse<(TokenStream, &'a mut TokenStream)> for syn::Item {
     }
 }
 
-impl<'a> MacroParse<d::ItemImpl> for &'a mut syn::ItemImpl {
-    fn macro_parse(self, _program: &mut ast::Program, opts: d::ItemImpl) -> Result<(), Diagnostic> {
+impl<'a> MacroParse<opt::ItemImpl> for &'a mut syn::ItemImpl {
+    fn macro_parse(
+        self,
+        _program: &mut ast::Program,
+        opts: opt::ItemImpl,
+    ) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
                 self.defaultness,
@@ -621,7 +625,7 @@ impl<'a> MacroParse<d::ItemImpl> for &'a mut syn::ItemImpl {
 fn prepare_for_impl_recursion(
     item: &mut syn::ImplItem,
     class: &syn::Path,
-    impl_opts: &d::ItemImpl,
+    impl_opts: &opt::ItemImpl,
 ) -> Result<(), Diagnostic> {
     let method = match item {
         syn::ImplItem::Method(m) => m,
@@ -769,11 +773,11 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
     Ok(())
 }
 
-impl<'a> MacroParse<(&'a mut TokenStream, d::ItemEnum)> for syn::ItemEnum {
+impl<'a> MacroParse<(&'a mut TokenStream, opt::ItemEnum)> for syn::ItemEnum {
     fn macro_parse(
         self,
         program: &mut ast::Program,
-        (tokens, opts): (&'a mut TokenStream, d::ItemEnum),
+        (tokens, opts): (&'a mut TokenStream, opt::ItemEnum),
     ) -> Result<(), Diagnostic> {
         if self.variants.len() == 0 {
             bail_span!(self, "cannot export empty enums to JS");
@@ -890,11 +894,11 @@ impl<'a> MacroParse<(&'a mut TokenStream, d::ItemEnum)> for syn::ItemEnum {
     }
 }
 
-impl MacroParse<d::ItemConst> for syn::ItemConst {
+impl MacroParse<opt::ItemConst> for syn::ItemConst {
     fn macro_parse(
         self,
         program: &mut ast::Program,
-        _opts: d::ItemConst,
+        _opts: opt::ItemConst,
     ) -> Result<(), Diagnostic> {
         match get_expr(&self.expr) {
             syn::Expr::Lit(syn::ExprLit {
@@ -912,11 +916,11 @@ impl MacroParse<d::ItemConst> for syn::ItemConst {
     }
 }
 
-impl MacroParse<d::ForeignMod> for syn::ItemForeignMod {
+impl MacroParse<opt::ForeignMod> for syn::ItemForeignMod {
     fn macro_parse(
         self,
         program: &mut ast::Program,
-        opts: d::ForeignMod,
+        opts: opt::ForeignMod,
     ) -> Result<(), Diagnostic> {
         let mut errors = Vec::new();
         match self.abi.name {
