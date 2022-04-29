@@ -315,71 +315,33 @@ pub struct ForeignItemType {
 
 impl_parse_attr!(syn::ForeignItemType, ForeignItemType);
 
-impl<'a> From<&'a ImplItemMethod> for ast::OperationKind {
-    fn from(opts: &'a ImplItemMethod) -> Self {
-        let mut operation_kind = ast::OperationKind::Regular;
-        if let Some(g) = &opts.getter {
-            operation_kind = ast::OperationKind::Getter(g.deref().clone().explicit());
-        }
-        if let Some(s) = &opts.setter {
-            operation_kind = ast::OperationKind::Setter(s.deref().clone().explicit());
-        }
-        if opts.indexing_getter.is_present() {
-            operation_kind = ast::OperationKind::IndexingGetter;
-        }
-        if opts.indexing_setter.is_present() {
-            operation_kind = ast::OperationKind::IndexingSetter;
-        }
-        if opts.indexing_deleter.is_present() {
-            operation_kind = ast::OperationKind::IndexingDeleter;
-        }
+macro_rules! operation_kind {
+    ($ty:path) => {
+        impl<'a> From<&'a $ty> for ast::OperationKind {
+            fn from(opts: &'a $ty) -> Self {
+                let mut operation_kind = ast::OperationKind::Regular;
+                if let Some(g) = &opts.getter {
+                    operation_kind = ast::OperationKind::Getter(g.deref().clone().explicit());
+                }
+                if let Some(s) = &opts.setter {
+                    operation_kind = ast::OperationKind::Setter(s.deref().clone().explicit());
+                }
+                if opts.indexing_getter.is_present() {
+                    operation_kind = ast::OperationKind::IndexingGetter;
+                }
+                if opts.indexing_setter.is_present() {
+                    operation_kind = ast::OperationKind::IndexingSetter;
+                }
+                if opts.indexing_deleter.is_present() {
+                    operation_kind = ast::OperationKind::IndexingDeleter;
+                }
 
-        operation_kind
-    }
+                operation_kind
+            }
+        }
+    };
 }
 
-impl<'a> From<&'a ItemFn> for ast::OperationKind {
-    fn from(opts: &'a ItemFn) -> Self {
-        let mut operation_kind = ast::OperationKind::Regular;
-        if let Some(g) = &opts.getter {
-            operation_kind = ast::OperationKind::Getter(g.deref().clone().explicit());
-        }
-        if let Some(s) = &opts.setter {
-            operation_kind = ast::OperationKind::Setter(s.deref().clone().explicit());
-        }
-        if opts.indexing_getter.is_present() {
-            operation_kind = ast::OperationKind::IndexingGetter;
-        }
-        if opts.indexing_setter.is_present() {
-            operation_kind = ast::OperationKind::IndexingSetter;
-        }
-        if opts.indexing_deleter.is_present() {
-            operation_kind = ast::OperationKind::IndexingDeleter;
-        }
-
-        operation_kind
-    }
-}
-
-impl<'a> From<&'a ForeignItemFn> for ast::OperationKind {
-    fn from(opts: &'a ForeignItemFn) -> Self {
-        let mut operation_kind = ast::OperationKind::Regular;
-        if let Some(g) = &opts.getter {
-            operation_kind = ast::OperationKind::Getter(g.deref().clone().explicit());
-        }
-        if let Some(s) = &opts.setter {
-            operation_kind = ast::OperationKind::Setter(s.deref().clone().explicit());
-        }
-        if opts.indexing_getter.is_present() {
-            operation_kind = ast::OperationKind::IndexingGetter;
-        }
-        if opts.indexing_setter.is_present() {
-            operation_kind = ast::OperationKind::IndexingSetter;
-        }
-        if opts.indexing_deleter.is_present() {
-            operation_kind = ast::OperationKind::IndexingDeleter;
-        }
-
-        operation_kind
-    }
-}
+operation_kind!(ImplItemMethod);
+operation_kind!(ItemFn);
+operation_kind!(ForeignItemFn);
