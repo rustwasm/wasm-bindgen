@@ -4,7 +4,7 @@ use syn::{
     Expr, Ident, LitStr, Path,
 };
 
-use crate::{meta::IntoLit, quote_lit};
+use crate::meta::{quote_lit, IntoLit};
 
 /// Valid syntax to appear to the right of `=` in `wasm_bindgen` attributes.
 #[derive(Debug, Clone)]
@@ -51,10 +51,10 @@ impl Parse for Rhs {
 
 impl IntoLit for Rhs {
     fn into_lit(self) -> syn::Lit {
-        syn::Lit::Str(match self {
-            Self::Path(p) => quote_lit!(p),
-            Self::LitStr(s) => s,
-            Self::Expr(e) => quote_lit!(e),
-        })
+        match self {
+            Self::Path(p) => quote_lit(&p),
+            Self::LitStr(s) => s.into(),
+            Self::Expr(e) => quote_lit(&e),
+        }
     }
 }

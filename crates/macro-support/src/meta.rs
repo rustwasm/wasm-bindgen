@@ -1,11 +1,12 @@
 use std::convert::TryFrom;
 
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
 use syn::{
     ext::IdentExt,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
+    spanned::Spanned,
     Ident, Path,
 };
 
@@ -23,15 +24,9 @@ impl IntoLit for syn::Lit {
     }
 }
 
-/// Create a `syn::LitStr` by calling `quote!`.
-#[macro_export]
-macro_rules! quote_lit {
-    ($src:expr) => {
-        {
-            let x = $src;
-            ::syn::LitStr::new(&::quote::quote!(#x).to_string(), ::syn::spanned::Spanned::span(&x))
-        }
-    };
+/// Create a `syn::Lit` by calling `quote!` and wrapping the contents in quotation marks.
+pub fn quote_lit<T: Spanned + ToTokens>(v: &T) -> syn::Lit {
+    syn::LitStr::new(&quote!(#v).to_string(), v.span()).into()
 }
 
 /// A `syn::Meta` that allows values other than literals.
@@ -48,16 +43,6 @@ impl<T: Parse> Meta<T> {
             Ok(Self::Path(path))
         } else {
             syn::parse2(quote!(#path(#body)))
-        }
-    }
-}
-
-impl From<syn::Meta> for Meta<syn::Lit> {
-    fn from(v: syn::Meta) -> Self {
-        match v {
-            syn::Meta::Path(path) => Self::Path(path),
-            syn::Meta::List(list) => Self::List(list.into()),
-            syn::Meta::NameValue(nv) => Self::NameValue(nv.into()),
         }
     }
 }
@@ -119,15 +104,6 @@ pub enum NestedMeta<T> {
     Lit(T),
 }
 
-impl From<syn::NestedMeta> for NestedMeta<syn::Lit> {
-    fn from(v: syn::NestedMeta) -> Self {
-        match v {
-            syn::NestedMeta::Meta(m) => Self::Meta(m.into()),
-            syn::NestedMeta::Lit(l) => Self::Lit(l.into()),
-        }
-    }
-}
-
 impl<T: IntoLit> From<NestedMeta<T>> for syn::NestedMeta {
     fn from(v: NestedMeta<T>) -> Self {
         match v {
@@ -151,16 +127,6 @@ pub struct MetaList<T> {
     pub nested: Punctuated<NestedMeta<T>, syn::token::Comma>,
 }
 
-impl From<syn::MetaList> for MetaList<syn::Lit> {
-    fn from(v: syn::MetaList) -> Self {
-        Self {
-            path: v.path,
-            paren_token: v.paren_token,
-            nested: v.nested.into_iter().map(NestedMeta::from).collect(),
-        }
-    }
-}
-
 impl<T: IntoLit> From<MetaList<T>> for syn::MetaList {
     fn from(v: MetaList<T>) -> Self {
         syn::MetaList {
@@ -176,22 +142,6 @@ pub struct MetaNameValue<T> {
     pub path: Path,
     pub eq_token: syn::token::Eq,
     pub lit: T,
-}
-
-impl From<syn::MetaNameValue> for MetaNameValue<syn::Lit> {
-    fn from(
-        syn::MetaNameValue {
-            path,
-            lit,
-            eq_token,
-        }: syn::MetaNameValue,
-    ) -> Self {
-        Self {
-            path,
-            lit,
-            eq_token,
-        }
-    }
 }
 
 impl<T: IntoLit> From<MetaNameValue<T>> for syn::MetaNameValue {
