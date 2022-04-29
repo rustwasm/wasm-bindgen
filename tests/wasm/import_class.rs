@@ -39,8 +39,7 @@ extern "C" {
     fn switch_methods_a();
     fn switch_methods_b();
     type SwitchMethods;
-    #[wasm_bindgen(constructor)]
-    #[wasm_bindgen(final)]
+    #[wasm_bindgen(constructor, final)]
     fn new() -> SwitchMethods;
     #[wasm_bindgen(js_namespace = SwitchMethods, final)]
     fn a();
