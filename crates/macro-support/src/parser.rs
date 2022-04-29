@@ -934,7 +934,7 @@ impl MacroParse<opt::ForeignMod> for syn::ItemForeignMod {
             }
         }
 
-        // This expects only one branch to be taken as a result of validation in d::ForeignMod::from_attributes
+        // This expects only one branch to be taken as a result of validation in d::ForeignMod::from_meta
         let module = if let Some(name) = &opts.module {
             ast::ImportModule::Named(name.value(), name.span())
         } else if let Some(name) = &opts.raw_module {
