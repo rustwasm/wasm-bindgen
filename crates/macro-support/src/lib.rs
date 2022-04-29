@@ -11,31 +11,28 @@ extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate wasm_bindgen_shared as shared;
 
-pub use crate::parser::BindgenAttrs;
 use crate::parser::MacroParse;
 use backend::{Diagnostic, TryToTokens};
 use proc_macro2::TokenStream;
 use quote::ToTokens;
 use quote::TokenStreamExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
+use syn::AttributeArgs;
+
+mod d;
+
+pub(crate) use d::ParseAttr;
 
 mod parser;
 
 /// Takes the parsed input from a `#[wasm_bindgen]` macro and returns the generated bindings
-pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diagnostic> {
-    parser::reset_attrs_used();
+pub fn expand(attr: AttributeArgs, input: TokenStream) -> Result<TokenStream, Diagnostic> {
     let item = syn::parse2::<syn::Item>(input)?;
-    let opts = syn::parse2(attr)?;
 
     let mut tokens = proc_macro2::TokenStream::new();
     let mut program = backend::ast::Program::default();
-    item.macro_parse(&mut program, (Some(opts), &mut tokens))?;
+    item.macro_parse(&mut program, (attr, &mut tokens))?;
     program.try_to_tokens(&mut tokens)?;
-
-    // If we successfully got here then we should have used up all attributes
-    // and considered all of them to see if they were used. If one was forgotten
-    // that's a bug on our end, so sanity check here.
-    parser::assert_all_attrs_checked();
 
     Ok(tokens)
 }
@@ -45,13 +42,11 @@ pub fn expand_class_marker(
     attr: TokenStream,
     input: TokenStream,
 ) -> Result<TokenStream, Diagnostic> {
-    parser::reset_attrs_used();
     let mut item = syn::parse2::<syn::ImplItemMethod>(input)?;
     let opts: ClassMarker = syn::parse2(attr)?;
 
     let mut program = backend::ast::Program::default();
     item.macro_parse(&mut program, (&opts.class, &opts.js_class))?;
-    parser::assert_all_attrs_checked(); // same as above
 
     // This is where things are slightly different, we are being expanded in the
     // context of an impl so we can't inject arbitrary item-like tokens into the

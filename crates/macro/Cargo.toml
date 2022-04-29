@@ -22,6 +22,7 @@ strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 [dependencies]
 wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.80" }
 quote = "1.0"
+syn = "1.0"
 
 [dev-dependencies]
 trybuild = "1.0"

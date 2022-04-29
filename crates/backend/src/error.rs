@@ -98,6 +98,12 @@ impl From<Error> for Diagnostic {
     }
 }
 
+impl From<darling::Error> for Diagnostic {
+    fn from(err: darling::Error) -> Self {
+        Self::from(Error::from(err))
+    }
+}
+
 fn extract_spans(node: &dyn ToTokens) -> Option<(Span, Span)> {
     let mut t = TokenStream::new();
     node.to_tokens(&mut t);

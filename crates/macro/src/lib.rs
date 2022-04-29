@@ -7,7 +7,8 @@ use quote::quote;
 
 #[proc_macro_attribute]
 pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
-    match wasm_bindgen_macro_support::expand(attr.into(), input.into()) {
+    let attr_args = syn::parse_macro_input!(attr as syn::AttributeArgs);
+    match wasm_bindgen_macro_support::expand(attr_args, input.into()) {
         Ok(tokens) => {
             if cfg!(feature = "xxx_debug_only_print_generated_code") {
                 println!("{}", tokens);
