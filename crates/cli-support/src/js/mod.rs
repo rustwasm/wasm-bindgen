@@ -1648,11 +1648,11 @@ impl<'a> Context<'a> {
     }
 
     fn expose_int64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Int64", memory)
+        self.memview("BigInt64", memory)
     }
 
     fn expose_uint64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint64", memory)
+        self.memview("BigUint64", memory)
     }
 
     fn expose_f32_memory(&mut self, memory: MemoryId) -> MemView {
