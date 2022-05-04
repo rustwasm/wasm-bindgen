@@ -23,12 +23,12 @@ function handleError(f, args) {
     }
 }
 
-let cachegetInt32Memory0 = null;
+let cachedInt32Memory0;
 function getInt32Memory0() {
-    if (cachegetInt32Memory0 === null || cachegetInt32Memory0.buffer !== wasm.memory.buffer) {
-        cachegetInt32Memory0 = new Int32Array(wasm.memory.buffer);
+    if (cachedInt32Memory0.byteLength === 0) {
+        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
     }
-    return cachegetInt32Memory0;
+    return cachedInt32Memory0;
 }
 
 function getObject(idx) { return heap[idx]; }
@@ -63,4 +63,6 @@ export function exported() {
 export function __wbg_foo_8d66ddef0ff279d6() { return handleError(function () {
     foo();
 }, arguments) };
+
+cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
 

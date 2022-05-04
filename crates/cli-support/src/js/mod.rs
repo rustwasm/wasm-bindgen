@@ -9,9 +9,10 @@ use anyhow::{anyhow, bail, Context as _, Error};
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
+use std::fmt::Write;
 use std::fs;
 use std::path::{Path, PathBuf};
-use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
+use walrus::{ExportItem, FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
 
@@ -49,9 +50,12 @@ pub struct Context<'a> {
     /// they're defined in as well as their version specification.
     pub npm_dependencies: HashMap<String, (PathBuf, String)>,
 
-    /// A mapping of a index for memories as we see them. Used in function
-    /// names.
-    memory_indices: HashMap<MemoryId, usize>,
+    /// A mapping from the memory IDs as we see them to an index for that memory,
+    /// used in function names, as well as all the kinds of views we've created
+    /// of that memory.
+    ///
+    /// `BTreeMap` and `BTreeSet` are used to make the ordering deterministic.
+    memories: BTreeMap<MemoryId, (usize, BTreeSet<&'static str>)>,
     table_indices: HashMap<TableId, usize>,
 
     /// A flag to track if the stack pointer setter shim has been injected.
@@ -101,7 +105,7 @@ impl<'a> Context<'a> {
             next_export_idx: 0,
             wit,
             aux,
-            memory_indices: Default::default(),
+            memories: Default::default(),
             table_indices: Default::default(),
             stack_pointer_shim_injected: false,
         })
@@ -399,8 +403,10 @@ impl<'a> Context<'a> {
                     ))),
                 );
 
+                footer.push_str(&self.post_instantiate());
+
                 if needs_manual_start {
-                    footer.push_str("wasm.__wbindgen_start();\n");
+                    footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
@@ -411,8 +417,11 @@ impl<'a> Context<'a> {
 
                 footer.push_str(&self.generate_deno_wasm_loading(module_name));
 
+                footer.push_str("\n\n");
+                footer.push_str(&self.post_instantiate());
+
                 if needs_manual_start {
-                    footer.push_str("wasm.__wbindgen_start();\n");
+                    footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
@@ -444,6 +453,10 @@ impl<'a> Context<'a> {
                         footer.push_str(";\n");
                     }
                 }
+
+                footer.push('\n');
+                footer.push_str(&self.post_instantiate());
+
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
                 }
@@ -571,6 +584,37 @@ impl<'a> Context<'a> {
             }
         }
         Ok(imports)
+    }
+
+    /// Returns JS to be run immediately after the wasm module is instantiated,
+    /// before the start function is called.
+    fn post_instantiate(&self) -> String {
+        let mut out = String::new();
+        // Initialise all the memory views.
+        for (&mem_id, &(num, ref views)) in &self.memories {
+            // We can't just use `export_name_of` because it takes `&mut self` and we've already borrowed `views`.
+            let mem = match self
+                .module
+                .exports
+                .iter()
+                .find(|export| matches!(export.item, ExportItem::Memory(id) if id == mem_id))
+            {
+                Some(export) => &export.name,
+                None => continue,
+            };
+
+            for kind in views {
+                writeln!(
+                    out,
+                    "cached{kind}Memory{num} = new {kind}Array(wasm.{mem}.buffer);",
+                    kind = kind,
+                    num = num,
+                    mem = mem,
+                )
+                .unwrap()
+            }
+        }
+        out
     }
 
     fn ts_for_init_fn(
@@ -785,6 +829,8 @@ impl<'a> Context<'a> {
 
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
+
+                    {post_instantiate}
                     {start}
                     return wasm;
                 }}
@@ -792,6 +838,7 @@ impl<'a> Context<'a> {
             init_memory_arg = init_memory_arg,
             default_module_path = default_module_path,
             init_memory = init_memory,
+            post_instantiate = self.post_instantiate(),
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
             } else {
@@ -1065,7 +1112,7 @@ impl<'a> Context<'a> {
 
         let mem = self.expose_uint8_memory(memory);
         let ret = MemView {
-            name: "passStringToWasm",
+            name: "passStringToWasm".into(),
             num: mem.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1230,7 +1277,7 @@ impl<'a> Context<'a> {
     fn expose_pass_array_jsvalue_to_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
         let mem = self.expose_uint32_memory(memory);
         let ret = MemView {
-            name: "passArrayJsValueToWasm",
+            name: "passArrayJsValueToWasm".into(),
             num: mem.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1285,7 +1332,7 @@ impl<'a> Context<'a> {
         size: usize,
     ) -> Result<MemView, Error> {
         let ret = MemView {
-            name,
+            name: name.into(),
             num: view.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1370,7 +1417,7 @@ impl<'a> Context<'a> {
         self.expose_text_decoder()?;
         let mem = self.expose_uint8_memory(memory);
         let ret = MemView {
-            name: "getStringFromWasm",
+            name: "getStringFromWasm".into(),
             num: mem.num,
         };
 
@@ -1413,7 +1460,7 @@ impl<'a> Context<'a> {
         };
         let get_string = self.expose_get_string_from_wasm(memory)?;
         let ret = MemView {
-            name: "getCachedStringFromWasm",
+            name: "getCachedStringFromWasm".into(),
             num: get_string.num,
         };
 
@@ -1449,7 +1496,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_js_value_from_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
         let mem = self.expose_uint32_memory(memory);
         let ret = MemView {
-            name: "getArrayJsValueFromWasm",
+            name: "getArrayJsValueFromWasm".into(),
             num: mem.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1553,7 +1600,7 @@ impl<'a> Context<'a> {
 
     fn arrayget(&mut self, name: &'static str, view: MemView, size: usize) -> MemView {
         let ret = MemView {
-            name,
+            name: name.into(),
             num: view.num,
         };
         if !self.should_write_global(name) {
@@ -1573,47 +1620,47 @@ impl<'a> Context<'a> {
     }
 
     fn expose_int8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt8Memory", "new Int8Array", memory)
+        self.memview("Int8", memory)
     }
 
     fn expose_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint8Memory", "new Uint8Array", memory)
+        self.memview("Uint8", memory)
     }
 
     fn expose_clamped_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint8ClampedMemory", "new Uint8ClampedArray", memory)
+        self.memview("Uint8Clamped", memory)
     }
 
     fn expose_int16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt16Memory", "new Int16Array", memory)
+        self.memview("Int16", memory)
     }
 
     fn expose_uint16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint16Memory", "new Uint16Array", memory)
+        self.memview("Uint16", memory)
     }
 
     fn expose_int32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt32Memory", "new Int32Array", memory)
+        self.memview("Int32", memory)
     }
 
     fn expose_uint32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint32Memory", "new Uint32Array", memory)
+        self.memview("Uint32", memory)
     }
 
     fn expose_int64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt64Memory", "new BigInt64Array", memory)
+        self.memview("BigInt64", memory)
     }
 
     fn expose_uint64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint64Memory", "new BigUint64Array", memory)
+        self.memview("BigUint64", memory)
     }
 
     fn expose_f32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getFloat32Memory", "new Float32Array", memory)
+        self.memview("Float32", memory)
     }
 
     fn expose_f64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getFloat64Memory", "new Float64Array", memory)
+        self.memview("Float64", memory)
     }
 
     fn memview_function(&mut self, t: VectorKind, memory: MemoryId) -> MemView {
@@ -1635,39 +1682,52 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn memview(&mut self, name: &'static str, js: &str, memory: walrus::MemoryId) -> MemView {
-        let view = self.memview_memory(name, memory);
-        if !self.should_write_global(name.to_string()) {
+    fn memview(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
+        let view = self.memview_memory(kind, memory);
+        if !self.should_write_global(view.name.clone()) {
             return view;
         }
         let mem = self.export_name_of(memory);
+        // When a buffer becomes detached, its length returns 0,
+        // which is why we check against that.
         self.global(&format!(
             "
-            let cache{name} = null;
+            let {cache};
             function {name}() {{
-                if (cache{name} === null || cache{name}.buffer !== wasm.{mem}.buffer) {{
-                    cache{name} = {js}(wasm.{mem}.buffer);
+                if ({cache}.byteLength === 0) {{
+                    {cache} = new {kind}Array(wasm.{mem}.buffer);
                 }}
-                return cache{name};
+                return {cache};
             }}
             ",
             name = view,
-            js = js,
+            cache = format_args!("cached{}Memory{}", kind, view.num),
+            kind = kind,
             mem = mem,
         ));
         return view;
     }
 
-    fn memview_memory(&mut self, name: &'static str, memory: walrus::MemoryId) -> MemView {
-        let next = self.memory_indices.len();
-        let num = *self.memory_indices.entry(memory).or_insert(next);
-        MemView { name, num }
+    fn memview_memory(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
+        let next = self.memories.len();
+        let &mut (num, ref mut kinds) = self
+            .memories
+            .entry(memory)
+            .or_insert((next, Default::default()));
+        kinds.insert(kind);
+        MemView {
+            name: format!("get{}Memory", kind).into(),
+            num,
+        }
     }
 
     fn memview_table(&mut self, name: &'static str, table: walrus::TableId) -> MemView {
         let next = self.table_indices.len();
         let num = *self.table_indices.entry(table).or_insert(next);
-        MemView { name, num }
+        MemView {
+            name: name.into(),
+            num,
+        }
     }
 
     fn expose_assert_class(&mut self) {
@@ -3766,7 +3826,7 @@ impl ExportedClass {
 }
 
 struct MemView {
-    name: &'static str,
+    name: Cow<'static, str>,
     num: usize,
 }
 
