@@ -3344,7 +3344,7 @@ impl<'a> Context<'a> {
             interface.push_str(&format!("export interface {} {{", trait_.name));
         }
         for method in trait_.methods.iter() {
-            let (symbol_docs, method_docs) = if method.comments.is_empty() {
+            let (symbol_docs, _method_docs) = if method.comments.is_empty() {
                 (String::new(), String::new())
             } else {
                 // How do I generate JSDoc for this
@@ -3366,7 +3366,7 @@ impl<'a> Context<'a> {
                 | AuxExportKind::StaticFunction { name, .. }
                 | AuxExportKind::Method { name, .. } => name.clone(),
             };
-            symbols.push_str(&format!("{name}:Symbol(\"{name}\"),", name = name));
+            symbols.push_str(&format!("{name}:Symbol(\"{}.{name}\"),", trait_.name, name = name));
             if trait_.generate_typescript {
                 self.typescript.push_str("\n");
                 self.typescript.push_str(&format_doc_comments(
