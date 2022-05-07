@@ -27,8 +27,8 @@ fn get_bad_type_wasm() -> JsValue {
     2.into()
 }
 
-fn get_valid_wasm() -> Uint8Array {
-    get_wasm_array()
+fn get_valid_wasm() -> JsValue {
+    get_wasm_array().into()
 }
 
 #[wasm_bindgen_test]
@@ -182,24 +182,6 @@ async fn instantiate_module() {
     let p = WebAssembly::instantiate_module(&module, &imports);
     let inst = JsFuture::from(p).await.unwrap();
     assert!(inst.is_instance_of::<WebAssembly::Instance>());
-}
-
-#[wasm_bindgen_test]
-async fn instantiate_streaming() {
-    let headers = Headers::new().unwrap();
-    headers.append("Content-Type", "application/wasm").unwrap();
-    let response = Response::new_with_opt_buffer_source_and_init(
-        Some(&get_valid_wasm()),
-        ResponseInit::new().headers(&headers),
-    )
-    .unwrap();
-    let response = Promise::resolve(&response);
-    let imports = get_imports();
-    let p = WebAssembly::instantiate_streaming(&response, &imports);
-    let obj = JsFuture::from(p).await.unwrap();
-    assert!(Reflect::get(obj.as_ref(), &"instance".into())
-        .unwrap()
-        .is_instance_of::<WebAssembly::Instance>());
 }
 
 #[wasm_bindgen_test]
