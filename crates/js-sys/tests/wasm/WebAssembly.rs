@@ -2,6 +2,7 @@ use js_sys::*;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
+use web_sys::{Headers, Response, ResponseInit};
 
 #[wasm_bindgen(module = "tests/wasm/WebAssembly.js")]
 extern "C" {
@@ -26,8 +27,8 @@ fn get_bad_type_wasm() -> JsValue {
     2.into()
 }
 
-fn get_valid_wasm() -> JsValue {
-    get_wasm_array().into()
+fn get_valid_wasm() -> Uint8Array {
+    get_wasm_array()
 }
 
 #[wasm_bindgen_test]
@@ -185,7 +186,14 @@ async fn instantiate_module() {
 
 #[wasm_bindgen_test]
 async fn instantiate_streaming() {
-    let response = Promise::resolve(&get_valid_wasm());
+    let headers = Headers::new().unwrap();
+    headers.append("Content-Type", "application/wasm").unwrap();
+    let response = Response::new_with_opt_buffer_source_and_init(
+        Some(&get_valid_wasm()),
+        ResponseInit::new().headers(&headers),
+    )
+    .unwrap();
+    let response = Promise::resolve(&response);
     let imports = get_imports();
     let p = WebAssembly::instantiate_streaming(&response, &imports);
     let obj = JsFuture::from(p).await.unwrap();

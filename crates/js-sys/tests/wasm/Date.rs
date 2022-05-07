@@ -441,7 +441,12 @@ fn set_utc_seconds() {
 
 #[wasm_bindgen_test]
 fn to_date_string() {
-    let date = Date::new(&"05 October 2011 14:48 UTC".into());
+    // Create the date from date components rather than a string because this
+    // constructor interprets it as a date in the local time zone, which is how
+    // `toDateString` outputs it. This makes sure that this test will work in any
+    // time zone.
+    // October is 9 rather than 10 because the months count from 0.
+    let date = Date::new_with_year_month_day_hr_min(2011, 9, 5, 14, 48);
     assert_eq!(JsValue::from(date.to_date_string()), "Wed Oct 05 2011");
 }
 
