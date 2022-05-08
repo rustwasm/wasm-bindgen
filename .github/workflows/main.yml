@@ -91,18 +91,6 @@ jobs:
   #       WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
   #   - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
 
-  test_wasm_bindgen_nightly:
-    name: "Run wasm-bindgen crate tests (nightly)"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - run: rustup default nightly-2021-09-02
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-    - run: cargo test --target wasm32-unknown-unknown --features nightly --test wasm
-
   test_native:
     name: Run native tests
     runs-on: ubuntu-latest
