@@ -29,9 +29,7 @@ use crate::UnwrapThrowExt;
 ///
 /// The type parameter on `Closure` is the type of closure that this represents.
 /// Currently this can only be the `Fn` and `FnMut` traits with up to 7
-/// arguments (and an optional return value). The arguments/return value of the
-/// trait must be numbers like `u32` for now, although this restriction may be
-/// lifted in the future!
+/// arguments (and an optional return value).
 ///
 /// # Examples
 ///
@@ -69,9 +67,9 @@ use crate::UnwrapThrowExt;
 /// pub fn run() -> IntervalHandle {
 ///     // First up we use `Closure::wrap` to wrap up a Rust closure and create
 ///     // a JS closure.
-///     let cb = Closure::wrap(Box::new(|| {
+///     let cb = Closure::new(|| {
 ///         log("interval elapsed!");
-///     }) as Box<dyn FnMut()>);
+///     });
 ///
 ///     // Next we pass this via reference to the `setInterval` function, and
 ///     // `setInterval` gets a handle to the corresponding JS closure.
@@ -111,9 +109,9 @@ use crate::UnwrapThrowExt;
 ///
 /// #[wasm_bindgen]
 /// pub fn run() -> Result<IntervalHandle, JsValue> {
-///     let cb = Closure::wrap(Box::new(|| {
+///     let cb = Closure::new(|| {
 ///         web_sys::console::log_1(&"interval elapsed!".into());
-///     }) as Box<dyn FnMut()>);
+///     });
 ///
 ///     let window = web_sys::window().unwrap();
 ///     let interval_id = window.set_interval_with_callback_and_timeout_and_arguments_0(
@@ -252,23 +250,9 @@ impl<T> Closure<T>
 where
     T: ?Sized + WasmClosure,
 {
-    /// A more ergonomic version of `Closure::wrap` that does the boxing and
-    /// cast to trait object for you.
+    /// Creates a new instance of `Closure` from the provided Rust function.
     ///
-    /// *This method requires the `nightly` feature of the `wasm-bindgen` crate
-    /// to be enabled, meaning this is a nightly-only API. Users on stable
-    /// should use `Closure::wrap`.*
-    pub fn new<F>(t: F) -> Closure<T>
-    where
-        F: IntoWasmClosure<T> + 'static,
-    {
-        Closure::wrap(Box::new(t).unsize())
-    }
-
-    /// Creates a new instance of `Closure` from the provided boxed Rust
-    /// function.
-    ///
-    /// Note that the closure provided here, `Box<T>`, has a few requirements
+    /// Note that the closure provided here, `F`, has a few requirements
     /// associated with it:
     ///
     /// * It must implement `Fn` or `FnMut` (for `FnOnce` functions see
@@ -282,6 +266,15 @@ where
     /// * Its arguments and return values are all types that can be shared with
     ///   JS (i.e. have `#[wasm_bindgen]` annotations or are simple numbers,
     ///   etc.)
+    pub fn new<F>(t: F) -> Closure<T>
+    where
+        F: IntoWasmClosure<T> + 'static,
+    {
+        Closure::wrap(Box::new(t).unsize())
+    }
+
+    /// A more direct version of `Closure::new` which creates a `Closure` from
+    /// a `Box<dyn Fn>`/`Box<dyn FnMut>`, which is how it's kept internally.
     pub fn wrap(mut data: Box<T>) -> Closure<T> {
         assert_eq!(mem::size_of::<*const T>(), mem::size_of::<FatPtr<T>>());
         let (a, b) = unsafe {
