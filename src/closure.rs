@@ -5,8 +5,6 @@
 //! type itself.
 
 use std::fmt;
-#[cfg(feature = "nightly")]
-use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
 use std::prelude::v1::*;
 
@@ -260,12 +258,11 @@ where
     /// *This method requires the `nightly` feature of the `wasm-bindgen` crate
     /// to be enabled, meaning this is a nightly-only API. Users on stable
     /// should use `Closure::wrap`.*
-    #[cfg(feature = "nightly")]
     pub fn new<F>(t: F) -> Closure<T>
     where
-        F: Unsize<T> + 'static,
+        F: IntoWasmClosure<T> + 'static,
     {
-        Closure::wrap(Box::new(t) as Box<T>)
+        Closure::wrap(Box::new(t).unsize())
     }
 
     /// Creates a new instance of `Closure` from the provided boxed Rust
@@ -543,6 +540,15 @@ pub unsafe trait WasmClosure {
     fn describe();
 }
 
+/// An internal trait for the `Closure` type.
+///
+/// This trait is not stable and it's not recommended to use this in bounds or
+/// implement yourself.
+#[doc(hidden)]
+pub trait IntoWasmClosure<T: ?Sized> {
+    fn unsize(self: Box<Self>) -> Box<T>;
+}
+
 // The memory safety here in these implementations below is a bit tricky. We
 // want to be able to drop the `Closure` object from within the invocation of a
 // `Closure` for cases like promises. That means that while it's running we
@@ -710,6 +716,22 @@ macro_rules! doit {
 
                 js_val
             }
+        }
+
+        impl<T, $($var,)* R> IntoWasmClosure<dyn FnMut($($var),*) -> R> for T
+            where T: 'static + FnMut($($var),*) -> R,
+                  $($var: FromWasmAbi + 'static,)*
+                  R: ReturnWasmAbi + 'static,
+        {
+            fn unsize(self: Box<Self>) -> Box<dyn FnMut($($var),*) -> R> { self }
+        }
+
+        impl<T, $($var,)* R> IntoWasmClosure<dyn Fn($($var),*) -> R> for T
+            where T: 'static + Fn($($var),*) -> R,
+                  $($var: FromWasmAbi + 'static,)*
+                  R: ReturnWasmAbi + 'static,
+        {
+            fn unsize(self: Box<Self>) -> Box<dyn Fn($($var),*) -> R> { self }
         }
     )*)
 }

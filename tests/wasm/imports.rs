@@ -224,7 +224,6 @@ fn dead_imports_not_generated() {
 }
 
 #[wasm_bindgen_test]
-#[cfg(feature = "nightly")]
 fn import_inside_function_works() {
     #[wasm_bindgen(module = "tests/wasm/imports.js")]
     extern "C" {
@@ -234,12 +233,10 @@ fn import_inside_function_works() {
 }
 
 #[wasm_bindgen_test]
-#[cfg(feature = "nightly")]
 fn private_module_imports_work() {
     private::foo();
 }
 
-#[cfg(feature = "nightly")]
 mod private {
     use wasm_bindgen::prelude::*;
 

@@ -1,5 +1,3 @@
-#![cfg(feature = "nightly")]
-
 use js_sys::Number;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
