@@ -1,13 +1,14 @@
-use js_sys::{ArrayBuffer, DataView};
+use js_sys::{ArrayBuffer, DataView, Object, Promise, Reflect, WebAssembly};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
-use web_sys::Response;
+use web_sys::{Headers, Response, ResponseInit};
 
 #[wasm_bindgen(module = "/tests/wasm/response.js")]
 extern "C" {
     fn new_response() -> Response;
+    fn get_wasm_imports() -> Object;
 }
 
 #[wasm_bindgen_test]
@@ -43,4 +44,26 @@ async fn test_response_from_other_body() {
     let response_b = Response::new_with_opt_readable_stream(body.as_ref()).unwrap();
     let output = JsFuture::from(response_b.text().unwrap()).await.unwrap();
     assert_eq!(JsValue::from_str(input), output);
+}
+
+// Because it relies on `Response`, this can't go in `js-sys`, so put it here instead.
+#[wasm_bindgen_test]
+async fn wasm_instantiate_streaming() {
+    // Taken from `crates/js-sys/tests/wasm/WebAssembly.js`.
+    let mut wasm = *b"\x00asm\x01\x00\x00\x00\x01\x08\x02`\x01\x7f\x00`\x00\x00\x02\x19\x01\x07imports\rimported_func\x00\x00\x03\x02\x01\x01\x07\x11\x01\rexported_func\x00\x01\n\x08\x01\x06\x00A*\x10\x00\x0b";
+
+    let headers = Headers::new().unwrap();
+    headers.append("Content-Type", "application/wasm").unwrap();
+    let response = Response::new_with_opt_u8_array_and_init(
+        Some(&mut wasm),
+        ResponseInit::new().headers(&headers),
+    )
+    .unwrap();
+    let response = Promise::resolve(&response);
+    let imports = get_wasm_imports();
+    let p = WebAssembly::instantiate_streaming(&response, &imports);
+    let obj = JsFuture::from(p).await.unwrap();
+    assert!(Reflect::get(obj.as_ref(), &"instance".into())
+        .unwrap()
+        .is_instance_of::<WebAssembly::Instance>());
 }

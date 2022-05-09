@@ -2,6 +2,7 @@ use js_sys::*;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
+use web_sys::{Headers, Response, ResponseInit};
 
 #[wasm_bindgen(module = "tests/wasm/WebAssembly.js")]
 extern "C" {
@@ -181,17 +182,6 @@ async fn instantiate_module() {
     let p = WebAssembly::instantiate_module(&module, &imports);
     let inst = JsFuture::from(p).await.unwrap();
     assert!(inst.is_instance_of::<WebAssembly::Instance>());
-}
-
-#[wasm_bindgen_test]
-async fn instantiate_streaming() {
-    let response = Promise::resolve(&get_valid_wasm());
-    let imports = get_imports();
-    let p = WebAssembly::instantiate_streaming(&response, &imports);
-    let obj = JsFuture::from(p).await.unwrap();
-    assert!(Reflect::get(obj.as_ref(), &"instance".into())
-        .unwrap()
-        .is_instance_of::<WebAssembly::Instance>());
 }
 
 #[wasm_bindgen_test]
