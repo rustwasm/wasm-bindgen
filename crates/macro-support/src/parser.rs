@@ -446,12 +446,16 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemTrait {
             syn::Visibility::Public(_) => {}
             _ => bail_span!(self, "can only #[wasm_bindgen] public traits"),
         }
+
+        for supertrait in self.supertraits.iter() {
+            
+        }
+
         let mut methods = Vec::new();
         let js_name = attrs
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
-        let is_inspectable = attrs.inspectable().is_some();
         for item in self.items.iter_mut() {
             match item {
                 syn::TraitItem::Method(method) => {
@@ -493,7 +497,6 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemTrait {
             js_name,
             methods,
             comments,
-            is_inspectable,
             generate_typescript,
         })
     }

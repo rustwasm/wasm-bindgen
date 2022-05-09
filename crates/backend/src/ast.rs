@@ -394,10 +394,10 @@ pub struct Trait {
     pub methods: Vec<TraitMethod>,
     /// The doc comments on this trait, if provided
     pub comments: Vec<String>,
-    /// Whether this trait is inspectable (provides toJSON/toString properties to JS)
-    pub is_inspectable: bool,
     /// Whether to generate a typescript definition for this trait
     pub generate_typescript: bool,
+    /// The supertraits of this trait
+    pub supertraits: Vec<Trait>,
 }
 
 /// The method signature of a trait

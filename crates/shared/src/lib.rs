@@ -140,7 +140,6 @@ macro_rules! shared_api {
             name: &'a str,
             methods: Vec<TraitMethod<'a>>,
             comments: Vec<&'a str>,
-            is_inspectable: bool,
             generate_typescript: bool,
         }
 

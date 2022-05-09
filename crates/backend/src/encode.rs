@@ -342,7 +342,6 @@ fn shared_trait<'a>(t: &'a ast::Trait, intern: &'a Interner) -> Result<Trait<'a>
             .map(|t| shared_trait_method(t, intern))
             .collect::<Result<Vec<_>, _>>()?,
         comments: t.comments.iter().map(|t| &**t).collect(),
-        is_inspectable: t.is_inspectable,
         generate_typescript: t.generate_typescript,
     })
 }
