@@ -130,6 +130,11 @@ impl JsValue {
         }
     }
 
+    /// Returns the internal pointer value of this `JsValue`.
+    pub fn ptr(&self) -> u32 {
+        self.idx
+    }
+
     /// Creates a new JS value which is a string.
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will
