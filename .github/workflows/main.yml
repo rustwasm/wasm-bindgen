@@ -67,6 +67,18 @@ jobs:
         WASM_BINDGEN_EXTERNREF: 1
         NODE_ARGS: --experimental-wasm-reftypes
 
+  test_threads:
+    name: "Run wasm-bindgen crate tests with multithreading enabled"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: rustup default nightly-2021-09-02
+    - run: rustup target add wasm32-unknown-unknown
+    - run: rustup component add rust-src
+    # Note: we only run the browser tests here, because wasm-bindgen doesn't support threading in Node yet.
+    - run: |
+        RUSTFLAGS='-C target-feature=+atomics,+bulk-memory,+mutable-globals' \
+          cargo test --target wasm32-unknown-unknown --test headless -Z build-std=std,panic_abort
 
   # I don't know why this is failing so comment this out for now, but ideally
   # this would be figured out at some point and solved.
