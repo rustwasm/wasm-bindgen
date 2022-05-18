@@ -351,7 +351,7 @@ impl JsValue {
 
     /// Applies the binary `in` JS operator on the two `JsValue`s.
     ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof)
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in)
     #[inline]
     pub fn js_in(&self, obj: &JsValue) -> bool {
         unsafe { __wbindgen_in(self.idx, obj.idx) == 1 }
