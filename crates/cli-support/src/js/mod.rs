@@ -1688,20 +1688,37 @@ impl<'a> Context<'a> {
             return view;
         }
         let mem = self.export_name_of(memory);
-        // When a buffer becomes detached, its length returns 0,
-        // which is why we check against that.
+
+        let cache = format!("cached{}Memory{}", kind, view.num);
+        let resized_check = if self.module.memories.get(memory).shared {
+            // When it's backed by a `SharedArrayBuffer`, growing the wasm module's memory
+            // doesn't detach old references; instead, it just leaves them pointing to a
+            // slice of the up-to-date memory. So in order to check if it's been grown, we
+            // have to compare it to the up-to-date buffer.
+            format!(
+                "{cache}.buffer !== wasm.{mem}.buffer",
+                cache = cache,
+                mem = mem
+            )
+        } else {
+            // Otherwise, we can do a quicker check of whether the buffer's been detached,
+            // which is indicated by a length of 0.
+            format!("{cache}.byteLength === 0", cache = cache)
+        };
+
         self.global(&format!(
             "
             let {cache};
             function {name}() {{
-                if ({cache}.byteLength === 0) {{
+                if ({resized_check}) {{
                     {cache} = new {kind}Array(wasm.{mem}.buffer);
                 }}
                 return {cache};
             }}
             ",
             name = view,
-            cache = format_args!("cached{}Memory{}", kind, view.num),
+            cache = cache,
+            resized_check = resized_check,
             kind = kind,
             mem = mem,
         ));
