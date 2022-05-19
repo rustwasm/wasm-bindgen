@@ -6,12 +6,20 @@ online][compiled]
 [dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/raytrace.html
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/raytrace-parallel/
 
-You can build the example locally with:
+## First time setup:
 
-```
-$ ./build.sh
+1. Download this directory
+2. Install `cargo-make`:
+```shell
+cargo install cargo-make
 ```
 
-(or running the commands on Windows manually)
+## Run:
+
+You can build the example locally using [cargo-make](https://crates.io/crates/cargo-make/) with:
+
+```shell
+cargo make --makefile "./make.toml" run
+```
 
 and then visiting http://localhost:8080 in a browser should run the example!

@@ -1,0 +1,34 @@
+[tasks.install-miniserve]
+install_crate = {crate_name = "miniserve", binary = "miniserve", test_arg = "-h"}
+
+[tasks.install-wasm-bindgen]
+install_crate = {crate_name = "wasm-bindgen-cli", binary = "wasm-bindgen", test_arg = "-h"}
+
+[tasks.install-rust-nightly]
+args = ["install", "nightly"]
+command = "rustup"
+
+[tasks.install-rust-src]
+args = ["component", "add", "rust-src", "--toolchain", "nightly"]
+command = "rustup"
+dependencies = ["install-rust-nightly"]
+
+[tasks.build]
+args = ["+nightly", "build", "--target", "wasm32-unknown-unknown", "--release", "-Z", "build-std=std,panic_abort"]
+command = "cargo"
+dependencies = ["install-rust-src"]
+env = {RUSTFLAGS = "-C target-feature=+atomics,+bulk-memory,+mutable-globals"}
+
+[tasks.setup]
+args = ["./target/wasm32-unknown-unknown/release/raytrace_parallel.wasm", "--out-dir", ".", "--no-typescript", "--no-modules"]
+command = "wasm-bindgen"
+dependencies = ["install-wasm-bindgen", "build"]
+
+[tasks.run]
+args = [".", "--index", "index.html", "--header", "Cross-Origin-Embedder-Policy: require-corp", "--header", "Cross-Origin-Opener-Policy: same-origin"]
+command = "miniserve"
+dependencies = ["install-miniserve", "setup"]
+
+[tasks.clean]
+args = ["clean"]
+command = "cargo"
