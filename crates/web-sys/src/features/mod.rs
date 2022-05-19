@@ -4954,6 +4954,12 @@ mod gen_OverSampleType;
 #[cfg(feature = "OverSampleType")]
 pub use gen_OverSampleType::*;
 
+#[cfg(feature = "OvrMultiview2")]
+#[allow(non_snake_case)]
+mod gen_OvrMultiview2;
+#[cfg(feature = "OvrMultiview2")]
+pub use gen_OvrMultiview2::*;
+
 #[cfg(feature = "PageTransitionEvent")]
 #[allow(non_snake_case)]
 mod gen_PageTransitionEvent;
