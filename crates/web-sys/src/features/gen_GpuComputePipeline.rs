@@ -25,7 +25,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn label(this: &GpuComputePipeline) -> Option<String>;
+    pub fn label(this: &GpuComputePipeline) -> String;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "GPUComputePipeline" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_label(this: &GpuComputePipeline, value: Option<&str>);
+    pub fn set_label(this: &GpuComputePipeline, value: &str);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBindGroupLayout")]
     # [wasm_bindgen (method , structural , js_class = "GPUComputePipeline" , js_name = getBindGroupLayout)]

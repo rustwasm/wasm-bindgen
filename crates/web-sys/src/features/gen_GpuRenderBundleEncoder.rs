@@ -25,7 +25,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn label(this: &GpuRenderBundleEncoder) -> Option<String>;
+    pub fn label(this: &GpuRenderBundleEncoder) -> String;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "GPURenderBundleEncoder" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_label(this: &GpuRenderBundleEncoder, value: Option<&str>);
+    pub fn set_label(this: &GpuRenderBundleEncoder, value: &str);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuRenderBundle")]
     # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = finish)]
@@ -64,39 +64,6 @@ extern "C" {
         this: &GpuRenderBundleEncoder,
         descriptor: &GpuRenderBundleDescriptor,
     ) -> GpuRenderBundle;
-    #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = insertDebugMarker)]
-    #[doc = "The `insertDebugMarker()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderBundleEncoder/insertDebugMarker)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoder`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn insert_debug_marker(this: &GpuRenderBundleEncoder, marker_label: &str);
-    #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = popDebugGroup)]
-    #[doc = "The `popDebugGroup()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderBundleEncoder/popDebugGroup)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoder`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn pop_debug_group(this: &GpuRenderBundleEncoder);
-    #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = pushDebugGroup)]
-    #[doc = "The `pushDebugGroup()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderBundleEncoder/pushDebugGroup)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoder`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn push_debug_group(this: &GpuRenderBundleEncoder, group_label: &str);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBindGroup")]
     # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = setBindGroup)]
@@ -164,6 +131,39 @@ extern "C" {
         dynamic_offsets_data_start: f64,
         dynamic_offsets_data_length: u32,
     );
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = insertDebugMarker)]
+    #[doc = "The `insertDebugMarker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderBundleEncoder/insertDebugMarker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoder`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn insert_debug_marker(this: &GpuRenderBundleEncoder, marker_label: &str);
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = popDebugGroup)]
+    #[doc = "The `popDebugGroup()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderBundleEncoder/popDebugGroup)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoder`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn pop_debug_group(this: &GpuRenderBundleEncoder);
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = pushDebugGroup)]
+    #[doc = "The `pushDebugGroup()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderBundleEncoder/pushDebugGroup)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoder`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn push_debug_group(this: &GpuRenderBundleEncoder, group_label: &str);
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "GPURenderBundleEncoder" , js_name = draw)]
     #[doc = "The `draw()` method."]
