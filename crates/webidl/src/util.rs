@@ -109,14 +109,10 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
 
     match *v {
         ConstValueLit::Boolean(b) => ConstValue::BooleanLiteral(b.0),
-        ConstValueLit::Float(FloatLit::NegInfinity(_)) => {
-            ConstValue::FloatLiteral(NEG_INFINITY)
-        }
+        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::FloatLiteral(NEG_INFINITY),
         ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::FloatLiteral(INFINITY),
         ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::FloatLiteral(NAN),
-        ConstValueLit::Float(FloatLit::Value(s)) => {
-            ConstValue::FloatLiteral(s.0.parse().unwrap())
-        }
+        ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::FloatLiteral(s.0.parse().unwrap()),
         ConstValueLit::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
                 let (negative, text) = if orig_text.starts_with("-") {

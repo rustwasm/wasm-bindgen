@@ -19,8 +19,8 @@ mod util;
 use crate::first_pass::{CallbackInterfaceData, OperationData};
 use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
 use crate::generator::{
-    Dictionary, DictionaryField, Enum, EnumVariant, Function, Interface, InterfaceAttribute,
-    InterfaceAttributeKind, Const, InterfaceMethod, Namespace,
+    Const, Dictionary, DictionaryField, Enum, EnumVariant, Function, Interface, InterfaceAttribute,
+    InterfaceAttributeKind, InterfaceMethod, Namespace,
 };
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
@@ -455,7 +455,7 @@ impl<'src> FirstPassRecord<'src> {
                 js_name,
                 consts,
                 functions,
-                unstable
+                unstable,
             }
             .generate(options)
             .to_tokens(&mut program.tokens);
@@ -466,7 +466,7 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         consts: &mut Vec<Const>,
         member: &'src weedle::namespace::ConstNamespaceMember<'src>,
-        unstable: bool
+        unstable: bool,
     ) {
         let idl_type = member.const_type.to_idl_type(self);
         let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();

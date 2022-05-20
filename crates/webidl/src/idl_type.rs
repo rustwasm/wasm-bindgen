@@ -269,7 +269,7 @@ impl<'a> ToIdlType<'a> for RecordKeyType<'a> {
             RecordKeyType::Byte(t) => t.to_idl_type(record),
             RecordKeyType::DOM(t) => t.to_idl_type(record),
             RecordKeyType::USV(t) => t.to_idl_type(record),
-            RecordKeyType::NonAny(t) => t.to_idl_type(record)
+            RecordKeyType::NonAny(t) => t.to_idl_type(record),
         }
     }
 }

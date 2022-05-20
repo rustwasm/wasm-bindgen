@@ -754,7 +754,11 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::NamespaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -771,7 +775,11 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::NamespaceDefinition<'src> {
 }
 
 impl<'src> FirstPass<'src, ApiStability> for weedle::PartialNamespaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, stability: ApiStability) -> Result<()> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -791,7 +799,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'sr
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str
+        self_name: &'src str,
     ) -> Result<()> {
         match self {
             weedle::namespace::NamespaceMember::Const(const_) => {
@@ -802,7 +810,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'sr
                     .consts
                     .push(const_);
                 Ok(())
-            },
+            }
             weedle::namespace::NamespaceMember::Operation(op) => op.first_pass(record, self_name),
             _ => Ok(()),
         }

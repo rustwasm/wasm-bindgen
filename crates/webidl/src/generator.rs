@@ -895,7 +895,7 @@ impl Namespace {
             js_name,
             consts,
             functions,
-            unstable
+            unstable,
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
