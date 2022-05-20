@@ -263,12 +263,13 @@ impl<'a> ToIdlType<'a> for RecordType<'a> {
     }
 }
 
-impl<'a> ToIdlType<'a> for StringType {
+impl<'a> ToIdlType<'a> for RecordKeyType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
-            StringType::Byte(t) => t.to_idl_type(record),
-            StringType::DOM(t) => t.to_idl_type(record),
-            StringType::USV(t) => t.to_idl_type(record),
+            RecordKeyType::Byte(t) => t.to_idl_type(record),
+            RecordKeyType::DOM(t) => t.to_idl_type(record),
+            RecordKeyType::USV(t) => t.to_idl_type(record),
+            RecordKeyType::NonAny(t) => t.to_idl_type(record)
         }
     }
 }
