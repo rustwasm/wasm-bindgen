@@ -806,6 +806,13 @@ where
     }
 }
 
+impl From<()> for JsValue {
+    #[inline]
+    fn from(_: ()) -> JsValue {
+        JsValue::UNDEFINED
+    }
+}
+
 impl JsCast for JsValue {
     // everything is a `JsValue`!
     #[inline]
