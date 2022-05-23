@@ -1521,12 +1521,6 @@ pub mod __rt {
         fn into_js_result(self) -> Result<JsValue, JsValue>;
     }
 
-    impl IntoJsResult for () {
-        fn into_js_result(self) -> Result<JsValue, JsValue> {
-            Ok(JsValue::undefined())
-        }
-    }
-
     impl<T: Into<JsValue>> IntoJsResult for T {
         fn into_js_result(self) -> Result<JsValue, JsValue> {
             Ok(self.into())
@@ -1537,15 +1531,6 @@ pub mod __rt {
         fn into_js_result(self) -> Result<JsValue, JsValue> {
             match self {
                 Ok(e) => Ok(e.into()),
-                Err(e) => Err(e.into()),
-            }
-        }
-    }
-
-    impl<E: Into<JsValue>> IntoJsResult for Result<(), E> {
-        fn into_js_result(self) -> Result<JsValue, JsValue> {
-            match self {
-                Ok(()) => Ok(JsValue::undefined()),
                 Err(e) => Err(e.into()),
             }
         }
