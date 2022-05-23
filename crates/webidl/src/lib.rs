@@ -19,8 +19,8 @@ mod util;
 use crate::first_pass::{CallbackInterfaceData, OperationData};
 use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
 use crate::generator::{
-    Dictionary, DictionaryField, Enum, EnumVariant, Function, Interface, InterfaceAttribute,
-    InterfaceAttributeKind, InterfaceConst, InterfaceMethod, Namespace,
+    Const, Dictionary, DictionaryField, Enum, EnumVariant, Function, Interface, InterfaceAttribute,
+    InterfaceAttributeKind, InterfaceMethod, Namespace,
 };
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
@@ -436,24 +436,55 @@ impl<'src> FirstPassRecord<'src> {
         js_name: String,
         ns: &'src first_pass::NamespaceData<'src>,
     ) {
+        let unstable = ns.stability.is_unstable();
+
+        let mut consts = vec![];
         let mut functions = vec![];
 
-        for (id, data) in ns.operations.iter() {
-            self.append_ns_member(&mut functions, &js_name, id, data);
+        for member in ns.consts.iter() {
+            self.append_ns_const(&mut consts, member, unstable);
         }
 
-        if !functions.is_empty() {
+        for (id, data) in ns.operations.iter() {
+            self.append_ns_operation(&mut functions, &js_name, id, data);
+        }
+
+        if !consts.is_empty() || !functions.is_empty() {
             Namespace {
                 name,
                 js_name,
+                consts,
                 functions,
+                unstable,
             }
             .generate(options)
             .to_tokens(&mut program.tokens);
         }
     }
 
-    fn append_ns_member(
+    fn append_ns_const(
+        &self,
+        consts: &mut Vec<Const>,
+        member: &'src weedle::namespace::ConstNamespaceMember<'src>,
+        unstable: bool,
+    ) {
+        let idl_type = member.const_type.to_idl_type(self);
+        let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
+
+        let js_name = member.identifier.0;
+        let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
+        let value = webidl_const_v_to_backend_const_v(&member.const_value);
+
+        consts.push(Const {
+            name,
+            js_name: js_name.to_string(),
+            ty,
+            value,
+            unstable,
+        });
+    }
+
+    fn append_ns_operation(
         &self,
         functions: &mut Vec<Function>,
         js_name: &'src str,
@@ -486,9 +517,9 @@ impl<'src> FirstPassRecord<'src> {
         }
     }
 
-    fn append_const(
+    fn append_interface_const(
         &self,
-        consts: &mut Vec<InterfaceConst>,
+        consts: &mut Vec<Const>,
         member: &'src weedle::interface::ConstMember<'src>,
         unstable: bool,
     ) {
@@ -499,7 +530,7 @@ impl<'src> FirstPassRecord<'src> {
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
         let value = webidl_const_v_to_backend_const_v(&member.const_value);
 
-        consts.push(InterfaceConst {
+        consts.push(Const {
             name,
             js_name: js_name.to_string(),
             ty,
@@ -536,7 +567,7 @@ impl<'src> FirstPassRecord<'src> {
         let mut methods = vec![];
 
         for member in data.consts.iter() {
-            self.append_const(&mut consts, member, unstable);
+            self.append_interface_const(&mut consts, member, unstable);
         }
 
         for member in data.attributes.iter() {
@@ -560,7 +591,7 @@ impl<'src> FirstPassRecord<'src> {
 
         for mixin_data in self.all_mixins(&js_name) {
             for member in &mixin_data.consts {
-                self.append_const(&mut consts, member, unstable);
+                self.append_interface_const(&mut consts, member, unstable);
             }
 
             for member in &mixin_data.attributes {

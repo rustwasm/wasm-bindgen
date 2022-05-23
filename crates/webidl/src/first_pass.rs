@@ -15,6 +15,7 @@ use weedle::argument::Argument;
 use weedle::attribute::*;
 use weedle::interface::*;
 use weedle::mixin::*;
+use weedle::namespace::*;
 use weedle::CallbackInterfaceDefinition;
 use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
 
@@ -80,6 +81,8 @@ pub(crate) struct MixinData<'src> {
 #[derive(Default)]
 pub(crate) struct NamespaceData<'src> {
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+    pub(crate) consts: Vec<&'src ConstNamespaceMember<'src>>,
+    pub(crate) stability: ApiStability,
 }
 
 #[derive(Default)]
@@ -173,8 +176,8 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::Definition<'src> {
             PartialInterface(interface) => interface.first_pass(record, stability),
             InterfaceMixin(mixin) => mixin.first_pass(record, stability),
             PartialInterfaceMixin(mixin) => mixin.first_pass(record, stability),
-            Namespace(namespace) => namespace.first_pass(record, ()),
-            PartialNamespace(namespace) => namespace.first_pass(record, ()),
+            Namespace(namespace) => namespace.first_pass(record, stability),
+            PartialNamespace(namespace) => namespace.first_pass(record, stability),
             Typedef(typedef) => typedef.first_pass(record, ()),
             Callback(callback) => callback.first_pass(record, ()),
             CallbackInterface(iface) => iface.first_pass(record, ()),
@@ -750,13 +753,18 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::NamespaceDefinition<'src> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
 
-        record.namespaces.entry(self.identifier.0).or_default();
+        let namespace = record.namespaces.entry(self.identifier.0).or_default();
+        namespace.stability = stability;
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
@@ -766,13 +774,18 @@ impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::PartialNamespaceDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::PartialNamespaceDefinition<'src> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
 
-        record.namespaces.entry(self.identifier.0).or_default();
+        let namespace = record.namespaces.entry(self.identifier.0).or_default();
+        namespace.stability = stability;
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
@@ -789,6 +802,15 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'sr
         self_name: &'src str,
     ) -> Result<()> {
         match self {
+            weedle::namespace::NamespaceMember::Const(const_) => {
+                record
+                    .namespaces
+                    .get_mut(self_name)
+                    .unwrap()
+                    .consts
+                    .push(const_);
+                Ok(())
+            }
             weedle::namespace::NamespaceMember::Operation(op) => op.first_pass(record, self_name),
             _ => Ok(()),
         }
