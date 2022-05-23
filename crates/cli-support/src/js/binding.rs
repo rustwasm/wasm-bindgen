@@ -229,6 +229,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             asyncness,
         );
         let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
+
         Ok(JsFunction {
             code,
             ts_sig,
