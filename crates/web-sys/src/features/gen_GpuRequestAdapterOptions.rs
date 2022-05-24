@@ -28,17 +28,17 @@ impl GpuRequestAdapterOptions {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `forceSoftware` field of this object."]
+    #[doc = "Change the `forceFallbackAdapter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuRequestAdapterOptions`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn force_software(&mut self, val: bool) -> &mut Self {
+    pub fn force_fallback_adapter(&mut self, val: bool) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("forceSoftware"),
+            &JsValue::from("forceFallbackAdapter"),
             &JsValue::from(val),
         );
         debug_assert!(

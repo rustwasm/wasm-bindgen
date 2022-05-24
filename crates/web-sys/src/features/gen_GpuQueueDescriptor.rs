@@ -4,21 +4,21 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUCommandEncoderDescriptor)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUQueueDescriptor)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuCommandEncoderDescriptor` dictionary."]
+    #[doc = "The `GpuQueueDescriptor` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoderDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQueueDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuCommandEncoderDescriptor;
+    pub type GpuQueueDescriptor;
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuCommandEncoderDescriptor {
-    #[doc = "Construct a new `GpuCommandEncoderDescriptor`."]
+impl GpuQueueDescriptor {
+    #[doc = "Construct a new `GpuQueueDescriptor`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoderDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQueueDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -30,7 +30,7 @@ impl GpuCommandEncoderDescriptor {
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoderDescriptor`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQueueDescriptor`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -46,7 +46,7 @@ impl GpuCommandEncoderDescriptor {
     }
 }
 #[cfg(web_sys_unstable_apis)]
-impl Default for GpuCommandEncoderDescriptor {
+impl Default for GpuQueueDescriptor {
     fn default() -> Self {
         Self::new()
     }

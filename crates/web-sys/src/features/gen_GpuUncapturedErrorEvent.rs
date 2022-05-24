@@ -16,16 +16,17 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuUncapturedErrorEvent;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuError")]
     # [wasm_bindgen (structural , method , getter , js_class = "GPUUncapturedErrorEvent" , js_name = error)]
     #[doc = "Getter for the `error` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUUncapturedErrorEvent/error)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuUncapturedErrorEvent`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuError`, `GpuUncapturedErrorEvent`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn error(this: &GpuUncapturedErrorEvent) -> ::js_sys::Object;
+    pub fn error(this: &GpuUncapturedErrorEvent) -> GpuError;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuUncapturedErrorEventInit")]
     #[wasm_bindgen(catch, constructor, js_class = "GPUUncapturedErrorEvent")]
