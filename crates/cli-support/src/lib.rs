@@ -611,9 +611,38 @@ fn unexported_unused_lld_things(module: &mut Module) {
 
 impl Output {
     pub fn js(&self) -> &str {
+        &self.gen().js
+    }
+
+    pub fn ts(&self) -> Option<&str> {
+        let gen = self.gen();
+        if gen.typescript {
+            Some(&gen.ts)
+        } else {
+            None
+        }
+    }
+
+    pub fn start(&self) -> Option<&String> {
+        self.gen().start.as_ref()
+    }
+
+    pub fn snippets(&self) -> &HashMap<String, Vec<String>> {
+        &self.gen().snippets
+    }
+
+    pub fn local_modules(&self) -> &HashMap<String, String> {
+        &self.gen().local_modules
+    }
+
+    pub fn npm_dependencies(&self) -> &HashMap<String, (PathBuf, String)> {
+        &self.gen().npm_dependencies
+    }
+
+    fn gen(&self) -> &JsGenerated {
         match &self.generated {
             Generated::InterfaceTypes => panic!("no js with interface types output"),
-            Generated::Js(gen) => &gen.js,
+            Generated::Js(gen) => &gen,
         }
     }
 
