@@ -322,13 +322,13 @@ impl Bindgen {
             Input::Path(ref path) => {
                 let bytes = std::fs::read(path)
                     .with_context(|| format!("failed reading '{}'", path.display()))?;
-                self.module_from_bytes(&bytes)
-                    .with_context(|| format!("failed getting Wasm module for '{}'", path.display()))?
+                self.module_from_bytes(&bytes).with_context(|| {
+                    format!("failed getting Wasm module for '{}'", path.display())
+                })?
             }
-            Input::Bytes(ref bytes, _) => {
-                self.module_from_bytes(&bytes)
-                    .context("failed getting Wasm module")?
-            }
+            Input::Bytes(ref bytes, _) => self
+                .module_from_bytes(&bytes)
+                .context("failed getting Wasm module")?,
         };
 
         self.threads
@@ -464,10 +464,8 @@ impl Bindgen {
     }
 
     fn module_from_bytes(&self, bytes: &[u8]) -> Result<Module, Error> {
-        let wasm = wit_text::parse_bytes(bytes)
-            .context("failed to parse bytes")?;
-        wit_validator::validate(&wasm)
-            .context("failed to validate")?;
+        let wasm = wit_text::parse_bytes(bytes).context("failed to parse bytes")?;
+        wit_validator::validate(&wasm).context("failed to validate")?;
         let module = walrus::ModuleConfig::new()
             // Skip validation of the module as LLVM's output is
             // generally already well-formed and so we won't gain much
