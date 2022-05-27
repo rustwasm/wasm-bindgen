@@ -466,7 +466,7 @@ impl Bindgen {
     fn module_from_bytes(&self, bytes: &[u8]) -> Result<Module, Error> {
         let wasm = wit_text::parse_bytes(bytes).context("failed to parse bytes")?;
         wit_validator::validate(&wasm).context("failed to validate")?;
-        let module = walrus::ModuleConfig::new()
+        walrus::ModuleConfig::new()
             // Skip validation of the module as LLVM's output is
             // generally already well-formed and so we won't gain much
             // from re-validating. Additionally LLVM's current output
@@ -479,8 +479,7 @@ impl Bindgen {
             .generate_producers_section(!self.remove_producers_section)
             .on_parse(wit_walrus::on_parse)
             .parse(&wasm)
-            .context("failed to parse input as wasm")?;
-        Ok(module)
+            .context("failed to parse input as wasm")
     }
 
     fn local_module_name(&self, module: &str) -> String {
