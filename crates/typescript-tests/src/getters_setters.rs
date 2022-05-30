@@ -66,3 +66,22 @@ impl ColorWithGetterAndSetter {
         };
     }
 }
+
+#[wasm_bindgen]
+pub struct ColorWithReadonly {
+    #[wasm_bindgen(readonly)]
+    pub r: f64,
+    #[wasm_bindgen(readonly)]
+    pub g: f64,
+    #[wasm_bindgen(readonly)]
+    pub b: f64,
+    pub a: u8,
+}
+
+#[wasm_bindgen]
+impl ColorWithReadonly {
+    #[wasm_bindgen(constructor)]
+    pub fn new(r: f64, g: f64, b: f64) -> ColorWithReadonly {
+        Self { r, b, g, a: 0 }
+    }
+}
