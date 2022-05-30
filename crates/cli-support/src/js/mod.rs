@@ -814,7 +814,7 @@ impl<'a> Context<'a> {
                     }}
                 }}
 
-                async function init(input{init_memory_arg}, userImports = {}) {{
+                async function init(input{init_memory_arg}, userImports = {{}}) {{
                     {default_module_path}
                     const imports = {{}};
                     {imports_init}
