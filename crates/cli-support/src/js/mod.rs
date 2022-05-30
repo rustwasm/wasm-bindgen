@@ -814,11 +814,12 @@ impl<'a> Context<'a> {
                     }}
                 }}
 
-                async function init(input{init_memory_arg}) {{
+                async function init(input{init_memory_arg}, userImports = {}) {{
                     {default_module_path}
                     const imports = {{}};
                     {imports_init}
-
+                    Object.assign(imports, userImports);
+            
                     if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
                         input = fetch(input);
                     }}
