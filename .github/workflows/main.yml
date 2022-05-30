@@ -47,7 +47,6 @@ jobs:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test --target wasm32-unknown-unknown
-    - run: cargo test --target wasm32-unknown-unknown
     - run: cargo test --target wasm32-unknown-unknown --features serde-serialize
     - run: cargo test --target wasm32-unknown-unknown --features enable-interning
     - run: cargo test --target wasm32-unknown-unknown -p no-std
