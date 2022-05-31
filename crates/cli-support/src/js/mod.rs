@@ -2521,9 +2521,10 @@ impl<'a> Context<'a> {
                     false => None,
                 };
 
-                let docs = format_doc_comments(&export.comments, Some(js_doc));
                 match &export.kind {
                     AuxExportKind::Function(name) => {
+                        let docs = format_doc_comments(&export.comments, Some(js_doc));
+
                         if let Some(ts_sig) = ts_sig {
                             self.typescript.push_str(&docs);
                             self.typescript.push_str("export function ");
@@ -2535,6 +2536,7 @@ impl<'a> Context<'a> {
                         self.globals.push_str("\n");
                     }
                     AuxExportKind::Constructor(class) => {
+                        let docs = format_doc_comments(&export.comments, Some(js_doc));
                         let exported = require_class(&mut self.exported_classes, class);
                         if exported.has_constructor {
                             bail!("found duplicate constructor for class `{}`", class);
@@ -2543,6 +2545,7 @@ impl<'a> Context<'a> {
                         exported.push(&docs, "constructor", "", &code, ts_sig);
                     }
                     AuxExportKind::Getter { class, field, .. } => {
+                        let docs = format_doc_comments(&export.comments, None);
                         let ret_ty = match export.generate_typescript {
                             true => match &ts_ret_ty {
                                 Some(s) => Some(s.as_str()),
@@ -2554,6 +2557,7 @@ impl<'a> Context<'a> {
                         exported.push_getter(&docs, field, &code, ret_ty);
                     }
                     AuxExportKind::Setter { class, field, .. } => {
+                        let docs = format_doc_comments(&export.comments, None);
                         let arg_ty = match export.generate_typescript {
                             true => Some(ts_arg_tys[0].as_str()),
                             false => None,
@@ -2562,10 +2566,12 @@ impl<'a> Context<'a> {
                         exported.push_setter(&docs, field, &code, arg_ty, might_be_optional_field);
                     }
                     AuxExportKind::StaticFunction { class, name } => {
+                        let docs = format_doc_comments(&export.comments, Some(js_doc));
                         let exported = require_class(&mut self.exported_classes, class);
                         exported.push(&docs, name, "static ", &code, ts_sig);
                     }
                     AuxExportKind::Method { class, name, .. } => {
+                        let docs = format_doc_comments(&export.comments, Some(js_doc));
                         let exported = require_class(&mut self.exported_classes, class);
                         exported.push(&docs, name, "", &code, ts_sig);
                     }

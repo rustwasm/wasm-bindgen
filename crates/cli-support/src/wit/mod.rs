@@ -806,7 +806,7 @@ impl<'a> Context<'a> {
                 arguments: vec![Descriptor::I32],
                 shim_idx: 0,
                 ret: descriptor.clone(),
-                inner_ret: None,
+                inner_ret: Some(descriptor.clone()),
             };
             let getter_id = self.export_adapter(getter_id, getter_descriptor)?;
             self.aux.export_map.insert(
