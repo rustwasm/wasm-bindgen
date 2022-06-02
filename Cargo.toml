@@ -89,6 +89,7 @@ members = [
   "examples/webxr",
   "examples/without-a-bundler",
   "examples/without-a-bundler-no-modules",
+  "examples/synchronous-instantiation",
   "tests/no-std",
 ]
 

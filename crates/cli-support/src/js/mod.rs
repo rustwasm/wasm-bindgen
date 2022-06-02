@@ -469,8 +469,8 @@ impl<'a> Context<'a> {
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
-                footer.push_str("export { getImports, initMemory, finalizeInit }\n");
-                footer.push_str("export default init;\n");
+                footer.push_str("export { initSync }\n");
+                footer.push_str("export default init;");
             }
         }
 
@@ -638,34 +638,39 @@ impl<'a> Context<'a> {
         // So using "declare" everywhere for at least the NoModules option.
         // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
         let setup_function_declaration;
-        let internal_helper_functions;
+        let mut sync_init_function = String::new();
         let declare_or_export;
         if self.config.mode.no_modules() {
             declare_or_export = "declare";
-            internal_helper_functions = "";
             setup_function_declaration = "declare function wasm_bindgen";
         } else {
             declare_or_export = "export";
-            internal_helper_functions = "\
-                export function getImports(): ModuleImports;\n\
-                export function initMemory(imports: ModuleImports, maybe_memory?: WebAssembly.Memory): void;\n\
-                export function finalizeInit(instance: WebAssembly.Instance, module: WebAssembly.Module): InitOutput;\n\
-            ";
+
+            sync_init_function.push_str(&format!("\
+                /**\n\
+                * Synchronously compiles the given `bytes` and instantiates the WebAssembly module.\n\
+                *\n\
+                * @param {{BufferSource}} bytes\n\
+                {memory_doc}\
+                *\n\
+                * @returns {{InitOutput}}\n\
+                */\n\
+                export function initSync(bytes: BufferSource{memory_param}): InitOutput;\n\n\
+                ",
+                memory_doc = memory_doc,
+                memory_param = memory_param
+            ));
+
             setup_function_declaration = "export default function init";
         }
         Ok(format!(
             "\n\
-            type ExportValue = Function | WebAssembly.Global | WebAssembly.Memory | WebAssembly.Table;\n\
-            type ImportValue = ExportValue | number;\n\
-            type Imports = Record<string, ModuleImports>;\n\
-            type ModuleImports = Record<string, ImportValue>;\n\
-            \n\
             {declare_or_export} type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
             \n\
             {declare_or_export} interface InitOutput {{\n\
             {output}}}\n\
             \n\
-            {internal_helper_functions}\n\
+            {sync_init_function}\
             /**\n\
             * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
             * for everything else, calls `WebAssembly.instantiate` directly.\n\
@@ -679,8 +684,8 @@ impl<'a> Context<'a> {
                 (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
             memory_doc, arg_optional, memory_param,
             output = output,
+            sync_init_function = sync_init_function,
             declare_or_export = declare_or_export,
-            internal_helper_functions = internal_helper_functions,
             setup_function_declaration = setup_function_declaration,
         ))
     }
@@ -748,11 +753,11 @@ impl<'a> Context<'a> {
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
         let mut imports_init = String::new();
-        if self.wasm_import_definitions.len() > 0 {
-            imports_init.push_str("imports.");
-            imports_init.push_str(module_name);
-            imports_init.push_str(" = {};\n");
-        }
+
+        imports_init.push_str("imports.");
+        imports_init.push_str(module_name);
+        imports_init.push_str(" = {};\n");
+
         for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
@@ -842,10 +847,20 @@ impl<'a> Context<'a> {
                 function finalizeInit(instance, module) {{
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
-
                     {post_instantiate}
                     {start}
                     return wasm;
+                }}
+
+                function initSync(bytes{init_memory_arg}) {{
+                    const imports = getImports();
+
+                    initMemory(imports{init_memory_arg});
+
+                    const module = new WebAssembly.Module(bytes);
+                    const instance = new WebAssembly.Instance(module, imports);
+
+                    return finalizeInit(instance, module);
                 }}
 
                 async function init(input{init_memory_arg}) {{
