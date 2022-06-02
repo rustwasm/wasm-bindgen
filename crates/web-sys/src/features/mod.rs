@@ -6742,6 +6742,18 @@ mod gen_StyleSheetList;
 #[cfg(feature = "StyleSheetList")]
 pub use gen_StyleSheetList::*;
 
+#[cfg(feature = "SubmitEvent")]
+#[allow(non_snake_case)]
+mod gen_SubmitEvent;
+#[cfg(feature = "SubmitEvent")]
+pub use gen_SubmitEvent::*;
+
+#[cfg(feature = "SubmitEventInit")]
+#[allow(non_snake_case)]
+mod gen_SubmitEventInit;
+#[cfg(feature = "SubmitEventInit")]
+pub use gen_SubmitEventInit::*;
+
 #[cfg(feature = "SubtleCrypto")]
 #[allow(non_snake_case)]
 mod gen_SubtleCrypto;
