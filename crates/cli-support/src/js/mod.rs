@@ -469,6 +469,7 @@ impl<'a> Context<'a> {
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
+                footer.push_str("export { getImports, initMemory, finalizeInit }\n");
                 footer.push_str("export default init;\n");
             }
         }
@@ -637,21 +638,34 @@ impl<'a> Context<'a> {
         // So using "declare" everywhere for at least the NoModules option.
         // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
         let setup_function_declaration;
+        let internal_helper_functions;
         let declare_or_export;
         if self.config.mode.no_modules() {
             declare_or_export = "declare";
+            internal_helper_functions = "";
             setup_function_declaration = "declare function wasm_bindgen";
         } else {
             declare_or_export = "export";
+            internal_helper_functions = "\
+                export function getImports(): ModuleImports;\n\
+                export function initMemory(imports: ModuleImports, maybe_memory?: WebAssembly.Memory): void;\n\
+                export function finalizeInit(instance: WebAssembly.Instance, module: WebAssembly.Module): InitOutput;\n\
+            ";
             setup_function_declaration = "export default function init";
         }
         Ok(format!(
             "\n\
+            type ExportValue = Function | WebAssembly.Global | WebAssembly.Memory | WebAssembly.Table;\n\
+            type ImportValue = ExportValue | number;\n\
+            type Imports = Record<string, ModuleImports>;\n\
+            type ModuleImports = Record<string, ImportValue>;\n\
+            \n\
             {declare_or_export} type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
             \n\
             {declare_or_export} interface InitOutput {{\n\
             {output}}}\n\
             \n\
+            {internal_helper_functions}\n\
             /**\n\
             * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
             * for everything else, calls `WebAssembly.instantiate` directly.\n\
@@ -666,6 +680,7 @@ impl<'a> Context<'a> {
             memory_doc, arg_optional, memory_param,
             output = output,
             declare_or_export = declare_or_export,
+            internal_helper_functions = internal_helper_functions,
             setup_function_declaration = setup_function_declaration,
         ))
     }
@@ -814,25 +829,38 @@ impl<'a> Context<'a> {
                     }}
                 }}
 
-                async function init(input{init_memory_arg}) {{
-                    {default_module_path}
+                function getImports() {{
                     const imports = {{}};
                     {imports_init}
+                    return imports;
+                }}
 
-                    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
-                        input = fetch(input);
-                    }}
-
+                function initMemory(imports, maybe_memory) {{
                     {init_memory}
+                }}
 
-                    const {{ instance, module }} = await load(await input, imports);
-
+                function finalizeInit(instance, module) {{
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
 
                     {post_instantiate}
                     {start}
                     return wasm;
+                }}
+
+                async function init(input{init_memory_arg}) {{
+                    {default_module_path}
+                    const imports = getImports();
+
+                    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
+                        input = fetch(input);
+                    }}
+
+                    initMemory(imports{init_memory_arg});
+
+                    const {{ instance, module }} = await load(await input, imports);
+
+                    return finalizeInit(instance, module);
                 }}
             ",
             init_memory_arg = init_memory_arg,
