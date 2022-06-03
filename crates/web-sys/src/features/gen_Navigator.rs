@@ -129,6 +129,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn clipboard(this: &Navigator) -> Option<Clipboard>;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "MediaSession")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = mediaSession)]
+    #[doc = "Getter for the `mediaSession` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/mediaSession)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaSession`, `Navigator`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn media_session(this: &Navigator) -> MediaSession;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WakeLock")]
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = wakeLock)]
     #[doc = "Getter for the `wakeLock` field of this object."]
