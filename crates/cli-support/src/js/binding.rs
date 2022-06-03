@@ -1304,7 +1304,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         | AdapterType::U32
         | AdapterType::F32
         | AdapterType::F64 => dst.push_str("number"),
-        AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("BigInt"),
+        AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("bigint"),
         AdapterType::String => dst.push_str("string"),
         AdapterType::Externref => dst.push_str("any"),
         AdapterType::Bool => dst.push_str("boolean"),
