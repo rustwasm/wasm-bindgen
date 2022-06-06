@@ -4258,6 +4258,12 @@ mod gen_MediaError;
 #[cfg(feature = "MediaError")]
 pub use gen_MediaError::*;
 
+#[cfg(feature = "MediaImage")]
+#[allow(non_snake_case)]
+mod gen_MediaImage;
+#[cfg(feature = "MediaImage")]
+pub use gen_MediaImage::*;
+
 #[cfg(feature = "MediaKeyError")]
 #[allow(non_snake_case)]
 mod gen_MediaKeyError;
@@ -4360,6 +4366,24 @@ mod gen_MediaList;
 #[cfg(feature = "MediaList")]
 pub use gen_MediaList::*;
 
+#[cfg(feature = "MediaMetadata")]
+#[allow(non_snake_case)]
+mod gen_MediaMetadata;
+#[cfg(feature = "MediaMetadata")]
+pub use gen_MediaMetadata::*;
+
+#[cfg(feature = "MediaMetadataInit")]
+#[allow(non_snake_case)]
+mod gen_MediaMetadataInit;
+#[cfg(feature = "MediaMetadataInit")]
+pub use gen_MediaMetadataInit::*;
+
+#[cfg(feature = "MediaPositionState")]
+#[allow(non_snake_case)]
+mod gen_MediaPositionState;
+#[cfg(feature = "MediaPositionState")]
+pub use gen_MediaPositionState::*;
+
 #[cfg(feature = "MediaQueryList")]
 #[allow(non_snake_case)]
 mod gen_MediaQueryList;
@@ -4401,6 +4425,30 @@ pub use gen_MediaRecorderErrorEventInit::*;
 mod gen_MediaRecorderOptions;
 #[cfg(feature = "MediaRecorderOptions")]
 pub use gen_MediaRecorderOptions::*;
+
+#[cfg(feature = "MediaSession")]
+#[allow(non_snake_case)]
+mod gen_MediaSession;
+#[cfg(feature = "MediaSession")]
+pub use gen_MediaSession::*;
+
+#[cfg(feature = "MediaSessionAction")]
+#[allow(non_snake_case)]
+mod gen_MediaSessionAction;
+#[cfg(feature = "MediaSessionAction")]
+pub use gen_MediaSessionAction::*;
+
+#[cfg(feature = "MediaSessionActionDetails")]
+#[allow(non_snake_case)]
+mod gen_MediaSessionActionDetails;
+#[cfg(feature = "MediaSessionActionDetails")]
+pub use gen_MediaSessionActionDetails::*;
+
+#[cfg(feature = "MediaSessionPlaybackState")]
+#[allow(non_snake_case)]
+mod gen_MediaSessionPlaybackState;
+#[cfg(feature = "MediaSessionPlaybackState")]
+pub use gen_MediaSessionPlaybackState::*;
 
 #[cfg(feature = "MediaSource")]
 #[allow(non_snake_case)]
