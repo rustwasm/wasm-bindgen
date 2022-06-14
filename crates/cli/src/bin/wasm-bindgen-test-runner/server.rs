@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::ffi::OsString;
 use std::fs;
 use std::net::SocketAddr;
@@ -75,7 +76,7 @@ pub fn spawn(
             } else {
                 include_str!("index.html")
             };
-            return Response::from_data("text/html", s);
+            return set_isolate_origin_headers(Response::from_data("text/html", s));
         }
 
         // Otherwise we need to find the asset here. It may either be in our
@@ -88,7 +89,7 @@ pub fn spawn(
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
-        return response;
+        return set_isolate_origin_headers(response);
     })
     .map_err(|e| anyhow!("{}", e))?;
     return Ok(srv);
@@ -122,4 +123,23 @@ pub fn spawn(
         }
         response
     }
+}
+
+/*
+ * Set the Cross-Origin-Opener-Policy and Cross-Origin_Embedder-Policy headers
+ * on the Server response to enable worker context sharing, as described in:
+ * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy#certain_features_depend_on_cross-origin_isolation
+ * https://security.googleblog.com/2018/07/mitigating-spectre-with-site-isolation.html
+ */
+fn set_isolate_origin_headers(mut response: Response) -> Response {
+    response.headers.push((
+        Cow::Borrowed("Cross-Origin-Opener-Policy"),
+        Cow::Borrowed("same-origin"),
+    ));
+    response.headers.push((
+        Cow::Borrowed("Cross-Origin-Embedder-Policy"),
+        Cow::Borrowed("require-corp"),
+    ));
+
+    return response;
 }
