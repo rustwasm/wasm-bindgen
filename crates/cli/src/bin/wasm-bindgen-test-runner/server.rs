@@ -1,8 +1,8 @@
+use std::borrow::Cow;
 use std::ffi::OsString;
 use std::fs;
 use std::net::SocketAddr;
 use std::path::Path;
-use std::borrow::Cow;
 
 use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
@@ -132,8 +132,14 @@ pub fn spawn(
  * https://security.googleblog.com/2018/07/mitigating-spectre-with-site-isolation.html
  */
 fn set_isolate_origin_headers(mut response: Response) -> Response {
-    response.headers.push((Cow::Borrowed("Cross-Origin-Opener-Policy"), Cow::Borrowed("same-origin")));
-    response.headers.push((Cow::Borrowed("Cross-Origin-Embedder-Policy"), Cow::Borrowed("require-corp")));
+    response.headers.push((
+        Cow::Borrowed("Cross-Origin-Opener-Policy"),
+        Cow::Borrowed("same-origin"),
+    ));
+    response.headers.push((
+        Cow::Borrowed("Cross-Origin-Embedder-Policy"),
+        Cow::Borrowed("require-corp"),
+    ));
 
     return response;
 }
