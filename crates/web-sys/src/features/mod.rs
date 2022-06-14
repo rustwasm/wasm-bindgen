@@ -8518,6 +8518,12 @@ mod gen_WebglLoseContext;
 #[cfg(feature = "WebglLoseContext")]
 pub use gen_WebglLoseContext::*;
 
+#[cfg(feature = "WebglMultiDraw")]
+#[allow(non_snake_case)]
+mod gen_WebglMultiDraw;
+#[cfg(feature = "WebglMultiDraw")]
+pub use gen_WebglMultiDraw::*;
+
 #[cfg(feature = "WebrtcGlobalStatisticsReport")]
 #[allow(non_snake_case)]
 mod gen_WebrtcGlobalStatisticsReport;
