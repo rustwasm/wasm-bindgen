@@ -35,7 +35,7 @@ impl TextStyle {
     }
 
     pub fn optional_new(_i: Option<ITextStyle>) -> TextStyle {
-        // parse JsValueo
+        // parse JsValue
         TextStyle::default()
     }
 }
