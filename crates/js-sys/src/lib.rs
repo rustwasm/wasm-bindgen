@@ -3961,6 +3961,16 @@ pub mod WebAssembly {
         #[wasm_bindgen(js_namespace = WebAssembly)]
         pub fn compile(buffer_source: &JsValue) -> Promise;
 
+        /// The `WebAssembly.compileStreaming()` function compiles a
+        /// `WebAssembly.Module` module directly from a streamed underlying
+        /// source. This function is useful if it is necessary to a compile a
+        /// module before it can be instantiated (otherwise, the
+        /// `WebAssembly.instantiateStreaming()` function should be used).
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compileStreaming)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = compileStreaming)]
+        pub fn compile_streaming(response: &Promise) -> Promise;
+
         /// The `WebAssembly.instantiate()` function allows you to compile and
         /// instantiate WebAssembly code.
         ///
