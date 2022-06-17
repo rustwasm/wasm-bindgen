@@ -15,6 +15,29 @@ use syn::spanned::Spanned;
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
+/// Javascript keywords which are not keywords in Rust.
+const JS_KEYWORDS: [&str; 20] = [
+    "class",
+    "case",
+    "catch",
+    "debugger",
+    "default",
+    "delete",
+    "export",
+    "extends",
+    "finally",
+    "function",
+    "import",
+    "instanceof",
+    "new",
+    "null",
+    "switch",
+    "this",
+    "throw",
+    "var",
+    "void",
+    "with",
+];
 #[derive(Default)]
 struct AttributeParseState {
     parsed: Cell<usize>,
@@ -462,6 +485,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             self.vis.clone(),
             false,
             None,
+            false,
         )?
         .0;
         let catch = opts.catch().is_some();
@@ -704,13 +728,19 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.vis,
             false,
             None,
+            false,
         )?;
         attrs.check_used()?;
         Ok(ret.0)
     }
 }
 
+pub(crate) fn is_js_keyword(keyword: &str) -> bool {
+    JS_KEYWORDS.contains(&keyword)
+}
+
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
+#[allow(clippy::too_many_arguments)]
 fn function_from_decl(
     decl_name: &syn::Ident,
     opts: &BindgenAttrs,
@@ -719,6 +749,7 @@ fn function_from_decl(
     vis: syn::Visibility,
     allow_self: bool,
     self_ty: Option<&Ident>,
+    is_from_impl: bool,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -754,11 +785,21 @@ fn function_from_decl(
         })
     };
 
+    let replace_colliding_arg = |i: &mut syn::PatType| {
+        if let syn::Pat::Ident(ref mut i) = *i.pat {
+            let ident = i.ident.to_string();
+            if is_js_keyword(ident.as_str()) {
+                i.ident = Ident::new(format!("_{}", ident).as_str(), i.ident.span());
+            }
+        }
+    };
+
     let mut method_self = None;
     let arguments = inputs
         .into_iter()
         .filter_map(|arg| match arg {
             syn::FnArg::Typed(mut c) => {
+                replace_colliding_arg(&mut c);
                 c.ty = Box::new(replace_self(*c.ty));
                 Some(c)
             }
@@ -784,21 +825,29 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
-    let (name, name_span, renamed_via_js_name) =
-        if let Some((js_name, js_name_span)) = opts.js_name() {
-            let kind = operation_kind(&opts);
-            let prefix = match kind {
-                OperationKind::Setter(_) => "set_",
-                _ => "",
-            };
-            (
-                format!("{}{}", prefix, js_name.to_string()),
-                js_name_span,
-                true,
-            )
-        } else {
-            (decl_name.to_string(), decl_name.span(), false)
+    let (name, name_span, renamed_via_js_name) = if let Some((js_name, js_name_span)) =
+        opts.js_name()
+    {
+        let kind = operation_kind(opts);
+        let prefix = match kind {
+            OperationKind::Setter(_) => "set_",
+            _ => "",
         };
+        let name = if prefix.is_empty() && opts.method().is_none() && is_js_keyword(js_name) {
+            format!("_{}", js_name)
+        } else {
+            format!("{}{}", prefix, js_name)
+        };
+        (name, js_name_span, true)
+    } else {
+        let name =
+            if !is_from_impl && opts.method().is_none() && is_js_keyword(&decl_name.to_string()) {
+                format!("_{}", decl_name)
+            } else {
+                decl_name.to_string()
+            };
+        (name, decl_name.span(), false)
+    };
     Ok((
         ast::Function {
             arguments,
@@ -1054,6 +1103,7 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
             self.vis.clone(),
             true,
             Some(class),
+            true,
         )?;
         let method_kind = if opts.constructor().is_some() {
             ast::MethodKind::Constructor
