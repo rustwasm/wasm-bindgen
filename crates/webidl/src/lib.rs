@@ -812,20 +812,23 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
     rustfmt(&to.join("mod.rs"), "mod")?;
 
     return if generate_features {
-        let features = features
-            .iter()
-            .map(|(name, feature)| {
-                let features = feature
-                    .required_features
-                    .iter()
-                    .map(|x| format!("\"{}\"", x))
-                    .collect::<Vec<_>>()
-                    .join(", ");
-                format!("{} = [{}]", name, features)
-            })
+        // Define the global "unstable" feature
+        let unstable_feature = core::iter::once("unstable = []".to_string());
+        // Then define all the other features from the WebIDLs
+        let generated_features = features.iter().map(|(name, feature)| {
+            let features = feature
+                .required_features
+                .iter()
+                .map(|x| format!("\"{}\"", x))
+                .collect::<Vec<_>>()
+                .join(", ");
+            format!("{} = [{}]", name, features)
+        });
+        // Return the newline-separated features
+        Ok(unstable_feature
+            .chain(generated_features)
             .collect::<Vec<_>>()
-            .join("\n");
-        Ok(features)
+            .join("\n"))
     } else {
         Ok(String::new())
     };

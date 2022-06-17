@@ -41,7 +41,7 @@ fn comment(mut comment: String, features: &Option<String>) -> TokenStream {
 fn maybe_unstable_attr(unstable: bool) -> Option<proc_macro2::TokenStream> {
     if unstable {
         Some(quote! {
-            #[cfg(web_sys_unstable_apis)]
+            #[cfg(feature = "unstable")]
         })
     } else {
         None
@@ -52,8 +52,7 @@ fn maybe_unstable_docs(unstable: bool) -> Option<proc_macro2::TokenStream> {
     if unstable {
         Some(quote! {
             #[doc = ""]
-            #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-            #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+            #[doc = "*This API is unstable and requires the `unstable` crate feature to be activated*"]
         })
     } else {
         None

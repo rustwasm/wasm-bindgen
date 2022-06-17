@@ -14,7 +14,6 @@ edition = "2018"
 
 [package.metadata.docs.rs]
 all-features = true
-rustdoc-args = ["--cfg=web_sys_unstable_apis"]
 
 [lib]
 doctest = false
