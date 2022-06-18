@@ -2368,6 +2368,12 @@ mod gen_GpuAdapter;
 #[cfg(feature = "GpuAdapter")]
 pub use gen_GpuAdapter::*;
 
+#[cfg(feature = "GpuAdapterInfo")]
+#[allow(non_snake_case)]
+mod gen_GpuAdapterInfo;
+#[cfg(feature = "GpuAdapterInfo")]
+pub use gen_GpuAdapterInfo::*;
+
 #[cfg(feature = "GpuAddressMode")]
 #[allow(non_snake_case)]
 mod gen_GpuAddressMode;
@@ -2470,11 +2476,11 @@ mod gen_GpuBufferDescriptor;
 #[cfg(feature = "GpuBufferDescriptor")]
 pub use gen_GpuBufferDescriptor::*;
 
-#[cfg(feature = "GpuCanvasCompositingAlphaMode")]
+#[cfg(feature = "GpuCanvasAlphaMode")]
 #[allow(non_snake_case)]
-mod gen_GpuCanvasCompositingAlphaMode;
-#[cfg(feature = "GpuCanvasCompositingAlphaMode")]
-pub use gen_GpuCanvasCompositingAlphaMode::*;
+mod gen_GpuCanvasAlphaMode;
+#[cfg(feature = "GpuCanvasAlphaMode")]
+pub use gen_GpuCanvasAlphaMode::*;
 
 #[cfg(feature = "GpuCanvasConfiguration")]
 #[allow(non_snake_case)]
@@ -2781,12 +2787,6 @@ pub use gen_GpuPipelineLayoutDescriptor::*;
 mod gen_GpuPowerPreference;
 #[cfg(feature = "GpuPowerPreference")]
 pub use gen_GpuPowerPreference::*;
-
-#[cfg(feature = "GpuPredefinedColorSpace")]
-#[allow(non_snake_case)]
-mod gen_GpuPredefinedColorSpace;
-#[cfg(feature = "GpuPredefinedColorSpace")]
-pub use gen_GpuPredefinedColorSpace::*;
 
 #[cfg(feature = "GpuPrimitiveState")]
 #[allow(non_snake_case)]
