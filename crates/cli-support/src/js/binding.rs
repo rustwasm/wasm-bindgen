@@ -102,6 +102,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
         asyncness: bool,
+        variadic: bool,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -227,6 +228,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             &adapter.inner_results,
             &mut might_be_optional_field,
             asyncness,
+            variadic,
         );
         let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
 
@@ -254,6 +256,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         result_tys: &[AdapterType],
         might_be_optional_field: &mut bool,
         asyncness: bool,
+        _variadic: bool,
     ) -> (String, Vec<String>, Option<String>) {
         // Build up the typescript signature as well
         let mut omittable = true;

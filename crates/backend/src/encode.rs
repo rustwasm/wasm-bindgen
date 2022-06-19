@@ -212,6 +212,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         asyncness: func.r#async,
         name: &func.name,
         generate_typescript: func.generate_typescript,
+        variadic: func.variadic,
     }
 }
 

@@ -464,6 +464,7 @@ impl<'a> Context<'a> {
                 asyncness: export.function.asyncness,
                 kind,
                 generate_typescript: export.function.generate_typescript,
+                variadic: export.function.variadic,
             },
         );
         Ok(())
@@ -822,6 +823,7 @@ impl<'a> Context<'a> {
                         consumed: false,
                     },
                     generate_typescript: field.generate_typescript,
+                    variadic: false,
                 },
             );
 
@@ -851,6 +853,7 @@ impl<'a> Context<'a> {
                         consumed: false,
                     },
                     generate_typescript: field.generate_typescript,
+                    variadic: false,
                 },
             );
         }
@@ -1085,6 +1088,7 @@ impl<'a> Context<'a> {
                 asyncness: false,
                 kind,
                 generate_typescript: true,
+                variadic: false,
             };
             assert!(self.aux.export_map.insert(id, export).is_none());
         }

@@ -2511,6 +2511,7 @@ impl<'a> Context<'a> {
         builder.catch(catch);
         let mut arg_names = &None;
         let mut asyncness = false;
+        let variadic = false;
         match kind {
             Kind::Export(export) => {
                 arg_names = &export.arg_names;
@@ -2539,7 +2540,7 @@ impl<'a> Context<'a> {
             catch,
             log_error,
         } = builder
-            .process(&adapter, instrs, arg_names, asyncness)
+            .process(&adapter, instrs, arg_names, asyncness, variadic)
             .with_context(|| match kind {
                 Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
                 Kind::Import(i) => {
