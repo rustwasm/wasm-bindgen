@@ -194,7 +194,17 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut code = String::new();
         code.push_str("(");
-        code.push_str(&function_args.join(", "));
+        if variadic {
+            if let Some((last, non_variadic_args)) = function_args.split_last() {
+                code.push_str(&non_variadic_args.join(", "));
+                if non_variadic_args.len() > 0 {
+                    code.push_str(", ");
+                }
+                code.push_str((String::from("...") + last).as_str())
+            }
+        } else {
+            code.push_str(&function_args.join(", "));
+        }
         code.push_str(") {\n");
 
         let mut call = js.prelude;
@@ -287,7 +297,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         ts_args.reverse();
         ts_arg_tys.reverse();
-        let mut ts = format!("({})", ts_args.join(", "));
+        let mut ts = String::from("(");
+        if variadic {
+            if let Some((last, non_variadic_args)) = ts_args.split_last() {
+                ts.push_str(&non_variadic_args.join(", "));
+                if non_variadic_args.len() > 0 {
+                    ts.push_str(", ");
+                }
+                ts.push_str((String::from("...") + last).as_str())
+            }
+        } else {
+            ts.push_str(&format!("{}", ts_args.join(", ")));
+        };
+        ts.push_str(")");
 
         // If this function is an optional field's setter, it should have only
         // one arg, and omittable should be `true`.

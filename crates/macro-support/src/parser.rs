@@ -859,6 +859,7 @@ fn function_from_decl(
             rust_vis: vis,
             r#async: sig.asyncness.is_some(),
             generate_typescript: opts.skip_typescript().is_none(),
+            variadic: opts.variadic().is_some(),
         },
         method_self,
     ))
