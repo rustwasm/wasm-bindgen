@@ -20,8 +20,8 @@ exports.js_works = () => {
     assert.strictEqual(wasm.api_get_false(), false);
     wasm.api_test_bool(true, false, 1.0);
 
-    assert.strictEqual(typeof(wasm.api_mk_symbol()), 'symbol');
-    assert.strictEqual(typeof(wasm.api_mk_symbol2('a')), 'symbol');
+    assert.strictEqual(typeof (wasm.api_mk_symbol()), 'symbol');
+    assert.strictEqual(typeof (wasm.api_mk_symbol2('a')), 'symbol');
     assert.strictEqual(Symbol.keyFor(wasm.api_mk_symbol()), undefined);
     assert.strictEqual(Symbol.keyFor(wasm.api_mk_symbol2('b')), undefined);
 
@@ -29,15 +29,27 @@ exports.js_works = () => {
     wasm.api_acquire_string('foo', null);
     assert.strictEqual(wasm.api_acquire_string2(''), '');
     assert.strictEqual(wasm.api_acquire_string2('a'), 'a');
+
+    let arr = [1, 2, 3, 4, {}, ['a', 'b', 'c']]
+    wasm.api_completely_variadic(...arr).forEach((element, index) => {
+        assert.strictEqual(element, arr[index]);
+    });
+    assert.strictEqual(
+        wasm.api_completely_variadic().length,
+        0
+    );
+    wasm.api_variadic_with_prefixed_params([], {}, ...arr).forEach((element, index) => {
+        assert.strictEqual(element, arr[index]);
+    });
 };
 
 exports.js_eq_works = () => {
     assert.strictEqual(wasm.eq_test('a', 'a'), true);
     assert.strictEqual(wasm.eq_test('a', 'b'), false);
     assert.strictEqual(wasm.eq_test(NaN, NaN), false);
-    assert.strictEqual(wasm.eq_test({a: 'a'}, {a: 'a'}), false);
+    assert.strictEqual(wasm.eq_test({ a: 'a' }, { a: 'a' }), false);
     assert.strictEqual(wasm.eq_test1(NaN), false);
-    let x = {a: 'a'};
+    let x = { a: 'a' };
     assert.strictEqual(wasm.eq_test(x, x), true);
     assert.strictEqual(wasm.eq_test1(x), true);
 };
@@ -48,16 +60,16 @@ exports.debug_values = () => ([
     0,
     1.0,
     true,
-    [1,2,3],
+    [1, 2, 3],
     "string",
-    {test: "object"},
+    { test: "object" },
     [1.0, [2.0, 3.0]],
     () => (null),
     new Set(),
 ]);
 
 exports.assert_function_table = (x, i) => {
-  const rawWasm = require('wasm-bindgen-test.js').__wasm;
-  assert.ok(x instanceof WebAssembly.Table);
-  assert.strictEqual(x.get(i), rawWasm.function_table_lookup);
+    const rawWasm = require('wasm-bindgen-test.js').__wasm;
+    assert.ok(x instanceof WebAssembly.Table);
+    assert.strictEqual(x.get(i), rawWasm.function_table_lookup);
 };
