@@ -240,7 +240,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             asyncness,
             variadic,
         );
-        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
+        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic);
 
         Ok(JsFunction {
             code,
@@ -343,10 +343,22 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_names: &[String],
         arg_tys: &[&AdapterType],
         ts_ret: &Option<String>,
+        variadic: bool,
     ) -> String {
         let mut ret = String::new();
-        for (name, ty) in arg_names.iter().zip(arg_tys) {
+        let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
+            Some((last, args)) if variadic => (Some(last), args),
+            _ => (None, arg_names),
+        };
+        for (name, ty) in fn_arg_names.iter().zip(arg_tys) {
             ret.push_str("@param {");
+            adapter2ts(ty, &mut ret);
+            ret.push_str("} ");
+            ret.push_str(name);
+            ret.push_str("\n");
+        }
+        if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
+            ret.push_str("@param {...");
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
