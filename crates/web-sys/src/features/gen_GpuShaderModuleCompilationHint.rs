@@ -22,10 +22,9 @@ impl GpuShaderModuleCompilationHint {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(layout: &::wasm_bindgen::JsValue) -> Self {
+    pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.layout(layout);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
@@ -45,5 +44,11 @@ impl GpuShaderModuleCompilationHint {
         );
         let _ = r;
         self
+    }
+}
+#[cfg(web_sys_unstable_apis)]
+impl Default for GpuShaderModuleCompilationHint {
+    fn default() -> Self {
+        Self::new()
     }
 }

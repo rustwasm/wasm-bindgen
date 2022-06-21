@@ -51,7 +51,6 @@ pub enum GpuTextureFormat {
     Depth24plus = "depth24plus",
     Depth24plusStencil8 = "depth24plus-stencil8",
     Depth32float = "depth32float",
-    Depth24unormStencil8 = "depth24unorm-stencil8",
     Depth32floatStencil8 = "depth32float-stencil8",
     Bc1RgbaUnorm = "bc1-rgba-unorm",
     Bc1RgbaUnormSrgb = "bc1-rgba-unorm-srgb",
