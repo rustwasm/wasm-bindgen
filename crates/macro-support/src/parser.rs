@@ -411,7 +411,6 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             };
 
             let attrs = BindgenAttrs::find(&mut field.attrs)?;
-            // assert_not_variadic(&attrs)?;
             if attrs.skip().is_some() {
                 attrs.check_used()?;
                 continue;
@@ -627,7 +626,6 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
-        // assert_not_variadic(&attrs)?;
         let js_name = attrs
             .js_name()
             .map(|s| s.0)
@@ -678,7 +676,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
-        // assert_not_variadic(&opts)?;
+
         let default_name = self.ident.to_string();
         let js_name = opts
             .js_name()
@@ -718,7 +716,6 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         if self.sig.unsafety.is_some() {
             bail_span!(self.sig.unsafety, "can only #[wasm_bindgen] safe functions");
         }
-        // assert_not_variadic(&attrs)?;
 
         let ret = function_from_decl(
             &self.sig.ident,
@@ -1558,16 +1555,6 @@ fn assert_no_lifetimes(sig: &syn::Signature) -> Result<(), Diagnostic> {
     syn::visit::Visit::visit_signature(&mut walk, sig);
     Diagnostic::from_vec(walk.diagnostics)
 }
-
-/// This method always fails if the BindgenAttrs contain variadic
-// fn assert_not_variadic(attrs: &BindgenAttrs) -> Result<(), Diagnostic> {
-//     if let Some(span) = attrs.variadic() {
-//         let msg = "the `variadic` attribute can only be applied to imported \
-//                    (`extern`) functions";
-//         return Err(Diagnostic::span_error(*span, msg));
-//     }
-//     Ok(())
-// }
 
 /// Extracts the last ident from the path
 fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
