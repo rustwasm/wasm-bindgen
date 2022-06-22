@@ -118,6 +118,7 @@ macro_rules! shared_api {
             asyncness: bool,
             name: &'a str,
             generate_typescript: bool,
+            variadic: bool,
         }
 
         struct Struct<'a> {

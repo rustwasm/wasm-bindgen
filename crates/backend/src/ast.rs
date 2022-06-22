@@ -303,6 +303,8 @@ pub struct Function {
     pub r#async: bool,
     /// Whether to generate a typescript definition for this function
     pub generate_typescript: bool,
+    /// Whether this is a function with a variadict parameter
+    pub variadic: bool,
 }
 
 /// Information about a Struct being exported

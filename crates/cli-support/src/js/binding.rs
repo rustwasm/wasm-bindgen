@@ -102,6 +102,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
         asyncness: bool,
+        variadic: bool,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -193,7 +194,17 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut code = String::new();
         code.push_str("(");
-        code.push_str(&function_args.join(", "));
+        if variadic {
+            if let Some((last, non_variadic_args)) = function_args.split_last() {
+                code.push_str(&non_variadic_args.join(", "));
+                if non_variadic_args.len() > 0 {
+                    code.push_str(", ");
+                }
+                code.push_str((String::from("...") + last).as_str())
+            }
+        } else {
+            code.push_str(&function_args.join(", "));
+        }
         code.push_str(") {\n");
 
         let mut call = js.prelude;
@@ -227,8 +238,9 @@ impl<'a, 'b> Builder<'a, 'b> {
             &adapter.inner_results,
             &mut might_be_optional_field,
             asyncness,
+            variadic,
         );
-        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
+        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic);
 
         Ok(JsFunction {
             code,
@@ -254,6 +266,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         result_tys: &[AdapterType],
         might_be_optional_field: &mut bool,
         asyncness: bool,
+        variadic: bool,
     ) -> (String, Vec<String>, Option<String>) {
         // Build up the typescript signature as well
         let mut omittable = true;
@@ -284,7 +297,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         ts_args.reverse();
         ts_arg_tys.reverse();
-        let mut ts = format!("({})", ts_args.join(", "));
+        let mut ts = String::from("(");
+        if variadic {
+            if let Some((last, non_variadic_args)) = ts_args.split_last() {
+                ts.push_str(&non_variadic_args.join(", "));
+                if non_variadic_args.len() > 0 {
+                    ts.push_str(", ");
+                }
+                ts.push_str((String::from("...") + last).as_str())
+            }
+        } else {
+            ts.push_str(&format!("{}", ts_args.join(", ")));
+        };
+        ts.push_str(")");
 
         // If this function is an optional field's setter, it should have only
         // one arg, and omittable should be `true`.
@@ -318,10 +343,22 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_names: &[String],
         arg_tys: &[&AdapterType],
         ts_ret: &Option<String>,
+        variadic: bool,
     ) -> String {
         let mut ret = String::new();
-        for (name, ty) in arg_names.iter().zip(arg_tys) {
+        let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
+            Some((last, args)) if variadic => (Some(last), args),
+            _ => (None, arg_names),
+        };
+        for (name, ty) in fn_arg_names.iter().zip(arg_tys) {
             ret.push_str("@param {");
+            adapter2ts(ty, &mut ret);
+            ret.push_str("} ");
+            ret.push_str(name);
+            ret.push_str("\n");
+        }
+        if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
+            ret.push_str("@param {...");
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
