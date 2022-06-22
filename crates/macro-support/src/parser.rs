@@ -454,6 +454,77 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     }
 }
 
+impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemTrait {
+    type Target = ast::Trait;
+
+    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+        if self.generics.params.len() > 0 {
+            bail_span!(
+                self.generics,
+                "traits with #[wasm_bindgen] cannot have lifetime or \
+                 type parameters currently"
+            );
+        }
+        match self.vis {
+            syn::Visibility::Public(_) => {}
+            _ => bail_span!(self, "can only #[wasm_bindgen] public traits"),
+        }
+
+        for supertrait in self.supertraits.iter() {
+            
+        }
+
+        let mut methods = Vec::new();
+        let js_name = attrs
+            .js_name()
+            .map(|s| s.0.to_string())
+            .unwrap_or(self.ident.to_string());
+        for item in self.items.iter_mut() {
+            match item {
+                syn::TraitItem::Method(method) => {
+                    let (function, method_self) = function_from_decl(
+                        &method.sig.ident,
+                        &attrs,
+                        method.sig.clone(),
+                        method.attrs.clone(),
+                        self.vis.clone(),
+                        true,
+                        Some(&self.ident),
+                    )?;
+                    let comments = extract_doc_comments(&method.attrs);
+                    let method_kind = if attrs.constructor().is_some() {
+                        ast::MethodKind::Constructor
+                    } else {
+                        let is_static = method_self.is_none();
+                        let kind = operation_kind(&attrs);
+                        ast::MethodKind::Operation(ast::Operation { is_static, kind })
+                    };
+
+                    methods.push(ast::TraitMethod {
+                        rust_name: method.sig.ident.clone(),
+                        trait_name: self.ident.clone(),
+                        function,
+                        method_self,
+                        method_kind,
+                        comments,
+                    });
+                }
+                _ => {}
+            }
+        }
+        let generate_typescript = attrs.skip_typescript().is_none();
+        let comments: Vec<String> = extract_doc_comments(&self.attrs);
+        attrs.check_used()?;
+        Ok(ast::Trait {
+            rust_name: self.ident.clone(),
+            js_name,
+            methods,
+            comments,
+            generate_typescript,
+        })
+    }
+}
+
 fn get_ty(mut ty: &syn::Type) -> &syn::Type {
     while let syn::Type::Group(g) = ty {
         ty = &g.elem;
@@ -951,11 +1022,16 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 };
                 c.macro_parse(program, opts)?;
             }
+            syn::Item::Trait(mut t) => {
+                let opts = opts.unwrap_or_default();
+                program.traits.push((&mut t).convert(opts)?);
+                t.to_tokens(tokens);
+            }
             _ => {
                 bail_span!(
                     self,
                     "#[wasm_bindgen] can only be applied to a function, \
-                     struct, enum, impl, or extern block",
+                     struct, enum, impl, trait, or extern block",
                 );
             }
         }

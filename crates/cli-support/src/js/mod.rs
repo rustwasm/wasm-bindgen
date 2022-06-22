@@ -2,7 +2,7 @@ use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
 use crate::wit::{AdapterKind, Instruction, InstructionData};
-use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
+use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct, AuxTrait};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
@@ -2412,6 +2412,10 @@ impl<'a> Context<'a> {
             self.generate_enum(e)?;
         }
 
+        for t in self.aux.traits.iter() {
+            self.generate_trait(t)?;
+        }
+
         for s in self.aux.structs.iter() {
             self.generate_struct(s)?;
         }
@@ -3483,6 +3487,73 @@ impl<'a> Context<'a> {
         self.export(
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
+            Some(&docs),
+        )?;
+
+        Ok(())
+    }
+
+    fn generate_trait(&mut self, trait_: &AuxTrait) -> Result<(), Error> {
+        let docs = format_doc_comments(&trait_.comments, None);
+        let mut symbols = String::new();
+        let mut interface = String::new();
+
+        if trait_.generate_typescript {
+            self.typescript.push_str(&docs);
+            self.typescript
+                .push_str(&format!("export interface {}Trait {{", trait_.name));
+            interface.push_str(&docs);
+            interface.push_str(&format!("export interface {} {{", trait_.name));
+        }
+        for method in trait_.methods.iter() {
+            let (symbol_docs, _method_docs) = if method.comments.is_empty() {
+                (String::new(), String::new())
+            } else {
+                // How do I generate JSDoc for this
+                (
+                    format_doc_comments(&method.comments, None),
+                    format_doc_comments(&method.comments, None),
+                )
+            };
+            if !symbol_docs.is_empty() {
+                symbols.push_str("\n");
+                symbols.push_str(&symbol_docs);
+            }
+            let name = match &method.kind {
+                AuxExportKind::Function(_) | AuxExportKind::Constructor(_) => {
+                    bail!("this shouldn't be possible")
+                }
+                AuxExportKind::Getter { field: name, .. }
+                | AuxExportKind::Setter { field: name, .. }
+                | AuxExportKind::StaticFunction { name, .. }
+                | AuxExportKind::Method { name, .. } => name.clone(),
+            };
+            symbols.push_str(&format!("{name}:Symbol(\"{}.{name}\"),", trait_.name, name = name));
+            if trait_.generate_typescript {
+                self.typescript.push_str("\n");
+                self.typescript.push_str(&format_doc_comments(
+                    &format!("Symbol for the {} method", name),
+                    None,
+                ));
+                self.typescript
+                    .push_str(&format!("  readonly {}: unique symbol;", name));
+                interface.push_str("\n");
+                //How do I generate ts sig for this?
+                //interface.push_str()
+            }
+        }
+        if trait_.generate_typescript {
+            self.typescript.push_str("\n}\n");
+            self.typescript.push_str(&format!(
+                "declare var {name}: {name}Trait;\n",
+                name = trait_.name
+            ));
+            self.typescript.push_str(&interface);
+            self.typescript.push_str("\n}\n");
+        }
+        self.export(
+            &trait_.name,
+            &format!("Object.freeze({{ {} }})", symbols),
             Some(&docs),
         )?;
 

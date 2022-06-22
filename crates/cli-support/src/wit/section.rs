@@ -43,6 +43,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         imports_with_assert_no_shim: _, // not relevant for this purpose
         enums,
         structs,
+        traits,
 
         // irrelevant ids used to track various internal intrinsics and such
         externref_table: _,
@@ -197,6 +198,14 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
             "generating a bindings section is currently incompatible with \
              exporting a `struct` from the wasm file, cannot export `{}`",
             struct_.name,
+        );
+    }
+
+    if let Some(trait_) = traits.iter().next() {
+        bail!(
+            "generating a bindings section is currently incompatible with \
+             exporting a `trait` from the wasm file, cannot export `{}`",
+            trait_.name,
         );
     }
 

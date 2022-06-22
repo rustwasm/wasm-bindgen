@@ -21,6 +21,8 @@ pub struct Program {
     pub enums: Vec<Enum>,
     /// rust structs
     pub structs: Vec<Struct>,
+    /// rust traits
+    pub traits: Vec<Trait>,
     /// custom typescript sections to be included in the definition file
     pub typescript_custom_sections: Vec<String>,
     /// Inline JS snippets
@@ -36,6 +38,7 @@ impl Program {
             && self.structs.is_empty()
             && self.typescript_custom_sections.is_empty()
             && self.inline_js.is_empty()
+            && self.traits.is_empty()
     }
 }
 
@@ -377,6 +380,42 @@ pub struct Variant {
     pub value: u32,
     /// The doc comments on this variant, if any
     pub comments: Vec<String>,
+}
+
+/// Information about a Trait being exported
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
+pub struct Trait {
+    /// The name of the trait in Rust code
+    pub rust_name: Ident,
+    /// The name of the trait in JS code
+    pub js_name: String,
+    /// All the methods of this trait to export
+    pub methods: Vec<TraitMethod>,
+    /// The doc comments on this trait, if provided
+    pub comments: Vec<String>,
+    /// Whether to generate a typescript definition for this trait
+    pub generate_typescript: bool,
+    /// The supertraits of this trait
+    pub supertraits: Vec<Trait>,
+}
+
+/// The method signature of a trait
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
+pub struct TraitMethod {
+    /// Comments extracted from the rust source.
+    pub comments: Vec<String>,
+    /// The rust method
+    pub function: Function,
+    /// The kind (static, named, regular)
+    pub method_kind: MethodKind,
+    /// The type of `self` (either `self`, `&self`, or `&mut self`)
+    pub method_self: Option<MethodSelf>,
+    /// The trait name, in Rust, this is attached to
+    pub trait_name: Ident,
+    /// The name of the rust method on the rust side.
+    pub rust_name: Ident,
 }
 
 /// Unused, the type of an argument to / return from a function

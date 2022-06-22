@@ -41,6 +41,7 @@ pub mod rethrow;
 pub mod simple;
 pub mod slice;
 pub mod structural;
+pub mod traits;
 pub mod truthy_falsy;
 pub mod u64;
 pub mod validate_prt;

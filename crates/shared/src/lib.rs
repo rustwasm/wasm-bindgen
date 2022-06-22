@@ -17,6 +17,7 @@ macro_rules! shared_api {
             enums: Vec<Enum<'a>>,
             imports: Vec<Import<'a>>,
             structs: Vec<Struct<'a>>,
+            traits: Vec<Trait<'a>>,
             typescript_custom_sections: Vec<&'a str>,
             local_modules: Vec<LocalModule<'a>>,
             inline_js: Vec<&'a str>,
@@ -133,6 +134,20 @@ macro_rules! shared_api {
             readonly: bool,
             comments: Vec<&'a str>,
             generate_typescript: bool,
+        }
+
+        struct Trait<'a> {
+            name: &'a str,
+            methods: Vec<TraitMethod<'a>>,
+            comments: Vec<&'a str>,
+            generate_typescript: bool,
+        }
+
+        struct TraitMethod<'a> {
+            consumed: bool,
+            comments: Vec<&'a str>,
+            function: Function<'a>,
+            method_kind: MethodKind<'a>,
         }
 
         struct LocalModule<'a> {

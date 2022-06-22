@@ -47,6 +47,10 @@ pub struct WasmBindgenAux {
     /// exported structs from Rust and their fields they've got exported.
     pub structs: Vec<AuxStruct>,
 
+    /// Auxiliary information to go into JS/TypeScript bindings describing the
+    /// exported traits from Rust and their method info
+    pub traits: Vec<AuxTrait>,
+
     /// Information about various internal functions used to manage the `externref`
     /// table, later used to process JS bindings.
     pub externref_table: Option<walrus::TableId>,
@@ -162,6 +166,36 @@ pub struct AuxStruct {
     /// Whether to generate helper methods for inspecting the class
     pub is_inspectable: bool,
     /// Whether typescript bindings should be generated for this struct.
+    pub generate_typescript: bool,
+}
+
+#[derive(Debug)]
+pub struct AuxTrait {
+    /// The name of this trait
+    pub name: String,
+    /// The copied Rust comments to forward to JS
+    pub comments: String,
+    /// The method signatures the trait defines
+    pub methods: Vec<AuxTraitMethod>,
+    /// Whether typescript bindings should be generated for this trait.
+    pub generate_typescript: bool,
+}
+
+#[derive(Debug)]
+pub struct AuxTraitMethod {
+    /// When generating errors about this method, a helpful name to remember it
+    /// by.
+    pub debug_name: String,
+    /// Comments parsed in Rust and forwarded here to show up in JS bindings.
+    pub comments: String,
+    /// Argument names in Rust forwarded here to configure the names that show
+    /// up in TypeScript bindings.
+    pub arg_names: Option<Vec<String>>,
+    /// Whether this is an async function, to configure the TypeScript return value.
+    pub asyncness: bool,
+    /// What kind of function this is and where it shows up
+    pub kind: AuxExportKind,
+    /// Whether typescript bindings should be generated for this export.
     pub generate_typescript: bool,
 }
 
