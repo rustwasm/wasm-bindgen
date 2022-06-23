@@ -1,9 +1,9 @@
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use std::collections::BTreeSet;
 use std::iter::FromIterator;
 
-lazy_static! {
-    pub(crate) static ref BUILTIN_IDENTS: BTreeSet<&'static str> = BTreeSet::from_iter(vec![
+pub(crate) static BUILTIN_IDENTS: Lazy<BTreeSet<&'static str>> = Lazy::new(|| {
+    BTreeSet::from_iter(vec![
         "str",
         "char",
         "bool",
@@ -31,17 +31,15 @@ lazy_static! {
         "Function",
         "Clamped",
         "DataView",
-    ]);
+    ])
+});
 
+// whitelist a few names that have known polyfills
+pub(crate) static POLYFILL_INTERFACES: Lazy<BTreeSet<&'static str>> =
+    Lazy::new(|| BTreeSet::from_iter(vec!["AudioContext", "OfflineAudioContext"]));
 
-    // whitelist a few names that have known polyfills
-    pub(crate) static ref POLYFILL_INTERFACES: BTreeSet<&'static str> = BTreeSet::from_iter(vec![
-        "AudioContext",
-        "OfflineAudioContext",
-    ]);
-
-
-    pub(crate) static ref IMMUTABLE_SLICE_WHITELIST: BTreeSet<&'static str> = BTreeSet::from_iter(vec![
+pub(crate) static IMMUTABLE_SLICE_WHITELIST: Lazy<BTreeSet<&'static str>> = Lazy::new(|| {
+    BTreeSet::from_iter(vec![
         // ImageData
         "ImageData",
         // WebGlRenderingContext, WebGl2RenderingContext
@@ -89,7 +87,6 @@ lazy_static! {
         "writeBuffer",
         "writeTexture",
         // AudioBuffer
-        "copyToChannel"
-        // TODO: Add another type's functions here. Leave a comment header with the type name
-    ]);
-}
+        "copyToChannel", // TODO: Add another type's functions here. Leave a comment header with the type name
+    ])
+});
