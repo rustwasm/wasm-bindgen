@@ -1,5 +1,4 @@
 use proc_macro2::{Ident, Span};
-use syn;
 use wasm_bindgen_backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use weedle::common::Identifier;
 use weedle::term;
