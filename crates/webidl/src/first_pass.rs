@@ -10,7 +10,6 @@
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 
-use weedle;
 use weedle::argument::Argument;
 use weedle::attribute::*;
 use weedle::interface::*;

@@ -12,7 +12,6 @@ use std::sync::atomic::Ordering::SeqCst;
 
 use crate::ast;
 use proc_macro2::{self, Ident};
-use syn;
 
 /// Check whether a given `&str` is a Rust keyword
 fn is_rust_keyword(name: &str) -> bool {

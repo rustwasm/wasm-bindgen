@@ -426,7 +426,6 @@ impl Closure<dyn FnOnce()> {
     /// and everything it closes over will leak.
     ///
     /// ```rust,ignore
-    /// use js_sys;
     /// use wasm_bindgen::{prelude::*, JsCast};
     ///
     /// let f = Closure::once_into_js(move || {

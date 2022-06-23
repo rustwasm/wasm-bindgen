@@ -8,8 +8,6 @@ use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
-use shared;
-use syn;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
 

@@ -5,7 +5,6 @@
 use crate::Diagnostic;
 use proc_macro2::{Ident, Span};
 use std::hash::{Hash, Hasher};
-use syn;
 use wasm_bindgen_shared as shared;
 
 /// An abstract syntax tree representing a rust program. Contains

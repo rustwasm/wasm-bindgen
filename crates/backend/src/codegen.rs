@@ -2,12 +2,12 @@ use crate::ast;
 use crate::encode;
 use crate::util::ShortHash;
 use crate::Diagnostic;
+use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::{quote, ToTokens};
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
-use syn;
 use wasm_bindgen_shared as shared;
 
 /// A trait for converting AST structs into Tokens and adding them to a TokenStream,
@@ -1321,9 +1321,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         // It's up to the descriptors themselves to ensure they have unique
         // names for unique items imported, currently done via `ShortHash` and
         // hashing appropriate data into the symbol name.
-        lazy_static::lazy_static! {
-            static ref DESCRIPTORS_EMITTED: Mutex<HashSet<String>> = Default::default();
-        }
+        static DESCRIPTORS_EMITTED: Lazy<Mutex<HashSet<String>>> = Lazy::new(Default::default);
 
         let ident = self.ident;
 
