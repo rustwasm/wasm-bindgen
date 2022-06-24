@@ -38,7 +38,7 @@ Our JS entry point is quite small!
 
 ## Webpack-specific files
 
-> **Note**: Webpack is not required for this example, and if you're interested
+> **Note**: Webpack is required for this example, and if you're interested
 > in options that don't use a JS bundler [see other examples][wab].
 
 [wab]: without-a-bundler.html
