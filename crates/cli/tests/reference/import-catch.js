@@ -23,7 +23,8 @@ function handleError(f, args) {
     }
 }
 
-let cachedInt32Memory0;
+let cachedInt32Memory0 = new Int32Array();
+
 function getInt32Memory0() {
     if (cachedInt32Memory0.byteLength === 0) {
         cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
@@ -63,6 +64,4 @@ export function exported() {
 export function __wbg_foo_8d66ddef0ff279d6() { return handleError(function () {
     foo();
 }, arguments) };
-
-cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
 

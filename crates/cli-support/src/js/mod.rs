@@ -12,7 +12,7 @@ use std::fmt;
 use std::fmt::Write;
 use std::fs;
 use std::path::{Path, PathBuf};
-use walrus::{ExportItem, FunctionId, ImportId, MemoryId, Module, TableId, ValType};
+use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
 
@@ -403,8 +403,6 @@ impl<'a> Context<'a> {
                     ))),
                 );
 
-                footer.push_str(&self.post_instantiate());
-
                 if needs_manual_start {
                     footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
@@ -418,7 +416,6 @@ impl<'a> Context<'a> {
                 footer.push_str(&self.generate_deno_wasm_loading(module_name));
 
                 footer.push_str("\n\n");
-                footer.push_str(&self.post_instantiate());
 
                 if needs_manual_start {
                     footer.push_str("\nwasm.__wbindgen_start();\n");
@@ -453,9 +450,6 @@ impl<'a> Context<'a> {
                         footer.push_str(";\n");
                     }
                 }
-
-                footer.push('\n');
-                footer.push_str(&self.post_instantiate());
 
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -585,37 +579,6 @@ impl<'a> Context<'a> {
             }
         }
         Ok(imports)
-    }
-
-    /// Returns JS to be run immediately after the wasm module is instantiated,
-    /// before the start function is called.
-    fn post_instantiate(&self) -> String {
-        let mut out = String::new();
-        // Initialise all the memory views.
-        for (&mem_id, &(num, ref views)) in &self.memories {
-            // We can't just use `export_name_of` because it takes `&mut self` and we've already borrowed `views`.
-            let mem = match self
-                .module
-                .exports
-                .iter()
-                .find(|export| matches!(export.item, ExportItem::Memory(id) if id == mem_id))
-            {
-                Some(export) => &export.name,
-                None => continue,
-            };
-
-            for kind in views {
-                writeln!(
-                    out,
-                    "cached{kind}Memory{num} = new {kind}Array(wasm.{mem}.buffer);",
-                    kind = kind,
-                    num = num,
-                    mem = mem,
-                )
-                .unwrap()
-            }
-        }
-        out
     }
 
     fn ts_for_init_fn(
@@ -797,6 +760,22 @@ impl<'a> Context<'a> {
             imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
         }
 
+        let mut init_memviews = String::new();
+        for &(num, ref views) in self.memories.values() {
+            for kind in views {
+                writeln!(
+                    init_memviews,
+                    // Reset the memory views to empty in case `init` gets called multiple times.
+                    // Without this, the `length = 0` check would never detect that the view was
+                    // outdated.
+                    "cached{kind}Memory{num} = new {kind}Array();",
+                    kind = kind,
+                    num = num,
+                )
+                .unwrap()
+            }
+        }
+
         let js = format!(
             "\
                 async function load(module, imports) {{
@@ -847,7 +826,7 @@ impl<'a> Context<'a> {
                 function finalizeInit(instance, module) {{
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
-                    {post_instantiate}
+                    {init_memviews}
                     {start}
                     return wasm;
                 }}
@@ -881,7 +860,7 @@ impl<'a> Context<'a> {
             init_memory_arg = init_memory_arg,
             default_module_path = default_module_path,
             init_memory = init_memory,
-            post_instantiate = self.post_instantiate(),
+            init_memviews = init_memviews,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
             } else {
@@ -1749,9 +1728,12 @@ impl<'a> Context<'a> {
             format!("{cache}.byteLength === 0", cache = cache)
         };
 
+        // Initialize the cache to an empty array, which will trigger the resized check
+        // on the first call and initialise the view.
+        self.global(&format!("let {cache} = new {kind}Array();\n"));
+
         self.global(&format!(
             "
-            let {cache};
             function {name}() {{
                 if ({resized_check}) {{
                     {cache} = new {kind}Array(wasm.{mem}.buffer);
