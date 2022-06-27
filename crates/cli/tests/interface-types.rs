@@ -59,9 +59,12 @@ fn runtest(test: &Path) -> Result<()> {
             .arg("--experimental-wasm-reftypes")
             .arg(&js)
             .env("NODE_PATH", td.path()),
-    )?;
-
-    Ok(())
+    )
+    .or_else(|_| {
+        // The `--experimental-wasm-reftypes` flag was removed in Node 18, so that might
+        // have caused the error; try again without it.
+        exec(Command::new("node").arg(&js).env("NODE_PATH", td.path()))
+    })
 }
 
 fn exec(cmd: &mut Command) -> Result<()> {
