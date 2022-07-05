@@ -43,6 +43,7 @@ pub mod slice;
 pub mod structural;
 pub mod truthy_falsy;
 pub mod u64;
+pub mod usize;
 pub mod validate_prt;
 pub mod variadic;
 pub mod vendor_prefix;
