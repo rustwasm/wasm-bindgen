@@ -9,7 +9,20 @@ browser directly. For this deployment strategy bundlers like Webpack are not
 required. For more information on deployment see the [dedicated
 documentation][deployment].
 
-First let's take a look at the code and see how when we're using `--target web`
+First, you'll need to add `web-sys` to your Cargo.toml.
+```toml
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+  'Document',
+  'Element',
+  'HtmlElement',
+  'Node',
+  'Window',
+]
+```
+
+Then, let's take a look at the code and see how when we're using `--target web`
 we're not actually losing any functionality!
 
 ```rust
