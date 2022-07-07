@@ -225,7 +225,7 @@ impl ToTokens for ast::Struct {
                 #[no_mangle]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                    drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
+                    let _ = <#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr); //implicit `drop()`
                 }
             };
 
