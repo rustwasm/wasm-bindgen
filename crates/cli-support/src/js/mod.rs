@@ -66,7 +66,10 @@ pub struct Context<'a> {
 pub struct ExportedClass {
     comments: String,
     contents: String,
+    /// The TypeScript for the class's methods.
     typescript: String,
+    /// Whether TypeScript for this class should be emitted (i.e., `skip_typescript` wasn't specified).
+    generate_typescript: bool,
     has_constructor: bool,
     wrap_needed: bool,
     /// Whether to generate helper methods for inspecting the class
@@ -1015,8 +1018,11 @@ impl<'a> Context<'a> {
         ts_dst.push_str("}\n");
 
         self.export(&name, &dst, Some(&class.comments))?;
-        self.typescript.push_str(&class.comments);
-        self.typescript.push_str(&ts_dst);
+
+        if class.generate_typescript {
+            self.typescript.push_str(&class.comments);
+            self.typescript.push_str(&ts_dst);
+        }
 
         Ok(())
     }
@@ -3477,6 +3483,7 @@ impl<'a> Context<'a> {
         let class = require_class(&mut self.exported_classes, &struct_.name);
         class.comments = format_doc_comments(&struct_.comments, None);
         class.is_inspectable = struct_.is_inspectable;
+        class.generate_typescript = struct_.generate_typescript;
         Ok(())
     }
 
