@@ -426,9 +426,9 @@ impl<'a> Context<'a> {
                         }
 
                         let (name, kind) = match op.kind {
-                            decode::OperationKind::Getter(f) => (f, AuxExportMethodKind::Getter),
-                            decode::OperationKind::Setter(f) => (f, AuxExportMethodKind::Setter),
-                            _ => (export.function.name, AuxExportMethodKind::Method),
+                            decode::OperationKind::Getter(f) => (f, AuxExportedMethodKind::Getter),
+                            decode::OperationKind::Setter(f) => (f, AuxExportedMethodKind::Setter),
+                            _ => (export.function.name, AuxExportedMethodKind::Method),
                         };
 
                         AuxExportKind::Method {
@@ -816,7 +816,7 @@ impl<'a> Context<'a> {
                         class: struct_.name.to_string(),
                         name: field.name.to_string(),
                         receiver: AuxReceiverKind::Borrowed,
-                        kind: AuxExportMethodKind::Getter,
+                        kind: AuxExportedMethodKind::Getter,
                     },
                     generate_typescript: field.generate_typescript,
                     variadic: false,
@@ -847,7 +847,7 @@ impl<'a> Context<'a> {
                         class: struct_.name.to_string(),
                         name: field.name.to_string(),
                         receiver: AuxReceiverKind::Borrowed,
-                        kind: AuxExportMethodKind::Setter,
+                        kind: AuxExportedMethodKind::Setter,
                     },
                     generate_typescript: field.generate_typescript,
                     variadic: false,

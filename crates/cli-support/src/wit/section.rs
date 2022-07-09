@@ -16,7 +16,7 @@
 //! generating any JS glue. Any JS glue currently generated is also invalid if
 //! the module contains the wasm bindings section and it's actually respected.
 
-use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, AuxExportMethodKind, Instruction};
+use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, Instruction};
 use crate::wit::{AdapterKind, NonstandardWitSection, WasmBindgenAux};
 use crate::wit::{AuxExport, InstructionData};
 use crate::wit::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
@@ -381,9 +381,9 @@ fn check_standard_export(export: &AuxExport) -> Result<(), Error> {
             class, name, kind, ..
         } => {
             let kind_name = match kind {
-                AuxExportMethodKind::Method => "method",
-                AuxExportMethodKind::Getter => "getter",
-                AuxExportMethodKind::Setter => "setter",
+                AuxExportedMethodKind::Method => "method",
+                AuxExportedMethodKind::Getter => "getter",
+                AuxExportedMethodKind::Setter => "setter",
             };
 
             bail!(

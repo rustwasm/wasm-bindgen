@@ -1,7 +1,7 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{
-    Adapter, AdapterId, AdapterJsImportKind, AuxExportMethodKind, AuxReceiverKind, AuxValue,
+    Adapter, AdapterId, AdapterJsImportKind, AuxExportedMethodKind, AuxReceiverKind, AuxValue,
 };
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
@@ -2595,8 +2595,8 @@ impl<'a> Context<'a> {
                             prefix += "static ";
                         }
                         let ts = match kind {
-                            AuxExportMethodKind::Method => ts_sig,
-                            AuxExportMethodKind::Getter => {
+                            AuxExportedMethodKind::Method => ts_sig,
+                            AuxExportedMethodKind::Getter => {
                                 prefix += "get ";
                                 // For getters and setters, we generate a separate TypeScript definition.
                                 if export.generate_typescript {
@@ -2616,7 +2616,7 @@ impl<'a> Context<'a> {
                                 // Ignore the raw signature.
                                 None
                             }
-                            AuxExportMethodKind::Setter => {
+                            AuxExportedMethodKind::Setter => {
                                 prefix += "set ";
                                 if export.generate_typescript {
                                     let is_optional = exported.push_accessor_ts(
@@ -3786,13 +3786,13 @@ fn check_duplicated_getter_and_setter_names(
                     AuxExportKind::Method {
                         class: first_class,
                         name: first_name,
-                        kind: AuxExportMethodKind::Getter,
+                        kind: AuxExportedMethodKind::Getter,
                         receiver: first_receiver,
                     },
                     AuxExportKind::Method {
                         class: second_class,
                         name: second_name,
-                        kind: AuxExportMethodKind::Getter,
+                        kind: AuxExportedMethodKind::Getter,
                         receiver: second_receiver,
                     },
                 ) => verify_exports(
@@ -3807,13 +3807,13 @@ fn check_duplicated_getter_and_setter_names(
                     AuxExportKind::Method {
                         class: first_class,
                         name: first_name,
-                        kind: AuxExportMethodKind::Setter,
+                        kind: AuxExportedMethodKind::Setter,
                         receiver: first_receiver,
                     },
                     AuxExportKind::Method {
                         class: second_class,
                         name: second_name,
-                        kind: AuxExportMethodKind::Setter,
+                        kind: AuxExportedMethodKind::Setter,
                         receiver: second_receiver,
                     },
                 ) => verify_exports(

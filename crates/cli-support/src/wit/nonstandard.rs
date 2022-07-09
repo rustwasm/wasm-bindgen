@@ -123,13 +123,13 @@ pub enum AuxExportKind {
         class: String,
         name: String,
         receiver: AuxReceiverKind,
-        kind: AuxExportMethodKind,
+        kind: AuxExportedMethodKind,
     },
 }
 
 /// All the possible kinds of exported methods.
 #[derive(Debug, Clone, Copy)]
-pub enum AuxExportMethodKind {
+pub enum AuxExportedMethodKind {
     /// A regular method.
     Method,
     /// A getter for a field.
