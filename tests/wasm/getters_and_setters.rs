@@ -1,5 +1,6 @@
 use std::cell::Cell;
 use std::rc::Rc;
+use std::sync::atomic::{AtomicU32, Ordering};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
@@ -21,6 +22,7 @@ extern "C" {
 
     fn test_getter_compute(x: GetterCompute);
     fn test_setter_compute(x: SetterCompute);
+    fn test_statics(x: Statics);
 }
 
 // Each getter/setter combination is derived
@@ -304,4 +306,43 @@ fn setter_compute() {
     let r = Rc::new(Cell::new(3));
     test_setter_compute(SetterCompute(r.clone()));
     assert_eq!(r.get(), 100);
+}
+
+static FIELD: AtomicU32 = AtomicU32::new(3);
+static STATIC_FIELD: AtomicU32 = AtomicU32::new(4);
+
+#[wasm_bindgen]
+struct Statics;
+
+#[wasm_bindgen]
+impl Statics {
+    #[wasm_bindgen(getter = field)]
+    // Make sure that this still works if we make this mutable for no reason
+    pub fn getter(&mut self) -> u32 {
+        FIELD.load(Ordering::Relaxed)
+    }
+
+    #[wasm_bindgen(setter = field)]
+    // Make sure that this still works if we make this consume the type for no reason
+    pub fn setter(self, x: u32) {
+        FIELD.store(x, Ordering::Relaxed)
+    }
+
+    // Define a static field with the same name to make sure that works.
+    #[wasm_bindgen(getter = field)]
+    pub fn static_getter() -> u32 {
+        STATIC_FIELD.load(Ordering::Relaxed)
+    }
+
+    #[wasm_bindgen(setter = field)]
+    pub fn static_setter(x: u32) {
+        STATIC_FIELD.store(x, Ordering::Relaxed)
+    }
+}
+
+#[wasm_bindgen_test]
+fn statics() {
+    test_statics(Statics);
+    assert_eq!(FIELD.load(Ordering::Relaxed), 13);
+    assert_eq!(STATIC_FIELD.load(Ordering::Relaxed), 14);
 }

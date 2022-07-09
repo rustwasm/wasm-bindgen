@@ -419,36 +419,31 @@ impl<'a> Context<'a> {
                 let class = class.to_string();
                 match export.method_kind {
                     decode::MethodKind::Constructor => AuxExportKind::Constructor(class),
-                    decode::MethodKind::Operation(op) => match op.kind {
-                        decode::OperationKind::Getter(f) => {
+                    decode::MethodKind::Operation(op) => {
+                        if !op.is_static {
+                            // Make the first argument be the index of the receiver.
                             descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Getter {
-                                class,
-                                field: f.to_string(),
-                                consumed: export.consumed,
-                            }
                         }
-                        decode::OperationKind::Setter(f) => {
-                            descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Setter {
-                                class,
-                                field: f.to_string(),
-                                consumed: export.consumed,
-                            }
-                        }
-                        _ if op.is_static => AuxExportKind::StaticFunction {
+
+                        let (name, kind) = match op.kind {
+                            decode::OperationKind::Getter(f) => (f, AuxExportMethodKind::Getter),
+                            decode::OperationKind::Setter(f) => (f, AuxExportMethodKind::Setter),
+                            _ => (export.function.name, AuxExportMethodKind::Method),
+                        };
+
+                        AuxExportKind::Method {
                             class,
-                            name: export.function.name.to_string(),
-                        },
-                        _ => {
-                            descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Method {
-                                class,
-                                name: export.function.name.to_string(),
-                                consumed: export.consumed,
-                            }
+                            name: name.to_owned(),
+                            receiver: if op.is_static {
+                                AuxReceiverKind::None
+                            } else if export.consumed {
+                                AuxReceiverKind::Owned
+                            } else {
+                                AuxReceiverKind::Borrowed
+                            },
+                            kind,
                         }
-                    },
+                    }
                 }
             }
             None => AuxExportKind::Function(export.function.name.to_string()),
@@ -817,10 +812,11 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
-                    kind: AuxExportKind::Getter {
+                    kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
-                        field: field.name.to_string(),
-                        consumed: false,
+                        name: field.name.to_string(),
+                        receiver: AuxReceiverKind::Borrowed,
+                        kind: AuxExportMethodKind::Getter,
                     },
                     generate_typescript: field.generate_typescript,
                     variadic: false,
@@ -847,10 +843,11 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
-                    kind: AuxExportKind::Setter {
+                    kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
-                        field: field.name.to_string(),
-                        consumed: false,
+                        name: field.name.to_string(),
+                        receiver: AuxReceiverKind::Borrowed,
+                        kind: AuxExportMethodKind::Setter,
                     },
                     generate_typescript: field.generate_typescript,
                     variadic: false,

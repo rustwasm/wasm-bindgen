@@ -1,6 +1,8 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
-use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
+use crate::wit::{
+    Adapter, AdapterId, AdapterJsImportKind, AuxExportMethodKind, AuxReceiverKind, AuxValue,
+};
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
@@ -73,9 +75,9 @@ pub struct ExportedClass {
     is_inspectable: bool,
     /// All readable properties of the class
     readable_properties: Vec<String>,
-    /// Map from field name to type as a string, docs plus whether it has a setter
-    /// and it is optional
-    typescript_fields: HashMap<String, (String, String, bool, bool)>,
+    /// Map from field name to type as a string, docs plus whether it has a setter,
+    /// whether it's optional and whether it's static.
+    typescript_fields: HashMap<String, (String, String, bool, bool, bool)>,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -996,9 +998,12 @@ impl<'a> Context<'a> {
         let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
         fields.sort(); // make sure we have deterministic output
         for name in fields {
-            let (ty, docs, has_setter, is_optional) = &class.typescript_fields[name];
+            let (ty, docs, has_setter, is_optional, is_static) = &class.typescript_fields[name];
             ts_dst.push_str(docs);
             ts_dst.push_str("  ");
+            if *is_static {
+                ts_dst.push_str("static ");
+            }
             if !has_setter {
                 ts_dst.push_str("readonly ");
             }
@@ -2501,11 +2506,14 @@ impl<'a> Context<'a> {
                 variadic = export.variadic;
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
-                    AuxExportKind::StaticFunction { .. } => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
-                    AuxExportKind::Getter { consumed, .. }
-                    | AuxExportKind::Setter { consumed, .. }
-                    | AuxExportKind::Method { consumed, .. } => builder.method(*consumed),
+                    AuxExportKind::Method {
+                        receiver: reciever, ..
+                    } => match reciever {
+                        AuxReceiverKind::None => {}
+                        AuxReceiverKind::Borrowed => builder.method(false),
+                        AuxReceiverKind::Owned => builder.method(true),
+                    },
                 }
             }
             Kind::Import(_) => {}
@@ -2549,6 +2557,7 @@ impl<'a> Context<'a> {
                 };
 
                 let js_docs = format_doc_comments(&export.comments, Some(js_doc));
+                let ts_docs = format_doc_comments(&export.comments, None);
 
                 match &export.kind {
                     AuxExportKind::Function(name) => {
@@ -2573,43 +2582,58 @@ impl<'a> Context<'a> {
                         exported.has_constructor = true;
                         exported.push(&js_docs, "constructor", "", &code, ts_sig);
                     }
-                    AuxExportKind::Getter { class, field, .. } => {
-                        let ts_docs = format_doc_comments(&export.comments, None);
-                        let ret_ty = match export.generate_typescript {
-                            true => match &ts_ret_ty {
-                                Some(s) => Some(s.as_str()),
-                                _ => None,
-                            },
-                            false => None,
-                        };
-
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_getter(&js_docs, &ts_docs, field, &code, ret_ty);
-                    }
-                    AuxExportKind::Setter { class, field, .. } => {
-                        let ts_docs = format_doc_comments(&export.comments, None);
-                        let arg_ty = match export.generate_typescript {
-                            true => Some(ts_arg_tys[0].as_str()),
-                            false => None,
-                        };
+                    AuxExportKind::Method {
+                        class,
+                        name,
+                        receiver,
+                        kind,
+                    } => {
                         let exported = require_class(&mut self.exported_classes, class);
 
-                        exported.push_setter(
-                            &js_docs,
-                            &ts_docs,
-                            field,
-                            &code,
-                            arg_ty,
-                            might_be_optional_field,
-                        );
-                    }
-                    AuxExportKind::StaticFunction { class, name } => {
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&js_docs, name, "static ", &code, ts_sig);
-                    }
-                    AuxExportKind::Method { class, name, .. } => {
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&js_docs, name, "", &code, ts_sig);
+                        let mut prefix = String::new();
+                        if receiver.is_static() {
+                            prefix += "static ";
+                        }
+                        let ts = match kind {
+                            AuxExportMethodKind::Method => ts_sig,
+                            AuxExportMethodKind::Getter => {
+                                prefix += "get ";
+                                // For getters and setters, we generate a separate TypeScript definition.
+                                if export.generate_typescript {
+                                    exported.push_accessor_ts(
+                                        &ts_docs,
+                                        name,
+                                        // This is only set to `None` when generating a constructor.
+                                        ts_ret_ty
+                                            .as_deref()
+                                            .expect("missing return type for getter"),
+                                        false,
+                                        receiver.is_static(),
+                                    );
+                                }
+                                // Add the getter to the list of readable fields (used to generate `toJSON`)
+                                exported.readable_properties.push(name.clone());
+                                // Ignore the raw signature.
+                                None
+                            }
+                            AuxExportMethodKind::Setter => {
+                                prefix += "set ";
+                                if export.generate_typescript {
+                                    let is_optional = exported.push_accessor_ts(
+                                        &ts_docs,
+                                        name,
+                                        &ts_arg_tys[0],
+                                        true,
+                                        receiver.is_static(),
+                                    );
+                                    // Set whether the field is optional.
+                                    *is_optional = might_be_optional_field;
+                                }
+                                None
+                            }
+                        };
+
+                        exported.push(&js_docs, name, &prefix, &code, ts);
                     }
                 }
             }
@@ -3736,45 +3760,70 @@ impl<'a> Context<'a> {
 fn check_duplicated_getter_and_setter_names(
     exports: &[(&AdapterId, &AuxExport)],
 ) -> Result<(), Error> {
-    let verify_exports =
-        |first_class, first_field, second_class, second_field| -> Result<(), Error> {
-            let both_are_in_the_same_class = first_class == second_class;
-            let both_are_referencing_the_same_field = first_field == second_field;
-            if both_are_in_the_same_class && both_are_referencing_the_same_field {
-                bail!(format!(
-                    "There can be only one getter/setter definition for `{}` in `{}`",
-                    first_field, first_class
-                ));
-            }
-            Ok(())
-        };
+    fn verify_exports(
+        first_class: &str,
+        first_field: &str,
+        first_receiver: &AuxReceiverKind,
+        second_class: &str,
+        second_field: &str,
+        second_receiver: &AuxReceiverKind,
+    ) -> Result<(), Error> {
+        let both_are_in_the_same_class = first_class == second_class;
+        let both_are_referencing_the_same_field = first_field == second_field
+            && first_receiver.is_static() == second_receiver.is_static();
+        if both_are_in_the_same_class && both_are_referencing_the_same_field {
+            bail!(format!(
+                "There can be only one getter/setter definition for `{}` in `{}`",
+                first_field, first_class
+            ));
+        }
+        Ok(())
+    }
     for (idx, (_, first_export)) in exports.iter().enumerate() {
         for (_, second_export) in exports.iter().skip(idx + 1) {
             match (&first_export.kind, &second_export.kind) {
                 (
-                    AuxExportKind::Getter {
+                    AuxExportKind::Method {
                         class: first_class,
-                        field: first_field,
-                        consumed: _,
+                        name: first_name,
+                        kind: AuxExportMethodKind::Getter,
+                        receiver: first_receiver,
                     },
-                    AuxExportKind::Getter {
+                    AuxExportKind::Method {
                         class: second_class,
-                        field: second_field,
-                        consumed: _,
+                        name: second_name,
+                        kind: AuxExportMethodKind::Getter,
+                        receiver: second_receiver,
                     },
-                ) => verify_exports(first_class, first_field, second_class, second_field)?,
+                ) => verify_exports(
+                    first_class,
+                    first_name,
+                    first_receiver,
+                    second_class,
+                    second_name,
+                    second_receiver,
+                )?,
                 (
-                    AuxExportKind::Setter {
+                    AuxExportKind::Method {
                         class: first_class,
-                        field: first_field,
-                        consumed: _,
+                        name: first_name,
+                        kind: AuxExportMethodKind::Setter,
+                        receiver: first_receiver,
                     },
-                    AuxExportKind::Setter {
+                    AuxExportKind::Method {
                         class: second_class,
-                        field: second_field,
-                        consumed: _,
+                        name: second_name,
+                        kind: AuxExportMethodKind::Setter,
+                        receiver: second_receiver,
                     },
-                ) => verify_exports(first_class, first_field, second_class, second_field)?,
+                ) => verify_exports(
+                    first_class,
+                    first_name,
+                    first_receiver,
+                    second_class,
+                    second_name,
+                    second_receiver,
+                )?,
                 _ => {}
             }
         }
@@ -3827,71 +3876,27 @@ impl ExportedClass {
         }
     }
 
-    /// Used for adding a getter to a class, mainly to ensure that TypeScript
-    /// generation is handled specially.
-    fn push_getter(
-        &mut self,
-        js_docs: &str,
-        ts_docs: &str,
-        field: &str,
-        js: &str,
-        ret_ty: Option<&str>,
-    ) {
-        self.push_accessor(js_docs, field, js, "get ");
-
-        if let Some(ret_ty) = ret_ty {
-            self.push_accessor_ts(ts_docs, field, ret_ty, false);
-        }
-
-        self.readable_properties.push(field.to_string());
-    }
-
-    /// Used for adding a setter to a class, mainly to ensure that TypeScript
-    /// generation is handled specially.
-    fn push_setter(
-        &mut self,
-        js_docs: &str,
-        ts_docs: &str,
-        field: &str,
-        js: &str,
-        ret_ty: Option<&str>,
-        might_be_optional_field: bool,
-    ) {
-        self.push_accessor(js_docs, field, js, "set ");
-
-        if let Some(ret_ty) = ret_ty {
-            let is_optional = self.push_accessor_ts(ts_docs, field, ret_ty, true);
-            *is_optional = might_be_optional_field;
-        }
-    }
-
     fn push_accessor_ts(
         &mut self,
         docs: &str,
         field: &str,
-        ret_ty: &str,
+        ty: &str,
         is_setter: bool,
+        is_static: bool,
     ) -> &mut bool {
-        let (ty, accessor_docs, has_setter, is_optional) = self
+        let (ty_dst, accessor_docs, has_setter, is_optional, is_static_dst) = self
             .typescript_fields
             .entry(field.to_string())
             .or_insert_with(Default::default);
 
-        *ty = ret_ty.to_string();
+        *ty_dst = ty.to_string();
         // Deterministic output: always use the getter's docs if available
         if !docs.is_empty() && (accessor_docs.is_empty() || !is_setter) {
             *accessor_docs = docs.to_owned();
         }
         *has_setter |= is_setter;
+        *is_static_dst = is_static;
         is_optional
-    }
-
-    fn push_accessor(&mut self, docs: &str, field: &str, js: &str, prefix: &str) {
-        self.contents.push_str(docs);
-        self.contents.push_str(prefix);
-        self.contents.push_str(field);
-        self.contents.push_str(js);
-        self.contents.push_str("\n");
     }
 }
 
