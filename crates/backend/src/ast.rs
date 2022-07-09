@@ -162,7 +162,7 @@ pub struct ImportFunction {
     /// necessary conversions (EG adding a try/catch to change a thrown error into a Result)
     pub shim: Ident,
     /// The doc comment on this import, if one is provided
-    pub doc_comment: Option<String>,
+    pub doc_comment: String,
 }
 
 /// The type of a function being imported

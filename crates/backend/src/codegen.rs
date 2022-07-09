@@ -1074,10 +1074,7 @@ impl TryToTokens for ast::ImportFunction {
         let abi_arguments = &abi_arguments;
         let abi_argument_names = &abi_argument_names;
 
-        let doc_comment = match &self.doc_comment {
-            None => "",
-            Some(doc_string) => doc_string,
-        };
+        let doc_comment = &self.doc_comment;
         let me = if is_method {
             quote! { &self, }
         } else {

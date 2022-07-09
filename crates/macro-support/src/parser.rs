@@ -10,6 +10,7 @@ use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
+use syn::Lit;
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
@@ -474,7 +475,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
         self,
         (opts, module): (BindgenAttrs, &'a ast::ImportModule),
     ) -> Result<Self::Target, Diagnostic> {
-        let wasm = function_from_decl(
+        let mut wasm = function_from_decl(
             &self.sig.ident,
             &opts,
             self.sig.clone(),
@@ -602,6 +603,51 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             }
         }
         let assert_no_shim = opts.assert_no_shim().is_some();
+
+        let mut doc_comment = String::new();
+        // Extract the doc comments from our list of attributes.
+        wasm.rust_attrs.retain(|attr| {
+            struct DocContents {
+                contents: String,
+            }
+
+            impl Parse for DocContents {
+                fn parse(input: ParseStream) -> SynResult<Self> {
+                    <Token![=]>::parse(input)?;
+                    match Lit::parse(input)? {
+                        Lit::Str(str) => Ok(Self {
+                            contents: str.value(),
+                        }),
+                        other => Err(syn::Error::new_spanned(other, "expected a string literal")),
+                    }
+                }
+            }
+
+            /// Returns the contents of the passed `#[doc = "..."]` attribute,
+            /// or `None` if it isn't one.
+            fn get_docs(attr: &syn::Attribute) -> Option<String> {
+                if attr.path.is_ident("doc") {
+                    syn::parse2::<DocContents>(attr.tokens.clone()).ok().map(|doc| doc.contents)
+                } else {
+                    None
+                }
+            }
+
+            if let Some(docs) = get_docs(attr) {
+                if !doc_comment.is_empty() {
+                    // Add newlines between the doc comments
+                    doc_comment.push('\n');
+                }
+                // Add this doc comment to the complete docs
+                doc_comment.push_str(&docs);
+
+                // Remove it from the list of regular attributes
+                false
+            } else {
+                true
+            }
+        });
+
         let ret = ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
             assert_no_shim,
@@ -612,7 +658,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             structural: opts.structural().is_some() || opts.r#final().is_none(),
             rust_name: self.sig.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
-            doc_comment: None,
+            doc_comment,
         });
         opts.check_used()?;
 
