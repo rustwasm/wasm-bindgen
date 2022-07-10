@@ -61,8 +61,8 @@ fn main() -> anyhow::Result<()> {
     } else {
         wasm_file_to_test
             .parent() // chop off file name
-            .and_then(|p| dbg!(p.parent())) // chop off `deps`
-            .and_then(|p| dbg!(p.parent())) // chop off `debug`
+            .and_then(|p| p.parent()) // chop off `deps`
+            .and_then(|p| p.parent()) // chop off `debug`
     }
     .map(|p| p.join("wbg-tmp"))
     .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
