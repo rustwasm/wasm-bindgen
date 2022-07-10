@@ -627,7 +627,9 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             /// or `None` if it isn't one.
             fn get_docs(attr: &syn::Attribute) -> Option<String> {
                 if attr.path.is_ident("doc") {
-                    syn::parse2::<DocContents>(attr.tokens.clone()).ok().map(|doc| doc.contents)
+                    syn::parse2::<DocContents>(attr.tokens.clone())
+                        .ok()
+                        .map(|doc| doc.contents)
                 } else {
                     None
                 }
