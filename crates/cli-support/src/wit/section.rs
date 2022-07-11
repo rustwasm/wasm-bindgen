@@ -16,7 +16,7 @@
 //! generating any JS glue. Any JS glue currently generated is also invalid if
 //! the module contains the wasm bindings section and it's actually respected.
 
-use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, Instruction};
+use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, Instruction};
 use crate::wit::{AdapterKind, NonstandardWitSection, WasmBindgenAux};
 use crate::wit::{AuxExport, InstructionData};
 use crate::wit::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
@@ -377,38 +377,22 @@ fn check_standard_export(export: &AuxExport) -> Result<(), Error> {
                 name,
             );
         }
-        AuxExportKind::Getter { class, field, .. } => {
+        AuxExportKind::Method {
+            class, name, kind, ..
+        } => {
+            let kind_name = match kind {
+                AuxExportedMethodKind::Method => "method",
+                AuxExportedMethodKind::Getter => "getter",
+                AuxExportedMethodKind::Setter => "setter",
+            };
+
             bail!(
-                "cannot export `{}::{}` getter function when generating \
-                 a standalone WebAssembly module with no JS glue",
-                class,
-                field,
-            );
-        }
-        AuxExportKind::Setter { class, field, .. } => {
-            bail!(
-                "cannot export `{}::{}` setter function when generating \
-                 a standalone WebAssembly module with no JS glue",
-                class,
-                field,
-            );
-        }
-        AuxExportKind::StaticFunction { class, name } => {
-            bail!(
-                "cannot export `{}::{}` static function when \
+                "cannot export `{}::{}` {} when \
                  generating a standalone WebAssembly module with no \
                  JS glue",
                 class,
-                name
-            );
-        }
-        AuxExportKind::Method { class, name, .. } => {
-            bail!(
-                "cannot export `{}::{}` method when \
-                 generating a standalone WebAssembly module with no \
-                 JS glue",
-                class,
-                name
+                name,
+                kind_name
             );
         }
     }

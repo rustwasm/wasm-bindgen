@@ -64,6 +64,9 @@ pub struct JsFunction {
     pub js_doc: String,
     pub ts_arg_tys: Vec<String>,
     pub ts_ret_ty: Option<String>,
+    /// Whether this function has a single optional argument.
+    ///
+    /// If the function is a setter, that means that the field it sets is optional.
     pub might_be_optional_field: bool,
     pub catch: bool,
     pub log_error: bool,

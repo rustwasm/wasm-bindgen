@@ -108,38 +108,53 @@ pub enum AuxExportKind {
     /// actually return just an integer which is put on an JS object currently.
     Constructor(String),
 
-    /// This function is intended to be a getter for a field on a class. The
-    /// first argument is the internal pointer and the returned value is
-    /// expected to be the field.
-    Getter {
-        class: String,
-        field: String,
-        // same as `consumed` in `Method`
-        consumed: bool,
-    },
-
-    /// This function is intended to be a setter for a field on a class. The
-    /// first argument is the internal pointer and the second argument is
-    /// expected to be the field's new value.
-    Setter {
-        class: String,
-        field: String,
-        // same as `consumed` in `Method`
-        consumed: bool,
-    },
-
-    /// This is a free function (ish) but scoped inside of a class name.
-    StaticFunction { class: String, name: String },
-
-    /// This is a member function of a class where the first parameter is the
-    /// implicit integer stored in the class instance.
+    /// A function that's associated with a class.
+    ///
+    /// This can either be a static method (indicated by `AuxReceiverKind::None`),
+    /// which is basically just a free function namespaced under the class, or
+    /// a proper method.
+    ///
+    /// It can also be a getter or a setter for a (possibly static) field of
+    /// the class, in which case `name` is the name of the field.
+    ///
+    /// If the function isn't static, the first argument is the index of the
+    /// Rust object in the JS heap.
     Method {
         class: String,
         name: String,
-        /// Whether or not this is calling a by-value method in Rust and should
-        /// clear the internal pointer in JS automatically.
-        consumed: bool,
+        receiver: AuxReceiverKind,
+        kind: AuxExportedMethodKind,
     },
+}
+
+/// All the possible kinds of exported methods.
+#[derive(Debug, Clone, Copy)]
+pub enum AuxExportedMethodKind {
+    /// A regular method.
+    Method,
+    /// A getter for a field.
+    Getter,
+    /// A setter for a field.
+    Setter,
+}
+
+/// The 'receiver' of a method; in other words, the type that the method is called on.
+///
+/// This is `None` if the method is static, or `Borrowed` or `Owned` if the
+/// method takes `&[mut] self` or `self` respectively.
+#[derive(Debug, Clone, Copy)]
+pub enum AuxReceiverKind {
+    None,
+    Borrowed,
+    Owned,
+}
+
+impl AuxReceiverKind {
+    /// Returns whether this is `AuxReceiverKind::None` (in other words,
+    /// whether the method with this receiver is static).
+    pub fn is_static(self) -> bool {
+        matches!(self, Self::None)
+    }
 }
 
 #[derive(Debug)]
