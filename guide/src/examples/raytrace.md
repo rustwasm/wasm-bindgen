@@ -5,7 +5,7 @@
 [online]: https://wasm-bindgen.netlify.app/exbuild/raytrace-parallel/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/raytrace-parallel
 
-This is an of using threads with WebAssembly, Rust, and `wasm-bindgen`,
+This is an example of using threads with WebAssembly, Rust, and `wasm-bindgen`,
 culminating in a parallel raytracer demo. There's a number of moving pieces to
 this demo and it's unfortunately not the easiest thing to wrangle, but it's
 hoped that this'll give you a bit of a taste of what it's like to use threads
