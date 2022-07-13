@@ -61,7 +61,7 @@ impl Element {
     where
         T: 'static + FnMut(web_sys::Event),
     {
-        let cb = Closure::wrap(Box::new(handler) as Box<dyn FnMut(_)>);
+        let cb = Closure::new(handler);
         if let Some(el) = self.el.take() {
             let el_et: EventTarget = el.into();
             el_et
@@ -94,7 +94,7 @@ impl Element {
                     // TODO document selector to the target element
                     let tg_el = document;
 
-                    let cb = Closure::wrap(Box::new(move |event: web_sys::Event| {
+                    let cb = Closure::new(move |event: web_sys::Event| {
                         if let Some(target_element) = event.target() {
                             let dyn_target_el: Option<&web_sys::Node> =
                                 wasm_bindgen::JsCast::dyn_ref(&target_element);
@@ -116,7 +116,7 @@ impl Element {
                                 }
                             }
                         }
-                    }) as Box<dyn FnMut(_)>);
+                    });
 
                     dyn_el
                         .add_event_listener_with_callback_and_bool(

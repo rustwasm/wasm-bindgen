@@ -65,7 +65,7 @@ use crate::UnwrapThrowExt;
 ///
 /// #[wasm_bindgen]
 /// pub fn run() -> IntervalHandle {
-///     // First up we use `Closure::wrap` to wrap up a Rust closure and create
+///     // First up we use `Closure::new` to wrap up a Rust closure and create
 ///     // a JS closure.
 ///     let cb = Closure::new(|| {
 ///         log("interval elapsed!");

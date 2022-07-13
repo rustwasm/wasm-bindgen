@@ -78,7 +78,7 @@ impl Queue {
 
                 // This closure will only be called on the next microtask event
                 // tick
-                Closure::wrap(Box::new(move |_| state.run_all()))
+                Closure::new(move |_| state.run_all())
             },
 
             state,
