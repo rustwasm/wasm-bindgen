@@ -121,7 +121,7 @@ impl XrApp {
         let g = f.clone();
 
         let mut i = 0;
-        *g.borrow_mut() = Some(Closure::wrap(Box::new(move |time: f64, frame: XrFrame| {
+        *g.borrow_mut() = Some(Closure::new(move |time: f64, frame: XrFrame| {
             log!("Frame rendering...");
             if i > 2 {
                 log!("All done!");
@@ -138,7 +138,7 @@ impl XrApp {
             // Schedule ourself for another requestAnimationFrame callback.
             // TODO: WebXR Samples call this at top of request_animation_frame - should this be moved?
             request_animation_frame(&sess, f.borrow().as_ref().unwrap());
-        }) as Box<dyn FnMut(f64, XrFrame)>));
+        }));
 
         let session: &Option<XrSession> = &self.session.borrow();
         let sess: &XrSession = if let Some(sess) = session {

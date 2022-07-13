@@ -43,7 +43,7 @@ pub fn run() -> Result<(), JsValue> {
     let g = f.clone();
 
     let mut i = 0;
-    *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
+    *g.borrow_mut() = Some(Closure::new(move || {
         if i > 300 {
             body().set_text_content(Some("All done!"));
 
@@ -61,7 +61,7 @@ pub fn run() -> Result<(), JsValue> {
 
         // Schedule ourself for another requestAnimationFrame callback.
         request_animation_frame(f.borrow().as_ref().unwrap());
-    }) as Box<dyn FnMut()>));
+    }));
 
     request_animation_frame(g.borrow().as_ref().unwrap());
     Ok(())

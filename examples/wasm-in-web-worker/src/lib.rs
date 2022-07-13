@@ -68,7 +68,7 @@ fn setup_input_oninput_callback(worker: Rc<RefCell<web_sys::Worker>>) {
     #[allow(unused_assignments)]
     let mut persistent_callback_handle = get_on_msg_callback();
 
-    let callback = Closure::wrap(Box::new(move || {
+    let callback = Closure::new(move || {
         console::log_1(&"oninput callback triggered".into());
         let document = web_sys::window().unwrap().document().unwrap();
 
@@ -103,7 +103,7 @@ fn setup_input_oninput_callback(worker: Rc<RefCell<web_sys::Worker>>) {
                     .set_inner_text("");
             }
         }
-    }) as Box<dyn FnMut()>);
+    });
 
     // Attach the closure as `oninput` callback to the input field.
     document
@@ -119,7 +119,7 @@ fn setup_input_oninput_callback(worker: Rc<RefCell<web_sys::Worker>>) {
 
 /// Create a closure to act on the message returned by the worker
 fn get_on_msg_callback() -> Closure<dyn FnMut(MessageEvent)> {
-    let callback = Closure::wrap(Box::new(move |event: MessageEvent| {
+    let callback = Closure::new(move |event: MessageEvent| {
         console::log_2(&"Received response: ".into(), &event.data().into());
 
         let result = match event.data().as_bool().unwrap() {
@@ -134,7 +134,7 @@ fn get_on_msg_callback() -> Closure<dyn FnMut(MessageEvent)> {
             .dyn_ref::<HtmlElement>()
             .expect("#resultField should be a HtmlInputElement")
             .set_inner_text(result);
-    }) as Box<dyn FnMut(_)>);
+    });
 
     callback
 }

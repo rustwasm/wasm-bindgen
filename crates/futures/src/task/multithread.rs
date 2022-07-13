@@ -97,7 +97,7 @@ impl Task {
 
         let closure = {
             let this = Rc::clone(&this);
-            Closure::wrap(Box::new(move |_| this.run()) as Box<dyn FnMut(JsValue)>)
+            Closure::new(move |_| this.run())
         };
         *this.inner.borrow_mut() = Some(Inner { future, closure });
 
