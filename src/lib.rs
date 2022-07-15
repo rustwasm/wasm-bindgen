@@ -8,7 +8,6 @@
 #![no_std]
 #![allow(coherence_leak_check)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
-use std::format;
 use core::convert::TryFrom;
 use core::fmt;
 use core::marker;
@@ -17,6 +16,7 @@ use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
 };
 use core::u32;
+use std::format;
 
 use crate::convert::{FromWasmAbi, WasmSlice};
 
@@ -1318,7 +1318,7 @@ pub trait UnwrapThrowExt<T>: Sized {
             loc.line(),
             loc.column()
         );
-        self.expect_throw(&msg)
+        self.expect_throw(msg.as_str())
     }
 
     /// Unwrap this container's `T` value, or throw an error to JS with the
@@ -1358,7 +1358,6 @@ where
         }
     }
 }
-
 
 /// Returns a handle to this wasm instance's `WebAssembly.Module`
 ///
