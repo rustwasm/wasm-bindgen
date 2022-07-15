@@ -98,3 +98,10 @@ exports.test_getter_compute = x => {
 exports.test_setter_compute = x => {
   x.foo = 97;
 };
+
+exports.test_statics = x => {
+    assert.equal(x.field, 3);
+    assert.equal(wasm.Statics.field, 4);
+    x.field = 13;
+    wasm.Statics.field = 14;
+}

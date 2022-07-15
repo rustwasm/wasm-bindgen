@@ -16,39 +16,58 @@ extern "C" {
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassColorAttachment {
-    #[cfg(all(feature = "GpuStoreOp", feature = "GpuTextureView",))]
+    #[cfg(all(
+        feature = "GpuLoadOp",
+        feature = "GpuStoreOp",
+        feature = "GpuTextureView",
+    ))]
     #[doc = "Construct a new `GpuRenderPassColorAttachment`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`, `GpuStoreOp`, `GpuTextureView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuLoadOp`, `GpuRenderPassColorAttachment`, `GpuStoreOp`, `GpuTextureView`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(
-        load_value: &::wasm_bindgen::JsValue,
-        store_op: GpuStoreOp,
-        view: &GpuTextureView,
-    ) -> Self {
+    pub fn new(load_op: GpuLoadOp, store_op: GpuStoreOp, view: &GpuTextureView) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.load_value(load_value);
+        ret.load_op(load_op);
         ret.store_op(store_op);
         ret.view(view);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `loadValue` field of this object."]
+    #[doc = "Change the `clearValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassColorAttachment`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn load_value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn clear_value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("loadValue"),
+            &JsValue::from("clearValue"),
             &JsValue::from(val),
         );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuLoadOp")]
+    #[doc = "Change the `loadOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuLoadOp`, `GpuRenderPassColorAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn load_op(&mut self, val: GpuLoadOp) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r =
+            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("loadOp"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"

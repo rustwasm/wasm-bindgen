@@ -10,10 +10,13 @@ use wasm_bindgen::prelude::*;
 #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GpuFeatureName {
-    DepthClamping = "depth-clamping",
-    Depth24unormStencil8 = "depth24unorm-stencil8",
+    DepthClipControl = "depth-clip-control",
     Depth32floatStencil8 = "depth32float-stencil8",
-    PipelineStatisticsQuery = "pipeline-statistics-query",
     TextureCompressionBc = "texture-compression-bc",
+    TextureCompressionEtc2 = "texture-compression-etc2",
+    TextureCompressionAstc = "texture-compression-astc",
     TimestampQuery = "timestamp-query",
+    IndirectFirstInstance = "indirect-first-instance",
+    ShaderF16 = "shader-f16",
+    Bgra8unormStorage = "bgra8unorm-storage",
 }

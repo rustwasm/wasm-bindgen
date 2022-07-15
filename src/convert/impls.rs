@@ -4,7 +4,7 @@ use core::mem::{self, ManuallyDrop};
 use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
-use crate::{Clamped, JsValue};
+use crate::{Clamped, JsError, JsValue};
 
 unsafe impl WasmAbi for () {}
 
@@ -396,14 +396,79 @@ impl IntoWasmAbi for () {
     }
 }
 
-impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
-    type Abi = T::Abi;
+/// This is an encoding of a Result. It can only store things that can be decoded by the JS
+/// bindings.
+///
+/// At the moment, we do not write the exact struct packing layout of everything into the
+/// glue/descriptions of datatypes, so T cannot be arbitrary. The current requirements of the
+/// struct unpacker (StructUnpacker), which apply to ResultAbi<T> as a whole, are as follows:
+///
+/// - repr(C), of course
+/// - u32/i32/f32/f64 fields at the "leaf fields" of the "field tree"
+/// - layout equivalent to a completely flattened repr(C) struct, constructed by an in order
+///   traversal of all the leaf fields in it.
+///  
+/// This means that you can't embed struct A(u32, f64) as struct B(u32, A); because the "completely
+/// flattened" struct AB(u32, u32, f64) would miss the 4 byte padding that is actually present
+/// within B and then as a consequence also miss the 4 byte padding within A that repr(C) inserts.
+///
+/// The enemy is padding. Padding is only required when there is an `f64` field. So the enemy is
+/// `f64` after anything else, particularly anything arbitrary. There is no smaller sized type, so
+/// we don't need to worry about 1-byte integers, etc. It's best, therefore, to place your f64s
+/// first in your structs, that's why we have `abi` first, although here it doesn't matter as the
+/// other two fields total 8 bytes anyway.
+///
+#[repr(C)]
+pub struct ResultAbi<T> {
+    /// This field is the same size/align as `T`.
+    abi: ResultAbiUnion<T>,
+    /// Order of args here is such that we can pop() the possible error first, deal with it and
+    /// move on. Later fields are popped off the stack first.
+    err: u32,
+    is_err: u32,
+}
 
+#[repr(C)]
+pub union ResultAbiUnion<T> {
+    // ManuallyDrop is #[repr(transparent)]
+    ok: std::mem::ManuallyDrop<T>,
+    err: (),
+}
+
+unsafe impl<T: WasmAbi> WasmAbi for ResultAbi<T> {}
+unsafe impl<T: WasmAbi> WasmAbi for ResultAbiUnion<T> {}
+
+impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
+    type Abi = ResultAbi<T::Abi>;
     #[inline]
     fn return_abi(self) -> Self::Abi {
         match self {
-            Ok(v) => v.into_abi(),
-            Err(e) => crate::throw_val(e),
+            Ok(v) => {
+                let abi = ResultAbiUnion {
+                    ok: std::mem::ManuallyDrop::new(v.into_abi()),
+                };
+                ResultAbi {
+                    abi,
+                    is_err: 0,
+                    err: 0,
+                }
+            }
+            Err(e) => {
+                let jsval = e.into();
+                ResultAbi {
+                    abi: ResultAbiUnion { err: () },
+                    is_err: 1,
+                    err: jsval.into_abi(),
+                }
+            }
         }
+    }
+}
+
+impl IntoWasmAbi for JsError {
+    type Abi = <JsValue as IntoWasmAbi>::Abi;
+
+    fn into_abi(self) -> Self::Abi {
+        self.value.into_abi()
     }
 }

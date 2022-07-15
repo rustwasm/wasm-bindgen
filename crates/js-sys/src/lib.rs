@@ -306,6 +306,11 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new_with_length(len: u32) -> Array;
 
+    /// Retrieves the element at the index, counting from the end if negative
+    /// (returns `undefined` if the index is out of range).
+    #[wasm_bindgen(method)]
+    pub fn at(this: &Array, index: i32) -> JsValue;
+
     /// Retrieves the element at the index (returns `undefined` if the index is out of range).
     #[wasm_bindgen(method, structural, indexing_getter)]
     pub fn get(this: &Array, index: u32) -> JsValue;
@@ -1483,6 +1488,17 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
     #[wasm_bindgen(constructor)]
     pub fn new(message: &str) -> Error;
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_options(message: &str, options: &Object) -> Error;
+
+    /// The cause property is the underlying cause of the error.
+    /// Usually this is used to add context to re-thrown errors.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#differentiate_between_similar_errors)
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn cause(this: &Error) -> JsValue;
+    #[wasm_bindgen(method, setter, structural)]
+    pub fn set_cause(this: &Error, cause: &JsValue);
 
     /// The message property is a human-readable description of the error.
     ///
@@ -1856,7 +1872,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of)
     #[derive(Clone, Debug)]
-    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "Iterator<Promise<any>>")]
+    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator, typescript_type = "AsyncIterator<any>")]
     pub type AsyncIterator;
 
     /// The `next()` method always has to return a Promise which resolves to an object
@@ -3125,6 +3141,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
 
+    /// The `Object.hasOwn()` method returns a boolean indicating whether the
+    /// object passed in has the specified property as its own property (as
+    /// opposed to inheriting it).
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn)
+    #[wasm_bindgen(static_method_of = Object, js_name = hasOwn)]
+    pub fn has_own(instance: &Object, property: &JsValue) -> bool;
+
     /// The `Object.is()` method determines whether two values are the same value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
@@ -3917,6 +3941,10 @@ impl Default for WeakSet {
     }
 }
 
+#[cfg(js_sys_unstable_apis)]
+#[allow(non_snake_case)]
+pub mod Temporal;
+
 #[allow(non_snake_case)]
 pub mod WebAssembly {
     use super::*;
@@ -3932,6 +3960,16 @@ pub mod WebAssembly {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compile)
         #[wasm_bindgen(js_namespace = WebAssembly)]
         pub fn compile(buffer_source: &JsValue) -> Promise;
+
+        /// The `WebAssembly.compileStreaming()` function compiles a
+        /// `WebAssembly.Module` module directly from a streamed underlying
+        /// source. This function is useful if it is necessary to a compile a
+        /// module before it can be instantiated (otherwise, the
+        /// `WebAssembly.instantiateStreaming()` function should be used).
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compileStreaming)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = compileStreaming)]
+        pub fn compile_streaming(response: &Promise) -> Promise;
 
         /// The `WebAssembly.instantiate()` function allows you to compile and
         /// instantiate WebAssembly code.
@@ -4300,6 +4338,14 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &JsString) -> u32;
 
+    /// The 'at()' method returns a new string consisting of the single UTF-16
+    /// code unit located at the specified offset into the string, counting from
+    /// the end if it's negative.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/at)
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn at(this: &JsString, index: i32) -> Option<JsString>;
+
     /// The String object's `charAt()` method returns a new string consisting of
     /// the single UTF-16 code unit located at the specified offset into the
     /// string.
@@ -4457,6 +4503,12 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = match)]
     pub fn match_(this: &JsString, pattern: &RegExp) -> Option<Object>;
 
+    /// The `match_all()` method is similar to `match()`, but gives an iterator of `exec()` arrays, which preserve capture groups.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = matchAll)]
+    pub fn match_all(this: &JsString, pattern: &RegExp) -> Iterator;
+
     /// The `normalize()` method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).
     ///
@@ -4513,6 +4565,36 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
     #[wasm_bindgen(method, js_class = "String", js_name = replace)]
     pub fn replace_by_pattern_with_function(
+        this: &JsString,
+        pattern: &RegExp,
+        replacement: &Function,
+    ) -> JsString;
+
+    /// The `replace_all()` method returns a new string with all matches of a pattern
+    /// replaced by a replacement. The pattern can be a string or a global RegExp, and
+    /// the replacement can be a string or a function to be called for each match.
+    ///
+    /// Note: The original string will remain unchanged.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all(this: &JsString, pattern: &str, replacement: &str) -> JsString;
+
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all_with_function(
+        this: &JsString,
+        pattern: &str,
+        replacement: &Function,
+    ) -> JsString;
+
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all_by_pattern(this: &JsString, pattern: &RegExp, replacement: &str)
+        -> JsString;
+
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll)
+    #[wasm_bindgen(method, js_class = "String", js_name = replaceAll)]
+    pub fn replace_all_by_pattern_with_function(
         this: &JsString,
         pattern: &RegExp,
         replacement: &Function,
@@ -5319,6 +5401,23 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Promise)]
     pub fn all(obj: &JsValue) -> Promise;
 
+    /// The `Promise.allSettled(iterable)` method returns a single `Promise` that
+    /// resolves when all of the promises in the iterable argument have either
+    /// fulfilled or rejected or when the iterable argument contains no promises.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
+    #[wasm_bindgen(static_method_of = Promise, js_name = allSettled)]
+    pub fn all_settled(obj: &JsValue) -> Promise;
+
+    /// The `Promise.any(iterable)` method returns a single `Promise` that
+    /// resolves when any of the promises in the iterable argument have resolved
+    /// or when the iterable argument contains no promises. It rejects with an
+    /// `AggregateError` if all promises in the iterable rejected.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any)
+    #[wasm_bindgen(static_method_of = Promise)]
+    pub fn any(obj: &JsValue) -> Promise;
+
     /// The `Promise.race(iterable)` method returns a promise that resolves or
     /// rejects as soon as one of the promises in the iterable resolves or
     /// rejects, with the value or reason from that promise.
@@ -5568,6 +5667,10 @@ macro_rules! arrays {
             /// input values from a specified array.
             #[wasm_bindgen(method)]
             pub fn set(this: &$name, src: &JsValue, offset: u32);
+
+            /// Gets the value at `idx`, counting from the end if negative.
+            #[wasm_bindgen(method)]
+            pub fn at(this: &$name, idx: i32) -> Option<$ty>;
 
             /// Gets the value at `idx`, equivalent to the javascript `my_var = arr[idx]`.
             #[wasm_bindgen(method, structural, indexing_getter)]

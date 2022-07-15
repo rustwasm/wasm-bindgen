@@ -16,41 +16,53 @@ extern "C" {
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassDepthStencilAttachment {
-    #[cfg(all(feature = "GpuStoreOp", feature = "GpuTextureView",))]
+    #[cfg(feature = "GpuTextureView")]
     #[doc = "Construct a new `GpuRenderPassDepthStencilAttachment`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`, `GpuStoreOp`, `GpuTextureView`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`, `GpuTextureView`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(
-        depth_load_value: &::wasm_bindgen::JsValue,
-        depth_store_op: GpuStoreOp,
-        stencil_load_value: &::wasm_bindgen::JsValue,
-        stencil_store_op: GpuStoreOp,
-        view: &GpuTextureView,
-    ) -> Self {
+    pub fn new(view: &GpuTextureView) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.depth_load_value(depth_load_value);
-        ret.depth_store_op(depth_store_op);
-        ret.stencil_load_value(stencil_load_value);
-        ret.stencil_store_op(stencil_store_op);
         ret.view(view);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `depthLoadValue` field of this object."]
+    #[doc = "Change the `depthClearValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn depth_load_value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn depth_clear_value(&mut self, val: f32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("depthLoadValue"),
+            &JsValue::from("depthClearValue"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuLoadOp")]
+    #[doc = "Change the `depthLoadOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuLoadOp`, `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn depth_load_op(&mut self, val: GpuLoadOp) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("depthLoadOp"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -104,17 +116,39 @@ impl GpuRenderPassDepthStencilAttachment {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `stencilLoadValue` field of this object."]
+    #[doc = "Change the `stencilClearValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn stencil_load_value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+    pub fn stencil_clear_value(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("stencilLoadValue"),
+            &JsValue::from("stencilClearValue"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuLoadOp")]
+    #[doc = "Change the `stencilLoadOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuLoadOp`, `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn stencil_load_op(&mut self, val: GpuLoadOp) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("stencilLoadOp"),
             &JsValue::from(val),
         );
         debug_assert!(

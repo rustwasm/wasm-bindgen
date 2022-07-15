@@ -81,6 +81,7 @@ enum OutputMode {
 enum Input {
     Path(PathBuf),
     Module(Module, String),
+    Bytes(Vec<u8>, String),
     None,
 }
 
@@ -144,6 +145,13 @@ impl Bindgen {
     pub fn input_module(&mut self, name: &str, module: Module) -> &mut Bindgen {
         let name = name.to_string();
         self.input = Input::Module(module, name);
+        return self;
+    }
+
+    /// Specify the input as the provided Wasm bytes.
+    pub fn input_bytes(&mut self, name: &str, bytes: Vec<u8>) -> &mut Bindgen {
+        let name = name.to_string();
+        self.input = Input::Bytes(bytes, name);
         return self;
     }
 
@@ -296,7 +304,7 @@ impl Bindgen {
     pub fn stem(&self) -> Result<&str, Error> {
         Ok(match &self.input {
             Input::None => bail!("must have an input by now"),
-            Input::Module(_, name) => name,
+            Input::Module(_, name) | Input::Bytes(_, name) => name,
             Input::Path(path) => match &self.out_name {
                 Some(name) => name,
                 None => path.file_stem().unwrap().to_str().unwrap(),
@@ -312,26 +320,15 @@ impl Bindgen {
                 mem::replace(m, blank_module)
             }
             Input::Path(ref path) => {
-                let wasm = wit_text::parse_file(&path)
-                    .with_context(|| format!("failed to read `{}`", path.display()))?;
-                wit_validator::validate(&wasm)
-                    .with_context(|| format!("failed to validate `{}`", path.display()))?;
-                let module = walrus::ModuleConfig::new()
-                    // Skip validation of the module as LLVM's output is
-                    // generally already well-formed and so we won't gain much
-                    // from re-validating. Additionally LLVM's current output
-                    // for threads includes atomic instructions but doesn't
-                    // include shared memory, so it fails that part of
-                    // validation!
-                    .strict_validate(false)
-                    .generate_dwarf(self.keep_debug)
-                    .generate_name_section(!self.remove_name_section)
-                    .generate_producers_section(!self.remove_producers_section)
-                    .on_parse(wit_walrus::on_parse)
-                    .parse(&wasm)
-                    .context("failed to parse input file as wasm")?;
-                module
+                let bytes = std::fs::read(path)
+                    .with_context(|| format!("failed reading '{}'", path.display()))?;
+                self.module_from_bytes(&bytes).with_context(|| {
+                    format!("failed getting Wasm module for '{}'", path.display())
+                })?
             }
+            Input::Bytes(ref bytes, _) => self
+                .module_from_bytes(&bytes)
+                .context("failed getting Wasm module")?,
         };
 
         self.threads
@@ -427,7 +424,7 @@ impl Bindgen {
 
         // We're ready for the final emission passes now. If we're in wasm
         // interface types mode then we execute the various passes there and
-        // generate a valid interface typess section into the wasm module.
+        // generate a valid interface types section into the wasm module.
         //
         // Otherwise we execute the JS generation passes to actually emit
         // JS/TypeScript/etc. The output here is unused in wasm interfac
@@ -464,6 +461,25 @@ impl Bindgen {
             stem: stem.to_string(),
             generated,
         })
+    }
+
+    fn module_from_bytes(&self, bytes: &[u8]) -> Result<Module, Error> {
+        let wasm = wit_text::parse_bytes(bytes).context("failed to parse bytes")?;
+        wit_validator::validate(&wasm).context("failed to validate")?;
+        walrus::ModuleConfig::new()
+            // Skip validation of the module as LLVM's output is
+            // generally already well-formed and so we won't gain much
+            // from re-validating. Additionally LLVM's current output
+            // for threads includes atomic instructions but doesn't
+            // include shared memory, so it fails that part of
+            // validation!
+            .strict_validate(false)
+            .generate_dwarf(self.keep_debug)
+            .generate_name_section(!self.remove_name_section)
+            .generate_producers_section(!self.remove_producers_section)
+            .on_parse(wit_walrus::on_parse)
+            .parse(&wasm)
+            .context("failed to parse input as wasm")
     }
 
     fn local_module_name(&self, module: &str) -> String {
@@ -611,9 +627,38 @@ fn unexported_unused_lld_things(module: &mut Module) {
 
 impl Output {
     pub fn js(&self) -> &str {
+        &self.gen().js
+    }
+
+    pub fn ts(&self) -> Option<&str> {
+        let gen = self.gen();
+        if gen.typescript {
+            Some(&gen.ts)
+        } else {
+            None
+        }
+    }
+
+    pub fn start(&self) -> Option<&String> {
+        self.gen().start.as_ref()
+    }
+
+    pub fn snippets(&self) -> &HashMap<String, Vec<String>> {
+        &self.gen().snippets
+    }
+
+    pub fn local_modules(&self) -> &HashMap<String, String> {
+        &self.gen().local_modules
+    }
+
+    pub fn npm_dependencies(&self) -> &HashMap<String, (PathBuf, String)> {
+        &self.gen().npm_dependencies
+    }
+
+    fn gen(&self) -> &JsGenerated {
         match &self.generated {
             Generated::InterfaceTypes => panic!("no js with interface types output"),
-            Generated::Js(gen) => &gen.js,
+            Generated::Js(gen) => &gen,
         }
     }
 

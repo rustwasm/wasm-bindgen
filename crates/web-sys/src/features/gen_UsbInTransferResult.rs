@@ -38,4 +38,31 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn status(this: &UsbInTransferResult) -> UsbTransferStatus;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "UsbTransferStatus")]
+    #[wasm_bindgen(catch, constructor, js_class = "USBInTransferResult")]
+    #[doc = "The `new UsbInTransferResult(..)` constructor, creating a new instance of `UsbInTransferResult`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBInTransferResult/USBInTransferResult)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbInTransferResult`, `UsbTransferStatus`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(status: UsbTransferStatus) -> Result<UsbInTransferResult, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "UsbTransferStatus")]
+    #[wasm_bindgen(catch, constructor, js_class = "USBInTransferResult")]
+    #[doc = "The `new UsbInTransferResult(..)` constructor, creating a new instance of `UsbInTransferResult`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBInTransferResult/USBInTransferResult)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbInTransferResult`, `UsbTransferStatus`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_data(
+        status: UsbTransferStatus,
+        data: Option<&::js_sys::DataView>,
+    ) -> Result<UsbInTransferResult, JsValue>;
 }

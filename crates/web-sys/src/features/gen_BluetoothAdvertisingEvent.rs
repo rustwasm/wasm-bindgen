@@ -106,4 +106,19 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn service_data(this: &BluetoothAdvertisingEvent) -> BluetoothServiceDataMap;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "BluetoothAdvertisingEventInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "BluetoothAdvertisingEvent")]
+    #[doc = "The `new BluetoothAdvertisingEvent(..)` constructor, creating a new instance of `BluetoothAdvertisingEvent`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothAdvertisingEvent/BluetoothAdvertisingEvent)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEvent`, `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new(
+        type_: &str,
+        init: &BluetoothAdvertisingEventInit,
+    ) -> Result<BluetoothAdvertisingEvent, JsValue>;
 }

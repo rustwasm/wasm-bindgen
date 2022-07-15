@@ -11,7 +11,7 @@ use crate::{describe::WasmDescribe, JsValue};
 /// This trait is automatically implemented for any type imported in a
 /// `#[wasm_bindgen]` `extern` block.
 ///
-/// [rfc]: https://github.com/rustwasm/rfcs/pull/2
+/// [rfc]: https://github.com/rustwasm/rfcs/blob/master/text/002-wasm-bindgen-inheritance-casting.md
 pub trait JsCast
 where
     Self: AsRef<JsValue> + Into<JsValue>,

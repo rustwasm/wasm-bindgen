@@ -1,16 +1,16 @@
 /* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
  * WebXR Device API
- * W3C Working Draft, 10 October 2019
+ * W3C Working Draft, 31 March 2022
  * The origin of this IDL file is:
- * https://www.w3.org/TR/2019/WD-webxr-20191010/
+ * https://www.w3.org/TR/2022/CR-webxr-20220331/
  */
 
 partial interface Navigator {
-  [SecureContext, SameObject] readonly attribute XR xr;
+  [SecureContext, SameObject] readonly attribute XRSystem xr;
 };
 
-[SecureContext, Exposed=Window] interface XR : EventTarget {
+[SecureContext, Exposed=Window] interface XRSystem : EventTarget {
   // Methods
   Promise<boolean> isSessionSupported(XRSessionMode mode);
   [NewObject] Promise<XRSession> requestSession(XRSessionMode mode, optional XRSessionInit options = {});
@@ -21,7 +21,8 @@ partial interface Navigator {
 
 enum XRSessionMode {
   "inline",
-  "immersive-vr"
+  "immersive-vr",
+  "immersive-ar"
 };
 
 dictionary XRSessionInit {
@@ -38,25 +39,32 @@ enum XRVisibilityState {
 [SecureContext, Exposed=Window] interface XRSession : EventTarget {
   // Attributes
   readonly attribute XRVisibilityState visibilityState;
+  readonly attribute float? frameRate;
+  readonly attribute Float32Array? supportedFrameRates;
   [SameObject] readonly attribute XRRenderState renderState;
   [SameObject] readonly attribute XRInputSourceArray inputSources;
 
   // Methods
   undefined updateRenderState(optional XRRenderStateInit state = {});
+  Promise<undefined> updateTargetFrameRate(float rate);
   [NewObject] Promise<XRReferenceSpace> requestReferenceSpace(XRReferenceSpaceType type);
 
-  long requestAnimationFrame(XRFrameRequestCallback callback);
-  undefined cancelAnimationFrame(long handle);
+  unsigned long requestAnimationFrame(XRFrameRequestCallback callback);
+  undefined cancelAnimationFrame(unsigned long handle);
 
   Promise<undefined> end();
 
   // Events
   attribute EventHandler onend;
-  attribute EventHandler onselect;
   attribute EventHandler oninputsourceschange;
+  attribute EventHandler onselect;
   attribute EventHandler onselectstart;
   attribute EventHandler onselectend;
+  attribute EventHandler onsqueeze;
+  attribute EventHandler onsqueezestart;
+  attribute EventHandler onsqueezeend;
   attribute EventHandler onvisibilitychange;
+  attribute EventHandler onframeratechange;
 };
 
 dictionary XRRenderStateInit {
@@ -64,6 +72,7 @@ dictionary XRRenderStateInit {
   double depthFar;
   double inlineVerticalFieldOfView;
   XRWebGLLayer? baseLayer;
+  sequence<XRLayer>? layers;
 };
 
 [SecureContext, Exposed=Window] interface XRRenderState {
@@ -77,6 +86,7 @@ callback XRFrameRequestCallback = undefined (DOMHighResTimeStamp time, XRFrame f
 
 [SecureContext, Exposed=Window] interface XRFrame {
   [SameObject] readonly attribute XRSession session;
+  readonly attribute DOMHighResTimeStamp predictedDisplayTime;
 
   XRViewerPose? getViewerPose(XRReferenceSpace referenceSpace);
   XRPose? getPose(XRSpace space, XRSpace baseSpace);
@@ -103,10 +113,7 @@ interface XRReferenceSpace : XRSpace {
 
 [SecureContext, Exposed=Window]
 interface XRBoundedReferenceSpace : XRReferenceSpace {
-  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
-  //readonly attribute FrozenArray<DOMPointReadOnly> boundsGeometry;
-  [Frozen, Cached, Pure]
-  readonly attribute sequence<DOMPointReadOnly> boundsGeometry;
+  readonly attribute FrozenArray<DOMPointReadOnly> boundsGeometry;
 };
 
 enum XREye {
@@ -119,6 +126,9 @@ enum XREye {
   readonly attribute XREye eye;
   readonly attribute Float32Array projectionMatrix;
   [SameObject] readonly attribute XRRigidTransform transform;
+  readonly attribute double? recommendedViewportScale;
+
+  undefined requestViewportScale(double? scale);
 };
 
 [SecureContext, Exposed=Window] interface XRViewport {
@@ -139,14 +149,14 @@ interface XRRigidTransform {
 
 [SecureContext, Exposed=Window] interface XRPose {
   [SameObject] readonly attribute XRRigidTransform transform;
+  [SameObject] readonly attribute DOMPointReadOnly? linearVelocity;
+  [SameObject] readonly attribute DOMPointReadOnly? angularVelocity;
+
   readonly attribute boolean emulatedPosition;
 };
 
 [SecureContext, Exposed=Window] interface XRViewerPose : XRPose {
-  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
-  //[SameObject] readonly attribute FrozenArray<XRView> views;
-  [SameObject, Frozen, Cached, Pure]
-  readonly attribute sequence<XRView> views;
+  [SameObject] readonly attribute FrozenArray<XRView> views;
 };
 
 enum XRHandedness {
@@ -167,10 +177,7 @@ interface XRInputSource {
   readonly attribute XRTargetRayMode targetRayMode;
   [SameObject] readonly attribute XRSpace targetRaySpace;
   [SameObject] readonly attribute XRSpace? gripSpace;
-  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
-  //[SameObject] readonly attribute FrozenArray<DOMString> profiles;
-  [SameObject, Frozen, Cached, Pure]
-  readonly attribute sequence<DOMString> profiles;
+  [SameObject] readonly attribute FrozenArray<DOMString> profiles;
 };
 
 [SecureContext, Exposed=Window]
@@ -179,6 +186,10 @@ interface XRInputSourceArray {
   readonly attribute unsigned long length;
   getter XRInputSource(unsigned long index);
 };
+
+[SecureContext, Exposed=Window]
+interface XRLayer : EventTarget {};
+
 
 typedef (WebGLRenderingContext or
          WebGL2RenderingContext) XRWebGLRenderingContext;
@@ -192,19 +203,17 @@ dictionary XRWebGLLayerInit {
   double framebufferScaleFactor = 1.0;
 };
 
-// TODO: Change constructor back to original webidl
-// [SecureContext, Exposed=Window]
-[SecureContext, Exposed=Window, Constructor(XRSession session, XRWebGLRenderingContext context, optional XRWebGLLayerInit layerInit = {})]
-interface XRWebGLLayer {
-  //constructor(XRSession session,
-  //  XRWebGLRenderingContext context,
-  //  optional XRWebGLLayerInit layerInit = {});
-
+[SecureContext, Exposed=Window]
+interface XRWebGLLayer: XRLayer {
+  constructor(XRSession session,
+             XRWebGLRenderingContext context,
+             optional XRWebGLLayerInit layerInit = {});
   // Attributes
   readonly attribute boolean antialias;
   readonly attribute boolean ignoreDepthValues;
+  attribute float? fixedFoveation;
 
-  [SameObject] readonly attribute WebGLFramebuffer framebuffer;
+  [SameObject] readonly attribute WebGLFramebuffer? framebuffer;
   readonly attribute unsigned long framebufferWidth;
   readonly attribute unsigned long framebufferHeight;
 
@@ -216,11 +225,11 @@ interface XRWebGLLayer {
 };
 
 partial dictionary WebGLContextAttributes {
-    boolean xrCompatible = null;
+    boolean xrCompatible = false;
 };
 
 partial interface mixin WebGLRenderingContextBase {
-    Promise<undefined> makeXRCompatible();
+    [NewObject] Promise<undefined> makeXRCompatible();
 };
 
 [SecureContext, Exposed=Window]
@@ -249,24 +258,14 @@ dictionary XRInputSourceEventInit : EventInit {
 interface XRInputSourcesChangeEvent : Event {
   constructor(DOMString type, XRInputSourcesChangeEventInit eventInitDict);
   [SameObject] readonly attribute XRSession session;
-  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
-  //[SameObject] readonly attribute FrozenArray<XRInputSource> added;
-  [SameObject, Frozen, Cached, Pure]
-  readonly attribute sequence<XRInputSource> added;
-  //[SameObject] readonly attribute FrozenArray<XRInputSource> removed;
-  [SameObject, Frozen, Cached, Pure]
-  readonly attribute sequence<XRInputSource> removed;
+  [SameObject] readonly attribute FrozenArray<XRInputSource> added;
+  [SameObject] readonly attribute FrozenArray<XRInputSource> removed;
 };
 
 dictionary XRInputSourcesChangeEventInit : EventInit {
   required XRSession session;
-  // TODO: Re-enable FrozenArray when supported. See https://bugzilla.mozilla.org/show_bug.cgi?id=1236777
-  //required FrozenArray<XRInputSource> added;
-  [Frozen, Cached, Pure]
-  required sequence<XRInputSource> added;
-  //required FrozenArray<XRInputSource> removed;
-  [Frozen, Cached, Pure]
-  required sequence<XRInputSource> removed;
+  required FrozenArray<XRInputSource> added;
+  required FrozenArray<XRInputSource> removed;
 
 };
 
@@ -279,5 +278,20 @@ interface XRReferenceSpaceEvent : Event {
 
 dictionary XRReferenceSpaceEventInit : EventInit {
   required XRReferenceSpace referenceSpace;
-  XRRigidTransform transform;
+  XRRigidTransform? transform = null;
+};
+
+dictionary XRSessionSupportedPermissionDescriptor: PermissionDescriptor {
+  XRSessionMode mode;
+};
+
+dictionary XRPermissionDescriptor: PermissionDescriptor {
+  XRSessionMode mode;
+  sequence<any> requiredFeatures;
+  sequence<any> optionalFeatures;
+};
+
+[Exposed=Window]
+interface XRPermissionStatus: PermissionStatus {
+  attribute FrozenArray<any> granted;
 };

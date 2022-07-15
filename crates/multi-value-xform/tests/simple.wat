@@ -85,7 +85,7 @@
   (func $f32 (type 4) (param i32))
   (func $f64 (type 4) (param i32))
   (memory (;0;) 1)
-  (global (;0;) (mut i32) (i32.const 0))
+  (global (;0;) (mut i32) i32.const 0)
   (export "i32" (func $#func0<i32_multivalue_shim>))
   (export "i64" (func $#func1<i64_multivalue_shim>))
   (export "f32" (func $#func2<f32_multivalue_shim>))

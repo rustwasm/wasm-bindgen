@@ -64,6 +64,9 @@ pub struct JsFunction {
     pub js_doc: String,
     pub ts_arg_tys: Vec<String>,
     pub ts_ret_ty: Option<String>,
+    /// Whether this function has a single optional argument.
+    ///
+    /// If the function is a setter, that means that the field it sets is optional.
     pub might_be_optional_field: bool,
     pub catch: bool,
     pub log_error: bool,
@@ -102,6 +105,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
         asyncness: bool,
+        variadic: bool,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -193,7 +197,17 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut code = String::new();
         code.push_str("(");
-        code.push_str(&function_args.join(", "));
+        if variadic {
+            if let Some((last, non_variadic_args)) = function_args.split_last() {
+                code.push_str(&non_variadic_args.join(", "));
+                if non_variadic_args.len() > 0 {
+                    code.push_str(", ");
+                }
+                code.push_str((String::from("...") + last).as_str())
+            }
+        } else {
+            code.push_str(&function_args.join(", "));
+        }
         code.push_str(") {\n");
 
         let mut call = js.prelude;
@@ -227,8 +241,10 @@ impl<'a, 'b> Builder<'a, 'b> {
             &adapter.inner_results,
             &mut might_be_optional_field,
             asyncness,
+            variadic,
         );
-        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty);
+        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic);
+
         Ok(JsFunction {
             code,
             ts_sig,
@@ -253,6 +269,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         result_tys: &[AdapterType],
         might_be_optional_field: &mut bool,
         asyncness: bool,
+        variadic: bool,
     ) -> (String, Vec<String>, Option<String>) {
         // Build up the typescript signature as well
         let mut omittable = true;
@@ -283,7 +300,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         ts_args.reverse();
         ts_arg_tys.reverse();
-        let mut ts = format!("({})", ts_args.join(", "));
+        let mut ts = String::from("(");
+        if variadic {
+            if let Some((last, non_variadic_args)) = ts_args.split_last() {
+                ts.push_str(&non_variadic_args.join(", "));
+                if non_variadic_args.len() > 0 {
+                    ts.push_str(", ");
+                }
+                ts.push_str((String::from("...") + last).as_str())
+            }
+        } else {
+            ts.push_str(&format!("{}", ts_args.join(", ")));
+        };
+        ts.push_str(")");
 
         // If this function is an optional field's setter, it should have only
         // one arg, and omittable should be `true`.
@@ -317,10 +346,22 @@ impl<'a, 'b> Builder<'a, 'b> {
         arg_names: &[String],
         arg_tys: &[&AdapterType],
         ts_ret: &Option<String>,
+        variadic: bool,
     ) -> String {
         let mut ret = String::new();
-        for (name, ty) in arg_names.iter().zip(arg_tys) {
+        let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
+            Some((last, args)) if variadic => (Some(last), args),
+            _ => (None, arg_names),
+        };
+        for (name, ty) in fn_arg_names.iter().zip(arg_tys) {
             ret.push_str("@param {");
+            adapter2ts(ty, &mut ret);
+            ret.push_str("} ");
+            ret.push_str(name);
+            ret.push_str("\n");
+        }
+        if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
+            ret.push_str("@param {...");
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
@@ -453,14 +494,14 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             None => String::new(),
         };
         self.prelude(&format!(
-            "var ptr{i} = {f}({0}, wasm.{malloc}{realloc});",
+            "const ptr{i} = {f}({0}, wasm.{malloc}{realloc});",
             val,
             i = i,
             f = pass,
             malloc = malloc,
             realloc = realloc,
         ));
-        self.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+        self.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
         self.push(format!("ptr{}", i));
         self.push(format!("len{}", i));
         Ok(())
@@ -507,7 +548,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),
                 (false, n) => {
-                    js.prelude(&format!("var ret = {};", call));
+                    js.prelude(&format!("const ret = {};", call));
                     if n == 1 {
                         js.push("ret".to_string());
                     } else {
@@ -596,16 +637,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::LoadRetptr { ty, offset, mem } => {
-            let (mem, size) = match ty {
-                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
-                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
-                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
+            let (mem, quads) = match ty {
+                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 1),
+                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 1),
+                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 2),
                 other => bail!("invalid aggregate return type {:?}", other),
             };
+            let size = quads * 4;
+            // Separate the offset and the scaled offset, because otherwise you don't guarantee
+            // that the variable names will be unique.
+            let scaled_offset = offset / quads;
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
             // here
-            let expr = format!("{}()[retptr / {} + {}]", mem, size, offset);
+            let expr = format!("{}()[retptr / {} + {}]", mem, size, scaled_offset);
             js.prelude(&format!("var r{} = {};", offset, expr));
             js.push(format!("r{}", offset));
         }
@@ -776,13 +821,76 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
             js.prelude(&format!(
-                "var ptr{i} = {f}({0}, wasm.{malloc});",
+                "const ptr{i} = {f}({0}, wasm.{malloc});",
                 val,
                 i = i,
                 f = func,
                 malloc = malloc,
             ));
-            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
+            js.push(format!("ptr{}", i));
+            js.push(format!("len{}", i));
+        }
+
+        Instruction::UnwrapResult { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
+            } else {
+                js.cx.expose_take_object();
+                "takeObject".to_string()
+            };
+            // is_err is popped first. The original layout was: ResultAbi {
+            //    abi: ResultAbiUnion<T>,
+            //    err: u32,
+            //    is_err: u32,
+            // }
+            // So is_err is last to be added to the stack.
+            let is_err = js.pop();
+            let err = js.pop();
+            js.prelude(&format!(
+                "
+                if ({is_err}) {{
+                    throw {take_object}({err});
+                }}
+                ",
+                take_object = take_object,
+                is_err = is_err,
+                err = err,
+            ));
+        }
+
+        Instruction::UnwrapResultString { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
+            } else {
+                js.cx.expose_take_object();
+                "takeObject".to_string()
+            };
+            let is_err = js.pop();
+            let err = js.pop();
+            let len = js.pop();
+            let ptr = js.pop();
+            let i = js.tmp();
+            js.prelude(&format!(
+                "
+                var ptr{i} = {ptr};
+                var len{i} = {len};
+                if ({is_err}) {{
+                    ptr{i} = 0; len{i} = 0;
+                    throw {take_object}({err});
+                }}
+                ",
+                take_object = take_object,
+                is_err = is_err,
+                err = err,
+                i = i,
+                ptr = ptr,
+                len = len,
+            ));
             js.push(format!("ptr{}", i));
             js.push(format!("len{}", i));
         }
@@ -879,10 +987,17 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("{} !== 0", val));
         }
 
-        Instruction::ExternrefLoadOwned => {
-            js.cx.expose_take_object();
+        Instruction::ExternrefLoadOwned { table_and_drop } => {
+            let take_object = if let Some((table, drop)) = *table_and_drop {
+                js.cx
+                    .expose_take_from_externref_table(table, drop)?
+                    .to_string()
+            } else {
+                js.cx.expose_take_object();
+                "takeObject".to_string()
+            };
             let val = js.pop();
-            js.push(format!("takeObject({})", val));
+            js.push(format!("{}({})", take_object, val));
         }
 
         Instruction::StringFromChar => {
@@ -940,12 +1055,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             optional: _,
             mem,
             free,
+            table,
         } => {
             let len = js.pop();
             let ptr = js.pop();
             let tmp = js.tmp();
 
-            let get = js.cx.expose_get_cached_string_from_wasm(*mem)?;
+            let get = js.cx.expose_get_cached_string_from_wasm(*mem, *table)?;
 
             js.prelude(&format!("var v{} = {}({}, {});", tmp, get, ptr, len));
 
@@ -1246,7 +1362,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         | AdapterType::U32
         | AdapterType::F32
         | AdapterType::F64 => dst.push_str("number"),
-        AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("BigInt"),
+        AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("bigint"),
         AdapterType::String => dst.push_str("string"),
         AdapterType::Externref => dst.push_str("any"),
         AdapterType::Bool => dst.push_str("boolean"),

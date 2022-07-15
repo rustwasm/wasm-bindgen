@@ -7,3 +7,8 @@ pub fn greet(_: &str) {}
 pub fn take_and_return_bool(_: bool) -> bool {
     true
 }
+
+#[wasm_bindgen(variadic)]
+pub fn variadic_function(arr: &JsValue) -> JsValue {
+    arr.into()
+}

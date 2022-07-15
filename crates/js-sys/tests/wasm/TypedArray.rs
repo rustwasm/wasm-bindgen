@@ -89,6 +89,18 @@ fn new_fill() {
     each!(test_fill);
 }
 
+macro_rules! test_at {
+    ($arr:ident) => {{
+        let arr = $arr::new(&2.into());
+        arr.set_index(1, 1 as _);
+        assert_eq!(arr.at(-1).unwrap() as f64, 1 as f64);
+    }};
+}
+#[wasm_bindgen_test]
+fn new_at() {
+    each!(test_at);
+}
+
 macro_rules! test_get_set {
     ($arr:ident) => {{
         let arr = $arr::new(&1.into());

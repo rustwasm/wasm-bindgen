@@ -8,7 +8,7 @@ dictionary IDBFileMetadataParameters
   boolean lastModified = true;
 };
 
-[Exposed=(Window,System)]
+[Exposed=Window]
 interface IDBFileHandle : EventTarget
 {
   readonly attribute IDBMutableFile? mutableFile;
@@ -19,7 +19,7 @@ interface IDBFileHandle : EventTarget
   attribute unsigned long long? location;
 
   [Throws]
-  IDBFileRequest? getMetadata(optional IDBFileMetadataParameters parameters);
+  IDBFileRequest? getMetadata(optional IDBFileMetadataParameters parameters = {});
   [Throws]
   IDBFileRequest? readAsArrayBuffer(unsigned long long size);
   [Throws]

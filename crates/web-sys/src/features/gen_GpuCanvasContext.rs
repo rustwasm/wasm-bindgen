@@ -51,18 +51,6 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn get_current_texture(this: &GpuCanvasContext) -> GpuTexture;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuAdapter", feature = "GpuTextureFormat",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUCanvasContext" , js_name = getPreferredFormat)]
-    #[doc = "The `getPreferredFormat()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCanvasContext/getPreferredFormat)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuAdapter`, `GpuCanvasContext`, `GpuTextureFormat`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn get_preferred_format(this: &GpuCanvasContext, adapter: &GpuAdapter) -> GpuTextureFormat;
-    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "GPUCanvasContext" , js_name = unconfigure)]
     #[doc = "The `unconfigure()` method."]
     #[doc = ""]

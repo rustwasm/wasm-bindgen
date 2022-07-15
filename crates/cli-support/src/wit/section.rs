@@ -16,7 +16,7 @@
 //! generating any JS glue. Any JS glue currently generated is also invalid if
 //! the module contains the wasm bindings section and it's actually respected.
 
-use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, Instruction};
+use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, Instruction};
 use crate::wit::{AdapterKind, NonstandardWitSection, WasmBindgenAux};
 use crate::wit::{AuxExport, InstructionData};
 use crate::wit::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
@@ -47,10 +47,12 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         // irrelevant ids used to track various internal intrinsics and such
         externref_table: _,
         externref_alloc: _,
+        externref_drop: _,
         externref_drop_slice: _,
         exn_store: _,
         shadow_stack_pointer: _,
         function_table: _,
+        thread_destroy: _,
     } = *aux;
 
     let adapter_context = |id: AdapterId| {
@@ -243,7 +245,10 @@ fn translate_instruction(
         I32FromStringFirstChar | StringFromChar => {
             bail!("chars aren't supported in wasm interface types");
         }
-        I32FromExternrefOwned | I32FromExternrefBorrow | ExternrefLoadOwned | TableGet => {
+        // Note: if `ExternrefLoadOwned` contained `Some`, this error message wouldn't make sense,
+        // but that can only occur when returning `Result`,
+        // in which case there'll be an earlier `UnwrapResult` instruction and we'll bail before reaching this point.
+        I32FromExternrefOwned | I32FromExternrefBorrow | ExternrefLoadOwned { .. } | TableGet => {
             bail!("externref pass failed to sink into wasm module");
         }
         I32FromExternrefRustOwned { .. }
@@ -274,6 +279,9 @@ fn translate_instruction(
         | OptionEnumFromI32 { .. }
         | Option64FromI32 { .. } => {
             bail!("optional types aren't supported in wasm bindgen");
+        }
+        UnwrapResult { .. } | UnwrapResultString { .. } => {
+            bail!("self-unwrapping result types aren't supported in wasm bindgen");
         }
         MutableSliceToMemory { .. } | VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
             bail!("vector slices aren't supported in wasm interface types yet");
@@ -369,38 +377,22 @@ fn check_standard_export(export: &AuxExport) -> Result<(), Error> {
                 name,
             );
         }
-        AuxExportKind::Getter { class, field, .. } => {
+        AuxExportKind::Method {
+            class, name, kind, ..
+        } => {
+            let kind_name = match kind {
+                AuxExportedMethodKind::Method => "method",
+                AuxExportedMethodKind::Getter => "getter",
+                AuxExportedMethodKind::Setter => "setter",
+            };
+
             bail!(
-                "cannot export `{}::{}` getter function when generating \
-                 a standalone WebAssembly module with no JS glue",
-                class,
-                field,
-            );
-        }
-        AuxExportKind::Setter { class, field, .. } => {
-            bail!(
-                "cannot export `{}::{}` setter function when generating \
-                 a standalone WebAssembly module with no JS glue",
-                class,
-                field,
-            );
-        }
-        AuxExportKind::StaticFunction { class, name } => {
-            bail!(
-                "cannot export `{}::{}` static function when \
+                "cannot export `{}::{}` {} when \
                  generating a standalone WebAssembly module with no \
                  JS glue",
                 class,
-                name
-            );
-        }
-        AuxExportKind::Method { class, name, .. } => {
-            bail!(
-                "cannot export `{}::{}` method when \
-                 generating a standalone WebAssembly module with no \
-                 JS glue",
-                class,
-                name
+                name,
+                kind_name
             );
         }
     }

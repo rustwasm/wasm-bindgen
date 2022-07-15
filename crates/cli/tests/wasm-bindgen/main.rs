@@ -289,7 +289,7 @@ fn omit_default_module_path_target_web() {
         "\
 async function init(input) {
 
-    const imports = {};",
+    const imports = getImports();",
     ));
 }
 
@@ -309,7 +309,7 @@ fn omit_default_module_path_target_no_modules() {
         "\
     async function init(input) {
 
-        const imports = {};",
+        const imports = getImports();",
     ));
 }
 

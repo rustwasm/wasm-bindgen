@@ -70,6 +70,7 @@ pub fn process(module: &mut Module) -> Result<()> {
     aux.externref_table = Some(meta.table);
     if module_needs_externref_metadata(&aux, section) {
         aux.externref_alloc = meta.alloc;
+        aux.externref_drop = meta.drop;
         aux.externref_drop_slice = meta.drop_slice;
     }
 
@@ -108,6 +109,19 @@ pub fn process(module: &mut Module) -> Result<()> {
                 } => {
                     *table_and_alloc = meta.alloc.map(|id| (meta.table, id));
                 }
+
+                Instruction::ExternrefLoadOwned {
+                    ref mut table_and_drop,
+                }
+                | Instruction::UnwrapResult {
+                    ref mut table_and_drop,
+                }
+                | Instruction::UnwrapResultString {
+                    ref mut table_and_drop,
+                } => {
+                    *table_and_drop = meta.drop.map(|id| (meta.table, id));
+                }
+                Instruction::CachedStringLoad { ref mut table, .. } => *table = Some(meta.table),
                 _ => continue,
             };
         }
@@ -167,7 +181,7 @@ fn import_xform(
     while let Some((i, instr)) = iter.next() {
         match instr.instr {
             Instruction::CallAdapter(_) => break,
-            Instruction::ExternrefLoadOwned | Instruction::TableGet => {
+            Instruction::ExternrefLoadOwned { .. } | Instruction::TableGet => {
                 let owned = match instr.instr {
                     Instruction::TableGet => false,
                     _ => true,
@@ -289,13 +303,16 @@ fn export_xform(cx: &mut Context, export: Export, instrs: &mut Vec<InstructionDa
         }
     }
 
-    // If one of the instructions after the call is an `ExternrefLoadOwned` then we
-    // know that the function returned an externref. Currently `&'static Externref`
-    // can't be done as a return value, so this is the only case we handle here.
+    // If one of the instructions after the call is an `ExternrefLoadOwned`,
+    // and a retptr isn't used, the function must return an externref.
+    // Currently `&'static Externref` can't be done as a return value,
+    // so we don't need to handle that possibility.
+    let mut uses_retptr = false;
     let mut ret_externref = false;
     while let Some((i, instr)) = iter.next() {
         match instr.instr {
-            Instruction::ExternrefLoadOwned => {
+            Instruction::LoadRetptr { .. } => uses_retptr = true,
+            Instruction::ExternrefLoadOwned { .. } if !uses_retptr => {
                 ret_externref = true;
                 to_delete.push(i);
             }

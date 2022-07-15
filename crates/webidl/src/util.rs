@@ -7,17 +7,15 @@ use std::ptr;
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
-use syn;
 use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident};
-use weedle;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
 use weedle::common::Identifier;
-use weedle::literal::{ConstValue, FloatLit, IntegerLit};
+use weedle::literal::{ConstValue as ConstValueLit, FloatLit, IntegerLit};
 use weedle::types::{NonAnyType, SingleType};
 
 use crate::constants::IMMUTABLE_SLICE_WHITELIST;
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
-use crate::generator::{InterfaceConstValue, InterfaceMethod, InterfaceMethodKind};
+use crate::generator::{ConstValue, InterfaceMethod, InterfaceMethodKind};
 use crate::idl_type::{IdlType, ToIdlType};
 use crate::Options;
 
@@ -104,20 +102,16 @@ pub(crate) fn array(base_ty: &str, pos: TypePosition, immutable: bool) -> syn::T
 }
 
 /// Map a webidl const value to the correct wasm-bindgen const value
-pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> InterfaceConstValue {
+pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
     use std::f64::{INFINITY, NAN, NEG_INFINITY};
 
     match *v {
-        ConstValue::Boolean(b) => InterfaceConstValue::BooleanLiteral(b.0),
-        ConstValue::Float(FloatLit::NegInfinity(_)) => {
-            InterfaceConstValue::FloatLiteral(NEG_INFINITY)
-        }
-        ConstValue::Float(FloatLit::Infinity(_)) => InterfaceConstValue::FloatLiteral(INFINITY),
-        ConstValue::Float(FloatLit::NaN(_)) => InterfaceConstValue::FloatLiteral(NAN),
-        ConstValue::Float(FloatLit::Value(s)) => {
-            InterfaceConstValue::FloatLiteral(s.0.parse().unwrap())
-        }
-        ConstValue::Integer(lit) => {
+        ConstValueLit::Boolean(b) => ConstValue::BooleanLiteral(b.0),
+        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::FloatLiteral(NEG_INFINITY),
+        ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::FloatLiteral(INFINITY),
+        ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::FloatLiteral(NAN),
+        ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::FloatLiteral(s.0.parse().unwrap()),
+        ConstValueLit::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
                 let (negative, text) = if orig_text.starts_with("-") {
                     (true, &orig_text[1..])
@@ -125,7 +119,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> InterfaceConstValue 
                     (false, orig_text)
                 };
                 if text == "0" {
-                    return InterfaceConstValue::SignedIntegerLiteral(0);
+                    return ConstValue::SignedIntegerLiteral(0);
                 }
                 let text = &text[offset..];
                 let n = u64::from_str_radix(text, base)
@@ -136,9 +130,9 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> InterfaceConstValue 
                     } else {
                         n.wrapping_neg() as i64
                     };
-                    InterfaceConstValue::SignedIntegerLiteral(n)
+                    ConstValue::SignedIntegerLiteral(n)
                 } else {
-                    InterfaceConstValue::UnsignedIntegerLiteral(n)
+                    ConstValue::UnsignedIntegerLiteral(n)
                 }
             };
             match lit {
@@ -147,7 +141,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> InterfaceConstValue 
                 IntegerLit::Dec(h) => mklit(h.0, 10, 0),
             }
         }
-        ConstValue::Null(_) => unimplemented!(),
+        ConstValueLit::Null(_) => unimplemented!(),
     }
 }
 

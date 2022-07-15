@@ -13,6 +13,8 @@ exports.call_exports = async function() {
   await assert.rejects(wasm.async_throw_7(), /7/);
   await assert.rejects(wasm.async_throw_custom(), /\[object Object\]/);
   await assert.rejects(wasm.async_throw_message(), /async message/);
+  await assert.rejects(wasm.async_throw_jserror(), /async message/);
+  await assert.rejects(wasm.async_throw_custom_error(), /custom error/);
 };
 
 exports.call_promise = async function() {

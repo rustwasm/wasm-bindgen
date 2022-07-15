@@ -36,6 +36,7 @@ tys! {
     RUST_STRUCT
     CHAR
     OPTIONAL
+    RESULT
     UNIT
     CLAMPED
 }
@@ -68,6 +69,7 @@ pub enum Descriptor {
     RustStruct(String),
     Char,
     Option(Box<Descriptor>),
+    Result(Box<Descriptor>),
     Unit,
 }
 
@@ -133,6 +135,7 @@ impl Descriptor {
             SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data, clamped))),
             VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data, clamped))),
             OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data, clamped))),
+            RESULT => Descriptor::Result(Box::new(Descriptor::_decode(data, clamped))),
             CACHED_STRING => Descriptor::CachedString,
             STRING => Descriptor::String,
             EXTERNREF => Descriptor::Externref,

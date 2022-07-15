@@ -138,6 +138,82 @@ impl Enum {
     }
 }
 
+pub enum ConstValue {
+    BooleanLiteral(bool),
+    FloatLiteral(f64),
+    SignedIntegerLiteral(i64),
+    UnsignedIntegerLiteral(u64),
+}
+
+impl ConstValue {
+    fn generate(&self) -> TokenStream {
+        use ConstValue::*;
+
+        match self {
+            BooleanLiteral(false) => quote!(false),
+            BooleanLiteral(true) => quote!(true),
+            // the actual type is unknown because of typedefs
+            // so we cannot use std::fxx::INFINITY
+            // but we can use type inference
+            FloatLiteral(f) if f.is_infinite() && f.is_sign_positive() => quote!(1.0 / 0.0),
+            FloatLiteral(f) if f.is_infinite() && f.is_sign_negative() => quote!(-1.0 / 0.0),
+            FloatLiteral(f) if f.is_nan() => quote!(0.0 / 0.0),
+            // again no suffix
+            // panics on +-inf, nan
+            FloatLiteral(f) => {
+                let f = Literal::f64_suffixed(*f);
+                quote!(#f)
+            }
+            SignedIntegerLiteral(i) => {
+                let i = Literal::i64_suffixed(*i);
+                quote!(#i)
+            }
+            UnsignedIntegerLiteral(i) => {
+                let i = Literal::u64_suffixed(*i);
+                quote!(#i)
+            }
+        }
+    }
+}
+
+pub struct Const {
+    pub name: Ident,
+    pub js_name: String,
+    pub ty: syn::Type,
+    pub value: ConstValue,
+    pub unstable: bool,
+}
+
+impl Const {
+    fn generate(
+        &self,
+        options: &Options,
+        parent_name: &Ident,
+        parent_js_name: &str,
+    ) -> TokenStream {
+        let name = &self.name;
+        let ty = &self.ty;
+        let js_name = &self.js_name;
+        let value = self.value.generate();
+        let unstable = self.unstable;
+
+        let unstable_attr = maybe_unstable_attr(unstable);
+        let unstable_docs = maybe_unstable_docs(unstable);
+
+        let doc_comment = comment(
+            format!("The `{}.{}` const.", parent_js_name, js_name),
+            &get_features_doc(options, parent_name.to_string()),
+        );
+
+        quote! {
+            #unstable_attr
+            #doc_comment
+            #unstable_docs
+            pub const #name: #ty = #value as #ty;
+        }
+    }
+}
+
 pub enum InterfaceAttributeKind {
     Getter,
     Setter,
@@ -429,89 +505,13 @@ impl InterfaceMethod {
     }
 }
 
-pub enum InterfaceConstValue {
-    BooleanLiteral(bool),
-    FloatLiteral(f64),
-    SignedIntegerLiteral(i64),
-    UnsignedIntegerLiteral(u64),
-}
-
-impl InterfaceConstValue {
-    fn generate(&self) -> TokenStream {
-        use InterfaceConstValue::*;
-
-        match self {
-            BooleanLiteral(false) => quote!(false),
-            BooleanLiteral(true) => quote!(true),
-            // the actual type is unknown because of typedefs
-            // so we cannot use std::fxx::INFINITY
-            // but we can use type inference
-            FloatLiteral(f) if f.is_infinite() && f.is_sign_positive() => quote!(1.0 / 0.0),
-            FloatLiteral(f) if f.is_infinite() && f.is_sign_negative() => quote!(-1.0 / 0.0),
-            FloatLiteral(f) if f.is_nan() => quote!(0.0 / 0.0),
-            // again no suffix
-            // panics on +-inf, nan
-            FloatLiteral(f) => {
-                let f = Literal::f64_suffixed(*f);
-                quote!(#f)
-            }
-            SignedIntegerLiteral(i) => {
-                let i = Literal::i64_suffixed(*i);
-                quote!(#i)
-            }
-            UnsignedIntegerLiteral(i) => {
-                let i = Literal::u64_suffixed(*i);
-                quote!(#i)
-            }
-        }
-    }
-}
-
-pub struct InterfaceConst {
-    pub name: Ident,
-    pub js_name: String,
-    pub ty: syn::Type,
-    pub value: InterfaceConstValue,
-    pub unstable: bool,
-}
-
-impl InterfaceConst {
-    fn generate(
-        &self,
-        options: &Options,
-        parent_name: &Ident,
-        parent_js_name: &str,
-    ) -> TokenStream {
-        let name = &self.name;
-        let ty = &self.ty;
-        let js_name = &self.js_name;
-        let value = self.value.generate();
-        let unstable = self.unstable;
-
-        let unstable_attr = maybe_unstable_attr(unstable);
-        let unstable_docs = maybe_unstable_docs(unstable);
-
-        let doc_comment = comment(
-            format!("The `{}.{}` const.", parent_js_name, js_name),
-            &get_features_doc(options, parent_name.to_string()),
-        );
-
-        quote! {
-            #unstable_attr
-            #doc_comment
-            #unstable_docs
-            pub const #name: #ty = #value as #ty;
-        }
-    }
-}
-
 pub struct Interface {
     pub name: Ident,
     pub js_name: String,
     pub deprecated: Option<String>,
     pub has_interface: bool,
     pub parents: Vec<Ident>,
-    pub consts: Vec<InterfaceConst>,
+    pub consts: Vec<Const>,
     pub attributes: Vec<InterfaceAttribute>,
     pub methods: Vec<InterfaceMethod>,
     pub unstable: bool,
@@ -883,7 +883,9 @@ impl Function {
 pub struct Namespace {
     pub name: Ident,
     pub js_name: String,
+    pub consts: Vec<Const>,
     pub functions: Vec<Function>,
+    pub unstable: bool,
 }
 
 impl Namespace {
@@ -891,24 +893,46 @@ impl Namespace {
         let Namespace {
             name,
             js_name,
+            consts,
             functions,
+            unstable,
         } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
 
         let functions = functions
             .into_iter()
             .map(|x| x.generate(options, &name, js_name.to_string()))
             .collect::<Vec<_>>();
 
+        let functions = if functions.is_empty() {
+            None
+        } else {
+            Some(quote! {
+                #[wasm_bindgen]
+                extern "C" {
+                    #(#functions)*
+                }
+            })
+        };
+
+        let consts = consts
+            .into_iter()
+            .map(|x| x.generate(options, &name, js_name))
+            .collect::<Vec<_>>();
+
         quote! {
+            #unstable_attr
+            #unstable_docs
             pub mod #name {
                 #![allow(unused_imports)]
                 use super::super::*;
                 use wasm_bindgen::prelude::*;
 
-                #[wasm_bindgen]
-                extern "C" {
-                    #(#functions)*
-                }
+                #(#consts)*
+
+                #functions
             }
         }
     }

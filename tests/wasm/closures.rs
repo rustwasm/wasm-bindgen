@@ -1,5 +1,4 @@
-#![cfg(feature = "nightly")]
-
+use js_sys::Number;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
@@ -46,6 +45,10 @@ extern "C" {
     #[wasm_bindgen(js_name = many_arity_call9)]
     fn many_arity_call_mut9(a: &Closure<dyn FnMut(u32, u32, u32, u32, u32, u32, u32, u32)>);
 
+    fn option_call1(a: Option<&Closure<dyn Fn()>>);
+    fn option_call2(a: Option<&Closure<dyn FnMut(u32) -> u32>>) -> u32;
+    fn option_call3(a: Option<&Closure<dyn Fn()>>) -> bool;
+
     #[wasm_bindgen(js_name = many_arity_call1)]
     fn many_arity_stack1(a: &dyn Fn());
     #[wasm_bindgen(js_name = many_arity_call2)]
@@ -68,6 +71,10 @@ extern "C" {
     fn long_lived_dropping_cache(a: &Closure<dyn Fn()>);
     #[wasm_bindgen(catch)]
     fn long_lived_dropping_call() -> Result<(), JsValue>;
+
+    fn long_lived_option_dropping_cache(a: Option<&Closure<dyn Fn()>>) -> bool;
+    #[wasm_bindgen(catch)]
+    fn long_lived_option_dropping_call() -> Result<(), JsValue>;
 
     fn long_fnmut_recursive_cache(a: &Closure<dyn FnMut()>);
     #[wasm_bindgen(catch)]
@@ -111,6 +118,11 @@ extern "C" {
 
     fn js_store_forgotten_closure(closure: &Closure<dyn Fn()>);
     fn js_call_forgotten_closure();
+
+    #[wasm_bindgen(js_name = many_arity_call2)]
+    fn externref_call(a: &Closure<dyn Fn(JsValue)>);
+    #[wasm_bindgen(js_name = many_arity_call2)]
+    fn named_externref_call(a: &Closure<dyn Fn(Number)>);
 }
 
 #[wasm_bindgen_test]
@@ -235,6 +247,29 @@ fn many_arity() {
     );
 }
 
+#[wasm_bindgen_test]
+fn option() {
+    let hit = Rc::new(Cell::new(false));
+    let hit2 = hit.clone();
+    let a = Closure::new(move || hit2.set(true));
+    assert!(!hit.get());
+    option_call1(Some(&a));
+    assert!(hit.get());
+
+    let hit = Rc::new(Cell::new(false));
+    {
+        let hit = hit.clone();
+        let a = Closure::new(move |x| {
+            hit.set(true);
+            x + 3
+        });
+        assert_eq!(option_call2(Some(&a)), 5);
+    }
+    assert!(hit.get());
+
+    assert!(option_call3(None));
+}
+
 struct Dropper(Rc<Cell<bool>>);
 impl Drop for Dropper {
     fn drop(&mut self) {
@@ -298,6 +333,24 @@ fn long_lived_dropping() {
     assert!(hit.get());
     drop(a);
     assert!(long_lived_dropping_call().is_err());
+}
+
+#[wasm_bindgen_test]
+fn long_lived_option_dropping() {
+    let hit = Rc::new(Cell::new(false));
+    let hit2 = hit.clone();
+
+    let a = Closure::new(move || hit2.set(true));
+
+    assert!(!long_lived_option_dropping_cache(None));
+    assert!(long_lived_option_dropping_cache(Some(&a)));
+
+    assert!(!hit.get());
+    assert!(long_lived_option_dropping_call().is_ok());
+    assert!(hit.get());
+
+    drop(a);
+    assert!(long_lived_option_dropping_call().is_err());
 }
 
 #[wasm_bindgen_test]
@@ -583,4 +636,10 @@ fn forget_works() {
     js_store_forgotten_closure(&a);
     a.forget();
     js_call_forgotten_closure();
+}
+
+#[wasm_bindgen_test]
+fn named_externref_no_duplicate_adapter() {
+    externref_call(&Closure::new(|a| assert_eq!(a, 1)));
+    named_externref_call(&Closure::new(|a| assert_eq!(a, 1)));
 }

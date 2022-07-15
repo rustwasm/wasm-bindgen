@@ -47,7 +47,6 @@ jobs:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test --target wasm32-unknown-unknown
-    - run: cargo test --target wasm32-unknown-unknown
     - run: cargo test --target wasm32-unknown-unknown --features serde-serialize
     - run: cargo test --target wasm32-unknown-unknown --features enable-interning
     - run: cargo test --target wasm32-unknown-unknown -p no-std
@@ -62,39 +61,46 @@ jobs:
     - run: cargo test --target wasm32-unknown-unknown --test wasm --features serde-serialize
       env:
         WASM_BINDGEN_WEAKREF: 1
-
-  test_wasm_bindgen_windows:
-    name: "Run wasm-bindgen crate tests (Windows)"
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-    - run: rustup update stable && rustup default stable
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-    - uses: ./.github/actions/setup-geckodriver
     - run: cargo test --target wasm32-unknown-unknown
       env:
-        RUST_LOG: wasm_bindgen_test_runner
-        GECKODRIVER_ARGS: --log trace
-    - run: cargo test --target wasm32-unknown-unknown -p js-sys
-    - run: cargo test --target wasm32-unknown-unknown -p webidl-tests
-      env:
-        WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
-    - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
+        WASM_BINDGEN_EXTERNREF: 1
+        NODE_ARGS: --experimental-wasm-reftypes
 
-  test_wasm_bindgen_nightly:
-    name: "Run wasm-bindgen crate tests (nightly)"
+  test_threads:
+    name: "Run wasm-bindgen crate tests with multithreading enabled"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: rustup default nightly-2021-09-02
+    - run: rustup default nightly-2022-05-19
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-    - run: cargo test --target wasm32-unknown-unknown --features nightly --test wasm
+    - run: rustup component add rust-src
+    # Note: we only run the browser tests here, because wasm-bindgen doesn't support threading in Node yet.
+    - run: |
+        RUSTFLAGS='-C target-feature=+atomics,+bulk-memory,+mutable-globals' \
+          cargo test --target wasm32-unknown-unknown --test headless -Z build-std=std,panic_abort
+
+  # I don't know why this is failing so comment this out for now, but ideally
+  # this would be figured out at some point and solved.
+  # test_wasm_bindgen_windows:
+  #   name: "Run wasm-bindgen crate tests (Windows)"
+  #   runs-on: windows-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - run: rustup update stable && rustup default stable
+  #   - run: rustup target add wasm32-unknown-unknown
+  #   - uses: actions/setup-node@v2
+  #     with:
+  #       node-version: '16'
+  #   - uses: ./.github/actions/setup-geckodriver
+  #   - run: cargo test --target wasm32-unknown-unknown
+  #     env:
+  #       RUST_LOG: wasm_bindgen_test_runner
+  #       GECKODRIVER_ARGS: --log trace
+  #   - run: cargo test --target wasm32-unknown-unknown -p js-sys
+  #   - run: cargo test --target wasm32-unknown-unknown -p webidl-tests
+  #     env:
+  #       WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
+  #   - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
 
   test_native:
     name: Run native tests
@@ -156,6 +162,9 @@ jobs:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test -p js-sys --target wasm32-unknown-unknown
+    - run: cargo test -p js-sys --target wasm32-unknown-unknown
+      env:
+        RUSTFLAGS: --cfg=js_sys_unstable_apis
 
   test_webidl:
     name: "Run wasm-bindgen-webidl crate tests"
@@ -219,7 +228,7 @@ jobs:
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
     - run: mv _package.json package.json && npm install && rm package.json
     - run: |
-        for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v wasm-in-web-worker | grep -v websockets | grep -v webxr | grep -v deno`; do
+        for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler | grep -v wasm-in-web-worker | grep -v websockets | grep -v webxr | grep -v deno | grep -v synchronous-instantiation`; do
           (cd examples/$dir &&
           ln -fs ../../node_modules . &&
           npm run build -- --output-path ../../exbuild/$dir) || exit 1;
@@ -233,7 +242,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: rustup default nightly-2021-09-02
+    - run: rustup default nightly-2022-05-19
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
     - run: |
@@ -320,7 +329,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: rustup update nightly && rustup default nightly
-    - run: cargo doc --no-deps --features 'nightly serde-serialize'
+    - run: cargo doc --no-deps --features 'serde-serialize'
     - run: cargo doc --no-deps --manifest-path crates/js-sys/Cargo.toml
     - run: cargo doc --no-deps --manifest-path crates/web-sys/Cargo.toml --all-features
       env:

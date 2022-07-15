@@ -135,6 +135,7 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Function(_) |
             Descriptor::Closure(_) |
 
+            Descriptor::Result(_) |
             // Always behind a `Ref`
             Descriptor::Slice(_) => bail!(
                 "unsupported argument type for calling Rust function from JS: {:?}",

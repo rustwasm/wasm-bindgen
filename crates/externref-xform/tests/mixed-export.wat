@@ -43,6 +43,6 @@
     i32.const 0)
   (func $a (type 1) (param f32 i32 i64 i32 i32))
   (table (;0;) 32 externref)
-  (global (;0;) (mut i32) (i32.const 32))
+  (global (;0;) (mut i32) i32.const 32)
   (export "a" (func $#func0<a_externref_shim>)))
 ;)

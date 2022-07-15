@@ -53,4 +53,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioTrack`*"]
     pub fn set_enabled(this: &AudioTrack, value: bool);
+    #[cfg(feature = "SourceBuffer")]
+    # [wasm_bindgen (structural , method , getter , js_class = "AudioTrack" , js_name = sourceBuffer)]
+    #[doc = "Getter for the `sourceBuffer` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioTrack/sourceBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioTrack`, `SourceBuffer`*"]
+    pub fn source_buffer(this: &AudioTrack) -> Option<SourceBuffer>;
 }

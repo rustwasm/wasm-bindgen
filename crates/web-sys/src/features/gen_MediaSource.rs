@@ -77,20 +77,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn set_onsourceended(this: &MediaSource, value: Option<&::js_sys::Function>);
-    # [wasm_bindgen (structural , method , getter , js_class = "MediaSource" , js_name = onsourceclosed)]
-    #[doc = "Getter for the `onsourceclosed` field of this object."]
+    # [wasm_bindgen (structural , method , getter , js_class = "MediaSource" , js_name = onsourceclose)]
+    #[doc = "Getter for the `onsourceclose` field of this object."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceclosed)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
-    pub fn onsourceclosed(this: &MediaSource) -> Option<::js_sys::Function>;
-    # [wasm_bindgen (structural , method , setter , js_class = "MediaSource" , js_name = onsourceclosed)]
-    #[doc = "Setter for the `onsourceclosed` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceclosed)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceclose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
-    pub fn set_onsourceclosed(this: &MediaSource, value: Option<&::js_sys::Function>);
+    pub fn onsourceclose(this: &MediaSource) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "MediaSource" , js_name = onsourceclose)]
+    #[doc = "Setter for the `onsourceclose` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/onsourceclose)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
+    pub fn set_onsourceclose(this: &MediaSource, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "MediaSource")]
     #[doc = "The `new MediaSource(..)` constructor, creating a new instance of `MediaSource`."]
     #[doc = ""]

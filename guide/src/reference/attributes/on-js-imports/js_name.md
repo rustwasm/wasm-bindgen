@@ -77,7 +77,7 @@ Could be accessed using this definition in Rust:
 ```rust
 #[wasm_bindgen(module = "bar")]
 extern "C" {
-    #[wasm_bindgen(js_name = default)
+    #[wasm_bindgen(js_name = default)]
     type Foo;
     #[wasm_bindgen(constructor, js_class = default)]
     pub fn new() -> Foo;

@@ -5,7 +5,7 @@
 [online]: https://wasm-bindgen.netlify.app/exbuild/raytrace-parallel/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/raytrace-parallel
 
-This is an of using threads with WebAssembly, Rust, and `wasm-bindgen`,
+This is an example of using threads with WebAssembly, Rust, and `wasm-bindgen`,
 culminating in a parallel raytracer demo. There's a number of moving pieces to
 this demo and it's unfortunately not the easiest thing to wrangle, but it's
 hoped that this'll give you a bit of a taste of what it's like to use threads
@@ -86,13 +86,16 @@ improvements to be made so if you have an idea please file an issue!
 
 * There is no standard notion of a "thread". For example the standard library
   has no viable route to implement the `std::thread` module. As a consequence
-  there is no concept of thread exit and TLS destructors will never run. With no
-  concept of a thread exit thread stacks will also never be deallocated.
-  Currently the intention is that with threaded wasm a pool of threads will be
-  used but that pool is initialized once and never changes over time, since
-  resources are never reclaimed from it. Much of this has to do with the
-  `#[wasm_bindgen]`-specific handling of threads. You can get more advanced, but
-  at that point you may have to not use `wasm-bindgen` as well.
+  there is no concept of thread exit and TLS destructors will never run.
+  We do expose a helper, `__wbindgen_thread_destroy`, that deallocates
+  the thread stack and TLS. If you invoke it, it *must* be the last function
+  you invoke from the wasm module for a given thread.
+
+* Any thread launched after the first one _might attempt to block_ implicitly
+  in its initialization routine. This is a constraint introduced by the way
+  we set up the space for thread stacks and TLS. This means that if you attempt
+  to run a wasm module in the main thread _after_ you are already running it
+  in a worker, it might fail.
 
 * Web Workers executing WebAssembly code cannot receive events from JS. A Web
   Worker has to fully return back to the browser (and ideally should do so

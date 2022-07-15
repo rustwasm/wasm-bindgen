@@ -34,6 +34,6 @@
     global.set 0)
   (func $foo (type 1) (param i32))
   (memory (;0;) 1)
-  (global (;0;) (mut i32) (i32.const 0))
+  (global (;0;) (mut i32) i32.const 0)
   (export "foo" (func $#func0<foo_multivalue_shim>)))
 ;)

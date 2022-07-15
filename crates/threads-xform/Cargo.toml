@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-threads-xform"
-version = "0.2.78"
+version = "0.2.81"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/threads-xform"
@@ -14,4 +14,14 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0"
 walrus = "0.19.0"
-wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.78" }
+wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.81" }
+
+[dev-dependencies]
+rayon = "1.0"
+wasmprinter = "0.2"
+wasmparser = "0.82"
+wat = "1.0"
+
+[[test]]
+name = "all"
+harness = false

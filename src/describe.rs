@@ -3,7 +3,7 @@
 
 #![doc(hidden)]
 
-use crate::{Clamped, JsValue};
+use crate::{Clamped, JsError, JsValue};
 use cfg_if::cfg_if;
 
 macro_rules! tys {
@@ -42,6 +42,7 @@ tys! {
     RUST_STRUCT
     CHAR
     OPTIONAL
+    RESULT
     UNIT
     CLAMPED
 }
@@ -170,11 +171,10 @@ impl WasmDescribe for () {
     }
 }
 
-// Note that this is only for `ReturnWasmAbi for Result<T, JsValue>`, which
-// throws the result, so we only need to inform about the `T`.
-impl<T: WasmDescribe> WasmDescribe for Result<T, JsValue> {
+impl<T: WasmDescribe, E: Into<JsValue>> WasmDescribe for Result<T, E> {
     fn describe() {
-        T::describe()
+        inform(RESULT);
+        T::describe();
     }
 }
 
@@ -182,5 +182,11 @@ impl<T: WasmDescribe> WasmDescribe for Clamped<T> {
     fn describe() {
         inform(CLAMPED);
         T::describe();
+    }
+}
+
+impl WasmDescribe for JsError {
+    fn describe() {
+        JsValue::describe();
     }
 }

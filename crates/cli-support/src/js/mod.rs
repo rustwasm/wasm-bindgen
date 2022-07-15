@@ -1,6 +1,8 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
-use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
+use crate::wit::{
+    Adapter, AdapterId, AdapterJsImportKind, AuxExportedMethodKind, AuxReceiverKind, AuxValue,
+};
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
@@ -9,6 +11,7 @@ use anyhow::{anyhow, bail, Context as _, Error};
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
+use std::fmt::Write;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
@@ -49,9 +52,12 @@ pub struct Context<'a> {
     /// they're defined in as well as their version specification.
     pub npm_dependencies: HashMap<String, (PathBuf, String)>,
 
-    /// A mapping of a index for memories as we see them. Used in function
-    /// names.
-    memory_indices: HashMap<MemoryId, usize>,
+    /// A mapping from the memory IDs as we see them to an index for that memory,
+    /// used in function names, as well as all the kinds of views we've created
+    /// of that memory.
+    ///
+    /// `BTreeMap` and `BTreeSet` are used to make the ordering deterministic.
+    memories: BTreeMap<MemoryId, (usize, BTreeSet<&'static str>)>,
     table_indices: HashMap<TableId, usize>,
 
     /// A flag to track if the stack pointer setter shim has been injected.
@@ -62,16 +68,19 @@ pub struct Context<'a> {
 pub struct ExportedClass {
     comments: String,
     contents: String,
+    /// The TypeScript for the class's methods.
     typescript: String,
+    /// Whether TypeScript for this class should be emitted (i.e., `skip_typescript` wasn't specified).
+    generate_typescript: bool,
     has_constructor: bool,
     wrap_needed: bool,
     /// Whether to generate helper methods for inspecting the class
     is_inspectable: bool,
     /// All readable properties of the class
     readable_properties: Vec<String>,
-    /// Map from field name to type as a string, docs plus whether it has a setter
-    /// and it is optional
-    typescript_fields: HashMap<String, (String, String, bool, bool)>,
+    /// Map from field name to type as a string, docs plus whether it has a setter,
+    /// whether it's optional and whether it's static.
+    typescript_fields: HashMap<String, (String, String, bool, bool, bool)>,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -101,7 +110,7 @@ impl<'a> Context<'a> {
             next_export_idx: 0,
             wit,
             aux,
-            memory_indices: Default::default(),
+            memories: Default::default(),
             table_indices: Default::default(),
             stack_pointer_shim_injected: false,
         })
@@ -334,7 +343,6 @@ impl<'a> Context<'a> {
                     break
                 default:
                     throw new Error(`Unsupported protocol: ${{wasm_url.protocol}}`);
-                    break
             }}
 
             const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
@@ -401,7 +409,7 @@ impl<'a> Context<'a> {
                 );
 
                 if needs_manual_start {
-                    footer.push_str("wasm.__wbindgen_start();\n");
+                    footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
@@ -412,8 +420,10 @@ impl<'a> Context<'a> {
 
                 footer.push_str(&self.generate_deno_wasm_loading(module_name));
 
+                footer.push_str("\n\n");
+
                 if needs_manual_start {
-                    footer.push_str("wasm.__wbindgen_start();\n");
+                    footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
@@ -445,6 +455,7 @@ impl<'a> Context<'a> {
                         footer.push_str(";\n");
                     }
                 }
+
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
                 }
@@ -457,7 +468,8 @@ impl<'a> Context<'a> {
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
-                footer.push_str("export default init;\n");
+                footer.push_str("export { initSync }\n");
+                footer.push_str("export default init;");
             }
         }
 
@@ -594,12 +606,29 @@ impl<'a> Context<'a> {
         // So using "declare" everywhere for at least the NoModules option.
         // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
         let setup_function_declaration;
+        let mut sync_init_function = String::new();
         let declare_or_export;
         if self.config.mode.no_modules() {
             declare_or_export = "declare";
             setup_function_declaration = "declare function wasm_bindgen";
         } else {
             declare_or_export = "export";
+
+            sync_init_function.push_str(&format!("\
+                /**\n\
+                * Synchronously compiles the given `bytes` and instantiates the WebAssembly module.\n\
+                *\n\
+                * @param {{BufferSource}} bytes\n\
+                {memory_doc}\
+                *\n\
+                * @returns {{InitOutput}}\n\
+                */\n\
+                export function initSync(bytes: BufferSource{memory_param}): InitOutput;\n\n\
+                ",
+                memory_doc = memory_doc,
+                memory_param = memory_param
+            ));
+
             setup_function_declaration = "export default function init";
         }
         Ok(format!(
@@ -609,6 +638,7 @@ impl<'a> Context<'a> {
             {declare_or_export} interface InitOutput {{\n\
             {output}}}\n\
             \n\
+            {sync_init_function}\
             /**\n\
             * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
             * for everything else, calls `WebAssembly.instantiate` directly.\n\
@@ -622,6 +652,7 @@ impl<'a> Context<'a> {
                 (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
             memory_doc, arg_optional, memory_param,
             output = output,
+            sync_init_function = sync_init_function,
             declare_or_export = declare_or_export,
             setup_function_declaration = setup_function_declaration,
         ))
@@ -690,11 +721,11 @@ impl<'a> Context<'a> {
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
         let mut imports_init = String::new();
-        if self.wasm_import_definitions.len() > 0 {
-            imports_init.push_str("imports.");
-            imports_init.push_str(module_name);
-            imports_init.push_str(" = {};\n");
-        }
+
+        imports_init.push_str("imports.");
+        imports_init.push_str(module_name);
+        imports_init.push_str(" = {};\n");
+
         for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
@@ -734,6 +765,22 @@ impl<'a> Context<'a> {
             imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
         }
 
+        let mut init_memviews = String::new();
+        for &(num, ref views) in self.memories.values() {
+            for kind in views {
+                writeln!(
+                    init_memviews,
+                    // Reset the memory views to empty in case `init` gets called multiple times.
+                    // Without this, the `length = 0` check would never detect that the view was
+                    // outdated.
+                    "cached{kind}Memory{num} = new {kind}Array();",
+                    kind = kind,
+                    num = num,
+                )
+                .unwrap()
+            }
+        }
+
         let js = format!(
             "\
                 async function load(module, imports) {{
@@ -771,28 +818,54 @@ impl<'a> Context<'a> {
                     }}
                 }}
 
-                async function init(input{init_memory_arg}) {{
-                    {default_module_path}
+                function getImports() {{
                     const imports = {{}};
                     {imports_init}
+                    return imports;
+                }}
+
+                function initMemory(imports, maybe_memory) {{
+                    {init_memory}
+                }}
+
+                function finalizeInit(instance, module) {{
+                    wasm = instance.exports;
+                    init.__wbindgen_wasm_module = module;
+                    {init_memviews}
+                    {start}
+                    return wasm;
+                }}
+
+                function initSync(bytes{init_memory_arg}) {{
+                    const imports = getImports();
+
+                    initMemory(imports{init_memory_arg});
+
+                    const module = new WebAssembly.Module(bytes);
+                    const instance = new WebAssembly.Instance(module, imports);
+
+                    return finalizeInit(instance, module);
+                }}
+
+                async function init(input{init_memory_arg}) {{
+                    {default_module_path}
+                    const imports = getImports();
 
                     if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
                         input = fetch(input);
                     }}
 
-                    {init_memory}
+                    initMemory(imports{init_memory_arg});
 
                     const {{ instance, module }} = await load(await input, imports);
 
-                    wasm = instance.exports;
-                    init.__wbindgen_wasm_module = module;
-                    {start}
-                    return wasm;
+                    return finalizeInit(instance, module);
                 }}
             ",
             init_memory_arg = init_memory_arg,
             default_module_path = default_module_path,
             init_memory = init_memory,
+            init_memviews = init_memviews,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
             } else {
@@ -928,9 +1001,12 @@ impl<'a> Context<'a> {
         let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
         fields.sort(); // make sure we have deterministic output
         for name in fields {
-            let (ty, docs, has_setter, is_optional) = &class.typescript_fields[name];
+            let (ty, docs, has_setter, is_optional, is_static) = &class.typescript_fields[name];
             ts_dst.push_str(docs);
             ts_dst.push_str("  ");
+            if *is_static {
+                ts_dst.push_str("static ");
+            }
             if !has_setter {
                 ts_dst.push_str("readonly ");
             }
@@ -947,8 +1023,11 @@ impl<'a> Context<'a> {
         ts_dst.push_str("}\n");
 
         self.export(&name, &dst, Some(&class.comments))?;
-        self.typescript.push_str(&class.comments);
-        self.typescript.push_str(&ts_dst);
+
+        if class.generate_typescript {
+            self.typescript.push_str(&class.comments);
+            self.typescript.push_str(&ts_dst);
+        }
 
         Ok(())
     }
@@ -1066,7 +1145,7 @@ impl<'a> Context<'a> {
 
         let mem = self.expose_uint8_memory(memory);
         let ret = MemView {
-            name: "passStringToWasm",
+            name: "passStringToWasm".into(),
             num: mem.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1231,7 +1310,7 @@ impl<'a> Context<'a> {
     fn expose_pass_array_jsvalue_to_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
         let mem = self.expose_uint32_memory(memory);
         let ret = MemView {
-            name: "passArrayJsValueToWasm",
+            name: "passArrayJsValueToWasm".into(),
             num: mem.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1286,7 +1365,7 @@ impl<'a> Context<'a> {
         size: usize,
     ) -> Result<MemView, Error> {
         let ret = MemView {
-            name,
+            name: name.into(),
             num: view.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1360,7 +1439,7 @@ impl<'a> Context<'a> {
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("let cached{0} = new {0}{1};", s, args))
+                self.global(&format!("const cached{0} = new {0}{1};", s, args))
             }
         };
 
@@ -1371,7 +1450,7 @@ impl<'a> Context<'a> {
         self.expose_text_decoder()?;
         let mem = self.expose_uint8_memory(memory);
         let ret = MemView {
-            name: "getStringFromWasm",
+            name: "getStringFromWasm".into(),
             num: mem.num,
         };
 
@@ -1401,12 +1480,21 @@ impl<'a> Context<'a> {
         Ok(ret)
     }
 
-    fn expose_get_cached_string_from_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
-        self.expose_get_object();
-        let get = self.expose_get_string_from_wasm(memory)?;
+    fn expose_get_cached_string_from_wasm(
+        &mut self,
+        memory: MemoryId,
+        table: Option<TableId>,
+    ) -> Result<MemView, Error> {
+        let get_object = if let Some(table) = table {
+            self.expose_get_from_externref_table(table)?.to_string()
+        } else {
+            self.expose_get_object();
+            "getObject".to_string()
+        };
+        let get_string = self.expose_get_string_from_wasm(memory)?;
         let ret = MemView {
-            name: "getCachedStringFromWasm",
-            num: get.num,
+            name: "getCachedStringFromWasm".into(),
+            num: get_string.num,
         };
 
         if !self.should_write_global(ret.to_string()) {
@@ -1423,15 +1511,17 @@ impl<'a> Context<'a> {
         // the fact that `getObject(0)` is guaranteed to be `undefined`.
         self.global(&format!(
             "
-            function {}(ptr, len) {{
+            function {name}(ptr, len) {{
                 if (ptr === 0) {{
-                    return getObject(len);
+                    return {get_object}(len);
                 }} else {{
-                    return {}(ptr, len);
+                    return {get_string}(ptr, len);
                 }}
             }}
             ",
-            ret, get,
+            name = ret,
+            get_string = get_string,
+            get_object = get_object
         ));
         Ok(ret)
     }
@@ -1439,7 +1529,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_js_value_from_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
         let mem = self.expose_uint32_memory(memory);
         let ret = MemView {
-            name: "getArrayJsValueFromWasm",
+            name: "getArrayJsValueFromWasm".into(),
             num: mem.num,
         };
         if !self.should_write_global(ret.to_string()) {
@@ -1543,7 +1633,7 @@ impl<'a> Context<'a> {
 
     fn arrayget(&mut self, name: &'static str, view: MemView, size: usize) -> MemView {
         let ret = MemView {
-            name,
+            name: name.into(),
             num: view.num,
         };
         if !self.should_write_global(name) {
@@ -1563,47 +1653,47 @@ impl<'a> Context<'a> {
     }
 
     fn expose_int8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt8Memory", "new Int8Array", memory)
+        self.memview("Int8", memory)
     }
 
     fn expose_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint8Memory", "new Uint8Array", memory)
+        self.memview("Uint8", memory)
     }
 
     fn expose_clamped_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint8ClampedMemory", "new Uint8ClampedArray", memory)
+        self.memview("Uint8Clamped", memory)
     }
 
     fn expose_int16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt16Memory", "new Int16Array", memory)
+        self.memview("Int16", memory)
     }
 
     fn expose_uint16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint16Memory", "new Uint16Array", memory)
+        self.memview("Uint16", memory)
     }
 
     fn expose_int32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt32Memory", "new Int32Array", memory)
+        self.memview("Int32", memory)
     }
 
     fn expose_uint32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint32Memory", "new Uint32Array", memory)
+        self.memview("Uint32", memory)
     }
 
     fn expose_int64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getInt64Memory", "new BigInt64Array", memory)
+        self.memview("BigInt64", memory)
     }
 
     fn expose_uint64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getUint64Memory", "new BigUint64Array", memory)
+        self.memview("BigUint64", memory)
     }
 
     fn expose_f32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getFloat32Memory", "new Float32Array", memory)
+        self.memview("Float32", memory)
     }
 
     fn expose_f64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("getFloat64Memory", "new Float64Array", memory)
+        self.memview("Float64", memory)
     }
 
     fn memview_function(&mut self, t: VectorKind, memory: MemoryId) -> MemView {
@@ -1625,39 +1715,72 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn memview(&mut self, name: &'static str, js: &str, memory: walrus::MemoryId) -> MemView {
-        let view = self.memview_memory(name, memory);
-        if !self.should_write_global(name.to_string()) {
+    fn memview(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
+        let view = self.memview_memory(kind, memory);
+        if !self.should_write_global(view.name.clone()) {
             return view;
         }
         let mem = self.export_name_of(memory);
+
+        let cache = format!("cached{}Memory{}", kind, view.num);
+        let resized_check = if self.module.memories.get(memory).shared {
+            // When it's backed by a `SharedArrayBuffer`, growing the wasm module's memory
+            // doesn't detach old references; instead, it just leaves them pointing to a
+            // slice of the up-to-date memory. So in order to check if it's been grown, we
+            // have to compare it to the up-to-date buffer.
+            format!(
+                "{cache}.buffer !== wasm.{mem}.buffer",
+                cache = cache,
+                mem = mem
+            )
+        } else {
+            // Otherwise, we can do a quicker check of whether the buffer's been detached,
+            // which is indicated by a length of 0.
+            format!("{cache}.byteLength === 0", cache = cache)
+        };
+
+        // Initialize the cache to an empty array, which will trigger the resized check
+        // on the first call and initialise the view.
+        self.global(&format!("let {cache} = new {kind}Array();\n"));
+
         self.global(&format!(
             "
-            let cache{name} = null;
             function {name}() {{
-                if (cache{name} === null || cache{name}.buffer !== wasm.{mem}.buffer) {{
-                    cache{name} = {js}(wasm.{mem}.buffer);
+                if ({resized_check}) {{
+                    {cache} = new {kind}Array(wasm.{mem}.buffer);
                 }}
-                return cache{name};
+                return {cache};
             }}
             ",
             name = view,
-            js = js,
+            cache = cache,
+            resized_check = resized_check,
+            kind = kind,
             mem = mem,
         ));
         return view;
     }
 
-    fn memview_memory(&mut self, name: &'static str, memory: walrus::MemoryId) -> MemView {
-        let next = self.memory_indices.len();
-        let num = *self.memory_indices.entry(memory).or_insert(next);
-        MemView { name, num }
+    fn memview_memory(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
+        let next = self.memories.len();
+        let &mut (num, ref mut kinds) = self
+            .memories
+            .entry(memory)
+            .or_insert((next, Default::default()));
+        kinds.insert(kind);
+        MemView {
+            name: format!("get{}Memory", kind).into(),
+            num,
+        }
     }
 
     fn memview_table(&mut self, name: &'static str, table: walrus::TableId) -> MemView {
         let next = self.table_indices.len();
         let num = *self.table_indices.entry(table).or_insert(next);
-        MemView { name, num }
+        MemView {
+            name: name.into(),
+            num,
+        }
     }
 
     fn expose_assert_class(&mut self) {
@@ -2182,6 +2305,50 @@ impl<'a> Context<'a> {
         true
     }
 
+    fn expose_get_from_externref_table(&mut self, table: TableId) -> Result<MemView, Error> {
+        let view = self.memview_table("getFromExternrefTable", table);
+        assert!(self.config.externref);
+        if !self.should_write_global(view.to_string()) {
+            return Ok(view);
+        }
+        let table = self.export_name_of(table);
+        self.global(&format!(
+            "function {view}(idx) {{ return wasm.{table}.get(idx); }}",
+            view = view,
+            table = table,
+        ));
+
+        Ok(view)
+    }
+
+    fn expose_take_from_externref_table(
+        &mut self,
+        table: TableId,
+        drop: FunctionId,
+    ) -> Result<MemView, Error> {
+        let view = self.memview_table("takeFromExternrefTable", table);
+        assert!(self.config.externref);
+        if !self.should_write_global(view.to_string()) {
+            return Ok(view);
+        }
+        let drop = self.export_name_of(drop);
+        let table = self.export_name_of(table);
+        self.global(&format!(
+            "
+                function {view}(idx) {{
+                    const value = wasm.{table}.get(idx);
+                    wasm.{drop}(idx);
+                    return value;
+                }}
+            ",
+            view = view,
+            table = table,
+            drop = drop,
+        ));
+
+        Ok(view)
+    }
+
     fn expose_add_to_externref_table(
         &mut self,
         table: TableId,
@@ -2236,7 +2403,18 @@ impl<'a> Context<'a> {
             self.process_package_json(path)?;
         }
 
+        self.export_destructor();
+
         Ok(())
+    }
+
+    fn export_destructor(&mut self) {
+        let thread_destroy = match self.aux.thread_destroy {
+            Some(id) => id,
+            None => return,
+        };
+
+        self.export_name_of(thread_destroy);
     }
 
     /// Registers import names for all `Global` imports first before we actually
@@ -2314,17 +2492,22 @@ impl<'a> Context<'a> {
         builder.catch(catch);
         let mut arg_names = &None;
         let mut asyncness = false;
+        let mut variadic = false;
         match kind {
             Kind::Export(export) => {
                 arg_names = &export.arg_names;
                 asyncness = export.asyncness;
+                variadic = export.variadic;
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
-                    AuxExportKind::StaticFunction { .. } => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
-                    AuxExportKind::Getter { consumed, .. }
-                    | AuxExportKind::Setter { consumed, .. }
-                    | AuxExportKind::Method { consumed, .. } => builder.method(*consumed),
+                    AuxExportKind::Method {
+                        receiver: reciever, ..
+                    } => match reciever {
+                        AuxReceiverKind::None => {}
+                        AuxReceiverKind::Borrowed => builder.method(false),
+                        AuxReceiverKind::Owned => builder.method(true),
+                    },
                 }
             }
             Kind::Import(_) => {}
@@ -2342,7 +2525,7 @@ impl<'a> Context<'a> {
             catch,
             log_error,
         } = builder
-            .process(&adapter, instrs, arg_names, asyncness)
+            .process(&adapter, instrs, arg_names, asyncness, variadic)
             .with_context(|| match kind {
                 Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
                 Kind::Import(i) => {
@@ -2367,53 +2550,84 @@ impl<'a> Context<'a> {
                     false => None,
                 };
 
-                let docs = format_doc_comments(&export.comments, Some(js_doc));
+                let js_docs = format_doc_comments(&export.comments, Some(js_doc));
+                let ts_docs = format_doc_comments(&export.comments, None);
+
                 match &export.kind {
                     AuxExportKind::Function(name) => {
                         if let Some(ts_sig) = ts_sig {
-                            self.typescript.push_str(&docs);
+                            self.typescript.push_str(&js_docs);
                             self.typescript.push_str("export function ");
                             self.typescript.push_str(&name);
                             self.typescript.push_str(ts_sig);
                             self.typescript.push_str(";\n");
                         }
-                        self.export(&name, &format!("function{}", code), Some(&docs))?;
+
+                        self.export(&name, &format!("function{}", code), Some(&js_docs))?;
                         self.globals.push_str("\n");
                     }
                     AuxExportKind::Constructor(class) => {
                         let exported = require_class(&mut self.exported_classes, class);
+
                         if exported.has_constructor {
                             bail!("found duplicate constructor for class `{}`", class);
                         }
+
                         exported.has_constructor = true;
-                        exported.push(&docs, "constructor", "", &code, ts_sig);
+                        exported.push(&js_docs, "constructor", "", &code, ts_sig);
                     }
-                    AuxExportKind::Getter { class, field, .. } => {
-                        let ret_ty = match export.generate_typescript {
-                            true => match &ts_ret_ty {
-                                Some(s) => Some(s.as_str()),
-                                _ => None,
-                            },
-                            false => None,
+                    AuxExportKind::Method {
+                        class,
+                        name,
+                        receiver,
+                        kind,
+                    } => {
+                        let exported = require_class(&mut self.exported_classes, class);
+
+                        let mut prefix = String::new();
+                        if receiver.is_static() {
+                            prefix += "static ";
+                        }
+                        let ts = match kind {
+                            AuxExportedMethodKind::Method => ts_sig,
+                            AuxExportedMethodKind::Getter => {
+                                prefix += "get ";
+                                // For getters and setters, we generate a separate TypeScript definition.
+                                if export.generate_typescript {
+                                    exported.push_accessor_ts(
+                                        &ts_docs,
+                                        name,
+                                        // This is only set to `None` when generating a constructor.
+                                        ts_ret_ty
+                                            .as_deref()
+                                            .expect("missing return type for getter"),
+                                        false,
+                                        receiver.is_static(),
+                                    );
+                                }
+                                // Add the getter to the list of readable fields (used to generate `toJSON`)
+                                exported.readable_properties.push(name.clone());
+                                // Ignore the raw signature.
+                                None
+                            }
+                            AuxExportedMethodKind::Setter => {
+                                prefix += "set ";
+                                if export.generate_typescript {
+                                    let is_optional = exported.push_accessor_ts(
+                                        &ts_docs,
+                                        name,
+                                        &ts_arg_tys[0],
+                                        true,
+                                        receiver.is_static(),
+                                    );
+                                    // Set whether the field is optional.
+                                    *is_optional = might_be_optional_field;
+                                }
+                                None
+                            }
                         };
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_getter(&docs, field, &code, ret_ty);
-                    }
-                    AuxExportKind::Setter { class, field, .. } => {
-                        let arg_ty = match export.generate_typescript {
-                            true => Some(ts_arg_tys[0].as_str()),
-                            false => None,
-                        };
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_setter(&docs, field, &code, arg_ty, might_be_optional_field);
-                    }
-                    AuxExportKind::StaticFunction { class, name } => {
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "static ", &code, ts_sig);
-                    }
-                    AuxExportKind::Method { class, name, .. } => {
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "", &code, ts_sig);
+
+                        exported.push(&js_docs, name, &prefix, &code, ts);
                     }
                 }
             }
@@ -3129,6 +3343,11 @@ impl<'a> Context<'a> {
                 format!("throw {}", args[0])
             }
 
+            Intrinsic::ErrorNew => {
+                assert_eq!(args.len(), 1);
+                format!("new Error({})", args[0])
+            }
+
             Intrinsic::Module => {
                 assert_eq!(args.len(), 0);
                 if !self.config.mode.no_modules() && !self.config.mode.web() {
@@ -3276,6 +3495,7 @@ impl<'a> Context<'a> {
         let class = require_class(&mut self.exported_classes, &struct_.name);
         class.comments = format_doc_comments(&struct_.comments, None);
         class.is_inspectable = struct_.is_inspectable;
+        class.generate_typescript = struct_.generate_typescript;
         Ok(())
     }
 
@@ -3535,45 +3755,70 @@ impl<'a> Context<'a> {
 fn check_duplicated_getter_and_setter_names(
     exports: &[(&AdapterId, &AuxExport)],
 ) -> Result<(), Error> {
-    let verify_exports =
-        |first_class, first_field, second_class, second_field| -> Result<(), Error> {
-            let both_are_in_the_same_class = first_class == second_class;
-            let both_are_referencing_the_same_field = first_field == second_field;
-            if both_are_in_the_same_class && both_are_referencing_the_same_field {
-                bail!(format!(
-                    "There can be only one getter/setter definition for `{}` in `{}`",
-                    first_field, first_class
-                ));
-            }
-            Ok(())
-        };
+    fn verify_exports(
+        first_class: &str,
+        first_field: &str,
+        first_receiver: &AuxReceiverKind,
+        second_class: &str,
+        second_field: &str,
+        second_receiver: &AuxReceiverKind,
+    ) -> Result<(), Error> {
+        let both_are_in_the_same_class = first_class == second_class;
+        let both_are_referencing_the_same_field = first_field == second_field
+            && first_receiver.is_static() == second_receiver.is_static();
+        if both_are_in_the_same_class && both_are_referencing_the_same_field {
+            bail!(format!(
+                "There can be only one getter/setter definition for `{}` in `{}`",
+                first_field, first_class
+            ));
+        }
+        Ok(())
+    }
     for (idx, (_, first_export)) in exports.iter().enumerate() {
         for (_, second_export) in exports.iter().skip(idx + 1) {
             match (&first_export.kind, &second_export.kind) {
                 (
-                    AuxExportKind::Getter {
+                    AuxExportKind::Method {
                         class: first_class,
-                        field: first_field,
-                        consumed: _,
+                        name: first_name,
+                        kind: AuxExportedMethodKind::Getter,
+                        receiver: first_receiver,
                     },
-                    AuxExportKind::Getter {
+                    AuxExportKind::Method {
                         class: second_class,
-                        field: second_field,
-                        consumed: _,
+                        name: second_name,
+                        kind: AuxExportedMethodKind::Getter,
+                        receiver: second_receiver,
                     },
-                ) => verify_exports(first_class, first_field, second_class, second_field)?,
+                ) => verify_exports(
+                    first_class,
+                    first_name,
+                    first_receiver,
+                    second_class,
+                    second_name,
+                    second_receiver,
+                )?,
                 (
-                    AuxExportKind::Setter {
+                    AuxExportKind::Method {
                         class: first_class,
-                        field: first_field,
-                        consumed: _,
+                        name: first_name,
+                        kind: AuxExportedMethodKind::Setter,
+                        receiver: first_receiver,
                     },
-                    AuxExportKind::Setter {
+                    AuxExportKind::Method {
                         class: second_class,
-                        field: second_field,
-                        consumed: _,
+                        name: second_name,
+                        kind: AuxExportedMethodKind::Setter,
+                        receiver: second_receiver,
                     },
-                ) => verify_exports(first_class, first_field, second_class, second_field)?,
+                ) => verify_exports(
+                    first_class,
+                    first_name,
+                    first_receiver,
+                    second_class,
+                    second_name,
+                    second_receiver,
+                )?,
                 _ => {}
             }
         }
@@ -3626,65 +3871,32 @@ impl ExportedClass {
         }
     }
 
-    /// Used for adding a getter to a class, mainly to ensure that TypeScript
-    /// generation is handled specially.
-    fn push_getter(&mut self, docs: &str, field: &str, js: &str, ret_ty: Option<&str>) {
-        self.push_accessor(docs, field, js, "get ");
-        if let Some(ret_ty) = ret_ty {
-            self.push_accessor_ts(docs, field, ret_ty, false);
-        }
-        self.readable_properties.push(field.to_string());
-    }
-
-    /// Used for adding a setter to a class, mainly to ensure that TypeScript
-    /// generation is handled specially.
-    fn push_setter(
-        &mut self,
-        docs: &str,
-        field: &str,
-        js: &str,
-        ret_ty: Option<&str>,
-        might_be_optional_field: bool,
-    ) {
-        self.push_accessor(docs, field, js, "set ");
-        if let Some(ret_ty) = ret_ty {
-            let is_optional = self.push_accessor_ts(docs, field, ret_ty, true);
-            *is_optional = might_be_optional_field;
-        }
-    }
-
     fn push_accessor_ts(
         &mut self,
         docs: &str,
         field: &str,
-        ret_ty: &str,
+        ty: &str,
         is_setter: bool,
+        is_static: bool,
     ) -> &mut bool {
-        let (ty, accessor_docs, has_setter, is_optional) = self
+        let (ty_dst, accessor_docs, has_setter, is_optional, is_static_dst) = self
             .typescript_fields
             .entry(field.to_string())
             .or_insert_with(Default::default);
 
-        *ty = ret_ty.to_string();
+        *ty_dst = ty.to_string();
         // Deterministic output: always use the getter's docs if available
         if !docs.is_empty() && (accessor_docs.is_empty() || !is_setter) {
             *accessor_docs = docs.to_owned();
         }
         *has_setter |= is_setter;
+        *is_static_dst = is_static;
         is_optional
-    }
-
-    fn push_accessor(&mut self, docs: &str, field: &str, js: &str, prefix: &str) {
-        self.contents.push_str(docs);
-        self.contents.push_str(prefix);
-        self.contents.push_str(field);
-        self.contents.push_str(js);
-        self.contents.push_str("\n");
     }
 }
 
 struct MemView {
-    name: &'static str,
+    name: Cow<'static, str>,
     num: usize,
 }
 

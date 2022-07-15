@@ -36,3 +36,18 @@ extern "C" {
 
 when we call this function, the last argument will be expanded as the javascript expects.
 
+
+To export a rust function to javascript with a variadic argument, we will use the same bindgen variadic attribute and assume that the last argument will be the variadic array. For example the following rust function:
+
+```rust
+#[wasm_bindgen(variadic)]
+pub  fn  variadic_function(arr: &JsValue) -> JsValue {
+	arr.into()
+}
+```
+
+will generate the following TS interface
+
+```ts
+export  function  variadic_function(...arr:  any):  any;
+```

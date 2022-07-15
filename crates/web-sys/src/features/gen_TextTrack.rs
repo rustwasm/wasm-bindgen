@@ -93,6 +93,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrack`*"]
     pub fn set_oncuechange(this: &TextTrack, value: Option<&::js_sys::Function>);
+    #[cfg(feature = "SourceBuffer")]
+    # [wasm_bindgen (structural , method , getter , js_class = "TextTrack" , js_name = sourceBuffer)]
+    #[doc = "Getter for the `sourceBuffer` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/sourceBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`, `TextTrack`*"]
+    pub fn source_buffer(this: &TextTrack) -> Option<SourceBuffer>;
     #[cfg(feature = "VttCue")]
     # [wasm_bindgen (method , structural , js_class = "TextTrack" , js_name = addCue)]
     #[doc = "The `addCue()` method."]

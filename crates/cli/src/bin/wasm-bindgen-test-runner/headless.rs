@@ -193,6 +193,7 @@ enum Driver {
     Gecko(Locate),
     Safari(Locate),
     Chrome(Locate),
+    Edge(Locate),
 }
 
 enum Locate {
@@ -225,6 +226,7 @@ impl Driver {
             ("geckodriver", Driver::Gecko as fn(Locate) -> Driver),
             ("safaridriver", Driver::Safari as fn(Locate) -> Driver),
             ("chromedriver", Driver::Chrome as fn(Locate) -> Driver),
+            ("msedgedriver", Driver::Edge as fn(Locate) -> Driver),
         ];
 
         // First up, if env vars like GECKODRIVER_REMOTE are present, use those
@@ -278,11 +280,12 @@ environment variables like `GECKODRIVER=/path/to/geckodriver` or make sure that
 the binary is in `PATH`; to configure the address of remote webdriver you can
 use environment variables like `GECKODRIVER_REMOTE=http://remote.host/`
 
-This crate currently supports `geckodriver`, `chromedriver`, and `safaridriver`,
-although more driver support may be added! You can download these at:
+This crate currently supports `geckodriver`, `chromedriver`, `safaridriver`, and
+`msedgedriver`, although more driver support may be added! You can download these at:
 
     * geckodriver - https://github.com/mozilla/geckodriver/releases
-    * chromedriver - http://chromedriver.chromium.org/downloads
+    * chromedriver - https://chromedriver.chromium.org/downloads
+    * msedgedriver - https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
     * safaridriver - should be preinstalled on OSX
 
 If you would prefer to not use headless testing and would instead like to do
@@ -301,6 +304,7 @@ an issue against rustwasm/wasm-bindgen!
             Driver::Gecko(_) => "Firefox",
             Driver::Safari(_) => "Safari",
             Driver::Chrome(_) => "Chrome",
+            Driver::Edge(_) => "Edge",
         }
     }
 
@@ -309,6 +313,7 @@ an issue against rustwasm/wasm-bindgen!
             Driver::Gecko(locate) => locate,
             Driver::Safari(locate) => locate,
             Driver::Chrome(locate) => locate,
+            Driver::Edge(locate) => locate,
         }
     }
 }
@@ -402,6 +407,35 @@ impl Client {
                     .or_insert_with(|| Json::Object(serde_json::Map::new()))
                     .as_object_mut()
                     .expect("goog:chromeOptions wasn't a JSON object")
+                    .entry("args".to_string())
+                    .or_insert_with(|| Json::Array(vec![]))
+                    .as_array_mut()
+                    .expect("args wasn't a JSON array")
+                    .extend(vec![
+                        Json::String("headless".to_string()),
+                        // See https://stackoverflow.com/questions/50642308/
+                        // for what this funky `disable-dev-shm-usage`
+                        // option is
+                        Json::String("disable-dev-shm-usage".to_string()),
+                        Json::String("no-sandbox".to_string()),
+                    ]);
+                let request = LegacyNewSessionParameters {
+                    desired: cap,
+                    required: Capabilities::new(),
+                };
+                let x: Response = self.post("/session", &request)?;
+                Ok(x.session_id)
+            }
+            Driver::Edge(_) => {
+                #[derive(Deserialize)]
+                struct Response {
+                    #[serde(rename = "sessionId")]
+                    session_id: String,
+                }
+                cap.entry("ms:edgeOptions".to_string())
+                    .or_insert_with(|| Json::Object(serde_json::Map::new()))
+                    .as_object_mut()
+                    .expect("ms:edgeOptions wasn't a JSON object")
                     .entry("args".to_string())
                     .or_insert_with(|| Json::Array(vec![]))
                     .as_array_mut()

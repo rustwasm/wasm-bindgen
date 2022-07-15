@@ -5,7 +5,6 @@
 use crate::Diagnostic;
 use proc_macro2::{Ident, Span};
 use std::hash::{Hash, Hasher};
-use syn;
 use wasm_bindgen_shared as shared;
 
 /// An abstract syntax tree representing a rust program. Contains
@@ -163,7 +162,7 @@ pub struct ImportFunction {
     /// necessary conversions (EG adding a try/catch to change a thrown error into a Result)
     pub shim: Ident,
     /// The doc comment on this import, if one is provided
-    pub doc_comment: Option<String>,
+    pub doc_comment: String,
 }
 
 /// The type of a function being imported
@@ -303,6 +302,8 @@ pub struct Function {
     pub r#async: bool,
     /// Whether to generate a typescript definition for this function
     pub generate_typescript: bool,
+    /// Whether this is a function with a variadict parameter
+    pub variadic: bool,
 }
 
 /// Information about a Struct being exported

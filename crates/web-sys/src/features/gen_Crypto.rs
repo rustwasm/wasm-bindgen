@@ -39,4 +39,11 @@ extern "C" {
         this: &Crypto,
         array: &mut [u8],
     ) -> Result<::js_sys::Object, JsValue>;
+    # [wasm_bindgen (method , structural , js_class = "Crypto" , js_name = randomUUID)]
+    #[doc = "The `randomUUID()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Crypto`*"]
+    pub fn random_uuid(this: &Crypto) -> String;
 }

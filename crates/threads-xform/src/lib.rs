@@ -2,11 +2,17 @@ use anyhow::{anyhow, bail, Error};
 use std::cmp;
 use std::env;
 use walrus::ir::Value;
-use walrus::{ExportItem, GlobalId, GlobalKind, MemoryId, Module};
-use walrus::{FunctionId, InitExpr, ValType};
+use walrus::{
+    ir::MemArg, ExportItem, FunctionId, GlobalId, GlobalKind, InitExpr, InstrSeqBuilder, MemoryId,
+    Module, ValType,
+};
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 const PAGE_SIZE: u32 = 1 << 16;
+const ATOMIC_MEM_ARG: MemArg = MemArg {
+    align: 4,
+    offset: 0,
+};
 
 /// Configuration for the transformation pass in this module.
 ///
@@ -94,6 +100,7 @@ impl Config {
     /// * A `start` function is injected (or prepended if one already exists)
     ///   which initializes memory for the first thread and otherwise allocates
     ///   thread ids for all threads.
+    /// * Some stack space is prepared for each thread after the first one.
     ///
     /// More and/or less may happen here over time, stay tuned!
     pub fn run(&self, module: &mut Module) -> Result<(), Error> {
@@ -102,9 +109,17 @@ impl Config {
         }
 
         let memory = wasm_conventions::get_memory(module)?;
-        let stack_pointer = wasm_conventions::get_shadow_stack_pointer(module)
-            .ok_or_else(|| anyhow!("failed to find shadow stack pointer"))?;
-        let addr = allocate_static_data(module, memory, 4, 4)?;
+
+        // Now we need to allocate extra static memory for:
+        // - A thread id counter.
+        // - A temporary stack for calls to `malloc()` and `free()`.
+        // - A lock to synchronize usage of the above stack.
+        // For this, we allocate 1 extra page of memory (should be enough as temporary
+        // stack) and grab the first 2 _aligned_ i32 words to use as counter and lock.
+        let static_data_align = 4;
+        let static_data_pages = 1;
+        let (base, addr) =
+            allocate_static_data(module, memory, static_data_pages, static_data_align)?;
 
         let mem = module.memories.get_mut(memory);
         assert!(mem.shared);
@@ -117,15 +132,38 @@ impl Config {
             init: delete_synthetic_func(module, "__wasm_init_tls")?,
             size: delete_synthetic_global(module, "__tls_size")?,
             align: delete_synthetic_global(module, "__tls_align")?,
+            base: wasm_conventions::get_tls_base(module)
+                .ok_or_else(|| anyhow!("failed to find tls base"))?,
         };
-        inject_start(
-            module,
-            tls,
-            addr,
-            stack_pointer,
-            self.thread_stack_size,
-            memory,
-        )?;
+
+        let thread_counter_addr = addr as i32;
+
+        let stack_alloc =
+            module
+                .globals
+                .add_local(ValType::I32, true, InitExpr::Value(Value::I32(0)));
+
+        // Make sure the temporary stack is aligned down
+        let temp_stack = (base + static_data_pages * PAGE_SIZE) & !(static_data_align - 1);
+
+        let stack = Stack {
+            pointer: wasm_conventions::get_shadow_stack_pointer(module)
+                .ok_or_else(|| anyhow!("failed to find shadow stack pointer"))?,
+            temp: temp_stack as i32,
+            temp_lock: thread_counter_addr + 4,
+            alloc: stack_alloc,
+            size: self.thread_stack_size,
+        };
+
+        inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
+
+        // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
+        //
+        // ## Safety
+        // After calling this function in a given agent, the instance should be considered
+        // "destroyed" and any further invocations into it will trigger UB. This function
+        // should not be called from an agent that cannot block (e.g. the main document thread).
+        inject_destroy(module, &tls, &stack, memory)?;
 
         Ok(())
     }
@@ -165,16 +203,19 @@ fn delete_synthetic_export(module: &mut Module, name: &str) -> Result<ExportItem
     Ok(ret)
 }
 
+/// Allocates extra space for static data. Returns `(addr, base)`, where:
+/// - `base` is the starting address of the extra `pages`.
+/// - `addr` is the _first_ address in that chunk that is aligned to `align`.
 fn allocate_static_data(
     module: &mut Module,
     memory: MemoryId,
-    size: u32,
+    pages: u32,
     align: u32,
-) -> Result<u32, Error> {
+) -> Result<(u32, u32), Error> {
     // First up, look for a `__heap_base` export which is injected by LLD as
     // part of the linking process. Note that `__heap_base` should in theory be
     // *after* the stack and data, which means it's at the very end of the
-    // address space and should be safe for us to inject 4 bytes of data at.
+    // address space and should be safe for us to inject extra pages of data at.
     let heap_base = module
         .exports
         .iter()
@@ -189,21 +230,11 @@ fn allocate_static_data(
         None => bail!("failed to find `__heap_base` for injecting thread id"),
     };
 
-    // Now we need to bump up `__heap_base` by 4 bytes as we'd like to reserve
-    // those 4 bytes for our thread id counter. Do lots of validation here to
-    // make sure that `__heap_base` is an non-mutable integer, and then do
-    // some logic:
-    //
-    // * We require that `__heap_base` is aligned to 4 as that's what the atomic
-    //   will require anyway.
-    // * We *may* have to add another page to the minimum for this module. If by
-    //   reserving 4 bytes the heap base now lies on a different page then we
-    //   probably went past our minimum page requirement, so we'll need to
-    //   update our memory limits to add one.
-    //
-    // Otherwise here we'll rewrite the `__heap_base` global's initializer to be
-    // 4 larger, reserving us those 4 bytes for a thread id counter.
-    let (address, add_a_page) = {
+    // Now we need to bump up `__heap_base` by a few pages. Do lots of validation
+    // here to make sure that `__heap_base` is an non-mutable integer, and then do
+    // some logic to ensure that the return the correct, aligned `address` as specified
+    // by `align`.
+    let (base, address) = {
         let global = module.globals.get_mut(heap_base);
         if global.ty != ValType::I32 {
             bail!("the `__heap_base` global doesn't have the type `i32`");
@@ -215,39 +246,55 @@ fn allocate_static_data(
             GlobalKind::Local(InitExpr::Value(Value::I32(n))) => n,
             _ => bail!("`__heap_base` not a locally defined `i32`"),
         };
+
         let address = (*offset as u32 + (align - 1)) & !(align - 1); // align up
-        let add_a_page = (address + size) / PAGE_SIZE != address / PAGE_SIZE;
-        *offset = (address + size) as i32;
-        (address, add_a_page)
+        let base = *offset;
+
+        *offset = *offset + (pages * PAGE_SIZE) as i32;
+
+        (base, address)
     };
 
-    if add_a_page {
-        let memory = module.memories.get_mut(memory);
-        memory.initial += 1;
-        memory.maximum = memory.maximum.map(|m| cmp::max(m, memory.initial));
-    }
-    Ok(address)
+    let memory = module.memories.get_mut(memory);
+    memory.initial += pages;
+    memory.maximum = memory.maximum.map(|m| cmp::max(m, memory.initial));
+
+    Ok((base as u32, address))
 }
 
 struct Tls {
     init: walrus::FunctionId,
     size: u32,
     align: u32,
+    base: GlobalId,
+}
+
+struct Stack {
+    /// The stack pointer global
+    pointer: GlobalId,
+    /// The address of a small, "scratch-space" stack
+    temp: i32,
+    /// The address of a lock for the temporary stack
+    temp_lock: i32,
+    /// A global to store allocated stack
+    alloc: GlobalId,
+    /// The size of the stack
+    size: u32,
 }
 
 fn inject_start(
     module: &mut Module,
-    tls: Tls,
-    addr: u32,
-    stack_pointer: GlobalId,
-    stack_size: u32,
+    tls: &Tls,
+    stack: &Stack,
+    thread_counter_addr: i32,
     memory: MemoryId,
 ) -> Result<(), Error> {
     use walrus::ir::*;
 
-    assert!(stack_size % PAGE_SIZE == 0);
+    assert!(stack.size % PAGE_SIZE == 0);
     let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
     let local = module.locals.add(ValType::I32);
+
     let mut body = builder.func_body();
 
     // Call previous start function if one is available. Currently this is
@@ -257,48 +304,35 @@ fn inject_start(
         body.call(prev);
     }
 
+    let malloc = find_function(module, "__wbindgen_malloc")?;
+
     // Perform an if/else based on whether we're the first thread or not. Our
     // thread ID will be zero if we're the first thread, otherwise it'll be
     // nonzero (assuming we don't overflow...)
-    body.i32_const(addr as i32)
+    body.i32_const(thread_counter_addr)
         .i32_const(1)
-        .atomic_rmw(
-            memory,
-            AtomicOp::Add,
-            AtomicWidth::I32,
-            MemArg {
-                align: 4,
-                offset: 0,
-            },
-        )
+        .atomic_rmw(memory, AtomicOp::Add, AtomicWidth::I32, ATOMIC_MEM_ARG)
         .if_else(
             None,
             // If our thread id is nonzero then we're the second or greater thread, so
-            // we give ourselves a stack via memory.grow and we update our stack
+            // we give ourselves a stack and we update our stack
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
-                // local0 = grow_memory(stack_size);
-                body.i32_const((stack_size / PAGE_SIZE) as i32)
-                    .memory_grow(memory)
-                    .local_set(local);
-
-                // if local0 == -1 then trap
-                body.block(None, |body| {
-                    let target = body.id();
-                    body.local_get(local)
-                        .i32_const(-1)
-                        .binop(BinaryOp::I32Ne)
-                        .br_if(target)
-                        .unreachable();
+                // local = malloc(stack.size) [aka base]
+                with_temp_stack(body, memory, &stack, |body| {
+                    body.i32_const(stack.size as i32)
+                        .call(malloc)
+                        .local_tee(local);
                 });
 
-                // stack_pointer = local0 + stack_size
-                body.local_get(local)
-                    .i32_const(PAGE_SIZE as i32)
-                    .binop(BinaryOp::I32Mul)
-                    .i32_const(stack_size as i32)
+                // stack.alloc = base
+                body.global_set(stack.alloc);
+
+                // stack_pointer = base + stack.size
+                body.global_get(stack.alloc)
+                    .i32_const(stack.size as i32)
                     .binop(BinaryOp::I32Add)
-                    .global_set(stack_pointer);
+                    .global_set(stack.pointer);
             },
             // If the thread id is zero then the default stack pointer works for
             // us.
@@ -306,30 +340,119 @@ fn inject_start(
         );
 
     // Afterwards we need to initialize our thread-local state.
-    let malloc = find_wbindgen_malloc(module)?;
     body.i32_const(tls.size as i32)
         .i32_const(tls.align as i32)
         .drop() // TODO: need to actually respect alignment
         .call(malloc)
+        .global_set(tls.base)
+        .global_get(tls.base)
         .call(tls.init);
 
     // Finish off our newly generated function.
-    let id = builder.finish(Vec::new(), &mut module.funcs);
+    let start_id = builder.finish(Vec::new(), &mut module.funcs);
 
     // ... and finally flag it as the new start function
-    module.start = Some(id);
+    module.start = Some(start_id);
 
     Ok(())
 }
 
-fn find_wbindgen_malloc(module: &Module) -> Result<FunctionId, Error> {
+fn inject_destroy(
+    module: &mut Module,
+    tls: &Tls,
+    stack: &Stack,
+    memory: MemoryId,
+) -> Result<(), Error> {
+    let free = find_function(module, "__wbindgen_free")?;
+
+    let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
+
+    builder.name("__wbindgen_thread_destroy".into());
+
+    let mut body = builder.func_body();
+
+    // Ideally, at this point, we would destroy the values stored in TLS.
+    // We can't really do that without help from the standard library.
+    // See https://github.com/rustwasm/wasm-bindgen/pull/2769#issuecomment-1015775467.
+
+    // free the TLS space
+    body.global_get(tls.base)
+        .i32_const(tls.size as i32)
+        .call(free);
+
+    // set tls.base = i32::MIN to trigger invalid memory
+    body.i32_const(i32::MIN).global_set(tls.base);
+
+    // free the stack callin `__wbindgen_free(stack.alloc, stack.size)`
+    with_temp_stack(&mut body, memory, stack, |body| {
+        body.global_get(stack.alloc)
+            .i32_const(stack.size as i32)
+            .call(free);
+    });
+
+    // set stack.alloc = 0 to trigger invalid memory
+    body.i32_const(0).global_set(stack.alloc);
+
+    let free_id = builder.finish(Vec::new(), &mut module.funcs);
+
+    module.exports.add("__wbindgen_thread_destroy", free_id);
+
+    Ok(())
+}
+
+fn find_function(module: &Module, name: &str) -> Result<FunctionId, Error> {
     let e = module
         .exports
         .iter()
-        .find(|e| e.name == "__wbindgen_malloc")
-        .ok_or_else(|| anyhow!("failed to find `__wbindgen_malloc`"))?;
+        .find(|e| e.name == name)
+        .ok_or_else(|| anyhow!("failed to find `{}`", name))?;
     match e.item {
         walrus::ExportItem::Function(f) => Ok(f),
-        _ => bail!("`__wbindgen_malloc` wasn't a funtion"),
+        _ => bail!("`{}` wasn't a funtion", name),
     }
+}
+
+/// Wraps the instructions fed by `block()` so that they can assume that the temporary, scratch
+/// stack is usable. Clobbers `stack.pointer`.
+fn with_temp_stack(
+    body: &mut InstrSeqBuilder<'_>,
+    memory: MemoryId,
+    stack: &Stack,
+    block: impl Fn(&mut InstrSeqBuilder<'_>),
+) {
+    use walrus::ir::*;
+
+    body.i32_const(stack.temp).global_set(stack.pointer);
+
+    body.loop_(None, |loop_| {
+        let loop_id = loop_.id();
+
+        loop_
+            .i32_const(stack.temp_lock)
+            .i32_const(0)
+            .i32_const(1)
+            .cmpxchg(memory, AtomicWidth::I32, ATOMIC_MEM_ARG)
+            .if_else(
+                None,
+                |body| {
+                    body.i32_const(stack.temp_lock)
+                        .i32_const(1)
+                        .i64_const(-1)
+                        .atomic_wait(memory, ATOMIC_MEM_ARG, false)
+                        .drop()
+                        .br(loop_id);
+                },
+                |_| {},
+            );
+    });
+
+    block(body);
+
+    body.i32_const(stack.temp_lock)
+        .i32_const(0)
+        .store(memory, StoreKind::I32 { atomic: true }, ATOMIC_MEM_ARG)
+        .i32_const(stack.temp_lock)
+        .i32_const(1)
+        .atomic_notify(memory, ATOMIC_MEM_ARG)
+        .drop();
 }

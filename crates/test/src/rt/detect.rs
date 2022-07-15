@@ -1,6 +1,5 @@
 //! Runtime detection of whether we're in node.js or a browser.
 
-use js_sys;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 

@@ -24,6 +24,8 @@ struct Context<'a> {
     aux: WasmBindgenAux,
     function_exports: HashMap<String, (ExportId, FunctionId)>,
     function_imports: HashMap<String, (ImportId, FunctionId)>,
+    /// A map from the signature of a function in the function table to its adapter, if we've already created it.
+    table_adapters: HashMap<Function, AdapterId>,
     memory: Option<MemoryId>,
     vendor_prefixes: HashMap<String, Vec<String>>,
     unique_crate_identifier: &'a str,
@@ -55,6 +57,7 @@ pub fn process(
         aux: Default::default(),
         function_exports: Default::default(),
         function_imports: Default::default(),
+        table_adapters: Default::default(),
         vendor_prefixes: Default::default(),
         descriptors: Default::default(),
         unique_crate_identifier: "",
@@ -210,6 +213,8 @@ impl<'a> Context<'a> {
                 );
             }
         }
+
+        self.aux.thread_destroy = self.thread_destroy();
 
         Ok(())
     }
@@ -414,36 +419,31 @@ impl<'a> Context<'a> {
                 let class = class.to_string();
                 match export.method_kind {
                     decode::MethodKind::Constructor => AuxExportKind::Constructor(class),
-                    decode::MethodKind::Operation(op) => match op.kind {
-                        decode::OperationKind::Getter(f) => {
+                    decode::MethodKind::Operation(op) => {
+                        if !op.is_static {
+                            // Make the first argument be the index of the receiver.
                             descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Getter {
-                                class,
-                                field: f.to_string(),
-                                consumed: export.consumed,
-                            }
                         }
-                        decode::OperationKind::Setter(f) => {
-                            descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Setter {
-                                class,
-                                field: f.to_string(),
-                                consumed: export.consumed,
-                            }
-                        }
-                        _ if op.is_static => AuxExportKind::StaticFunction {
+
+                        let (name, kind) = match op.kind {
+                            decode::OperationKind::Getter(f) => (f, AuxExportedMethodKind::Getter),
+                            decode::OperationKind::Setter(f) => (f, AuxExportedMethodKind::Setter),
+                            _ => (export.function.name, AuxExportedMethodKind::Method),
+                        };
+
+                        AuxExportKind::Method {
                             class,
-                            name: export.function.name.to_string(),
-                        },
-                        _ => {
-                            descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Method {
-                                class,
-                                name: export.function.name.to_string(),
-                                consumed: export.consumed,
-                            }
+                            name: name.to_owned(),
+                            receiver: if op.is_static {
+                                AuxReceiverKind::None
+                            } else if export.consumed {
+                                AuxReceiverKind::Owned
+                            } else {
+                                AuxReceiverKind::Borrowed
+                            },
+                            kind,
                         }
-                    },
+                    }
                 }
             }
             None => AuxExportKind::Function(export.function.name.to_string()),
@@ -459,6 +459,7 @@ impl<'a> Context<'a> {
                 asyncness: export.function.asyncness,
                 kind,
                 generate_typescript: export.function.generate_typescript,
+                variadic: export.function.variadic,
             },
         );
         Ok(())
@@ -801,7 +802,7 @@ impl<'a> Context<'a> {
                 arguments: vec![Descriptor::I32],
                 shim_idx: 0,
                 ret: descriptor.clone(),
-                inner_ret: None,
+                inner_ret: Some(descriptor.clone()),
             };
             let getter_id = self.export_adapter(getter_id, getter_descriptor)?;
             self.aux.export_map.insert(
@@ -811,12 +812,14 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
-                    kind: AuxExportKind::Getter {
+                    kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
-                        field: field.name.to_string(),
-                        consumed: false,
+                        name: field.name.to_string(),
+                        receiver: AuxReceiverKind::Borrowed,
+                        kind: AuxExportedMethodKind::Getter,
                     },
                     generate_typescript: field.generate_typescript,
+                    variadic: false,
                 },
             );
 
@@ -840,12 +843,14 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
-                    kind: AuxExportKind::Setter {
+                    kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
-                        field: field.name.to_string(),
-                        consumed: false,
+                        name: field.name.to_string(),
+                        receiver: AuxReceiverKind::Borrowed,
+                        kind: AuxExportedMethodKind::Setter,
                     },
                     generate_typescript: field.generate_typescript,
+                    variadic: false,
                 },
             );
         }
@@ -1080,6 +1085,7 @@ impl<'a> Context<'a> {
                 asyncness: false,
                 kind,
                 generate_typescript: true,
+                variadic: false,
             };
             assert!(self.aux.export_map.insert(id, export).is_none());
         }
@@ -1276,10 +1282,51 @@ impl<'a> Context<'a> {
         Ok(id)
     }
 
-    fn table_element_adapter(&mut self, idx: u32, signature: Function) -> Result<AdapterId, Error> {
+    fn table_element_adapter(
+        &mut self,
+        idx: u32,
+        mut signature: Function,
+    ) -> Result<AdapterId, Error> {
+        fn strip_externref_names(descriptor: &mut Descriptor) {
+            match descriptor {
+                Descriptor::NamedExternref(_) => *descriptor = Descriptor::Externref,
+
+                Descriptor::Function(function) => strip_function_externref_names(&mut **function),
+                Descriptor::Closure(closure) => {
+                    strip_function_externref_names(&mut closure.function)
+                }
+                Descriptor::Ref(descriptor)
+                | Descriptor::RefMut(descriptor)
+                | Descriptor::Slice(descriptor)
+                | Descriptor::Vector(descriptor)
+                | Descriptor::Option(descriptor)
+                | Descriptor::Result(descriptor) => strip_externref_names(&mut **descriptor),
+
+                _ => {}
+            }
+        }
+
+        fn strip_function_externref_names(descriptor: &mut Function) {
+            descriptor
+                .arguments
+                .iter_mut()
+                .for_each(strip_externref_names);
+            strip_externref_names(&mut descriptor.ret);
+            descriptor.inner_ret.as_mut().map(strip_externref_names);
+        }
+
+        // We don't care about the names of externrefs here; we only care whether
+        // the compiler will actually keep them as separate functions.
+        strip_function_externref_names(&mut signature);
+
+        if let Some(&id) = self.table_adapters.get(&signature) {
+            return Ok(id);
+        }
         let call = Instruction::CallTableElement(idx);
         // like above, largely just defer the work elsewhere
-        Ok(self.register_export_adapter(call, signature)?)
+        let id = self.register_export_adapter(call, signature.clone())?;
+        self.table_adapters.insert(signature, id);
+        Ok(id)
     }
 
     fn register_export_adapter(
@@ -1346,9 +1393,11 @@ impl<'a> Context<'a> {
         });
         if uses_retptr {
             let mem = ret.cx.memory()?;
-            for (i, ty) in ret.input.into_iter().enumerate() {
+            let mut unpacker = StructUnpacker::new();
+            for ty in ret.input.into_iter() {
+                let offset = unpacker.read_ty(&ty)?;
                 instructions.push(InstructionData {
-                    instr: Instruction::LoadRetptr { offset: i, ty, mem },
+                    instr: Instruction::LoadRetptr { offset, ty, mem },
                     stack_change: StackChange::Modified {
                         pushed: 1,
                         popped: 0,
@@ -1397,6 +1446,13 @@ impl<'a> Context<'a> {
             .cloned()
             .map(|p| p.1)
             .ok_or_else(|| anyhow!("failed to find declaration of `__wbindgen_free` in module"))
+    }
+
+    fn thread_destroy(&self) -> Option<FunctionId> {
+        self.function_exports
+            .get("__wbindgen_thread_destroy")
+            .cloned()
+            .map(|p| p.1)
     }
 
     fn memory(&self) -> Result<MemoryId, Error> {
@@ -1568,4 +1624,47 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
 
 fn concatenate_comments(comments: &[&str]) -> String {
     comments.iter().map(|&s| s).collect::<Vec<_>>().join("\n")
+}
+
+/// The C struct packing algorithm, in terms of u32.
+struct StructUnpacker {
+    next_offset: usize,
+}
+
+impl StructUnpacker {
+    fn new() -> Self {
+        Self { next_offset: 0 }
+    }
+    fn align_up(&mut self, alignment_pow2: usize) -> usize {
+        let mask = alignment_pow2 - 1;
+        self.next_offset = (self.next_offset + mask) & (!mask);
+        self.next_offset
+    }
+    fn append(&mut self, quads: usize, alignment_pow2: usize) -> usize {
+        let ret = self.align_up(alignment_pow2);
+        self.next_offset += quads;
+        ret
+    }
+    /// Returns the offset for this member, with the offset in multiples of u32.
+    fn read_ty(&mut self, ty: &AdapterType) -> Result<usize, Error> {
+        let (quads, alignment) = match ty {
+            AdapterType::I32 | AdapterType::U32 | AdapterType::F32 => (1, 1),
+            AdapterType::F64 => (2, 2),
+            other => bail!("invalid aggregate return type {:?}", other),
+        };
+        Ok(self.append(quads, alignment))
+    }
+}
+
+#[test]
+fn test_struct_packer() {
+    let mut unpacker = StructUnpacker::new();
+    let i32___ = &AdapterType::I32;
+    let double = &AdapterType::F64;
+    let mut read_ty = |ty| unpacker.read_ty(ty).unwrap();
+    assert_eq!(read_ty(i32___), 0); // u32
+    assert_eq!(read_ty(i32___), 1); // u32
+    assert_eq!(read_ty(double), 2); // f64, already aligned
+    assert_eq!(read_ty(i32___), 4); // u32, already aligned
+    assert_eq!(read_ty(double), 6); // f64, NOT already aligned, skips up to offset 6
 }

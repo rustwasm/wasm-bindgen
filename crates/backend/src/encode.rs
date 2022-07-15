@@ -48,11 +48,15 @@ struct LocalFile {
 
 impl Interner {
     fn new() -> Interner {
+        let root = env::var_os("CARGO_MANIFEST_DIR")
+            .expect("should have CARGO_MANIFEST_DIR env var")
+            .into();
+        let crate_name = env::var("CARGO_PKG_NAME").expect("should have CARGO_PKG_NAME env var");
         Interner {
             bump: bumpalo::Bump::new(),
             files: RefCell::new(HashMap::new()),
-            root: env::var_os("CARGO_MANIFEST_DIR").unwrap().into(),
-            crate_name: env::var("CARGO_PKG_NAME").unwrap(),
+            root,
+            crate_name,
             has_package_json: Cell::new(false),
         }
     }
@@ -208,6 +212,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         asyncness: func.r#async,
         name: &func.name,
         generate_typescript: func.generate_typescript,
+        variadic: func.variadic,
     }
 }
 

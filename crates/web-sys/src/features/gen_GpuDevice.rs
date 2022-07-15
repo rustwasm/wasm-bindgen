@@ -94,7 +94,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn label(this: &GpuDevice) -> Option<String>;
+    pub fn label(this: &GpuDevice) -> String;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "GPUDevice" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
@@ -105,7 +105,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_label(this: &GpuDevice, value: Option<&str>);
+    pub fn set_label(this: &GpuDevice, value: &str);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuBindGroup", feature = "GpuBindGroupDescriptor",))]
     # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createBindGroup)]

@@ -220,6 +220,9 @@ intrinsics! {
         #[symbol = "__wbindgen_rethrow"]
         #[signature = fn(Externref) -> Unit]
         Rethrow,
+        #[symbol = "__wbindgen_error_new"]
+        #[signature = fn(ref_string()) -> Externref]
+        ErrorNew,
         #[symbol = "__wbindgen_memory"]
         #[signature = fn() -> Externref]
         Memory,

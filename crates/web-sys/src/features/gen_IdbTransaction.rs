@@ -92,6 +92,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn abort(this: &IdbTransaction) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBTransaction" , js_name = commit)]
+    #[doc = "The `commit()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/commit)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    pub fn commit(this: &IdbTransaction) -> Result<(), JsValue>;
     #[cfg(feature = "IdbObjectStore")]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBTransaction" , js_name = objectStore)]
     #[doc = "The `objectStore()` method."]

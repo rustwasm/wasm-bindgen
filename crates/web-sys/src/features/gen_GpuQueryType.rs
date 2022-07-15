@@ -11,6 +11,5 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GpuQueryType {
     Occlusion = "occlusion",
-    PipelineStatistics = "pipeline-statistics",
     Timestamp = "timestamp",
 }

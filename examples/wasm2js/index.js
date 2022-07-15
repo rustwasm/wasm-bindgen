@@ -1,4 +1,4 @@
-// Import our JS shim and initialize it, executing the start function when it's
-// ready.
-import init from './pkg/wasm2js.js';
-init();
+// Import our JS shim; will initialize by itself
+import { run } from './pkg/wasm2js.js';
+// Run the function a second time
+run();

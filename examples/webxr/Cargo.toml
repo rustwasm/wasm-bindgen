@@ -9,9 +9,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 futures = "0.3.4"
-js-sys = "0.3.55"
-wasm-bindgen = {version = "0.2.78", features = ["serde-serialize"]}
-wasm-bindgen-futures = "0.4.28"
+js-sys = "0.3.58"
+wasm-bindgen = {version = "0.2.81", features = ["serde-serialize"]}
+wasm-bindgen-futures = "0.4.31"
 serde = { version = "1.0.80", features = ["derive"] }
 serde_derive = "^1.0.59"
 
@@ -30,7 +30,6 @@ features = [
   'Response',
   'WebGl2RenderingContext',
   'Window',
-  'Xr',
   'XrBoundedReferenceSpace',
   'XrEye',
   'XrFrame',
@@ -61,5 +60,6 @@ features = [
   'XrVisibilityState',
   'XrWebGlLayer',
   'XrWebGlLayerInit',
+  'XrSystem',
   'console'
 ]

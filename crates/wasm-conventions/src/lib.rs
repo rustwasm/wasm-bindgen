@@ -30,9 +30,6 @@ pub fn get_memory(module: &Module) -> Result<MemoryId> {
 }
 
 /// Get the `__shadow_stack_pointer`.
-///
-/// It must have been previously added to the module's exports via
-/// `export_shadow_stack_pointer`.
 pub fn get_shadow_stack_pointer(module: &Module) -> Option<GlobalId> {
     let candidates = module
         .globals
@@ -52,6 +49,29 @@ pub fn get_shadow_stack_pointer(module: &Module) -> Option<GlobalId> {
         0 => None,
         // TODO: have an actual check here.
         1 => Some(candidates[0].id()),
+        _ => None,
+    }
+}
+
+/// Get the `__tls_base`.
+pub fn get_tls_base(module: &Module) -> Option<GlobalId> {
+    let candidates = module
+        .exports
+        .iter()
+        .filter(|ex| ex.name == "__tls_base")
+        .filter_map(|ex| match ex.item {
+            walrus::ExportItem::Global(id) => Some(id),
+            _ => None,
+        })
+        .filter(|id| {
+            let global = module.globals.get(*id);
+
+            global.ty == ValType::I32
+        })
+        .collect::<Vec<_>>();
+
+    match candidates.len() {
+        1 => Some(candidates[0]),
         _ => None,
     }
 }

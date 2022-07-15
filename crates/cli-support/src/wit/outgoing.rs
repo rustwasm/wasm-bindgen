@@ -18,8 +18,15 @@ impl InstructionBuilder<'_, '_> {
         let input_before = self.input.len();
         let output_before = self.output.len();
         self._outgoing(arg)?;
-        assert_eq!(output_before + 1, self.output.len());
+
         assert!(input_before < self.input.len());
+        if let Descriptor::Result(arg) = arg {
+            if let Descriptor::Unit = &**arg {
+                assert_eq!(output_before, self.output.len());
+                return Ok(());
+            }
+        }
+        assert_eq!(output_before + 1, self.output.len());
         Ok(())
     }
 
@@ -35,14 +42,18 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Externref => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::Externref],
                 );
             }
             Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::NamedExternref(name.clone())],
                 );
             }
@@ -149,6 +160,7 @@ impl InstructionBuilder<'_, '_> {
             }
 
             Descriptor::Option(d) => self.outgoing_option(d)?,
+            Descriptor::Result(d) => self.outgoing_result(d)?,
 
             Descriptor::Function(_) | Descriptor::Closure(_) | Descriptor::Slice(_) => bail!(
                 "unsupported argument type for calling JS function from Rust: {:?}",
@@ -244,14 +256,18 @@ impl InstructionBuilder<'_, '_> {
                 // is the valid owned index.
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::Externref.option()],
                 );
             }
             Descriptor::NamedExternref(name) => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::ExternrefLoadOwned,
+                    Instruction::ExternrefLoadOwned {
+                        table_and_drop: None,
+                    },
                     &[AdapterType::NamedExternref(name.clone()).option()],
                 );
             }
@@ -337,6 +353,141 @@ impl InstructionBuilder<'_, '_> {
         Ok(())
     }
 
+    fn outgoing_result(&mut self, arg: &Descriptor) -> Result<(), Error> {
+        match arg {
+            Descriptor::Externref
+            | Descriptor::NamedExternref(_)
+            | Descriptor::I8
+            | Descriptor::U8
+            | Descriptor::I16
+            | Descriptor::U16
+            | Descriptor::I32
+            | Descriptor::U32
+            | Descriptor::F32
+            | Descriptor::F64
+            | Descriptor::I64
+            | Descriptor::U64
+            | Descriptor::Boolean
+            | Descriptor::Char
+            | Descriptor::Enum { .. }
+            | Descriptor::RustStruct(_)
+            | Descriptor::Ref(_)
+            | Descriptor::RefMut(_)
+            | Descriptor::CachedString
+            | Descriptor::Option(_)
+            | Descriptor::Vector(_)
+            | Descriptor::Unit => {
+                // We must throw before reading the Ok type, if there is an error. However, the
+                // structure of ResultAbi is that the Err value + discriminant come last (for
+                // alignment reasons). So the UnwrapResult instruction must come first, but the
+                // inputs must be read last.
+                //
+                // So first, push an UnwrapResult instruction without modifying the inputs list.
+                //
+                //     []
+                //     -------------------------<
+                //     UnwrapResult { popped: 2 }
+                //
+                self.instructions.push(InstructionData {
+                    instr: Instruction::UnwrapResult {
+                        table_and_drop: None,
+                    },
+                    stack_change: StackChange::Modified {
+                        popped: 2,
+                        pushed: 0,
+                    },
+                });
+
+                // Then push whatever else you were going to do, modifying the inputs and
+                // instructions.
+                //
+                //     [f64, u32, u32]
+                //     -------------------------<
+                //     UnwrapResult { popped: 2 }
+                //     SomeOtherInstruction { popped: 3 }
+                //
+                // The popped numbers don't add up yet (3 != 5), but they will.
+                let len = self.instructions.len();
+                self._outgoing(arg)?;
+
+                // check we did not add any deferred calls, because we have undermined the idea of
+                // running them unconditionally in a finally {} block. String does this, but we
+                // special case it.
+                assert!(!self.instructions[len..].iter().any(|idata| matches!(
+                    idata.instr,
+                    Instruction::Standard(wit_walrus::Instruction::DeferCallCore(_))
+                )));
+
+                // Finally, we add the two inputs to UnwrapResult, and everything checks out
+                //
+                //     [f64, u32, u32, u32, u32]
+                //     -------------------------<
+                //     UnwrapResult { popped: 2 }
+                //     SomeOtherInstruction { popped: 3 }
+                //
+                self.get(AdapterType::I32);
+                self.get(AdapterType::I32);
+            }
+            Descriptor::String => {
+                // fetch the ptr/length ...
+                self.get(AdapterType::I32);
+                self.get(AdapterType::I32);
+                // fetch the err/is_err
+                self.get(AdapterType::I32);
+                self.get(AdapterType::I32);
+
+                self.instructions.push(InstructionData {
+                    instr: Instruction::UnwrapResultString {
+                        table_and_drop: None,
+                    },
+                    stack_change: StackChange::Modified {
+                        // 2 from UnwrapResult, 2 from ptr/len
+                        popped: 4,
+                        // pushes the ptr/len back on
+                        pushed: 2,
+                    },
+                });
+
+                // ... then defer a call to `free` to happen later
+                // this will run string's DeferCallCore with the length parameter, but if is_err,
+                // then we have never written anything into that, so it is poison. So we'll have to
+                // make sure we call it with length 0, which according to __wbindgen_free's
+                // implementation is always safe. We do this in UnwrapResultString's
+                // implementation.
+                let free = self.cx.free()?;
+                let std = wit_walrus::Instruction::DeferCallCore(free);
+                self.instructions.push(InstructionData {
+                    instr: Instruction::Standard(std),
+                    stack_change: StackChange::Modified {
+                        popped: 2,
+                        pushed: 2,
+                    },
+                });
+
+                // ... and then convert it to a string type
+                let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
+                self.instructions.push(InstructionData {
+                    instr: Instruction::Standard(std),
+                    stack_change: StackChange::Modified {
+                        popped: 2,
+                        pushed: 1,
+                    },
+                });
+                self.output.push(AdapterType::String);
+            }
+
+            Descriptor::ClampedU8
+            | Descriptor::Function(_)
+            | Descriptor::Closure(_)
+            | Descriptor::Slice(_)
+            | Descriptor::Result(_) => bail!(
+                "unsupported Result type for returning from exported Rust function: {:?}",
+                arg
+            ),
+        }
+        Ok(())
+    }
+
     fn outgoing_option_ref(&mut self, _mutable: bool, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::Externref => {
@@ -400,6 +551,7 @@ impl InstructionBuilder<'_, '_> {
                 optional,
                 mem,
                 free,
+                table: None,
             },
             &[AdapterType::String],
         );

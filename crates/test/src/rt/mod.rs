@@ -87,7 +87,6 @@
 // Overall this is all somewhat in flux as it's pretty new, and feedback is
 // always of course welcome!
 
-use console_error_panic_hook;
 use js_sys::{Array, Function, Promise};
 use std::cell::{Cell, RefCell};
 use std::fmt;

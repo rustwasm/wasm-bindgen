@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub struct ColorWithGetter {
+pub struct ColorWithGetters {
     r: f64,
     _g: f64,
     _b: f64,
@@ -9,15 +9,20 @@ pub struct ColorWithGetter {
 }
 
 #[wasm_bindgen]
-impl ColorWithGetter {
+impl ColorWithGetters {
     #[wasm_bindgen(getter)]
     pub fn r(&self) -> f64 {
         self.r
     }
+
+    #[wasm_bindgen(getter)]
+    pub fn color_space() -> String {
+        "sRGB".to_owned()
+    }
 }
 
 #[wasm_bindgen]
-pub struct ColorWithSetter {
+pub struct ColorWithSetters {
     r: f64,
     _g: f64,
     _b: f64,
@@ -25,7 +30,7 @@ pub struct ColorWithSetter {
 }
 
 #[wasm_bindgen]
-impl ColorWithSetter {
+impl ColorWithSetters {
     #[wasm_bindgen(setter)]
     pub fn set_r(&mut self, r: f64) {
         self.r = r;
@@ -37,6 +42,9 @@ impl ColorWithSetter {
             (self.r * 255.0) as u8
         };
     }
+
+    #[wasm_bindgen(setter)]
+    pub fn set_color_space(_: String) {}
 }
 
 #[wasm_bindgen]
@@ -64,5 +72,24 @@ impl ColorWithGetterAndSetter {
         } else {
             (self.r * 255.0) as u8
         };
+    }
+}
+
+#[wasm_bindgen]
+pub struct ColorWithReadonly {
+    #[wasm_bindgen(readonly)]
+    pub r: f64,
+    #[wasm_bindgen(readonly)]
+    pub g: f64,
+    #[wasm_bindgen(readonly)]
+    pub b: f64,
+    pub a: u8,
+}
+
+#[wasm_bindgen]
+impl ColorWithReadonly {
+    #[wasm_bindgen(constructor)]
+    pub fn new(r: f64, g: f64, b: f64) -> ColorWithReadonly {
+        Self { r, b, g, a: 0 }
     }
 }
