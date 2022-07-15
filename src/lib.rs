@@ -8,7 +8,7 @@
 #![no_std]
 #![allow(coherence_leak_check)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
-
+use std::format;
 use core::convert::TryFrom;
 use core::fmt;
 use core::marker;
