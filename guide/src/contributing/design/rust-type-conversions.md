@@ -19,11 +19,27 @@ pub trait IntoWasmAbi: WasmDescribe {
 And that's it! This is actually the only trait needed currently for translating
 a Rust value to a JS one. There's a few points here:
 
-* We'll get to `WasmDescribe` later in this section
-* The associated type `Abi` is what will actually be generated as an argument to
-  the wasm export. The bound `WasmAbi` is only implemented for types like `u32`
-  and `f64`, those which can be placed on the boundary and transmitted
-  losslessly.
+* We'll get to `WasmDescribe` later in this section.
+
+* The associated type `Abi` is what will actually be generated as an argument /
+  return type for the `extern "C"` functions used to declare wasm imports/exports.
+  The bound `WasmAbi` is implemented for primitive types like `u32` and `f64`,
+  which can be represented directly as WebAssembly values, as well of a couple
+  of `#[repr(C)]` types like `WasmSlice`:
+
+  ```rust
+  #[repr(C)]
+  pub struct WasmSlice {
+      pub ptr: u32,
+      pub len: u32,
+  }
+  ```
+
+  This struct, which is how things like strings are represented in FFI, isn't
+  a WebAssembly primitive type and so isn't mapped directly to a WebAssembly
+  parameter / return value; instead, the C ABI flattens it out into two arguments
+  or stores it on the stack.
+
 * And finally we have the `into_abi` function, returning the `Abi` associated
   type which will be actually passed to JS.
 
