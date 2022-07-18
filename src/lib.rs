@@ -16,7 +16,6 @@ use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
 };
 use core::u32;
-use std::format;
 
 use crate::convert::{FromWasmAbi, WasmSlice};
 
@@ -1313,7 +1312,7 @@ pub trait UnwrapThrowExt<T>: Sized {
     fn unwrap_throw(self) -> T {
         let loc = core::panic::Location::caller();
         let msg = format!(
-            "`unwrap_throw` failed ({}:{}:{})",
+            "`unwrap_throw` failed (at {}:{}:{})",
             loc.file(),
             loc.line(),
             loc.column()
