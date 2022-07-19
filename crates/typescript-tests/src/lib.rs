@@ -1,5 +1,6 @@
 pub mod custom_section;
 pub mod getters_setters;
+pub mod inspectable;
 pub mod omit_definition;
 pub mod opt_args_and_ret;
 pub mod optional_fields;

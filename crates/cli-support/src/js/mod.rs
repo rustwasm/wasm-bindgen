@@ -948,6 +948,16 @@ impl<'a> Context<'a> {
                         format!("{}{name}: this.{name},\n", fields, name = field_name)
                     })
             ));
+            // Also add definitions to the .d.ts file.
+            ts_dst.push_str(
+                "\
+            /**\n*\
+            * Return copy of self without private attributes.\n\
+            */\n  toJSON(): Object;\n\
+            /**\n\
+            * Return stringified version of self.\n\
+            */\n  toString(): string;\n",
+            );
 
             if self.config.mode.nodejs() {
                 // `util.inspect` must be imported in Node.js to define [inspect.custom]
