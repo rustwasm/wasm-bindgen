@@ -1309,21 +1309,22 @@ pub fn anyref_heap_live_count() -> u32 {
 pub trait UnwrapThrowExt<T>: Sized {
     /// Unwrap this `Option` or `Result`, but instead of panicking on failure,
     /// throw an exception to JavaScript.
+    #[cfg(feature = "std")]
     #[track_caller]
     fn unwrap_throw(self) -> T {
         let loc = core::panic::Location::caller();
-        let mut msg = String::new();
-        core::fmt::write(
-            &mut msg,
-            core::format_args!(
-                "`unwrap_throw` failed (at {}:{}:{})",
-                loc.file(),
-                loc.line(),
-                loc.column()
-            ),
-        )
-        .expect("Error occurred while trying to write in String");
-        self.expect_throw(msg.as_str())
+        let msg = std::format!(
+            "`unwrap_throw` failed ({}:{}:{})",
+            loc.file(),
+            loc.line(),
+            loc.column()
+        );
+        self.expect_throw(&msg)
+    }
+
+    #[cfg(not(feature = "std"))]
+    fn unwrap_throw(self) -> T {
+        self.expect_throw("`unwrap_throw` failed")
     }
 
     /// Unwrap this container's `T` value, or throw an error to JS with the
