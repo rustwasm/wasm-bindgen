@@ -17,7 +17,6 @@ use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
 };
 use core::u32;
-use std::format;
 
 use crate::convert::{FromWasmAbi, WasmSlice};
 
@@ -1313,12 +1312,17 @@ pub trait UnwrapThrowExt<T>: Sized {
     #[track_caller]
     fn unwrap_throw(self) -> T {
         let loc = core::panic::Location::caller();
-        let msg = format!(
-            "`unwrap_throw` failed (at {}:{}:{})",
-            loc.file(),
-            loc.line(),
-            loc.column()
-        );
+        let mut msg = String::new();
+        core::fmt::write(
+            &mut msg,
+            core::format_args!(
+                "`unwrap_throw` failed (at {}:{}:{})",
+                loc.file(),
+                loc.line(),
+                loc.column()
+            ),
+        )
+        .expect("Error occurred while trying to write in String");
         self.expect_throw(msg.as_str())
     }
 
