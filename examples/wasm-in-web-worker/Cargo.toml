@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.81"
+wasm-bindgen = "0.2.82"
 console_error_panic_hook = { version = "0.1.6", optional = true }
 
 [dependencies.web-sys]
