@@ -396,6 +396,14 @@ async fn test_example(path: &Path) -> anyhow::Result<()> {
     result
 }
 
+fn run(command: &mut Command) -> anyhow::Result<()> {
+    let status = command.status()?;
+    if !status.success() {
+        bail!("build failed")
+    }
+    Ok(())
+}
+
 async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
     let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
     let path: PathBuf = [manifest_dir, "examples".as_ref(), name.as_ref()]
@@ -429,13 +437,7 @@ async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
         .map(|_| ())
         .or_else(allow_already_exists)?;
 
-        let status = Command::new("npm")
-            .arg("install")
-            .current_dir(manifest_dir)
-            .status()?;
-        if !status.success() {
-            bail!("install failed");
-        }
+        run(Command::new("npm").arg("install").current_dir(manifest_dir))?;
 
         fs::remove_file(manifest_dir.join("package.json"))?;
 
@@ -446,14 +448,10 @@ async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
     drop(installed);
 
     // Build the example.
-    let status = Command::new("npm")
+    run(Command::new("npm")
         .arg("run")
         .arg("build")
-        .current_dir(&path)
-        .status()?;
-    if !status.success() {
-        bail!("build failed");
-    }
+        .current_dir(&path))?;
 
     test_example(&path.join("dist")).await
 }
@@ -494,4 +492,55 @@ webpack_tests! {
     webrtc_datachannel = "webrtc_datachannel",
     // WebXR isn't supported in Firefox yet
     // webxr = "webxr",
+}
+
+#[cfg(unix)]
+async fn test_shell_example(name: &str) -> anyhow::Result<()> {
+    let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", name]
+        .iter()
+        .copied()
+        .collect();
+    run(Command::new(path.join("build.sh")).current_dir(&path))?;
+    test_example(&path).await
+}
+
+#[cfg(unix)]
+macro_rules! shell_tests {
+    ($($test:ident = $name:literal,)*) => {
+        $(
+            #[tokio::test]
+            async fn $test() {
+                test_shell_example($name).await.unwrap();
+            }
+        )*
+    };
+}
+
+// Since these run on shell scripts, they won't work outside Unix-based OSes.
+#[cfg(unix)]
+shell_tests! {
+    // This requires module workers, which Firefox doesn't support yet.
+    // synchronous_instantiation = "synchronous-instantiation", target = "web",
+    wasm2js = "wasm2js",
+    wasm_in_web_worker = "wasm-in-web-worker",
+    websockets = "websockets",
+    without_a_bundler = "without-a-bundler",
+    without_a_bundler_no_modules = "without-a-bundler-no-modules",
+}
+
+#[cfg(unix)]
+#[tokio::test]
+async fn raytrace_parallel() {
+    let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", "raytrace-parallel"]
+        .iter()
+        .copied()
+        .collect();
+
+    run(Command::new(path.join("build.sh"))
+        .current_dir(&path)
+        // This requires nightly.
+        .env("RUSTUP_TOOLCHAIN", "nightly"))
+    .unwrap();
+
+    test_example(&path).await.unwrap();
 }

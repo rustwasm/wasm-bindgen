@@ -21,5 +21,3 @@ cargo run -p wasm-bindgen-cli -- \
   ../../target/wasm32-unknown-unknown/release/raytrace_parallel.wasm \
   --out-dir . \
   --target no-modules
-
-python3 server.py

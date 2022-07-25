@@ -112,7 +112,7 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '16'
-    - run: cargo test
+    - run: cargo test --exclude examples # We run the example tests later using the artifacts from `build_examples`.
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
     - run: cargo test -p wasm-bindgen-externref-xform
@@ -228,10 +228,12 @@ jobs:
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
     - run: mv _package.json package.json && npm install && rm package.json
     - run: |
-        for dir in `ls examples | grep -v README | grep -v raytrace | grep -v without-a-bundler | grep -v wasm-in-web-worker | grep -v websockets | grep -v webxr | grep -v deno | grep -v synchronous-instantiation`; do
+        for dir in `ls examples | grep -v README | grep -v raytrace | grep -v webxr | grep -v deno | grep -v synchronous-instantiation`; do
           (cd examples/$dir &&
-          ln -fs ../../node_modules . &&
-          npm run build -- --output-path ../../exbuild/$dir) || exit 1;
+            ln -fs ../../node_modules . &&
+            (npm run build -- --output-path ../../exbuild/$dir ||
+              (./build.sh && cp -r ./* ../../exbuild/$dir))
+          ) || exit 1;
         done
     - uses: actions/upload-artifact@v2
       with:
@@ -246,7 +248,6 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
     - run: |
-        sed -i 's/python/#python/' examples/raytrace-parallel/build.sh
         (cd examples/raytrace-parallel && ./build.sh)
         mkdir exbuild
         cp examples/raytrace-parallel/*.{js,html,wasm} exbuild
