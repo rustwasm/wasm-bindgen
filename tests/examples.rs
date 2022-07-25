@@ -492,5 +492,6 @@ webpack_tests! {
     webaudio = "webaudio",
     webgl = "webgl",
     webrtc_datachannel = "webrtc_datachannel",
-    webxr = "webxr",
+    // WebXR isn't supported in Firefox yet
+    // webxr = "webxr",
 }
