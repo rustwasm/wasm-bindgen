@@ -1322,7 +1322,7 @@ pub trait UnwrapThrowExt<T>: Sized {
         self.expect_throw(&msg)
     }
 
-    #[cfg(not(feature = "std"))]
+    #[cfg(not(all(feature = "std", debug_assertions)))]
     fn unwrap_throw(self) -> T {
         self.expect_throw("`unwrap_throw` failed")
     }
