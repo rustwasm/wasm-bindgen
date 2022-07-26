@@ -1309,7 +1309,7 @@ pub fn anyref_heap_live_count() -> u32 {
 pub trait UnwrapThrowExt<T>: Sized {
     /// Unwrap this `Option` or `Result`, but instead of panicking on failure,
     /// throw an exception to JavaScript.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", debug_assertions))]
     #[track_caller]
     fn unwrap_throw(self) -> T {
         let loc = core::panic::Location::caller();
