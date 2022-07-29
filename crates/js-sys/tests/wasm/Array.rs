@@ -595,6 +595,15 @@ fn Int32Array_view_mut_raw() {
 }
 
 #[wasm_bindgen_test]
+fn BigInt64Array_view_mut_raw() {
+    test_array_view_mut_raw(
+        js_sys::BigInt64Array::view_mut_raw,
+        i64::from,
+        JsValue::from,
+    );
+}
+
+#[wasm_bindgen_test]
 fn Uint8Array_view_mut_raw() {
     test_array_view_mut_raw(js_sys::Uint8Array::view_mut_raw, u8::from, JsValue::from);
 }
@@ -616,6 +625,15 @@ fn Uint16Array_view_mut_raw() {
 #[wasm_bindgen_test]
 fn Uint32Array_view_mut_raw() {
     test_array_view_mut_raw(js_sys::Uint32Array::view_mut_raw, u32::from, JsValue::from);
+}
+
+#[wasm_bindgen_test]
+fn BigUint64Array_view_mut_raw() {
+    test_array_view_mut_raw(
+        js_sys::BigUint64Array::view_mut_raw,
+        u64::from,
+        JsValue::from,
+    );
 }
 
 #[wasm_bindgen_test]

@@ -5854,9 +5854,9 @@ arrays! {
 
     /// `BigInt64Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array
-    BigInt64Array: BigInt,
+    BigInt64Array: i64,
 
     /// `BigUint64Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array
-    BigUint64Array: BigInt,
+    BigUint64Array: u64,
 }
