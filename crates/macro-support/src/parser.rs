@@ -447,18 +447,47 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemTrait {
             _ => bail_span!(self, "can only #[wasm_bindgen] public traits"),
         }
 
+        let mut supertraits = Vec::new();
         for supertrait in self.supertraits.iter() {
-            
+            match supertrait {
+                syn::TypeParamBound::Trait(t) => supertraits.push(extract_path_ident(&t.path)?),
+                _ => panic!("Why is the type parameter on the supertrait not a trait?")
+            }
         }
 
-        let mut methods = Vec::new();
         let js_name = attrs
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
+
+        let mut methods = Vec::new();
         for item in self.items.iter_mut() {
             match item {
                 syn::TraitItem::Method(method) => {
+                    let attrs = BindgenAttrs::find(&mut method.attrs)?;
+                    assert_not_variadic(&attrs)?;
+                    if attrs.skip().is_some() {
+                        attrs.check_used()?;
+                        continue;
+                    }
+
+                    if method.default.is_some() {
+                        bail_span!(method.default, "default methods are not supported");
+                    }
+                    if method.sig.unsafety.is_some() {
+                        bail_span!(method.sig.unsafety, "can only bindgen safe functions",);
+                    }
+                    if attrs.constructor().is_some() {
+                        panic!("traits can't define constructors")
+                    }
+
+                    let (js_name, rust_name) = (method.sig.ident.to_string(), method.sig.ident.clone());
+                    let js_name = match attrs.js_name() {
+                        Some((name, _)) => name.to_string(),
+                        None => js_name,
+                    };
+
+                    let comments = extract_doc_comments(&method.attrs);
                     let (function, method_self) = function_from_decl(
                         &method.sig.ident,
                         &attrs,
@@ -468,23 +497,23 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemTrait {
                         true,
                         Some(&self.ident),
                     )?;
-                    let comments = extract_doc_comments(&method.attrs);
-                    let method_kind = if attrs.constructor().is_some() {
-                        ast::MethodKind::Constructor
-                    } else {
+
+                    let method_kind = {
                         let is_static = method_self.is_none();
                         let kind = operation_kind(&attrs);
                         ast::MethodKind::Operation(ast::Operation { is_static, kind })
                     };
 
                     methods.push(ast::TraitMethod {
-                        rust_name: method.sig.ident.clone(),
+                        rust_name,
+                        js_name,
                         trait_name: self.ident.clone(),
                         function,
                         method_self,
                         method_kind,
                         comments,
                     });
+                    attrs.check_used()?;
                 }
                 _ => {}
             }
@@ -498,6 +527,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemTrait {
             methods,
             comments,
             generate_typescript,
+            supertraits
         })
     }
 }

@@ -396,8 +396,8 @@ pub struct Trait {
     pub comments: Vec<String>,
     /// Whether to generate a typescript definition for this trait
     pub generate_typescript: bool,
-    /// The supertraits of this trait
-    pub supertraits: Vec<Trait>,
+    /// The supertraits of this trait, if provided
+    pub supertraits: Vec<Ident>,
 }
 
 /// The method signature of a trait
@@ -414,8 +414,10 @@ pub struct TraitMethod {
     pub method_self: Option<MethodSelf>,
     /// The trait name, in Rust, this is attached to
     pub trait_name: Ident,
-    /// The name of the rust method on the rust side.
+    /// The name of the method on the rust side.
     pub rust_name: Ident,
+    /// The name of the method in JS code
+    pub js_name: String,
 }
 
 /// Unused, the type of an argument to / return from a function

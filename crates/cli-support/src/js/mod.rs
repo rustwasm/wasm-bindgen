@@ -1,4 +1,4 @@
-use crate::descriptor::VectorKind;
+use crate::descriptor::{VectorKind, Function};
 use crate::intrinsic::Intrinsic;
 use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
 use crate::wit::{AdapterKind, Instruction, InstructionData};
@@ -3339,7 +3339,7 @@ impl<'a> Context<'a> {
         if trait_.generate_typescript {
             self.typescript.push_str(&docs);
             self.typescript
-                .push_str(&format!("export interface {}Trait {{", trait_.name));
+                .push_str(&format!("interface __wbindgen_{}Trait {{", trait_.name));
             interface.push_str(&docs);
             interface.push_str(&format!("export interface {} {{", trait_.name));
         }
@@ -3370,12 +3370,13 @@ impl<'a> Context<'a> {
             if trait_.generate_typescript {
                 self.typescript.push_str("\n");
                 self.typescript.push_str(&format_doc_comments(
-                    &format!("Symbol for the {} method", name),
+                    &format!(" Symbol for the {} method", name),
                     None,
                 ));
                 self.typescript
                     .push_str(&format!("  readonly {}: unique symbol;", name));
                 interface.push_str("\n");
+                
                 //How do I generate ts sig for this?
                 //interface.push_str()
             }
@@ -3383,7 +3384,7 @@ impl<'a> Context<'a> {
         if trait_.generate_typescript {
             self.typescript.push_str("\n}\n");
             self.typescript.push_str(&format!(
-                "declare var {name}: {name}Trait;\n",
+                "export const {name}: __wbindgen_{name}Trait;\n",
                 name = trait_.name
             ));
             self.typescript.push_str(&interface);
