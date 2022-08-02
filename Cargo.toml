@@ -48,7 +48,7 @@ serde_derive = "1.0"
 wasm-bindgen-test-crate-a = { path = 'tests/crates/a', version = '0.1' }
 wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
 
-[dev-dependencies]
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 anyhow = "1.0.58"
 futures-util = { version = "0.3.21", features = ["sink"] }
 hyper = { version = "0.14.20", features = ["server", "tcp", "http1"] }
