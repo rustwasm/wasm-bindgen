@@ -174,8 +174,8 @@ impl WebDriver {
             match tokio_tungstenite::connect_async(format!("ws://{driver_addr}/session")).await {
                 Ok((ws, _)) => break ws,
                 Err(e) => {
-                    if start.elapsed() > Duration::from_secs(10) {
-                        return Err(e).context("failed to connect to Firefox (after 10s)");
+                    if start.elapsed() > Duration::from_secs(20) {
+                        return Err(e).context("failed to connect to Firefox (after 20s)");
                     }
                 }
             }
