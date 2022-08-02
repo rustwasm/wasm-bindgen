@@ -225,7 +225,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
     - run: |
-        curl https://github.com/WebAssembly/binaryen/releases/download/version_109/binaryen-version_109-x86_64-linux.tar.gz -sSf > binaryen-version_109-x86_64-linux.tar.gz
+        curl -L https://github.com/WebAssembly/binaryen/releases/download/version_109/binaryen-version_109-x86_64-linux.tar.gz -sSf > binaryen-version_109-x86_64-linux.tar.gz
         tar -xz -f binaryen-version_109-x86_64-linux.tar.gz
         export PATH="binaryen-version_109/bin:$PATH"
     - run: |
