@@ -10,6 +10,7 @@ use std::io::ErrorKind;
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
+use std::sync::Once;
 use std::time::{Duration, Instant};
 use std::{env, io, str};
 
@@ -22,7 +23,7 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tokio::net::TcpStream;
-use tokio::sync::{oneshot, Mutex};
+use tokio::sync::oneshot;
 use tokio::time::timeout;
 use tokio_tungstenite::tungstenite::{self, Message};
 use tokio_tungstenite::{MaybeTlsStream, WebSocketStream};
@@ -424,32 +425,22 @@ async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
         }
 
         // All of the examples have the same dependencies, so we can just install
-        // to the root `node_modules`, since Node resolves packages from any outer
-        // directories as well as the one containing the `package.json`.
-
-        static INSTALLED: Mutex<bool> = Mutex::const_new(false);
-
-        // We lock this while installing so that by the time other threads read it
-        // as `true`, the actual installation is done.
-        let mut installed = INSTALLED.blocking_lock();
-
-        if !*installed {
+        // to the root `node_modules` once, since Node resolves packages from any
+        // outer directories as well as the one containing the `package.json`.
+        static INSTALL: Once = Once::new();
+        INSTALL.call_once(|| {
             fs::copy(
                 manifest_dir.join("_package.json"),
                 manifest_dir.join("package.json"),
             )
             .map(|_| ())
-            .or_else(allow_already_exists)?;
+            .or_else(allow_already_exists)
+            .unwrap();
 
-            run(Command::new("npm").arg("install").current_dir(manifest_dir))?;
+            run(Command::new("npm").arg("install").current_dir(manifest_dir)).unwrap();
 
-            fs::remove_file(manifest_dir.join("package.json"))?;
-
-            *installed = true;
-        }
-
-        // release the lock
-        drop(installed);
+            fs::remove_file(manifest_dir.join("package.json")).unwrap();
+        });
 
         // Build the example.
         run(Command::new("npm")
