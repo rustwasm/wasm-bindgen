@@ -112,7 +112,8 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '16'
-    - run: cargo test --exclude examples # We run the example tests later using the artifacts from `build_examples`.
+    # Run everything except the example tests; we run them later in `test_examples`.
+    - run: cargo test --test headless --test no_std --test wasm --test must_use --test std-crate-no-std-dep
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
     - run: cargo test -p wasm-bindgen-externref-xform

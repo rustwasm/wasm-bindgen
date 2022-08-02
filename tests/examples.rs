@@ -1,3 +1,5 @@
+#![cfg(not(target_arch = "wasm32"))]
+
 //! A test that none of our examples are broken, by opening them in a browser
 //! and checking that no errors get logged to the console.
 //!
