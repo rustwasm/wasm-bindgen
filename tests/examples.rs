@@ -1,5 +1,7 @@
 //! A test that none of our examples are broken, by opening them in a browser
 //! and checking that no errors get logged to the console.
+//!
+//! This currently only attempts to use Firefox.
 
 use std::collections::VecDeque;
 use std::fmt::{self, Display, Formatter, Write};
@@ -127,7 +129,7 @@ struct WebDriver {
     /// The WebSocket we're connected to the WebDriver implementation with.
     ws: WebSocketStream<MaybeTlsStream<TcpStream>>,
     /// The WebDriver process.
-    process: Option<FirefoxProcess>,
+    process: FirefoxProcess,
     /// The ID that will be used for the next command.
     next_id: u64,
     /// Unyielded events.
@@ -136,40 +138,32 @@ struct WebDriver {
 
 impl Drop for WebDriver {
     fn drop(&mut self) {
-        if let Some(process) = &mut self.process {
-            process.kill().unwrap();
-        }
+        self.process.kill().unwrap();
     }
 }
 
 impl WebDriver {
     async fn new() -> anyhow::Result<Self> {
-        let (driver_addr, process) = if let Ok(driver_addr) = env::var("WEBDRIVER") {
-            (driver_addr, None)
-        } else {
-            // Make the OS assign us a random port by asking for port 0.
-            let driver_addr = TcpListener::bind("127.0.0.1:0")?.local_addr()?;
+        // Make the OS assign us a random port by asking for port 0.
+        let driver_addr = TcpListener::bind("127.0.0.1:0")?.local_addr()?;
 
-            // For the moment, we're only supporting Firefox here.
-            let mut builder = FirefoxRunner::new(
-                &firefox_default_path().context("failed to find firefox installation")?,
-                Some(Profile::new()?),
-            );
-            builder
-                .arg("--remote-debugging-port")
-                .arg(driver_addr.port().to_string())
-                .arg("--headless")
-                .stdout(Stdio::null())
-                .stderr(Stdio::null());
-            let process = builder
-                .start()
-                // `mozprofile` doesn't guarantee that its errors are `Send + Sync`,
-                // which means that they can't be converted to `anyhow::Error`.
-                // So, convert them to strings as a workaround.
-                .map_err(|e| anyhow::Error::msg(e.to_string()))?;
-
-            (driver_addr.to_string(), Some(process))
-        };
+        // For the moment, we're only supporting Firefox here.
+        let mut builder = FirefoxRunner::new(
+            &firefox_default_path().context("failed to find Firefox installation")?,
+            Some(Profile::new()?),
+        );
+        builder
+            .arg("--remote-debugging-port")
+            .arg(driver_addr.port().to_string())
+            .arg("--headless")
+            .stdout(Stdio::null())
+            .stderr(Stdio::null());
+        let process = builder
+            .start()
+            // `mozprofile` doesn't guarantee that its errors are `Send + Sync`,
+            // which means that they can't be converted to `anyhow::Error`.
+            // So, convert them to strings as a workaround.
+            .map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
         // Connect to the Firefox instance.
         let start = Instant::now();
