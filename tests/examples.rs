@@ -520,7 +520,7 @@ macro_rules! shell_tests {
 #[cfg(unix)]
 shell_tests! {
     // This requires module workers, which Firefox doesn't support yet.
-    // synchronous_instantiation = "synchronous-instantiation", target = "web",
+    // synchronous_instantiation = "synchronous-instantiation"
     wasm2js = "wasm2js",
     wasm_in_web_worker = "wasm-in-web-worker",
     websockets = "websockets",

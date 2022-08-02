@@ -228,7 +228,7 @@ jobs:
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
     - run: mv _package.json package.json && npm install && rm package.json
     - run: |
-        for dir in `ls examples | grep -v README | grep -v raytrace | grep -v webxr | grep -v deno | grep -v synchronous-instantiation`; do
+        for dir in `ls examples | grep -v README | grep -v raytrace | grep -v deno; do
           (cd examples/$dir &&
             ln -fs ../../node_modules . &&
             (npm run build -- --output-path ../../exbuild/$dir ||
