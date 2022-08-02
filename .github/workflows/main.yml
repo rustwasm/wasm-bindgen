@@ -256,6 +256,21 @@ jobs:
         name: examples2
         path: exbuild
 
+  test_examples:
+    needs:
+    - build_examples
+    - build_raytrace
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v3
+      with:
+        name: exbuild
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: cargo test --test examples
+      env:
+        EXBUILD: exbuild
+
   build_benchmarks:
     runs-on: ubuntu-latest
     steps:

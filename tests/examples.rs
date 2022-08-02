@@ -252,7 +252,16 @@ impl WebDriver {
 
 /// Run a single example example being served with the passed name at the passed
 /// URL.
-async fn test_example(path: &Path) -> anyhow::Result<()> {
+async fn test_example(
+    name: &str,
+    build: impl FnOnce() -> anyhow::Result<PathBuf>,
+) -> anyhow::Result<()> {
+    let path = if let Some(value) = env::var_os("EXBUILD") {
+        Path::new(&value).join(name)
+    } else {
+        build()?
+    };
+
     let mut driver = WebDriver::new().await?;
 
     // Serve the path.
@@ -399,55 +408,58 @@ fn run(command: &mut Command) -> anyhow::Result<()> {
 }
 
 async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
-    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let path: PathBuf = [manifest_dir, "examples".as_ref(), name.as_ref()]
-        .iter()
-        .copied()
-        .collect();
+    test_example(name, || {
+        let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+        let path: PathBuf = [manifest_dir, "examples".as_ref(), name.as_ref()]
+            .iter()
+            .copied()
+            .collect();
 
-    fn allow_already_exists(e: io::Error) -> io::Result<()> {
-        if e.kind() == ErrorKind::AlreadyExists {
-            Ok(())
-        } else {
-            Err(e)
+        fn allow_already_exists(e: io::Error) -> io::Result<()> {
+            if e.kind() == ErrorKind::AlreadyExists {
+                Ok(())
+            } else {
+                Err(e)
+            }
         }
-    }
 
-    // All of the examples have the same dependencies, so we can just install
-    // to the root `node_modules`, since Node resolves packages from any outer
-    // directories as well as the one containing the `package.json`.
+        // All of the examples have the same dependencies, so we can just install
+        // to the root `node_modules`, since Node resolves packages from any outer
+        // directories as well as the one containing the `package.json`.
 
-    static INSTALLED: Mutex<bool> = Mutex::const_new(false);
+        static INSTALLED: Mutex<bool> = Mutex::const_new(false);
 
-    // We lock this while installing so that by the time other threads read it
-    // as `true`, the actual installation is done.
-    let mut installed = INSTALLED.lock().await;
+        // We lock this while installing so that by the time other threads read it
+        // as `true`, the actual installation is done.
+        let mut installed = INSTALLED.blocking_lock();
 
-    if !*installed {
-        fs::copy(
-            manifest_dir.join("_package.json"),
-            manifest_dir.join("package.json"),
-        )
-        .map(|_| ())
-        .or_else(allow_already_exists)?;
+        if !*installed {
+            fs::copy(
+                manifest_dir.join("_package.json"),
+                manifest_dir.join("package.json"),
+            )
+            .map(|_| ())
+            .or_else(allow_already_exists)?;
 
-        run(Command::new("npm").arg("install").current_dir(manifest_dir))?;
+            run(Command::new("npm").arg("install").current_dir(manifest_dir))?;
 
-        fs::remove_file(manifest_dir.join("package.json"))?;
+            fs::remove_file(manifest_dir.join("package.json"))?;
 
-        *installed = true;
-    }
+            *installed = true;
+        }
 
-    // release the lock
-    drop(installed);
+        // release the lock
+        drop(installed);
 
-    // Build the example.
-    run(Command::new("npm")
-        .arg("run")
-        .arg("build")
-        .current_dir(&path))?;
+        // Build the example.
+        run(Command::new("npm")
+            .arg("run")
+            .arg("build")
+            .current_dir(&path))?;
 
-    test_example(&path.join("dist")).await
+        Ok(path.join("dist"))
+    })
+    .await
 }
 
 macro_rules! webpack_tests {
@@ -490,12 +502,15 @@ webpack_tests! {
 
 #[cfg(unix)]
 async fn test_shell_example(name: &str) -> anyhow::Result<()> {
-    let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", name]
-        .iter()
-        .copied()
-        .collect();
-    run(Command::new(path.join("build.sh")).current_dir(&path))?;
-    test_example(&path).await
+    test_example(name, || {
+        let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", name]
+            .iter()
+            .copied()
+            .collect();
+        run(Command::new(path.join("build.sh")).current_dir(&path))?;
+        Ok(path)
+    })
+    .await
 }
 
 #[cfg(unix)]
@@ -525,16 +540,20 @@ shell_tests! {
 #[cfg(unix)]
 #[tokio::test]
 async fn raytrace_parallel() {
-    let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", "raytrace-parallel"]
-        .iter()
-        .copied()
-        .collect();
+    test_example("raytrace-parallel", || {
+        let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", "raytrace-parallel"]
+            .iter()
+            .copied()
+            .collect();
 
-    run(Command::new(path.join("build.sh"))
-        .current_dir(&path)
-        // This requires nightly.
-        .env("RUSTUP_TOOLCHAIN", "nightly"))
+        run(Command::new(path.join("build.sh"))
+            .current_dir(&path)
+            // This requires nightly.
+            .env("RUSTUP_TOOLCHAIN", "nightly"))
+        .unwrap();
+
+        Ok(path)
+    })
+    .await
     .unwrap();
-
-    test_example(&path).await.unwrap();
 }
