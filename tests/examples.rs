@@ -456,8 +456,12 @@ async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
 }
 
 macro_rules! webpack_tests {
-    ($($test:ident = $name:literal,)*) => {
+    ($(
+        $(#[$attr:meta])*
+        $test:ident = $name:literal,
+    )*) => {
         $(
+            $(#[$attr])*
             #[tokio::test]
             async fn $test() {
                 test_webpack_example($name).await.unwrap();
@@ -487,10 +491,11 @@ webpack_tests! {
     wasm_in_wasm = "wasm-in-wasm",
     weather_report = "weather_report",
     webaudio = "webaudio",
+    #[ignore = "The CI virtual machines don't have GPUs, so this doesn't work there."]
     webgl = "webgl",
     webrtc_datachannel = "webrtc_datachannel",
-    // WebXR isn't supported in Firefox yet
-    // webxr = "webxr",
+    #[ignore = "WebXR isn't supported in Firefox yet"]
+    webxr = "webxr",
 }
 
 #[cfg(unix)]
@@ -508,8 +513,12 @@ async fn test_shell_example(name: &str) -> anyhow::Result<()> {
 
 #[cfg(unix)]
 macro_rules! shell_tests {
-    ($($test:ident = $name:literal,)*) => {
+    ($(
+        $(#[$attr:meta])*
+        $test:ident = $name:literal,
+    )*) => {
         $(
+            $(#[$attr])*
             #[tokio::test]
             async fn $test() {
                 test_shell_example($name).await.unwrap();
@@ -521,8 +530,8 @@ macro_rules! shell_tests {
 // Since these run on shell scripts, they won't work outside Unix-based OSes.
 #[cfg(unix)]
 shell_tests! {
-    // This requires module workers, which Firefox doesn't support yet.
-    // synchronous_instantiation = "synchronous-instantiation"
+    #[ignore = "This requires module workers, which Firefox doesn't support yet."]
+    synchronous_instantiation = "synchronous-instantiation",
     wasm2js = "wasm2js",
     wasm_in_web_worker = "wasm-in-web-worker",
     websockets = "websockets",
