@@ -239,6 +239,8 @@ jobs:
               (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir))
           ) || exit 1;
         done
+      env:
+        RUSTFLAGS: --cfg=web_sys_unstable_apis
     - uses: actions/upload-artifact@v2
       with:
         name: examples1
