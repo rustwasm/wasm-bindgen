@@ -233,7 +233,7 @@ jobs:
           (cd examples/$dir &&
             ln -fs ../../node_modules . &&
             (npm run build -- --output-path ../../exbuild/$dir ||
-              (./build.sh && cp -r ./* ../../exbuild/$dir))
+              (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir))
           ) || exit 1;
         done
     - uses: actions/upload-artifact@v2
