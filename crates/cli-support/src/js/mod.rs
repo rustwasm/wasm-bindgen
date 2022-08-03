@@ -614,16 +614,19 @@ impl<'a> Context<'a> {
         } else {
             declare_or_export = "export";
 
-            sync_init_function.push_str(&format!("\
+            sync_init_function.push_str(&format!(
+                "\
+                {declare_or_export} type SyncInitInput = BufferSource | WebAssembly.Module;\n\
                 /**\n\
-                * Synchronously compiles the given `bytes` and instantiates the WebAssembly module.\n\
+                * Instantiates the given `module`, which can either be bytes or\n\
+                * a precompiled `WebAssembly.Module`.\n\
                 *\n\
-                * @param {{BufferSource}} bytes\n\
+                * @param {{SyncInitInput}} module\n\
                 {memory_doc}\
                 *\n\
                 * @returns {{InitOutput}}\n\
                 */\n\
-                export function initSync(bytes: BufferSource{memory_param}): InitOutput;\n\n\
+                export function initSync(module: SyncInitInput{memory_param}): InitOutput;\n\n\
                 ",
                 memory_doc = memory_doc,
                 memory_param = memory_param
@@ -836,12 +839,15 @@ impl<'a> Context<'a> {
                     return wasm;
                 }}
 
-                function initSync(bytes{init_memory_arg}) {{
+                function initSync(module{init_memory_arg}) {{
                     const imports = getImports();
 
                     initMemory(imports{init_memory_arg});
 
-                    const module = new WebAssembly.Module(bytes);
+                    if (!(module instanceof WebAssembly.Module)) {{
+                        module = new WebAssembly.Module(module);
+                    }}
+
                     const instance = new WebAssembly.Instance(module, imports);
 
                     return finalizeInit(instance, module);
