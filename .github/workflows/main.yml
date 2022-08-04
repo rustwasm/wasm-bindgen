@@ -113,7 +113,7 @@ jobs:
       with:
         node-version: '16'
     # Run everything except the example tests; we run them later in `test_examples`.
-    - run: cargo test --test must_use --test non_wasm --test std-crate-no-std-dep --test unwrap_throw
+    - run: RUSTFLAGS="--cfg=disable_example_tests" cargo test
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
     - run: cargo test -p wasm-bindgen-externref-xform

@@ -1,4 +1,4 @@
-#![cfg(not(target_arch = "wasm32"))]
+#![cfg(not(any(target_arch = "wasm32", disable_example_tests)))]
 
 //! A test that none of our examples are broken, by opening them in a browser
 //! and checking that no errors get logged to the console.
