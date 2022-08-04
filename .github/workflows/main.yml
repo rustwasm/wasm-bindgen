@@ -276,7 +276,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: examples2
-        path: exbuild
+        path: exbuild/raytrace-parallel
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo test --test examples
       env:
