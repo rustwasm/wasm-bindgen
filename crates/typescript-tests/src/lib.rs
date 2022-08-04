@@ -7,5 +7,6 @@ pub mod simple_async_fn;
 pub mod simple_fn;
 pub mod simple_struct;
 pub mod simple_trait;
+pub mod supertrait;
 pub mod typescript_type;
 pub mod web_sys;
