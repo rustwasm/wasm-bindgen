@@ -33,6 +33,7 @@ pub mod jscast;
 pub mod math;
 pub mod no_shims;
 pub mod node;
+pub mod intrinsics;
 pub mod option;
 pub mod optional_primitives;
 pub mod result;
