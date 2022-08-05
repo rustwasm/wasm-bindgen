@@ -1,20 +1,10 @@
-#![cfg(not(any(target_arch = "wasm32", disable_example_tests)))]
-
-//! A test that none of our examples are broken, by opening them in a browser
-//! and checking that no errors get logged to the console.
-//!
-//! This currently only attempts to use Firefox.
-
 use std::collections::VecDeque;
 use std::fmt::{self, Display, Formatter, Write};
-use std::fs;
-use std::io::ErrorKind;
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use std::sync::Once;
 use std::time::{Duration, Instant};
-use std::{env, io, str};
+use std::{env, str};
 
 use anyhow::{bail, Context};
 use futures_util::{future, SinkExt, StreamExt};
@@ -253,9 +243,9 @@ impl WebDriver {
     }
 }
 
-/// Run a single example example being served with the passed name at the passed
-/// URL.
-async fn test_example(
+/// Run a single example with the passed name, using the passed closure to
+/// build it if prebuilt examples weren't provided.
+pub async fn test_example(
     name: &str,
     build: impl FnOnce() -> anyhow::Result<PathBuf>,
 ) -> anyhow::Result<()> {
@@ -402,160 +392,33 @@ async fn test_example(
     result
 }
 
-fn run(command: &mut Command) -> anyhow::Result<()> {
+pub fn run(command: &mut Command) -> anyhow::Result<()> {
+    // Format the command to use in errors.
+    let mut cmdline = command.get_program().to_string_lossy().to_string();
+    for arg in command.get_args().map(|arg| arg.to_string_lossy()) {
+        cmdline += " ";
+        cmdline += &arg;
+    }
+
     let status = command.status()?;
     if !status.success() {
-        bail!("build failed")
+        bail!("`{cmdline}` failed with {status}");
     }
     Ok(())
 }
 
-async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
-    test_example(name, || {
-        let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
-        let path: PathBuf = [manifest_dir, "examples".as_ref(), name.as_ref()]
-            .iter()
-            .copied()
-            .collect();
-
-        fn allow_already_exists(e: io::Error) -> io::Result<()> {
-            if e.kind() == ErrorKind::AlreadyExists {
-                Ok(())
-            } else {
-                Err(e)
-            }
-        }
-
-        // All of the examples have the same dependencies, so we can just install
-        // to the root `node_modules` once, since Node resolves packages from any
-        // outer directories as well as the one containing the `package.json`.
-        static INSTALL: Once = Once::new();
-        INSTALL.call_once(|| {
-            fs::copy(
-                manifest_dir.join("_package.json"),
-                manifest_dir.join("package.json"),
-            )
-            .map(|_| ())
-            .or_else(allow_already_exists)
-            .unwrap();
-
-            run(Command::new("npm").arg("install").current_dir(manifest_dir)).unwrap();
-
-            fs::remove_file(manifest_dir.join("package.json")).unwrap();
-        });
-
-        // Build the example.
-        run(Command::new("npm")
-            .arg("run")
-            .arg("build")
-            .current_dir(&path))?;
-
-        Ok(path.join("dist"))
-    })
-    .await
+/// Returns the path of root `wasm-bindgen` folder.
+pub fn manifest_dir() -> &'static Path {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
 }
 
-macro_rules! webpack_tests {
-    ($(
-        $(#[$attr:meta])*
-        $test:ident = $name:literal,
-    )*) => {
-        $(
-            $(#[$attr])*
-            #[tokio::test]
-            async fn $test() {
-                test_webpack_example($name).await.unwrap();
-            }
-        )*
-    };
-}
-
-webpack_tests! {
-    add = "add",
-    canvas = "canvas",
-    char = "char",
-    closures = "closures",
-    console_log = "console_log",
-    dom = "dom",
-    duck_typed_interfaces = "duck-typed-interfaces",
-    fetch = "fetch",
-    guide_supported_types_examples = "guide-supported-types-examples",
-    hello_world = "hello_world",
-    import_js = "import_js",
-    julia_set = "julia_set",
-    paint = "paint",
-    performance = "performance",
-    request_animation_frame = "request-animation-frame",
-    todomvc = "todomvc",
-    wasm_in_wasm_imports = "wasm-in-wasm-imports",
-    wasm_in_wasm = "wasm-in-wasm",
-    weather_report = "weather_report",
-    webaudio = "webaudio",
-    #[ignore = "The CI virtual machines don't have GPUs, so this doesn't work there."]
-    webgl = "webgl",
-    webrtc_datachannel = "webrtc_datachannel",
-    #[ignore = "WebXR isn't supported in Firefox yet"]
-    webxr = "webxr",
-}
-
-#[cfg(unix)]
-async fn test_shell_example(name: &str) -> anyhow::Result<()> {
-    test_example(name, || {
-        let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", name]
-            .iter()
-            .copied()
-            .collect();
-        run(Command::new(path.join("build.sh")).current_dir(&path))?;
-        Ok(path)
-    })
-    .await
-}
-
-#[cfg(unix)]
-macro_rules! shell_tests {
-    ($(
-        $(#[$attr:meta])*
-        $test:ident = $name:literal,
-    )*) => {
-        $(
-            $(#[$attr])*
-            #[tokio::test]
-            async fn $test() {
-                test_shell_example($name).await.unwrap();
-            }
-        )*
-    };
-}
-
-// Since these run on shell scripts, they won't work outside Unix-based OSes.
-#[cfg(unix)]
-shell_tests! {
-    #[ignore = "This requires module workers, which Firefox doesn't support yet."]
-    synchronous_instantiation = "synchronous-instantiation",
-    wasm2js = "wasm2js",
-    wasm_in_web_worker = "wasm-in-web-worker",
-    websockets = "websockets",
-    without_a_bundler = "without-a-bundler",
-    without_a_bundler_no_modules = "without-a-bundler-no-modules",
-}
-
-#[cfg(unix)]
-#[tokio::test]
-async fn raytrace_parallel() {
-    test_example("raytrace-parallel", || {
-        let path: PathBuf = [env!("CARGO_MANIFEST_DIR"), "examples", "raytrace-parallel"]
-            .iter()
-            .copied()
-            .collect();
-
-        run(Command::new(path.join("build.sh"))
-            .current_dir(&path)
-            // This requires nightly.
-            .env("RUSTUP_TOOLCHAIN", "nightly"))
-        .unwrap();
-
-        Ok(path)
-    })
-    .await
-    .unwrap();
+/// Returns the path of the example with the passed name.
+pub fn example_dir(name: &str) -> PathBuf {
+    [manifest_dir(), "examples".as_ref(), name.as_ref()]
+        .iter()
+        .collect()
 }

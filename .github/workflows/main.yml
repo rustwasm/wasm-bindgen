@@ -112,8 +112,7 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '16'
-    # Run everything except the example tests; we run them later in `test_examples`.
-    - run: RUSTFLAGS="--cfg=disable_example_tests" cargo test
+    - run: cargo test
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
     - run: cargo test -p wasm-bindgen-externref-xform
@@ -227,10 +226,10 @@ jobs:
     - run: |
         curl -L https://github.com/WebAssembly/binaryen/releases/download/version_109/binaryen-version_109-x86_64-linux.tar.gz -sSf > binaryen-version_109-x86_64-linux.tar.gz
         tar -xz -f binaryen-version_109-x86_64-linux.tar.gz
+        echo "$PWD/binaryen-version_109/bin" >> $GITHUB_PATH
     - run: |
         cargo build -p wasm-bindgen-cli
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
-        echo "$PWD/binaryen-version_109/bin" >> $GITHUB_PATH
     - run: mv _package.json package.json && npm install && rm package.json
     - run: |
         for dir in `ls examples | grep -v README | grep -v raytrace | grep -v deno`; do
@@ -278,7 +277,7 @@ jobs:
         name: examples2
         path: exbuild/raytrace-parallel
     - run: rustup update --no-self-update stable && rustup default stable
-    - run: cargo test --test examples
+    - run: cargo test -p example-tests
       env:
         EXBUILD: exbuild
 
