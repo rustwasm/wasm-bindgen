@@ -111,4 +111,3 @@ fn debug_string() {
     assert_eq!(debug(JsValue::symbol(None)), "JsValue(Symbol)");
     assert_eq!(debug(JsValue::from_str("hi")), "JsValue(\"hi\")");
 }
-
