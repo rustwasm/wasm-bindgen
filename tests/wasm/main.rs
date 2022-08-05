@@ -27,6 +27,7 @@ pub mod futures;
 pub mod getters_and_setters;
 pub mod import_class;
 pub mod imports;
+pub mod intrinsics;
 pub mod js_keywords;
 pub mod js_objects;
 pub mod jscast;

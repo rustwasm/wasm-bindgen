@@ -3200,7 +3200,14 @@ impl<'a> Context<'a> {
 
             Intrinsic::TryIntoNumber => {
                 assert_eq!(args.len(), 1);
-                format!("try {{ +{} }} catch(e) {{ e }}", args[0])
+                prelude.push_str("let result;\n");
+                writeln!(
+                    prelude,
+                    "try {{ result = +{} }} catch (e) {{ result = e }}",
+                    args[0]
+                )
+                .unwrap();
+                "result".to_owned()
             }
 
             Intrinsic::Neg => {
@@ -3260,7 +3267,22 @@ impl<'a> Context<'a> {
 
             Intrinsic::CheckedDiv => {
                 assert_eq!(args.len(), 2);
-                format!("try {{ {} / {} }} catch (e) {{ if (e instanceof RangeError) {{ e }} else {{ throw e }} }}", args[0], args[1])
+                prelude.push_str("let result;\n");
+                writeln!(
+                    prelude,
+                    "try {{
+                        result = {} / {};
+                    }} catch (e) {{
+                        if (e instanceof RangeError) {{
+                            result = e;
+                        }} else {{
+                            throw e;
+                        }}
+                    }}",
+                    args[0], args[1]
+                )
+                .unwrap();
+                "result".to_owned()
             }
 
             Intrinsic::Mul => {
