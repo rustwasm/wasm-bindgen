@@ -9,7 +9,7 @@ online][compiled]
 You can build the example locally with:
 
 ```
-$ ./build.sh
+$ ./run.sh
 ```
 
 (or running the commands on Windows manually)
