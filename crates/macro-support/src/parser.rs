@@ -759,9 +759,6 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
                 "can only #[wasm_bindgen] non-const functions"
             );
         }
-        if self.sig.unsafety.is_some() {
-            bail_span!(self.sig.unsafety, "can only #[wasm_bindgen] safe functions");
-        }
 
         let ret = function_from_decl(
             &self.sig.ident,
@@ -1132,9 +1129,6 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
                 self.sig.constness,
                 "can only #[wasm_bindgen] non-const functions",
             );
-        }
-        if self.sig.unsafety.is_some() {
-            bail_span!(self.sig.unsafety, "can only bindgen safe functions",);
         }
 
         let opts = BindgenAttrs::find(&mut self.attrs)?;

@@ -39,9 +39,4 @@ impl A {
     pub const fn foo() {}
 }
 
-#[wasm_bindgen]
-impl A {
-    pub unsafe fn foo() {}
-}
-
 fn main() {}

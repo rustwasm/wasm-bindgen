@@ -531,7 +531,7 @@ impl TryToTokens for ast::Export {
                     all(target_arch = "wasm32", not(target_os = "emscripten")),
                     export_name = #export_name,
                 )]
-                pub extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
+                pub unsafe extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
                     #start_check
                     // Scope all local variables to be destroyed after we call
                     // the function to ensure that `#convert_ret`, if it panics,
