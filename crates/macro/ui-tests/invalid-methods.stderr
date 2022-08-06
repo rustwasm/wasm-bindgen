@@ -52,12 +52,6 @@ error: can only #[wasm_bindgen] non-const functions
 39 |     pub const fn foo() {}
    |         ^^^^^
 
-error: can only bindgen safe functions
-  --> $DIR/invalid-methods.rs:44:9
-   |
-44 |     pub unsafe fn foo() {}
-   |         ^^^^^^
-
 warning: unused macro definition
   --> $DIR/invalid-methods.rs:26:1
    |

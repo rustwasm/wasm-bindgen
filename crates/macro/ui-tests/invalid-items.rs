@@ -4,9 +4,6 @@ use wasm_bindgen::prelude::*;
 fn foo() {}
 
 #[wasm_bindgen]
-pub unsafe fn foo1() {}
-
-#[wasm_bindgen]
 pub const fn foo2() {}
 
 #[wasm_bindgen]
