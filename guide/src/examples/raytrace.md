@@ -16,12 +16,14 @@ and wasm with Rust on the web.
 One of the major gotchas with threaded WebAssembly is that Rust does not ship a
 precompiled target (e.g. standard library) which has threading support enabled.
 This means that you'll need to recompile the standard library with the
-appropriate rustc flags, namely `-C target-feature=+atomics,+bulk-memory`.
+appropriate rustc flags, namely
+`-C target-feature=+atomics,+bulk-memory,+mutable-globals`.
+Note that this requires a nightly Rust toolchain.
 
 To do this you can use the `RUSTFLAGS` environment variable that Cargo reads:
 
 ```sh
-export RUSTFLAGS='-C target-feature=+atomics,+bulk-memory'
+export RUSTFLAGS='-C target-feature=+atomics,+bulk-memory,+mutable-globals'
 ```
 
 To recompile the standard library it's recommended to use Cargo's
@@ -40,7 +42,7 @@ build-std = ['std', 'panic_abort']
 
 [build]
 target = "wasm32-unknown-unknown"
-rustflags = '-Ctarget-feature=+atomics,+bulk-memory'
+rustflags = '-Ctarget-feature=+atomics,+bulk-memory,+mutable-globals'
 ```
 
 After this `cargo build` should produce a WebAssembly file with threading

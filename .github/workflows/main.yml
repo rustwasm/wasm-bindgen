@@ -232,7 +232,7 @@ jobs:
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
     - run: mv _package.json package.json && npm install && rm package.json
     - run: |
-        for dir in `ls examples | grep -v README | grep -v raytrace | grep -v deno`; do
+        for dir in `ls examples | grep -v README | grep -v raytrace | grep -v deno | grep -v wasm-audio-worklet`; do
           (cd examples/$dir &&
             (npm run build -- --output-path ../../exbuild/$dir ||
               (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir))
@@ -245,7 +245,7 @@ jobs:
         name: examples1
         path: exbuild
 
-  build_raytrace:
+  build_nightly:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -253,9 +253,11 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
     - run: |
-        (cd examples/raytrace-parallel && ./build.sh)
-        mkdir exbuild
-        cp examples/raytrace-parallel/*.{js,html,wasm} exbuild
+        for dir in raytrace-parallel wasm-audio-worklet; do
+          (cd examples/$dir &&
+            ./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir
+          ) || exit 1;
+        done
     - uses: actions/upload-artifact@v2
       with:
         name: examples2
@@ -264,7 +266,7 @@ jobs:
   test_examples:
     needs:
     - build_examples
-    - build_raytrace
+    - build_nightly
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -275,7 +277,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: examples2
-        path: exbuild/raytrace-parallel
+        path: exbuild
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo test -p example-tests
       env:
@@ -376,7 +378,7 @@ jobs:
       - dist_macos
       - dist_windows
       - build_examples
-      - build_raytrace
+      - build_nightly
       - build_benchmarks
     runs-on: ubuntu-latest
     steps:

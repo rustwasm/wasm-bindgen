@@ -78,6 +78,7 @@ members = [
   "examples/raytrace-parallel",
   "examples/request-animation-frame",
   "examples/todomvc",
+  "examples/wasm-audio-worklet",
   "examples/wasm-in-wasm",
   "examples/wasm-in-wasm-imports",
   "examples/wasm-in-web-worker",
