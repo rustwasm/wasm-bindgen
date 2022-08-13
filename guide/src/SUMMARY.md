@@ -27,6 +27,7 @@
   - [web-sys: A Simple Paint Program](./examples/paint.md)
   - [web-sys: WASM in Web Worker](./examples/wasm-in-web-worker.md)
   - [Parallel Raytracing](./examples/raytrace.md)
+  - [WASM Audio Worklet](./examples/wasm-audio-worklet.md)
   - [web-sys: A TODO MVC App](./examples/todomvc.md)
 - [Reference](./reference/index.md)
   - [Deployment](./reference/deployment.md)

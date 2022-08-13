@@ -421,7 +421,7 @@ jobs:
         tar xf artifacts/doc_api/docs.tar.gz
         mv target/doc gh-pages/api
         mv artifacts/examples1 gh-pages/exbuild
-        mv artifacts/examples2 gh-pages/exbuild/raytrace-parallel
+        mv artifacts/examples2/* gh-pages/exbuild
         mv artifacts/benchmarks gh-pages/benchmarks
         tar czf gh-pages.tar.gz gh-pages
     - uses: actions/upload-artifact@v2
