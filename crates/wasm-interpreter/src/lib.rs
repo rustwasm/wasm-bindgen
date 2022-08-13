@@ -19,6 +19,8 @@
 #![deny(missing_docs)]
 
 use std::collections::{BTreeMap, HashMap, HashSet};
+use std::fmt::{self, Display, Formatter};
+use std::mem;
 use walrus::ir::Instr;
 use walrus::{ElementId, FunctionId, LocalId, Module, TableId};
 
@@ -57,6 +59,13 @@ pub struct Interpreter {
     // stores the last table index argument, used for finding a different
     // descriptor.
     descriptor_table_idx: Option<u32>,
+
+    /// Unsupported instructions that we've come across and skipped.
+    ///
+    /// We store these to provide a more helpful error message if one of these
+    /// happened to be necessary and led to an invalid descriptor, by
+    /// suggesting that they might be the cause.
+    skipped: Vec<Skip>,
 }
 
 impl Interpreter {
@@ -128,15 +137,23 @@ impl Interpreter {
     ///
     /// Returns `Some` if `func` was found in the `module` and `None` if it was
     /// not found in the `module`.
-    pub fn interpret_descriptor(&mut self, id: FunctionId, module: &Module) -> Option<&[u32]> {
+    ///
+    /// As well as the descriptor, a `Vec<Skip>` is returned, which is a list
+    /// of functions that were skipped over due to unsupported instructions. If
+    /// the descriptor is invalid, those are likely the cause.
+    pub fn interpret_descriptor(
+        &mut self,
+        id: FunctionId,
+        module: &Module,
+    ) -> Option<(&[u32], Vec<Skip>)> {
         self.descriptor.truncate(0);
 
         // We should have a blank wasm and LLVM stack at both the start and end
         // of the call.
         assert_eq!(self.sp, self.mem.len() as i32);
-        self.call(id, module, &[]);
+        self.call(id, module, &[]).expect("unsupported instruction");
         assert_eq!(self.sp, self.mem.len() as i32);
-        Some(&self.descriptor)
+        Some((&self.descriptor, mem::take(&mut self.skipped)))
     }
 
     /// Interprets a "closure descriptor", figuring out the signature of the
@@ -160,7 +177,7 @@ impl Interpreter {
         id: FunctionId,
         module: &Module,
         entry_removal_list: &mut HashSet<(ElementId, usize)>,
-    ) -> Option<&[u32]> {
+    ) -> Option<(&[u32], Vec<Skip>)> {
         // Call the `id` function. This is an internal `#[inline(never)]`
         // whose code is completely controlled by the `wasm-bindgen` crate, so
         // it should take some arguments (the number of arguments depends on the
@@ -183,7 +200,8 @@ impl Interpreter {
         );
 
         let args = vec![0; num_params];
-        self.call(id, module, &args);
+        self.call(id, module, &args)
+            .expect("unsupported instruction");
         let descriptor_table_idx = self
             .descriptor_table_idx
             .take()
@@ -213,7 +231,12 @@ impl Interpreter {
         self.functions
     }
 
-    fn call(&mut self, id: FunctionId, module: &Module, args: &[i32]) -> Option<i32> {
+    fn call(
+        &mut self,
+        id: FunctionId,
+        module: &Module,
+        args: &[i32],
+    ) -> Result<Option<i32>, Instr> {
         let func = module.funcs.get(id);
         log::debug!("starting a call of {:?} {:?}", id, func.name);
         log::debug!("arguments {:?}", args);
@@ -238,12 +261,12 @@ impl Interpreter {
         }
 
         for (instr, _) in block.instrs.iter() {
-            frame.eval(instr);
+            frame.eval(instr)?;
             if frame.done {
                 break;
             }
         }
-        self.scratch.last().cloned()
+        Ok(self.scratch.last().cloned())
     }
 }
 
@@ -255,7 +278,10 @@ struct Frame<'a> {
 }
 
 impl Frame<'_> {
-    fn eval(&mut self, instr: &Instr) {
+    /// Evaluate a stack frame.
+    ///
+    /// Returns an `Err` if an unsupported instruction is encountered.
+    fn eval(&mut self, instr: &Instr) -> Result<(), Instr> {
         use walrus::ir::*;
 
         let stack = &mut self.interp.scratch;
@@ -263,7 +289,7 @@ impl Frame<'_> {
         match instr {
             Instr::Const(c) => match c.value {
                 Value::I32(n) => stack.push(n),
-                _ => panic!("non-i32 constant"),
+                _ => return Err(instr.clone()),
             },
             Instr::LocalGet(e) => stack.push(self.locals.get(&e.local).cloned().unwrap_or(0)),
             Instr::LocalSet(e) => {
@@ -286,7 +312,7 @@ impl Frame<'_> {
                 stack.push(match e.op {
                     BinaryOp::I32Sub => lhs - rhs,
                     BinaryOp::I32Add => lhs + rhs,
-                    op => panic!("invalid binary op {:?}", op),
+                    _ => return Err(instr.clone()),
                 });
             }
 
@@ -347,7 +373,27 @@ impl Frame<'_> {
                     let args = (0..ty.params().len())
                         .map(|_| stack.pop().unwrap())
                         .collect::<Vec<_>>();
-                    self.interp.call(e.func, self.module, &args);
+
+                    if let Err(instr) = self.interp.call(e.func, self.module, &args) {
+                        let name = self.module.funcs.get(e.func).name.clone();
+
+                        // If an unsupported instruction appears in a nested function, it's most likely
+                        // some runtime-initialization call injected by the compiler that we don't care
+                        // about, like `__wasm_call_ctors` on the WASI target.
+                        //
+                        // So, skip the rest of the function and move on.
+                        log::debug!(
+                            "unsupported instruction {instr:?}, skipping function{name}",
+                            name = if let Some(ref name) = name {
+                                format!(" `{name}`")
+                            } else {
+                                "".to_owned()
+                            }
+                        );
+
+                        // Add it to the list of skipped functions.
+                        self.interp.skipped.push(Skip { name, instr });
+                    }
                 }
             }
 
@@ -360,7 +406,30 @@ impl Frame<'_> {
             // Note that LLVM may change over time to generate new
             // instructions in debug mode, and we'll have to react to those
             // sorts of changes as they arise.
-            s => panic!("unknown instruction {:?}", s),
+            _ => return Err(instr.clone()),
+        }
+
+        Ok(())
+    }
+}
+
+/// A function that was skipped due to an unsupported instruction, and the
+/// instruction that caused it.
+#[derive(Debug, Clone)]
+pub struct Skip {
+    /// The name of the function that was skipped.
+    pub name: Option<String>,
+
+    /// The unsupported instruction that caused it to be skipped.
+    pub instr: Instr,
+}
+
+impl Display for Skip {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        if let Some(ref name) = self.name {
+            write!(f, "skipped `{name}` due to {:?}", self.instr)
+        } else {
+            write!(f, "skipped a function due to {:?}", self.instr)
         }
     }
 }

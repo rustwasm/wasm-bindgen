@@ -108,14 +108,17 @@ pub enum VectorKind {
 }
 
 impl Descriptor {
-    pub fn decode(mut data: &[u32]) -> Descriptor {
-        let descriptor = Descriptor::_decode(&mut data, false);
-        assert!(data.is_empty(), "remaining data {:?}", data);
-        descriptor
+    /// Decodes `data` into a descriptor, or returns `None` if it's invalid.
+    pub fn decode(mut data: &[u32]) -> Option<Descriptor> {
+        let descriptor = Descriptor::_decode(&mut data, false)?;
+        if !data.is_empty() {
+            return None;
+        }
+        Some(descriptor)
     }
 
-    fn _decode(data: &mut &[u32], clamped: bool) -> Descriptor {
-        match get(data) {
+    fn _decode(data: &mut &[u32], clamped: bool) -> Option<Descriptor> {
+        Some(match get(data)? {
             I8 => Descriptor::I8,
             I16 => Descriptor::I16,
             I32 => Descriptor::I32,
@@ -128,31 +131,31 @@ impl Descriptor {
             F32 => Descriptor::F32,
             F64 => Descriptor::F64,
             BOOLEAN => Descriptor::Boolean,
-            FUNCTION => Descriptor::Function(Box::new(Function::decode(data))),
-            CLOSURE => Descriptor::Closure(Box::new(Closure::decode(data))),
-            REF => Descriptor::Ref(Box::new(Descriptor::_decode(data, clamped))),
-            REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data, clamped))),
-            SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data, clamped))),
-            VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data, clamped))),
-            OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data, clamped))),
-            RESULT => Descriptor::Result(Box::new(Descriptor::_decode(data, clamped))),
+            FUNCTION => Descriptor::Function(Box::new(Function::decode(data)?)),
+            CLOSURE => Descriptor::Closure(Box::new(Closure::decode(data)?)),
+            REF => Descriptor::Ref(Box::new(Descriptor::_decode(data, clamped)?)),
+            REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data, clamped)?)),
+            SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data, clamped)?)),
+            VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data, clamped)?)),
+            OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data, clamped)?)),
+            RESULT => Descriptor::Result(Box::new(Descriptor::_decode(data, clamped)?)),
             CACHED_STRING => Descriptor::CachedString,
             STRING => Descriptor::String,
             EXTERNREF => Descriptor::Externref,
-            ENUM => Descriptor::Enum { hole: get(data) },
+            ENUM => Descriptor::Enum { hole: get(data)? },
             RUST_STRUCT => {
-                let name = get_string(data);
+                let name = get_string(data)?;
                 Descriptor::RustStruct(name)
             }
             NAMED_EXTERNREF => {
-                let name = get_string(data);
+                let name = get_string(data)?;
                 Descriptor::NamedExternref(name)
             }
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
-            CLAMPED => Descriptor::_decode(data, true),
-            other => panic!("unknown descriptor: {}", other),
-        }
+            CLAMPED => Descriptor::_decode(data, true)?,
+            _ => return None,
+        })
     }
 
     pub fn unwrap_function(self) -> Function {
@@ -204,45 +207,48 @@ impl Descriptor {
     }
 }
 
-fn get(a: &mut &[u32]) -> u32 {
-    let ret = a[0];
+fn get(a: &mut &[u32]) -> Option<u32> {
+    let ret = *a.get(0)?;
     *a = &a[1..];
-    ret
+    Some(ret)
 }
 
-fn get_string(data: &mut &[u32]) -> String {
-    (0..get(data))
-        .map(|_| char::from_u32(get(data)).unwrap())
+fn get_string(data: &mut &[u32]) -> Option<String> {
+    (0..get(data)?)
+        .map(|_| char::from_u32(get(data)?))
         .collect()
 }
 
 impl Closure {
-    fn decode(data: &mut &[u32]) -> Closure {
-        let shim_idx = get(data);
-        let dtor_idx = get(data);
-        let mutable = get(data) == REFMUT;
-        assert_eq!(get(data), FUNCTION);
-        Closure {
+    fn decode(data: &mut &[u32]) -> Option<Closure> {
+        let shim_idx = get(data)?;
+        let dtor_idx = get(data)?;
+        let mutable = get(data)? == REFMUT;
+        if get(data)? != FUNCTION {
+            return None;
+        }
+
+        Some(Closure {
             shim_idx,
             dtor_idx,
             mutable,
-            function: Function::decode(data),
-        }
+            function: Function::decode(data)?,
+        })
     }
 }
 
 impl Function {
-    fn decode(data: &mut &[u32]) -> Function {
-        let shim_idx = get(data);
-        let arguments = (0..get(data))
+    fn decode(data: &mut &[u32]) -> Option<Function> {
+        let shim_idx = get(data)?;
+        let arguments = (0..get(data)?)
             .map(|_| Descriptor::_decode(data, false))
-            .collect::<Vec<_>>();
-        Function {
+            .collect::<Option<Vec<_>>>()?;
+        Some(Function {
             arguments,
             shim_idx,
-            ret: Descriptor::_decode(data, false),
-            inner_ret: Some(Descriptor::_decode(data, false)),
-        }
+            ret: Descriptor::_decode(data, false)?,
+            inner_ret: Some(Descriptor::_decode(data, false)?),
+        })
     }
 }
 

@@ -14,9 +14,10 @@ use crate::descriptor::{Closure, Descriptor};
 use anyhow::Error;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
+use std::fmt::Write;
 use walrus::ImportId;
 use walrus::{CustomSection, FunctionId, Module, TypedCustomSectionId};
-use wasm_bindgen_wasm_interpreter::Interpreter;
+use wasm_bindgen_wasm_interpreter::{Interpreter, Skip};
 
 #[derive(Default, Debug)]
 pub struct WasmBindgenDescriptorsSection {
@@ -40,6 +41,31 @@ pub fn execute(module: &mut Module) -> Result<WasmBindgenDescriptorsSectionId, E
     Ok(module.customs.add(section))
 }
 
+/// Returns an error for an invalid descriptor.
+///
+/// `skipped` is the list of functions that were skipped while retrieving the
+/// descriptor from the wasm module, which are likely the cause of the error if
+/// present.
+fn descriptor_error(descriptor: &[u32], skipped: &[Skip]) -> anyhow::Error {
+    let mut msg = format!("invalid descriptor: {descriptor:?}");
+
+    if !skipped.is_empty() {
+        writeln!(
+            msg,
+            "\n\n\
+            Some functions containing unsupported instructions were skipped while\n\
+            intepreting the wasm module, which may have caused this:"
+        )
+        .unwrap();
+
+        for skip in skipped {
+            writeln!(msg, "    {skip}").unwrap();
+        }
+    }
+
+    anyhow::Error::msg(msg)
+}
+
 impl WasmBindgenDescriptorsSection {
     fn execute_exports(
         &mut self,
@@ -56,9 +82,10 @@ impl WasmBindgenDescriptorsSection {
                 walrus::ExportItem::Function(id) => id,
                 _ => panic!("{} export not a function", export.name),
             };
-            if let Some(d) = interpreter.interpret_descriptor(id, module) {
+            if let Some((d, skipped)) = interpreter.interpret_descriptor(id, module) {
                 let name = &export.name[prefix.len()..];
-                let descriptor = Descriptor::decode(d);
+                let descriptor =
+                    Descriptor::decode(d).ok_or_else(|| descriptor_error(d, &skipped))?;
                 self.descriptors.insert(name.to_string(), descriptor);
             }
             to_remove.push(export.id());
@@ -96,10 +123,14 @@ impl WasmBindgenDescriptorsSection {
             };
             dfs_in_order(&mut find, local, local.entry_block());
             if find.found {
-                let descriptor = interpreter
+                let (descriptor, skipped) = interpreter
                     .interpret_closure_descriptor(id, module, &mut element_removal_list)
                     .unwrap();
-                func_to_descriptor.insert(id, Descriptor::decode(descriptor));
+                func_to_descriptor.insert(
+                    id,
+                    Descriptor::decode(descriptor)
+                        .ok_or_else(|| descriptor_error(descriptor, &skipped))?,
+                );
             }
         }
 
@@ -177,5 +208,49 @@ impl CustomSection for WasmBindgenDescriptorsSection {
 
     fn data(&self, _: &walrus::IdsToIndices) -> Cow<[u8]> {
         panic!("shouldn't emit custom sections just yet");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::WasmBindgenDescriptorsSectionId;
+
+    fn execute(wat: &str) -> anyhow::Result<WasmBindgenDescriptorsSectionId> {
+        let wasm = wat::parse_str(wat).unwrap();
+        let mut module = walrus::Module::from_buffer(&wasm).unwrap();
+        super::execute(&mut module)
+    }
+
+    #[test]
+    fn unsupported_instruction() {
+        let result = execute(
+            r#"
+            (module
+                (import "__wbindgen_placeholder__" "__wbindgen_describe"
+                (func $__wbindgen_describe (param i32)))
+
+                (func $bar
+                    ;; We don't support `block`, so this will cause an error.
+                    block
+                    end
+
+                    ;; Which means this descriptor won't go through.
+                    i32.const 0
+                    call $__wbindgen_describe
+                )
+
+                (func $foo
+                    ;; Call into a nested function `bar`, since an unsupported instruction in the
+                    ;; root function we're calling panics immediately.
+                    call $bar
+                )
+
+                (export "__wbindgen_describe_foo" (func $foo))
+            )
+            "#,
+        );
+        let err = result.unwrap_err();
+        assert!(err.to_string().contains("invalid descriptor: []"));
+        assert!(err.to_string().contains("Block"));
     }
 }

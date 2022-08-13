@@ -14,7 +14,11 @@ fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
         })
         .next()
         .unwrap();
-    assert_eq!(i.interpret_descriptor(id, &module), result);
+    assert_eq!(
+        i.interpret_descriptor(id, &module)
+            .map(|(descriptor, _)| descriptor),
+        result
+    );
 }
 
 #[test]
@@ -216,6 +220,60 @@ fn calling_functions() {
             (func $bar
                 i32.const 0
                 call $__wbindgen_describe
+            )
+
+            (export "foo" (func $foo))
+        )
+    "#;
+    interpret(wat, "foo", Some(&[0]));
+}
+
+#[test]
+fn skip_unsupported() {
+    let wat = r#"
+        (module
+            (import "__wbindgen_placeholder__" "__wbindgen_describe"
+              (func $__wbindgen_describe (param i32)))
+
+            (func $bar
+                ;; We don't support blocks.
+                block
+                end
+
+                ;; Then attempt to add to the descriptor to make sure we aren't getting here.
+                i32.const 1
+                call $__wbindgen_describe
+            )
+
+            (func $foo
+                ;; Call $bar, which contains unsupported instructions and should be skipped.
+                call $bar
+
+                ;; And then test that this descriptor still goes through.
+                i32.const 0
+                call $__wbindgen_describe
+            )
+
+            (export "foo" (func $foo))
+        )
+    "#;
+    interpret(wat, "foo", Some(&[0]));
+}
+
+#[test]
+#[should_panic]
+fn skip_unsupported_root() {
+    let wat = r#"
+        (module
+            (import "__wbindgen_placeholder__" "__wbindgen_describe"
+              (func $__wbindgen_describe (param i32)))
+
+            (func $foo
+                ;; Execute an invalid instruction in the root function we're calling.
+                ;; This causes an immediate panic, since we can't just skip the whole function
+                ;; we're getting a descriptor from.
+                block
+                end
             )
 
             (export "foo" (func $foo))

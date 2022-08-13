@@ -28,3 +28,6 @@ wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.
 wit-text = "0.8.0"
 wit-walrus = "0.6.0"
 wit-validator = "0.2.0"
+
+[dev-dependencies]
+wat = "1.0"
