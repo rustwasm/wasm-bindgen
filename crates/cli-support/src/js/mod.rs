@@ -1,3 +1,4 @@
+use crate::decode::ContentPlaceholderBuf;
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{
@@ -3162,10 +3163,8 @@ impl<'a> Context<'a> {
                     Ok(format!("new URL('{}', {}).toString()", path, base))
                 } else {
                     if let Some(content) = content {
-                        let mut escaped = String::with_capacity(content.len());
-                        content.chars().for_each(|c| match c {
-                            '`' | '\\' | '$' => escaped.extend(['\\', c]),
-                            _ => escaped.extend([c]),
+                        let escaped = content.escape(|p| match p {
+                            ContentPlaceholderBuf::WbgMain => "${script_src}".to_string(),
                         });
                         Ok(format!(
                             "\"data:application/javascript,\" + encodeURIComponent(`{escaped}`)"

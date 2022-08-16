@@ -194,22 +194,46 @@ impl<'a, 'b, I: Iterator<Item = &'b LocalFile>> Iterator for ImportCollector<'a,
             }
         };
 
+        let mut pl = Vec::new();
         for imp in r
             .body
             .iter()
             .flat_map(|i| i.as_module_decl().and_then(|i| i.as_import()))
         {
-            let f = file.join(imp.src.value.as_ref());
-            let fc = f.path.canonicalize().unwrap_or_else(|_| f.path.clone());
-            if !self.done.contains(&fc) {
-                self.stack.push(f);
-                self.done.insert(fc);
+            let val = imp.src.value.as_ref();
+            if val == "$wbg_main" {
+                pl.push((imp.src.span.lo.0 + 1, imp.src.span.hi.0 - 1));
+            } else {
+                let f = file.join(val);
+                let fc = f.path.canonicalize().unwrap_or_else(|_| f.path.clone());
+                if !self.done.contains(&fc) {
+                    self.stack.push(f);
+                    self.done.insert(fc);
+                }
             }
         }
 
+        let mut v = vec![&fm.src[..]];
+        let mut lolen = 0;
+        for &(a, b) in pl.iter() {
+            let s = v.pop().unwrap();
+            let (lo, hi) = s.split_at(a as usize - lolen);
+            v.push(lo);
+            v.push(&hi[(b - a) as usize..]);
+            lolen += lo.len();
+        }
         Some(Ok(LocalModule {
             identifier: self.intern.intern_str(&file.new_identifier),
-            contents: self.intern.intern_str(&fm.src),
+            contents: ModuleContent {
+                head: self.intern.intern_str(v[0]),
+                tail: v[1..]
+                    .iter()
+                    .map(|x| ContentPart {
+                        p: ContentPlaceholder::WbgMain,
+                        t: self.intern.intern_str(x),
+                    })
+                    .collect(),
+            },
         }))
     }
 }

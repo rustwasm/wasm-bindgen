@@ -141,9 +141,23 @@ macro_rules! shared_api {
             generate_typescript: bool,
         }
 
+        enum ContentPlaceholder {
+            WbgMain,
+        }
+
+        struct ContentPart<'a> {
+            p: ContentPlaceholder,
+            t: &'a str,
+        }
+
+        struct ModuleContent<'a> {
+            head: &'a str,
+            tail: Vec<ContentPart<'a>>,
+        }
+
         struct LocalModule<'a> {
             identifier: &'a str,
-            contents: &'a str,
+            contents: ModuleContent<'a>,
         }
         }
     }; // end of mac case
