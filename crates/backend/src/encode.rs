@@ -345,11 +345,8 @@ impl Encoder {
     }
 
     fn finish(mut self) -> Vec<u8> {
-        let len = self.dst.len() - 4;
-        self.dst[0] = (len >> 0) as u8;
-        self.dst[1] = (len >> 8) as u8;
-        self.dst[2] = (len >> 16) as u8;
-        self.dst[3] = (len >> 24) as u8;
+        let len = (self.dst.len() - 4) as u32;
+        self.dst[..4].copy_from_slice(&len.to_le_bytes()[..]);
         self.dst
     }
 

@@ -1575,10 +1575,7 @@ fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
     if data.len() == 0 {
         return None;
     }
-    let len = ((data[0] as usize) << 0)
-        | ((data[1] as usize) << 8)
-        | ((data[2] as usize) << 16)
-        | ((data[3] as usize) << 24);
+    let len = u32::from_le_bytes([data[0], data[1], data[2], data[3]]) as usize;
     let (a, b) = data[4..].split_at(len);
     *data = b;
     Some(a)
