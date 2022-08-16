@@ -28,11 +28,10 @@ impl Scene {
     /// Creates a new scene from the JSON description in `object`, which we
     /// deserialize here into an actual scene.
     #[wasm_bindgen(constructor)]
-    pub fn new(object: &JsValue) -> Result<Scene, JsValue> {
+    pub fn new(object: JsValue) -> Result<Scene, JsValue> {
         console_error_panic_hook::set_once();
         Ok(Scene {
-            inner: object
-                .into_serde()
+            inner: serde_wasm_bindgen::from_value(object)
                 .map_err(|e| JsValue::from(e.to_string()))?,
         })
     }

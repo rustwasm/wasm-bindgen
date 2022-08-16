@@ -1,36 +1,7 @@
-use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
-
-/// A struct to hold some data from the github Branch API.
-///
-/// Note how we don't have to define every member -- serde will ignore extra
-/// data when deserializing
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Branch {
-    pub name: String,
-    pub commit: Commit,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Commit {
-    pub sha: String,
-    pub commit: CommitDetails,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CommitDetails {
-    pub author: Signature,
-    pub committer: Signature,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Signature {
-    pub name: String,
-    pub email: String,
-}
 
 #[wasm_bindgen]
 pub async fn run(repo: String) -> Result<JsValue, JsValue> {
@@ -56,9 +27,6 @@ pub async fn run(repo: String) -> Result<JsValue, JsValue> {
     // Convert this other `Promise` into a rust `Future`.
     let json = JsFuture::from(resp.json()?).await?;
 
-    // Use serde to parse the JSON into a struct.
-    let branch_info: Branch = json.into_serde().unwrap();
-
-    // Send the `Branch` struct back to JS as an `Object`.
-    Ok(JsValue::from_serde(&branch_info).unwrap())
+    // Send the JSON response back to JS.
+    Ok(json)
 }

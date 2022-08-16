@@ -1,21 +1,19 @@
 # Serializing and Deserializing Arbitrary Data Into and From `JsValue` with Serde
 
 It's possible to pass arbitrary data from Rust to JavaScript by serializing it
-to JSON with [Serde](https://github.com/serde-rs/serde). `wasm-bindgen` includes
-the `JsValue` type, which streamlines serializing and deserializing.
+with [Serde](https://github.com/serde-rs/serde). This is done through the
+[`serde-wasm-bindgen`](https://docs.rs/serde-wasm-bindgen) crate.
 
-## Enable the `"serde-serialize"` Feature
+## Add dependencies
 
-To enable the `"serde-serialize"` feature, do two things in `Cargo.toml`:
-
-1. Add the `serde` and `serde_derive` crates to `[dependencies]`.
-2. Add `features = ["serde-serialize"]` to the existing `wasm-bindgen`
-   dependency.
+To use `serde-wasm-bindgen`, you first have to add it as a dependency in your
+`Cargo.toml`. You also need the `serde` crate, with the `derive` feature
+enabled, to allow your types to be serialized and deserialized with Serde.
 
 ```toml
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
-wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+serde-wasm-bindgen = "0.4"
 ```
 
 ## Derive the `Serialize` and `Deserialize` Traits
@@ -42,7 +40,7 @@ pub struct Example {
 }
 ```
 
-## Send it to JavaScript with `JsValue::from_serde`
+## Send it to JavaScript with `serde_wasm_bindgen::to_value`
 
 Here's a function that will pass an `Example` to JavaScript by serializing it to
 `JsValue`:
@@ -58,19 +56,19 @@ pub fn send_example_to_js() -> JsValue {
         field3: [1., 2., 3., 4.]
     };
 
-    JsValue::from_serde(&example).unwrap()
+    serde_wasm_bindgen::to_value(&example).unwrap()
 }
 ```
 
-## Receive it from JavaScript with `JsValue::into_serde`
+## Receive it from JavaScript with `serde_wasm_bindgen::from_value`
 
 Here's a function that will receive a `JsValue` parameter from JavaScript and
 then deserialize an `Example` from it:
 
 ```rust
 #[wasm_bindgen]
-pub fn receive_example_from_js(val: &JsValue) {
-    let example: Example = val.into_serde().unwrap();
+pub fn receive_example_from_js(val: JsValue) {
+    let example: Example = serde_wasm_bindgen::from_value(val).unwrap();
     ...
 }
 ```
@@ -94,23 +92,13 @@ example.field2.push([5, 6]);
 receive_example_from_js(example);
 ```
 
-## An Alternative Approach: `serde-wasm-bindgen`
+## `JsValue::from_serde` / `JsValue::into_serde`
 
-[The `serde-wasm-bindgen`
-crate](https://github.com/cloudflare/serde-wasm-bindgen) serializes and
-deserializes Rust structures directly to `JsValue`s, without going through
-temporary JSON stringification. This approach has both advantages and
-disadvantages.
-
-The primary advantage is smaller code size: going through JSON entrenches code
-to stringify and parse floating point numbers, which is not a small amount of
-code. It also supports more types than JSON does, such as `Map`, `Set`, and
-array buffers.
-
-There are two primary disadvantages. The first is that it is not always
-compatible with the default JSON-based serialization. The second is that it
-performs more calls back and forth between JS and Wasm, which has not been fully
-optimized in all engines, meaning it can sometimes be a speed
-regression. However, in other cases, it is a speed up over the JSON-based
-stringification, so &mdash; as always &mdash; make sure to profile your own use
-cases as necessary.
+In previous versions of `wasm-bindgen`, `JsValue::from_serde` and
+`JsValue::into_serde` were the recommended way of using Serde to convert
+to/from JS values. These functions use `serde_json` to serialize types to JSON
+and parse them on the other end. However, this caused problems when certain
+features of `serde_json` and other crates were enabled that caused it to depend
+on `wasm-bindgen`, creating a circular dependency, which is illegal in Rust and
+caused people's code to fail to compile. So, they were deprecated in favor of
+`serde-wasm-bindgen`.
