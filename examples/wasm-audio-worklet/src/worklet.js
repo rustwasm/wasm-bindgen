@@ -1,3 +1,6 @@
+import './polyfill.js';
+import * as bindgen from '$wbg_main';
+
 registerProcessor("WasmProcessor", class WasmProcessor extends AudioWorkletProcessor {
     constructor(options) {
         super();
