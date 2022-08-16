@@ -98,13 +98,13 @@ impl TryToTokens for ast::Program {
             shared::version()
         );
         let encoded = encode::encode(self)?;
-        let mut bytes = Vec::new();
-        bytes.push((prefix_json.len() >> 0) as u8);
-        bytes.push((prefix_json.len() >> 8) as u8);
-        bytes.push((prefix_json.len() >> 16) as u8);
-        bytes.push((prefix_json.len() >> 24) as u8);
-        bytes.extend_from_slice(prefix_json.as_bytes());
-        bytes.extend_from_slice(&encoded.custom_section);
+        let len = prefix_json.len() as u32;
+        let bytes = [
+            &len.to_le_bytes()[..],
+            prefix_json.as_bytes(),
+            &encoded.custom_section,
+        ]
+        .concat();
 
         let generated_static_length = bytes.len();
         let generated_static_value = syn::LitByteStr::new(&bytes, Span::call_site());
