@@ -229,6 +229,9 @@ intrinsics! {
         #[symbol = "__wbindgen_module"]
         #[signature = fn() -> Externref]
         Module,
+        #[symbol = "__wbindgen_script_url"]
+        #[signature = fn() -> String]
+        ScriptUrl,
         #[symbol = "__wbindgen_function_table"]
         #[signature = fn() -> Externref]
         FunctionTable,

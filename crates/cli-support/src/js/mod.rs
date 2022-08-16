@@ -378,6 +378,7 @@ impl<'a> Context<'a> {
             // function.
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
+                js.push_str("let script_src;\n");
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
                 footer.push_str(&format!("{} = Object.assign(init, __exports);\n", global));
@@ -700,14 +701,13 @@ impl<'a> Context<'a> {
                     stem = self.config.stem()?
                 ),
                 OutputMode::NoModules { .. } => "\
+                    if (typeof document === 'undefined') {
+                        script_src = location.href;
+                    } else {
+                        script_src = document.currentScript.src;
+                    }
                     if (typeof input === 'undefined') {
-                        let src;
-                        if (typeof document === 'undefined') {
-                            src = location.href;
-                        } else {
-                            src = document.currentScript.src;
-                        }
-                        input = src.replace(/\\.js$/, '_bg.wasm');
+                        input = script_src.replace(/\\.js$/, '_bg.wasm');
                     }"
                 .to_string(),
                 _ => "".to_string(),
@@ -3424,6 +3424,22 @@ impl<'a> Context<'a> {
                 }
                 drop(memories);
                 format!("wasm.{}", self.export_name_of(memory))
+            }
+
+            Intrinsic::ScriptUrl => {
+                assert_eq!(args.len(), 0);
+                match self.config.mode {
+                    OutputMode::Web
+                    | OutputMode::Deno
+                    | OutputMode::Node {
+                        experimental_modules: true,
+                    } => format!("import.meta.url"),
+                    OutputMode::Node {
+                        experimental_modules: false,
+                    } => format!("__filename"),
+                    OutputMode::NoModules { .. } => format!("script_src"),
+                    OutputMode::Bundler { .. } => format!("__webpack_public_path__"),
+                }
             }
 
             Intrinsic::FunctionTable => {

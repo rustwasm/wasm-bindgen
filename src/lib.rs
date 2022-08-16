@@ -972,6 +972,7 @@ externs! {
 
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
+        fn __wbindgen_script_url(ret: *mut [usize; 2]) -> ();
         fn __wbindgen_function_table() -> u32;
     }
 }
@@ -1249,6 +1250,20 @@ pub fn module() -> JsValue {
 /// Returns a handle to this wasm instance's `WebAssembly.Memory`
 pub fn memory() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_memory()) }
+}
+
+/// Returns the URL to the script that instantiated the wasm module.
+///
+/// On some wasm-bindgen targets, this script is a module or a bundle.
+/// Also, the returned URL is relative on some wasm-bindgen targets.
+#[cfg(feature = "std")]
+pub fn script_url() -> String {
+    unsafe {
+        let mut ret = [0; 2];
+        __wbindgen_script_url(&mut ret);
+        let data = Vec::from_raw_parts(ret[0] as *mut u8, ret[1], ret[1]);
+        String::from_utf8_unchecked(data)
+    }
 }
 
 /// Returns a handle to this wasm instance's `WebAssembly.Table` which is the
