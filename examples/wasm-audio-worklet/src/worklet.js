@@ -1,3 +1,5 @@
+//!bundle
+
 import './polyfill.js';
 import * as bindgen from '$wbg_main';
 

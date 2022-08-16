@@ -20,3 +20,5 @@ cargo run -p wasm-bindgen-cli -- \
   --out-dir . \
   --target web \
   --split-linked-modules
+
+find snippets -type f -exec grep -q '//!bundle$' {} \; -exec npx rollup -i {} -o {} \;
