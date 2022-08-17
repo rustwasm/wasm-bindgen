@@ -6,7 +6,6 @@ use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::{quote, ToTokens};
 use std::collections::{HashMap, HashSet};
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 use wasm_bindgen_shared as shared;
 
@@ -82,14 +81,6 @@ impl TryToTokens for ast::Program {
         // of the wasm executable. For now it's just a plain old static, but we'll
         // eventually have it actually in its own section.
 
-        static CNT: AtomicUsize = AtomicUsize::new(0);
-
-        let generated_static_name = format!(
-            "__WASM_BINDGEN_GENERATED_{}",
-            ShortHash(CNT.fetch_add(1, Ordering::SeqCst)),
-        );
-        let generated_static_name = Ident::new(&generated_static_name, Span::call_site());
-
         // See comments in `crates/cli-support/src/lib.rs` about what this
         // `schema_version` is.
         let prefix_json = format!(
@@ -125,14 +116,13 @@ impl TryToTokens for ast::Program {
         (quote! {
             #[cfg(target_arch = "wasm32")]
             #[automatically_derived]
-            #[link_section = "__wasm_bindgen_unstable"]
-            #[doc(hidden)]
-            pub static #generated_static_name: [u8; #generated_static_length] = {
+            const _: () = {
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
-                *#generated_static_value
+                #[link_section = "__wasm_bindgen_unstable"]
+                pub static _GENERATED: [u8; #generated_static_length] =
+                    *#generated_static_value;
             };
-
         })
         .to_tokens(tokens);
 
