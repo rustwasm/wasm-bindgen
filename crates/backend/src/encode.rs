@@ -146,6 +146,11 @@ fn shared_program<'a>(
             .iter()
             .map(|x| -> &'a str { &x })
             .collect(),
+        linked_modules: prog
+            .linked_modules
+            .iter()
+            .map(|a| shared_linked_module(a, intern))
+            .collect::<Result<Vec<_>, _>>()?,
         local_modules: intern
             .files
             .borrow()
@@ -246,6 +251,16 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
             .transpose()?,
         js_namespace: i.js_namespace.clone(),
         kind: shared_import_kind(&i.kind, intern)?,
+    })
+}
+
+fn shared_linked_module<'a>(
+    i: &'a ast::ImportModule,
+    intern: &'a Interner,
+) -> Result<LinkedModule<'a>, Diagnostic> {
+    Ok(LinkedModule {
+        module: shared_module(i, intern)?,
+        link_function_name: intern.intern_str(&i.link_function_name()),
     })
 }
 

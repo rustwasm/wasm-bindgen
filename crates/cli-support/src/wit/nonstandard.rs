@@ -328,6 +328,10 @@ pub enum AuxImport {
     /// This is an intrinsic function expected to be implemented with a JS glue
     /// shim. Each intrinsic has its own expected signature and implementation.
     Intrinsic(Intrinsic),
+
+    /// This is a function representing a resource by returning a link to it.
+    /// The supplied path is relative to the JS glue shim.
+    LinkTo(String),
 }
 
 /// Values that can be imported verbatim to hook up to an import.

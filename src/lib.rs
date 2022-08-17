@@ -63,6 +63,8 @@ pub mod prelude {
     pub use crate::JsError;
 }
 
+pub use wasm_bindgen_macro::link_to;
+
 pub mod convert;
 pub mod describe;
 

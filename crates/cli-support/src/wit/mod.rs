@@ -331,6 +331,25 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
+    fn link_module(&mut self, id: ImportId, module: &decode::ImportModule) -> Result<(), Error> {
+        let descriptor = Function {
+            shim_idx: 0,
+            arguments: Vec::new(),
+            ret: Descriptor::String,
+            inner_ret: None,
+        };
+        let id = self.import_adapter(id, descriptor, AdapterJsImportKind::Normal)?;
+        let path = match module {
+            decode::ImportModule::Named(n) => format!("snippets/{}", n),
+            decode::ImportModule::RawNamed(n) => n.to_string(),
+            decode::ImportModule::Inline(i) => {
+                format!("snippets/{}/inline{}.js", self.unique_crate_identifier, i)
+            }
+        };
+        self.aux.import_map.insert(id, AuxImport::LinkTo(path));
+        Ok(())
+    }
+
     fn program(&mut self, program: decode::Program<'a>) -> Result<(), Error> {
         self.unique_crate_identifier = program.unique_crate_identifier;
         let decode::Program {
@@ -343,6 +362,7 @@ impl<'a> Context<'a> {
             inline_js,
             unique_crate_identifier,
             package_json,
+            linked_modules,
         } = program;
 
         for module in local_modules {
@@ -362,6 +382,13 @@ impl<'a> Context<'a> {
         }
         for export in exports {
             self.export(export)?;
+        }
+
+        for module in linked_modules {
+            match self.function_imports.remove(module.link_function_name) {
+                Some((id, _)) => self.link_module(id, &module.module)?,
+                None => (),
+            }
         }
 
         // Register vendor prefixes for all types before we walk over all the

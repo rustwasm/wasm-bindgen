@@ -16,6 +16,8 @@ pub struct Program {
     pub exports: Vec<Export>,
     /// js -> rust interfaces
     pub imports: Vec<Import>,
+    /// linked-to modules
+    pub linked_modules: Vec<ImportModule>,
     /// rust enums
     pub enums: Vec<Enum>,
     /// rust structs
@@ -37,6 +39,12 @@ impl Program {
             && self.inline_js.is_empty()
     }
 }
+
+/// An abstract syntax tree representing a link to a module in Rust.
+/// In contrast to Program, LinkToModule must expand to an expression.
+/// linked_modules of the inner Program must contain exactly one element
+/// whose link is produced by the expression.
+pub struct LinkToModule(pub Program);
 
 /// A rust to js interface. Allows interaction with rust objects/functions
 /// from javascript.
@@ -105,6 +113,14 @@ impl Hash for ImportModule {
             ImportModule::Inline(idx, _) => (2u8, idx).hash(h),
             ImportModule::RawNamed(name, _) => (3u8, name).hash(h),
         }
+    }
+}
+
+impl ImportModule {
+    /// Name of the link function when the ImportModule is used in
+    /// Program::linked_modules.
+    pub fn link_function_name(&self) -> String {
+        format!("__wbindgen_link_{}", crate::util::ShortHash(self))
     }
 }
 

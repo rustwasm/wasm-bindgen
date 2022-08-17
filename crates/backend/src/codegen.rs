@@ -130,6 +130,32 @@ impl TryToTokens for ast::Program {
     }
 }
 
+impl TryToTokens for ast::LinkToModule {
+    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
+        let mut program = TokenStream::new();
+        self.0.try_to_tokens(&mut program)?;
+        let link_function_name = self.0.linked_modules[0].link_function_name();
+        let name = Ident::new(&link_function_name, Span::call_site());
+        let abi_ret = quote! { <String as wasm_bindgen::convert::FromWasmAbi>::Abi };
+        let extern_fn = extern_fn(&name, &[], &[], &[], abi_ret);
+        quote! {
+            {
+                #program
+                #extern_fn
+
+                unsafe {
+                    let _ret = #name();
+                    wasm_bindgen::__rt::take_last_exception().map(|()| {
+                        <String as wasm_bindgen::convert::FromWasmAbi>::from_abi(_ret)
+                    })
+                }
+            }
+        }
+        .to_tokens(tokens);
+        Ok(())
+    }
+}
+
 impl ToTokens for ast::Struct {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let name = &self.rust_name;
@@ -1076,8 +1102,8 @@ impl TryToTokens for ast::ImportFunction {
         let import_name = &self.shim;
         let attrs = &self.function.rust_attrs;
         let arguments = &arguments;
-        let abi_arguments = &abi_arguments;
-        let abi_argument_names = &abi_argument_names;
+        let abi_arguments = &abi_arguments[..];
+        let abi_argument_names = &abi_argument_names[..];
 
         let doc_comment = &self.doc_comment;
         let me = if is_method {
@@ -1102,23 +1128,13 @@ impl TryToTokens for ast::ImportFunction {
         // like rustc itself doesn't do great in that regard so let's just do
         // the best we can in the meantime.
         let extern_fn = respan(
-            quote! {
-                #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-                #(#attrs)*
-                #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                extern "C" {
-                    fn #import_name(#(#abi_arguments),*) -> #abi_ret;
-                }
-
-                #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-                unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
-                    #(
-                        drop(#abi_argument_names);
-                    )*
-                    panic!("cannot call wasm-bindgen imported functions on \
-                            non-wasm targets");
-                }
-            },
+            extern_fn(
+                import_name,
+                attrs,
+                abi_arguments,
+                abi_argument_names,
+                abi_ret,
+            ),
             &self.rust_name,
         );
 
@@ -1358,6 +1374,32 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             };
         })
         .to_tokens(tokens);
+    }
+}
+
+fn extern_fn(
+    import_name: &Ident,
+    attrs: &[syn::Attribute],
+    abi_arguments: &[TokenStream],
+    abi_argument_names: &[Ident],
+    abi_ret: TokenStream,
+) -> TokenStream {
+    quote! {
+        #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+        #(#attrs)*
+        #[link(wasm_import_module = "__wbindgen_placeholder__")]
+        extern "C" {
+            fn #import_name(#(#abi_arguments),*) -> #abi_ret;
+        }
+
+        #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+        unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
+            #(
+                drop(#abi_argument_names);
+            )*
+            panic!("cannot call wasm-bindgen imported functions on \
+                    non-wasm targets");
+        }
     }
 }
 
