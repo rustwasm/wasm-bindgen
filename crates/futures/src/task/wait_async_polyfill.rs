@@ -36,21 +36,12 @@
  * when possible.  The worker communicates with its parent using postMessage.
  */
 
-use js_sys::{encode_uri_component, Array, Promise};
+use js_sys::{Array, Promise};
 use std::cell::RefCell;
 use std::sync::atomic::AtomicI32;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{MessageEvent, Worker};
-
-const HELPER_CODE: &'static str = "
-onmessage = function (ev) {
-    let [ia, index, value] = ev.data;
-    ia = new Int32Array(ia.buffer);
-    let result = Atomics.wait(ia, index, value);
-    postMessage(result);
-};
-";
 
 thread_local! {
     static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
@@ -62,11 +53,8 @@ fn alloc_helper() -> Worker {
             return helper;
         }
 
-        let mut initialization_string = "data:application/javascript,".to_owned();
-        let encoded: String = encode_uri_component(HELPER_CODE).into();
-        initialization_string.push_str(&encoded);
-
-        Worker::new(&initialization_string).unwrap_or_else(|js| wasm_bindgen::throw_val(js))
+        let worker_url = wasm_bindgen::link_to!(module = "/src/task/worker.js").unwrap();
+        Worker::new(&worker_url).unwrap_or_else(|js| wasm_bindgen::throw_val(js))
     })
 }
 
