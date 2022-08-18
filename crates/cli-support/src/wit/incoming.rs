@@ -89,8 +89,8 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U16 => self.number(WitVT::U16, WasmVT::I32),
             Descriptor::I32 => self.number(WitVT::S32, WasmVT::I32),
             Descriptor::U32 => self.number(WitVT::U32, WasmVT::I32),
-            Descriptor::I64 => self.number64(true),
-            Descriptor::U64 => self.number64(false),
+            Descriptor::I64 => self.number(WitVT::S64, WasmVT::I64),
+            Descriptor::U64 => self.number(WitVT::U64, WasmVT::I64),
             Descriptor::F32 => {
                 self.get(AdapterType::F32);
                 self.output.push(AdapterType::F32);
@@ -256,17 +256,7 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U32 => self.in_option_native(ValType::I32),
             Descriptor::F32 => self.in_option_native(ValType::F32),
             Descriptor::F64 => self.in_option_native(ValType::F64),
-            Descriptor::I64 | Descriptor::U64 => {
-                let (signed, ty) = match arg {
-                    Descriptor::I64 => (true, AdapterType::S64.option()),
-                    _ => (false, AdapterType::U64.option()),
-                };
-                self.instruction(
-                    &[ty],
-                    Instruction::I32SplitOption64 { signed },
-                    &[AdapterType::I32, AdapterType::I32, AdapterType::I32],
-                );
-            }
+            Descriptor::I64 | Descriptor::U64 => self.in_option_native(ValType::I64),
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::Bool.option()],
@@ -393,18 +383,6 @@ impl InstructionBuilder<'_, '_> {
             &[AdapterType::from_wit(input)],
             Instruction::Standard(std),
             &[AdapterType::from_wasm(output).unwrap()],
-        );
-    }
-
-    fn number64(&mut self, signed: bool) {
-        self.instruction(
-            &[if signed {
-                AdapterType::S64
-            } else {
-                AdapterType::U64
-            }],
-            Instruction::I32Split64 { signed },
-            &[AdapterType::I32, AdapterType::I32],
         );
     }
 

@@ -63,6 +63,8 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U16 => self.outgoing_i32(AdapterType::U16),
             Descriptor::I32 => self.outgoing_i32(AdapterType::S32),
             Descriptor::U32 => self.outgoing_i32(AdapterType::U32),
+            Descriptor::I64 => self.outgoing_i64(AdapterType::I64),
+            Descriptor::U64 => self.outgoing_i64(AdapterType::U64),
             Descriptor::F32 => {
                 self.get(AdapterType::F32);
                 self.output.push(AdapterType::F32);
@@ -78,22 +80,6 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                     Instruction::StringFromChar,
                     &[AdapterType::String],
-                );
-            }
-
-            Descriptor::I64 | Descriptor::U64 => {
-                let signed = match arg {
-                    Descriptor::I64 => true,
-                    _ => false,
-                };
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32],
-                    Instruction::I64FromLoHi { signed },
-                    &[if signed {
-                        AdapterType::S64
-                    } else {
-                        AdapterType::U64
-                    }],
                 );
             }
 
@@ -277,19 +263,10 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U16 => self.out_option_sentinel(AdapterType::U16),
             Descriptor::I32 => self.option_native(true, ValType::I32),
             Descriptor::U32 => self.option_native(false, ValType::I32),
+            Descriptor::I64 => self.option_native(true, ValType::I64),
+            Descriptor::U64 => self.option_native(false, ValType::I64),
             Descriptor::F32 => self.option_native(true, ValType::F32),
             Descriptor::F64 => self.option_native(true, ValType::F64),
-            Descriptor::I64 | Descriptor::U64 => {
-                let (signed, ty) = match arg {
-                    Descriptor::I64 => (true, AdapterType::S64.option()),
-                    _ => (false, AdapterType::U64.option()),
-                };
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32, AdapterType::I32],
-                    Instruction::Option64FromI32 { signed },
-                    &[ty],
-                );
-            }
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::I32],
@@ -539,6 +516,15 @@ impl InstructionBuilder<'_, '_> {
             trap: false,
         };
         self.instruction(&[AdapterType::I32], Instruction::Standard(std), &[output]);
+    }
+
+    fn outgoing_i64(&mut self, output: AdapterType) {
+        let std = wit_walrus::Instruction::WasmToInt {
+            input: walrus::ValType::I64,
+            output: output.to_wit().unwrap(),
+            trap: false,
+        };
+        self.instruction(&[AdapterType::I64], Instruction::Standard(std), &[output]);
     }
 
     fn cached_string(&mut self, optional: bool, owned: bool) -> Result<(), Error> {

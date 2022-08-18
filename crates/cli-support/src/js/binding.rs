@@ -8,7 +8,7 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
-use walrus::Module;
+use walrus::{Module, ValType};
 
 /// A one-size-fits-all builder for processing WebIDL bindings and generating
 /// JS.
@@ -437,6 +437,14 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         self.prelude(&format!("_assertNum({});", arg));
     }
 
+    fn assert_bigint(&mut self, arg: &str) {
+        if !self.cx.config.debug {
+            return;
+        }
+        self.cx.expose_assert_bigint();
+        self.prelude(&format!("_assertBigInt({});", arg));
+    }
+
     fn assert_bool(&mut self, arg: &str) {
         if !self.cx.config.debug {
             return;
@@ -452,6 +460,16 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         self.cx.expose_is_like_none();
         self.prelude(&format!("if (!isLikeNone({})) {{", arg));
         self.assert_number(arg);
+        self.prelude("}");
+    }
+
+    fn assert_optional_bigint(&mut self, arg: &str) {
+        if !self.cx.config.debug {
+            return;
+        }
+        self.cx.expose_is_like_none();
+        self.prelude(&format!("if (!isLikeNone({})) {{", arg));
+        self.assert_bigint(arg);
         self.prelude("}");
     }
 
@@ -560,9 +578,18 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             }
         }
 
-        Instruction::Standard(wit_walrus::Instruction::IntToWasm { trap: false, .. }) => {
+        Instruction::Standard(wit_walrus::Instruction::IntToWasm {
+            trap: false, input, ..
+        }) => {
             let val = js.pop();
-            js.assert_number(&val);
+            if matches!(
+                input,
+                wit_walrus::ValType::I64 | wit_walrus::ValType::S64 | wit_walrus::ValType::U64
+            ) {
+                js.assert_bigint(&val);
+            } else {
+                js.assert_number(&val);
+            }
             js.push(val);
         }
 
@@ -577,6 +604,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let val = js.pop();
             match output {
                 wit_walrus::ValType::U32 => js.push(format!("{} >>> 0", val)),
+                wit_walrus::ValType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
                 _ => js.push(val),
             }
         }
@@ -618,6 +646,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::StoreRetptr { ty, offset, mem } => {
             let (mem, size) = match ty {
                 AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
+                AdapterType::I64 => (js.cx.expose_int64_memory(*mem), 8),
                 AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
                 AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
                 other => bail!("invalid aggregate return type {:?}", other),
@@ -639,6 +668,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::LoadRetptr { ty, offset, mem } => {
             let (mem, quads) = match ty {
                 AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 1),
+                AdapterType::I64 => (js.cx.expose_int64_memory(*mem), 2),
                 AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 1),
                 AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 2),
                 other => bail!("invalid aggregate return type {:?}", other),
@@ -712,52 +742,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("ptr{}", i));
         }
 
-        Instruction::I32Split64 { signed } => {
-            let val = js.pop();
-            let f = if *signed {
-                js.cx.expose_int64_cvt_shim()
-            } else {
-                js.cx.expose_uint64_cvt_shim()
-            };
-            let i = js.tmp();
-            js.prelude(&format!(
-                "
-                 {f}[0] = {val};
-                 const low{i} = u32CvtShim[0];
-                 const high{i} = u32CvtShim[1];
-                 ",
-                i = i,
-                f = f,
-                val = val,
-            ));
-            js.push(format!("low{}", i));
-            js.push(format!("high{}", i));
-        }
-
-        Instruction::I32SplitOption64 { signed } => {
-            let val = js.pop();
-            js.cx.expose_is_like_none();
-            let f = if *signed {
-                js.cx.expose_int64_cvt_shim()
-            } else {
-                js.cx.expose_uint64_cvt_shim()
-            };
-            let i = js.tmp();
-            js.prelude(&format!(
-                "\
-                    {f}[0] = isLikeNone({val}) ? BigInt(0) : {val};
-                    const low{i} = u32CvtShim[0];
-                    const high{i} = u32CvtShim[1];
-                ",
-                i = i,
-                f = f,
-                val = val,
-            ));
-            js.push(format!("!isLikeNone({0})", val));
-            js.push(format!("low{}", i));
-            js.push(format!("high{}", i));
-        }
-
         Instruction::I32FromOptionExternref { table_and_alloc } => {
             let val = js.pop();
             js.cx.expose_is_like_none();
@@ -803,12 +787,19 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("isLikeNone({0}) ? {1} : {0}", val, hole));
         }
 
-        Instruction::FromOptionNative { .. } => {
+        Instruction::FromOptionNative { ty } => {
             let val = js.pop();
             js.cx.expose_is_like_none();
-            js.assert_optional_number(&val);
+            if *ty == ValType::I64 {
+                js.assert_optional_bigint(&val);
+            } else {
+                js.assert_optional_number(&val);
+            }
             js.push(format!("!isLikeNone({0})", val));
-            js.push(format!("isLikeNone({0}) ? 0 : {0}", val));
+            js.push(format!(
+                "isLikeNone({val}) ? 0{n} : {val}",
+                n = if *ty == ValType::I64 { "n" } else { "" }
+            ));
         }
 
         Instruction::VectorToMemory { kind, malloc, mem } => {
@@ -1001,29 +992,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("String.fromCodePoint({})", val));
         }
 
-        Instruction::I64FromLoHi { signed } => {
-            let f = if *signed {
-                js.cx.expose_int64_cvt_shim()
-            } else {
-                js.cx.expose_uint64_cvt_shim()
-            };
-            let i = js.tmp();
-            let high = js.pop();
-            let low = js.pop();
-            js.prelude(&format!(
-                "\
-                     u32CvtShim[0] = {low};
-                     u32CvtShim[1] = {high};
-                     const n{i} = {f}[0];
-                 ",
-                low = low,
-                high = high,
-                f = f,
-                i = i,
-            ));
-            js.push(format!("n{}", i))
-        }
-
         Instruction::RustFromI32 { class } => {
             js.cx.require_class_wrap(class);
             let val = js.pop();
@@ -1183,14 +1151,21 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("{0} === 0xFFFFFF ? undefined : {0}", val));
         }
 
-        Instruction::ToOptionNative { ty: _, signed } => {
+        Instruction::ToOptionNative { ty, signed } => {
             let val = js.pop();
             let present = js.pop();
             js.push(format!(
-                "{} === 0 ? undefined : {}{}",
+                "{} === 0 ? undefined : {}",
                 present,
-                val,
-                if *signed { "" } else { " >>> 0" },
+                if *signed {
+                    val
+                } else {
+                    match ty {
+                        ValType::I32 => format!("{val} >>> 0"),
+                        ValType::I64 => format!("BigInt.asUintN(64, {val})"),
+                        _ => unreachable!("unsigned non-integer"),
+                    }
+                },
             ));
         }
 
@@ -1210,31 +1185,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::OptionEnumFromI32 { hole } => {
             let val = js.pop();
             js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
-        }
-
-        Instruction::Option64FromI32 { signed } => {
-            let f = if *signed {
-                js.cx.expose_int64_cvt_shim()
-            } else {
-                js.cx.expose_uint64_cvt_shim()
-            };
-            let i = js.tmp();
-            let high = js.pop();
-            let low = js.pop();
-            let present = js.pop();
-            js.prelude(&format!(
-                "
-                    u32CvtShim[0] = {low};
-                    u32CvtShim[1] = {high};
-                    const n{i} = {present} === 0 ? undefined : {f}[0];
-                ",
-                present = present,
-                low = low,
-                high = high,
-                f = f,
-                i = i,
-            ));
-            js.push(format!("n{}", i));
         }
     }
     Ok(())

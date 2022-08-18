@@ -100,6 +100,8 @@ pub unsafe trait WasmAbi {}
 
 unsafe impl WasmAbi for u32 {}
 unsafe impl WasmAbi for i32 {}
+unsafe impl WasmAbi for u64 {}
+unsafe impl WasmAbi for i64 {}
 unsafe impl WasmAbi for f32 {}
 unsafe impl WasmAbi for f64 {}
 

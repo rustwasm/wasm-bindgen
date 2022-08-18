@@ -25,6 +25,22 @@ pub struct WasmOptionalU32 {
 unsafe impl WasmAbi for WasmOptionalU32 {}
 
 #[repr(C)]
+pub struct WasmOptionalI64 {
+    pub present: u32,
+    pub value: i64,
+}
+
+unsafe impl WasmAbi for WasmOptionalI64 {}
+
+#[repr(C)]
+pub struct WasmOptionalU64 {
+    pub present: u32,
+    pub value: u64,
+}
+
+unsafe impl WasmAbi for WasmOptionalU64 {}
+
+#[repr(C)]
 pub struct WasmOptionalF32 {
     pub present: u32,
     pub value: f32,
@@ -39,23 +55,6 @@ pub struct WasmOptionalF64 {
 }
 
 unsafe impl WasmAbi for WasmOptionalF64 {}
-
-#[repr(C)]
-pub struct Wasm64 {
-    pub low: u32,
-    pub high: u32,
-}
-
-unsafe impl WasmAbi for Wasm64 {}
-
-#[repr(C)]
-pub struct WasmOptional64 {
-    pub present: u32,
-    pub low: u32,
-    pub high: u32,
-}
-
-unsafe impl WasmAbi for WasmOptional64 {}
 
 macro_rules! type_wasm_native {
     ($($t:tt as $c:tt => $r:tt)*) => ($(
@@ -111,6 +110,8 @@ type_wasm_native!(
     isize as i32 => WasmOptionalI32
     u32 as u32 => WasmOptionalU32
     usize as u32 => WasmOptionalU32
+    i64 as i64 => WasmOptionalI64
+    u64 as u64 => WasmOptionalU64
     f32 as f32 => WasmOptionalF32
     f64 as f64 => WasmOptionalF64
 );
@@ -144,66 +145,6 @@ macro_rules! type_abi_as_u32 {
 }
 
 type_abi_as_u32!(i8 u8 i16 u16);
-
-macro_rules! type_64 {
-    ($($t:tt)*) => ($(
-        impl IntoWasmAbi for $t {
-            type Abi = Wasm64;
-
-            #[inline]
-            fn into_abi(self) -> Wasm64 {
-                Wasm64 {
-                    low: self as u32,
-                    high: (self >> 32) as u32,
-                }
-            }
-        }
-
-        impl FromWasmAbi for $t {
-            type Abi = Wasm64;
-
-            #[inline]
-            unsafe fn from_abi(js: Wasm64) -> $t {
-                $t::from(js.low) | ($t::from(js.high) << 32)
-            }
-        }
-
-        impl IntoWasmAbi for Option<$t> {
-            type Abi = WasmOptional64;
-
-            #[inline]
-            fn into_abi(self) -> WasmOptional64 {
-                match self {
-                    None => WasmOptional64 {
-                        present: 0,
-                        low: 0 as u32,
-                        high: 0 as u32,
-                    },
-                    Some(me) => WasmOptional64 {
-                        present: 1,
-                        low: me as u32,
-                        high: (me >> 32) as u32,
-                    },
-                }
-            }
-        }
-
-        impl FromWasmAbi for Option<$t> {
-            type Abi = WasmOptional64;
-
-            #[inline]
-            unsafe fn from_abi(js: WasmOptional64) -> Self {
-                if js.present == 0 {
-                    None
-                } else {
-                    Some($t::from(js.low) | ($t::from(js.high) << 32))
-                }
-            }
-        }
-    )*)
-}
-
-type_64!(i64 u64);
 
 impl IntoWasmAbi for bool {
     type Abi = u32;

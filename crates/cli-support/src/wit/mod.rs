@@ -1646,7 +1646,7 @@ impl StructUnpacker {
     fn read_ty(&mut self, ty: &AdapterType) -> Result<usize, Error> {
         let (quads, alignment) = match ty {
             AdapterType::I32 | AdapterType::U32 | AdapterType::F32 => (1, 1),
-            AdapterType::F64 => (2, 2),
+            AdapterType::I64 | AdapterType::U64 | AdapterType::F64 => (2, 2),
             other => bail!("invalid aggregate return type {:?}", other),
         };
         Ok(self.append(quads, alignment))
