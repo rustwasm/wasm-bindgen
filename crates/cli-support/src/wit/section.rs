@@ -256,11 +256,7 @@ fn translate_instruction(
         | RustFromI32 { .. } => {
             bail!("rust types aren't supported in wasm interface types");
         }
-        I32Split64 { .. } | I64FromLoHi { .. } => {
-            bail!("64-bit integers aren't supported in wasm-bindgen");
-        }
-        I32SplitOption64 { .. }
-        | I32FromOptionExternref { .. }
+        I32FromOptionExternref { .. }
         | I32FromOptionU32Sentinel
         | I32FromOptionRust { .. }
         | I32FromOptionBool
@@ -276,8 +272,7 @@ fn translate_instruction(
         | ToOptionNative { .. }
         | OptionBoolFromI32
         | OptionCharFromI32
-        | OptionEnumFromI32 { .. }
-        | Option64FromI32 { .. } => {
+        | OptionEnumFromI32 { .. } => {
             bail!("optional types aren't supported in wasm bindgen");
         }
         UnwrapResult { .. } | UnwrapResultString { .. } => {

@@ -1126,6 +1126,19 @@ impl<'a> Context<'a> {
         ));
     }
 
+    fn expose_assert_bigint(&mut self) {
+        if !self.should_write_global("assert_bigint") {
+            return;
+        }
+        self.global(&format!(
+            "
+            function _assertBigInt(n) {{
+                if (typeof(n) !== 'bigint') throw new Error('expected a bigint argument');
+            }}
+            "
+        ));
+    }
+
     fn expose_assert_bool(&mut self) {
         if !self.should_write_global("assert_bool") {
             return;
@@ -2034,41 +2047,6 @@ impl<'a> Context<'a> {
             }
             ",
         );
-    }
-
-    fn expose_u32_cvt_shim(&mut self) -> &'static str {
-        let name = "u32CvtShim";
-        if !self.should_write_global(name) {
-            return name;
-        }
-        self.global(&format!("const {} = new Uint32Array(2);", name));
-        name
-    }
-
-    fn expose_int64_cvt_shim(&mut self) -> &'static str {
-        let name = "int64CvtShim";
-        if !self.should_write_global(name) {
-            return name;
-        }
-        let n = self.expose_u32_cvt_shim();
-        self.global(&format!(
-            "const {} = new BigInt64Array({}.buffer);",
-            name, n
-        ));
-        name
-    }
-
-    fn expose_uint64_cvt_shim(&mut self) -> &'static str {
-        let name = "uint64CvtShim";
-        if !self.should_write_global(name) {
-            return name;
-        }
-        let n = self.expose_u32_cvt_shim();
-        self.global(&format!(
-            "const {} = new BigUint64Array({}.buffer);",
-            name, n
-        ));
-        name
     }
 
     fn expose_is_like_none(&mut self) {
