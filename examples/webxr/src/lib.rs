@@ -41,7 +41,8 @@ pub fn create_webgl_context(xr_mode: bool) -> Result<WebGl2RenderingContext, JsV
             &gl_attribs,
             &JsValue::from_str("xrCompatible"),
             &JsValue::TRUE,
-        ).unwrap();
+        )
+        .unwrap();
 
         canvas
             .get_context_with_context_options("webgl2", &gl_attribs)?
