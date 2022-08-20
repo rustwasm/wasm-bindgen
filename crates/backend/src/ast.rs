@@ -101,18 +101,9 @@ pub enum ImportModule {
 impl Hash for ImportModule {
     fn hash<H: Hasher>(&self, h: &mut H) {
         match self {
-            ImportModule::Named(name, _) => {
-                1u8.hash(h);
-                name.hash(h);
-            }
-            ImportModule::Inline(idx, _) => {
-                2u8.hash(h);
-                idx.hash(h);
-            }
-            ImportModule::RawNamed(name, _) => {
-                3u8.hash(h);
-                name.hash(h);
-            }
+            ImportModule::Named(name, _) => (1u8, name).hash(h),
+            ImportModule::Inline(idx, _) => (2u8, idx).hash(h),
+            ImportModule::RawNamed(name, _) => (3u8, name).hash(h),
         }
     }
 }
