@@ -1,7 +1,7 @@
 # Serializing and Deserializing Arbitrary Data Into and From `JsValue` with Serde
 
 It's possible to pass arbitrary data from Rust to JavaScript by serializing it
-with [Serde](https://github.com/serde-rs/serde). This is done through the
+with [Serde](https://github.com/serde-rs/serde). This can be done through the
 [`serde-wasm-bindgen`](https://docs.rs/serde-wasm-bindgen) crate.
 
 ## Add dependencies
@@ -75,9 +75,9 @@ pub fn receive_example_from_js(val: JsValue) {
 
 ## JavaScript Usage
 
-In the `JsValue` that JavaScript gets, `field1` will be an `Object` (not a
-JavaScript `Map`), `field2` will be a JavaScript `Array` whose members are
-`Array`s of numbers, and `field3` will be an `Array` of numbers.
+In the `JsValue` that JavaScript gets, `field1` will be a `Map`, `field2` will
+be a JavaScript `Array` whose members are `Array`s of numbers, and `field3`
+will be an `Array` of numbers.
 
 ```js
 import { send_example_to_js, receive_example_from_js } from "example";
@@ -92,13 +92,53 @@ example.field2.push([5, 6]);
 receive_example_from_js(example);
 ```
 
+## An alternative approach - using JSON
+
+`serde-wasm-bindgen` works by directly manipulating JavaScript values. This
+requires a lot of calls back and forth between Rust and JavaScript, which can
+sometimes be slow. An alternative way of doing this is to serialize values to
+JSON, and then parse them on the other end. Browsers' JSON implementations are usually quite fast, and so this
+approach can outstrip `serde-wasm-bindgen`'s performance in some cases.
+
+That's not to say that using JSON is always faster, though - the JSON approach
+can be anywhere from 2x to 0.2x the speed of `serde-wasm-bindgen`, depending on
+the JS runtime and the values being passed. It also leads to larger code size
+than `serde-wasm-bindgen`. So, make sure to profile each for your own use
+cases.
+
+Here's the equivalent of the above examples using JSON:
+
+```rust
+#[wasm_bindgen]
+pub fn send_example_to_js() -> JsValue {
+    let mut field1 = HashMap::new();
+    field1.insert(0, String::from("ex"));
+    let example = Example {
+        field1,
+        field2: vec![vec![1., 2.], vec![3., 4.]],
+        field3: [1., 2., 3., 4.]
+    };
+
+    let json = serde_json::to_string(&example).unwrap();
+    js_sys::JSON::parse(&json).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn receive_example_from_js(val: JsValue) {
+    // `JSON::stringify` returns a JavaScript string,
+    // which we then have to convert into a Rust string.
+    let json = String::from(js_sys::JSON::stringify(&val).unwrap());
+    let example: Example = serde_json::from_str(&json).unwrap();
+    ...
+}
+```
+
 ## `JsValue::from_serde` / `JsValue::into_serde`
 
 In previous versions of `wasm-bindgen`, `JsValue::from_serde` and
 `JsValue::into_serde` were the recommended way of using Serde to convert
-to/from JS values. These functions use `serde_json` to serialize types to JSON
-and parse them on the other end. However, this caused problems when certain
-features of `serde_json` and other crates were enabled that caused it to depend
-on `wasm-bindgen`, creating a circular dependency, which is illegal in Rust and
-caused people's code to fail to compile. So, they were deprecated in favor of
-`serde-wasm-bindgen`.
+to/from JS values. These were implemented using the JSON approach with
+`serde_json`. This caused problems when certain features of `serde_json` and
+other crates were enabled that caused it to depend on `wasm-bindgen`, creating
+a circular dependency, which is illegal in Rust and caused people's code to
+fail to compile. So, they were deprecated.
