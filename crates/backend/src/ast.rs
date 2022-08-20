@@ -78,8 +78,8 @@ pub enum MethodSelf {
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Import {
-    /// The type of module being imported from
-    pub module: ImportModule,
+    /// The type of module being imported from, if any
+    pub module: Option<ImportModule>,
     /// The namespace to access the item through, if any
     pub js_namespace: Option<Vec<String>>,
     /// The type of item being imported
@@ -90,8 +90,6 @@ pub struct Import {
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub enum ImportModule {
-    /// No module / import from global scope
-    None,
     /// Import from the named module, with relative paths interpreted
     Named(String, Span),
     /// Import from the named module, without interpreting paths
@@ -103,9 +101,6 @@ pub enum ImportModule {
 impl Hash for ImportModule {
     fn hash<H: Hasher>(&self, h: &mut H) {
         match self {
-            ImportModule::None => {
-                0u8.hash(h);
-            }
             ImportModule::Named(name, _) => {
                 1u8.hash(h);
                 name.hash(h);

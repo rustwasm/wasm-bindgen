@@ -468,12 +468,12 @@ fn get_expr(mut expr: &syn::Expr) -> &syn::Expr {
     expr
 }
 
-impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignItemFn {
+impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (BindgenAttrs, &'a ast::ImportModule),
+        (opts, module): (BindgenAttrs, &'a Option<ast::ImportModule>),
     ) -> Result<Self::Target, Diagnostic> {
         let mut wasm = function_from_decl(
             &self.sig.ident,
@@ -712,12 +712,12 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     }
 }
 
-impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignItemStatic {
+impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::ForeignItemStatic {
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (BindgenAttrs, &'a ast::ImportModule),
+        (opts, module): (BindgenAttrs, &'a Option<ast::ImportModule>),
     ) -> Result<Self::Target, Diagnostic> {
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
@@ -1197,7 +1197,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
     }
 
     program.imports.push(ast::Import {
-        module: ast::ImportModule::None,
+        module: None,
         js_namespace: None,
         kind: ast::ImportKind::Enum(ast::ImportEnum {
             vis: enum_.vis,
@@ -1381,19 +1381,19 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 let msg = "cannot specify both `module` and `raw_module`";
                 errors.push(Diagnostic::span_error(span, msg));
             }
-            ast::ImportModule::Named(name.to_string(), span)
+            Some(ast::ImportModule::Named(name.to_string(), span))
         } else if let Some((name, span)) = opts.raw_module() {
             if opts.inline_js().is_some() {
                 let msg = "cannot specify both `raw_module` and `inline_js`";
                 errors.push(Diagnostic::span_error(span, msg));
             }
-            ast::ImportModule::RawNamed(name.to_string(), span)
+            Some(ast::ImportModule::RawNamed(name.to_string(), span))
         } else if let Some((js, span)) = opts.inline_js() {
             let i = program.inline_js.len();
             program.inline_js.push(js.to_string());
-            ast::ImportModule::Inline(i, span)
+            Some(ast::ImportModule::Inline(i, span))
         } else {
-            ast::ImportModule::None
+            None
         };
         for item in self.items.into_iter() {
             if let Err(e) = item.macro_parse(program, module.clone()) {
@@ -1406,11 +1406,11 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
     }
 }
 
-impl MacroParse<ast::ImportModule> for syn::ForeignItem {
+impl MacroParse<Option<ast::ImportModule>> for syn::ForeignItem {
     fn macro_parse(
         mut self,
         program: &mut ast::Program,
-        module: ast::ImportModule,
+        module: Option<ast::ImportModule>,
     ) -> Result<(), Diagnostic> {
         let item_opts = {
             let attrs = match self {
