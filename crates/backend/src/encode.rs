@@ -239,16 +239,26 @@ fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<
 
 fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<'a>, Diagnostic> {
     Ok(Import {
-        module: match &i.module {
-            ast::ImportModule::Named(m, span) => {
-                ImportModule::Named(intern.resolve_import_module(m, *span)?)
-            }
-            ast::ImportModule::RawNamed(m, _span) => ImportModule::RawNamed(intern.intern_str(m)),
-            ast::ImportModule::Inline(idx, _) => ImportModule::Inline(*idx as u32),
-            ast::ImportModule::None => ImportModule::None,
-        },
+        module: i
+            .module
+            .as_ref()
+            .map(|m| shared_module(m, intern))
+            .transpose()?,
         js_namespace: i.js_namespace.clone(),
         kind: shared_import_kind(&i.kind, intern)?,
+    })
+}
+
+fn shared_module<'a>(
+    m: &'a ast::ImportModule,
+    intern: &'a Interner,
+) -> Result<ImportModule<'a>, Diagnostic> {
+    Ok(match m {
+        ast::ImportModule::Named(m, span) => {
+            ImportModule::Named(intern.resolve_import_module(m, *span)?)
+        }
+        ast::ImportModule::RawNamed(m, _span) => ImportModule::RawNamed(intern.intern_str(m)),
+        ast::ImportModule::Inline(idx, _) => ImportModule::Inline(*idx as u32),
     })
 }
 

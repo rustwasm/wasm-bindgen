@@ -881,10 +881,10 @@ impl<'a> Context<'a> {
 
     fn determine_import(&self, import: &decode::Import<'_>, item: &str) -> Result<JsImport, Error> {
         let is_local_snippet = match import.module {
-            decode::ImportModule::Named(s) => self.aux.local_modules.contains_key(s),
-            decode::ImportModule::RawNamed(_) => false,
-            decode::ImportModule::Inline(_) => true,
-            decode::ImportModule::None => false,
+            Some(decode::ImportModule::Named(s)) => self.aux.local_modules.contains_key(s),
+            Some(decode::ImportModule::RawNamed(_)) => false,
+            Some(decode::ImportModule::Inline(_)) => true,
+            None => false,
         };
 
         // Similar to `--target no-modules`, only allow vendor prefixes
@@ -902,7 +902,7 @@ impl<'a> Context<'a> {
                     &vendor_prefixes[0]
                 );
             }
-            if let decode::ImportModule::Named(module) = &import.module {
+            if let Some(decode::ImportModule::Named(module)) = &import.module {
                 bail!(
                     "import of `{}` from `{}` has a polyfill of `{}` listed, but
                      vendor prefixes aren't supported when importing from modules",
@@ -938,17 +938,19 @@ impl<'a> Context<'a> {
         };
 
         let name = match import.module {
-            decode::ImportModule::Named(module) if is_local_snippet => JsImportName::LocalModule {
-                module: module.to_string(),
-                name: name.to_string(),
-            },
-            decode::ImportModule::Named(module) | decode::ImportModule::RawNamed(module) => {
+            Some(decode::ImportModule::Named(module)) if is_local_snippet => {
+                JsImportName::LocalModule {
+                    module: module.to_string(),
+                    name: name.to_string(),
+                }
+            }
+            Some(decode::ImportModule::Named(module) | decode::ImportModule::RawNamed(module)) => {
                 JsImportName::Module {
                     module: module.to_string(),
                     name: name.to_string(),
                 }
             }
-            decode::ImportModule::Inline(idx) => {
+            Some(decode::ImportModule::Inline(idx)) => {
                 let offset = self
                     .aux
                     .snippets
@@ -961,7 +963,7 @@ impl<'a> Context<'a> {
                     name: name.to_string(),
                 }
             }
-            decode::ImportModule::None => JsImportName::Global {
+            None => JsImportName::Global {
                 name: name.to_string(),
             },
         };

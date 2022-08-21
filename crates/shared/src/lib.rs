@@ -25,13 +25,12 @@ macro_rules! shared_api {
         }
 
         struct Import<'a> {
-            module: ImportModule<'a>,
+            module: Option<ImportModule<'a>>,
             js_namespace: Option<Vec<String>>,
             kind: ImportKind<'a>,
         }
 
         enum ImportModule<'a> {
-            None,
             Named(&'a str),
             RawNamed(&'a str),
             Inline(u32),

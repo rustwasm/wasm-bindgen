@@ -119,7 +119,7 @@ pub fn ident_ty(ident: Ident) -> syn::Type {
 /// Convert an ImportFunction into the more generic Import type, wrapping the provided function
 pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
     ast::Import {
-        module: ast::ImportModule::None,
+        module: None,
         js_namespace: None,
         kind: ast::ImportKind::Function(function),
     }
