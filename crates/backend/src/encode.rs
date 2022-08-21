@@ -239,7 +239,11 @@ fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<
 
 fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<'a>, Diagnostic> {
     Ok(Import {
-        module: Option::transpose(i.module.as_ref().map(|m| shared_module(m, intern)))?,
+        module: i
+            .module
+            .as_ref()
+            .map(|m| shared_module(m, intern))
+            .transpose()?,
         js_namespace: i.js_namespace.clone(),
         kind: shared_import_kind(&i.kind, intern)?,
     })
