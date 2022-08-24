@@ -97,8 +97,9 @@ receive_example_from_js(example);
 `serde-wasm-bindgen` works by directly manipulating JavaScript values. This
 requires a lot of calls back and forth between Rust and JavaScript, which can
 sometimes be slow. An alternative way of doing this is to serialize values to
-JSON, and then parse them on the other end. Browsers' JSON implementations are usually quite fast, and so this
-approach can outstrip `serde-wasm-bindgen`'s performance in some cases.
+JSON, and then parse them on the other end. Browsers' JSON implementations are
+usually quite fast, and so this approach can outstrip `serde-wasm-bindgen`'s
+performance in some cases.
 
 That's not to say that using JSON is always faster, though - the JSON approach
 can be anywhere from 2x to 0.2x the speed of `serde-wasm-bindgen`, depending on
@@ -106,9 +107,17 @@ the JS runtime and the values being passed. It also leads to larger code size
 than `serde-wasm-bindgen`. So, make sure to profile each for your own use
 cases.
 
-Here's the equivalent of the above examples using JSON:
+This approach is implemented in [`gloo_utils::format::JsValueSerdeExt`]:
+
+```toml
+# Cargo.toml
+[dependencies]
+gloo-utils = { version = "0.1", features = ["serde"] }
+```
 
 ```rust
+use gloo_utils::format::JsValueSerdeExt;
+
 #[wasm_bindgen]
 pub fn send_example_to_js() -> JsValue {
     let mut field1 = HashMap::new();
@@ -119,19 +128,17 @@ pub fn send_example_to_js() -> JsValue {
         field3: [1., 2., 3., 4.]
     };
 
-    let json = serde_json::to_string(&example).unwrap();
-    js_sys::JSON::parse(&json).unwrap()
+    JsValue::from_serde(&example).unwrap()
 }
 
 #[wasm_bindgen]
 pub fn receive_example_from_js(val: JsValue) {
-    // `JSON::stringify` returns a JavaScript string,
-    // which we then have to convert into a Rust string.
-    let json = String::from(js_sys::JSON::stringify(&val).unwrap());
-    let example: Example = serde_json::from_str(&json).unwrap();
+    let example: Example = val.into_serde().unwrap();
     ...
 }
 ```
+
+[`gloo_utils::format::JsValueSerdeExt`]: https://docs.rs/gloo-utils/latest/gloo_utils/format/trait.JsValueSerdeExt.html
 
 ## `JsValue::from_serde` / `JsValue::into_serde`
 
