@@ -46,7 +46,7 @@ code in in the worker across browsers, the `index.html` also includes loading
 both `wasm_in_web_worker.js` and `index.js`.
 
 ```html
-{{#include ../../../examples/wasm-in-web-worker/www/index.html}}
+{{#include ../../../examples/wasm-in-web-worker/index.html}}
 ```
 
 ## `index.js`
@@ -55,7 +55,7 @@ Loads our WASM file asynchronously and calls the entry point `startup` of the
 main thread which will create a worker.
 
 ```js
-{{#include ../../../examples/wasm-in-web-worker/www/index.js}}
+{{#include ../../../examples/wasm-in-web-worker/index.js}}
 ```
 
 ## `worker.js`
@@ -67,5 +67,5 @@ calculation and bind a method of the object to the `onmessage` callback of the
 worker.
 
 ```js
-{{#include ../../../examples/wasm-in-web-worker/www/worker.js}}
+{{#include ../../../examples/wasm-in-web-worker/worker.js}}
 ```
