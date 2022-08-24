@@ -106,6 +106,26 @@ pub async fn async_throw_custom_error() -> Result<AsyncCustomReturn, AsyncCustom
     })
 }
 
+#[wasm_bindgen]
+pub async fn async_take_reference(x: &str) -> String {
+    format!("Hi, {x}!")
+}
+
+#[wasm_bindgen]
+pub struct AsyncStruct;
+
+#[wasm_bindgen]
+impl AsyncStruct {
+    #[wasm_bindgen(constructor)]
+    pub async fn new() -> AsyncStruct {
+        AsyncStruct
+    }
+
+    pub async fn method(&self) -> u32 {
+        42
+    }
+}
+
 #[wasm_bindgen_test]
 async fn test_promise() {
     assert_eq!(call_promise().await.as_string(), Some(String::from("ok")))

@@ -470,9 +470,7 @@ impl TryToTokens for ast::Export {
                     quote! { () },
                     quote! { () },
                     quote! {
-                        wasm_bindgen_futures::spawn_local(async move {
-                            <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret.await);
-                        })
+                        <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret.await)
                     },
                 )
             } else {
@@ -480,9 +478,7 @@ impl TryToTokens for ast::Export {
                     quote! { wasm_bindgen::JsValue },
                     quote! { #syn_ret },
                     quote! {
-                        wasm_bindgen_futures::future_to_promise(async move {
-                            <#syn_ret as wasm_bindgen::__rt::IntoJsResult>::into_js_result(#ret.await)
-                        }).into()
+                        <#syn_ret as wasm_bindgen::__rt::IntoJsResult>::into_js_result(#ret.await)
                     },
                 )
             }
@@ -496,8 +492,32 @@ impl TryToTokens for ast::Export {
             (quote! { #syn_ret }, quote! { #syn_ret }, quote! { #ret })
         };
 
+        let mut call = quote! {
+            {
+                #(#arg_conversions)*
+                let #ret = #receiver(#(#converted_arguments),*);
+                #ret_expr
+            }
+        };
+
+        if self.function.r#async {
+            if self.start {
+                call = quote! {
+                    wasm_bindgen_futures::spawn_local(async move {
+                        #call
+                    })
+                }
+            } else {
+                call = quote! {
+                    wasm_bindgen_futures::future_to_promise(async move {
+                        #call
+                    }).into()
+                }
+            }
+        }
+
         let projection = quote! { <#ret_ty as wasm_bindgen::convert::ReturnWasmAbi> };
-        let convert_ret = quote! { #projection::return_abi(#ret_expr) };
+        let convert_ret = quote! { #projection::return_abi(#ret) };
         let describe_ret = quote! {
             <#ret_ty as WasmDescribe>::describe();
             <#inner_ret_ty as WasmDescribe>::describe();
@@ -523,13 +543,8 @@ impl TryToTokens for ast::Export {
                 )]
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
                     #start_check
-                    // Scope all local variables to be destroyed after we call
-                    // the function to ensure that `#convert_ret`, if it panics,
-                    // doesn't leak anything.
-                    let #ret = {
-                        #(#arg_conversions)*
-                        #receiver(#(#converted_arguments),*)
-                    };
+
+                    let #ret = #call;
                     #convert_ret
                 }
             };
