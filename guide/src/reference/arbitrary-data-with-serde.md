@@ -140,12 +140,13 @@ pub fn receive_example_from_js(val: JsValue) {
 
 [`gloo_utils::format::JsValueSerdeExt`]: https://docs.rs/gloo-utils/latest/gloo_utils/format/trait.JsValueSerdeExt.html
 
-## `JsValue::from_serde` / `JsValue::into_serde`
+## History
 
-In previous versions of `wasm-bindgen`, `JsValue::from_serde` and
-`JsValue::into_serde` were the recommended way of using Serde to convert
-to/from JS values. These were implemented using the JSON approach with
-`serde_json`. This caused problems when certain features of `serde_json` and
-other crates were enabled that caused it to depend on `wasm-bindgen`, creating
-a circular dependency, which is illegal in Rust and caused people's code to
-fail to compile. So, they were deprecated.
+In previous versions of `wasm-bindgen`, `gloo-utils`'s JSON-based Serde support
+(`JsValue::from_serde` and `JsValue::into_serde`) was built into `wasm-bindgen`
+itself. However, this required a dependency on `serde_json`, which had a
+problem: with certain features of `serde_json` and other crates enabled,
+`serde_json` would end up with a circular dependency on `wasm-bindgen`, which
+is illegal in Rust and caused people's code to fail to compile. So, these
+methods were extracted out into `gloo-utils` with an extension trait and the
+originals were deprecated.
