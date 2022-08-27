@@ -202,11 +202,12 @@ impl JsValue {
     /// provided.
     ///
     /// **This function is deprecated**, due to [creating a dependency cycle in
-    /// some circumstances][dep-cycle-issue]. Use [`serde-wasm-bindgen`]
-    /// instead, or manually call `serde_json::to_string` + `JSON.parse`.
+    /// some circumstances][dep-cycle-issue]. Use [`serde-wasm-bindgen`] or
+    /// [`gloo_utils::format::JsValueSerdeExt`] instead.
     ///
     /// [dep-cycle-issue]: https://github.com/rustwasm/wasm-bindgen/issues/2770
     /// [`serde-wasm-bindgen`]: https://docs.rs/serde-wasm-bindgen
+    /// [`gloo_utils::format::JsValueSerdeExt`]: https://docs.rs/gloo-utils/latest/gloo_utils/format/trait.JsValueSerdeExt.html
     ///
     /// This function will serialize the provided value `t` to a JSON string,
     /// send the JSON string to JS, parse it into a JS object, and then return
@@ -221,7 +222,7 @@ impl JsValue {
     ///
     /// Returns any error encountered when serializing `T` into JSON.
     #[cfg(feature = "serde-serialize")]
-    #[deprecated = "causes dependency cycles, use `serde-wasm-bindgen` instead"]
+    #[deprecated = "causes dependency cycles, use `serde-wasm-bindgen` or `gloo_utils::format::JsValueSerdeExt` instead"]
     pub fn from_serde<T>(t: &T) -> serde_json::Result<JsValue>
     where
         T: serde::ser::Serialize + ?Sized,
@@ -234,11 +235,12 @@ impl JsValue {
     /// JSON into an arbitrary Rust value.
     ///
     /// **This function is deprecated**, due to [creating a dependency cycle in
-    /// some circumstances][dep-cycle-issue]. Use [`serde-wasm-bindgen`]
-    /// instead, or manually call `JSON.stringify` + `serde_json::from_str`.
+    /// some circumstances][dep-cycle-issue]. Use [`serde-wasm-bindgen`] or
+    /// [`gloo_utils::format::JsValueSerdeExt`] instead.
     ///
     /// [dep-cycle-issue]: https://github.com/rustwasm/wasm-bindgen/issues/2770
     /// [`serde-wasm-bindgen`]: https://docs.rs/serde-wasm-bindgen
+    /// [`gloo_utils::format::JsValueSerdeExt`]: https://docs.rs/gloo-utils/latest/gloo_utils/format/trait.JsValueSerdeExt.html
     ///
     /// This function will first call `JSON.stringify` on the `JsValue` itself.
     /// The resulting string is then passed into Rust which then parses it as
@@ -251,7 +253,7 @@ impl JsValue {
     ///
     /// Returns any error encountered when parsing the JSON into a `T`.
     #[cfg(feature = "serde-serialize")]
-    #[deprecated = "causes dependency cycles, use `serde-wasm-bindgen` instead"]
+    #[deprecated = "causes dependency cycles, use `serde-wasm-bindgen` or `gloo_utils::format::JsValueSerdeExt` instead"]
     pub fn into_serde<T>(&self) -> serde_json::Result<T>
     where
         T: for<'a> serde::de::Deserialize<'a>,
