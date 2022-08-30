@@ -154,7 +154,7 @@ impl JsValue {
     /// allocated large integer) and returns a handle to the JS version of it.
     #[inline]
     pub fn bigint_from_str(s: &str) -> JsValue {
-        unsafe { JsValue::_new(__wbindgen_bigint_new(s.as_ptr(), s.len())) }
+        unsafe { JsValue::_new(__wbindgen_bigint_from_str(s.as_ptr(), s.len())) }
     }
 
     /// Creates a new JS value which is a boolean.
@@ -868,7 +868,7 @@ macro_rules! numbers {
 numbers! { i8 u8 i16 u16 i32 u32 f32 f64 }
 
 macro_rules! big_numbers {
-    ($($n:ident)*) => ($(
+    (|$arg:ident|, $($n:ident = $handle:expr,)*) => ($(
         impl PartialEq<$n> for JsValue {
             #[inline]
             fn eq(&self, other: &$n) -> bool {
@@ -878,14 +878,20 @@ macro_rules! big_numbers {
 
         impl From<$n> for JsValue {
             #[inline]
-            fn from(n: $n) -> JsValue {
-                JsValue::bigint_from_str(&n.to_string())
+            fn from($arg: $n) -> JsValue {
+                unsafe { JsValue::_new($handle) }
             }
         }
     )*)
 }
 
-big_numbers! { i64 u64 i128 u128 }
+big_numbers! {
+    |n|,
+    i64 = __wbindgen_bigint_from_i64(n),
+    u64 = __wbindgen_bigint_from_u64(n),
+    i128 = __wbindgen_bigint_from_i128((n >> 64) as i64, n as u64),
+    u128 = __wbindgen_bigint_from_u128((n >> 64) as u64, n as u64),
+}
 
 // `usize` and `isize` have to be treated a bit specially, because we know that
 // they're 32-bit but the compiler conservatively assumes they might be bigger.
@@ -926,7 +932,11 @@ externs! {
 
         fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_number_new(f: f64) -> u32;
-        fn __wbindgen_bigint_new(ptr: *const u8, len: usize) -> u32;
+        fn __wbindgen_bigint_from_str(ptr: *const u8, len: usize) -> u32;
+        fn __wbindgen_bigint_from_i64(n: i64) -> u32;
+        fn __wbindgen_bigint_from_u64(n: u64) -> u32;
+        fn __wbindgen_bigint_from_i128(hi: i64, lo: u64) -> u32;
+        fn __wbindgen_bigint_from_u128(hi: u64, lo: u64) -> u32;
         fn __wbindgen_symbol_named_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_symbol_anonymous_new() -> u32;
 

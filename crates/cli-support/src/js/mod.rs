@@ -3323,9 +3323,19 @@ impl<'a> Context<'a> {
                 args[0].clone()
             }
 
-            Intrinsic::BigIntNew => {
+            Intrinsic::BigIntFromStr => {
                 assert_eq!(args.len(), 1);
                 format!("BigInt({})", args[0])
+            }
+
+            Intrinsic::BigIntFromI64 | Intrinsic::BigIntFromU64 => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
+            Intrinsic::BigIntFromI128 | Intrinsic::BigIntFromU128 => {
+                assert_eq!(args.len(), 2);
+                format!("{} << BigInt(64) | {}", args[0], args[1])
             }
 
             Intrinsic::StringNew => {
