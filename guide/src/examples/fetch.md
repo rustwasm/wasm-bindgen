@@ -11,8 +11,7 @@ then parses the resulting JSON.
 ## `Cargo.toml`
 
 The `Cargo.toml` enables a number of features related to the `fetch` API and
-types used: `Headers`, `Request`, etc. It also enables `wasm-bindgen`'s `serde`
-support.
+types used: `Headers`, `Request`, etc.
 
 ```toml
 {{#include ../../../examples/fetch/Cargo.toml}}

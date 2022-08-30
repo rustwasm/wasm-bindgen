@@ -3,16 +3,13 @@
 #[macro_use]
 mod utils;
 
-use futures::{future, Future};
-use js_sys::Promise;
+use js_sys::{Object, Promise, Reflect};
 use std::cell::RefCell;
-use std::collections::HashMap;
 use std::rc::Rc;
 use utils::set_panic_hook;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::future_to_promise;
-use wasm_bindgen_futures::JsFuture;
 use web_sys::*;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
@@ -39,12 +36,16 @@ pub fn create_webgl_context(xr_mode: bool) -> Result<WebGl2RenderingContext, JsV
         .unwrap();
 
     let gl: WebGl2RenderingContext = if xr_mode {
-        let mut gl_attribs = HashMap::new();
-        gl_attribs.insert(String::from("xrCompatible"), true);
-        let js_gl_attribs = JsValue::from_serde(&gl_attribs).unwrap();
+        let gl_attribs = Object::new();
+        Reflect::set(
+            &gl_attribs,
+            &JsValue::from_str("xrCompatible"),
+            &JsValue::TRUE,
+        )
+        .unwrap();
 
         canvas
-            .get_context_with_context_options("webgl2", &js_gl_attribs)?
+            .get_context_with_context_options("webgl2", &gl_attribs)?
             .unwrap()
             .dyn_into()?
     } else {
@@ -77,7 +78,6 @@ impl XrApp {
     pub fn init(&self) -> Promise {
         log!("Starting WebXR...");
         let navigator: web_sys::Navigator = web_sys::window().unwrap().navigator();
-        let gpu = navigator.gpu();
         let xr = navigator.xr();
         let session_mode = XrSessionMode::Inline;
         let session_supported_promise = xr.is_session_supported(session_mode);
@@ -121,7 +121,7 @@ impl XrApp {
         let g = f.clone();
 
         let mut i = 0;
-        *g.borrow_mut() = Some(Closure::new(move |time: f64, frame: XrFrame| {
+        *g.borrow_mut() = Some(Closure::new(move |_time: f64, frame: XrFrame| {
             log!("Frame rendering...");
             if i > 2 {
                 log!("All done!");

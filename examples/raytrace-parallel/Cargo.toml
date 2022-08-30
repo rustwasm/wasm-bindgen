@@ -13,8 +13,9 @@ js-sys = "0.3.59"
 rayon = "1.1.0"
 rayon-core = "1.5.0"
 raytracer = { git = 'https://github.com/alexcrichton/raytracer', branch = 'update-deps' }
+serde-wasm-bindgen = "0.4.3"
 futures-channel-preview = "0.3.0-alpha.18"
-wasm-bindgen = { version = "0.2.82", features = ['serde-serialize'] }
+wasm-bindgen = "0.2.82"
 wasm-bindgen-futures = "0.4.32"
 
 [dependencies.web-sys]
