@@ -13,6 +13,7 @@ pub mod console;
 pub mod div_element;
 pub mod element;
 pub mod event;
+pub mod geolocation;
 pub mod head_element;
 pub mod headers;
 pub mod heading_element;

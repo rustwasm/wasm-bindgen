@@ -1150,12 +1150,6 @@ mod gen_ConvolverOptions;
 #[cfg(feature = "ConvolverOptions")]
 pub use gen_ConvolverOptions::*;
 
-#[cfg(feature = "Coordinates")]
-#[allow(non_snake_case)]
-mod gen_Coordinates;
-#[cfg(feature = "Coordinates")]
-pub use gen_Coordinates::*;
-
 #[cfg(feature = "Credential")]
 #[allow(non_snake_case)]
 mod gen_Credential;
@@ -2337,6 +2331,24 @@ pub use gen_GamepadServiceTest::*;
 mod gen_Geolocation;
 #[cfg(feature = "Geolocation")]
 pub use gen_Geolocation::*;
+
+#[cfg(feature = "GeolocationCoordinates")]
+#[allow(non_snake_case)]
+mod gen_GeolocationCoordinates;
+#[cfg(feature = "GeolocationCoordinates")]
+pub use gen_GeolocationCoordinates::*;
+
+#[cfg(feature = "GeolocationPosition")]
+#[allow(non_snake_case)]
+mod gen_GeolocationPosition;
+#[cfg(feature = "GeolocationPosition")]
+pub use gen_GeolocationPosition::*;
+
+#[cfg(feature = "GeolocationPositionError")]
+#[allow(non_snake_case)]
+mod gen_GeolocationPositionError;
+#[cfg(feature = "GeolocationPositionError")]
+pub use gen_GeolocationPositionError::*;
 
 #[cfg(feature = "GetNotificationOptions")]
 #[allow(non_snake_case)]
@@ -5350,23 +5362,11 @@ mod gen_PopupBlockedEventInit;
 #[cfg(feature = "PopupBlockedEventInit")]
 pub use gen_PopupBlockedEventInit::*;
 
-#[cfg(feature = "Position")]
-#[allow(non_snake_case)]
-mod gen_Position;
-#[cfg(feature = "Position")]
-pub use gen_Position::*;
-
 #[cfg(feature = "PositionAlignSetting")]
 #[allow(non_snake_case)]
 mod gen_PositionAlignSetting;
 #[cfg(feature = "PositionAlignSetting")]
 pub use gen_PositionAlignSetting::*;
-
-#[cfg(feature = "PositionError")]
-#[allow(non_snake_case)]
-mod gen_PositionError;
-#[cfg(feature = "PositionError")]
-pub use gen_PositionError::*;
 
 #[cfg(feature = "PositionOptions")]
 #[allow(non_snake_case)]

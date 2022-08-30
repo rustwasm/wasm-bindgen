@@ -3,7 +3,7 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (is_type_of = | _ | false , extends = :: js_sys :: Object , js_name = Geolocation , typescript_type = "Geolocation")]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = Geolocation , typescript_type = "Geolocation")]
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Geolocation` class."]
     #[doc = ""]
@@ -18,17 +18,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`*"]
     pub fn clear_watch(this: &Geolocation, watch_id: i32);
-    # [wasm_bindgen (catch , method , structural , js_class = "Geolocation" , js_name = getCurrentPosition)]
+    # [wasm_bindgen (method , structural , js_class = "Geolocation" , js_name = getCurrentPosition)]
     #[doc = "The `getCurrentPosition()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`*"]
-    pub fn get_current_position(
-        this: &Geolocation,
-        success_callback: &::js_sys::Function,
-    ) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "Geolocation" , js_name = getCurrentPosition)]
+    pub fn get_current_position(this: &Geolocation, success_callback: &::js_sys::Function);
+    # [wasm_bindgen (method , structural , js_class = "Geolocation" , js_name = getCurrentPosition)]
     #[doc = "The `getCurrentPosition()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition)"]
@@ -38,9 +35,9 @@ extern "C" {
         this: &Geolocation,
         success_callback: &::js_sys::Function,
         error_callback: Option<&::js_sys::Function>,
-    ) -> Result<(), JsValue>;
+    );
     #[cfg(feature = "PositionOptions")]
-    # [wasm_bindgen (catch , method , structural , js_class = "Geolocation" , js_name = getCurrentPosition)]
+    # [wasm_bindgen (method , structural , js_class = "Geolocation" , js_name = getCurrentPosition)]
     #[doc = "The `getCurrentPosition()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition)"]
@@ -51,18 +48,15 @@ extern "C" {
         success_callback: &::js_sys::Function,
         error_callback: Option<&::js_sys::Function>,
         options: &PositionOptions,
-    ) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "Geolocation" , js_name = watchPosition)]
+    );
+    # [wasm_bindgen (method , structural , js_class = "Geolocation" , js_name = watchPosition)]
     #[doc = "The `watchPosition()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Geolocation`*"]
-    pub fn watch_position(
-        this: &Geolocation,
-        success_callback: &::js_sys::Function,
-    ) -> Result<i32, JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "Geolocation" , js_name = watchPosition)]
+    pub fn watch_position(this: &Geolocation, success_callback: &::js_sys::Function) -> i32;
+    # [wasm_bindgen (method , structural , js_class = "Geolocation" , js_name = watchPosition)]
     #[doc = "The `watchPosition()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition)"]
@@ -72,9 +66,9 @@ extern "C" {
         this: &Geolocation,
         success_callback: &::js_sys::Function,
         error_callback: Option<&::js_sys::Function>,
-    ) -> Result<i32, JsValue>;
+    ) -> i32;
     #[cfg(feature = "PositionOptions")]
-    # [wasm_bindgen (catch , method , structural , js_class = "Geolocation" , js_name = watchPosition)]
+    # [wasm_bindgen (method , structural , js_class = "Geolocation" , js_name = watchPosition)]
     #[doc = "The `watchPosition()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition)"]
@@ -85,5 +79,5 @@ extern "C" {
         success_callback: &::js_sys::Function,
         error_callback: Option<&::js_sys::Function>,
         options: &PositionOptions,
-    ) -> Result<i32, JsValue>;
+    ) -> i32;
 }
