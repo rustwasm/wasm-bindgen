@@ -15,6 +15,9 @@ exports.call_exports = async function() {
   await assert.rejects(wasm.async_throw_message(), /async message/);
   await assert.rejects(wasm.async_throw_jserror(), /async message/);
   await assert.rejects(wasm.async_throw_custom_error(), /custom error/);
+  assert.strictEqual("Hi, Jim!", await wasm.async_take_reference("Jim"));
+  const foo = await new wasm.AsyncStruct();
+  assert.strictEqual(42, await foo.method());
 };
 
 exports.call_promise = async function() {
