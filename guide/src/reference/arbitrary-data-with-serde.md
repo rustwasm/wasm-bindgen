@@ -99,7 +99,9 @@ requires a lot of calls back and forth between Rust and JavaScript, which can
 sometimes be slow. An alternative way of doing this is to serialize values to
 JSON, and then parse them on the other end. Browsers' JSON implementations are
 usually quite fast, and so this approach can outstrip `serde-wasm-bindgen`'s
-performance in some cases.
+performance in some cases. But this approach supports only types that can be
+serialized as JSON, leaving out some important types that `serde-wasm-bindgen`
+supports such as `Map`, `Set`, and array buffers.
 
 That's not to say that using JSON is always faster, though - the JSON approach
 can be anywhere from 2x to 0.2x the speed of `serde-wasm-bindgen`, depending on
