@@ -11,14 +11,10 @@ extern "C" {
     pub type ReadableWritablePair;
 }
 impl ReadableWritablePair {
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "ReadableStream", feature = "WritableStream",))]
     #[doc = "Construct a new `ReadableWritablePair`."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `ReadableWritablePair`, `WritableStream`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(readable: &ReadableStream, writable: &WritableStream) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -44,14 +40,10 @@ impl ReadableWritablePair {
         let _ = r;
         self
     }
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WritableStream")]
     #[doc = "Change the `writable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableWritablePair`, `WritableStream`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn writable(&mut self, val: &WritableStream) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
