@@ -14,6 +14,7 @@ use wasm_bindgen::prelude::*;
 
 pub mod api;
 pub mod arg_names;
+pub mod bigint;
 pub mod char;
 pub mod classes;
 pub mod closures;
@@ -43,7 +44,6 @@ pub mod simple;
 pub mod slice;
 pub mod structural;
 pub mod truthy_falsy;
-pub mod u64;
 pub mod usize;
 pub mod validate_prt;
 pub mod variadic;

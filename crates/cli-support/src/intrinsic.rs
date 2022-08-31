@@ -193,9 +193,21 @@ intrinsics! {
         #[symbol = "__wbindgen_number_new"]
         #[signature = fn(F64) -> Externref]
         NumberNew,
-        #[symbol = "__wbindgen_bigint_new"]
+        #[symbol = "__wbindgen_bigint_from_str"]
         #[signature = fn(ref_string()) -> Externref]
-        BigIntNew,
+        BigIntFromStr,
+        #[symbol = "__wbindgen_bigint_from_i64"]
+        #[signature = fn(I64) -> Externref]
+        BigIntFromI64,
+        #[symbol = "__wbindgen_bigint_from_u64"]
+        #[signature = fn(U64) -> Externref]
+        BigIntFromU64,
+        #[symbol = "__wbindgen_bigint_from_i128"]
+        #[signature = fn(I64, U64) -> Externref]
+        BigIntFromI128,
+        #[symbol = "__wbindgen_bigint_from_u128"]
+        #[signature = fn(U64, U64) -> Externref]
+        BigIntFromU128,
         #[symbol = "__wbindgen_string_new"]
         #[signature = fn(ref_string()) -> Externref]
         StringNew,

@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
-#[wasm_bindgen(module = "tests/wasm/u64.js")]
+#[wasm_bindgen(module = "tests/wasm/bigint.js")]
 extern "C" {
     fn i64_js_identity(a: i64) -> i64;
     fn u64_js_identity(a: u64) -> u64;
@@ -51,6 +51,26 @@ pub fn i64_rust_identity(a: i64) -> i64 {
 #[wasm_bindgen]
 pub fn u64_rust_identity(a: u64) -> u64 {
     u64_js_identity(a)
+}
+
+#[wasm_bindgen]
+pub fn i64_jsvalue_identity(a: i64) -> JsValue {
+    JsValue::from(a)
+}
+
+#[wasm_bindgen]
+pub fn u64_jsvalue_identity(a: u64) -> JsValue {
+    JsValue::from(a)
+}
+
+#[wasm_bindgen]
+pub fn i128_min_jsvalue() -> JsValue {
+    JsValue::from(i128::min_value())
+}
+
+#[wasm_bindgen]
+pub fn u128_max_jsvalue() -> JsValue {
+    JsValue::from(u128::max_value())
 }
 
 #[wasm_bindgen]
