@@ -354,11 +354,29 @@ fn record(args: &Array, dst: impl FnOnce(&mut Output) -> &mut String) {
     });
 }
 
+/// Similar to [`std::process::Termination`], but for wasm-bindgen tests.
+pub trait Termination {
+    /// Convert this into a JS result.
+    fn into_js_result(self) -> Result<(), JsValue>;
+}
+
+impl Termination for () {
+    fn into_js_result(self) -> Result<(), JsValue> {
+        Ok(())
+    }
+}
+
+impl<E: std::fmt::Debug> Termination for Result<(), E> {
+    fn into_js_result(self) -> Result<(), JsValue> {
+        self.map_err(|e| JsError::new(&format!("{:?}", e)).into())
+    }
+}
+
 impl Context {
     /// Entry point for a synchronous test in wasm. The `#[wasm_bindgen_test]`
     /// macro generates invocations of this method.
-    pub fn execute_sync(&self, name: &str, f: impl FnOnce() + 'static) {
-        self.execute(name, async { f() });
+    pub fn execute_sync<T: Termination>(&self, name: &str, f: impl 'static + FnOnce() -> T) {
+        self.execute(name, async { f().into_js_result() });
     }
 
     /// Entry point for an asynchronous in wasm. The
@@ -366,12 +384,13 @@ impl Context {
     /// method.
     pub fn execute_async<F>(&self, name: &str, f: impl FnOnce() -> F + 'static)
     where
-        F: Future<Output = ()> + 'static,
+        F: Future + 'static,
+        F::Output: Termination,
     {
-        self.execute(name, async { f().await })
+        self.execute(name, async { f().await.into_js_result() })
     }
 
-    fn execute(&self, name: &str, test: impl Future<Output = ()> + 'static) {
+    fn execute(&self, name: &str, test: impl Future<Output = Result<(), JsValue>> + 'static) {
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
@@ -556,8 +575,8 @@ extern "C" {
     fn __wbg_test_invoke(f: &mut dyn FnMut()) -> Result<(), JsValue>;
 }
 
-impl<F: Future> Future for TestFuture<F> {
-    type Output = Result<F::Output, JsValue>;
+impl<F: Future<Output = Result<(), JsValue>>> Future for TestFuture<F> {
+    type Output = F::Output;
 
     fn poll(self: Pin<&mut Self>, cx: &mut task::Context) -> Poll<Self::Output> {
         let output = self.output.clone();
@@ -573,7 +592,7 @@ impl<F: Future> Future for TestFuture<F> {
             })
         });
         match (result, future_output) {
-            (_, Some(Poll::Ready(e))) => Poll::Ready(Ok(e)),
+            (_, Some(Poll::Ready(result))) => Poll::Ready(result),
             (_, Some(Poll::Pending)) => Poll::Pending,
             (Err(e), _) => Poll::Ready(Err(e)),
             (Ok(_), None) => wasm_bindgen::throw_str("invalid poll state"),
