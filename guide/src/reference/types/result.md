@@ -1,14 +1,14 @@
-# `Result<T, JsValue>`
+# `Result<T, E>`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| No | No | No | No | No | Yes | Same as `T`, or an exception |
+| No | No | No | Yes | No | No | Same as `T`, or an exception |
 
 The `Result` type can be returned from functions exported to JS as well as
-closures in Rust. Only `Result<T, JsValue>` is supported where `T` can be
-converted to JS. Whenever `Ok(val)` is encountered it's converted to JS and
-handed off, and whenever `Err(error)` is encountered an exception is thrown in
-JS with `error`.
+closures in Rust. The `Ok` type must be able to be converted to JS, and the
+`Err` type must implement `Into<JsValue>`. Whenever `Ok(val)` is encountered
+it's converted to JS and handed off, and whenever `Err(error)` is encountered
+an exception is thrown in JS with `error`.
 
 You can use `Result` to enable handling of JS exceptions with `?` in Rust,
 naturally propagating it upwards to the wasm boundary. Furthermore you can also
