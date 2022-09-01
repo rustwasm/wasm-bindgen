@@ -57,14 +57,14 @@ extern "C" {
         underlying_sink: &::js_sys::Object,
         strategy: &QueuingStrategy,
     ) -> Result<WritableStream, JsValue>;
-    # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = abort)]
+    # [wasm_bindgen (catch , method , structural , js_class = "WritableStream" , js_name = abort)]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/abort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStream`*"]
-    pub fn abort(this: &WritableStream) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = abort)]
+    pub fn abort(this: &WritableStream) -> Result<::js_sys::Promise, JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "WritableStream" , js_name = abort)]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/abort)"]
@@ -73,7 +73,7 @@ extern "C" {
     pub fn abort_with_reason(
         this: &WritableStream,
         reason: &::wasm_bindgen::JsValue,
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]
@@ -82,11 +82,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `WritableStream`*"]
     pub fn close(this: &WritableStream) -> ::js_sys::Promise;
     #[cfg(feature = "WritableStreamDefaultWriter")]
-    # [wasm_bindgen (method , structural , js_class = "WritableStream" , js_name = getWriter)]
+    # [wasm_bindgen (catch , method , structural , js_class = "WritableStream" , js_name = getWriter)]
     #[doc = "The `getWriter()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/getWriter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStream`, `WritableStreamDefaultWriter`*"]
-    pub fn get_writer(this: &WritableStream) -> WritableStreamDefaultWriter;
+    pub fn get_writer(this: &WritableStream) -> Result<WritableStreamDefaultWriter, JsValue>;
 }

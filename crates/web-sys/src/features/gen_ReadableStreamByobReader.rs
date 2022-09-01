@@ -46,13 +46,13 @@ extern "C" {
         this: &ReadableStreamByobReader,
         view: &mut [u8],
     ) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBReader" , js_name = releaseLock)]
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamBYOBReader" , js_name = releaseLock)]
     #[doc = "The `releaseLock()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBReader/releaseLock)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamByobReader`*"]
-    pub fn release_lock(this: &ReadableStreamByobReader);
+    pub fn release_lock(this: &ReadableStreamByobReader) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBReader" , js_name = cancel)]
     #[doc = "The `cancel()` method."]
     #[doc = ""]

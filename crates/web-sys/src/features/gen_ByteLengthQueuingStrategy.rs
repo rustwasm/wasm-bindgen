@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ByteLengthQueuingStrategy`*"]
     pub fn high_water_mark(this: &ByteLengthQueuingStrategy) -> f64;
-    # [wasm_bindgen (structural , method , getter , js_class = "ByteLengthQueuingStrategy" , js_name = size)]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "ByteLengthQueuingStrategy" , js_name = size)]
     #[doc = "Getter for the `size` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ByteLengthQueuingStrategy/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ByteLengthQueuingStrategy`*"]
-    pub fn size(this: &ByteLengthQueuingStrategy) -> ::js_sys::Function;
+    pub fn size(this: &ByteLengthQueuingStrategy) -> Result<::js_sys::Function, JsValue>;
     #[cfg(feature = "QueuingStrategyInit")]
     #[wasm_bindgen(catch, constructor, js_class = "ByteLengthQueuingStrategy")]
     #[doc = "The `new ByteLengthQueuingStrategy(..)` constructor, creating a new instance of `ByteLengthQueuingStrategy`."]

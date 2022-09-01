@@ -18,21 +18,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamByobRequest`*"]
     pub fn view(this: &ReadableStreamByobRequest) -> Option<::js_sys::Object>;
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respond)]
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respond)]
     #[doc = "The `respond()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBRequest/respond)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamByobRequest`*"]
-    pub fn respond_with_u32(this: &ReadableStreamByobRequest, bytes_written: u32);
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respond)]
+    pub fn respond_with_u32(
+        this: &ReadableStreamByobRequest,
+        bytes_written: u32,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respond)]
     #[doc = "The `respond()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBRequest/respond)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamByobRequest`*"]
-    pub fn respond_with_f64(this: &ReadableStreamByobRequest, bytes_written: f64);
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respondWithNewView)]
+    pub fn respond_with_f64(
+        this: &ReadableStreamByobRequest,
+        bytes_written: f64,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respondWithNewView)]
     #[doc = "The `respondWithNewView()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBRequest/respondWithNewView)"]
@@ -41,12 +47,15 @@ extern "C" {
     pub fn respond_with_new_view_with_array_buffer_view(
         this: &ReadableStreamByobRequest,
         view: &::js_sys::Object,
-    );
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respondWithNewView)]
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respondWithNewView)]
     #[doc = "The `respondWithNewView()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBRequest/respondWithNewView)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamByobRequest`*"]
-    pub fn respond_with_new_view_with_u8_array(this: &ReadableStreamByobRequest, view: &mut [u8]);
+    pub fn respond_with_new_view_with_u8_array(
+        this: &ReadableStreamByobRequest,
+        view: &mut [u8],
+    ) -> Result<(), JsValue>;
 }

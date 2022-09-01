@@ -18,21 +18,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamDefaultController`*"]
     pub fn desired_size(this: &ReadableStreamDefaultController) -> Option<f64>;
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamDefaultController" , js_name = close)]
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamDefaultController" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultController/close)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamDefaultController`*"]
-    pub fn close(this: &ReadableStreamDefaultController);
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamDefaultController" , js_name = enqueue)]
+    pub fn close(this: &ReadableStreamDefaultController) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamDefaultController" , js_name = enqueue)]
     #[doc = "The `enqueue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultController/enqueue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamDefaultController`*"]
-    pub fn enqueue(this: &ReadableStreamDefaultController);
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamDefaultController" , js_name = enqueue)]
+    pub fn enqueue(this: &ReadableStreamDefaultController) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamDefaultController" , js_name = enqueue)]
     #[doc = "The `enqueue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultController/enqueue)"]
@@ -41,19 +41,22 @@ extern "C" {
     pub fn enqueue_with_chunk(
         this: &ReadableStreamDefaultController,
         chunk: &::wasm_bindgen::JsValue,
-    );
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamDefaultController`*"]
-    pub fn error(this: &ReadableStreamDefaultController);
-    # [wasm_bindgen (method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
+    pub fn error(this: &ReadableStreamDefaultController) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamDefaultController`*"]
-    pub fn error_with_e(this: &ReadableStreamDefaultController, e: &::wasm_bindgen::JsValue);
+    pub fn error_with_e(
+        this: &ReadableStreamDefaultController,
+        e: &::wasm_bindgen::JsValue,
+    ) -> Result<(), JsValue>;
 }
