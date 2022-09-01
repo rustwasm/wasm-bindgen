@@ -379,12 +379,13 @@ impl<'a> Context<'a> {
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let script_src;\n");
-                js.push_str("\
+                js.push_str(
+                    "\
                     if (typeof document === 'undefined') {
                         script_src = location.href;
                     } else {
                         script_src = document.currentScript.src;
-                    }"
+                    }",
                 );
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
