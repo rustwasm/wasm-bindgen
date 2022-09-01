@@ -2956,7 +2956,20 @@ impl<'a> Context<'a> {
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let js = self.import_name(js)?;
-                Ok(format!("{} instanceof {}", args[0], js))
+                write!(
+                    prelude,
+                    "\
+                    let result;
+                    try {{
+                        result = {} instanceof {};
+                    }} catch {{
+                        result = false;
+                    }}
+                    ",
+                    args[0], js,
+                )
+                .unwrap();
+                Ok("result".to_owned())
             }
 
             AuxImport::Static(js) => {
