@@ -385,7 +385,7 @@ impl<'a> Context<'a> {
                         script_src = location.href;
                     } else {
                         script_src = document.currentScript.src;
-                    }",
+                    }\n",
                 );
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
