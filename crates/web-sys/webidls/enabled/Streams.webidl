@@ -6,19 +6,21 @@
  *
  * The origin of this IDL file is
  * https://streams.spec.whatwg.org/#idl-index
+ * `[Throws]` attributes copied from Mozilla's webidl tree as of Aug. 31, 2022
+ * https://hg.mozilla.org/mozilla-central/file/tip/dom/webidl/
  */
 
 [Exposed=*, Transferable]
 interface ReadableStream {
-  constructor(optional object underlyingSource, optional QueuingStrategy strategy = {});
+  [Throws] constructor(optional object underlyingSource, optional QueuingStrategy strategy = {});
 
   readonly attribute boolean locked;
 
   Promise<undefined> cancel(optional any reason);
-  ReadableStreamReader getReader(optional ReadableStreamGetReaderOptions options = {});
-  ReadableStream pipeThrough(ReadableWritablePair transform, optional StreamPipeOptions options = {});
+  [Throws] ReadableStreamReader getReader(optional ReadableStreamGetReaderOptions options = {});
+  [Throws] ReadableStream pipeThrough(ReadableWritablePair transform, optional StreamPipeOptions options = {});
   Promise<undefined> pipeTo(WritableStream destination, optional StreamPipeOptions options = {});
-  sequence<ReadableStream> tee();
+  [Throws] sequence<ReadableStream> tee();
 
   async iterable<any>(optional ReadableStreamIteratorOptions options = {});
 };
@@ -71,10 +73,10 @@ interface mixin ReadableStreamGenericReader {
 
 [Exposed=*]
 interface ReadableStreamDefaultReader {
-  constructor(ReadableStream stream);
+  [Throws] constructor(ReadableStream stream);
 
   Promise<ReadableStreamReadResult> read();
-  undefined releaseLock();
+  [Throws] undefined releaseLock();
 };
 ReadableStreamDefaultReader includes ReadableStreamGenericReader;
 
@@ -85,10 +87,10 @@ dictionary ReadableStreamReadResult {
 
 [Exposed=*]
 interface ReadableStreamBYOBReader {
-  constructor(ReadableStream stream);
+  [Throws] constructor(ReadableStream stream);
 
   Promise<ReadableStreamReadResult> read(ArrayBufferView view);
-  undefined releaseLock();
+  [Throws] undefined releaseLock();
 };
 ReadableStreamBYOBReader includes ReadableStreamGenericReader;
 
@@ -96,38 +98,38 @@ ReadableStreamBYOBReader includes ReadableStreamGenericReader;
 interface ReadableStreamDefaultController {
   readonly attribute unrestricted double? desiredSize;
 
-  undefined close();
-  undefined enqueue(optional any chunk);
-  undefined error(optional any e);
+  [Throws] undefined close();
+  [Throws] undefined enqueue(optional any chunk);
+  [Throws] undefined error(optional any e);
 };
 
 [Exposed=*]
 interface ReadableByteStreamController {
-  readonly attribute ReadableStreamBYOBRequest? byobRequest;
+  [Throws] readonly attribute ReadableStreamBYOBRequest? byobRequest;
   readonly attribute unrestricted double? desiredSize;
 
-  undefined close();
-  undefined enqueue(ArrayBufferView chunk);
-  undefined error(optional any e);
+  [Throws] undefined close();
+  [Throws] undefined enqueue(ArrayBufferView chunk);
+  [Throws] undefined error(optional any e);
 };
 
 [Exposed=*]
 interface ReadableStreamBYOBRequest {
   readonly attribute ArrayBufferView? view;
 
-  undefined respond([EnforceRange] unsigned long long bytesWritten);
-  undefined respondWithNewView(ArrayBufferView view);
+  [Throws] undefined respond([EnforceRange] unsigned long long bytesWritten);
+  [Throws] undefined respondWithNewView(ArrayBufferView view);
 };
 
 [Exposed=*, Transferable]
 interface WritableStream {
-  constructor(optional object underlyingSink, optional QueuingStrategy strategy = {});
+  [Throws] constructor(optional object underlyingSink, optional QueuingStrategy strategy = {});
 
   readonly attribute boolean locked;
 
-  Promise<undefined> abort(optional any reason);
+  [Throws] Promise<undefined> abort(optional any reason);
   Promise<undefined> close();
-  WritableStreamDefaultWriter getWriter();
+  [Throws] WritableStreamDefaultWriter getWriter();
 };
 
 dictionary UnderlyingSink {
@@ -145,26 +147,27 @@ callback UnderlyingSinkAbortCallback = Promise<undefined> (optional any reason);
 
 [Exposed=*]
 interface WritableStreamDefaultWriter {
-  constructor(WritableStream stream);
+  [Throws] constructor(WritableStream stream);
 
   readonly attribute Promise<undefined> closed;
-  readonly attribute unrestricted double? desiredSize;
+  [Throws] readonly attribute unrestricted double? desiredSize;
   readonly attribute Promise<undefined> ready;
 
-  Promise<undefined> abort(optional any reason);
+  [Throws] Promise<undefined> abort(optional any reason);
   Promise<undefined> close();
-  undefined releaseLock();
+  [Throws] undefined releaseLock();
   Promise<undefined> write(optional any chunk);
 };
 
 [Exposed=*]
 interface WritableStreamDefaultController {
   readonly attribute AbortSignal signal;
-  undefined error(optional any e);
+  [Throws] undefined error(optional any e);
 };
 
 [Exposed=*, Transferable]
 interface TransformStream {
+  [Throws]
   constructor(optional object transformer,
               optional QueuingStrategy writableStrategy = {},
               optional QueuingStrategy readableStrategy = {});
@@ -189,9 +192,9 @@ callback TransformerTransformCallback = Promise<undefined> (any chunk, Transform
 interface TransformStreamDefaultController {
   readonly attribute unrestricted double? desiredSize;
 
-  undefined enqueue(optional any chunk);
-  undefined error(optional any reason);
-  undefined terminate();
+  [Throws] undefined enqueue(optional any chunk);
+  [Throws] undefined error(optional any reason);
+  [Throws] undefined terminate();
 };
 
 dictionary QueuingStrategy {
@@ -210,7 +213,7 @@ interface ByteLengthQueuingStrategy {
   constructor(QueuingStrategyInit init);
 
   readonly attribute unrestricted double highWaterMark;
-  readonly attribute Function size;
+  [Throws] readonly attribute Function size;
 };
 
 [Exposed=*]
@@ -218,7 +221,7 @@ interface CountQueuingStrategy {
   constructor(QueuingStrategyInit init);
 
   readonly attribute unrestricted double highWaterMark;
-  readonly attribute Function size;
+  [Throws] readonly attribute Function size;
 };
 
 interface mixin GenericTransformStream {
