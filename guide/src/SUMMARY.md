@@ -58,7 +58,7 @@
     - [`String`](./reference/types/string.md)
     - [Number Slices](./reference/types/number-slices.md)
     - [Boxed Number Slices](./reference/types/boxed-number-slices.md)
-    - [`Result<T, JsValue>`](./reference/types/result.md)
+    - [`Result<T, E>`](./reference/types/result.md)
   - [`#[wasm_bindgen]` Attributes](./reference/attributes/index.md)
     - [On JavaScript Imports](./reference/attributes/on-js-imports/index.md)
       - [`catch`](./reference/attributes/on-js-imports/catch.md)
