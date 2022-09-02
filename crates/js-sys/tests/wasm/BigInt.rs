@@ -25,8 +25,6 @@ fn from() {
     assert_jsvalue_eq(BigInt::from(-3isize), -3i64);
 }
 
-
-
 #[wasm_bindgen_test]
 fn eq() {
     // Test that all the `Eq` impls work properly.
@@ -43,4 +41,3 @@ fn eq() {
     assert_eq!(BigInt::from(-3i64), -3i128);
     assert_eq!(BigInt::from(-3i64), -3isize);
 }
-
