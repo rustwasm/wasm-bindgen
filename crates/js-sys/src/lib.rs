@@ -20,7 +20,7 @@
 
 use core::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub};
 use std::cmp::Ordering;
-use std::convert::{self, Infallible};
+use std::convert::{self, Infallible, TryFrom};
 use std::f64;
 use std::fmt;
 use std::iter::{self, Product, Sum};
@@ -1046,7 +1046,7 @@ macro_rules! bigint_from {
         impl PartialEq<$x> for BigInt {
             #[inline]
             fn eq(&self, other: &$x) -> bool {
-                JsValue::from(self) == BigInt::from(*other).unchecked_into::<JsValue>()
+                JsValue::from(self) == JsValue::from(BigInt::from(*other))
             }
         }
     )*)
@@ -1066,6 +1066,15 @@ macro_rules! bigint_from_big {
             #[inline]
             fn eq(&self, other: &$x) -> bool {
                 self == &BigInt::from(*other)
+            }
+        }
+
+        impl TryFrom<BigInt> for $x {
+            type Error = BigInt;
+
+            #[inline]
+            fn try_from(x: BigInt) -> Result<Self, BigInt> {
+                Self::try_from(JsValue::from(x)).map_err(JsCast::unchecked_into)
             }
         }
     )*)
