@@ -1051,7 +1051,7 @@ macro_rules! bigint_from {
         }
     )*)
 }
-bigint_from!(i8 u8 i16 u16 i32 u32);
+bigint_from!(i8 u8 i16 u16 i32 u32 isize usize);
 
 macro_rules! bigint_from_big {
     ($($x:ident)*) => ($(
@@ -1070,7 +1070,7 @@ macro_rules! bigint_from_big {
         }
     )*)
 }
-bigint_from_big!(i64 u64 i128 u128 isize usize);
+bigint_from_big!(i64 u64 i128 u128);
 
 impl PartialEq<Number> for BigInt {
     #[inline]
