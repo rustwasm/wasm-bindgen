@@ -471,7 +471,7 @@ impl<'a> Context<'a> {
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
-                footer.push_str("export { initSync }\n");
+                footer.push_str("export { initSync, initWithoutStart }\n");
                 footer.push_str("export default init;");
             }
         }
@@ -610,6 +610,7 @@ impl<'a> Context<'a> {
         // Also in (at least) the NoModules, the `init()` method is renamed to `wasm_bindgen()`.
         let setup_function_declaration;
         let mut sync_init_function = String::new();
+        let mut without_start_init_function = String::new();
         let declare_or_export;
         if self.config.mode.no_modules() {
             declare_or_export = "declare";
@@ -635,6 +636,23 @@ impl<'a> Context<'a> {
                 memory_param = memory_param
             ));
 
+            without_start_init_function.push_str(&format!(
+                "\
+                /**\n\
+                * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
+                * for everything else, calls `WebAssembly.instantiate` directly.\n\
+                *\n\
+                * @param {{InitInput | Promise<InitInput>}} module_or_path\n\
+                {}\
+                *\n\
+                * @returns {{Promise<InitOutput>}}\n\
+                */\n\
+                export function initWithoutStart \
+                    (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n\n\
+                ",
+                memory_doc, arg_optional, memory_param,
+            ));
+
             setup_function_declaration = "export default function init";
         }
         Ok(format!(
@@ -647,7 +665,8 @@ impl<'a> Context<'a> {
             {sync_init_function}\
             /**\n\
             * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
-            * for everything else, calls `WebAssembly.instantiate` directly.\n\
+            * for everything else, calls `WebAssembly.instantiate` directly and runs\n\
+            * the start function.\n\
             *\n\
             * @param {{InitInput | Promise<InitInput>}} module_or_path\n\
             {}\
@@ -834,11 +853,13 @@ impl<'a> Context<'a> {
                     {init_memory}
                 }}
 
-                function finalizeInit(instance, module) {{
+                function finalizeInit(instance, module, start) {{
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
                     {init_memviews}
-                    {start}
+                    if (start == true) {{
+                        {start}
+                    }}
                     return wasm;
                 }}
 
@@ -853,10 +874,10 @@ impl<'a> Context<'a> {
 
                     const instance = new WebAssembly.Instance(module, imports);
 
-                    return finalizeInit(instance, module);
+                    return finalizeInit(instance, module, true);
                 }}
 
-                async function init(input{init_memory_arg}) {{
+                async function initInternal(input{init_memory_arg}, start) {{
                     {default_module_path}
                     const imports = getImports();
 
@@ -868,7 +889,15 @@ impl<'a> Context<'a> {
 
                     const {{ instance, module }} = await load(await input, imports);
 
-                    return finalizeInit(instance, module);
+                    return finalizeInit(instance, module, start);
+                }}
+
+                async function initWithoutStart(input{init_memory_arg}) {{
+                    return initInternal(input{init_memory_arg}, false);
+                }}
+
+                async function init(input{init_memory_arg}) {{
+                    return initInternal(input{init_memory_arg}, true);
                 }}
             ",
             init_memory_arg = init_memory_arg,

@@ -239,7 +239,7 @@ fn default_module_path_target_web() {
     let contents = fs::read_to_string(out_dir.join("default_module_path_target_web.js")).unwrap();
     assert!(contents.contains(
         "\
-async function init(input) {
+async function initInternal(input, start) {
     if (typeof input === 'undefined') {
         input = new URL('default_module_path_target_web_bg.wasm', import.meta.url);
     }",
@@ -260,7 +260,7 @@ fn default_module_path_target_no_modules() {
         fs::read_to_string(out_dir.join("default_module_path_target_no_modules.js")).unwrap();
     assert!(contents.contains(
         "\
-    async function init(input) {
+    async function initInternal(input, start) {
         if (typeof input === 'undefined') {
             let src;
             if (typeof document === 'undefined') {
@@ -287,7 +287,7 @@ fn omit_default_module_path_target_web() {
         fs::read_to_string(out_dir.join("omit_default_module_path_target_web.js")).unwrap();
     assert!(contents.contains(
         "\
-async function init(input) {
+async function initInternal(input, start) {
 
     const imports = getImports();",
     ));
@@ -307,7 +307,7 @@ fn omit_default_module_path_target_no_modules() {
         fs::read_to_string(out_dir.join("omit_default_module_path_target_no_modules.js")).unwrap();
     assert!(contents.contains(
         "\
-    async function init(input) {
+    async function initInternal(input, start) {
 
         const imports = getImports();",
     ));
