@@ -886,6 +886,10 @@ macro_rules! big_numbers {
     )*)
 }
 
+fn bigint_get_as_i64(v: &JsValue) -> Option<i64> {
+    unsafe { Option::from_abi(__wbindgen_bigint_get_as_i64(v.idx)) }
+}
+
 macro_rules! try_from_for_num64 {
     ($ty:ty) => {
         impl TryFrom<JsValue> for $ty {
@@ -893,11 +897,7 @@ macro_rules! try_from_for_num64 {
 
             #[inline]
             fn try_from(v: JsValue) -> Result<Self, JsValue> {
-                if let WasmOptionalI64 {
-                    present: 1,
-                    value: as_i64,
-                } = unsafe { __wbindgen_bigint_get_as_i64(v.idx) }
-                {
+                if let Some(as_i64) = bigint_get_as_i64(&v) {
                     // Reinterpret bits; ABI-wise this is safe to do and allows us to avoid
                     // having separate intrinsics per signed/unsigned types.
                     let as_self = as_i64 as Self;
@@ -924,13 +924,12 @@ macro_rules! try_from_for_num128 {
             #[inline]
             fn try_from(v: JsValue) -> Result<Self, JsValue> {
                 // Truncate the bigint to 64 bits, this will give us the lower part.
-                let lo = unsafe { __wbindgen_bigint_get_as_i64(v.idx) };
-                if lo.present == 0 {
+                let lo = match bigint_get_as_i64(&v) {
+                    // The lower part must be interpreted as unsigned in both i128 and u128.
+                    Some(lo) => lo as u64,
                     // Not a bigint.
-                    return Err(v);
-                }
-                // The lower part must be interpreted as unsigned in both i128 and u128.
-                let lo = lo.value as u64;
+                    None => return Err(v),
+                };
                 // Now we know it's a bigint, so we can safely use `>> 64n` without
                 // worrying about a JS exception on type mismatch.
                 let hi = v >> JsValue::from(64_u64);
