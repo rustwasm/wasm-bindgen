@@ -18,7 +18,7 @@ use core::ops::{
 };
 use core::u32;
 
-use crate::convert::{FromWasmAbi, WasmOptionalF64, WasmSlice};
+use crate::convert::{FromWasmAbi, WasmSlice};
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -68,6 +68,7 @@ pub mod describe;
 
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
+use convert::WasmOption;
 
 if_std! {
     extern crate std;
@@ -976,7 +977,7 @@ externs! {
         fn __wbindgen_ge(a: u32, b: u32) -> u32;
         fn __wbindgen_gt(a: u32, b: u32) -> u32;
 
-        fn __wbindgen_number_get(idx: u32) -> WasmOptionalF64;
+        fn __wbindgen_number_get(idx: u32) -> WasmOption<f64>;
         fn __wbindgen_boolean_get(idx: u32) -> u32;
         fn __wbindgen_string_get(idx: u32) -> WasmSlice;
 
