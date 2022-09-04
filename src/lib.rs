@@ -897,17 +897,14 @@ macro_rules! try_from_for_num64 {
 
             #[inline]
             fn try_from(v: JsValue) -> Result<Self, JsValue> {
-                if let Some(as_i64) = bigint_get_as_i64(&v) {
+                bigint_get_as_i64(&v)
                     // Reinterpret bits; ABI-wise this is safe to do and allows us to avoid
                     // having separate intrinsics per signed/unsigned types.
-                    let as_self = as_i64 as Self;
+                    .map(|as_i64| as_i64 as Self)
                     // Double-check that we didn't truncate the bigint to 64 bits.
-                    if v == as_self {
-                        return Ok(as_self);
-                    }
-                }
-                // Not a bigint or not in range.
-                Err(v)
+                    .filter(|as_self| v == *as_self)
+                    // Not a bigint or not in range.
+                    .ok_or(v)
             }
         }
     };
