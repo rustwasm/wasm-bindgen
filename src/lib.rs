@@ -886,6 +886,62 @@ macro_rules! big_numbers {
     )*)
 }
 
+fn bigint_get_as_i64(v: &JsValue) -> Option<i64> {
+    unsafe { Option::from_abi(__wbindgen_bigint_get_as_i64(v.idx)) }
+}
+
+macro_rules! try_from_for_num64 {
+    ($ty:ty) => {
+        impl TryFrom<JsValue> for $ty {
+            type Error = JsValue;
+
+            #[inline]
+            fn try_from(v: JsValue) -> Result<Self, JsValue> {
+                bigint_get_as_i64(&v)
+                    // Reinterpret bits; ABI-wise this is safe to do and allows us to avoid
+                    // having separate intrinsics per signed/unsigned types.
+                    .map(|as_i64| as_i64 as Self)
+                    // Double-check that we didn't truncate the bigint to 64 bits.
+                    .filter(|as_self| v == *as_self)
+                    // Not a bigint or not in range.
+                    .ok_or(v)
+            }
+        }
+    };
+}
+
+try_from_for_num64!(i64);
+try_from_for_num64!(u64);
+
+macro_rules! try_from_for_num128 {
+    ($ty:ty, $hi_ty:ty) => {
+        impl TryFrom<JsValue> for $ty {
+            type Error = JsValue;
+
+            #[inline]
+            fn try_from(v: JsValue) -> Result<Self, JsValue> {
+                // Truncate the bigint to 64 bits, this will give us the lower part.
+                let lo = match bigint_get_as_i64(&v) {
+                    // The lower part must be interpreted as unsigned in both i128 and u128.
+                    Some(lo) => lo as u64,
+                    // Not a bigint.
+                    None => return Err(v),
+                };
+                // Now we know it's a bigint, so we can safely use `>> 64n` without
+                // worrying about a JS exception on type mismatch.
+                let hi = v >> JsValue::from(64_u64);
+                // The high part is the one we want checked against a 64-bit range.
+                // If it fits, then our original number is in the 128-bit range.
+                let hi = <$hi_ty>::try_from(hi)?;
+                Ok(Self::from(hi) << 64 | Self::from(lo))
+            }
+        }
+    };
+}
+
+try_from_for_num128!(i128, i64);
+try_from_for_num128!(u128, u64);
+
 big_numbers! {
     |n|,
     i64 = __wbindgen_bigint_from_i64(n),
@@ -980,6 +1036,7 @@ externs! {
         fn __wbindgen_number_get(idx: u32) -> WasmOption<f64>;
         fn __wbindgen_boolean_get(idx: u32) -> u32;
         fn __wbindgen_string_get(idx: u32) -> WasmSlice;
+        fn __wbindgen_bigint_get_as_i64(idx: u32) -> WasmOption<i64>;
 
         fn __wbindgen_debug_string(ret: *mut [usize; 2], idx: u32) -> ();
 

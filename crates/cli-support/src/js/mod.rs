@@ -3384,6 +3384,12 @@ impl<'a> Context<'a> {
                 format!("typeof(v) === 'boolean' ? (v ? 1 : 0) : 2")
             }
 
+            Intrinsic::BigIntGetAsI64 => {
+                assert_eq!(args.len(), 1);
+                prelude.push_str(&format!("const v = {};\n", args[0]));
+                format!("typeof(v) === 'bigint' ? v : undefined")
+            }
+
             Intrinsic::Throw => {
                 assert_eq!(args.len(), 1);
                 format!("throw new Error({})", args[0])
