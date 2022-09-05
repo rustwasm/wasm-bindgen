@@ -7,9 +7,9 @@
  *
  * The origin of this IDL file is
  * https://streams.spec.whatwg.org/#idl-index
- * `[Throws]` attributes copied from Mozilla's webidl tree as of Aug. 31, 2022
- * https://hg.mozilla.org/mozilla-central/file/tip/dom/webidl/
- * To avoid API breakage, `[Throws]` attributes are ommitted from `ReadableStream` methods
+ * `[Throws]` attribute for each method was determined by manually checking if the method can throw
+ * an exception according to the spec.
+ * To avoid API breakage, `[Throws]` attributes are omitted from `ReadableStream` methods.
  */
 
 [Exposed=*, Transferable]
@@ -78,7 +78,7 @@ interface ReadableStreamDefaultReader {
   [Throws] constructor(ReadableStream stream);
 
   Promise<ReadableStreamReadResult> read();
-  [Throws] undefined releaseLock();
+  undefined releaseLock();
 };
 ReadableStreamDefaultReader includes ReadableStreamGenericReader;
 
@@ -92,7 +92,7 @@ interface ReadableStreamBYOBReader {
   [Throws] constructor(ReadableStream stream);
 
   Promise<ReadableStreamReadResult> read(ArrayBufferView view);
-  [Throws] undefined releaseLock();
+  undefined releaseLock();
 };
 ReadableStreamBYOBReader includes ReadableStreamGenericReader;
 
@@ -102,17 +102,17 @@ interface ReadableStreamDefaultController {
 
   [Throws] undefined close();
   [Throws] undefined enqueue(optional any chunk);
-  [Throws] undefined error(optional any e);
+  undefined error(optional any e);
 };
 
 [Exposed=*]
 interface ReadableByteStreamController {
-  [Throws] readonly attribute ReadableStreamBYOBRequest? byobRequest;
+  readonly attribute ReadableStreamBYOBRequest? byobRequest;
   readonly attribute unrestricted double? desiredSize;
 
   [Throws] undefined close();
   [Throws] undefined enqueue(ArrayBufferView chunk);
-  [Throws] undefined error(optional any e);
+  undefined error(optional any e);
 };
 
 [Exposed=*]
@@ -129,7 +129,7 @@ interface WritableStream {
 
   readonly attribute boolean locked;
 
-  [Throws] Promise<undefined> abort(optional any reason);
+  Promise<undefined> abort(optional any reason);
   Promise<undefined> close();
   [Throws] WritableStreamDefaultWriter getWriter();
 };
@@ -155,16 +155,16 @@ interface WritableStreamDefaultWriter {
   [Throws] readonly attribute unrestricted double? desiredSize;
   readonly attribute Promise<undefined> ready;
 
-  [Throws] Promise<undefined> abort(optional any reason);
+  Promise<undefined> abort(optional any reason);
   Promise<undefined> close();
-  [Throws] undefined releaseLock();
+  undefined releaseLock();
   Promise<undefined> write(optional any chunk);
 };
 
 [Exposed=*]
 interface WritableStreamDefaultController {
   readonly attribute AbortSignal signal;
-  [Throws] undefined error(optional any e);
+  undefined error(optional any e);
 };
 
 [Exposed=*, Transferable]
@@ -195,7 +195,7 @@ interface TransformStreamDefaultController {
   readonly attribute unrestricted double? desiredSize;
 
   [Throws] undefined enqueue(optional any chunk);
-  [Throws] undefined error(optional any reason);
+  undefined error(optional any reason);
   [Throws] undefined terminate();
 };
 
@@ -215,7 +215,7 @@ interface ByteLengthQueuingStrategy {
   constructor(QueuingStrategyInit init);
 
   readonly attribute unrestricted double highWaterMark;
-  [Throws] readonly attribute Function size;
+  readonly attribute Function size;
 };
 
 [Exposed=*]
@@ -223,7 +223,7 @@ interface CountQueuingStrategy {
   constructor(QueuingStrategyInit init);
 
   readonly attribute unrestricted double highWaterMark;
-  [Throws] readonly attribute Function size;
+  readonly attribute Function size;
 };
 
 interface mixin GenericTransformStream {
