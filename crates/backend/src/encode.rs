@@ -77,10 +77,10 @@ impl Interner {
     ///
     /// Note that repeated invocations of this function will be memoized, so the
     /// same `id` will always return the same resulting unique `id`.
-    fn resolve_import_module(&self, id: &str, span: Span) -> Result<&str, Diagnostic> {
+    fn resolve_import_module(&self, id: &str, span: Span) -> Result<ImportModule, Diagnostic> {
         let mut files = self.files.borrow_mut();
         if let Some(file) = files.get(id) {
-            return Ok(self.intern_str(&file.new_identifier));
+            return Ok(ImportModule::Named(self.intern_str(&file.new_identifier)));
         }
         self.check_for_package_json();
         let path = if id.starts_with("/") {
@@ -89,7 +89,7 @@ impl Interner {
             let msg = "relative module paths aren't supported yet";
             return Err(Diagnostic::span_error(span, msg));
         } else {
-            return Ok(self.intern_str(&id));
+            return Ok(ImportModule::RawNamed(self.intern_str(id)));
         };
 
         // Generate a unique ID which is somewhat readable as well, so mix in
@@ -254,9 +254,7 @@ fn shared_module<'a>(
     intern: &'a Interner,
 ) -> Result<ImportModule<'a>, Diagnostic> {
     Ok(match m {
-        ast::ImportModule::Named(m, span) => {
-            ImportModule::Named(intern.resolve_import_module(m, *span)?)
-        }
+        ast::ImportModule::Named(m, span) => intern.resolve_import_module(m, *span)?,
         ast::ImportModule::RawNamed(m, _span) => ImportModule::RawNamed(intern.intern_str(m)),
         ast::ImportModule::Inline(idx, _) => ImportModule::Inline(*idx as u32),
     })
