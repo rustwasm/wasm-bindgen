@@ -138,7 +138,7 @@ impl TryToTokens for ast::LinkToModule {
         let name = Ident::new(&link_function_name, Span::call_site());
         let abi_ret = quote! { <String as wasm_bindgen::convert::FromWasmAbi>::Abi };
         let extern_fn = extern_fn(&name, &[], &[], &[], abi_ret);
-        quote! {
+        (quote! {
             {
                 #program
                 #extern_fn
@@ -150,7 +150,7 @@ impl TryToTokens for ast::LinkToModule {
                     })
                 }
             }
-        }
+        })
         .to_tokens(tokens);
         Ok(())
     }
