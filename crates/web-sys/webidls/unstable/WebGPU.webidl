@@ -13,6 +13,7 @@ interface GPUSupportedLimits {
     readonly attribute unsigned long maxTextureDimension3D;
     readonly attribute unsigned long maxTextureArrayLayers;
     readonly attribute unsigned long maxBindGroups;
+    readonly attribute unsigned long maxBindingsPerBindGroup;
     readonly attribute unsigned long maxDynamicUniformBuffersPerPipelineLayout;
     readonly attribute unsigned long maxDynamicStorageBuffersPerPipelineLayout;
     readonly attribute unsigned long maxSampledTexturesPerShaderStage;
@@ -25,11 +26,13 @@ interface GPUSupportedLimits {
     readonly attribute unsigned long minUniformBufferOffsetAlignment;
     readonly attribute unsigned long minStorageBufferOffsetAlignment;
     readonly attribute unsigned long maxVertexBuffers;
+    readonly attribute unsigned long long maxBufferSize;
     readonly attribute unsigned long maxVertexAttributes;
     readonly attribute unsigned long maxVertexBufferArrayStride;
     readonly attribute unsigned long maxInterStageShaderComponents;
     readonly attribute unsigned long maxInterStageShaderVariables;
     readonly attribute unsigned long maxColorAttachments;
+    readonly attribute unsigned long maxColorAttachmentBytesPerPixel;
     readonly attribute unsigned long maxComputeWorkgroupStorageSize;
     readonly attribute unsigned long maxComputeInvocationsPerWorkgroup;
     readonly attribute unsigned long maxComputeWorkgroupSizeX;
@@ -45,10 +48,10 @@ interface GPUSupportedFeatures {
 
 [Exposed=(Window, DedicatedWorker), SecureContext]
 interface GPUAdapterInfo {
-  readonly attribute DOMString vendor;
-  readonly attribute DOMString architecture;
-  readonly attribute DOMString device;
-  readonly attribute DOMString description;
+    readonly attribute DOMString vendor;
+    readonly attribute DOMString architecture;
+    readonly attribute DOMString device;
+    readonly attribute DOMString description;
 };
 
 interface mixin NavigatorGPU {
@@ -98,7 +101,8 @@ enum GPUFeatureName {
     "timestamp-query",
     "indirect-first-instance",
     "shader-f16",
-    "bgra8unorm-storage"
+    "bgra8unorm-storage",
+    "rg11b10ufloat-renderable"
 };
 
 [Exposed=(Window, DedicatedWorker), SecureContext]
@@ -134,16 +138,24 @@ GPUDevice includes GPUObjectBase;
 
 [Exposed=(Window, DedicatedWorker), SecureContext]
 interface GPUBuffer {
+    readonly attribute GPUSize64 size;
+    readonly attribute GPUBufferUsageFlags usage;
+
+    readonly attribute GPUBufferMapState mapState;
+
     Promise<undefined> mapAsync(GPUMapModeFlags mode, optional GPUSize64 offset = 0, optional GPUSize64 size);
     ArrayBuffer getMappedRange(optional GPUSize64 offset = 0, optional GPUSize64 size);
     undefined unmap();
 
     undefined destroy();
-
-    readonly attribute GPUSize64 size;
-    readonly attribute GPUBufferUsageFlags usage;
 };
 GPUBuffer includes GPUObjectBase;
+
+enum GPUBufferMapState {
+    "unmapped",
+    "pending",
+    "mapped"
+};
 
 dictionary GPUBufferDescriptor : GPUObjectDescriptorBase {
     required GPUSize64 size;
@@ -889,12 +901,12 @@ dictionary GPUImageCopyExternalImage {
 
 interface mixin GPUBindingCommandsMixin {
     undefined setBindGroup(GPUIndex32 index, GPUBindGroup bindGroup,
-                      optional sequence<GPUBufferDynamicOffset> dynamicOffsets = []);
+        optional sequence<GPUBufferDynamicOffset> dynamicOffsets = []);
 
     undefined setBindGroup(GPUIndex32 index, GPUBindGroup bindGroup,
-                      Uint32Array dynamicOffsetsData,
-                      GPUSize64 dynamicOffsetsDataStart,
-                      GPUSize32 dynamicOffsetsDataLength);
+        Uint32Array dynamicOffsetsData,
+        GPUSize64 dynamicOffsetsDataStart,
+        GPUSize32 dynamicOffsetsDataLength);
 };
 
 interface mixin GPUDebugCommandsMixin {
@@ -936,8 +948,8 @@ dictionary GPUComputePassDescriptor : GPUObjectDescriptorBase {
 [Exposed=(Window, DedicatedWorker), SecureContext]
 interface GPURenderPassEncoder {
     undefined setViewport(float x, float y,
-                     float width, float height,
-                     float minDepth, float maxDepth);
+        float width, float height,
+        float minDepth, float maxDepth);
 
     undefined setScissorRect(GPUIntegerCoordinate x, GPUIntegerCoordinate y,
                         GPUIntegerCoordinate width, GPUIntegerCoordinate height);
@@ -1024,11 +1036,11 @@ interface mixin GPURenderCommandsMixin {
     undefined setVertexBuffer(GPUIndex32 slot, GPUBuffer buffer, optional GPUSize64 offset = 0, optional GPUSize64 size);
 
     undefined draw(GPUSize32 vertexCount, optional GPUSize32 instanceCount = 1,
-              optional GPUSize32 firstVertex = 0, optional GPUSize32 firstInstance = 0);
+        optional GPUSize32 firstVertex = 0, optional GPUSize32 firstInstance = 0);
     undefined drawIndexed(GPUSize32 indexCount, optional GPUSize32 instanceCount = 1,
-                     optional GPUSize32 firstIndex = 0,
-                     optional GPUSignedOffset32 baseVertex = 0,
-                     optional GPUSize32 firstInstance = 0);
+        optional GPUSize32 firstIndex = 0,
+        optional GPUSignedOffset32 baseVertex = 0,
+        optional GPUSize32 firstInstance = 0);
 
     undefined drawIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
     undefined drawIndexedIndirect(GPUBuffer indirectBuffer, GPUSize64 indirectOffset);
@@ -1143,14 +1155,14 @@ partial interface GPUDevice {
     readonly attribute Promise<GPUDeviceLostInfo> lost;
 };
 
-enum GPUErrorFilter {
-    "out-of-memory",
-    "validation"
-};
-
 [Exposed=(Window, DedicatedWorker), SecureContext]
 interface GPUError {
     readonly attribute DOMString message;
+};
+
+[Exposed=(Window, DedicatedWorker), SecureContext]
+interface GPUValidationError : GPUError {
+    constructor(DOMString message);
 };
 
 [Exposed=(Window, DedicatedWorker), SecureContext]
@@ -1159,8 +1171,14 @@ interface GPUOutOfMemoryError : GPUError {
 };
 
 [Exposed=(Window, DedicatedWorker), SecureContext]
-interface GPUValidationError : GPUError {
+interface GPUInternalError : GPUError {
     constructor(DOMString message);
+};
+
+enum GPUErrorFilter {
+    "validation",
+    "out-of-memory",
+    "internal"
 };
 
 partial interface GPUDevice {
@@ -1174,7 +1192,7 @@ interface GPUUncapturedErrorEvent : Event {
         DOMString type,
         GPUUncapturedErrorEventInit gpuUncapturedErrorEventInitDict
     );
-    readonly attribute GPUError error;
+    [SameObject] readonly attribute GPUError error;
 };
 
 dictionary GPUUncapturedErrorEventInit : EventInit {
@@ -1226,3 +1244,4 @@ dictionary GPUExtent3DDict {
     GPUIntegerCoordinate depthOrArrayLayers = 1;
 };
 typedef (sequence<GPUIntegerCoordinate> or GPUExtent3DDict) GPUExtent3D;
+
