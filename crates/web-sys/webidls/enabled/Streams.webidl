@@ -196,7 +196,7 @@ interface TransformStreamDefaultController {
 
   [Throws] undefined enqueue(optional any chunk);
   undefined error(optional any reason);
-  [Throws] undefined terminate();
+  undefined terminate();
 };
 
 dictionary QueuingStrategy {
