@@ -87,3 +87,32 @@ pub fn u64_slice(a: &[u64]) -> Vec<u64> {
 fn works() {
     js_works();
 }
+
+mod try_from_works {
+    use super::*;
+    use crate::JsValue;
+    use core::convert::TryFrom;
+
+    macro_rules! test_type_boundaries {
+        ($($ty:ident)*) => {
+            $(
+                #[wasm_bindgen_test]
+                fn $ty() {
+                    // Not a bigint.
+                    assert!($ty::try_from(JsValue::NULL).is_err());
+                    assert!($ty::try_from(JsValue::from_f64(0.0)).is_err());
+                    // Within range.
+                    assert_eq!($ty::try_from(JsValue::from($ty::MIN)), Ok($ty::MIN));
+                    // Too small.
+                    assert!($ty::try_from(JsValue::from($ty::MIN) - JsValue::from(1_i64)).is_err());
+                    // Within range.
+                    assert_eq!($ty::try_from(JsValue::from($ty::MAX)), Ok($ty::MAX));
+                    // Too large.
+                    assert!($ty::try_from(JsValue::from($ty::MAX) + JsValue::from(1_i64)).is_err());
+                }
+            )*
+        };
+    }
+
+    test_type_boundaries!(i64 u64 i128 u128);
+}

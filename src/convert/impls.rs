@@ -8,56 +8,32 @@ use crate::{Clamped, JsError, JsValue};
 
 unsafe impl WasmAbi for () {}
 
-#[repr(C)]
-pub struct WasmOptionalI32 {
-    pub present: u32,
-    pub value: i32,
+#[repr(C, u32)]
+pub enum WasmOption<T: WasmAbi> {
+    None,
+    Some(T),
 }
 
-unsafe impl WasmAbi for WasmOptionalI32 {}
+unsafe impl<T: WasmAbi> WasmAbi for WasmOption<T> {}
 
-#[repr(C)]
-pub struct WasmOptionalU32 {
-    pub present: u32,
-    pub value: u32,
+impl<Abi: WasmAbi> WasmOption<Abi> {
+    pub fn from_option<T: IntoWasmAbi<Abi = Abi>>(option: Option<T>) -> Self {
+        match option {
+            Some(v) => WasmOption::Some(v.into_abi()),
+            None => WasmOption::None,
+        }
+    }
+
+    pub unsafe fn into_option<T: FromWasmAbi<Abi = Abi>>(v: Self) -> Option<T> {
+        match v {
+            WasmOption::Some(v) => Some(T::from_abi(v)),
+            WasmOption::None => None,
+        }
+    }
 }
-
-unsafe impl WasmAbi for WasmOptionalU32 {}
-
-#[repr(C)]
-pub struct WasmOptionalI64 {
-    pub present: u32,
-    pub value: i64,
-}
-
-unsafe impl WasmAbi for WasmOptionalI64 {}
-
-#[repr(C)]
-pub struct WasmOptionalU64 {
-    pub present: u32,
-    pub value: u64,
-}
-
-unsafe impl WasmAbi for WasmOptionalU64 {}
-
-#[repr(C)]
-pub struct WasmOptionalF32 {
-    pub present: u32,
-    pub value: f32,
-}
-
-unsafe impl WasmAbi for WasmOptionalF32 {}
-
-#[repr(C)]
-pub struct WasmOptionalF64 {
-    pub present: u32,
-    pub value: f64,
-}
-
-unsafe impl WasmAbi for WasmOptionalF64 {}
 
 macro_rules! type_wasm_native {
-    ($($t:tt as $c:tt => $r:tt)*) => ($(
+    ($($t:tt as $c:tt)*) => ($(
         impl IntoWasmAbi for $t {
             type Abi = $c;
 
@@ -73,47 +49,34 @@ macro_rules! type_wasm_native {
         }
 
         impl IntoWasmAbi for Option<$t> {
-            type Abi = $r;
+            type Abi = WasmOption<$c>;
 
             #[inline]
-            fn into_abi(self) -> $r {
-                match self {
-                    None => $r {
-                        present: 0,
-                        value: 0 as $c,
-                    },
-                    Some(me) => $r {
-                        present: 1,
-                        value: me as $c,
-                    },
-                }
+            fn into_abi(self) -> Self::Abi {
+                WasmOption::from_option(self.map(|v| v as $c))
             }
         }
 
         impl FromWasmAbi for Option<$t> {
-            type Abi = $r;
+            type Abi = WasmOption<$c>;
 
             #[inline]
-            unsafe fn from_abi(js: $r) -> Self {
-                if js.present == 0 {
-                    None
-                } else {
-                    Some(js.value as $t)
-                }
+            unsafe fn from_abi(js: Self::Abi) -> Self {
+                WasmOption::into_option(js).map(|v: $c| v as $t)
             }
         }
     )*)
 }
 
 type_wasm_native!(
-    i32 as i32 => WasmOptionalI32
-    isize as i32 => WasmOptionalI32
-    u32 as u32 => WasmOptionalU32
-    usize as u32 => WasmOptionalU32
-    i64 as i64 => WasmOptionalI64
-    u64 as u64 => WasmOptionalU64
-    f32 as f32 => WasmOptionalF32
-    f64 as f64 => WasmOptionalF64
+    i32 as i32
+    isize as i32
+    u32 as u32
+    usize as u32
+    i64 as i64
+    u64 as u64
+    f32 as f32
+    f64 as f64
 );
 
 macro_rules! type_abi_as_u32 {
