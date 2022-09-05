@@ -52,11 +52,11 @@ extern "C" {
         this: &TransformStreamDefaultController,
         reason: &::wasm_bindgen::JsValue,
     );
-    # [wasm_bindgen (catch , method , structural , js_class = "TransformStreamDefaultController" , js_name = terminate)]
+    # [wasm_bindgen (method , structural , js_class = "TransformStreamDefaultController" , js_name = terminate)]
     #[doc = "The `terminate()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/terminate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransformStreamDefaultController`*"]
-    pub fn terminate(this: &TransformStreamDefaultController) -> Result<(), JsValue>;
+    pub fn terminate(this: &TransformStreamDefaultController);
 }
