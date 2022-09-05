@@ -40,14 +40,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStream`, `WritableStreamDefaultWriter`*"]
     pub fn new(stream: &WritableStream) -> Result<WritableStreamDefaultWriter, JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "WritableStreamDefaultWriter" , js_name = abort)]
+    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = abort)]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/abort)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStreamDefaultWriter`*"]
-    pub fn abort(this: &WritableStreamDefaultWriter) -> Result<::js_sys::Promise, JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "WritableStreamDefaultWriter" , js_name = abort)]
+    pub fn abort(this: &WritableStreamDefaultWriter) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = abort)]
     #[doc = "The `abort()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/abort)"]
@@ -56,7 +56,7 @@ extern "C" {
     pub fn abort_with_reason(
         this: &WritableStreamDefaultWriter,
         reason: &::wasm_bindgen::JsValue,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]
@@ -64,13 +64,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStreamDefaultWriter`*"]
     pub fn close(this: &WritableStreamDefaultWriter) -> ::js_sys::Promise;
-    # [wasm_bindgen (catch , method , structural , js_class = "WritableStreamDefaultWriter" , js_name = releaseLock)]
+    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = releaseLock)]
     #[doc = "The `releaseLock()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultWriter/releaseLock)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStreamDefaultWriter`*"]
-    pub fn release_lock(this: &WritableStreamDefaultWriter) -> Result<(), JsValue>;
+    pub fn release_lock(this: &WritableStreamDefaultWriter);
     # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultWriter" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]

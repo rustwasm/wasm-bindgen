@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CountQueuingStrategy`*"]
     pub fn high_water_mark(this: &CountQueuingStrategy) -> f64;
-    # [wasm_bindgen (structural , catch , method , getter , js_class = "CountQueuingStrategy" , js_name = size)]
+    # [wasm_bindgen (structural , method , getter , js_class = "CountQueuingStrategy" , js_name = size)]
     #[doc = "Getter for the `size` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CountQueuingStrategy/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CountQueuingStrategy`*"]
-    pub fn size(this: &CountQueuingStrategy) -> Result<::js_sys::Function, JsValue>;
+    pub fn size(this: &CountQueuingStrategy) -> ::js_sys::Function;
     #[cfg(feature = "QueuingStrategyInit")]
     #[wasm_bindgen(catch, constructor, js_class = "CountQueuingStrategy")]
     #[doc = "The `new CountQueuingStrategy(..)` constructor, creating a new instance of `CountQueuingStrategy`."]

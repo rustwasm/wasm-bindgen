@@ -19,21 +19,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `WritableStreamDefaultController`*"]
     pub fn signal(this: &WritableStreamDefaultController) -> AbortSignal;
-    # [wasm_bindgen (catch , method , structural , js_class = "WritableStreamDefaultController" , js_name = error)]
+    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStreamDefaultController`*"]
-    pub fn error(this: &WritableStreamDefaultController) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "WritableStreamDefaultController" , js_name = error)]
+    pub fn error(this: &WritableStreamDefaultController);
+    # [wasm_bindgen (method , structural , js_class = "WritableStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStreamDefaultController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStreamDefaultController`*"]
-    pub fn error_with_e(
-        this: &WritableStreamDefaultController,
-        e: &::wasm_bindgen::JsValue,
-    ) -> Result<(), JsValue>;
+    pub fn error_with_e(this: &WritableStreamDefaultController, e: &::wasm_bindgen::JsValue);
 }

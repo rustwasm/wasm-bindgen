@@ -35,14 +35,14 @@ extern "C" {
         this: &TransformStreamDefaultController,
         chunk: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "TransformStreamDefaultController" , js_name = error)]
+    # [wasm_bindgen (method , structural , js_class = "TransformStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransformStreamDefaultController`*"]
-    pub fn error(this: &TransformStreamDefaultController) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "TransformStreamDefaultController" , js_name = error)]
+    pub fn error(this: &TransformStreamDefaultController);
+    # [wasm_bindgen (method , structural , js_class = "TransformStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/error)"]
@@ -51,7 +51,7 @@ extern "C" {
     pub fn error_with_reason(
         this: &TransformStreamDefaultController,
         reason: &::wasm_bindgen::JsValue,
-    ) -> Result<(), JsValue>;
+    );
     # [wasm_bindgen (catch , method , structural , js_class = "TransformStreamDefaultController" , js_name = terminate)]
     #[doc = "The `terminate()` method."]
     #[doc = ""]

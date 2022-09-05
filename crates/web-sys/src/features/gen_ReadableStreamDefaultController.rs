@@ -42,21 +42,18 @@ extern "C" {
         this: &ReadableStreamDefaultController,
         chunk: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
+    # [wasm_bindgen (method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamDefaultController`*"]
-    pub fn error(this: &ReadableStreamDefaultController) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
+    pub fn error(this: &ReadableStreamDefaultController);
+    # [wasm_bindgen (method , structural , js_class = "ReadableStreamDefaultController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamDefaultController`*"]
-    pub fn error_with_e(
-        this: &ReadableStreamDefaultController,
-        e: &::wasm_bindgen::JsValue,
-    ) -> Result<(), JsValue>;
+    pub fn error_with_e(this: &ReadableStreamDefaultController, e: &::wasm_bindgen::JsValue);
 }

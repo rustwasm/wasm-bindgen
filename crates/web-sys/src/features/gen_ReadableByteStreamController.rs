@@ -12,15 +12,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ReadableByteStreamController`*"]
     pub type ReadableByteStreamController;
     #[cfg(feature = "ReadableStreamByobRequest")]
-    # [wasm_bindgen (structural , catch , method , getter , js_class = "ReadableByteStreamController" , js_name = byobRequest)]
+    # [wasm_bindgen (structural , method , getter , js_class = "ReadableByteStreamController" , js_name = byobRequest)]
     #[doc = "Getter for the `byobRequest` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableByteStreamController/byobRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableByteStreamController`, `ReadableStreamByobRequest`*"]
-    pub fn byob_request(
-        this: &ReadableByteStreamController,
-    ) -> Result<Option<ReadableStreamByobRequest>, JsValue>;
+    pub fn byob_request(this: &ReadableByteStreamController) -> Option<ReadableStreamByobRequest>;
     # [wasm_bindgen (structural , method , getter , js_class = "ReadableByteStreamController" , js_name = desiredSize)]
     #[doc = "Getter for the `desiredSize` field of this object."]
     #[doc = ""]
@@ -55,21 +53,18 @@ extern "C" {
         this: &ReadableByteStreamController,
         chunk: &mut [u8],
     ) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "ReadableByteStreamController" , js_name = error)]
+    # [wasm_bindgen (method , structural , js_class = "ReadableByteStreamController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableByteStreamController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableByteStreamController`*"]
-    pub fn error(this: &ReadableByteStreamController) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "ReadableByteStreamController" , js_name = error)]
+    pub fn error(this: &ReadableByteStreamController);
+    # [wasm_bindgen (method , structural , js_class = "ReadableByteStreamController" , js_name = error)]
     #[doc = "The `error()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableByteStreamController/error)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableByteStreamController`*"]
-    pub fn error_with_e(
-        this: &ReadableByteStreamController,
-        e: &::wasm_bindgen::JsValue,
-    ) -> Result<(), JsValue>;
+    pub fn error_with_e(this: &ReadableByteStreamController, e: &::wasm_bindgen::JsValue);
 }
