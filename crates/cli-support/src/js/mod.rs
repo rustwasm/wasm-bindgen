@@ -62,6 +62,8 @@ pub struct Context<'a> {
 
     /// A flag to track if the stack pointer setter shim has been injected.
     stack_pointer_shim_injected: bool,
+
+    start_found: bool,
 }
 
 #[derive(Default)]
@@ -93,6 +95,7 @@ impl<'a> Context<'a> {
         config: &'a Bindgen,
         wit: &'a NonstandardWitSection,
         aux: &'a WasmBindgenAux,
+        start_found: bool,
     ) -> Result<Context<'a>, Error> {
         Ok(Context {
             globals: String::new(),
@@ -113,6 +116,7 @@ impl<'a> Context<'a> {
             memories: Default::default(),
             table_indices: Default::default(),
             stack_pointer_shim_injected: false,
+            start_found,
         })
     }
 
@@ -857,9 +861,8 @@ impl<'a> Context<'a> {
                     wasm = instance.exports;
                     init.__wbindgen_wasm_module = module;
                     {init_memviews}
-                    if (start == true) {{
-                        {start}
-                    }}
+                    {start}
+                    {main}
                     return wasm;
                 }}
 
@@ -906,6 +909,11 @@ impl<'a> Context<'a> {
             init_memviews = init_memviews,
             start = if needs_manual_start {
                 "wasm.__wbindgen_start();"
+            } else {
+                ""
+            },
+            main = if needs_manual_start && self.start_found {
+                "if (start == true) { wasm.__wbindgen_main(); }"
             } else {
                 ""
             },

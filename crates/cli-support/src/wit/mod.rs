@@ -43,12 +43,18 @@ struct InstructionBuilder<'a, 'b> {
     return_position: bool,
 }
 
+pub struct ProcessResult {
+    pub adapters: NonstandardWitSectionId,
+    pub aux: WasmBindgenAuxId,
+    pub start_found: bool,
+}
+
 pub fn process(
     module: &mut Module,
     externref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
-) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
+) -> Result<ProcessResult, Error> {
     let mut storage = Vec::new();
     let programs = extract_programs(module, &mut storage)?;
 
@@ -88,7 +94,11 @@ pub fn process(
 
     let adapters = cx.module.customs.add(cx.adapters);
     let aux = cx.module.customs.add(cx.aux);
-    Ok((adapters, aux))
+    Ok(ProcessResult {
+        adapters,
+        aux,
+        start_found: cx.start_found,
+    })
 }
 
 impl<'a> Context<'a> {
@@ -476,22 +486,7 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        let prev_start = match self.module.start {
-            Some(f) => f,
-            None => {
-                self.module.start = Some(id);
-                return Ok(());
-            }
-        };
-
-        // Note that we call the previous start function, if any, first. This is
-        // because the start function currently only shows up when it's injected
-        // through thread/externref transforms. These injected start functions
-        // need to happen before user code, so we always schedule them first.
-        let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-        builder.func_body().call(prev_start).call(id);
-        let new_start = builder.finish(Vec::new(), &mut self.module.funcs);
-        self.module.start = Some(new_start);
+        self.module.exports.add("__wbindgen_main", id);
         Ok(())
     }
 

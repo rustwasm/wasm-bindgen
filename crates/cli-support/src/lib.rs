@@ -359,7 +359,7 @@ impl Bindgen {
         // auxiliary section for all sorts of miscellaneous information and
         // features #[wasm_bindgen] supports that aren't covered by wasm
         // interface types.
-        wit::process(
+        let wit::ProcessResult { start_found, .. } = wit::process(
             &mut module,
             self.externref,
             self.wasm_interface_types,
@@ -441,7 +441,7 @@ impl Bindgen {
                 .customs
                 .delete_typed::<wit::NonstandardWitSection>()
                 .unwrap();
-            let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
+            let mut cx = js::Context::new(&mut module, self, &adapters, &aux, start_found)?;
             cx.generate()?;
             let (js, ts, start) = cx.finalize(stem)?;
             Generated::Js(JsGenerated {
