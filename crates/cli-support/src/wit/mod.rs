@@ -97,7 +97,7 @@ pub fn process(
     Ok(ProcessResult {
         adapters,
         aux,
-        start_found: cx.start_found,
+        start_found: cx.start_found && cx.support_start,
     })
 }
 
