@@ -2488,6 +2488,12 @@ mod gen_GpuBufferDescriptor;
 #[cfg(feature = "GpuBufferDescriptor")]
 pub use gen_GpuBufferDescriptor::*;
 
+#[cfg(feature = "GpuBufferMapState")]
+#[allow(non_snake_case)]
+mod gen_GpuBufferMapState;
+#[cfg(feature = "GpuBufferMapState")]
+pub use gen_GpuBufferMapState::*;
+
 #[cfg(feature = "GpuCanvasAlphaMode")]
 #[allow(non_snake_case)]
 mod gen_GpuCanvasAlphaMode;
@@ -2733,6 +2739,12 @@ pub use gen_GpuImageDataLayout::*;
 mod gen_GpuIndexFormat;
 #[cfg(feature = "GpuIndexFormat")]
 pub use gen_GpuIndexFormat::*;
+
+#[cfg(feature = "GpuInternalError")]
+#[allow(non_snake_case)]
+mod gen_GpuInternalError;
+#[cfg(feature = "GpuInternalError")]
+pub use gen_GpuInternalError::*;
 
 #[cfg(feature = "GpuLoadOp")]
 #[allow(non_snake_case)]

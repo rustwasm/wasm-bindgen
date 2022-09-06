@@ -19,4 +19,5 @@ pub enum GpuFeatureName {
     IndirectFirstInstance = "indirect-first-instance",
     ShaderF16 = "shader-f16",
     Bgra8unormStorage = "bgra8unorm-storage",
+    Rg11b10ufloatRenderable = "rg11b10ufloat-renderable",
 }
