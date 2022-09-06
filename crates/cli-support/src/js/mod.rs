@@ -418,6 +418,10 @@ impl<'a> Context<'a> {
                 if needs_manual_start {
                     footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
+
+                if self.start_found {
+                    footer.push_str("\nwasm.__wbindgen_main();\n");
+                }
             }
 
             OutputMode::Deno => {
@@ -431,6 +435,10 @@ impl<'a> Context<'a> {
 
                 if needs_manual_start {
                     footer.push_str("\nwasm.__wbindgen_start();\n");
+                }
+
+                if self.start_found {
+                    footer.push_str("\nwasm.__wbindgen_main();\n");
                 }
             }
 
@@ -465,6 +473,12 @@ impl<'a> Context<'a> {
 
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
+                }
+
+                if self.start_found {
+                    start
+                        .get_or_insert_with(String::default)
+                        .push_str("\nwasm.__wbindgen_main();\n");
                 }
             }
 
@@ -912,7 +926,7 @@ impl<'a> Context<'a> {
             } else {
                 ""
             },
-            main = if needs_manual_start && self.start_found {
+            main = if self.start_found {
                 "if (start == true) { wasm.__wbindgen_main(); }"
             } else {
                 ""
