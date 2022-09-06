@@ -87,6 +87,8 @@ pub(crate) static IMMUTABLE_SLICE_WHITELIST: Lazy<BTreeSet<&'static str>> = Lazy
         "writeBuffer",
         "writeTexture",
         // AudioBuffer
-        "copyToChannel", // TODO: Add another type's functions here. Leave a comment header with the type name
+        "copyToChannel",
+        // FontFace
+        "FontFace", // TODO: Add another type's functions here. Leave a comment header with the type name
     ])
 });

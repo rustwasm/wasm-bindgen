@@ -185,7 +185,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/FontFace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn new_with_u8_array(family: &str, source: &mut [u8]) -> Result<FontFace, JsValue>;
+    pub fn new_with_u8_array(family: &str, source: &[u8]) -> Result<FontFace, JsValue>;
     #[cfg(feature = "FontFaceDescriptors")]
     #[wasm_bindgen(catch, constructor, js_class = "FontFace")]
     #[doc = "The `new FontFace(..)` constructor, creating a new instance of `FontFace`."]
@@ -231,7 +231,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FontFace`, `FontFaceDescriptors`*"]
     pub fn new_with_u8_array_and_descriptors(
         family: &str,
-        source: &mut [u8],
+        source: &[u8],
         descriptors: &FontFaceDescriptors,
     ) -> Result<FontFace, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "FontFace" , js_name = load)]
