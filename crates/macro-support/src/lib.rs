@@ -35,7 +35,7 @@ pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diag
     // If we successfully got here then we should have used up all attributes
     // and considered all of them to see if they were used. If one was forgotten
     // that's a bug on our end, so sanity check here.
-    parser::assert_all_attrs_checked();
+    parser::check_unused_attrs(&mut tokens);
 
     Ok(tokens)
 }
@@ -51,7 +51,6 @@ pub fn expand_class_marker(
 
     let mut program = backend::ast::Program::default();
     item.macro_parse(&mut program, (&opts.class, &opts.js_class))?;
-    parser::assert_all_attrs_checked(); // same as above
 
     // This is where things are slightly different, we are being expanded in the
     // context of an impl so we can't inject arbitrary item-like tokens into the
@@ -76,6 +75,7 @@ pub fn expand_class_marker(
         if let Err(e) = program.try_to_tokens(tokens) {
             err = Some(e);
         }
+        parser::check_unused_attrs(tokens); // same as above
         tokens.append_all(item.attrs.iter().filter(|attr| match attr.style {
             syn::AttrStyle::Inner(_) => true,
             _ => false,

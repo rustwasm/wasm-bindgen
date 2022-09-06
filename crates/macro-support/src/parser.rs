@@ -41,6 +41,8 @@ const JS_KEYWORDS: [&str; 20] = [
 struct AttributeParseState {
     parsed: Cell<usize>,
     checks: Cell<usize>,
+    #[cfg(not(feature = "strict-macro"))]
+    unused_attrs: std::cell::RefCell<Vec<Ident>>,
 }
 
 /// Parsed attributes from a `#[wasm_bindgen(..)]`.
@@ -94,35 +96,40 @@ macro_rules! methods {
     ($(($name:ident, $variant:ident($($contents:tt)*)),)*) => {
         $(methods!(@method $name, $variant($($contents)*));)*
 
-        #[cfg(feature = "strict-macro")]
         fn check_used(self) -> Result<(), Diagnostic> {
             // Account for the fact this method was called
             ATTRS.with(|state| state.checks.set(state.checks.get() + 1));
 
-            let mut errors = Vec::new();
-            for (used, attr) in self.attrs.iter() {
-                if used.get() {
-                    continue
-                }
-                // The check below causes rustc to crash on powerpc64 platforms
-                // with an LLVM error. To avoid this, we instead use #[cfg()]
-                // and duplicate the function below. See #58516 for details.
-                /*if !cfg!(feature = "strict-macro") {
-                    continue
-                }*/
-                let span = match attr {
-                    $(BindgenAttr::$variant(span, ..) => span,)*
-                };
-                errors.push(Diagnostic::span_error(*span, "unused #[wasm_bindgen] attribute"));
+            let unused =
+                self.attrs
+                .iter()
+                .filter_map(|(used, attr)| if used.get() { None } else { Some(attr) })
+                .map(|attr| {
+                    match attr {
+                        $(BindgenAttr::$variant(span, ..) => {
+                            #[cfg(feature = "strict-macro")]
+                            {
+                                Diagnostic::span_error(*span, "unused #[wasm_bindgen] attribute")
+                            }
+
+                            #[cfg(not(feature = "strict-macro"))]
+                            {
+                                Ident::new(stringify!($name), *span)
+                            }
+                        },)*
+                    }
+                });
+
+            #[cfg(feature = "strict-macro")]
+            {
+                Diagnostic::from_vec(unused.collect())
             }
-            Diagnostic::from_vec(errors)
-        }
 
-        #[cfg(not(feature = "strict-macro"))]
-        fn check_used(self) -> Result<(), Diagnostic> {
-            // Account for the fact this method was called
-            ATTRS.with(|state| state.checks.set(state.checks.get() + 1));
-            Ok(())
+            #[cfg(not(feature = "strict-macro"))]
+            {
+                ATTRS.with(|state| state.unused_attrs.borrow_mut().extend(unused));
+                Ok(())
+            }
         }
     };
 
@@ -1617,12 +1624,25 @@ pub fn reset_attrs_used() {
     ATTRS.with(|state| {
         state.parsed.set(0);
         state.checks.set(0);
+        #[cfg(not(feature = "strict-macro"))]
+        state.unused_attrs.borrow_mut().clear();
     })
 }
 
-pub fn assert_all_attrs_checked() {
+pub fn check_unused_attrs(tokens: &mut TokenStream) {
     ATTRS.with(|state| {
         assert_eq!(state.parsed.get(), state.checks.get());
+        #[cfg(not(feature = "strict-macro"))]
+        {
+            let unused = &*state.unused_attrs.borrow();
+            tokens.extend(quote::quote! {
+                // Anonymous scope to prevent name clashes.
+                const _: () = {
+                    #(let #unused: ();)*
+                };
+            });
+        }
+        let _ = tokens;
     })
 }
 
