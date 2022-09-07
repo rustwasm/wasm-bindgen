@@ -1372,7 +1372,9 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 ));
             }
         }
-        let module = module_from_opts(program, &opts, &mut errors);
+        let module = module_from_opts(program, &opts)
+            .map_err(|e| errors.push(e))
+            .unwrap_or_default();
         for item in self.items.into_iter() {
             if let Err(e) = item.macro_parse(program, module.clone()) {
                 errors.push(e);
@@ -1420,9 +1422,9 @@ impl MacroParse<Option<ast::ImportModule>> for syn::ForeignItem {
 pub fn module_from_opts(
     program: &mut ast::Program,
     opts: &BindgenAttrs,
-    errors: &mut Vec<Diagnostic>,
-) -> Option<ast::ImportModule> {
-    if let Some((name, span)) = opts.module() {
+) -> Result<Option<ast::ImportModule>, Diagnostic> {
+    let mut errors = Vec::new();
+    let module = if let Some((name, span)) = opts.module() {
         if opts.inline_js().is_some() {
             let msg = "cannot specify both `module` and `inline_js`";
             errors.push(Diagnostic::span_error(span, msg));
@@ -1444,7 +1446,9 @@ pub fn module_from_opts(
         Some(ast::ImportModule::Inline(i, span))
     } else {
         None
-    }
+    };
+    Diagnostic::from_vec(errors)?;
+    Ok(module)
 }
 
 /// Get the first type parameter of a generic type, errors on incorrect input.
