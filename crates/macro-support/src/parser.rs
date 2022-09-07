@@ -1373,15 +1373,11 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
 impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
     fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         let mut errors = Vec::new();
-        match self.abi.name {
-            Some(ref l) if l.value() == "C" => {}
-            None => {}
-            Some(ref other) => {
-                errors.push(err_span!(
-                    other,
-                    "only foreign mods with the `C` ABI are allowed"
-                ));
-            }
+        if let Some(other) = self.abi.name.filter(|l| l.value() != "C") {
+            errors.push(err_span!(
+                other,
+                "only foreign mods with the `C` ABI are allowed"
+            ));
         }
         let module = module_from_opts(program, &opts)
             .map_err(|e| errors.push(e))
