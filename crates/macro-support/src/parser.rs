@@ -1619,12 +1619,14 @@ pub fn check_unused_attrs(tokens: &mut TokenStream) {
     ATTRS.with(|state| {
         assert_eq!(state.parsed.get(), state.checks.get());
         let unused_attrs = &*state.unused_attrs.borrow();
-        tokens.extend(quote::quote! {
-            // Anonymous scope to prevent name clashes.
-            const _: () = {
-                #(let #unused_attrs: ();)*
-            };
-        });
+        if !unused_attrs.is_empty() {
+            tokens.extend(quote::quote! {
+                // Anonymous scope to prevent name clashes.
+                const _: () = {
+                    #(let #unused_attrs: ();)*
+                };
+            });
+        }
     })
 }
 
