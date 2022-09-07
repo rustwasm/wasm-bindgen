@@ -887,7 +887,9 @@ impl<'a> Context<'a> {
         if let Some(vendor_prefixes) = vendor_prefixes {
             assert!(vendor_prefixes.len() > 0);
 
-            if let Some(decode::ImportModule::Inline(_)) = &import.module {
+            if let Some(decode::ImportModule::Inline(_) | decode::ImportModule::Named(_)) =
+                &import.module
+            {
                 bail!(
                     "local JS snippets do not support vendor prefixes for \
                      the import of `{}` with a polyfill of `{}`",
@@ -895,7 +897,7 @@ impl<'a> Context<'a> {
                     &vendor_prefixes[0]
                 );
             }
-            if let Some(decode::ImportModule::Named(module)) = &import.module {
+            if let Some(decode::ImportModule::RawNamed(module)) = &import.module {
                 bail!(
                     "import of `{}` from `{}` has a polyfill of `{}` listed, but
                      vendor prefixes aren't supported when importing from modules",
