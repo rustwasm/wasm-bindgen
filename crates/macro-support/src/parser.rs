@@ -360,7 +360,11 @@ impl Parse for BindgenAttr {
 
         attrgen!(parsers);
 
-        return Err(original.error("unknown attribute"));
+        return Err(original.error(if attr_string.starts_with("_") {
+            "unknown attribute: it's safe to remove unused attributes entirely."
+        } else {
+            "unknown attribute"
+        }));
     }
 }
 
