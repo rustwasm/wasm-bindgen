@@ -107,7 +107,7 @@ macro_rules! methods {
                     .map(|attr| {
                         match attr {
                             $(BindgenAttr::$variant(span, ..) => {
-                                Ident::new(stringify!($name), *span)
+                                syn::parse_quote_spanned!(*span => $name)
                             })*
                         }
                     })

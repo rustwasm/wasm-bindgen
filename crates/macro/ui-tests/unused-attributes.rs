@@ -21,7 +21,7 @@ pub const FOO: &'static str = "FOO";
 #[wasm_bindgen(readonly)]
 pub fn bar() {}
 
-#[wasm_bindgen(getter_with_clone)]
+#[wasm_bindgen(getter_with_clone, final)]
 impl MyStruct {
     #[wasm_bindgen(getter, typescript_type = "Thing[]")]
     pub fn hello(&self) -> String {
