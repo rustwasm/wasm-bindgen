@@ -1372,29 +1372,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 ));
             }
         }
-        let module = if let Some((name, span)) = opts.module() {
-            if opts.inline_js().is_some() {
-                let msg = "cannot specify both `module` and `inline_js`";
-                errors.push(Diagnostic::span_error(span, msg));
-            }
-            if opts.raw_module().is_some() {
-                let msg = "cannot specify both `module` and `raw_module`";
-                errors.push(Diagnostic::span_error(span, msg));
-            }
-            Some(ast::ImportModule::Named(name.to_string(), span))
-        } else if let Some((name, span)) = opts.raw_module() {
-            if opts.inline_js().is_some() {
-                let msg = "cannot specify both `raw_module` and `inline_js`";
-                errors.push(Diagnostic::span_error(span, msg));
-            }
-            Some(ast::ImportModule::RawNamed(name.to_string(), span))
-        } else if let Some((js, span)) = opts.inline_js() {
-            let i = program.inline_js.len();
-            program.inline_js.push(js.to_string());
-            Some(ast::ImportModule::Inline(i, span))
-        } else {
-            None
-        };
+        let module = module_from_opts(program, &opts, &mut errors);
         for item in self.items.into_iter() {
             if let Err(e) = item.macro_parse(program, module.clone()) {
                 errors.push(e);
@@ -1436,6 +1414,36 @@ impl MacroParse<Option<ast::ImportModule>> for syn::ForeignItem {
         });
 
         Ok(())
+    }
+}
+
+pub fn module_from_opts(
+    program: &mut ast::Program,
+    opts: &BindgenAttrs,
+    errors: &mut Vec<Diagnostic>,
+) -> Option<ast::ImportModule> {
+    if let Some((name, span)) = opts.module() {
+        if opts.inline_js().is_some() {
+            let msg = "cannot specify both `module` and `inline_js`";
+            errors.push(Diagnostic::span_error(span, msg));
+        }
+        if opts.raw_module().is_some() {
+            let msg = "cannot specify both `module` and `raw_module`";
+            errors.push(Diagnostic::span_error(span, msg));
+        }
+        Some(ast::ImportModule::Named(name.to_string(), span))
+    } else if let Some((name, span)) = opts.raw_module() {
+        if opts.inline_js().is_some() {
+            let msg = "cannot specify both `raw_module` and `inline_js`";
+            errors.push(Diagnostic::span_error(span, msg));
+        }
+        Some(ast::ImportModule::RawNamed(name.to_string(), span))
+    } else if let Some((js, span)) = opts.inline_js() {
+        let i = program.inline_js.len();
+        program.inline_js.push(js.to_string());
+        Some(ast::ImportModule::Inline(i, span))
+    } else {
+        None
     }
 }
 
