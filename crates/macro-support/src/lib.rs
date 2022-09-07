@@ -21,6 +21,16 @@ use syn::parse::{Parse, ParseStream, Result as SynResult};
 
 mod parser;
 
+#[cfg(feature = "strict-macro")]
+const _: () = {
+    #[deprecated(
+        note = "strict-macro feature is deprecated and will be removed in a future version"
+    )]
+    const WASM_BINDGEN_STRICT_MACRO: () = {};
+
+    WASM_BINDGEN_STRICT_MACRO
+};
+
 /// Takes the parsed input from a `#[wasm_bindgen]` macro and returns the generated bindings
 pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diagnostic> {
     parser::reset_attrs_used();
