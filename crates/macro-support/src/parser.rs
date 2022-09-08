@@ -1,4 +1,4 @@
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::char;
 use std::str::Chars;
 
@@ -41,6 +41,7 @@ const JS_KEYWORDS: [&str; 20] = [
 struct AttributeParseState {
     parsed: Cell<usize>,
     checks: Cell<usize>,
+    unused_attrs: RefCell<Vec<Ident>>,
 }
 
 /// Parsed attributes from a `#[wasm_bindgen(..)]`.
@@ -94,35 +95,24 @@ macro_rules! methods {
     ($(($name:ident, $variant:ident($($contents:tt)*)),)*) => {
         $(methods!(@method $name, $variant($($contents)*));)*
 
-        #[cfg(feature = "strict-macro")]
-        fn check_used(self) -> Result<(), Diagnostic> {
+        fn check_used(self) {
             // Account for the fact this method was called
-            ATTRS.with(|state| state.checks.set(state.checks.get() + 1));
+            ATTRS.with(|state| {
+                state.checks.set(state.checks.get() + 1);
 
-            let mut errors = Vec::new();
-            for (used, attr) in self.attrs.iter() {
-                if used.get() {
-                    continue
-                }
-                // The check below causes rustc to crash on powerpc64 platforms
-                // with an LLVM error. To avoid this, we instead use #[cfg()]
-                // and duplicate the function below. See #58516 for details.
-                /*if !cfg!(feature = "strict-macro") {
-                    continue
-                }*/
-                let span = match attr {
-                    $(BindgenAttr::$variant(span, ..) => span,)*
-                };
-                errors.push(Diagnostic::span_error(*span, "unused #[wasm_bindgen] attribute"));
-            }
-            Diagnostic::from_vec(errors)
-        }
-
-        #[cfg(not(feature = "strict-macro"))]
-        fn check_used(self) -> Result<(), Diagnostic> {
-            // Account for the fact this method was called
-            ATTRS.with(|state| state.checks.set(state.checks.get() + 1));
-            Ok(())
+                state.unused_attrs.borrow_mut().extend(
+                    self.attrs
+                    .iter()
+                    .filter_map(|(used, attr)| if used.get() { None } else { Some(attr) })
+                    .map(|attr| {
+                        match attr {
+                            $(BindgenAttr::$variant(span, ..) => {
+                                syn::parse_quote_spanned!(*span => $name)
+                            })*
+                        }
+                    })
+                );
+            });
         }
     };
 
@@ -218,7 +208,7 @@ impl BindgenAttrs {
             }
             let mut attrs: BindgenAttrs = syn::parse2(group.stream())?;
             ret.attrs.extend(attrs.attrs.drain(..));
-            attrs.check_used()?;
+            attrs.check_used();
         }
     }
 
@@ -353,7 +343,11 @@ impl Parse for BindgenAttr {
 
         attrgen!(parsers);
 
-        return Err(original.error("unknown attribute"));
+        return Err(original.error(if attr_string.starts_with("_") {
+            "unknown attribute: it's safe to remove unused attributes entirely."
+        } else {
+            "unknown attribute"
+        }));
     }
 }
 
@@ -411,7 +405,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
 
             let attrs = BindgenAttrs::find(&mut field.attrs)?;
             if attrs.skip().is_some() {
-                attrs.check_used()?;
+                attrs.check_used();
                 continue;
             }
 
@@ -436,11 +430,11 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 generate_typescript: attrs.skip_typescript().is_none(),
                 getter_with_clone: getter_with_clone || attrs.getter_with_clone().is_some(),
             });
-            attrs.check_used()?;
+            attrs.check_used();
         }
         let generate_typescript = attrs.skip_typescript().is_none();
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
-        attrs.check_used()?;
+        attrs.check_used();
         Ok(ast::Struct {
             rust_name: self.ident.clone(),
             js_name,
@@ -662,7 +656,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::Fo
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment,
         });
-        opts.check_used()?;
+        opts.check_used();
 
         Ok(ret)
     }
@@ -695,7 +689,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
                 _ => {}
             }
         }
-        attrs.check_used()?;
+        attrs.check_used();
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
             attrs: self.attrs,
@@ -734,7 +728,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::Fo
             self.ident,
             ShortHash((&js_name, module, &self.ident)),
         );
-        opts.check_used()?;
+        opts.check_used();
         Ok(ast::ImportKind::Static(ast::ImportStatic {
             ty: *self.ty,
             vis: self.vis,
@@ -770,7 +764,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             None,
             false,
         )?;
-        attrs.check_used()?;
+        attrs.check_used();
         Ok(ret.0)
     }
 }
@@ -1049,7 +1043,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
             }
         }
         Diagnostic::from_vec(errors)?;
-        opts.check_used()?;
+        opts.check_used();
         Ok(())
     }
 }
@@ -1160,7 +1154,7 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
             rust_name: self.sig.ident.clone(),
             start: false,
         });
-        opts.check_used()?;
+        opts.check_used();
         Ok(())
     }
 }
@@ -1229,7 +1223,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                     attrs: _,
                     lit: syn::Lit::Str(_),
                 }) => {
-                    opts.check_used()?;
+                    opts.check_used();
                     return import_enum(self, program);
                 }
                 _ => {}
@@ -1239,7 +1233,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
-        opts.check_used()?;
+        opts.check_used();
 
         let has_discriminant = self.variants[0].discriminant.is_some();
 
@@ -1353,7 +1347,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
             }
         }
 
-        opts.check_used()?;
+        opts.check_used();
 
         Ok(())
     }
@@ -1401,7 +1395,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
             }
         }
         Diagnostic::from_vec(errors)?;
-        opts.check_used()?;
+        opts.check_used();
         Ok(())
     }
 }
@@ -1617,12 +1611,22 @@ pub fn reset_attrs_used() {
     ATTRS.with(|state| {
         state.parsed.set(0);
         state.checks.set(0);
+        state.unused_attrs.borrow_mut().clear();
     })
 }
 
-pub fn assert_all_attrs_checked() {
+pub fn check_unused_attrs(tokens: &mut TokenStream) {
     ATTRS.with(|state| {
         assert_eq!(state.parsed.get(), state.checks.get());
+        let unused_attrs = &*state.unused_attrs.borrow();
+        if !unused_attrs.is_empty() {
+            tokens.extend(quote::quote! {
+                // Anonymous scope to prevent name clashes.
+                const _: () = {
+                    #(let #unused_attrs: ();)*
+                };
+            });
+        }
     })
 }
 
