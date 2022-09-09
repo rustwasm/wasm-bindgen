@@ -375,6 +375,26 @@ extern "C" {
         type_: u32,
         video: &HtmlVideoElement,
     ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoFrame")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGLRenderingContext" , js_name = texImage2D)]
+    #[doc = "The `texImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrame`, `WebGlRenderingContext`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn tex_image_2d_with_u32_and_u32_and_video_frame(
+        this: &WebGlRenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: i32,
+        format: u32,
+        type_: u32,
+        video_frame: &VideoFrame,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WebGLRenderingContext" , js_name = texSubImage2D)]
     #[doc = "The `texSubImage2D()` method."]
     #[doc = ""]
@@ -495,6 +515,27 @@ extern "C" {
         format: u32,
         type_: u32,
         video: &HtmlVideoElement,
+    ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoFrame")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGLRenderingContext" , js_name = texSubImage2D)]
+    #[doc = "The `texSubImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrame`, `WebGlRenderingContext`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn tex_sub_image_2d_with_u32_and_u32_and_video_frame(
+        this: &WebGlRenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        format: u32,
+        type_: u32,
+        video_frame: &VideoFrame,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = uniform1fv)]
