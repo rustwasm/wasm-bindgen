@@ -380,7 +380,10 @@ impl<'a> Context<'a> {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, None)?;
-                footer.push_str(&format!("{} = Object.assign(init, __exports);\n", global));
+                footer.push_str(&format!(
+                    "{} = Object.assign(init, {{ initSync }}, __exports);\n",
+                    global
+                ));
             }
 
             // With normal CommonJS node we need to defer requiring the wasm
