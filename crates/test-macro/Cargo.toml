@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-test-macro"
-version = "0.3.32"
+version = "0.3.33"
 authors = ["The wasm-bindgen Developers"]
 description = "Internal testing macro for wasm-bindgen"
 license = "MIT/Apache-2.0"
