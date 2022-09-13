@@ -20,7 +20,7 @@ macro_rules! console_log {
 
 #[macro_use]
 macro_rules! console_error {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+    ($($t:tt)*) => (error(&format_args!($($t)*).to_string()))
 }
 
 const WASM: &[u8] = include_bytes!("native_add.wasm");
