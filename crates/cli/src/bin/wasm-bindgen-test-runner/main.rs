@@ -33,6 +33,7 @@ enum TestMode {
     Node,
     Deno,
     Browser,
+    NoModule,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -103,7 +104,13 @@ fn main() -> anyhow::Result<()> {
 
     let custom_section = wasm.customs.remove_raw("__wasm_bindgen_test_unstable");
     let test_mode = match custom_section {
-        Some(section) if section.data.contains(&0x01) => TestMode::Browser,
+        Some(section) if section.data.contains(&0x01) => {
+            if std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok() {
+                TestMode::NoModule
+            } else {
+                TestMode::Browser
+            }
+        }
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
         None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
         None => TestMode::Node,
@@ -161,6 +168,7 @@ integration test.\
         TestMode::Node => b.nodejs(true)?,
         TestMode::Deno => b.deno(true)?,
         TestMode::Browser => b.web(true)?,
+        TestMode::NoModule => b.no_modules(true)?,
     };
 
     b.debug(debug)
@@ -176,7 +184,7 @@ integration test.\
     match test_mode {
         TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
         TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
-        TestMode::Browser => {
+        TestMode::Browser | TestMode::NoModule => {
             let srv = server::spawn(
                 &if headless {
                     "127.0.0.1:0".parse().unwrap()
@@ -188,6 +196,7 @@ integration test.\
                 &tmpdir,
                 &args,
                 &tests,
+                matches!(test_mode, TestMode::NoModule),
             )
             .context("failed to spawn server")?;
             let addr = srv.server_addr();
