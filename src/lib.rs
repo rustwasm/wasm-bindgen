@@ -348,6 +348,12 @@ impl JsValue {
         unsafe { __wbindgen_is_object(self.idx) == 1 }
     }
 
+    /// Tests whether this JS value is an instance of Array.
+    #[inline]
+    pub fn is_array(&self) -> bool {
+        unsafe { __wbindgen_is_array(self.idx) == 1 }
+    }
+
     /// Tests whether the type of this JS value is `function`.
     #[inline]
     pub fn is_function(&self) -> bool {
@@ -1003,6 +1009,7 @@ externs! {
         fn __wbindgen_is_undefined(idx: u32) -> u32;
         fn __wbindgen_is_symbol(idx: u32) -> u32;
         fn __wbindgen_is_object(idx: u32) -> u32;
+        fn __wbindgen_is_array(idx: u32) -> u32;
         fn __wbindgen_is_function(idx: u32) -> u32;
         fn __wbindgen_is_string(idx: u32) -> u32;
         fn __wbindgen_is_bigint(idx: u32) -> u32;

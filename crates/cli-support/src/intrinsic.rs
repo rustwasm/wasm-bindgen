@@ -95,6 +95,9 @@ intrinsics! {
         #[symbol = "__wbindgen_is_function"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsFunction,
+        #[symbol = "__wbindgen_is_array"]
+        #[signature = fn(ref_externref()) -> Boolean]
+        IsArray,
         #[symbol = "__wbindgen_is_undefined"]
         #[signature = fn(ref_externref()) -> Boolean]
         IsUndefined,

@@ -3141,6 +3141,11 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'function'", args[0])
             }
 
+            Intrinsic::IsArray => {
+                assert_eq!(args.len(), 1);
+                format!("{} instanceof Array", args[0])
+            }
+
             Intrinsic::IsUndefined => {
                 assert_eq!(args.len(), 1);
                 format!("{} === undefined", args[0])
