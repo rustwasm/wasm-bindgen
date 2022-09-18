@@ -3,7 +3,7 @@
 use std::convert::TryFrom;
 use std::fmt::Debug;
 
-use js_sys::{Object, RangeError, Reflect};
+use js_sys::{Array, Object, RangeError, Reflect};
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_test::wasm_bindgen_test;
 
@@ -78,6 +78,7 @@ fn types() {
     assert!(JsValue::UNDEFINED.is_undefined());
     assert!(JsValue::NULL.is_null());
     assert!(Object::new().is_object());
+    assert!(Array::new().is_array());
     assert!(JsValue::symbol(None).is_symbol());
     assert!(JsValue::from_str("hi").is_string());
     assert!(JsValue::bigint_from_str("5").is_bigint());
