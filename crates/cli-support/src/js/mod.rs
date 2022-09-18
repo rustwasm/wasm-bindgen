@@ -3143,7 +3143,7 @@ impl<'a> Context<'a> {
 
             Intrinsic::IsArray => {
                 assert_eq!(args.len(), 1);
-                format!("{} instanceof Array", args[0])
+                format!("Array.isArray({})", args[0])
             }
 
             Intrinsic::IsUndefined => {
