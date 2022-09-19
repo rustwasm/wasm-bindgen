@@ -282,6 +282,8 @@ impl JsValue {
     /// Attempt to downcast the `JsValue` to a croncrete type `T` that
     /// implements `RefFromWasmAbi`.
     ///
+    /// # Safety
+    ///
     /// This method is unsafe because the type of `JsValue` is never
     /// checked.
     #[inline]
