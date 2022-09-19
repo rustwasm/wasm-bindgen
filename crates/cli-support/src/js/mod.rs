@@ -3237,6 +3237,11 @@ impl<'a> Context<'a> {
         prelude: &mut String,
     ) -> Result<String, Error> {
         let expr = match intrinsic {
+            Intrinsic::JsvalPtr => {
+                assert_eq!(args.len(), 1);
+                format!("{}.ptr", args[0])
+            }
+
             Intrinsic::JsvalEq => {
                 assert_eq!(args.len(), 2);
                 format!("{} === {}", args[0], args[1])
