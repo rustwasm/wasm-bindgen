@@ -279,6 +279,19 @@ impl JsValue {
         unsafe { FromWasmAbi::from_abi(__wbindgen_jsval_ptr(self.idx)) }
     }
 
+    /// Attempt to downcast the `JsValue` to a croncrete type `T` that
+    /// implements `RefFromWasmAbi`.
+    ///
+    /// This method is unsafe because the type of `JsValue` is never
+    /// checked.
+    #[inline]
+    pub unsafe fn downcast_unchecked<T>(&self) -> Option<T::Anchor>
+    where
+        T: RefFromWasmAbi<Abi = u32>,
+    {
+        self.as_ptr().map(|ptr| unsafe { T::ref_from_abi(ptr) })
+    }
+
     /// Returns the `f64` value of this JS value if it's an instance of a
     /// number.
     ///
