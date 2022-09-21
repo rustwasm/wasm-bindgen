@@ -214,6 +214,7 @@ impl ToTokens for ast::Struct {
             const #free_fn_const: () = {
                 #[no_mangle]
                 #[doc(hidden)]
+                #[allow(clippy::drop_non_drop)]
                 pub unsafe extern "C" fn #free_fn(ptr: u32) {
                     drop(<#name as wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr));
                 }
