@@ -1,6 +1,8 @@
 use anyhow::{anyhow, bail, Error};
 use std::cmp;
 use std::env;
+use walrus::ir::BinaryOp;
+use walrus::ir::LoadKind;
 use walrus::ir::Value;
 use walrus::{
     ir::MemArg, ExportItem, FunctionId, GlobalId, GlobalKind, InitExpr, InstrSeqBuilder, MemoryId,
@@ -22,6 +24,9 @@ pub struct Config {
     thread_stack_size: u32,
     enabled: bool,
 }
+
+#[derive(Clone, Copy)]
+pub struct ThreadCounterAddr(i32);
 
 impl Config {
     /// Create a new configuration with default settings.
@@ -103,9 +108,9 @@ impl Config {
     /// * Some stack space is prepared for each thread after the first one.
     ///
     /// More and/or less may happen here over time, stay tuned!
-    pub fn run(&self, module: &mut Module) -> Result<(), Error> {
+    pub fn run(&self, module: &mut Module) -> Result<Option<ThreadCounterAddr>, Error> {
         if !self.is_enabled(module) {
-            return Ok(());
+            return Ok(None);
         }
 
         let memory = wasm_conventions::get_memory(module)?;
@@ -165,7 +170,25 @@ impl Config {
         // should not be called from an agent that cannot block (e.g. the main document thread).
         inject_destroy(module, &tls, &stack, memory)?;
 
-        Ok(())
+        Ok(Some(ThreadCounterAddr(thread_counter_addr)))
+    }
+}
+
+impl ThreadCounterAddr {
+    pub fn wrap_start(self, memory: MemoryId, mut body: InstrSeqBuilder, id: FunctionId) {
+        // This happens after the thread counter was already increased, so "1"
+        // means we are in the first thread.
+        body.i32_const(self.0)
+            .load(memory, LoadKind::I32 { atomic: true }, ATOMIC_MEM_ARG)
+            .i32_const(1)
+            .binop(BinaryOp::I32Eq)
+            .if_else(
+                None,
+                |body| {
+                    body.call(id);
+                },
+                |_| {},
+            );
     }
 }
 

@@ -8,6 +8,7 @@ use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
 use wasm_bindgen_shared::struct_function_export_name;
+use wasm_bindgen_threads_xform::ThreadCounterAddr;
 
 mod incoming;
 mod nonstandard;
@@ -32,6 +33,7 @@ struct Context<'a> {
     descriptors: HashMap<String, Descriptor>,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_counter_addr: Option<ThreadCounterAddr>,
     support_start: bool,
 }
 
@@ -47,6 +49,7 @@ pub fn process(
     module: &mut Module,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_counter_addr: Option<ThreadCounterAddr>,
     support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
     let mut storage = Vec::new();
@@ -66,6 +69,7 @@ pub fn process(
         start_found: false,
         externref_enabled,
         wasm_interface_types,
+        thread_counter_addr,
         support_start,
     };
     cx.init()?;
@@ -476,22 +480,38 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        let prev_start = match self.module.start {
-            Some(f) => f,
-            None => {
-                self.module.start = Some(id);
-                return Ok(());
-            }
+        let prev_start = if let Some(prev_start) = self.module.start {
+            // Note that we call the previous start function, if any, first. This is
+            // because the start function currently only shows up when it's injected
+            // through thread/externref transforms. These injected start functions
+            // need to happen before user code, so we always schedule them first.
+            let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
+            builder.func_body().call(prev_start);
+            Some(builder)
+        } else {
+            None
         };
 
-        // Note that we call the previous start function, if any, first. This is
-        // because the start function currently only shows up when it's injected
-        // through thread/externref transforms. These injected start functions
-        // need to happen before user code, so we always schedule them first.
-        let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-        builder.func_body().call(prev_start).call(id);
-        let new_start = builder.finish(Vec::new(), &mut self.module.funcs);
-        self.module.start = Some(new_start);
+        if let Some(thread_counter_addr) = self.thread_counter_addr {
+            // If we support shared memory, we re-use the thread counter address to
+            // call the start function only once.
+            let mut builder = prev_start
+                .unwrap_or_else(|| walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]));
+
+            thread_counter_addr.wrap_start(self.memory()?, builder.func_body(), id);
+
+            self.module.start = Some(builder.finish(Vec::new(), &mut self.module.funcs));
+        } else if let Some(mut builder) = prev_start {
+            // If we don't support shared memory, we still have to call the start
+            // function if we had a previous start function.
+            builder.func_body().call(id);
+            self.module.start = Some(builder.finish(Vec::new(), &mut self.module.funcs));
+        } else {
+            // If we didn't have a previous start function and don't support shared memory,
+            // just add the start function.
+            self.module.start = Some(id);
+        }
+
         Ok(())
     }
 

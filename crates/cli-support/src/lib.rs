@@ -331,7 +331,8 @@ impl Bindgen {
                 .context("failed getting Wasm module")?,
         };
 
-        self.threads
+        let thread_counter_addr = self
+            .threads
             .run(&mut module)
             .with_context(|| "failed to prepare module for threading")?;
 
@@ -363,6 +364,7 @@ impl Bindgen {
             &mut module,
             self.externref,
             self.wasm_interface_types,
+            thread_counter_addr,
             self.emit_start,
         )?;
 
