@@ -13,6 +13,7 @@ edition = "2018"
 
 [lib]
 proc-macro = true
+doctest = false # 'cannot call wasm-bindgen imported functions on non-wasm targets'
 
 [features]
 spans = ["wasm-bindgen-macro-support/spans"]
