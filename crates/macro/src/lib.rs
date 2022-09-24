@@ -27,7 +27,7 @@ pub fn link_to(input: TokenStream) -> TokenStream {
             }
             tokens.into()
         }
-        Err(diagnostic) => (quote! { Result::<String, JsValue>::Ok(#diagnostic) }).into(),
+        Err(diagnostic) => (quote! { String::clone(#diagnostic) }).into(),
     }
 }
 

@@ -53,7 +53,7 @@ fn alloc_helper() -> Worker {
             return helper;
         }
 
-        let worker_url = wasm_bindgen::link_to!(module = "/src/task/worker.js").unwrap();
+        let worker_url = wasm_bindgen::link_to!(module = "/src/task/worker.js");
         Worker::new(&worker_url).unwrap_or_else(|js| wasm_bindgen::throw_val(js))
     })
 }

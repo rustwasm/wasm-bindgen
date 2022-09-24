@@ -144,10 +144,7 @@ impl TryToTokens for ast::LinkToModule {
                 #extern_fn
 
                 unsafe {
-                    let _ret = #name();
-                    wasm_bindgen::__rt::take_last_exception().map(|()| {
-                        <String as wasm_bindgen::convert::FromWasmAbi>::from_abi(_ret)
-                    })
+                    <String as wasm_bindgen::convert::FromWasmAbi>::from_abi(#name())
                 }
             }
         })
