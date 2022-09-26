@@ -136,7 +136,7 @@ impl TryToTokens for ast::LinkToModule {
         self.0.try_to_tokens(&mut program)?;
         let link_function_name = self.0.link_function_name(0);
         let name = Ident::new(&link_function_name, Span::call_site());
-        let abi_ret = quote! { <String as wasm_bindgen::convert::FromWasmAbi>::Abi };
+        let abi_ret = quote! { <std::string::String as wasm_bindgen::convert::FromWasmAbi>::Abi };
         let extern_fn = extern_fn(&name, &[], &[], &[], abi_ret);
         (quote! {
             {
@@ -144,7 +144,7 @@ impl TryToTokens for ast::LinkToModule {
                 #extern_fn
 
                 unsafe {
-                    <String as wasm_bindgen::convert::FromWasmAbi>::from_abi(#name())
+                    <std::string::String as wasm_bindgen::convert::FromWasmAbi>::from_abi(#name())
                 }
             }
         })
