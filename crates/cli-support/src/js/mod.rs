@@ -384,7 +384,7 @@ impl<'a> Context<'a> {
                     if (typeof document === 'undefined') {
                         script_src = location.href;
                     } else {
-                        script_src = document.currentScript.src;
+                        script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
                 js.push_str("let wasm;\n");
@@ -3131,7 +3131,7 @@ impl<'a> Context<'a> {
                     } => "import.meta.url",
                     OutputMode::Node {
                         experimental_modules: false,
-                    } => "__filename",
+                    } => "require('url').pathToFileURL(__filename)",
                     OutputMode::NoModules { .. } => "script_src",
                 };
                 Ok(format!("new URL('{}', {}).toString()", path, base))

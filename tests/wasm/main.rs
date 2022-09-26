@@ -32,6 +32,7 @@ pub mod intrinsics;
 pub mod js_keywords;
 pub mod js_objects;
 pub mod jscast;
+pub mod link_to;
 pub mod math;
 pub mod no_shims;
 pub mod node;

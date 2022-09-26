@@ -19,8 +19,8 @@ pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 /// This macro adds a linked module by module, raw_module or inline_js attribute.
-/// It expands to a String containing a link to that module. This link may be relative and
-/// is suitable for dynamic imports, or creating workers or worklets:
+/// It expands to a String containing a URL to that module. This URL can be used
+/// to create workers or worklets, for example:
 /// ```
 /// use web_sys::Worker;
 /// let worker = Worker::new(&wasm_bindgen::link_to!(module = "/src/worker.js"));
