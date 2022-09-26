@@ -331,7 +331,12 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn link_module(&mut self, id: ImportId, module: &decode::ImportModule) -> Result<(), Error> {
+    fn link_module(
+        &mut self,
+        id: ImportId,
+        module: &decode::ImportModule,
+        offset: usize,
+    ) -> Result<(), Error> {
         let descriptor = Function {
             shim_idx: 0,
             arguments: Vec::new(),
@@ -342,8 +347,12 @@ impl<'a> Context<'a> {
         let path = match module {
             decode::ImportModule::Named(n) => format!("snippets/{}", n),
             decode::ImportModule::RawNamed(n) => n.to_string(),
-            decode::ImportModule::Inline(i) => {
-                format!("snippets/{}/inline{}.js", self.unique_crate_identifier, i)
+            decode::ImportModule::Inline(idx) => {
+                format!(
+                    "snippets/{}/inline{}.js",
+                    self.unique_crate_identifier,
+                    *idx as usize + offset
+                )
             }
         };
         self.aux.import_map.insert(id, AuxImport::LinkTo(path));
@@ -384,9 +393,15 @@ impl<'a> Context<'a> {
             self.export(export)?;
         }
 
+        let offset = self
+            .aux
+            .snippets
+            .get(unique_crate_identifier)
+            .map(|s| s.len())
+            .unwrap_or(0);
         for module in linked_modules {
             match self.function_imports.remove(module.link_function_name) {
-                Some((id, _)) => self.link_module(id, &module.module)?,
+                Some((id, _)) => self.link_module(id, &module.module, offset)?,
                 None => (),
             }
         }

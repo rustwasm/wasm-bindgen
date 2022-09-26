@@ -2,7 +2,7 @@
 //! with all the added metadata necessary to generate WASM bindings
 //! for it.
 
-use crate::Diagnostic;
+use crate::{util::ShortHash, Diagnostic};
 use proc_macro2::{Ident, Span};
 use std::hash::{Hash, Hasher};
 use wasm_bindgen_shared as shared;
@@ -37,6 +37,15 @@ impl Program {
             && self.structs.is_empty()
             && self.typescript_custom_sections.is_empty()
             && self.inline_js.is_empty()
+    }
+
+    /// Name of the link function for a specific linked module
+    pub fn link_function_name(&self, idx: usize) -> String {
+        let hash = match &self.linked_modules[idx] {
+            ImportModule::Inline(idx, _) => ShortHash((1, &self.inline_js[*idx])).to_string(),
+            other => ShortHash((0, other)).to_string(),
+        };
+        format!("__wbindgen_link_{}", hash)
     }
 }
 
@@ -113,14 +122,6 @@ impl Hash for ImportModule {
             ImportModule::Inline(idx, _) => (2u8, idx).hash(h),
             ImportModule::RawNamed(name, _) => (3u8, name).hash(h),
         }
-    }
-}
-
-impl ImportModule {
-    /// Name of the link function when the ImportModule is used in
-    /// Program::linked_modules.
-    pub fn link_function_name(&self) -> String {
-        format!("__wbindgen_link_{}", crate::util::ShortHash(self))
     }
 }
 

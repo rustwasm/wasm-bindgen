@@ -149,7 +149,8 @@ fn shared_program<'a>(
         linked_modules: prog
             .linked_modules
             .iter()
-            .map(|a| shared_linked_module(a, intern))
+            .enumerate()
+            .map(|(i, a)| shared_linked_module(&prog.link_function_name(i), a, intern))
             .collect::<Result<Vec<_>, _>>()?,
         local_modules: intern
             .files
@@ -255,12 +256,13 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
 }
 
 fn shared_linked_module<'a>(
+    name: &str,
     i: &'a ast::ImportModule,
     intern: &'a Interner,
 ) -> Result<LinkedModule<'a>, Diagnostic> {
     Ok(LinkedModule {
         module: shared_module(i, intern)?,
-        link_function_name: intern.intern_str(&i.link_function_name()),
+        link_function_name: intern.intern_str(name),
     })
 }
 

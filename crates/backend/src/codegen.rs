@@ -134,7 +134,7 @@ impl TryToTokens for ast::LinkToModule {
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
         let mut program = TokenStream::new();
         self.0.try_to_tokens(&mut program)?;
-        let link_function_name = self.0.linked_modules[0].link_function_name();
+        let link_function_name = self.0.link_function_name(0);
         let name = Ident::new(&link_function_name, Span::call_site());
         let abi_ret = quote! { <String as wasm_bindgen::convert::FromWasmAbi>::Abi };
         let extern_fn = extern_fn(&name, &[], &[], &[], abi_ret);
