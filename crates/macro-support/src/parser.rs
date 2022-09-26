@@ -107,7 +107,7 @@ macro_rules! methods {
                 let span = match attr {
                     $(BindgenAttr::$variant(span, ..) => span,)*
                 };
-                errors.push(Diagnostic::span_error(*span, "unused #[wasm_bindgen] attribute"));
+                errors.push(Diagnostic::span_error(*span, "unused wasm_bindgen attribute"));
             }
             Diagnostic::from_vec(errors)
         }

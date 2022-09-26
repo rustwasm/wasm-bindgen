@@ -12,7 +12,7 @@ error: `link_to!` requires a module.
    |
    = note: this error originates in the macro `wasm_bindgen::link_to` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: unused #[wasm_bindgen] attribute
+error: unused wasm_bindgen attribute
   --> $DIR/link-to.rs:20:9
    |
 20 |         js_namespace = foo
