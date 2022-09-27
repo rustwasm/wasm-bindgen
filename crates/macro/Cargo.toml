@@ -13,7 +13,6 @@ edition = "2018"
 
 [lib]
 proc-macro = true
-doctest = false # 'cannot call wasm-bindgen imported functions on non-wasm targets'
 
 [features]
 spans = ["wasm-bindgen-macro-support/spans"]
@@ -28,3 +27,4 @@ quote = "1.0"
 trybuild = "1.0"
 wasm-bindgen = { path = "../..", version = "0.2.83" }
 wasm-bindgen-futures = { path = "../futures", version = "0.4.33" }
+web-sys = { path = "../web-sys", version = "0.3.60" }
