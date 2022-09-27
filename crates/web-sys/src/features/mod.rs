@@ -2164,6 +2164,12 @@ mod gen_FlexLineGrowthState;
 #[cfg(feature = "FlexLineGrowthState")]
 pub use gen_FlexLineGrowthState::*;
 
+#[cfg(feature = "FlowControlType")]
+#[allow(non_snake_case)]
+mod gen_FlowControlType;
+#[cfg(feature = "FlowControlType")]
+pub use gen_FlowControlType::*;
+
 #[cfg(feature = "FocusEvent")]
 #[allow(non_snake_case)]
 mod gen_FocusEvent;
@@ -5098,6 +5104,12 @@ mod gen_PanningModelType;
 #[cfg(feature = "PanningModelType")]
 pub use gen_PanningModelType::*;
 
+#[cfg(feature = "ParityType")]
+#[allow(non_snake_case)]
+mod gen_ParityType;
+#[cfg(feature = "ParityType")]
+pub use gen_ParityType::*;
+
 #[cfg(feature = "Path2d")]
 #[allow(non_snake_case)]
 mod gen_Path2d;
@@ -6513,6 +6525,54 @@ pub use gen_SecurityPolicyViolationEventInit::*;
 mod gen_Selection;
 #[cfg(feature = "Selection")]
 pub use gen_Selection::*;
+
+#[cfg(feature = "Serial")]
+#[allow(non_snake_case)]
+mod gen_Serial;
+#[cfg(feature = "Serial")]
+pub use gen_Serial::*;
+
+#[cfg(feature = "SerialInputSignals")]
+#[allow(non_snake_case)]
+mod gen_SerialInputSignals;
+#[cfg(feature = "SerialInputSignals")]
+pub use gen_SerialInputSignals::*;
+
+#[cfg(feature = "SerialOptions")]
+#[allow(non_snake_case)]
+mod gen_SerialOptions;
+#[cfg(feature = "SerialOptions")]
+pub use gen_SerialOptions::*;
+
+#[cfg(feature = "SerialOutputSignals")]
+#[allow(non_snake_case)]
+mod gen_SerialOutputSignals;
+#[cfg(feature = "SerialOutputSignals")]
+pub use gen_SerialOutputSignals::*;
+
+#[cfg(feature = "SerialPort")]
+#[allow(non_snake_case)]
+mod gen_SerialPort;
+#[cfg(feature = "SerialPort")]
+pub use gen_SerialPort::*;
+
+#[cfg(feature = "SerialPortFilter")]
+#[allow(non_snake_case)]
+mod gen_SerialPortFilter;
+#[cfg(feature = "SerialPortFilter")]
+pub use gen_SerialPortFilter::*;
+
+#[cfg(feature = "SerialPortInfo")]
+#[allow(non_snake_case)]
+mod gen_SerialPortInfo;
+#[cfg(feature = "SerialPortInfo")]
+pub use gen_SerialPortInfo::*;
+
+#[cfg(feature = "SerialPortRequestOptions")]
+#[allow(non_snake_case)]
+mod gen_SerialPortRequestOptions;
+#[cfg(feature = "SerialPortRequestOptions")]
+pub use gen_SerialPortRequestOptions::*;
 
 #[cfg(feature = "ServerSocketOptions")]
 #[allow(non_snake_case)]
