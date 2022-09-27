@@ -15,7 +15,7 @@ fn test_module() {
 
 #[wasm_bindgen_test]
 fn test_raw_module() {
-    let link = wasm_bindgen::link_to!(raw_module = "not-found.js");
+    let link = wasm_bindgen::link_to!(raw_module = "./not-found.js");
     assert!(read_file(&link).is_err());
 }
 
