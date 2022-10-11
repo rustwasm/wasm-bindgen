@@ -296,7 +296,7 @@ jobs:
         name: benchmarks
         path: benchmarks
 
-  dist_linux:
+  dist_linux_x86_64:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -310,8 +310,24 @@ jobs:
         strip -g target/x86_64-unknown-linux-musl/release/wasm2es6js
     - uses: actions/upload-artifact@v2
       with:
-        name: dist_linux
+        name: dist_linux_x86_64
         path: "target/x86_64-unknown-linux-musl/release/wasm*"
+
+  dist_linux_aarch64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: rustup update --no-self-update stable && rustup default stable
+      - run: rustup target add aarch64-unknown-linux-musl
+      - run: sudo apt update -y && sudo apt install musl-tools -y
+      - run: sudo snap install --beta --classic zig
+      - run: cargo install cargo-zigbuild
+      - run: |
+          cargo zigbuild --manifest-path crates/cli/Cargo.toml --target aarch64-unknown-linux-musl --features vendored-openssl --release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist_linux_aarch64
+          path: "target/aarch64-unknown-linux-musl/release/wasm*"
 
   dist_macos:
     runs-on: macos-latest
@@ -374,7 +390,8 @@ jobs:
     needs:
       - doc_api
       - doc_book
-      - dist_linux
+      - dist_linux_x86_64
+      - dist_linux_aarch64
       - dist_macos
       - dist_windows
       - build_examples
@@ -409,7 +426,8 @@ jobs:
           chmod +x tmp/$name/wasm*
           tar czvf gh-release/$name.tar.gz -C tmp $name
         }
-        mk x86_64-unknown-linux-musl dist_linux
+        mk x86_64-unknown-linux-musl dist_linux_x86_64
+        mk aarch64-unknown-linux-musl dist_linux_aarch64
         mk x86_64-apple-darwin dist_macos
         mk x86_64-pc-windows-msvc dist_windows
     - uses: actions/upload-artifact@v2
