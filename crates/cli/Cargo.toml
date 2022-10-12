@@ -21,7 +21,7 @@ env_logger = "0.8"
 anyhow = "1.0"
 log = "0.4"
 openssl = { version = '0.10.11', optional = true }
-rouille = { version = "3.0.0", default-features = false }
+rouille = { version = "3.0.0", default-features = false, features = ['assets'] }
 serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
