@@ -6,7 +6,7 @@ mod schema_hash_approval;
 // This gets changed whenever our schema changes.
 // At this time versions of wasm-bindgen and wasm-bindgen-cli are required to have the exact same
 // SCHEMA_VERSION in order to work together.
-pub const SCHEMA_VERSION: &str = "0.2.83";
+pub const SCHEMA_VERSION: &str = "0.2.84";
 
 #[macro_export]
 macro_rules! shared_api {
@@ -17,7 +17,7 @@ macro_rules! shared_api {
             enums: Vec<Enum<'a>>,
             imports: Vec<Import<'a>>,
             structs: Vec<Struct<'a>>,
-            typescript_custom_sections: Vec<&'a str>,
+            typescript_custom_sections: Vec<LiteralOrExpression<'a>>,
             local_modules: Vec<LocalModule<'a>>,
             inline_js: Vec<&'a str>,
             unique_crate_identifier: &'a str,
@@ -138,6 +138,11 @@ macro_rules! shared_api {
         struct LocalModule<'a> {
             identifier: &'a str,
             contents: &'a str,
+        }
+
+        enum LiteralOrExpression<'a> {
+            Literal(&'a str),
+            Expression(&'a syn::Expr),
         }
         }
     }; // end of mac case

@@ -1335,17 +1335,15 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
             bail_span!(self, "#[wasm_bindgen] will not work on constants unless you are defining a #[wasm_bindgen(typescript_custom_section)].");
         }
 
-        match get_expr(&self.expr) {
-            syn::Expr::Lit(syn::ExprLit {
-                lit: syn::Lit::Str(litstr),
-                ..
-            }) => {
-                program.typescript_custom_sections.push(litstr.value());
-            }
-            expr => {
-                bail_span!(expr, "Expected a string literal to be used with #[wasm_bindgen(typescript_custom_section)].");
-            }
-        }
+        program
+            .typescript_custom_sections
+            .push(match get_expr(&self.expr) {
+                syn::Expr::Lit(syn::ExprLit {
+                    lit: syn::Lit::Str(litstr),
+                    ..
+                }) => ast::LiteralOrExpression::Literal(litstr.value()),
+                expr => ast::LiteralOrExpression::Expression(expr.clone()),
+            });
 
         opts.check_used();
 

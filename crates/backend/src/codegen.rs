@@ -1,6 +1,5 @@
 use crate::ast;
 use crate::encode;
-use crate::util::ShortHash;
 use crate::Diagnostic;
 use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
@@ -88,17 +87,8 @@ impl TryToTokens for ast::Program {
             shared::SCHEMA_VERSION,
             shared::version()
         );
+        let prefix_json_len = prefix_json.len() as u32;
         let encoded = encode::encode(self)?;
-        let len = prefix_json.len() as u32;
-        let bytes = [
-            &len.to_le_bytes()[..],
-            prefix_json.as_bytes(),
-            &encoded.custom_section,
-        ]
-        .concat();
-
-        let generated_static_length = bytes.len();
-        let generated_static_value = syn::LitByteStr::new(&bytes, Span::call_site());
 
         // We already consumed the contents of included files when generating
         // the custom section, but we want to make sure that updates to the
@@ -113,18 +103,110 @@ impl TryToTokens for ast::Program {
             quote! { include_str!(#file) }
         });
 
-        (quote! {
-            #[cfg(target_arch = "wasm32")]
-            #[automatically_derived]
-            const _: () = {
-                static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
+        let encoded_tokens = if let [encode::CustomSectionSlice::Literal(custom_section)] =
+            &encoded.custom_section_slices[..]
+        {
+            let custom_section_len = custom_section.len() as u32;
+            let bytes = [
+                &prefix_json_len.to_le_bytes()[..],
+                prefix_json.as_bytes(),
+                &custom_section_len.to_le_bytes()[..],
+                custom_section,
+            ]
+            .concat();
 
-                #[link_section = "__wasm_bindgen_unstable"]
-                pub static _GENERATED: [u8; #generated_static_length] =
-                    *#generated_static_value;
+            let generated_static_length = bytes.len();
+            let generated_static_value = syn::LitByteStr::new(&bytes, Span::call_site());
+
+            quote! {
+                #[cfg(target_arch = "wasm32")]
+                #[automatically_derived]
+                const _: () = {
+                    static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
+
+                    #[link_section = "__wasm_bindgen_unstable"]
+                    pub static _GENERATED: [u8; #generated_static_length] =
+                        *#generated_static_value;
+                };
+            }
+        } else {
+            let (prefix_json_literal_len, prefix_json_literal) = {
+                let bytes = [&prefix_json_len.to_le_bytes()[..], prefix_json.as_bytes()].concat();
+
+                (bytes.len(), syn::LitByteStr::new(&bytes, Span::call_site()))
             };
-        })
-        .to_tokens(tokens);
+            let prefix_json_literal_len_literal =
+                syn::LitInt::new(&prefix_json_literal_len.to_string(), Span::call_site());
+            let concat_args = encoded
+                .custom_section_slices
+                .iter()
+                .map(|slice| match slice {
+                    encode::CustomSectionSlice::Literal(bytes) => {
+                        let literal = syn::LitByteStr::new(bytes, Span::call_site());
+
+                        quote! { #literal }
+                    }
+                    encode::CustomSectionSlice::Expression(expr) => {
+                        quote! {
+                            {
+                                // Store `#expr` into a constant first to generate
+                                // better error messages if `#expr` isn't a string.
+                                const _VALUE_STR: &str = #expr;
+
+                                // `const` functions cannot both evaluate the length
+                                // they need to allocate as well as allocate that
+                                // length, so we need to evaluate strings in two
+                                // steps.
+                                // Additionally, the length is encoded using
+                                // variable-length encoding, so we don't know ahead
+                                // of time the size of the buffer needed to encode
+                                // the length, so we have to compute a length and
+                                // then allocate a buffer twice in total, and then
+                                // concatenate these values.
+
+                                const _VALUE: &[u8] = _VALUE_STR.as_bytes();
+                                const _VALUE_LEN: usize = _VALUE.len();
+                                const _VALUE_LEN_VLE_LEN: usize =
+                                    wasm_bindgen::macro_support::vle_len(_VALUE_LEN);
+                                const _VALUE_LEN_VLE: [u8; _VALUE_LEN_VLE_LEN] =
+                                    wasm_bindgen::macro_support::vle(_VALUE_LEN);
+                                const _TOTAL_LEN: usize = _VALUE_LEN_VLE_LEN + _VALUE_LEN;
+
+                                &wasm_bindgen::macro_support::concat::<_TOTAL_LEN>(
+                                    &[&_VALUE_LEN_VLE, _VALUE])
+                            }
+                        }
+                    }
+                });
+            let concat_args_clone = concat_args.clone();
+
+            quote! {
+                #[cfg(target_arch = "wasm32")]
+                #[automatically_derived]
+                const _: () = {
+                    static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
+
+                    // See comment above for why we use so many intermediate
+                    // constants.
+                    const _GENERATED_ARGS: &[&[u8]] = &[#(#concat_args_clone),*];
+                    const _GENERATED_ARGS_LEN: usize =
+                        wasm_bindgen::macro_support::concat_len(_GENERATED_ARGS);
+                    const _GENERATED_LEN: usize =
+                        #prefix_json_literal_len_literal + 4 + _GENERATED_ARGS_LEN;
+
+                    #[link_section = "__wasm_bindgen_unstable"]
+                    pub static _GENERATED: [u8; _GENERATED_LEN] =
+                        wasm_bindgen::macro_support::concat::<_GENERATED_LEN>(&[
+                            #prefix_json_literal,
+                            &_GENERATED_ARGS_LEN.to_le_bytes(),
+                            &wasm_bindgen::macro_support::concat::<_GENERATED_ARGS_LEN>(
+                                _GENERATED_ARGS),
+                        ]);
+                };
+            }
+        };
+
+        encoded_tokens.to_tokens(tokens);
 
         Ok(())
     }

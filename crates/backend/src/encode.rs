@@ -1,5 +1,6 @@
 use crate::util::ShortHash;
 use proc_macro2::{Ident, Span};
+use quote::ToTokens;
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::env;
@@ -9,8 +10,13 @@ use std::path::PathBuf;
 use crate::ast;
 use crate::Diagnostic;
 
+pub enum CustomSectionSlice {
+    Literal(Vec<u8>),
+    Expression(proc_macro2::TokenStream),
+}
+
 pub struct EncodeResult {
-    pub custom_section: Vec<u8>,
+    pub custom_section_slices: Vec<CustomSectionSlice>,
     pub included_files: Vec<PathBuf>,
 }
 
@@ -18,7 +24,7 @@ pub fn encode(program: &ast::Program) -> Result<EncodeResult, Diagnostic> {
     let mut e = Encoder::new();
     let i = Interner::new();
     shared_program(program, &i)?.encode(&mut e);
-    let custom_section = e.finish();
+    let custom_section_slices = e.finish();
     let included_files = i
         .files
         .borrow()
@@ -27,7 +33,7 @@ pub fn encode(program: &ast::Program) -> Result<EncodeResult, Diagnostic> {
         .cloned()
         .collect();
     Ok(EncodeResult {
-        custom_section,
+        custom_section_slices,
         included_files,
     })
 }
@@ -144,7 +150,7 @@ fn shared_program<'a>(
         typescript_custom_sections: prog
             .typescript_custom_sections
             .iter()
-            .map(|x| -> &'a str { &x })
+            .map(|x| shared_literal_or_expression(x, intern))
             .collect(),
         local_modules: intern
             .files
@@ -337,29 +343,54 @@ fn shared_struct_field<'a>(s: &'a ast::StructField, _intern: &'a Interner) -> St
     }
 }
 
+fn shared_literal_or_expression<'a>(
+    s: &'a ast::LiteralOrExpression,
+    _intern: &'a Interner,
+) -> LiteralOrExpression<'a> {
+    match s {
+        ast::LiteralOrExpression::Literal(lit) => LiteralOrExpression::Literal(lit.as_str()),
+        ast::LiteralOrExpression::Expression(expr) => LiteralOrExpression::Expression(expr),
+    }
+}
+
 trait Encode {
     fn encode(&self, dst: &mut Encoder);
 }
 
 struct Encoder {
+    slices: Vec<CustomSectionSlice>,
     dst: Vec<u8>,
 }
 
 impl Encoder {
     fn new() -> Encoder {
         Encoder {
-            dst: vec![0, 0, 0, 0],
+            slices: Vec::new(),
+            dst: Vec::new(),
         }
     }
 
-    fn finish(mut self) -> Vec<u8> {
-        let len = (self.dst.len() - 4) as u32;
-        self.dst[..4].copy_from_slice(&len.to_le_bytes()[..]);
-        self.dst
+    fn finish(self) -> Vec<CustomSectionSlice> {
+        let Self { mut slices, dst } = self;
+        if !dst.is_empty() {
+            slices.push(CustomSectionSlice::Literal(dst));
+        }
+        slices
     }
 
     fn byte(&mut self, byte: u8) {
         self.dst.push(byte);
+    }
+}
+
+impl Encode for syn::Expr {
+    fn encode(&self, dst: &mut Encoder) {
+        let tokens = self.to_token_stream();
+        if !dst.dst.is_empty() {
+            dst.slices
+                .push(CustomSectionSlice::Literal(std::mem::take(&mut dst.dst)));
+        }
+        dst.slices.push(CustomSectionSlice::Expression(tokens));
     }
 }
 

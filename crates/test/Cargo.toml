@@ -11,7 +11,7 @@ edition = "2018"
 console_error_panic_hook = '0.1'
 js-sys = { path = '../js-sys', version = '0.3.60' }
 scoped-tls = "1.0"
-wasm-bindgen = { path = '../..', version = '0.2.83' }
+wasm-bindgen = { path = '../..', version = '0.2.84' }
 wasm-bindgen-futures = { path = '../futures', version = '0.4.33' }
 wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.33' }
 

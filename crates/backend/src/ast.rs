@@ -21,7 +21,7 @@ pub struct Program {
     /// rust structs
     pub structs: Vec<Struct>,
     /// custom typescript sections to be included in the definition file
-    pub typescript_custom_sections: Vec<String>,
+    pub typescript_custom_sections: Vec<LiteralOrExpression>,
     /// Inline JS snippets
     pub inline_js: Vec<String>,
 }
@@ -450,4 +450,15 @@ impl Function {
         }
         Ok(name[4..].to_string())
     }
+}
+
+/// Either the value of a string literal, or the [`proc_macro2::TokenStream`]
+/// representation of a constant expression.
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone)]
+pub enum LiteralOrExpression {
+    /// Literal string.
+    Literal(String),
+    /// Expression computing a constant string.
+    Expression(syn::Expr),
 }

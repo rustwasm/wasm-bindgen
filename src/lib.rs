@@ -65,6 +65,7 @@ pub mod prelude {
 
 pub mod convert;
 pub mod describe;
+pub mod macro_support;
 
 mod cast;
 pub use crate::cast::{JsCast, JsObject};

@@ -389,6 +389,11 @@ impl<'a> Context<'a> {
             self.struct_(struct_)?;
         }
         for section in typescript_custom_sections {
+            let section = match section {
+                decode::LiteralOrExpression::Literal(section) => section,
+                decode::LiteralOrExpression::Expression(x) => x, // match *x {},
+            };
+
             self.aux.extra_typescript.push_str(section);
             self.aux.extra_typescript.push_str("\n\n");
         }

@@ -35,7 +35,7 @@ These tests assert that we have reasonable error messages that point to the
 right source spans when the `#[wasm_bindgen]` proc-macro is misused.
 
 ```
-cargo test -p ui-tests
+cargo test -p wasm-bindgen-macro
 ```
 
 ## The `js-sys` Tests

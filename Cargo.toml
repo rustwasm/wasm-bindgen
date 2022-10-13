@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen"
-version = "0.2.83"
+version = "0.2.84"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -35,7 +35,7 @@ strict-macro = ["wasm-bindgen-macro/strict-macro"]
 xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_generated_code"]
 
 [dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.83" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.84" }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 cfg-if = "1.0.0"

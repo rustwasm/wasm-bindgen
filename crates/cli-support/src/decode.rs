@@ -5,7 +5,7 @@ pub trait Decode<'src>: Sized {
 
     fn decode_all(mut data: &'src [u8]) -> Self {
         let ret = Self::decode(&mut data);
-        assert!(data.len() == 0);
+        assert_eq!(data.len(), 0);
         return ret;
     }
 }
@@ -152,6 +152,13 @@ macro_rules! decode_api {
         decode_enum!($name () $($variants)*);
         decode_api!($($rest)*);
     );
+}
+
+mod syn {
+    /// Alias `syn::Expr` to `str` when decoding; an expression is evaluated as
+    /// a Rust constant during compilation, so when we decode the buffer we can
+    /// expect a string instead.
+    pub type Expr = str;
 }
 
 wasm_bindgen_shared::shared_api!(decode_api);
