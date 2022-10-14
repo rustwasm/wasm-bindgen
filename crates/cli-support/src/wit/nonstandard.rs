@@ -329,8 +329,8 @@ pub enum AuxImport {
     /// shim. Each intrinsic has its own expected signature and implementation.
     Intrinsic(Intrinsic),
 
-    /// This is a function representing a resource by returning a link to it.
-    /// The supplied path is relative to the JS glue shim.
+    /// This is a function which returns a URL pointing to a specific file,
+    /// usually a JS snippet. The supplied path is relative to the JS glue shim.
     LinkTo(String),
 }
 

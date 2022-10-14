@@ -18,9 +18,15 @@ pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
     }
 }
 
-/// This macro adds a linked module by module, raw_module or inline_js attribute.
-/// It expands to a String containing a URL to that module. This URL can be used
-/// to create workers or worklets, for example:
+/// This macro takes a JS module as input and returns a URL that can be used to
+/// access it at runtime.
+///
+/// The module can be specified in a few ways:
+/// - You can use `inline_js = "..."` to create an inline JS file.
+/// - You can use `module = "/foo/bar"` to reference a file relative to the
+/// root of the crate the macro is invoked in.
+///
+/// The returned URL can be used for things like creating workers/worklets:
 /// ```no_run
 /// use web_sys::Worker;
 /// let worker = Worker::new(&wasm_bindgen::link_to!(module = "/src/worker.js"));
