@@ -315,8 +315,6 @@ jobs:
 
   dist_linux_aarch64_gnu:
     runs-on: ubuntu-latest
-    env:
-      CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
     steps:
     - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
@@ -324,6 +322,8 @@ jobs:
     - run: sudo apt update -y && sudo apt install gcc-aarch64-linux-gnu -y
     - run: |
         cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-unknown-linux-gnu --features vendored-openssl --release
+      env:
+        CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
     - uses: actions/upload-artifact@v2
       with:
         name: dist_linux_aarch64_gnu
