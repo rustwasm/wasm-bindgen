@@ -315,6 +315,8 @@ jobs:
 
   dist_linux_aarch64_gnu:
     runs-on: ubuntu-latest
+    env:
+      CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
     steps:
     - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
