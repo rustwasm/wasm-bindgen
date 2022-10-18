@@ -30,6 +30,6 @@ extern "C" {
 }
 
 #[wasm_bindgen_test]
-fn test_create_garbageexceptions() {
+fn test_create_garbage() {
     create_garbage()
 }
