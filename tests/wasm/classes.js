@@ -43,6 +43,9 @@ exports.js_exceptions = () => {
     let b = wasm.ClassesExceptions1.new();
     b.foo(b);
     assert.throws(() => b.bar(b), /recursive use of an object/);
+    // TODO: fails because it tries to borrow_mut, but the throw_str from the previous line doesn't clean up the
+    // RefMut so the object is left in a broken state
+    b.free();
 
     let c = wasm.ClassesExceptions1.new();
     let d = wasm.ClassesExceptions2.new();
