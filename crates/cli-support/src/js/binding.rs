@@ -716,8 +716,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
             let i = js.tmp();
-            js.prelude(&format!("var ptr{} = {}.ptr;", i, val));
-            js.prelude(&format!("{}.ptr = 0;", val));
+            js.prelude(&format!("var ptr{} = {}.__destroy_into_raw();", i, val));
             js.push(format!("ptr{}", i));
         }
 
@@ -736,8 +735,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.prelude(&format!("if (!isLikeNone({0})) {{", val));
             js.assert_class(&val, class);
             js.assert_not_moved(&val);
-            js.prelude(&format!("ptr{} = {}.ptr;", i, val));
-            js.prelude(&format!("{}.ptr = 0;", val));
+            js.prelude(&format!("ptr{} = {}.__destroy_into_raw();", i, val));
             js.prelude("}");
             js.push(format!("ptr{}", i));
         }
