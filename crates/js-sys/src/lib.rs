@@ -827,6 +827,9 @@ pub mod Atomics {
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn add(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = add)]
+        pub fn add_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
+
         /// The static `Atomics.and()` method computes a bitwise AND with a given
         /// value at a given position in the array, and returns the old value
         /// at that position.
@@ -836,6 +839,9 @@ pub mod Atomics {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/and)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn and(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = and)]
+        pub fn and_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.compareExchange()` method exchanges a given
         /// replacement value at a given position in the array, if a given expected
@@ -853,6 +859,14 @@ pub mod Atomics {
             replacement_value: i32,
         ) -> Result<i32, JsValue>;
 
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = compareExchange)]
+        pub fn compare_exchange_bigint(
+            typed_array: &JsValue,
+            index: u32,
+            expected_value: i64,
+            replacement_value: i64,
+        ) -> Result<i64, JsValue>;
+
         /// The static `Atomics.exchange()` method stores a given value at a given
         /// position in the array and returns the old value at that position.
         /// This atomic operation guarantees that no other write happens
@@ -861,6 +875,13 @@ pub mod Atomics {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/exchange)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn exchange(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = exchange)]
+        pub fn exchange_bigint(
+            typed_array: &JsValue,
+            index: u32,
+            value: i64,
+        ) -> Result<i64, JsValue>;
 
         /// The static `Atomics.isLockFree()` method is used to determine
         /// whether to use locks or atomic operations. It returns true,
@@ -877,6 +898,9 @@ pub mod Atomics {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/load)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn load(typed_array: &JsValue, index: u32) -> Result<i32, JsValue>;
+
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = load)]
+        pub fn load_bigint(typed_array: &JsValue, index: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.notify()` method notifies up some agents that
         /// are sleeping in the wait queue.
@@ -904,12 +928,18 @@ pub mod Atomics {
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn or(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = or)]
+        pub fn or_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
+
         /// The static `Atomics.store()` method stores a given value at the given
         /// position in the array and returns that value.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/store)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn store(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = store)]
+        pub fn store_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.sub()` method substracts a given value at a
         /// given position in the array and returns the old value at that position.
@@ -919,6 +949,9 @@ pub mod Atomics {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/sub)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn sub(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = sub)]
+        pub fn sub_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.wait()` method verifies that a given
         /// position in an `Int32Array` still contains a given value
@@ -931,6 +964,13 @@ pub mod Atomics {
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn wait(typed_array: &Int32Array, index: u32, value: i32) -> Result<JsString, JsValue>;
 
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        pub fn wait_bigint(
+            typed_array: &Int32Array,
+            index: u32,
+            value: i64,
+        ) -> Result<JsString, JsValue>;
+
         /// Like `wait()`, but with timeout
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
@@ -939,6 +979,14 @@ pub mod Atomics {
             typed_array: &Int32Array,
             index: u32,
             value: i32,
+            timeout: f64,
+        ) -> Result<JsString, JsValue>;
+
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        pub fn wait_with_timeout_bigint(
+            typed_array: &Int32Array,
+            index: u32,
+            value: i64,
             timeout: f64,
         ) -> Result<JsString, JsValue>;
 
@@ -951,6 +999,9 @@ pub mod Atomics {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/xor)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn xor(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = xor)]
+        pub fn xor_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
     }
 }
 
