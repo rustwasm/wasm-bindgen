@@ -177,7 +177,10 @@ pub fn run() -> Result<(), JsValue> {
             let h: &str = &parsed["main"]["humidity"].to_owned().to_string();
             let sun_r = ((&parsed["sys"]["sunrise"]).to_owned().as_f64().unwrap()) as u64;
             let sun_s = ((&parsed["sys"]["sunset"]).to_owned().as_f64().unwrap()) as u64;
-            temp_d.set_attribute("style", "display: block");
+
+            temp_d
+                .set_attribute("style", "display: block")
+                .expect("failed to set attr style");
             city.set_inner_html(&place);
             image.set_inner_html(&content);
             weather.set_inner_html(&parsed["weather"][0]["main"].to_owned().to_string());
@@ -206,9 +209,15 @@ fn create_div(document: &Document, id: &str, class: &str) -> Element {
 
 fn create_submit_box(document: &Document) -> Element {
     let submit_box: Element = document.create_element("input").unwrap();
-    submit_box.set_attribute("type", "button");
-    submit_box.set_attribute("value", "Search");
-    submit_box.set_attribute("name", "submit");
+    submit_box
+        .set_attribute("type", "button")
+        .expect("failed to set attr type to button");
+    submit_box
+        .set_attribute("value", "Search")
+        .expect("failed to set attr value to Search");
+    submit_box
+        .set_attribute("name", "submit")
+        .expect("failed to set attr name to submit");
     submit_box.set_id("submit");
     submit_box.set_class_name(" ReportStyles-bootstrapButton btn btn-info");
     submit_box
@@ -216,10 +225,19 @@ fn create_submit_box(document: &Document) -> Element {
 
 fn create_input_box(document: &Document) -> Element {
     let input_box = document.create_element("input").unwrap();
-    input_box.set_attribute("name", "name");
-    input_box.set_attribute("value", "Delhi");
-    input_box.set_attribute("type", "text");
-    input_box.set_attribute("placeholder", "Type city name here");
+    input_box
+        .set_attribute("name", "name")
+        .expect("failed to set attr name to name");
+    input_box.set_attribute("value", "Delhi").expect(
+        "
+    failed to set attr value to Delhi",
+    );
+    input_box
+        .set_attribute("type", "text")
+        .expect("failed to set attr type to text");
+    input_box
+        .set_attribute("placeholder", "Type city name here")
+        .expect("Failed to set attr placeholder to Type city name here");
     input_box.set_id("name");
     input_box.set_class_name("ReportStyles-search");
     input_box
