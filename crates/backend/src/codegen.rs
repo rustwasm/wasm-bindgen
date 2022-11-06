@@ -118,7 +118,7 @@ impl TryToTokens for ast::Program {
             const _: () = {
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
-                #[link_section = "__wasm_bindgen_unstable"]
+                #[link_section = "__WASM_BINDGEN_UNSTABLE"]
                 pub static _GENERATED: [u8; #generated_static_length] =
                     *#generated_static_value;
             };
@@ -137,7 +137,10 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
-        let free_fn_const = Ident::new(&format!("{}__const", free_fn), free_fn.span());
+        let free_fn_const = Ident::new(
+            &format!("{}__CONST", free_fn.to_string().to_uppercase()),
+            free_fn.span(),
+        );
         (quote! {
             #[automatically_derived]
             impl wasm_bindgen::describe::WasmDescribe for #name {
@@ -190,7 +193,7 @@ impl ToTokens for ast::Struct {
                 fn from(value: #name) -> Self {
                     let ptr = wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
 
-                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                    #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
                     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                     extern "C" {
                         fn #new_fn(ptr: u32) -> u32;
@@ -283,7 +286,10 @@ impl ToTokens for ast::StructField {
             quote! {}
         };
 
-        let getter_const = Ident::new(&format!("{}__const", getter), getter.span());
+        let getter_const = Ident::new(
+            &format!("{}__CONST", getter.to_string().to_uppercase()),
+            getter.span(),
+        );
 
         (quote! {
             #[automatically_derived]
@@ -321,7 +327,10 @@ impl ToTokens for ast::StructField {
             return;
         }
 
-        let setter_const = Ident::new(&format!("{}__const", setter), setter.span());
+        let setter_const = Ident::new(
+            &format!("{}__CONST", setter.to_string().to_uppercase()),
+            setter.span(),
+        );
 
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
@@ -354,7 +363,7 @@ impl TryToTokens for ast::Export {
         let mut args = vec![];
         let mut arg_conversions = vec![];
         let mut converted_arguments = vec![];
-        let ret = Ident::new("_ret", Span::call_site());
+        let ret = Ident::new("_RET", Span::call_site());
 
         let offset = if self.method_self.is_some() {
             args.push(quote! { me: u32 });
@@ -406,7 +415,7 @@ impl TryToTokens for ast::Export {
         for (i, arg) in self.function.arguments.iter().enumerate() {
             argtys.push(&arg.ty);
             let i = i + offset;
-            let ident = Ident::new(&format!("arg{}", i), Span::call_site());
+            let ident = Ident::new(&format!("ARG{}", i), Span::call_site());
             let ty = &arg.ty;
             match &*arg.ty {
                 syn::Type::Reference(syn::TypeReference {
@@ -530,8 +539,10 @@ impl TryToTokens for ast::Export {
             quote! {}
         };
 
-        let generated_name_const =
-            Ident::new(&format!("{}__const", generated_name), generated_name.span());
+        let generated_name_const = Ident::new(
+            &format!("{}__CONST", generated_name.to_string().to_uppercase()),
+            generated_name.span(),
+        );
         (quote! {
             #[automatically_derived]
             const #generated_name_const: () = {
@@ -606,7 +617,10 @@ impl ToTokens for ast::ImportType {
             None => "",
             Some(comment) => comment,
         };
-        let const_name = format!("__wbg_generated_const_{}", rust_name);
+        let const_name = format!(
+            "__WBG_GENERATED_CONST_{}",
+            rust_name.to_string().to_uppercase()
+        );
         let const_name = Ident::new(&const_name, Span::call_site());
         let instanceof_shim = Ident::new(&self.instanceof_shim, Span::call_site());
 
@@ -759,7 +773,7 @@ impl ToTokens for ast::ImportType {
 
                 impl JsCast for #rust_name {
                     fn instanceof(val: &JsValue) -> bool {
-                        #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                        #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
                         #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                         extern "C" {
                             fn #instanceof_shim(val: u32) -> u32;
@@ -974,7 +988,7 @@ impl TryToTokens for ast::ImportFunction {
         let mut abi_arguments = Vec::new();
         let mut arg_conversions = Vec::new();
         let mut arguments = Vec::new();
-        let ret_ident = Ident::new("_ret", Span::call_site());
+        let ret_ident = Ident::new("_RET", Span::call_site());
 
         for (i, arg) in self.function.arguments.iter().enumerate() {
             let ty = &arg.ty;
@@ -985,7 +999,7 @@ impl TryToTokens for ast::ImportFunction {
                     subpat: None,
                     ..
                 }) => ident.clone(),
-                syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{}", i), Span::call_site()),
+                syn::Pat::Wild(_) => syn::Ident::new(&format!("__GENARG_{}", i), Span::call_site()),
                 _ => bail_span!(
                     arg.pat,
                     "unsupported pattern in #[wasm_bindgen] imported function",
@@ -1104,7 +1118,7 @@ impl TryToTokens for ast::ImportFunction {
             quote! {
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 #(#attrs)*
-                #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
                 extern "C" {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
@@ -1271,7 +1285,7 @@ impl ToTokens for ast::ImportStatic {
             #[automatically_derived]
             #vis static #name: wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
-                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                    #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
                     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                     extern "C" {
                         fn #shim_name() -> <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi;
@@ -1334,9 +1348,15 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             return;
         }
 
-        let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
+        let name = Ident::new(
+            &format!("__WBINDGEN_DESCRIBE_{}", ident.to_string().to_uppercase()),
+            ident.span(),
+        );
         let const_name = Ident::new(
-            &format!("__wbindgen_const_describe_{}", ident),
+            &format!(
+                "__WBINDGEN_CONST_DESCRIBE_{}",
+                ident.to_string().to_uppercase()
+            ),
             ident.span(),
         );
         let inner = &self.inner;

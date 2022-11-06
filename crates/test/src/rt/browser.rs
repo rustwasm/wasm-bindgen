@@ -17,7 +17,7 @@ pub struct Browser {
 #[wasm_bindgen]
 extern "C" {
     type HTMLDocument;
-    static document: HTMLDocument;
+    static DOCUMENT: HTMLDocument;
     #[wasm_bindgen(method, structural)]
     fn getElementById(this: &HTMLDocument, id: &str) -> Element;
 
@@ -36,7 +36,7 @@ impl Browser {
     /// Creates a new instance of `Browser`, assuming that its APIs will work
     /// (requires `Node::new()` to have return `None` first).
     pub fn new() -> Browser {
-        let pre = document.getElementById("output");
+        let pre = DOCUMENT.getElementById("output");
         pre.set_text_content("");
         Browser { pre }
     }
