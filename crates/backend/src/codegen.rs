@@ -1,6 +1,5 @@
 use crate::ast;
 use crate::encode;
-use crate::util::ShortHash;
 use crate::Diagnostic;
 use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
