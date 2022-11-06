@@ -16,7 +16,10 @@ pub fn create_gui(params: &'static Params, ctx: AudioContext) {
     let listener = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
         params.set_frequency(frequency.value().parse().unwrap());
         params.set_volume(volume.value().parse().unwrap());
-        ctx.resume().unwrap();
+        #[allow(unused_must_use)]
+        {
+            ctx.resume().unwrap();
+        }
     })
     .into_js_value();
 
