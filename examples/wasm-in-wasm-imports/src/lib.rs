@@ -13,12 +13,10 @@ extern "C" {
 
 }
 
-#[macro_use]
 macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
-#[macro_use]
 macro_rules! console_error {
     ($($t:tt)*) => (error(&format_args!($($t)*).to_string()))
 }
