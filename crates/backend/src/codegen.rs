@@ -138,7 +138,7 @@ impl ToTokens for ast::Struct {
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         let free_fn_const = Ident::new(
-            &format!("{}__CONST", free_fn.to_string().to_uppercase()),
+            &format!("{}_CONST", free_fn.to_string().to_uppercase()),
             free_fn.span(),
         );
         (quote! {
@@ -287,7 +287,7 @@ impl ToTokens for ast::StructField {
         };
 
         let getter_const = Ident::new(
-            &format!("{}__CONST", getter.to_string().to_uppercase()),
+            &format!("{}_CONST", getter.to_string().to_uppercase()),
             getter.span(),
         );
 
@@ -328,7 +328,7 @@ impl ToTokens for ast::StructField {
         }
 
         let setter_const = Ident::new(
-            &format!("{}__CONST", setter.to_string().to_uppercase()),
+            &format!("{}_CONST", setter.to_string().to_uppercase()),
             setter.span(),
         );
 
@@ -540,7 +540,7 @@ impl TryToTokens for ast::Export {
         };
 
         let generated_name_const = Ident::new(
-            &format!("{}__CONST", generated_name.to_string().to_uppercase()),
+            &format!("{}_CONST", generated_name.to_string().to_uppercase()),
             generated_name.span(),
         );
         (quote! {
