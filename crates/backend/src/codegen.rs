@@ -118,7 +118,7 @@ impl TryToTokens for ast::Program {
             const _: () = {
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
-                #[link_section = "__WASM_BINDGEN_UNSTABLE"]
+                #[link_section = "__wasm_bindgen_unstable"]
                 pub static _GENERATED: [u8; #generated_static_length] =
                     *#generated_static_value;
             };
