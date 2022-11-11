@@ -193,7 +193,7 @@ impl ToTokens for ast::Struct {
                 fn from(value: #name) -> Self {
                     let ptr = wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
 
-                    #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
+                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
                     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                     extern "C" {
                         fn #new_fn(ptr: u32) -> u32;
@@ -773,7 +773,7 @@ impl ToTokens for ast::ImportType {
 
                 impl JsCast for #rust_name {
                     fn instanceof(val: &JsValue) -> bool {
-                        #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
+                        #[link(wasm_import_module = "__wbindgen_placeholder__")]
                         #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                         extern "C" {
                             fn #instanceof_shim(val: u32) -> u32;
@@ -1118,7 +1118,7 @@ impl TryToTokens for ast::ImportFunction {
             quote! {
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 #(#attrs)*
-                #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
+                #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 extern "C" {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
@@ -1285,7 +1285,7 @@ impl ToTokens for ast::ImportStatic {
             #[automatically_derived]
             #vis static #name: wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
-                    #[link(wasm_import_module = "__WBINDGEN_PLACEHOLDER__")]
+                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
                     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                     extern "C" {
                         fn #shim_name() -> <#ty as wasm_bindgen::convert::FromWasmAbi>::Abi;
