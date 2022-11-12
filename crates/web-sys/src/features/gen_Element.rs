@@ -663,15 +663,18 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
     pub fn webkit_matches_selector(this: &Element, selector: &str) -> Result<bool, JsValue>;
     #[cfg(feature = "Animation")]
-    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
+    # [wasm_bindgen (catch , method , structural , js_class = "Element" , js_name = animate)]
     #[doc = "The `animate()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`, `Element`*"]
-    pub fn animate(this: &Element, keyframes: Option<&::js_sys::Object>) -> Animation;
+    pub fn animate(
+        this: &Element,
+        keyframes: Option<&::js_sys::Object>,
+    ) -> Result<Animation, JsValue>;
     #[cfg(feature = "Animation")]
-    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
+    # [wasm_bindgen (catch , method , structural , js_class = "Element" , js_name = animate)]
     #[doc = "The `animate()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
@@ -681,9 +684,9 @@ extern "C" {
         this: &Element,
         keyframes: Option<&::js_sys::Object>,
         options: f64,
-    ) -> Animation;
+    ) -> Result<Animation, JsValue>;
     #[cfg(all(feature = "Animation", feature = "KeyframeAnimationOptions",))]
-    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
+    # [wasm_bindgen (catch , method , structural , js_class = "Element" , js_name = animate)]
     #[doc = "The `animate()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
@@ -693,19 +696,14 @@ extern "C" {
         this: &Element,
         keyframes: Option<&::js_sys::Object>,
         options: &KeyframeAnimationOptions,
-    ) -> Animation;
-    #[cfg(web_sys_unstable_apis)]
+    ) -> Result<Animation, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = getAnimations)]
     #[doc = "The `getAnimations()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn get_animations(this: &Element) -> ::js_sys::Array;
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GetAnimationsOptions")]
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = getAnimations)]
     #[doc = "The `getAnimations()` method."]
@@ -713,9 +711,6 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `GetAnimationsOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn get_animations_with_options(
         this: &Element,
         options: &GetAnimationsOptions,
