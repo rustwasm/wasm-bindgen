@@ -2362,6 +2362,12 @@ mod gen_Geolocation;
 #[cfg(feature = "Geolocation")]
 pub use gen_Geolocation::*;
 
+#[cfg(feature = "GetAnimationsOptions")]
+#[allow(non_snake_case)]
+mod gen_GetAnimationsOptions;
+#[cfg(feature = "GetAnimationsOptions")]
+pub use gen_GetAnimationsOptions::*;
+
 #[cfg(feature = "GetNotificationOptions")]
 #[allow(non_snake_case)]
 mod gen_GetNotificationOptions;
@@ -4155,6 +4161,12 @@ pub use gen_KeyboardEvent::*;
 mod gen_KeyboardEventInit;
 #[cfg(feature = "KeyboardEventInit")]
 pub use gen_KeyboardEventInit::*;
+
+#[cfg(feature = "KeyframeAnimationOptions")]
+#[allow(non_snake_case)]
+mod gen_KeyframeAnimationOptions;
+#[cfg(feature = "KeyframeAnimationOptions")]
+pub use gen_KeyframeAnimationOptions::*;
 
 #[cfg(feature = "KeyframeEffect")]
 #[allow(non_snake_case)]
