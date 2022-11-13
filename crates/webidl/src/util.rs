@@ -11,7 +11,7 @@ use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident};
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
 use weedle::common::Identifier;
 use weedle::literal::{ConstValue as ConstValueLit, FloatLit, IntegerLit};
-use weedle::types::{NonAnyType, SingleType};
+use weedle::types::{MayBeNull, NonAnyType, SingleType};
 
 use crate::constants::IMMUTABLE_SLICE_WHITELIST;
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
@@ -670,4 +670,47 @@ pub fn get_cfg_features(options: &Options, features: &BTreeSet<String>) -> Optio
             Some(syn::parse_quote!( #[cfg(all(#features))] ))
         }
     }
+}
+
+pub fn nullable(mut ty: weedle::types::Type) -> weedle::types::Type {
+    use weedle::types::Type;
+
+    fn make_nullable<T>(mb: &mut MayBeNull<T>) {
+        mb.q_mark = Some(weedle::term::QMark);
+    }
+
+    match &mut ty {
+        Type::Single(SingleType::Any(_) | SingleType::NonAny(NonAnyType::Promise(_))) => (),
+        Type::Single(SingleType::NonAny(NonAnyType::Integer(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::FloatingPoint(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Boolean(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Byte(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Octet(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::ByteString(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::DOMString(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::USVString(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Sequence(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Object(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Symbol(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Error(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::ArrayBuffer(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::DataView(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Int8Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Int16Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Int32Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Uint8Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Uint16Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Uint32Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Uint8ClampedArray(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Float32Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Float64Array(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::ArrayBufferView(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::BufferSource(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::FrozenArrayType(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::RecordType(mb))) => make_nullable(mb),
+        Type::Single(SingleType::NonAny(NonAnyType::Identifier(mb))) => make_nullable(mb),
+        Type::Union(mb) => make_nullable(mb),
+    }
+
+    ty
 }

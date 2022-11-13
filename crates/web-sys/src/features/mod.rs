@@ -4204,6 +4204,18 @@ mod gen_Location;
 #[cfg(feature = "Location")]
 pub use gen_Location::*;
 
+#[cfg(feature = "MapLikeIterator")]
+#[allow(non_snake_case)]
+mod gen_MapLikeIterator;
+#[cfg(feature = "MapLikeIterator")]
+pub use gen_MapLikeIterator::*;
+
+#[cfg(feature = "MapLikeIteratorResult")]
+#[allow(non_snake_case)]
+mod gen_MapLikeIteratorResult;
+#[cfg(feature = "MapLikeIteratorResult")]
+pub use gen_MapLikeIteratorResult::*;
+
 #[cfg(feature = "MediaCapabilities")]
 #[allow(non_snake_case)]
 mod gen_MediaCapabilities;
