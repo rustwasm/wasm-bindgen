@@ -1348,10 +1348,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             return;
         }
 
-        let name = Ident::new(
-            &format!("__WBINDGEN_DESCRIBE_{}", ident.to_string().to_uppercase()),
-            ident.span(),
-        );
+        let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
         let const_name = Ident::new(
             &format!(
                 "__WBINDGEN_CONST_DESCRIBE_{}",
