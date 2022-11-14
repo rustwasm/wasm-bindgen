@@ -23,6 +23,19 @@ extern "C" {
     #[wasm_bindgen(method)]
     fn assert_internal_string(this: &Construct, s: &str);
 
+    #[wasm_bindgen(method, js_name = "kebab-case")]
+    fn kebab_case(this: &Construct) -> u32;
+    #[wasm_bindgen(method, getter, js_name = "kebab-case-val")]
+    fn kebab_case_val(this: &Construct) -> u32;
+    #[wasm_bindgen(method, setter, js_name = "kebab-case-val")]
+    fn set_kebab_case_val(this: &Construct, val: u32);
+    #[wasm_bindgen(static_method_of = Construct, js_name = "static-kebab-case")]
+    fn static_kebab_case() -> u32;
+    #[wasm_bindgen(static_method_of = Construct, getter, js_name = "static-kebab-case-val")]
+    fn static_kebab_case_val() -> u32;
+    #[wasm_bindgen(static_method_of = Construct, setter, js_name = "static-kebab-case-val")]
+    fn set_static_kebab_case_val(val: u32);
+
     type NewConstructors;
     #[wasm_bindgen(constructor)]
     fn new(arg: i32) -> NewConstructors;
@@ -137,6 +150,14 @@ fn construct() {
     assert_eq!(f.clone().get_internal_string(), "this");
     f.append_to_internal_string(" foo");
     f.assert_internal_string("this foo");
+
+    assert_eq!(f.kebab_case(), 42);
+    f.set_kebab_case_val(0);
+    // our setter does nothing so this is 42 anyway
+    assert_eq!(f.kebab_case_val(), 42);
+    assert_eq!(Construct::static_kebab_case(), 42);
+    Construct::set_static_kebab_case_val(0);
+    assert_eq!(Construct::static_kebab_case_val(), 42);
 }
 
 #[wasm_bindgen_test]

@@ -81,6 +81,12 @@ extern "C" {
 
     #[wasm_bindgen(js_namespace = same_js_namespace_from_module)]
     fn func_from_module_1_same_js_namespace(s: i32) -> i32;
+
+    #[wasm_bindgen(js_name = "kebab-case")]
+    fn kebab_case() -> u32;
+
+    #[wasm_bindgen(js_name = "\"string'literal\nbreakers\r")]
+    fn string_literal_breakers() -> u32;
 }
 
 #[wasm_bindgen(module = "tests/wasm/imports_2.js")]
@@ -320,4 +326,10 @@ fn func_from_two_modules_same_js_name() {
 fn func_from_two_modules_same_js_namespace() {
     assert_eq!(func_from_module_1_same_js_namespace(2), 10);
     assert_eq!(func_from_module_2_same_js_namespace(2), 12);
+}
+
+#[wasm_bindgen_test]
+fn invalid_idents() {
+    assert_eq!(kebab_case(), 42);
+    assert_eq!(string_literal_breakers(), 42);
 }

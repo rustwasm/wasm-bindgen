@@ -2951,7 +2951,12 @@ impl<'a> Context<'a> {
 
             AuxImport::ValueWithThis(class, name) => {
                 let class = self.import_name(class)?;
-                Ok(format!("{}.{}({})", class, name, variadic_args(&args)?))
+                Ok(format!(
+                    "{}{}({})",
+                    class,
+                    property_accessor(name),
+                    variadic_args(&args)?
+                ))
             }
 
             AuxImport::Instanceof(js) => {
@@ -3023,14 +3028,19 @@ impl<'a> Context<'a> {
                     Some(pair) => pair,
                     None => bail!("structural method calls must have at least one argument"),
                 };
-                Ok(format!("{}.{}({})", receiver, name, variadic_args(args)?))
+                Ok(format!(
+                    "{}{}({})",
+                    receiver,
+                    property_accessor(name),
+                    variadic_args(args)?
+                ))
             }
 
             AuxImport::StructuralGetter(field) => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
-                Ok(format!("{}.{}", args[0], field))
+                Ok(format!("{}{}", args[0], property_accessor(field)))
             }
 
             AuxImport::StructuralClassGetter(class, field) => {
@@ -3038,14 +3048,19 @@ impl<'a> Context<'a> {
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
                 let class = self.import_name(class)?;
-                Ok(format!("{}.{}", class, field))
+                Ok(format!("{}{}", class, property_accessor(field)))
             }
 
             AuxImport::StructuralSetter(field) => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 2);
-                Ok(format!("{}.{} = {}", args[0], field, args[1]))
+                Ok(format!(
+                    "{}{} = {}",
+                    args[0],
+                    property_accessor(field),
+                    args[1]
+                ))
             }
 
             AuxImport::StructuralClassSetter(class, field) => {
@@ -3053,7 +3068,12 @@ impl<'a> Context<'a> {
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let class = self.import_name(class)?;
-                Ok(format!("{}.{} = {}", class, field, args[0]))
+                Ok(format!(
+                    "{}{} = {}",
+                    class,
+                    property_accessor(field),
+                    args[0]
+                ))
             }
 
             AuxImport::IndexingGetterOfClass(class) => {
@@ -3910,6 +3930,62 @@ fn require_class<'a>(
         .expect("classes already written")
         .entry(name.to_string())
         .or_insert_with(ExportedClass::default)
+}
+
+/// Returns whether a character has the Unicode `ID_Start` properly.
+///
+/// This is only ever-so-slightly different from `XID_Start` in a few edge
+/// cases, so we handle those edge cases manually and delegate everything else
+/// to `unicode-ident`.
+fn is_id_start(c: char) -> bool {
+    match c {
+        '\u{037A}' | '\u{0E33}' | '\u{0EB3}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}'
+        | '\u{FC5F}' | '\u{FC60}' | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}'
+        | '\u{FDFB}' | '\u{FE70}' | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}'
+        | '\u{FE7A}' | '\u{FE7C}' | '\u{FE7E}' | '\u{FF9E}' | '\u{FF9F}' => true,
+        _ => unicode_ident::is_xid_start(c),
+    }
+}
+
+/// Returns whether a character has the Unicode `ID_Continue` properly.
+///
+/// This is only ever-so-slightly different from `XID_Continue` in a few edge
+/// cases, so we handle those edge cases manually and delegate everything else
+/// to `unicode-ident`.
+fn is_id_continue(c: char) -> bool {
+    match c {
+        '\u{037A}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}' | '\u{FC5F}' | '\u{FC60}'
+        | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}' | '\u{FDFB}' | '\u{FE70}'
+        | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}' | '\u{FE7A}' | '\u{FE7C}'
+        | '\u{FE7E}' => true,
+        _ => unicode_ident::is_xid_continue(c),
+    }
+}
+
+/// Returns whether a string is a valid JavaScript identifier.
+/// Defined at https://tc39.es/ecma262/#prod-IdentifierName.
+fn is_valid_ident(name: &str) -> bool {
+    name.chars().enumerate().all(|(i, char)| {
+        if i == 0 {
+            is_id_start(char) || char == '$' || char == '_'
+        } else {
+            is_id_continue(char) || char == '$' || char == '\u{200C}' || char == '\u{200D}'
+        }
+    })
+}
+
+/// Returns a string to tack on to the end of an expression to access a
+/// property named `name` of the object that expression resolves to.
+///
+/// In most cases, this is `.<name>`, generating accesses like `foo.bar`.
+/// However, if `name` is not a valid JavaScript identifier, it becomes
+/// `["<name>"]` instead, creating accesses like `foo["kebab-case"]`.
+fn property_accessor(name: &str) -> String {
+    if is_valid_ident(name) {
+        format!(".{name}")
+    } else {
+        format!("[\"{}\"]", name.escape_default())
+    }
 }
 
 impl ExportedClass {

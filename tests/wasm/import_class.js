@@ -25,6 +25,26 @@ class Construct {
   assert_internal_string(s) {
     assert.strictEqual(this.internal_string, s);
   }
+
+  ["kebab-case"]() {
+    return 42;
+  }
+  
+  get ["kebab-case-val"]() {
+    return 42;
+  }
+
+  set ["kebab-case-val"](val) {}
+
+  static ["static-kebab-case"]() {
+    return 42;
+  }
+
+  static get ["static-kebab-case-val"]() {
+    return 42;
+  }
+
+  static set ["static-kebab-case-val"](val) {}
 }
 
 Construct.internal_string = '';
