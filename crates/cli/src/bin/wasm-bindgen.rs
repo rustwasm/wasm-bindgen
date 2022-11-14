@@ -31,6 +31,7 @@ Options:
     --omit-imports               Don't emit imports in generated JavaScript
     --debug                      Include otherwise-extraneous debug checks in output
     --no-demangle                Don't demangle Rust symbol names
+    --keep-lld-exports           Keep exports synthesized by LLD
     --keep-debug                 Keep debug sections in wasm files
     --remove-name-section        Remove the debugging `name` section of the file
     --remove-producers-section   Remove the telemetry `producers` section
@@ -64,6 +65,7 @@ struct Args {
     flag_remove_producers_section: bool,
     flag_weak_refs: Option<bool>,
     flag_reference_types: Option<bool>,
+    flag_keep_lld_exports: bool,
     flag_keep_debug: bool,
     flag_encode_into: Option<String>,
     flag_target: Option<String>,
@@ -115,6 +117,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .no_modules(args.flag_no_modules)?
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
+        .keep_lld_exports(args.flag_keep_lld_exports)
         .keep_debug(args.flag_keep_debug)
         .remove_name_section(args.flag_remove_name_section)
         .remove_producers_section(args.flag_remove_producers_section)
