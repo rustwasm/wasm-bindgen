@@ -2951,7 +2951,12 @@ impl<'a> Context<'a> {
 
             AuxImport::ValueWithThis(class, name) => {
                 let class = self.import_name(class)?;
-                Ok(format!("{}{}({})", class, property_accessor(name), variadic_args(&args)?))
+                Ok(format!(
+                    "{}{}({})",
+                    class,
+                    property_accessor(name),
+                    variadic_args(&args)?
+                ))
             }
 
             AuxImport::Instanceof(js) => {
@@ -3023,7 +3028,12 @@ impl<'a> Context<'a> {
                     Some(pair) => pair,
                     None => bail!("structural method calls must have at least one argument"),
                 };
-                Ok(format!("{}{}({})", receiver, property_accessor(name), variadic_args(args)?))
+                Ok(format!(
+                    "{}{}({})",
+                    receiver,
+                    property_accessor(name),
+                    variadic_args(args)?
+                ))
             }
 
             AuxImport::StructuralGetter(field) => {
@@ -3045,7 +3055,12 @@ impl<'a> Context<'a> {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 2);
-                Ok(format!("{}{} = {}", args[0], property_accessor(field), args[1]))
+                Ok(format!(
+                    "{}{} = {}",
+                    args[0],
+                    property_accessor(field),
+                    args[1]
+                ))
             }
 
             AuxImport::StructuralClassSetter(class, field) => {
@@ -3053,7 +3068,12 @@ impl<'a> Context<'a> {
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let class = self.import_name(class)?;
-                Ok(format!("{}{} = {}", class, property_accessor(field), args[0]))
+                Ok(format!(
+                    "{}{} = {}",
+                    class,
+                    property_accessor(field),
+                    args[0]
+                ))
             }
 
             AuxImport::IndexingGetterOfClass(class) => {
