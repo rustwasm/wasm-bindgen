@@ -30,6 +30,7 @@ pub struct Bindgen {
     typescript: bool,
     omit_imports: bool,
     demangle: bool,
+    keep_lld_exports: bool,
     keep_debug: bool,
     remove_name_section: bool,
     remove_producers_section: bool,
@@ -107,6 +108,7 @@ impl Bindgen {
             typescript: false,
             omit_imports: false,
             demangle: true,
+            keep_lld_exports: false,
             keep_debug: false,
             remove_name_section: false,
             remove_producers_section: false,
@@ -267,6 +269,11 @@ impl Bindgen {
         self
     }
 
+    pub fn keep_lld_exports(&mut self, keep_lld_exports: bool) -> &mut Bindgen {
+        self.keep_lld_exports = keep_lld_exports;
+        self
+    }
+
     pub fn keep_debug(&mut self, keep_debug: bool) -> &mut Bindgen {
         self.keep_debug = keep_debug;
         self
@@ -340,7 +347,9 @@ impl Bindgen {
         if self.demangle {
             demangle(&mut module);
         }
-        unexported_unused_lld_things(&mut module);
+        if !self.keep_lld_exports {
+            unexported_unused_lld_things(&mut module);
+        }
 
         // We're making quite a few changes, list ourselves as a producer.
         module
