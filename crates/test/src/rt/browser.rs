@@ -17,6 +17,7 @@ pub struct Browser {
 #[wasm_bindgen]
 extern "C" {
     type HTMLDocument;
+    #[wasm_bindgen(js_name = document)]
     static DOCUMENT: HTMLDocument;
     #[wasm_bindgen(method, structural)]
     fn getElementById(this: &HTMLDocument, id: &str) -> Element;
