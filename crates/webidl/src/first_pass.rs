@@ -786,7 +786,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
                         q_mark: None,
                     },
                 )))),
-                &THROWS_ATTR,
+                &None,
                 false,
             );
         }

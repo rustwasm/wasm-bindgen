@@ -39,7 +39,7 @@ macro_rules! read_test_suite {
             let entries = maplike.entries();
 
             loop {
-                let entry = entries.next().unwrap();
+                let entry = entries.next();
 
                 if entry.done() {
                     break;
@@ -65,7 +65,7 @@ macro_rules! read_test_suite {
             let keys = maplike.keys();
 
             loop {
-                let key = keys.next().unwrap();
+                let key = keys.next();
 
                 if key.done() {
                     break;
@@ -83,7 +83,7 @@ macro_rules! read_test_suite {
             let values = maplike.values();
 
             loop {
-                let value = values.next().unwrap();
+                let value = values.next();
 
                 if value.done() {
                     break;

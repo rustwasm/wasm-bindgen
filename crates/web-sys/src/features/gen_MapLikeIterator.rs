@@ -12,11 +12,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MapLikeIterator`*"]
     pub type MapLikeIterator;
     #[cfg(feature = "MapLikeIteratorResult")]
-    # [wasm_bindgen (catch , method , structural , js_class = "MapLikeIterator" , js_name = next)]
+    # [wasm_bindgen (method , structural , js_class = "MapLikeIterator" , js_name = next)]
     #[doc = "The `next()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MapLikeIterator/next)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MapLikeIterator`, `MapLikeIteratorResult`*"]
-    pub fn next(this: &MapLikeIterator) -> Result<MapLikeIteratorResult, JsValue>;
+    pub fn next(this: &MapLikeIterator) -> MapLikeIteratorResult;
 }
