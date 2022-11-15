@@ -70,6 +70,7 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) includes: BTreeMap<&'src str, BTreeSet<&'src str>>,
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
     pub(crate) callbacks: BTreeSet<&'src str>,
+    pub(crate) iterators: BTreeSet<&'src str>,
     pub(crate) callback_interfaces: BTreeMap<&'src str, CallbackInterfaceData<'src>>,
 }
 
@@ -716,80 +717,8 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
         // TODO: iterators could have stronger types by generating specialised interfaces for each
         //       maplike/setlike. Right now, `value` is always `any`.
 
-        // [NoInterfaceObject]
-        // interface MapLikeIteratorResult {
-        //   readonly attribute any value;
-        //   readonly attribute boolean done;
-        // }
-        record
-            .interfaces
-            .entry("MapLikeIteratorResult")
-            .or_insert_with(|| InterfaceData {
-                attributes: vec![
-                    AttributeInterfaceData {
-                        definition: &AttributeInterfaceMember {
-                            attributes: None,
-                            modifier: None,
-                            readonly: None,
-                            attribute: term!(attribute),
-                            type_: AttributedType {
-                                attributes: None,
-                                type_: Type::Single(SingleType::Any(term!(any))),
-                            },
-                            identifier: Identifier("value"),
-                            semi_colon: term!(;),
-                        },
-                        stability: ApiStability::Stable,
-                    },
-                    AttributeInterfaceData {
-                        definition: &AttributeInterfaceMember {
-                            attributes: None,
-                            modifier: None,
-                            readonly: None,
-                            attribute: term!(attribute),
-                            type_: AttributedType {
-                                attributes: None,
-                                type_: Type::Single(SingleType::NonAny(NonAnyType::Boolean(
-                                    MayBeNull {
-                                        type_: term!(boolean),
-                                        q_mark: None,
-                                    },
-                                ))),
-                            },
-                            identifier: Identifier("done"),
-                            semi_colon: term!(;),
-                        },
-                        stability: ApiStability::Stable,
-                    },
-                ],
-                ..Default::default()
-            });
-
-        // [NoInterfaceObject]
-        // interface MapLikeIterator {
-        //   [Throws] MapLikeIteratorResult next();
-        // };
-        if !record.interfaces.contains_key("MapLikeIterator") {
-            record
-                .interfaces
-                .insert("MapLikeIterator", Default::default());
-
-            first_pass_operation(
-                record,
-                FirstPassOperationType::Interface,
-                "MapLikeIterator",
-                &[OperationId::Operation(Some("next"))],
-                &[],
-                &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
-                    MayBeNull {
-                        type_: Identifier("MapLikeIteratorResult"),
-                        q_mark: None,
-                    },
-                )))),
-                &None,
-                false,
-            );
-        }
+        // declare the iterator interface
+        record.iterators.insert("MapLikeIterator");
 
         // [NewObject] MapLikeIterator entries();
         first_pass_operation(

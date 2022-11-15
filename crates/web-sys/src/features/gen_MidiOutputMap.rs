@@ -18,14 +18,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOutputMap`*"]
     pub fn size(this: &MidiOutputMap) -> u32;
-    #[cfg(feature = "MapLikeIterator")]
+    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "MIDIOutputMap" , js_name = entries)]
     #[doc = "The `entries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIOutputMap/entries)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MapLikeIterator`, `MidiOutputMap`*"]
-    pub fn entries(this: &MidiOutputMap) -> MapLikeIterator;
+    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `MidiOutputMap`*"]
+    pub fn entries(this: &MidiOutputMap) -> ::js_sys::Iterator;
     # [wasm_bindgen (catch , method , structural , js_class = "MIDIOutputMap" , js_name = forEach)]
     #[doc = "The `forEach()` method."]
     #[doc = ""]
@@ -48,20 +48,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOutputMap`*"]
     pub fn has(this: &MidiOutputMap, key: &str) -> bool;
-    #[cfg(feature = "MapLikeIterator")]
+    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "MIDIOutputMap" , js_name = keys)]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIOutputMap/keys)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MapLikeIterator`, `MidiOutputMap`*"]
-    pub fn keys(this: &MidiOutputMap) -> MapLikeIterator;
-    #[cfg(feature = "MapLikeIterator")]
+    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `MidiOutputMap`*"]
+    pub fn keys(this: &MidiOutputMap) -> ::js_sys::Iterator;
+    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "MIDIOutputMap" , js_name = values)]
     #[doc = "The `values()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIOutputMap/values)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MapLikeIterator`, `MidiOutputMap`*"]
-    pub fn values(this: &MidiOutputMap) -> MapLikeIterator;
+    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `MidiOutputMap`*"]
+    pub fn values(this: &MidiOutputMap) -> ::js_sys::Iterator;
 }

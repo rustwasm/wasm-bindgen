@@ -36,16 +36,10 @@ macro_rules! read_test_suite {
             maplike.for_each(cb.as_ref().unchecked_ref()).unwrap();
 
             let mut entries_vec = vec![];
-            let entries = maplike.entries();
 
-            loop {
-                let entry = entries.next();
-
-                if entry.done() {
-                    break;
-                }
-
-                let pair = entry.value().dyn_into::<js_sys::Array>().unwrap();
+            for entry in maplike.entries().into_iter() {
+                let entry = entry.unwrap();
+                let pair = entry.dyn_into::<js_sys::Array>().unwrap();
                 let key = pair.get(0).as_string().unwrap();
                 let value = pair.get(1).as_f64().unwrap() as u32;
 
@@ -62,16 +56,10 @@ macro_rules! read_test_suite {
             );
 
             let mut keys_vec = vec![];
-            let keys = maplike.keys();
 
-            loop {
-                let key = keys.next();
-
-                if key.done() {
-                    break;
-                }
-
-                keys_vec.push(key.value().as_string().unwrap());
+            for key in maplike.keys().into_iter() {
+                let key = key.unwrap();
+                keys_vec.push(key.as_string().unwrap());
             }
 
             assert_eq!(
@@ -80,16 +68,10 @@ macro_rules! read_test_suite {
             );
 
             let mut values_vec = vec![];
-            let values = maplike.values();
 
-            loop {
-                let value = values.next();
-
-                if value.done() {
-                    break;
-                }
-
-                values_vec.push(value.value().as_f64().unwrap() as u32);
+            for value in maplike.values().into_iter() {
+                let value = value.unwrap();
+                values_vec.push(value.as_f64().unwrap() as u32);
             }
 
             assert_eq!(&values_vec, &[1, 2, 3]);

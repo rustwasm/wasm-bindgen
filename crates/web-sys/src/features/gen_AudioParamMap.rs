@@ -18,14 +18,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`*"]
     pub fn size(this: &AudioParamMap) -> u32;
-    #[cfg(feature = "MapLikeIterator")]
+    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "AudioParamMap" , js_name = entries)]
     #[doc = "The `entries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioParamMap/entries)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`, `MapLikeIterator`*"]
-    pub fn entries(this: &AudioParamMap) -> MapLikeIterator;
+    #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`, `Iterator`*"]
+    pub fn entries(this: &AudioParamMap) -> ::js_sys::Iterator;
     # [wasm_bindgen (catch , method , structural , js_class = "AudioParamMap" , js_name = forEach)]
     #[doc = "The `forEach()` method."]
     #[doc = ""]
@@ -48,20 +48,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`*"]
     pub fn has(this: &AudioParamMap, key: &str) -> bool;
-    #[cfg(feature = "MapLikeIterator")]
+    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "AudioParamMap" , js_name = keys)]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioParamMap/keys)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`, `MapLikeIterator`*"]
-    pub fn keys(this: &AudioParamMap) -> MapLikeIterator;
-    #[cfg(feature = "MapLikeIterator")]
+    #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`, `Iterator`*"]
+    pub fn keys(this: &AudioParamMap) -> ::js_sys::Iterator;
+    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "AudioParamMap" , js_name = values)]
     #[doc = "The `values()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioParamMap/values)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`, `MapLikeIterator`*"]
-    pub fn values(this: &AudioParamMap) -> MapLikeIterator;
+    #[doc = "*This API requires the following crate features to be activated: `AudioParamMap`, `Iterator`*"]
+    pub fn values(this: &AudioParamMap) -> ::js_sys::Iterator;
 }
