@@ -8842,6 +8842,18 @@ mod gen_XrFrame;
 #[cfg(feature = "XrFrame")]
 pub use gen_XrFrame::*;
 
+#[cfg(feature = "XrHand")]
+#[allow(non_snake_case)]
+mod gen_XrHand;
+#[cfg(feature = "XrHand")]
+pub use gen_XrHand::*;
+
+#[cfg(feature = "XrHandJoint")]
+#[allow(non_snake_case)]
+mod gen_XrHandJoint;
+#[cfg(feature = "XrHandJoint")]
+pub use gen_XrHandJoint::*;
+
 #[cfg(feature = "XrHandedness")]
 #[allow(non_snake_case)]
 mod gen_XrHandedness;
@@ -8883,6 +8895,18 @@ pub use gen_XrInputSourcesChangeEvent::*;
 mod gen_XrInputSourcesChangeEventInit;
 #[cfg(feature = "XrInputSourcesChangeEventInit")]
 pub use gen_XrInputSourcesChangeEventInit::*;
+
+#[cfg(feature = "XrJointPose")]
+#[allow(non_snake_case)]
+mod gen_XrJointPose;
+#[cfg(feature = "XrJointPose")]
+pub use gen_XrJointPose::*;
+
+#[cfg(feature = "XrJointSpace")]
+#[allow(non_snake_case)]
+mod gen_XrJointSpace;
+#[cfg(feature = "XrJointSpace")]
+pub use gen_XrJointSpace::*;
 
 #[cfg(feature = "XrLayer")]
 #[allow(non_snake_case)]
