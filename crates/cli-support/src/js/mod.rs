@@ -437,10 +437,6 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                imports.push_str(&format!(
-                    "import * as wasm from './{}_bg.wasm';\n",
-                    module_name
-                ));
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -458,6 +454,15 @@ impl<'a> Context<'a> {
                         footer.push_str(";\n");
                     }
                 }
+
+                self.imports_post.push_str(
+                    "\
+                    let wasm;
+                    export function __wbg_set_wasm(val) {
+                        wasm = val;
+                    }
+                    ",
+                );
 
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -495,20 +500,23 @@ impl<'a> Context<'a> {
             !self.config.mode.uses_es_modules() || js.is_empty(),
             "ES modules require imports to be at the start of the file"
         );
-        js.push_str(&imports);
-        js.push_str("\n");
-        js.push_str(&self.imports_post);
-        js.push_str("\n");
+
+        let mut push_with_newline = |s| {
+            js.push_str(s);
+            if !s.is_empty() {
+                js.push('\n');
+            }
+        };
+
+        push_with_newline(&imports);
+        push_with_newline(&self.imports_post);
 
         // Emit all our exports from this module
-        js.push_str(&self.globals);
-        js.push_str("\n");
+        push_with_newline(&self.globals);
 
         // Generate the initialization glue, if there was any
-        js.push_str(&init_js);
-        js.push_str("\n");
-        js.push_str(&footer);
-        js.push_str("\n");
+        push_with_newline(&init_js);
+        push_with_newline(&footer);
         if self.config.mode.no_modules() {
             js.push_str("})();\n");
         }

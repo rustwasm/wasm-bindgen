@@ -1,4 +1,8 @@
-import * as wasm from './reference_test_bg.wasm';
+let wasm;
+export function __wbg_set_wasm(val) {
+    wasm = val;
+}
+
 
 export function __wbindgen_init_externref_table() {
     const table = wasm.__wbindgen_export_0;

@@ -755,8 +755,11 @@ impl Output {
             write(
                 &js_path,
                 format!(
-                    "import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}",
-                    wasm_name, js_name, start
+                    "import * as wasm from \"./{wasm_name}.wasm\";
+import {{ __wbg_set_wasm }} from \"./{js_name}\";
+__wbg_set_wasm(wasm);
+export * from \"./{js_name}\";
+{start}"
                 ),
             )?;
 

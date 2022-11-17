@@ -1,4 +1,7 @@
-import * as wasm from './reference_test_bg.wasm';
+let wasm;
+export function __wbg_set_wasm(val) {
+    wasm = val;
+}
 
 /**
 * @param {number} a
