@@ -18,13 +18,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiInputMap`*"]
     pub fn size(this: &MidiInputMap) -> u32;
-    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "MIDIInputMap" , js_name = entries)]
     #[doc = "The `entries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIInputMap/entries)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `MidiInputMap`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MidiInputMap`*"]
     pub fn entries(this: &MidiInputMap) -> ::js_sys::Iterator;
     # [wasm_bindgen (catch , method , structural , js_class = "MIDIInputMap" , js_name = forEach)]
     #[doc = "The `forEach()` method."]
@@ -48,20 +47,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiInputMap`*"]
     pub fn has(this: &MidiInputMap, key: &str) -> bool;
-    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "MIDIInputMap" , js_name = keys)]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIInputMap/keys)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `MidiInputMap`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MidiInputMap`*"]
     pub fn keys(this: &MidiInputMap) -> ::js_sys::Iterator;
-    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "MIDIInputMap" , js_name = values)]
     #[doc = "The `values()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIInputMap/values)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `MidiInputMap`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MidiInputMap`*"]
     pub fn values(this: &MidiInputMap) -> ::js_sys::Iterator;
 }

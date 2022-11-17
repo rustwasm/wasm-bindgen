@@ -31,6 +31,7 @@ pub(crate) static BUILTIN_IDENTS: Lazy<BTreeSet<&'static str>> = Lazy::new(|| {
         "Function",
         "Clamped",
         "DataView",
+        "Iterator",
     ])
 });
 

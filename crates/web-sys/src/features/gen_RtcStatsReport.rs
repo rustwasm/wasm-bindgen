@@ -18,13 +18,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReport`*"]
     pub fn size(this: &RtcStatsReport) -> u32;
-    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "RTCStatsReport" , js_name = entries)]
     #[doc = "The `entries()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCStatsReport/entries)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `RtcStatsReport`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcStatsReport`*"]
     pub fn entries(this: &RtcStatsReport) -> ::js_sys::Iterator;
     # [wasm_bindgen (catch , method , structural , js_class = "RTCStatsReport" , js_name = forEach)]
     #[doc = "The `forEach()` method."]
@@ -47,20 +46,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReport`*"]
     pub fn has(this: &RtcStatsReport, key: &str) -> bool;
-    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "RTCStatsReport" , js_name = keys)]
     #[doc = "The `keys()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCStatsReport/keys)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `RtcStatsReport`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcStatsReport`*"]
     pub fn keys(this: &RtcStatsReport) -> ::js_sys::Iterator;
-    #[cfg(feature = "Iterator")]
     # [wasm_bindgen (method , structural , js_class = "RTCStatsReport" , js_name = values)]
     #[doc = "The `values()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCStatsReport/values)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Iterator`, `RtcStatsReport`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcStatsReport`*"]
     pub fn values(this: &RtcStatsReport) -> ::js_sys::Iterator;
 }
