@@ -1,3 +1,11 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/*
+ * WebXR Device API
+ * W3C Working Draft, 19 April 2022
+ * The origin of this IDL file is:
+ * https://www.w3.org/TR/2022/WD-webxr-hand-input-1-20220419/
+ */
+
 partial interface XRInputSource {
    [SameObject] readonly attribute XRHand? hand;
 };
