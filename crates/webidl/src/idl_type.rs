@@ -29,6 +29,7 @@ pub(crate) enum IdlType<'a> {
     Symbol,
     Error,
     Callback,
+    Iterator,
 
     ArrayBuffer,
     DataView,
@@ -331,6 +332,8 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             IdlType::Enum(self.0)
         } else if record.callbacks.contains(self.0) {
             IdlType::Callback
+        } else if record.iterators.contains(self.0) {
+            IdlType::Iterator
         } else if let Some(data) = record.callback_interfaces.get(self.0) {
             IdlType::CallbackInterface {
                 name: self.0,
@@ -433,6 +436,7 @@ impl<'a> IdlType<'a> {
             IdlType::Symbol => dst.push_str("symbol"),
             IdlType::Error => dst.push_str("error"),
             IdlType::Callback => dst.push_str("callback"),
+            IdlType::Iterator => dst.push_str("iterator"),
 
             IdlType::ArrayBuffer => dst.push_str("array_buffer"),
             IdlType::DataView => dst.push_str("data_view"),
@@ -644,6 +648,7 @@ impl<'a> IdlType<'a> {
             IdlType::Any => Ok(js_value),
             IdlType::Undefined => Ok(None),
             IdlType::Callback => Ok(js_sys("Function")),
+            IdlType::Iterator => Ok(js_sys("Iterator")),
             IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
         }
     }
