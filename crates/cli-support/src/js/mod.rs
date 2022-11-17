@@ -500,20 +500,23 @@ impl<'a> Context<'a> {
             !self.config.mode.uses_es_modules() || js.is_empty(),
             "ES modules require imports to be at the start of the file"
         );
-        js.push_str(&imports);
-        js.push_str("\n");
-        js.push_str(&self.imports_post);
-        js.push_str("\n");
+
+        let mut push_with_newline = |s| {
+            js.push_str(s);
+            if !s.is_empty() {
+                js.push('\n');
+            }
+        };
+
+        push_with_newline(&imports);
+        push_with_newline(&self.imports_post);
 
         // Emit all our exports from this module
-        js.push_str(&self.globals);
-        js.push_str("\n");
+        push_with_newline(&self.globals);
 
         // Generate the initialization glue, if there was any
-        js.push_str(&init_js);
-        js.push_str("\n");
-        js.push_str(&footer);
-        js.push_str("\n");
+        push_with_newline(&init_js);
+        push_with_newline(&footer);
         if self.config.mode.no_modules() {
             js.push_str("})();\n");
         }

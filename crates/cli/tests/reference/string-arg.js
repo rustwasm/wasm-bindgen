@@ -1,4 +1,8 @@
-import * as wasm from './reference_test_bg.wasm';
+let wasm;
+export function __wbg_set_wasm(val) {
+    wasm = val;
+}
+
 
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
