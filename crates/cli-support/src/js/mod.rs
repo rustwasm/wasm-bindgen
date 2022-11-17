@@ -437,10 +437,6 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                imports.push_str(&format!(
-                    "import * as wasm from './{}_bg.wasm';\n",
-                    module_name
-                ));
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -458,6 +454,13 @@ impl<'a> Context<'a> {
                         footer.push_str(";\n");
                     }
                 }
+
+                self.imports_post.push_str("\
+                    let wasm;
+                    export function __wbg_set_wasm(val) {
+                        wasm = val;
+                    }
+                ");
 
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
