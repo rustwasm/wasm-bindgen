@@ -455,12 +455,14 @@ impl<'a> Context<'a> {
                     }
                 }
 
-                self.imports_post.push_str("\
+                self.imports_post.push_str(
+                    "\
                     let wasm;
                     export function __wbg_set_wasm(val) {
                         wasm = val;
                     }
-                ");
+                    ",
+                );
 
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
