@@ -41,9 +41,7 @@ error[E0277]: the trait bound `wasm_bindgen::JsValue: From<BadType>` is not sati
                <wasm_bindgen::JsValue as From<&'a T>>
                <wasm_bindgen::JsValue as From<&'a str>>
                <wasm_bindgen::JsValue as From<*const T>>
-               <wasm_bindgen::JsValue as From<*mut T>>
-               <wasm_bindgen::JsValue as From<JsError>>
-             and 73 others
+             and 75 others
      = note: required because of the requirements on the impl of `Into<wasm_bindgen::JsValue>` for `BadType`
      = note: required because of the requirements on the impl of `IntoJsResult` for `BadType`
 note: required by `into_js_result`
