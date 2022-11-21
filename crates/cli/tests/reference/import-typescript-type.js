@@ -17,11 +17,13 @@ function addBorrowedObject(obj) {
 }
 /**
 * @param {import("somepackage").SomeType} a
+* @param {import("someotherpackage").SomeOtherType} b
 */
-export function something(a) {
+export function something(a, b) {
     try {
-        wasm.something(addBorrowedObject(a));
+        wasm.something(addBorrowedObject(a), addBorrowedObject(b));
     } finally {
+        heap[stack_pointer++] = undefined;
         heap[stack_pointer++] = undefined;
     }
 }

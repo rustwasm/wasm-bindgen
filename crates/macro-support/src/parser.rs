@@ -702,6 +702,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let path_name = match module {
             Some(ast::ImportModule::RawNamed(path, _)) => Some(path.clone()),
+            Some(ast::ImportModule::Named(path, _)) if !path.starts_with("/") => Some(path.clone()),
             _ => None,
         };
         let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
