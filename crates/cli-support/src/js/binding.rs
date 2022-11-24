@@ -795,8 +795,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             }
             js.push(format!("!isLikeNone({0})", val));
             js.push(format!(
-                "isLikeNone({val}) ? 0{n} : {val}",
-                n = if *ty == ValType::I64 { "n" } else { "" }
+                "isLikeNone({val}) ? {zero} : {val}",
+                zero = if *ty == ValType::I64 {
+                    "BigInt(0)"
+                } else {
+                    "0"
+                }
             ));
         }
 
