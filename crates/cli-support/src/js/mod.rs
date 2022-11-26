@@ -3551,6 +3551,10 @@ impl<'a> Context<'a> {
                 }
                 base
             }
+
+            Intrinsic::ShimIsModule => {
+                format!("{}", !self.config.mode.no_modules())
+            }
         };
         Ok(expr)
     }

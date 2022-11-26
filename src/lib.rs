@@ -1083,6 +1083,8 @@ externs! {
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
         fn __wbindgen_function_table() -> u32;
+
+        fn __wbindgen_shim_is_module() -> u32;
     }
 }
 
@@ -1365,6 +1367,11 @@ pub fn memory() -> JsValue {
 /// indirect function table used by Rust
 pub fn function_table() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_function_table()) }
+}
+
+/// Returns if the generated JS shim is a ES module.
+pub fn shim_is_module() -> bool {
+    (unsafe { __wbindgen_shim_is_module() }) != 0
 }
 
 #[doc(hidden)]

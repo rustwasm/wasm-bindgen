@@ -276,5 +276,8 @@ intrinsics! {
         #[symbol = "__wbindgen_init_externref_table"]
         #[signature = fn() -> Unit]
         InitExternrefTable,
+        #[symbol = "__wbindgen_shim_is_module"]
+        #[signature = fn() -> Boolean]
+        ShimIsModule,
     }
 }
