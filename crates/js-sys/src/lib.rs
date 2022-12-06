@@ -5533,7 +5533,7 @@ pub mod Intl {
     #[wasm_bindgen]
     extern "C" {
         /// The `Intl.RelativeTimeFormat` object is a constructor for objects
-        /// that enable language-sensitive date and time formatting.
+        /// that enable language-sensitive relative time formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
         #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.RelativeTimeFormat")]
@@ -5541,7 +5541,7 @@ pub mod Intl {
         pub type RelativeTimeFormat;
 
         /// The `Intl.RelativeTimeFormat` object is a constructor for objects
-        /// that enable language-sensitive date and time formatting.
+        /// that enable language-sensitive relative time formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
         #[wasm_bindgen(constructor, js_namespace = Intl)]
@@ -5569,6 +5569,14 @@ pub mod Intl {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/resolvedOptions)
         #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
         pub fn resolved_options(this: &RelativeTimeFormat) -> Object;
+
+        /// The `Intl.RelativeTimeFormat.supportedLocalesOf()` method returns an array
+        /// containing those of the provided locales that are supported in date and time
+        /// formatting without having to fall back to the runtime's default locale.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RelativeTimeFormat/supportedLocalesOf)
+        #[wasm_bindgen(static_method_of = RelativeTimeFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
+        pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
 
     impl Default for RelativeTimeFormat {
