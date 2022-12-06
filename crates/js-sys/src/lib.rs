@@ -5528,6 +5528,57 @@ pub mod Intl {
             )
         }
     }
+
+    // Intl.RelativeTimeFormat
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `Intl.RelativeTimeFormat` object is a constructor for objects
+        /// that enable language-sensitive date and time formatting.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
+        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.RelativeTimeFormat")]
+        #[derive(Clone, Debug)]
+        pub type RelativeTimeFormat;
+
+        /// The `Intl.RelativeTimeFormat` object is a constructor for objects
+        /// that enable language-sensitive date and time formatting.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
+        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        pub fn new(locales: &Array, options: &Object) -> RelativeTimeFormat;
+
+        /// The Intl.RelativeTimeFormat.prototype.format property returns a getter function that
+        /// formats a date according to the locale and formatting options of this
+        /// Intl.RelativeTimeFormat object.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/format)
+        #[wasm_bindgen(method, getter, js_class = "Intl.RelativeTimeFormat")]
+        pub fn format(this: &RelativeTimeFormat) -> Function;
+
+        /// The `Intl.RelativeTimeFormat.prototype.formatToParts()` method allows locale-aware
+        /// formatting of strings produced by RelativeTimeFormat formatters.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/formatToParts)
+        #[wasm_bindgen(method, js_class = "Intl.RelativeTimeFormat", js_name = formatToParts)]
+        pub fn format_to_parts(this: &RelativeTimeFormat, date: &Date) -> Array;
+
+        /// The `Intl.RelativeTimeFormat.prototype.resolvedOptions()` method returns a new
+        /// object with properties reflecting the locale and date and time formatting
+        /// options computed during initialization of this RelativeTimeFormat object.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/resolvedOptions)
+        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        pub fn resolved_options(this: &RelativeTimeFormat) -> Object;
+    }
+
+    impl Default for RelativeTimeFormat {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
+    }
 }
 
 // Promise
