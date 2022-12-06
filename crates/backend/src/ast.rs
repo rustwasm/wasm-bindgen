@@ -308,6 +308,8 @@ pub struct Struct {
     pub is_inspectable: bool,
     /// Whether to generate a typescript definition for this struct
     pub generate_typescript: bool,
+    /// The type of the unique non-zero-sized field if this struct has `repr(transparent)`
+    pub transparent: Option<syn::Type>,
 }
 
 /// The field of a struct

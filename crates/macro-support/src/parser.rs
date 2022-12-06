@@ -10,7 +10,7 @@ use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
-use syn::Lit;
+use syn::{self, AttrStyle, Lit, Meta, MetaList, NestedMeta};
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
@@ -393,11 +393,26 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             .unwrap_or(self.ident.to_string());
         let is_inspectable = attrs.inspectable().is_some();
         let getter_with_clone = attrs.getter_with_clone().is_some();
+        let transparent = if self.attrs.iter().any(|attr| match attr.parse_meta() {
+            Ok(Meta::List(MetaList { path, nested, .. })) => {
+                path.is_ident("repr")
+                    && nested.iter().any(|nested| match nested {
+                        NestedMeta::Meta(Meta::Path(path)) => path.is_ident("transparent"),
+                        _ => false,
+                    })
+            }
+            _ => false,
+        }) {
+            self.fields.iter().next().map(|field| field.ty.clone())
+        } else {
+            None
+        };
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
                 _ => continue,
             }
+
             let (js_field_name, member) = match &field.ident {
                 Some(ident) => (ident.to_string(), syn::Member::Named(ident.clone())),
                 None => (i.to_string(), syn::Member::Unnamed(i.into())),
@@ -442,6 +457,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             comments,
             is_inspectable,
             generate_typescript,
+            transparent,
         })
     }
 }
