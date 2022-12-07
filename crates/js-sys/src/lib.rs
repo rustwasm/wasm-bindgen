@@ -5547,9 +5547,8 @@ pub mod Intl {
         #[wasm_bindgen(constructor, js_namespace = Intl)]
         pub fn new(locales: &Array, options: &Object) -> RelativeTimeFormat;
 
-        /// The `Intl.RelativeTimeFormat.prototype.format` property returns a getter function that
-        /// formats a `value` and `unit` according to the locale and formatting options of this
-        /// Intl.RelativeTimeFormat object.
+        /// The `Intl.RelativeTimeFormat.prototype.format` method formats a `value` and `unit`
+        /// according to the locale and formatting options of this Intl.RelativeTimeFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/format)
         #[wasm_bindgen(method, js_class = "Intl.RelativeTimeFormat")]
