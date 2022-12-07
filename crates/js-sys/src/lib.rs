@@ -5547,23 +5547,23 @@ pub mod Intl {
         #[wasm_bindgen(constructor, js_namespace = Intl)]
         pub fn new(locales: &Array, options: &Object) -> RelativeTimeFormat;
 
-        /// The Intl.RelativeTimeFormat.prototype.format property returns a getter function that
-        /// formats a date according to the locale and formatting options of this
+        /// The `Intl.RelativeTimeFormat.prototype.format` property returns a getter function that
+        /// formats a `value` and `unit` according to the locale and formatting options of this
         /// Intl.RelativeTimeFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/format)
         #[wasm_bindgen(method, getter, js_class = "Intl.RelativeTimeFormat")]
         pub fn format(this: &RelativeTimeFormat) -> Function;
 
-        /// The `Intl.RelativeTimeFormat.prototype.formatToParts()` method allows locale-aware
-        /// formatting of strings produced by RelativeTimeFormat formatters.
+        /// The `Intl.RelativeTimeFormat.prototype.formatToParts()` method returns an array of
+        /// objects representing the relative time format in parts that can be used for custom locale-aware formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/formatToParts)
         #[wasm_bindgen(method, js_class = "Intl.RelativeTimeFormat", js_name = formatToParts)]
         pub fn format_to_parts(this: &RelativeTimeFormat, date: &Date) -> Array;
 
         /// The `Intl.RelativeTimeFormat.prototype.resolvedOptions()` method returns a new
-        /// object with properties reflecting the locale and date and time formatting
+        /// object with properties reflecting the locale and relative time formatting
         /// options computed during initialization of this RelativeTimeFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/resolvedOptions)
