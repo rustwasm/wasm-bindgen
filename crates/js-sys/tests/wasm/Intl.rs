@@ -119,7 +119,9 @@ fn relative_time_format() {
 
     let c = Intl::RelativeTimeFormat::new(&locales, &opts);
     assert!(c.format(1_f64.into(), &"seconds").is_string());
-    assert!(c.format_to_parts(1_f64.into(), &"seconds").is_instance_of::<Array>());
+    assert!(c
+        .format_to_parts(1_f64.into(), &"seconds")
+        .is_instance_of::<Array>());
     assert!(c.resolved_options().is_instance_of::<Object>());
 
     assert_eq!(c.format(1_f64.into(), &"seconds"), "in 1 second");
