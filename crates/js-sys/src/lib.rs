@@ -5552,15 +5552,15 @@ pub mod Intl {
         /// Intl.RelativeTimeFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/format)
-        #[wasm_bindgen(method, getter, js_class = "Intl.RelativeTimeFormat")]
-        pub fn format(this: &RelativeTimeFormat) -> Function;
+        #[wasm_bindgen(method, js_class = "Intl.RelativeTimeFormat")]
+        pub fn format(this: &RelativeTimeFormat, value: f64, unit: &str) -> JsString;
 
         /// The `Intl.RelativeTimeFormat.prototype.formatToParts()` method returns an array of
         /// objects representing the relative time format in parts that can be used for custom locale-aware formatting.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/formatToParts)
         #[wasm_bindgen(method, js_class = "Intl.RelativeTimeFormat", js_name = formatToParts)]
-        pub fn format_to_parts(this: &RelativeTimeFormat, date: &Date) -> Array;
+        pub fn format_to_parts(this: &RelativeTimeFormat, value: f64, unit: &str) -> Array;
 
         /// The `Intl.RelativeTimeFormat.prototype.resolvedOptions()` method returns a new
         /// object with properties reflecting the locale and relative time formatting
