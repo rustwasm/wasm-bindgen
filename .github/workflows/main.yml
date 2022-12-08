@@ -15,6 +15,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read #  to fetch code (actions/checkout)
+
 jobs:
   # Check Code style quickly by running `rustfmt` over all code
   rustfmt:
@@ -402,6 +405,9 @@ jobs:
 
 
   deploy:
+    permissions:
+      contents: write #  to push changes in repo (jamesives/github-pages-deploy-action)
+
     needs:
       - doc_api
       - doc_book
