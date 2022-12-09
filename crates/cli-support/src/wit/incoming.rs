@@ -204,7 +204,6 @@ impl InstructionBuilder<'_, '_> {
                             kind,
                             malloc: self.cx.malloc()?,
                             mem: self.cx.memory()?,
-                            free: self.cx.free()?,
                         },
                         &[AdapterType::I32, AdapterType::I32],
                     );

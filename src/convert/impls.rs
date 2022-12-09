@@ -2,7 +2,7 @@ use core::char;
 use core::mem::{self, ManuallyDrop};
 
 use crate::convert::traits::WasmAbi;
-use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
+use crate::convert::{FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
 use crate::{Clamped, JsError, JsValue};
 
@@ -245,6 +245,16 @@ impl RefFromWasmAbi for JsValue {
     #[inline]
     unsafe fn ref_from_abi(js: u32) -> Self::Anchor {
         ManuallyDrop::new(JsValue::_new(js))
+    }
+}
+
+impl LongRefFromWasmAbi for JsValue {
+    type Abi = u32;
+    type Anchor = JsValue;
+
+    #[inline]
+    unsafe fn long_ref_from_abi(js: u32) -> Self::Anchor {
+        Self::from_abi(js)
     }
 }
 

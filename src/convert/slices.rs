@@ -1,12 +1,15 @@
 #[cfg(feature = "std")]
 use std::prelude::v1::*;
 
-use core::slice;
+use core::ops::{Deref, DerefMut};
 use core::str;
 
+use crate::__wbindgen_copy_to_typed_array;
 use crate::cast::JsObject;
 use crate::convert::OptionIntoWasmAbi;
-use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
+use crate::convert::{
+    FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi,
+};
 use cfg_if::cfg_if;
 
 if_std! {
@@ -25,6 +28,50 @@ unsafe impl WasmAbi for WasmSlice {}
 #[inline]
 fn null_slice() -> WasmSlice {
     WasmSlice { ptr: 0, len: 0 }
+}
+
+if_std! {
+    #[repr(C)]
+    pub struct WasmMutSlice {
+        pub slice: WasmSlice,
+        pub idx: u32,
+    }
+
+    unsafe impl WasmAbi for WasmMutSlice {}
+
+    /// The representation of a mutable slice passed from JS to Rust.
+    pub struct MutSlice<T> {
+        /// A copy of the data in the JS typed array.
+        contents: Box<[T]>,
+        /// A reference to the original JS typed array.
+        js: JsValue,
+    }
+
+    impl<T> Drop for MutSlice<T> {
+        fn drop(&mut self) {
+            unsafe {
+                __wbindgen_copy_to_typed_array(
+                    self.contents.as_ptr() as *const u8,
+                    self.contents.len() * mem::size_of::<T>(),
+                    self.js.idx
+                );
+            }
+        }
+    }
+
+    impl<T> Deref for MutSlice<T> {
+        type Target = [T];
+
+        fn deref(&self) -> &[T] {
+            &self.contents
+        }
+    }
+
+    impl<T> DerefMut for MutSlice<T> {
+        fn deref_mut(&mut self) -> &mut [T] {
+            &mut self.contents
+        }
+    }
 }
 
 macro_rules! vectors {
@@ -109,17 +156,24 @@ macro_rules! vectors {
         }
 
         impl RefMutFromWasmAbi for [$t] {
-            type Abi = WasmSlice;
-            type Anchor = &'static mut [$t];
+            type Abi = WasmMutSlice;
+            type Anchor = MutSlice<$t>;
 
             #[inline]
-            unsafe fn ref_mut_from_abi(js: WasmSlice)
-                -> &'static mut [$t]
-            {
-                slice::from_raw_parts_mut(
-                    <*mut $t>::from_abi(js.ptr),
-                    js.len as usize,
-                )
+            unsafe fn ref_mut_from_abi(js: WasmMutSlice) -> MutSlice<$t> {
+                let contents = <Box<[$t]>>::from_abi(js.slice);
+                let js = JsValue::from_abi(js.idx);
+                MutSlice { contents, js }
+            }
+        }
+
+        impl LongRefFromWasmAbi for [$t] {
+            type Abi = WasmSlice;
+            type Anchor = Box<[$t]>;
+
+            #[inline]
+            unsafe fn long_ref_from_abi(js: WasmSlice) -> Box<[$t]> {
+                Self::ref_from_abi(js)
             }
         }
     )*)
@@ -230,6 +284,16 @@ impl RefFromWasmAbi for str {
     #[inline]
     unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
         mem::transmute::<Box<[u8]>, Box<str>>(<Box<[u8]>>::from_abi(js))
+    }
+}
+
+impl LongRefFromWasmAbi for str {
+    type Abi = <[u8] as RefFromWasmAbi>::Abi;
+    type Anchor = Box<str>;
+
+    #[inline]
+    unsafe fn long_ref_from_abi(js: Self::Abi) -> Self::Anchor {
+        Self::ref_from_abi(js)
     }
 }
 

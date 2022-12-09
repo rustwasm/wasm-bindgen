@@ -1075,6 +1075,8 @@ externs! {
         fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
         fn __wbindgen_jsval_loose_eq(a: u32, b: u32) -> u32;
 
+        fn __wbindgen_copy_to_typed_array(ptr: *const u8, len: usize, idx: u32) -> ();
+
         fn __wbindgen_not(idx: u32) -> u32;
 
         fn __wbindgen_memory() -> u32;
@@ -1367,6 +1369,7 @@ pub fn function_table() -> JsValue {
 #[doc(hidden)]
 pub mod __rt {
     use crate::JsValue;
+    use core::borrow::{Borrow, BorrowMut};
     use core::cell::{Cell, UnsafeCell};
     use core::ops::{Deref, DerefMut};
 
@@ -1486,6 +1489,13 @@ pub mod __rt {
         }
     }
 
+    impl<'b, T: ?Sized> Borrow<T> for Ref<'b, T> {
+        #[inline]
+        fn borrow(&self) -> &T {
+            self.value
+        }
+    }
+
     impl<'b, T: ?Sized> Drop for Ref<'b, T> {
         fn drop(&mut self) {
             self.borrow.set(self.borrow.get() - 1);
@@ -1509,6 +1519,20 @@ pub mod __rt {
     impl<'b, T: ?Sized> DerefMut for RefMut<'b, T> {
         #[inline]
         fn deref_mut(&mut self) -> &mut T {
+            self.value
+        }
+    }
+
+    impl<'b, T: ?Sized> Borrow<T> for RefMut<'b, T> {
+        #[inline]
+        fn borrow(&self) -> &T {
+            self.value
+        }
+    }
+
+    impl<'b, T: ?Sized> BorrowMut<T> for RefMut<'b, T> {
+        #[inline]
+        fn borrow_mut(&mut self) -> &mut T {
             self.value
         }
     }

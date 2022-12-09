@@ -243,6 +243,16 @@ impl ToTokens for ast::Struct {
             }
 
             #[automatically_derived]
+            impl wasm_bindgen::convert::LongRefFromWasmAbi for #name {
+                type Abi = u32;
+                type Anchor = wasm_bindgen::__rt::Ref<'static, #name>;
+
+                unsafe fn long_ref_from_abi(js: Self::Abi) -> Self::Anchor {
+                    <Self as wasm_bindgen::convert::RefFromWasmAbi>::ref_from_abi(js)
+                }
+            }
+
+            #[automatically_derived]
             impl wasm_bindgen::convert::OptionIntoWasmAbi for #name {
                 #[inline]
                 fn none() -> Self::Abi { 0 }
@@ -404,7 +414,7 @@ impl TryToTokens for ast::Export {
 
         let mut argtys = Vec::new();
         for (i, arg) in self.function.arguments.iter().enumerate() {
-            argtys.push(&arg.ty);
+            argtys.push(&*arg.ty);
             let i = i + offset;
             let ident = Ident::new(&format!("arg{}", i), Span::call_site());
             let ty = &arg.ty;
@@ -426,16 +436,31 @@ impl TryToTokens for ast::Export {
                     });
                 }
                 syn::Type::Reference(syn::TypeReference { elem, .. }) => {
-                    args.push(quote! {
-                        #ident: <#elem as wasm_bindgen::convert::RefFromWasmAbi>::Abi
-                    });
-                    arg_conversions.push(quote! {
-                        let #ident = unsafe {
-                            <#elem as wasm_bindgen::convert::RefFromWasmAbi>
-                                ::ref_from_abi(#ident)
-                        };
-                        let #ident = &*#ident;
-                    });
+                    if self.function.r#async {
+                        args.push(quote! {
+                            #ident: <#elem as wasm_bindgen::convert::LongRefFromWasmAbi>::Abi
+                        });
+                        arg_conversions.push(quote! {
+                            let #ident = unsafe {
+                                <#elem as wasm_bindgen::convert::LongRefFromWasmAbi>
+                                    ::long_ref_from_abi(#ident)
+                            };
+                            let #ident = <<#elem as wasm_bindgen::convert::LongRefFromWasmAbi>
+                                ::Anchor as core::borrow::Borrow<#elem>>
+                                ::borrow(&#ident);
+                        });
+                    } else {
+                        args.push(quote! {
+                            #ident: <#elem as wasm_bindgen::convert::RefFromWasmAbi>::Abi
+                        });
+                        arg_conversions.push(quote! {
+                            let #ident = unsafe {
+                                <#elem as wasm_bindgen::convert::RefFromWasmAbi>
+                                    ::ref_from_abi(#ident)
+                            };
+                            let #ident = &*#ident;
+                        });
+                    }
                 }
                 _ => {
                     args.push(quote! {
@@ -550,6 +575,22 @@ impl TryToTokens for ast::Export {
         })
         .to_tokens(into);
 
+        let describe_args: TokenStream = argtys
+            .iter()
+            .map(|ty| match ty {
+                syn::Type::Reference(reference)
+                    if self.function.r#async && reference.mutability.is_none() =>
+                {
+                    let inner = &reference.elem;
+                    quote! {
+                        inform(LONGREF);
+                        <#inner as WasmDescribe>::describe();
+                    }
+                }
+                _ => quote! { <#ty as WasmDescribe>::describe(); },
+            })
+            .collect();
+
         // In addition to generating the shim function above which is what
         // our generated JS will invoke, we *also* generate a "descriptor"
         // shim. This descriptor shim uses the `WasmDescribe` trait to
@@ -573,7 +614,7 @@ impl TryToTokens for ast::Export {
                 inform(FUNCTION);
                 inform(0);
                 inform(#nargs);
-                #(<#argtys as WasmDescribe>::describe();)*
+                #describe_args
                 #describe_ret
             },
             attrs: attrs.clone(),
@@ -659,7 +700,7 @@ impl ToTokens for ast::ImportType {
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
-                use wasm_bindgen::convert::RefFromWasmAbi;
+                use wasm_bindgen::convert::{RefFromWasmAbi, LongRefFromWasmAbi};
                 use wasm_bindgen::describe::WasmDescribe;
                 use wasm_bindgen::{JsValue, JsCast, JsObject};
                 use wasm_bindgen::__rt::core;
@@ -728,6 +769,17 @@ impl ToTokens for ast::ImportType {
                         core::mem::ManuallyDrop::new(#rust_name {
                             obj: core::mem::ManuallyDrop::into_inner(tmp).into(),
                         })
+                    }
+                }
+
+                impl LongRefFromWasmAbi for #rust_name {
+                    type Abi = <JsValue as LongRefFromWasmAbi>::Abi;
+                    type Anchor = #rust_name;
+
+                    #[inline]
+                    unsafe fn long_ref_from_abi(js: Self::Abi) -> Self::Anchor {
+                        let tmp = <JsValue as LongRefFromWasmAbi>::long_ref_from_abi(js);
+                        #rust_name { obj: tmp.into() }
                     }
                 }
 
