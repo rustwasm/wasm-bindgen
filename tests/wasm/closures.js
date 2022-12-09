@@ -150,7 +150,7 @@ exports.pass_reference_first_arg_twice = (a, b, c) => {
 };
 
 exports.call_destroyed = f => {
-  assert.throws(f, /invoked recursively or destroyed/);
+  assert.throws(f, /closure invoked.*after being dropped/);
 };
 
 let FORGOTTEN_CLOSURE = null;

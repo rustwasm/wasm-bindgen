@@ -571,7 +571,7 @@ macro_rules! doit {
                     $($var: <$var as FromWasmAbi>::Abi),*
                 ) -> <R as ReturnWasmAbi>::Abi {
                     if a == 0 {
-                        throw_str("closure invoked recursively or destroyed already");
+                        throw_str("closure invoked after being dropped");
                     }
                     // Make sure all stack variables are converted before we
                     // convert `ret` as it may throw (for `Result`, for
@@ -623,7 +623,7 @@ macro_rules! doit {
                     $($var: <$var as FromWasmAbi>::Abi),*
                 ) -> <R as ReturnWasmAbi>::Abi {
                     if a == 0 {
-                        throw_str("closure invoked recursively or destroyed already");
+                        throw_str("closure invoked recursively or after being dropped");
                     }
                     // Make sure all stack variables are converted before we
                     // convert `ret` as it may throw (for `Result`, for
@@ -759,7 +759,7 @@ where
             arg: <A as RefFromWasmAbi>::Abi,
         ) -> <R as ReturnWasmAbi>::Abi {
             if a == 0 {
-                throw_str("closure invoked recursively or destroyed already");
+                throw_str("closure invoked after being dropped");
             }
             // Make sure all stack variables are converted before we
             // convert `ret` as it may throw (for `Result`, for
@@ -802,7 +802,7 @@ where
             arg: <A as RefFromWasmAbi>::Abi,
         ) -> <R as ReturnWasmAbi>::Abi {
             if a == 0 {
-                throw_str("closure invoked recursively or destroyed already");
+                throw_str("closure invoked recursively or after being dropped");
             }
             // Make sure all stack variables are converted before we
             // convert `ret` as it may throw (for `Result`, for
