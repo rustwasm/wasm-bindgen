@@ -96,7 +96,7 @@ let's take a look at that.
 // original input to `#[wasm_bindgen]` omitted ...
 
 #[export_name = "foo_new"]
-pub extern "C" fn __wasm_bindgen_generated_Foo_new(arg0: i32) -> u32
+pub extern "C" fn __wasm_bindgen_generated_Foo_new(arg0: i32) -> u32 {
     let ret = Foo::new(arg0);
     Box::into_raw(Box::new(WasmRefCell::new(ret))) as u32
 }
