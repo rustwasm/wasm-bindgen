@@ -65,7 +65,7 @@ pub enum AdapterJsImportKind {
     Normal,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum AdapterType {
     S8,
     S16,

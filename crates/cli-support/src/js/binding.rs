@@ -948,8 +948,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("len{}", i));
             // Then we give wasm a reference to the original typed array, so that it can
             // update it with modifications made on the wasm side before returning.
-            js.cx.expose_add_heap_object();
-            js.push(format!("addHeapObject({val})"));
+            js.push(val);
         }
 
         Instruction::BoolFromI32 => {

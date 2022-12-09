@@ -205,7 +205,12 @@ impl InstructionBuilder<'_, '_> {
                             malloc: self.cx.malloc()?,
                             mem: self.cx.memory()?,
                         },
-                        &[AdapterType::I32, AdapterType::I32],
+                        &[AdapterType::I32, AdapterType::I32, AdapterType::Externref],
+                    );
+                    self.late_instruction(
+                        &[AdapterType::Externref],
+                        Instruction::I32FromExternrefOwned,
+                        &[AdapterType::I32],
                     );
                 } else {
                     self.instruction(
@@ -362,6 +367,27 @@ impl InstructionBuilder<'_, '_> {
             self.input.extend_from_slice(inputs);
         }
 
+        self.instructions.push(InstructionData {
+            instr,
+            stack_change: StackChange::Modified {
+                popped: inputs.len(),
+                pushed: outputs.len(),
+            },
+        });
+        self.output.extend_from_slice(outputs);
+    }
+
+    /// Add an instruction whose inputs are the results of previous instructions
+    /// instead of the parameters from JS / results from Rust.
+    pub fn late_instruction(
+        &mut self,
+        inputs: &[AdapterType],
+        instr: Instruction,
+        outputs: &[AdapterType],
+    ) {
+        for input in inputs {
+            assert_eq!(self.output.pop().unwrap(), *input);
+        }
         self.instructions.push(InstructionData {
             instr,
             stack_change: StackChange::Modified {

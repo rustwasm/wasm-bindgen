@@ -90,7 +90,7 @@ pub struct Closure {
     pub mutable: bool,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum VectorKind {
     I8,
     U8,
