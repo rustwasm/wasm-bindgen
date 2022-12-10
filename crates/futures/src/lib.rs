@@ -88,7 +88,7 @@ where
 ///
 /// The `future` will always be run on the next microtask tick even if it
 /// immediately returns `Poll::Ready`.
-/// 
+///
 /// This is a convenience function to spawn a `future` that is already boxed,
 /// and avoid doing an extra allocation to spawn it.
 ///
@@ -96,7 +96,7 @@ where
 ///
 /// This function has the same panic behavior as `future_to_promise`.
 #[inline]
-pub fn spawn_boxed_local (future: Pin<Box<dyn 'static + Future<Output = ()>>>) {
+pub fn spawn_boxed_local(future: Pin<Box<dyn 'static + Future<Output = ()>>>) {
     task::Task::spawn(future);
 }
 
