@@ -78,7 +78,26 @@ pub fn spawn_local<F>(future: F)
 where
     F: Future<Output = ()> + 'static,
 {
-    task::Task::spawn(Box::pin(future));
+    spawn_boxed_local(Box::pin(future))
+}
+
+/// Runs a Rust `Future` on the current thread.
+///
+/// The `future` must be `'static` because it will be scheduled
+/// to run in the background and cannot contain any stack references.
+///
+/// The `future` will always be run on the next microtask tick even if it
+/// immediately returns `Poll::Ready`.
+/// 
+/// This is a convenience function to spawn a `future` that is already boxed,
+/// and avoid doing an extra allocation to spawn it.
+///
+/// # Panics
+///
+/// This function has the same panic behavior as `future_to_promise`.
+#[inline]
+pub fn spawn_boxed_local (future: Pin<Box<dyn 'static + Future<Output = ()>>>) {
+    task::Task::spawn(future);
 }
 
 struct Inner {
