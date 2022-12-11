@@ -91,7 +91,7 @@ pub struct JsValue {
     _marker: marker::PhantomData<*mut u8>, // not at all threadsafe
 }
 
-const JSIDX_OFFSET: u32 = 32; // keep in sync with js/mod.rs
+const JSIDX_OFFSET: u32 = 128; // keep in sync with js/mod.rs
 const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET + 0;
 const JSIDX_NULL: u32 = JSIDX_OFFSET + 1;
 const JSIDX_TRUE: u32 = JSIDX_OFFSET + 2;

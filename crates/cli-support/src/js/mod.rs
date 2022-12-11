@@ -85,7 +85,7 @@ pub struct ExportedClass {
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 // Must be kept in sync with `src/lib.rs` of the `wasm-bindgen` crate
-const INITIAL_HEAP_OFFSET: usize = 32;
+const INITIAL_HEAP_OFFSET: usize = 128;
 
 impl<'a> Context<'a> {
     pub fn new(
