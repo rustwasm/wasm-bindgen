@@ -26,7 +26,7 @@
     i32.const 0)
   (func $foo (type 1) (param i32))
   (table (;0;) 2 funcref)
-  (table (;1;) 32 externref)
+  (table (;1;) 128 externref)
   (export "func" (table 0))
   (elem (;0;) (i32.const 0) func $foo)
   (elem (;1;) (i32.const 1) func $#func0<closure0_externref_shim>))
