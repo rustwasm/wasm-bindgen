@@ -23,6 +23,6 @@
   (func (;2;) (type 0)
     i32.const 0
     call $#func1<a_externref_shim>)
-  (table (;0;) 32 externref)
+  (table (;0;) 128 externref)
   (export "foo" (func 2)))
 ;)

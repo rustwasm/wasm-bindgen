@@ -9,7 +9,7 @@
   (func $exported (type 2) (param i32))
   (func $__externref_table_alloc (type 1) (result i32))
   (func $__wbindgen_add_to_stack_pointer (type 3) (param i32) (result i32))
-  (table (;0;) 32 externref)
+  (table (;0;) 128 externref)
   (memory (;0;) 17)
   (export "memory" (memory 0))
   (export "exported" (func $exported))

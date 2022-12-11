@@ -2,7 +2,7 @@
   (type (;0;) (func))
   (import "./reference_test_bg.js" "__wbindgen_init_externref_table" (func (;0;) (type 0)))
   (func $foo (type 0))
-  (table (;0;) 32 externref)
+  (table (;0;) 128 externref)
   (memory (;0;) 17)
   (export "memory" (memory 0))
   (export "foo" (func $foo))

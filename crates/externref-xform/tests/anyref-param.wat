@@ -31,7 +31,7 @@
     i32.add
     global.set 0)
   (func $foo (type 0) (param i32))
-  (table (;0;) 32 externref)
+  (table (;0;) 128 externref)
   (global (;0;) (mut i32) i32.const 32)
   (export "foo" (func $#func0<foo_externref_shim>)))
 ;)
