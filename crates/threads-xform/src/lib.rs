@@ -155,6 +155,8 @@ impl Config {
             size: self.thread_stack_size,
         };
 
+        let _ = module.exports.add("__stack_alloc", stack.alloc);
+
         inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
 
         // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
@@ -163,6 +165,16 @@ impl Config {
         // After calling this function in a given agent, the instance should be considered
         // "destroyed" and any further invocations into it will trigger UB. This function
         // should not be called from an agent that cannot block (e.g. the main document thread).
+        //
+        // You can also call it from a "leader" agent, passing appropriate values, if said leader
+        // is in charge of cleaning up after a "follower" agent. In that case:
+        // - The "appropriate values" are the values of the `__tls_base` and `__stack_alloc` globals
+        //   from the follower thread, after initialization.
+        // - The leader does _not_ need to block.
+        // - Similar restrictions apply: the follower thread should be considered unusable afterwards,
+        //   the leader should not call this function with the same set of parameteres twice.
+        // - Moreover, concurrent calls can lead to UB: the follower could be in the middle of a
+        //   call while the leader is destroying its stack! You should make sure that this cannot happen.
         inject_destroy(module, &tls, &stack, memory)?;
 
         Ok(())
@@ -365,37 +377,63 @@ fn inject_destroy(
 ) -> Result<(), Error> {
     let free = find_function(module, "__wbindgen_free")?;
 
-    let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
+    let mut builder =
+        walrus::FunctionBuilder::new(&mut module.types, &[ValType::I32, ValType::I32], &[]);
 
     builder.name("__wbindgen_thread_destroy".into());
 
     let mut body = builder.func_body();
 
+    // if no explicit parameters are passed (i.e. their value is 0) then we assume
+    // we're being called from the agent that must be destroyed and rely on its globals
+    let tls_base = module.locals.add(ValType::I32);
+    let stack_alloc = module.locals.add(ValType::I32);
+
     // Ideally, at this point, we would destroy the values stored in TLS.
     // We can't really do that without help from the standard library.
     // See https://github.com/rustwasm/wasm-bindgen/pull/2769#issuecomment-1015775467.
 
-    // free the TLS space
-    body.global_get(tls.base)
-        .i32_const(tls.size as i32)
-        .call(free);
+    body.local_get(tls_base).if_else(
+        None,
+        |body| {
+            body.local_get(tls_base)
+                .i32_const(tls.size as i32)
+                .call(free);
+        },
+        |body| {
+            body.global_get(tls.base)
+                .i32_const(tls.size as i32)
+                .call(free);
 
-    // set tls.base = i32::MIN to trigger invalid memory
-    body.i32_const(i32::MIN).global_set(tls.base);
+            // set tls.base = i32::MIN to trigger invalid memory
+            body.i32_const(i32::MIN).global_set(tls.base);
+        },
+    );
 
-    // free the stack callin `__wbindgen_free(stack.alloc, stack.size)`
-    with_temp_stack(&mut body, memory, stack, |body| {
-        body.global_get(stack.alloc)
-            .i32_const(stack.size as i32)
-            .call(free);
-    });
+    // free the stack calling `__wbindgen_free(stack.alloc, stack.size)`
+    body.local_get(stack_alloc).if_else(
+        None,
+        |body| {
+            // we're destroying somebody else's stack, so we can use our own
+            body.local_get(stack_alloc)
+                .i32_const(stack.size as i32)
+                .call(free);
+        },
+        |mut body| {
+            with_temp_stack(&mut body, memory, stack, |body| {
+                body.global_get(stack.alloc)
+                    .i32_const(stack.size as i32)
+                    .call(free);
+            });
 
-    // set stack.alloc = 0 to trigger invalid memory
-    body.i32_const(0).global_set(stack.alloc);
+            // set stack.alloc = 0 to trigger invalid memory
+            body.i32_const(0).global_set(stack.alloc);
+        },
+    );
 
-    let free_id = builder.finish(Vec::new(), &mut module.funcs);
+    let destroy_id = builder.finish(Vec::new(), &mut module.funcs);
 
-    module.exports.add("__wbindgen_thread_destroy", free_id);
+    module.exports.add("__wbindgen_thread_destroy", destroy_id);
 
     Ok(())
 }
