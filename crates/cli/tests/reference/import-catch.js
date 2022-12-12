@@ -4,7 +4,7 @@ export function __wbg_set_wasm(val) {
 }
 
 
-const heap = new Array(32).fill(undefined);
+const heap = new Array(128).fill(undefined);
 
 heap.push(undefined, null, true, false);
 
@@ -39,7 +39,7 @@ function getInt32Memory0() {
 function getObject(idx) { return heap[idx]; }
 
 function dropObject(idx) {
-    if (idx < 36) return;
+    if (idx < 132) return;
     heap[idx] = heap_next;
     heap_next = idx;
 }

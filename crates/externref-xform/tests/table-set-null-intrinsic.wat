@@ -30,6 +30,6 @@
     table.set 0)
   (func $alloc (type 0) (result i32)
     i32.const 0)
-  (table (;0;) 32 externref)
+  (table (;0;) 128 externref)
   (export "foo" (func $#func0<foo_externref_shim>)))
 ;)
