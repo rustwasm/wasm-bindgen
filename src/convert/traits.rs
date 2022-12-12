@@ -1,3 +1,4 @@
+use core::borrow::Borrow;
 use core::ops::{Deref, DerefMut};
 
 use crate::describe::*;
@@ -56,6 +57,32 @@ pub trait RefFromWasmAbi: WasmDescribe {
     ///
     /// Same as `FromWasmAbi::from_abi`.
     unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor;
+}
+
+/// A version of the `RefFromWasmAbi` trait with the additional requirement
+/// that the reference must remain valid as long as the anchor isn't dropped.
+///
+/// This isn't the case for `JsValue`'s `RefFromWasmAbi` implementation. To
+/// avoid having to allocate a spot for the `JsValue` on the `JsValue` heap,
+/// the `JsValue` is instead pushed onto the `JsValue` stack, and popped off
+/// again after the function that the reference was passed to returns. So,
+/// `JsValue` has a different `LongRefFromWasmAbi` implementation that behaves
+/// the same as `FromWasmAbi`, putting the value on the heap.
+///
+/// This is needed for async functions, where the reference needs to be valid
+/// for the whole length of the `Future`, rather than the initial synchronous
+/// call.
+///
+/// 'long ref' is short for 'long-lived reference'.
+pub trait LongRefFromWasmAbi: WasmDescribe {
+    /// Same as `RefFromWasmAbi::Abi`
+    type Abi: WasmAbi;
+
+    /// Same as `RefFromWasmAbi::Anchor`
+    type Anchor: Borrow<Self>;
+
+    /// Same as `RefFromWasmAbi::ref_from_abi`
+    unsafe fn long_ref_from_abi(js: Self::Abi) -> Self::Anchor;
 }
 
 /// Dual of the `RefFromWasmAbi` trait, except for mutable references.

@@ -3498,6 +3498,15 @@ impl<'a> Context<'a> {
                 "JSON.stringify(obj === undefined ? null : obj)".to_string()
             }
 
+            Intrinsic::CopyToTypedArray => {
+                assert_eq!(args.len(), 2);
+                format!(
+                    "new Uint8Array({dst}.buffer, {dst}.byteOffset, {dst}.byteLength).set({src})",
+                    src = args[0],
+                    dst = args[1]
+                )
+            }
+
             Intrinsic::ExternrefHeapLiveCount => {
                 assert_eq!(args.len(), 0);
                 self.expose_global_heap();

@@ -126,6 +126,16 @@ impl AsyncStruct {
     }
 }
 
+#[wasm_bindgen]
+pub async fn async_take_js_reference(x: &JsValue) {
+    assert_eq!(*x, 42);
+}
+
+#[wasm_bindgen]
+pub async fn async_take_mut_slice(x: &mut [i32]) {
+    x.fill(42);
+}
+
 #[wasm_bindgen_test]
 async fn test_promise() {
     assert_eq!(call_promise().await.as_string(), Some(String::from("ok")))

@@ -18,6 +18,10 @@ exports.call_exports = async function() {
   assert.strictEqual("Hi, Jim!", await wasm.async_take_reference("Jim"));
   const foo = await new wasm.AsyncStruct();
   assert.strictEqual(42, await foo.method());
+  await wasm.async_take_js_reference(42);
+  const buffer = new Int32Array([1, 2, 3, 4]);
+  await wasm.async_take_mut_slice(buffer);
+  assert.deepStrictEqual(buffer, new Int32Array([42, 42, 42, 42]));
 };
 
 exports.call_promise = async function() {
