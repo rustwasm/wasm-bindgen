@@ -5437,13 +5437,12 @@ pub mod Intl {
         #[wasm_bindgen(constructor, js_namespace = Intl)]
         pub fn new(locales: &Array, options: &Object) -> NumberFormat;
 
-        /// The Intl.NumberFormat.prototype.format property returns a getter function that
-        /// formats a number according to the locale and formatting options of this
-        /// NumberFormat object.
+        /// The Intl.NumberFormat.prototype.format() method formats a number according to
+        /// the locale and formatting options of this Intl.NumberFormat object.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/format)
-        #[wasm_bindgen(method, getter, js_class = "Intl.NumberFormat")]
-        pub fn format(this: &NumberFormat) -> Function;
+        #[wasm_bindgen(method, js_class = "Intl.NumberFormat")]
+        pub fn format(this: &NumberFormat, number: f64) -> JsString;
 
         /// The `Intl.Numberformat.prototype.formatToParts()` method allows locale-aware
         /// formatting of strings produced by NumberTimeFormat formatters.
