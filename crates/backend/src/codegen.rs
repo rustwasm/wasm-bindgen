@@ -137,7 +137,6 @@ impl ToTokens for ast::Struct {
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
-        let free_fn_const = Ident::new(&format!("{}__const", free_fn), free_fn.span());
         (quote! {
             #[automatically_derived]
             impl wasm_bindgen::describe::WasmDescribe for #name {
@@ -210,7 +209,7 @@ impl ToTokens for ast::Struct {
 
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            const #free_fn_const: () = {
+            const _: () = {
                 #[no_mangle]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #free_fn(ptr: u32) {
@@ -293,11 +292,9 @@ impl ToTokens for ast::StructField {
             quote! {}
         };
 
-        let getter_const = Ident::new(&format!("{}__const", getter), getter.span());
-
         (quote! {
             #[automatically_derived]
-            const #getter_const: () = {
+            const _: () = {
                 #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #getter(js: u32)
@@ -331,12 +328,10 @@ impl ToTokens for ast::StructField {
             return;
         }
 
-        let setter_const = Ident::new(&format!("{}__const", setter), setter.span());
-
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            const #setter_const: () = {
+            const _: () = {
                 #[no_mangle]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #setter(
@@ -555,11 +550,9 @@ impl TryToTokens for ast::Export {
             quote! {}
         };
 
-        let generated_name_const =
-            Ident::new(&format!("{}__const", generated_name), generated_name.span());
         (quote! {
             #[automatically_derived]
-            const #generated_name_const: () = {
+            const _: () = {
                 #(#attrs)*
                 #[cfg_attr(
                     all(target_arch = "wasm32", not(target_os = "emscripten")),
@@ -647,8 +640,6 @@ impl ToTokens for ast::ImportType {
             None => "",
             Some(comment) => comment,
         };
-        let const_name = format!("__wbg_generated_const_{}", rust_name);
-        let const_name = Ident::new(&const_name, Span::call_site());
         let instanceof_shim = Ident::new(&self.instanceof_shim, Span::call_site());
 
         let internal_obj = match self.extends.first() {
@@ -697,7 +688,7 @@ impl ToTokens for ast::ImportType {
             }
 
             #[automatically_derived]
-            const #const_name: () = {
+            const _: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
                 use wasm_bindgen::convert::{RefFromWasmAbi, LongRefFromWasmAbi};
@@ -1387,16 +1378,12 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         }
 
         let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
-        let const_name = Ident::new(
-            &format!("__wbindgen_const_describe_{}", ident),
-            ident.span(),
-        );
         let inner = &self.inner;
         let attrs = &self.attrs;
         (quote! {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[automatically_derived]
-            const #const_name: () = {
+            const _: () = {
                 #(#attrs)*
                 #[no_mangle]
                 #[doc(hidden)]
