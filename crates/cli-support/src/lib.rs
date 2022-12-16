@@ -755,7 +755,7 @@ impl Output {
             write(
                 &js_path,
                 format!(
-                    "import * as wasm from \"./{wasm_name}.wasm\";
+                    "import wasm from \"./{wasm_name}.wasm\";
 import {{ __wbg_set_wasm }} from \"./{js_name}\";
 __wbg_set_wasm(wasm);
 export * from \"./{js_name}\";
