@@ -45,13 +45,11 @@ struct InstructionBuilder<'a, 'b> {
 
 pub fn process(
     module: &mut Module,
+    programs: Vec<decode::Program>,
     externref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
-    let mut storage = Vec::new();
-    let programs = extract_programs(module, &mut storage)?;
-
     let mut cx = Context {
         adapters: Default::default(),
         aux: Default::default(),
@@ -1493,7 +1491,11 @@ impl<'a> Context<'a> {
     }
 }
 
-fn extract_programs<'a>(
+/// Extract all of the `Program`s encoded in our custom section.
+///
+/// `program_storage` is used to squirrel away the raw bytes of the custom
+///  section, so that they can be referenced by the `Program`s we return.
+pub fn extract_programs<'a>(
     module: &mut Module,
     program_storage: &'a mut Vec<Vec<u8>>,
 ) -> Result<Vec<decode::Program<'a>>, Error> {

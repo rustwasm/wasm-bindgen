@@ -356,20 +356,31 @@ impl Bindgen {
             .producers
             .add_processed_by("wasm-bindgen", &wasm_bindgen_shared::version());
 
+        // Parse and remove our custom section before executing descriptors.
+        // That includes checking that the binary has the same schema version
+        // as this version of the CLI, which is why we do it first - to make
+        // sure that this binary was produced by a compatible version of the
+        // wasm-bindgen macro before attempting to interpret our unstable
+        // descriptor format. That way, we give a more helpful version mismatch
+        // error instead of an unhelpful panic if an incompatible descriptor is
+        // found.
+        let mut storage = Vec::new();
+        let programs = wit::extract_programs(&mut module, &mut storage)?;
+
         // Learn about the type signatures of all wasm-bindgen imports and
         // exports by executing `__wbindgen_describe_*` functions. This'll
         // effectively move all the descriptor functions to their own custom
         // sections.
         descriptors::execute(&mut module)?;
 
-        // Process and remove our raw custom sections emitted by the
-        // #[wasm_bindgen] macro and the compiler. In their stead insert a
-        // forward-compatible wasm interface types section as well as an
+        // Process the custom section we extracted earlier. In its stead insert
+        // a forward-compatible wasm interface types section as well as an
         // auxiliary section for all sorts of miscellaneous information and
         // features #[wasm_bindgen] supports that aren't covered by wasm
         // interface types.
         wit::process(
             &mut module,
+            programs,
             self.externref,
             self.wasm_interface_types,
             self.emit_start,
