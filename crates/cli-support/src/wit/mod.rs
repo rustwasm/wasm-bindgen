@@ -264,7 +264,12 @@ impl<'a> Context<'a> {
                 // type has to be `(i32, i32) -> i32`
                 let ty = self.module.types.get(x.ty());
                 let type_matches = ty.params() == [I32, I32] && ty.results() == [I32];
-                name_matches && type_matches
+                // Having the correct name and signature doesn't necessarily mean that it's
+                // actually a `main` function. Unfortunately, there doesn't seem to be any 100%
+                // reliable way to make sure that it is, but we can at least rule out any
+                // `#[wasm_bindgen]` exported functions.
+                let unknown = !self.function_exports.contains_key("main");
+                name_matches && type_matches && unknown
             })
             .map(|x| x.id());
         let main_id = match main_id {
