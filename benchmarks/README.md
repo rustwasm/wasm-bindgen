@@ -21,7 +21,7 @@ Next, `cd` into that directory and execute:
 
 ```
 $ cargo build --release --target wasm32-unknown-unknown
-$ wasm-bindgen --target web ./target/wasm32-unknown-unknown/release/crate.wasm
+$ wasm-bindgen --out-dir pkg --target web ./target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm
 ```
 
 Next, use your favorite static file server to host the current directory. For
