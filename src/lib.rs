@@ -44,7 +44,7 @@ macro_rules! externs {
     )
 }
 
-/// A module which is typically glob imported
+/// A module which is typically glob imported.
 ///
 /// ```
 /// use wasm_bindgen::prelude::*;
