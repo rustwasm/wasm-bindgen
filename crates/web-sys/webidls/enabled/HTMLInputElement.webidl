@@ -135,6 +135,9 @@ interface HTMLInputElement : HTMLElement {
   [Throws]
   undefined setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
 
+  [Throws]
+  undefined showPicker();
+
   // also has obsolete members
 };
 
