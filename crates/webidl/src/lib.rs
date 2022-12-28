@@ -795,8 +795,6 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         let out_file_path = to.join(format!("gen_{}.rs", name));
 
         fs::write(&out_file_path, &feature.code)?;
-
-        rustfmt(&out_file_path, name)?;
     }
 
     let binding_file = features.keys().map(|name| {
@@ -809,7 +807,12 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
 
     fs::write(to.join("mod.rs"), binding_file)?;
 
-    rustfmt(&to.join("mod.rs"), "mod")?;
+    let to_format = features
+        .iter()
+        .map(|(name, _)| to.join(format!("gen_{}.rs", name)))
+        .chain([to.join("mod.rs")]);
+
+    rustfmt(to_format)?;
 
     return if generate_features {
         let features = features
@@ -846,16 +849,16 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         Ok(source)
     }
 
-    fn rustfmt(path: &PathBuf, name: &str) -> Result<()> {
+    fn rustfmt<'a>(paths: impl IntoIterator<Item = PathBuf>) -> Result<()> {
         // run rustfmt on the generated file - really handy for debugging
         let result = Command::new("rustfmt")
             .arg("--edition")
             .arg("2018")
-            .arg(&path)
+            .args(paths)
             .status()
-            .context(format!("rustfmt on file {}", name))?;
+            .context("rustfmt failed")?;
 
-        assert!(result.success(), "rustfmt on file {}", name);
+        assert!(result.success(), "rustfmt failed");
 
         Ok(())
     }
