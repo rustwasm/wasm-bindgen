@@ -698,4 +698,11 @@ extern "C" {
         end: u32,
         direction: &str,
     ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLInputElement" , js_name = showPicker)]
+    #[doc = "The `showPicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/showPicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
+    pub fn show_picker(this: &HtmlInputElement) -> Result<(), JsValue>;
 }

@@ -29,6 +29,7 @@ If you don't see a particular web API in `web-sys`, here is how to add it.
    [spec](https://w3c.github.io/mediasession/#the-mediasession-interface). The
    [very bottom](https://w3c.github.io/mediasession/#idl-index) of _that_ page
    is the IDL.
-2. Run `cargo run --release --package wasm-bindgen-webidl -- webidls src/features`
-3. Copy the contents of `features` into the `[features]` section of `Cargo.toml`
-4. Run `git add .` to add all the generated files into git.
+2. Annotate the functions that can throw with `[Throws]`
+3. Run `cargo run --release --package wasm-bindgen-webidl -- webidls src/features`
+4. Copy the contents of `features` into the `[features]` section of `Cargo.toml`
+5. Run `git add .` to add all the generated files into git.
