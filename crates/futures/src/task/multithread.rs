@@ -8,7 +8,6 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::Arc;
 use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 const SLEEPING: i32 = 0;
 const AWAKE: i32 = 1;

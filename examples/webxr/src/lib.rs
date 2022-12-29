@@ -8,7 +8,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use utils::set_panic_hook;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::future_to_promise;
 use web_sys::*;
 

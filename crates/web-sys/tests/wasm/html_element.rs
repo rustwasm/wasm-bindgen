@@ -1,5 +1,4 @@
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use wasm_bindgen_test::*;
 use web_sys::HtmlElement;
 

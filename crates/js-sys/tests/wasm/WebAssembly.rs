@@ -1,5 +1,5 @@
 use js_sys::*;
-use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 use web_sys::{Headers, Response, ResponseInit};

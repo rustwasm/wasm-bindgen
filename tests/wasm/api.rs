@@ -1,6 +1,5 @@
 use js_sys::{Uint8Array, WebAssembly};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::{self, JsCast};
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/api.js")]

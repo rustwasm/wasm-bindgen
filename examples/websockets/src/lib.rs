@@ -1,5 +1,4 @@
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 
 macro_rules! console_log {

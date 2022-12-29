@@ -2,7 +2,6 @@ extern crate wasm_bindgen;
 extern crate web_sys;
 
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::Node;
 
 #[wasm_bindgen(raw_module = "../globals.js")]
