@@ -50,6 +50,7 @@ macro_rules! externs {
 /// use wasm_bindgen::prelude::*;
 /// ```
 pub mod prelude {
+    pub use crate::JsCast;
     pub use crate::JsValue;
     pub use crate::UnwrapThrowExt;
     #[doc(hidden)]
