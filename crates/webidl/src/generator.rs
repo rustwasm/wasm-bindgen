@@ -710,15 +710,6 @@ impl Dictionary {
             }
         }
 
-        // The constructor is unstable if any of the fields are
-        let (unstable_ctor, unstable_ctor_docs) = match unstable {
-            true => (None, None),
-            false => {
-                let unstable = fields.iter().any(|f| f.unstable);
-                (maybe_unstable_attr(unstable), maybe_unstable_docs(unstable))
-            }
-        };
-
         required_features.remove(&name.to_string());
 
         let cfg_features = get_cfg_features(options, &required_features);
@@ -756,11 +747,9 @@ impl Dictionary {
 
             #unstable_attr
             impl #name {
-                #unstable_ctor
                 #cfg_features
                 #ctor_doc_comment
                 #unstable_docs
-                #unstable_ctor_docs
                 pub fn new(#(#required_args),*) -> Self {
                     #[allow(unused_mut)]
                     let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());

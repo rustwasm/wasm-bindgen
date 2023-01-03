@@ -79,6 +79,17 @@ pub(crate) struct AttributeInterfaceData<'src> {
     pub(crate) stability: ApiStability,
 }
 
+pub(crate) struct ConstData<'src> {
+    pub(crate) definition: &'src ConstMember<'src>,
+    pub(crate) stability: ApiStability,
+}
+
+#[derive(Clone)]
+pub(crate) struct ConstNamespaceData<'src> {
+    pub(crate) definition: &'src ConstNamespaceMember<'src>,
+    pub(crate) stability: ApiStability,
+}
+
 /// We need to collect interface data during the first pass, to be used later.
 #[derive(Default)]
 pub(crate) struct InterfaceData<'src> {
@@ -87,7 +98,7 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) has_interface: bool,
     pub(crate) deprecated: Option<String>,
     pub(crate) attributes: Vec<AttributeInterfaceData<'src>>,
-    pub(crate) consts: Vec<&'src ConstMember<'src>>,
+    pub(crate) consts: Vec<ConstData<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
     pub(crate) superclass: Option<&'src str>,
     pub(crate) definition_attributes: Option<&'src ExtendedAttributeList<'src>>,
@@ -115,13 +126,18 @@ pub(crate) struct MixinData<'src> {
 #[derive(Default)]
 pub(crate) struct NamespaceData<'src> {
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
-    pub(crate) consts: Vec<&'src ConstNamespaceMember<'src>>,
+    pub(crate) consts: Vec<ConstNamespaceData<'src>>,
+    pub(crate) stability: ApiStability,
+}
+
+pub(crate) struct PartialDictionaryData<'src> {
+    pub(crate) definition: &'src PartialDictionaryDefinition<'src>,
     pub(crate) stability: ApiStability,
 }
 
 #[derive(Default)]
 pub(crate) struct DictionaryData<'src> {
-    pub(crate) partials: Vec<&'src PartialDictionaryDefinition<'src>>,
+    pub(crate) partials: Vec<PartialDictionaryData<'src>>,
     pub(crate) definition: Option<&'src DictionaryDefinition<'src>>,
     pub(crate) stability: ApiStability,
 }
@@ -156,6 +172,7 @@ pub(crate) enum OperationId<'src> {
 pub(crate) struct OperationData<'src> {
     pub(crate) signatures: Vec<Signature<'src>>,
     pub(crate) is_static: bool,
+    pub(crate) stability: ApiStability,
 }
 
 #[derive(Clone, Debug)]
@@ -224,7 +241,7 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::Definition<'src> {
 
         match self {
             Dictionary(dictionary) => dictionary.first_pass(record, stability),
-            PartialDictionary(dictionary) => dictionary.first_pass(record, ()),
+            PartialDictionary(dictionary) => dictionary.first_pass(record, stability),
             Enum(enum_) => enum_.first_pass(record, stability),
             IncludesStatement(includes) => includes.first_pass(record, ()),
             Interface(interface) => interface.first_pass(record, stability),
@@ -260,8 +277,12 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::DictionaryDefinition<'src> 
     }
 }
 
-impl<'src> FirstPass<'src, ()> for weedle::PartialDictionaryDefinition<'src> {
-    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ApiStability> for weedle::PartialDictionaryDefinition<'src> {
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        stability: ApiStability,
+    ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
@@ -271,7 +292,10 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialDictionaryDefinition<'src> {
             .entry(self.identifier.0)
             .or_default()
             .partials
-            .push(self);
+            .push(PartialDictionaryData {
+                definition: self,
+                stability,
+            });
 
         Ok(())
     }
@@ -335,6 +359,7 @@ fn first_pass_operation<'src, A: Into<Arg<'src>> + 'src>(
     ret: &weedle::types::ReturnType<'src>,
     attrs: &'src Option<ExtendedAttributeList<'src>>,
     is_static: bool,
+    stability: ApiStability,
 ) {
     if util::is_chrome_only(attrs) {
         return;
@@ -367,6 +392,7 @@ fn first_pass_operation<'src, A: Into<Arg<'src>> + 'src>(
     for id in ids {
         let op = operations.entry(*id).or_default();
         op.is_static = is_static;
+        op.stability = stability;
         op.signatures.push(Signature {
             args: args.clone(),
             ret: ret.clone(),
@@ -412,6 +438,7 @@ fn process_interface_attribute<'src>(
     self_name: &'src str,
     attr: &'src ExtendedAttribute<'src>,
 ) {
+    let stability = record.interfaces[self_name].stability;
     let ident = weedle::common::Identifier(self_name);
     let non_null = weedle::types::MayBeNull {
         type_: ident,
@@ -432,6 +459,7 @@ fn process_interface_attribute<'src>(
                 &return_ty,
                 &None,
                 false,
+                stability,
             );
         }
         ExtendedAttribute::NoArgs(other) if (other.0).0 == "Constructor" => {
@@ -444,6 +472,7 @@ fn process_interface_attribute<'src>(
                 &return_ty,
                 &None,
                 false,
+                stability,
             );
         }
         ExtendedAttribute::NamedArgList(list) if list.lhs_identifier.0 == "NamedConstructor" => {
@@ -458,6 +487,7 @@ fn process_interface_attribute<'src>(
                 &return_ty,
                 &None,
                 false,
+                stability,
             );
         }
         _ => {}
@@ -497,7 +527,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
     ) -> Result<()> {
         match self {
             InterfaceMember::Attribute(attr) => attr.first_pass(record, ctx),
-            InterfaceMember::Operation(op) => op.first_pass(record, ctx.0),
+            InterfaceMember::Operation(op) => op.first_pass(record, ctx),
             InterfaceMember::Const(const_) => {
                 if util::is_chrome_only(&const_.attributes) {
                     return Ok(());
@@ -507,15 +537,18 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
                     .get_mut(ctx.0)
                     .unwrap()
                     .consts
-                    .push(const_);
+                    .push(ConstData {
+                        definition: const_,
+                        stability: ctx.1,
+                    });
                 Ok(())
             }
-            InterfaceMember::Constructor(constr) => constr.first_pass(record, ctx.0),
+            InterfaceMember::Constructor(constr) => constr.first_pass(record, ctx),
             InterfaceMember::Iterable(_iterable) => {
                 log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
                 Ok(())
             }
-            InterfaceMember::Maplike(ml) => ml.first_pass(record, ctx.0),
+            InterfaceMember::Maplike(ml) => ml.first_pass(record, ctx),
             // TODO
             InterfaceMember::Stringifier(_) => {
                 log::warn!(
@@ -539,11 +572,13 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::OperationInterfaceMember<'src>
+{
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        (self_name, stability): (&'src str, ApiStability),
     ) -> Result<()> {
         let is_static = match self.modifier {
             Some(StringifierOrStatic::Stringifier(_)) => {
@@ -572,16 +607,19 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             &self.return_type,
             &self.attributes,
             is_static,
+            stability,
         );
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::interface::ConstructorInterfaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::ConstructorInterfaceMember<'src>
+{
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        (self_name, stability): (&'src str, ApiStability),
     ) -> Result<()> {
         let ident = weedle::common::Identifier(self_name);
         let non_null = weedle::types::MayBeNull {
@@ -602,17 +640,20 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::ConstructorInterfac
             &return_ty,
             &self.attributes,
             false,
+            stability,
         );
 
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::MaplikeInterfaceMember<'src>
+{
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        (self_name, stability): (&'src str, ApiStability),
     ) -> Result<()> {
         let key_ty = &self.generics.body.0;
         let value_ty = &self.generics.body.2;
@@ -656,7 +697,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
                     identifier: Identifier("size"),
                     semi_colon: term!(;),
                 },
-                stability: ApiStability::Stable,
+                stability,
             });
 
         // boolean has(K key);
@@ -674,6 +715,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
             )))),
             &None,
             false,
+            stability,
         );
 
         // V? get(K key);
@@ -686,6 +728,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
             &opt_value_ret(),
             &None,
             false,
+            stability,
         );
 
         // callback MapLikeForEachCallback = undefined (V value, K key);
@@ -712,6 +755,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
             &undefined_ret(),
             &THROWS_ATTR,
             false,
+            stability,
         );
 
         // TODO: iterators could have stronger types by generating specialised interfaces for each
@@ -735,6 +779,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
             )))),
             &NEW_OBJECT_ATTR,
             false,
+            stability,
         );
 
         // [NewObject] MapLikeIterator keys();
@@ -752,6 +797,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
             )))),
             &NEW_OBJECT_ATTR,
             false,
+            stability,
         );
 
         // [NewObject] MapLikeIterator values();
@@ -769,6 +815,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
             )))),
             &NEW_OBJECT_ATTR,
             false,
+            stability,
         );
 
         // add writeable interface if *not* readonly
@@ -783,6 +830,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
                 &undefined_ret(),
                 &None,
                 false,
+                stability,
             );
 
             // boolean delete(K key);
@@ -800,6 +848,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
                 )))),
                 &None,
                 false,
+                stability,
             );
 
             // TODO: `set` actually returns `this` but we don't have a way to express that just yet
@@ -813,6 +862,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::MaplikeInterfaceMem
                 &undefined_ret(),
                 &None,
                 false,
+                stability,
             );
         }
 
@@ -943,6 +993,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             &self.return_type,
             &self.attributes,
             false,
+            ctx.1,
         );
         Ok(())
     }
@@ -1007,7 +1058,7 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::NamespaceDefinition<'src> {
         namespace.stability = stability;
 
         for member in &self.members.body {
-            member.first_pass(record, self.identifier.0)?;
+            member.first_pass(record, (self.identifier.0, stability))?;
         }
 
         Ok(())
@@ -1024,44 +1075,46 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::PartialNamespaceDefinition<
             return Ok(());
         }
 
-        let namespace = record.namespaces.entry(self.identifier.0).or_default();
-        namespace.stability = stability;
-
         for member in &self.members.body {
-            member.first_pass(record, self.identifier.0)?;
+            member.first_pass(record, (self.identifier.0, stability))?;
         }
 
         Ok(())
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::namespace::NamespaceMember<'src> {
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        ctx: (&'src str, ApiStability),
     ) -> Result<()> {
         match self {
             weedle::namespace::NamespaceMember::Const(const_) => {
                 record
                     .namespaces
-                    .get_mut(self_name)
+                    .get_mut(ctx.0)
                     .unwrap()
                     .consts
-                    .push(const_);
+                    .push(ConstNamespaceData {
+                        definition: const_,
+                        stability: ctx.1,
+                    });
                 Ok(())
             }
-            weedle::namespace::NamespaceMember::Operation(op) => op.first_pass(record, self_name),
+            weedle::namespace::NamespaceMember::Operation(op) => op.first_pass(record, ctx),
             _ => Ok(()),
         }
     }
 }
 
-impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceMember<'src> {
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::namespace::OperationNamespaceMember<'src>
+{
     fn first_pass(
         &'src self,
         record: &mut FirstPassRecord<'src>,
-        self_name: &'src str,
+        (self_name, stability): (&'src str, ApiStability),
     ) -> Result<()> {
         first_pass_operation(
             record,
@@ -1072,6 +1125,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceM
             &self.return_type,
             &self.attributes,
             true,
+            stability,
         );
         Ok(())
     }

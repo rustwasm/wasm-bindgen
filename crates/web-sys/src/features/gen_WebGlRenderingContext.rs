@@ -1599,12 +1599,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlProgram`, `WebGlRenderingContext`*"]
     pub fn link_program(this: &WebGlRenderingContext, program: &WebGlProgram);
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = makeXRCompatible)]
     #[doc = "The `makeXRCompatible()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/makeXRCompatible)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlRenderingContext`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn make_xr_compatible(this: &WebGlRenderingContext) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = pixelStorei)]
     #[doc = "The `pixelStorei()` method."]

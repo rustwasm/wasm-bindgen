@@ -437,15 +437,13 @@ impl<'src> FirstPassRecord<'src> {
             // Stable types can have methods that have unstable argument types.
             // If any of the arguments types are `unstable` then this method is downgraded
             // to be unstable.
-            let unstable_override = match unstable {
-                // only downgrade stable methods
-                false => signature
-                    .orig
-                    .args
-                    .iter()
-                    .any(|arg| is_type_unstable(arg.ty, unstable_types)),
-                true => true,
-            };
+            let has_unstable_args = signature
+                .orig
+                .args
+                .iter()
+                .any(|arg| is_type_unstable(arg.ty, unstable_types));
+
+            let unstable = unstable || data.stability.is_unstable() || has_unstable_args;
 
             if let Some(arguments) = arguments {
                 if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
@@ -459,7 +457,7 @@ impl<'src> FirstPassRecord<'src> {
                         structural,
                         catch,
                         variadic,
-                        unstable: unstable_override,
+                        unstable,
                     });
                 }
             }
@@ -490,7 +488,7 @@ impl<'src> FirstPassRecord<'src> {
                             structural,
                             catch,
                             variadic: false,
-                            unstable: unstable_override,
+                            unstable,
                         });
                     }
                 }
