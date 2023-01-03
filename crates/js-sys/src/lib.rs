@@ -29,7 +29,6 @@ use std::str;
 use std::str::FromStr;
 
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 // When adding new imports:
 //

@@ -11,7 +11,7 @@ use core::pin::Pin;
 use core::task::{Context, Poll};
 use futures_core::stream::Stream;
 use js_sys::{AsyncIterator, IteratorNext};
-use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen::prelude::*;
 
 /// A `Stream` that yields values from an underlying `AsyncIterator`.
 pub struct JsStream {

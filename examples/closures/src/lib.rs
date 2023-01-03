@@ -1,6 +1,5 @@
 use js_sys::{Array, Date};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::{Document, Element, HtmlElement, Window};
 
 #[wasm_bindgen(start)]

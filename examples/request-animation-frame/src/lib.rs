@@ -1,7 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 fn window() -> web_sys::Window {
     web_sys::window().expect("no global `window` exists")

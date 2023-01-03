@@ -8,7 +8,6 @@ use std::time::{Duration, UNIX_EPOCH};
 use gloo::events::EventListener;
 use json::JsonValue;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
 use web_sys::Document;
 use web_sys::Element;

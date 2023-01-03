@@ -1,6 +1,5 @@
 use js_sys::{Function, Object, Reflect, WebAssembly};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::{spawn_local, JsFuture};
 
 // lifted from the `console_log` example

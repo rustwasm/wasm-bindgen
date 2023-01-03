@@ -1,8 +1,6 @@
 use js_sys::*;
 use std::iter::FromIterator;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
 
 macro_rules! js_array {

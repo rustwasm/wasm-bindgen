@@ -1,6 +1,5 @@
 use crate::generated::*;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use wasm_bindgen_test::*;
 
 macro_rules! read_test_suite {

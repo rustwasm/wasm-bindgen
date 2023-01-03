@@ -5,7 +5,6 @@ use crate::store::ItemList;
 use crate::{Message, Scheduler};
 use std::cell::RefCell;
 use std::rc::Rc;
-use wasm_bindgen::JsCast;
 
 use crate::template::Template;
 

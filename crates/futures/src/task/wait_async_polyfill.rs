@@ -40,7 +40,6 @@ use js_sys::{encode_uri_component, Array, Promise};
 use std::cell::RefCell;
 use std::sync::atomic::AtomicI32;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::{MessageEvent, Worker};
 
 const HELPER_CODE: &'static str = "
