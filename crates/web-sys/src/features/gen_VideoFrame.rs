@@ -190,6 +190,29 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new_with_image_bitmap(image: &ImageBitmap) -> Result<VideoFrame, JsValue>;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "OffscreenCanvas")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_offscreen_canvas(image: &OffscreenCanvas) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_video_frame(image: &VideoFrame) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "HtmlImageElement", feature = "VideoFrameInit",))]
     #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
     #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
@@ -262,6 +285,36 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new_with_image_bitmap_and_video_frame_init(
         image: &ImageBitmap,
+        init: &VideoFrameInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "OffscreenCanvas", feature = "VideoFrameInit",))]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`, `VideoFrame`, `VideoFrameInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_offscreen_canvas_and_video_frame_init(
+        image: &OffscreenCanvas,
+        init: &VideoFrameInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoFrameInit")]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrame`, `VideoFrameInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_video_frame_and_video_frame_init(
+        image: &VideoFrame,
         init: &VideoFrameInit,
     ) -> Result<VideoFrame, JsValue>;
     #[cfg(web_sys_unstable_apis)]

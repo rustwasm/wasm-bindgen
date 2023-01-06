@@ -28,6 +28,8 @@ typedef (HTMLImageElement or
          ImageData or
          CanvasRenderingContext2D or
          ImageBitmap or
+         OffscreenCanvas or
+         VideoFrame or
          BufferSource) ImageBitmapSource;
 
 [Exposed=(Window,Worker)]
