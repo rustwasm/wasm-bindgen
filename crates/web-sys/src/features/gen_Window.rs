@@ -2423,6 +2423,7 @@ extern "C" {
         this: &Window,
         a_image: &OffscreenCanvas,
     ) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrame")]
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = createImageBitmap)]
     #[doc = "The `createImageBitmap()` method."]
@@ -2430,6 +2431,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/createImageBitmap)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoFrame`, `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn create_image_bitmap_with_video_frame(
         this: &Window,
         a_image: &VideoFrame,
@@ -2574,6 +2578,7 @@ extern "C" {
         a_sw: i32,
         a_sh: i32,
     ) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrame")]
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = createImageBitmap)]
     #[doc = "The `createImageBitmap()` method."]
@@ -2581,6 +2586,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/createImageBitmap)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoFrame`, `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn create_image_bitmap_with_video_frame_and_a_sx_and_a_sy_and_a_sw_and_a_sh(
         this: &Window,
         a_image: &VideoFrame,

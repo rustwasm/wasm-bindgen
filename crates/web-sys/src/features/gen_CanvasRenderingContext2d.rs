@@ -385,6 +385,7 @@ extern "C" {
         dx: f64,
         dy: f64,
     ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrame")]
     # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = drawImage)]
     #[doc = "The `drawImage()` method."]
@@ -392,6 +393,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn draw_image_with_video_frame(
         this: &CanvasRenderingContext2d,
         image: &VideoFrame,
@@ -488,6 +492,7 @@ extern "C" {
         dw: f64,
         dh: f64,
     ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrame")]
     # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = drawImage)]
     #[doc = "The `drawImage()` method."]
@@ -495,6 +500,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn draw_image_with_video_frame_and_dw_and_dh(
         this: &CanvasRenderingContext2d,
         image: &VideoFrame,
@@ -617,6 +625,7 @@ extern "C" {
         dw: f64,
         dh: f64,
     ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrame")]
     # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = drawImage)]
     #[doc = "The `drawImage()` method."]
@@ -624,6 +633,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn draw_image_with_video_frame_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
         this: &CanvasRenderingContext2d,
         image: &VideoFrame,
@@ -888,6 +900,7 @@ extern "C" {
         image: &OffscreenCanvas,
         repetition: &str,
     ) -> Result<Option<CanvasPattern>, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "CanvasPattern", feature = "VideoFrame",))]
     # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = createPattern)]
     #[doc = "The `createPattern()` method."]
@@ -895,6 +908,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createPattern)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasPattern`, `CanvasRenderingContext2d`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn create_pattern_with_video_frame(
         this: &CanvasRenderingContext2d,
         image: &VideoFrame,
