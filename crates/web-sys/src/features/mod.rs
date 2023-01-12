@@ -832,18 +832,6 @@ mod gen_ChannelMergerOptions;
 #[cfg(feature = "ChannelMergerOptions")]
 pub use gen_ChannelMergerOptions::*;
 
-#[cfg(feature = "ChannelPixelLayout")]
-#[allow(non_snake_case)]
-mod gen_ChannelPixelLayout;
-#[cfg(feature = "ChannelPixelLayout")]
-pub use gen_ChannelPixelLayout::*;
-
-#[cfg(feature = "ChannelPixelLayoutDataType")]
-#[allow(non_snake_case)]
-mod gen_ChannelPixelLayoutDataType;
-#[cfg(feature = "ChannelPixelLayoutDataType")]
-pub use gen_ChannelPixelLayoutDataType::*;
-
 #[cfg(feature = "ChannelSplitterNode")]
 #[allow(non_snake_case)]
 mod gen_ChannelSplitterNode;
@@ -3957,12 +3945,6 @@ pub use gen_IirFilterOptions::*;
 mod gen_ImageBitmap;
 #[cfg(feature = "ImageBitmap")]
 pub use gen_ImageBitmap::*;
-
-#[cfg(feature = "ImageBitmapFormat")]
-#[allow(non_snake_case)]
-mod gen_ImageBitmapFormat;
-#[cfg(feature = "ImageBitmapFormat")]
-pub use gen_ImageBitmapFormat::*;
 
 #[cfg(feature = "ImageBitmapRenderingContext")]
 #[allow(non_snake_case)]
