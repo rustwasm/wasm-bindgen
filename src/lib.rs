@@ -28,14 +28,14 @@ macro_rules! if_std {
 
 macro_rules! externs {
     ($(#[$attr:meta])* extern "C" { $(fn $name:ident($($args:tt)*) -> $ret:ty;)* }) => (
-        #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+        #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
         $(#[$attr])*
         extern "C" {
             $(fn $name($($args)*) -> $ret;)*
         }
 
         $(
-            #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+            #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
             #[allow(unused_variables)]
             unsafe extern fn $name($($args)*) -> $ret {
                 panic!("function not implemented on non-wasm32 targets")
@@ -1318,7 +1318,10 @@ pub trait UnwrapThrowExt<T>: Sized {
 
 impl<T> UnwrapThrowExt<T> for Option<T> {
     fn expect_throw(self, message: &str) -> T {
-        if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
+        if cfg!(all(
+            target_arch = "wasm32",
+            not(any(target_os = "emscripten", target_os = "wasi"))
+        )) {
             match self {
                 Some(val) => val,
                 None => throw_str(message),
@@ -1334,7 +1337,10 @@ where
     E: core::fmt::Debug,
 {
     fn expect_throw(self, message: &str) -> T {
-        if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
+        if cfg!(all(
+            target_arch = "wasm32",
+            not(any(target_os = "emscripten", target_os = "wasi"))
+        )) {
             match self {
                 Ok(val) => val,
                 Err(_) => throw_str(message),
