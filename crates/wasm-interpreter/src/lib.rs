@@ -270,6 +270,10 @@ impl Frame<'_> {
                 let val = stack.pop().unwrap();
                 self.locals.insert(e.local, val);
             }
+            Instr::LocalTee(e) => {
+                let val = stack.last().unwrap().clone();
+                self.locals.insert(e.local, val);
+            }
 
             // Blindly assume all globals are the stack pointer
             Instr::GlobalGet(_) => stack.push(self.interp.sp),
