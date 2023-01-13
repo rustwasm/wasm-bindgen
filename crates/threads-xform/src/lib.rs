@@ -103,7 +103,11 @@ impl Config {
     /// * Some stack space is prepared for each thread after the first one.
     ///
     /// More and/or less may happen here over time, stay tuned!
-    pub fn run(&self, module: &mut Module) -> Result<(), Error> {
+    pub fn run(
+        &self,
+        module: &mut Module,
+        start: &mut Option<walrus::FunctionBuilder>,
+    ) -> Result<(), Error> {
         if !self.is_enabled(module) {
             return Ok(());
         }
@@ -157,7 +161,7 @@ impl Config {
 
         let _ = module.exports.add("__stack_alloc", stack.alloc);
 
-        inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
+        inject_start(module, start, &tls, &stack, thread_counter_addr, memory)?;
 
         // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
         //
@@ -296,6 +300,7 @@ struct Stack {
 
 fn inject_start(
     module: &mut Module,
+    start: &mut Option<walrus::FunctionBuilder>,
     tls: &Tls,
     stack: &Stack,
     thread_counter_addr: i32,
@@ -304,17 +309,11 @@ fn inject_start(
     use walrus::ir::*;
 
     assert!(stack.size % PAGE_SIZE == 0);
-    let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
+    let builder =
+        start.get_or_insert_with(|| walrus::FunctionBuilder::new(&mut module.types, &[], &[]));
     let local = module.locals.add(ValType::I32);
 
     let mut body = builder.func_body();
-
-    // Call previous start function if one is available. Currently this is
-    // always true because LLVM injects a call to `__wasm_init_memory` as the
-    // start function which, well, initializes memory.
-    if let Some(prev) = module.start.take() {
-        body.call(prev);
-    }
 
     let malloc = find_function(module, "__wbindgen_malloc")?;
 
@@ -359,12 +358,6 @@ fn inject_start(
         .global_set(tls.base)
         .global_get(tls.base)
         .call(tls.init);
-
-    // Finish off our newly generated function.
-    let start_id = builder.finish(Vec::new(), &mut module.funcs);
-
-    // ... and finally flag it as the new start function
-    module.start = Some(start_id);
 
     Ok(())
 }

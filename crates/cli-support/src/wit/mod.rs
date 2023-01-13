@@ -20,6 +20,7 @@ pub use self::standard::*;
 struct Context<'a> {
     start_found: bool,
     module: &'a mut Module,
+    start: &'a mut Option<walrus::FunctionBuilder>,
     adapters: NonstandardWitSection,
     aux: WasmBindgenAux,
     /// All of the wasm module's exported functions.
@@ -47,6 +48,7 @@ struct InstructionBuilder<'a, 'b> {
 
 pub fn process(
     module: &mut Module,
+    start: &mut Option<walrus::FunctionBuilder>,
     programs: Vec<decode::Program>,
     externref_enabled: bool,
     wasm_interface_types: bool,
@@ -63,6 +65,7 @@ pub fn process(
         unique_crate_identifier: "",
         memory: wasm_bindgen_wasm_conventions::get_memory(module).ok(),
         module,
+        start,
         start_found: false,
         externref_enabled,
         wasm_interface_types,
@@ -312,14 +315,13 @@ impl<'a> Context<'a> {
             self.module
                 .add_import_func(PLACEHOLDER_MODULE, "__wbindgen_init_externref_table", ty);
 
-        self.module.start = Some(match self.module.start {
-            Some(prev_start) => {
-                let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-                builder.func_body().call(import).call(prev_start);
-                builder.finish(Vec::new(), &mut self.module.funcs)
-            }
-            None => import,
-        });
+        let module = &mut self.module;
+        let builder = self
+            .start
+            .get_or_insert_with(|| walrus::FunctionBuilder::new(&mut module.types, &[], &[]));
+
+        builder.func_body().call_at(0, import);
+
         self.bind_intrinsic(import_id, Intrinsic::InitExternrefTable)?;
 
         Ok(())
@@ -481,22 +483,17 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        let prev_start = match self.module.start {
-            Some(f) => f,
-            None => {
-                self.module.start = Some(id);
-                return Ok(());
-            }
-        };
+        let module = &mut self.module;
+        let builder = self
+            .start
+            .get_or_insert_with(|| walrus::FunctionBuilder::new(&mut module.types, &[], &[]));
 
-        // Note that we call the previous start function, if any, first. This is
+        // Note that we leave the previous start function, if any, first. This is
         // because the start function currently only shows up when it's injected
         // through thread/externref transforms. These injected start functions
         // need to happen before user code, so we always schedule them first.
-        let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-        builder.func_body().call(prev_start).call(id);
-        let new_start = builder.finish(Vec::new(), &mut self.module.funcs);
-        self.module.start = Some(new_start);
+        builder.func_body().call(id);
+
         Ok(())
     }
 

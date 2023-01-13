@@ -338,8 +338,14 @@ impl Bindgen {
                 .context("failed getting Wasm module")?,
         };
 
+        let mut start = module.start.take().map(|start| {
+            let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
+            builder.func_body().call(start);
+            builder
+        });
+
         self.threads
-            .run(&mut module)
+            .run(&mut module, &mut start)
             .with_context(|| "failed to prepare module for threading")?;
 
         // If requested, turn all mangled symbols into prettier unmangled
@@ -380,6 +386,7 @@ impl Bindgen {
         // interface types.
         wit::process(
             &mut module,
+            &mut start,
             programs,
             self.externref,
             self.wasm_interface_types,
@@ -434,6 +441,8 @@ impl Bindgen {
             multivalue::run(&mut module)
                 .context("failed to transform return pointers into multi-value Wasm")?;
         }
+
+        module.start = start.map(|builder| builder.finish(Vec::new(), &mut module.funcs));
 
         // We've done a whole bunch of transformations to the wasm module, many
         // of which leave "garbage" lying around, so let's prune out all our
