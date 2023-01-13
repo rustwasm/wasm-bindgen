@@ -312,14 +312,14 @@ impl<'a> Context<'a> {
             self.module
                 .add_import_func(PLACEHOLDER_MODULE, "__wbindgen_init_externref_table", ty);
 
-        self.module.start = Some(match self.module.start {
-            Some(prev_start) => {
-                let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-                builder.func_body().call(import).call(prev_start);
-                builder.finish(Vec::new(), &mut self.module.funcs)
-            }
-            None => import,
-        });
+        if self.module.start.is_some() {
+            let builder =
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
+            builder.func_body().call_at(0, import);
+        } else {
+            self.module.start = Some(import);
+        }
+
         self.bind_intrinsic(import_id, Intrinsic::InitExternrefTable)?;
 
         Ok(())
@@ -481,22 +481,19 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        let prev_start = match self.module.start {
-            Some(f) => f,
-            None => {
-                self.module.start = Some(id);
-                return Ok(());
-            }
-        };
+        if self.module.start.is_some() {
+            let builder =
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
 
-        // Note that we call the previous start function, if any, first. This is
-        // because the start function currently only shows up when it's injected
-        // through thread/externref transforms. These injected start functions
-        // need to happen before user code, so we always schedule them first.
-        let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-        builder.func_body().call(prev_start).call(id);
-        let new_start = builder.finish(Vec::new(), &mut self.module.funcs);
-        self.module.start = Some(new_start);
+            // Note that we leave the previous start function, if any, first. This is
+            // because the start function currently only shows up when it's injected
+            // through thread/externref transforms. These injected start functions
+            // need to happen before user code, so we always schedule them first.
+            builder.func_body().call(id);
+        } else {
+            self.module.start = Some(id);
+        }
+
         Ok(())
     }
 

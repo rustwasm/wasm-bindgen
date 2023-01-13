@@ -8,7 +8,8 @@
 
 use anyhow::{anyhow, bail, Result};
 use walrus::{
-    ir::Value, ElementId, FunctionId, GlobalId, GlobalKind, InitExpr, MemoryId, Module, ValType,
+    ir::Value, ElementId, FunctionBuilder, FunctionId, FunctionKind, GlobalId, GlobalKind,
+    InitExpr, MemoryId, Module, ValType,
 };
 
 /// Get a Wasm module's canonical linear memory.
@@ -111,4 +112,39 @@ pub fn get_function_table_entry(module: &Module, idx: u32) -> Result<FunctionTab
         }
     }
     bail!("failed to find `{}` in function table", idx);
+}
+
+pub fn get_or_insert_start_builder(module: &mut Module) -> &mut FunctionBuilder {
+    let prev_start = {
+        match module.start {
+            Some(start) => match module.funcs.get_mut(start).kind {
+                FunctionKind::Import(_) => Err(Some(start)),
+                FunctionKind::Local(_) => Ok(start),
+                FunctionKind::Uninitialized(_) => todo!(),
+            },
+            None => Err(None),
+        }
+    };
+
+    let id = match prev_start {
+        Ok(id) => id,
+        Err(prev_start) => {
+            let mut builder = FunctionBuilder::new(&mut module.types, &[], &[]);
+
+            if let Some(prev_start) = prev_start {
+                builder.func_body().call(prev_start);
+            }
+
+            let id = builder.finish(Vec::new(), &mut module.funcs);
+            module.start = Some(id);
+            id
+        }
+    };
+
+    module
+        .funcs
+        .get_mut(id)
+        .kind
+        .unwrap_local_mut()
+        .builder_mut()
 }
