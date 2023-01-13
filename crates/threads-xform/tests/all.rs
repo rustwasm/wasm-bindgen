@@ -22,7 +22,7 @@ fn runtest(test: &Test) -> Result<String> {
 
     let config = wasm_bindgen_threads_xform::Config::new();
 
-    config.run(&mut module)?;
+    config.run(&mut module, &mut None)?;
     walrus::passes::gc::run(&mut module);
 
     let features = {

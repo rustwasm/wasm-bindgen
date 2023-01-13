@@ -8,6 +8,7 @@ use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
 use wasm_bindgen_shared::struct_function_export_name;
+use wasm_bindgen_threads_xform::ThreadCount;
 
 mod incoming;
 mod nonstandard;
@@ -35,6 +36,7 @@ struct Context<'a> {
     descriptors: HashMap<String, Descriptor>,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_count: Option<ThreadCount>,
     support_start: bool,
 }
 
@@ -52,6 +54,7 @@ pub fn process(
     programs: Vec<decode::Program>,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_count: Option<ThreadCount>,
     support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
     let mut cx = Context {
@@ -69,6 +72,7 @@ pub fn process(
         start_found: false,
         externref_enabled,
         wasm_interface_types,
+        thread_count,
         support_start,
     };
     cx.init()?;
@@ -492,7 +496,11 @@ impl<'a> Context<'a> {
         // because the start function currently only shows up when it's injected
         // through thread/externref transforms. These injected start functions
         // need to happen before user code, so we always schedule them first.
-        builder.func_body().call(id);
+        if let Some(thread_count) = self.thread_count {
+            thread_count.wrap_start(builder, id)
+        } else {
+            builder.func_body().call(id);
+        }
 
         Ok(())
     }

@@ -344,7 +344,8 @@ impl Bindgen {
             builder
         });
 
-        self.threads
+        let thread_count = self
+            .threads
             .run(&mut module, &mut start)
             .with_context(|| "failed to prepare module for threading")?;
 
@@ -390,6 +391,7 @@ impl Bindgen {
             programs,
             self.externref,
             self.wasm_interface_types,
+            thread_count,
             self.emit_start,
         )?;
 
