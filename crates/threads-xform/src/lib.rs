@@ -23,6 +23,9 @@ pub struct Config {
     enabled: bool,
 }
 
+#[derive(Clone, Copy)]
+pub struct ThreadCount(walrus::LocalId);
+
 impl Config {
     /// Create a new configuration with default settings.
     pub fn new() -> Config {
@@ -103,9 +106,9 @@ impl Config {
     /// * Some stack space is prepared for each thread after the first one.
     ///
     /// More and/or less may happen here over time, stay tuned!
-    pub fn run(&self, module: &mut Module) -> Result<(), Error> {
+    pub fn run(&self, module: &mut Module) -> Result<Option<ThreadCount>, Error> {
         if !self.is_enabled(module) {
-            return Ok(());
+            return Ok(None);
         }
 
         let memory = wasm_conventions::get_memory(module)?;
@@ -157,7 +160,7 @@ impl Config {
 
         let _ = module.exports.add("__stack_alloc", stack.alloc);
 
-        inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
+        let thread_count = inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
 
         // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
         //
@@ -177,7 +180,21 @@ impl Config {
         //   call while the leader is destroying its stack! You should make sure that this cannot happen.
         inject_destroy(module, &tls, &stack, memory)?;
 
-        Ok(())
+        Ok(Some(thread_count))
+    }
+}
+
+impl ThreadCount {
+    pub fn wrap_start(self, builder: &mut walrus::FunctionBuilder, start: FunctionId) {
+        // We only want to call the start function if we are in the first thread.
+        // The thread counter should be 0 for the first thread.
+        builder.func_body().local_get(self.0).if_else(
+            None,
+            |_| {},
+            |body| {
+                body.call(start);
+            },
+        );
     }
 }
 
@@ -300,12 +317,13 @@ fn inject_start(
     stack: &Stack,
     thread_counter_addr: i32,
     memory: MemoryId,
-) -> Result<(), Error> {
+) -> Result<ThreadCount, Error> {
     use walrus::ir::*;
 
     assert!(stack.size % PAGE_SIZE == 0);
 
     let local = module.locals.add(ValType::I32);
+    let thread_count = module.locals.add(ValType::I32);
 
     let malloc = find_function(module, "__wbindgen_malloc")?;
 
@@ -319,6 +337,7 @@ fn inject_start(
     body.i32_const(thread_counter_addr)
         .i32_const(1)
         .atomic_rmw(memory, AtomicOp::Add, AtomicWidth::I32, ATOMIC_MEM_ARG)
+        .local_tee(thread_count)
         .if_else(
             None,
             // If our thread id is nonzero then we're the second or greater thread, so
@@ -355,7 +374,7 @@ fn inject_start(
         .global_get(tls.base)
         .call(tls.init);
 
-    Ok(())
+    Ok(ThreadCount(thread_count))
 }
 
 fn inject_destroy(

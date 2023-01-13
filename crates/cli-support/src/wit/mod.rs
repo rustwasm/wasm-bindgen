@@ -8,6 +8,7 @@ use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
 use wasm_bindgen_shared::struct_function_export_name;
+use wasm_bindgen_threads_xform::ThreadCount;
 
 mod incoming;
 mod nonstandard;
@@ -34,6 +35,7 @@ struct Context<'a> {
     descriptors: HashMap<String, Descriptor>,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_count: Option<ThreadCount>,
     support_start: bool,
 }
 
@@ -50,6 +52,7 @@ pub fn process(
     programs: Vec<decode::Program>,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_count: Option<ThreadCount>,
     support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
     let mut cx = Context {
@@ -66,6 +69,7 @@ pub fn process(
         start_found: false,
         externref_enabled,
         wasm_interface_types,
+        thread_count,
         support_start,
     };
     cx.init()?;
@@ -481,7 +485,11 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        if self.module.start.is_some() {
+        if let Some(thread_count) = self.thread_count {
+            let builder =
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
+            thread_count.wrap_start(builder, id);
+        } else if self.module.start.is_some() {
             let builder =
                 wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
 
