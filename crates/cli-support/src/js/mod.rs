@@ -3581,7 +3581,7 @@ impl<'a> Context<'a> {
                 if !variant_docs.is_empty() {
                     self.typescript.push_str(&variant_docs);
                 }
-                self.typescript.push_str(&format!("  {},", name));
+                self.typescript.push_str(&format!("  {name} = {value},"));
             }
         }
         if enum_.generate_typescript {

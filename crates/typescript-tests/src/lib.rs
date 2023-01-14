@@ -1,4 +1,5 @@
 pub mod custom_section;
+pub mod enums;
 pub mod getters_setters;
 pub mod inspectable;
 pub mod omit_definition;
