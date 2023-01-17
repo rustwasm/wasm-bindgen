@@ -22,10 +22,10 @@ use wasm_bindgen_cli_support::Bindgen;
 #[global_allocator]
 static ALLOC: std::alloc::System = std::alloc::System;
 
+mod bundler;
 mod deno;
 mod headless;
 mod node;
-mod bundler;
 mod server;
 mod shell;
 
