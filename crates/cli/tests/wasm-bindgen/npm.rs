@@ -14,7 +14,7 @@ fn no_modules_rejects_npm() {
                 }
 
                 #[wasm_bindgen(start)]
-                pub fn main() {
+                fn main() {
                     foo();
                 }
             "#,
@@ -48,7 +48,7 @@ fn more_package_json_fields_ignored() {
                 }
 
                 #[wasm_bindgen(start)]
-                pub fn main() {
+                fn main() {
                     foo();
                 }
             "#,
@@ -102,7 +102,7 @@ fn npm_conflict_rejected() {
                 }
 
                 #[wasm_bindgen(start)]
-                pub fn main() {
+                fn main() {
                     foo();
                     bar::foo();
                 }

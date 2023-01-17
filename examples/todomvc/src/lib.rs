@@ -58,7 +58,7 @@ fn app(name: &str) {
 
 /// Entry point into the program from JavaScript
 #[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
+fn run() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
     app("todos-wasmbindgen");
 

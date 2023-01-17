@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
-pub fn run() {
+fn run() {
     bare_bones();
     using_a_macro();
     using_web_sys();
