@@ -25,6 +25,7 @@ static ALLOC: std::alloc::System = std::alloc::System;
 mod deno;
 mod headless;
 mod node;
+mod bundler;
 mod server;
 mod shell;
 
@@ -32,6 +33,7 @@ mod shell;
 enum TestMode {
     Node,
     Deno,
+    Bundler,
     Browser,
 }
 
@@ -106,6 +108,7 @@ fn main() -> anyhow::Result<()> {
         Some(section) if section.data.contains(&0x01) => TestMode::Browser,
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
         None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
+        None if std::env::var("WASM_BINDGEN_USE_BUNDLER").is_ok() => TestMode::Bundler,
         None => TestMode::Node,
     };
 
@@ -160,6 +163,8 @@ integration test.\
     match test_mode {
         TestMode::Node => b.nodejs(true)?,
         TestMode::Deno => b.deno(true)?,
+        // Use bundler target to create ESM code
+        TestMode::Bundler => b.bundler(true)?,
         TestMode::Browser => b.web(true)?,
     };
 
@@ -176,6 +181,7 @@ integration test.\
     match test_mode {
         TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
         TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
+        TestMode::Bundler => bundler::execute(&module, &tmpdir, &args, &tests)?,
         TestMode::Browser => {
             let srv = server::spawn(
                 &if headless {
