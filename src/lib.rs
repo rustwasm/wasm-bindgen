@@ -1084,7 +1084,8 @@ externs! {
         fn __wbindgen_module() -> u32;
         fn __wbindgen_function_table() -> u32;
 
-        fn __wbindgen_shim_is_module() -> u32;
+        fn __wbindgen_shim_format_variant() -> WasmOption<u32>;
+        fn __wbindgen_shim_format_string() -> WasmSlice;
     }
 }
 
@@ -1369,9 +1370,32 @@ pub fn function_table() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_function_table()) }
 }
 
-/// Returns if the generated JS shim is a ES module.
-pub fn shim_is_module() -> bool {
-    (unsafe { __wbindgen_shim_is_module() }) != 0
+/// Represents the format of the shim.
+#[derive(Clone, Debug)]
+#[non_exhaustive]
+pub enum ShimFormat {
+    /// The shim is an ES module.
+    EsModule,
+    /// The shim is regular JavaScript.
+    NoModules {
+        /// The name of the global variable.
+        global_name: String,
+    },
+}
+
+/// Returns the format of the generated JS shim.
+///
+/// This will currently return `None` on every target except `web` and `no-modules`.
+pub fn shim_format() -> Option<ShimFormat> {
+    match unsafe { __wbindgen_shim_format_variant() } {
+        WasmOption::Some(0) => Some(ShimFormat::EsModule),
+        WasmOption::Some(1) => {
+            let global_name = unsafe { String::from_abi(__wbindgen_shim_format_string()) };
+            Some(ShimFormat::NoModules { global_name })
+        }
+        WasmOption::Some(_) => unreachable!("unexpected variant identifier"),
+        WasmOption::None => None,
+    }
 }
 
 #[doc(hidden)]
