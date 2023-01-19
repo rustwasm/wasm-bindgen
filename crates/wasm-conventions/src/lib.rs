@@ -120,7 +120,7 @@ pub fn get_or_insert_start_builder(module: &mut Module) -> &mut FunctionBuilder 
             Some(start) => match module.funcs.get_mut(start).kind {
                 FunctionKind::Import(_) => Err(Some(start)),
                 FunctionKind::Local(_) => Ok(start),
-                FunctionKind::Uninitialized(_) => todo!(),
+                FunctionKind::Uninitialized(_) => unimplemented!(),
             },
             None => Err(None),
         }

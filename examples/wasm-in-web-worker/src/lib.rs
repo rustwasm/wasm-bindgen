@@ -42,8 +42,8 @@ impl NumberEval {
 }
 
 /// Run entry point for the main thread.
-#[wasm_bindgen]
-pub fn startup() {
+#[wasm_bindgen(start)]
+fn start() {
     // Here, we create our worker. In a larger app, multiple callbacks should be
     // able to interact with the code in the worker. Therefore, we wrap it in
     // `Rc<RefCell>` following the interior mutability pattern. Here, it would
