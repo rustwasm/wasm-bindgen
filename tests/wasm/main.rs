@@ -52,6 +52,6 @@ pub mod vendor_prefix;
 
 // should not be executed
 #[wasm_bindgen(start)]
-pub fn start() {
+fn start() {
     panic!();
 }

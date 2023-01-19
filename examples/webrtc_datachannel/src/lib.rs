@@ -22,7 +22,7 @@ extern "C" {
 }
 
 #[wasm_bindgen(start)]
-pub async fn start() -> Result<(), JsValue> {
+async fn start() -> Result<(), JsValue> {
     /*
      * Set up PeerConnections
      * pc1 <=> pc2

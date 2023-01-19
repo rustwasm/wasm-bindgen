@@ -745,6 +745,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
+            _ if attrs.start().is_some() => {}
             _ => bail_span!(self, "can only #[wasm_bindgen] public functions"),
         }
         if self.sig.constness.is_some() {

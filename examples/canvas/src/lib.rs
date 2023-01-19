@@ -2,7 +2,7 @@ use std::f64;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
-pub fn start() {
+fn start() {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
