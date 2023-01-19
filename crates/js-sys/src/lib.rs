@@ -447,6 +447,19 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &Array) -> u32;
 
+    /// Sets the length of the array.
+    ///
+    /// If it is set to less than the current length of the array, it will
+    /// shrink the array.
+    ///
+    /// If it is set to more than the current length of the array, it will
+    /// increase the length of the array, filling the new space with empty
+    /// slots.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+    #[wasm_bindgen(method, setter)]
+    pub fn set_length(this: &Array, value: u32);
+
     /// `map()` calls a provided callback function once for each element in an array,
     /// in order, and constructs a new array from the results. callback is invoked
     /// only for indexes of the array which have assigned values, including undefined.

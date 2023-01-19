@@ -535,6 +535,33 @@ fn for_each() {
 }
 
 #[wasm_bindgen_test]
+fn set_length() {
+    let array = js_array![1, 2, 3, 4, 5];
+    array.set_length(3);
+    assert_eq!(
+        array.iter().collect::<Vec<_>>(),
+        [1.0, 2.0, 3.0].map(|x| JsValue::from_f64(x))
+    );
+
+    array.set_length(7);
+    assert_eq!(
+        array.iter().collect::<Vec<_>>(),
+        [1.0, 2.0, 3.0]
+            .iter()
+            .copied()
+            .map(|x| JsValue::from_f64(x))
+            .chain([JsValue::UNDEFINED; 4])
+            .collect::<Vec<_>>()
+    );
+
+    let mut calls = 0;
+    array.for_each(&mut |_, _, _| calls += 1);
+    // The later elements don't get filled with `undefined`, they get filled with
+    // empty slots, which get skipped by `for_each`.
+    assert_eq!(calls, 3);
+}
+
+#[wasm_bindgen_test]
 fn array_inheritance() {
     let array = Array::new();
     assert!(array.is_instance_of::<Array>());
