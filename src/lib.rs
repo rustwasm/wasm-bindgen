@@ -841,7 +841,7 @@ where
     fn from(s: Option<T>) -> JsValue {
         match s {
             Some(s) => s.into(),
-            None => JsValue::undefined(),
+            None => JsValue::null(),
         }
     }
 }

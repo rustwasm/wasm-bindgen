@@ -7,7 +7,7 @@ class MyType {
 exports.MyType = MyType;
 
 exports.take_none_byval = x => {
-    assert.strictEqual(x, undefined);
+    assert.strictEqual(x, null);
 };
 exports.take_some_byval = x => {
     assert.ok(x !== null && x !== undefined);
