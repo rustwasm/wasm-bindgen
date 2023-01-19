@@ -19,7 +19,7 @@
       const { add } = wasm_bindgen;
 
       async function run() {
-        await wasm_bindgen('./pkg/without_a_bundler_no_modules_bg.wasm');
+        await wasm_bindgen();
 
         const result = add(1, 2);
         console.log(`1 + 2 = ${result}`);
