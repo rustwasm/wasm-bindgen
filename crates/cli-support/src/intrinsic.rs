@@ -255,6 +255,9 @@ intrinsics! {
         #[symbol = "__wbindgen_module"]
         #[signature = fn() -> Externref]
         Module,
+        #[symbol = "__wbindgen_shim_url"]
+        #[signature = fn() -> Externref]
+        ShimUrl,
         #[symbol = "__wbindgen_function_table"]
         #[signature = fn() -> Externref]
         FunctionTable,

@@ -3545,6 +3545,15 @@ impl<'a> Context<'a> {
                 format!("wasm.{}", self.export_name_of(memory))
             }
 
+            Intrinsic::ShimUrl => {
+                assert_eq!(args.len(), 0);
+                match self.config.mode {
+                    OutputMode::Web => format!("import.meta.url"),
+                    OutputMode::NoModules { .. } => format!("script_src"),
+                    _ => format!("null"),
+                }
+            }
+
             Intrinsic::FunctionTable => {
                 assert_eq!(args.len(), 0);
                 let name = self.export_function_table()?;
