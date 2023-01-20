@@ -30,4 +30,7 @@ async fn foo_async3() -> Result<JsValue, ()> { Err(()) }
 #[wasm_bindgen(start)]
 async fn foo_async4() -> Result<JsValue, JsValue> { Ok(JsValue::from(1u32)) }
 
+#[wasm_bindgen(start_async)]
+fn foo_missing_async() {}
+
 fn main() {}

@@ -10,6 +10,12 @@ error: the start function cannot have generics
 10 | fn foo3<T>() {}
    |        ^^^
 
+error: the start_async function has to be async
+  --> ui-tests/start-function.rs:34:1
+   |
+34 | fn foo_missing_async() {}
+   | ^^^^^^^^^^^^^^^^^^^^^^
+
 error[E0277]: the trait bound `Result<wasm_bindgen::JsValue, ()>: wasm_bindgen::__rt::Start` is not satisfied
     --> ui-tests/start-function.rs:15:1
      |
