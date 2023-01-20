@@ -48,7 +48,7 @@ const test_import = (a, b, c) => {
     assert.strictEqual(b.length, 2);
     assert.strictEqual(b[0], 1);
     assert.strictEqual(b[1], 2);
-    assert.strictEqual(c, undefined);
+    assert.strictEqual(c, null);
     return a;
 };
 
@@ -128,7 +128,7 @@ const import_mut_foo = (a, b, c) => {
     assert.strictEqual(b[2], 6);
     b[0] = 8;
     b[1] = 7;
-    assert.strictEqual(c, undefined);
+    assert.strictEqual(c, null);
 };
 
 exports.import_mut_js_i8 = import_mut_foo;

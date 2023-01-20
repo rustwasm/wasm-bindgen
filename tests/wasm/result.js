@@ -116,7 +116,7 @@ exports.call_option = function() {
     });
     assert.doesNotThrow(() => {
         let o = wasm.return_option_ok_none();
-        assert.strictEqual(o, undefined);
+        assert.strictEqual(o, null);
     });
     assert.throws(() => {
         wasm.return_option_err();

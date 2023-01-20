@@ -44,7 +44,7 @@ exports.test_jsvalue_typeof = function() {
 };
 
 exports.optional_str_none = function(x) {
-  assert.strictEqual(x, undefined);
+  assert.strictEqual(x, null);
 };
 
 exports.optional_str_some = function(x) {
@@ -52,7 +52,7 @@ exports.optional_str_some = function(x) {
 };
 
 exports.optional_slice_none = function(x) {
-  assert.strictEqual(x, undefined);
+  assert.strictEqual(x, null);
 };
 
 exports.optional_slice_some = function(x) {

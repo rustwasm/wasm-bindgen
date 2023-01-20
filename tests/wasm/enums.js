@@ -32,7 +32,7 @@ exports.js_expect_enum = (a, b) => {
 };
 
 exports.js_expect_enum_none = a => {
-  assert.strictEqual(a, undefined);
+  assert.strictEqual(a, null);
 };
 
 exports.js_renamed_enum = b => {

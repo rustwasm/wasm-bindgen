@@ -983,10 +983,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::OptionRustFromI32 { class } => {
             js.cx.require_class_wrap(class);
             let val = js.pop();
-            js.push(format!(
-                "{0} === 0 ? undefined : {1}.__wrap({0})",
-                val, class,
-            ))
+            js.push(format!("{0} === 0 ? null : {1}.__wrap({0})", val, class,))
         }
 
         Instruction::CachedStringLoad {
@@ -1121,7 +1118,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
             js.push(format!(
-                "{ptr} === 0 ? undefined : {f}({ptr}, {len})",
+                "{ptr} === 0 ? null : {f}({ptr}, {len})",
                 ptr = ptr,
                 len = len,
                 f = f
@@ -1130,14 +1127,14 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::OptionU32Sentinel => {
             let val = js.pop();
-            js.push(format!("{0} === 0xFFFFFF ? undefined : {0}", val));
+            js.push(format!("{0} === 0xFFFFFF ? null : {0}", val));
         }
 
         Instruction::ToOptionNative { ty, signed } => {
             let val = js.pop();
             let present = js.pop();
             js.push(format!(
-                "{} === 0 ? undefined : {}",
+                "{} === 0 ? null : {}",
                 present,
                 if *signed {
                     val
@@ -1153,20 +1150,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::OptionBoolFromI32 => {
             let val = js.pop();
-            js.push(format!("{0} === 0xFFFFFF ? undefined : {0} !== 0", val));
+            js.push(format!("{0} === 0xFFFFFF ? null : {0} !== 0", val));
         }
 
         Instruction::OptionCharFromI32 => {
             let val = js.pop();
             js.push(format!(
-                "{0} === 0xFFFFFF ? undefined : String.fromCodePoint({0})",
+                "{0} === 0xFFFFFF ? null : String.fromCodePoint({0})",
                 val,
             ));
         }
 
         Instruction::OptionEnumFromI32 { hole } => {
             let val = js.pop();
-            js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
+            js.push(format!("{0} === {1} ? null : {0}", val, hole));
         }
     }
     Ok(())
@@ -1283,7 +1280,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::Vector(kind) => dst.push_str(&kind.js_ty()),
         AdapterType::Option(ty) => {
             adapter2ts(ty, dst);
-            dst.push_str(" | undefined");
+            dst.push_str(" | null");
         }
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
