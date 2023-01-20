@@ -29,3 +29,17 @@ There's a few caveats to be aware of when using the `start` attribute:
   executed *once per thread*, not once globally!
 * Note that the `start` function is relatively new, so if you find any bugs with
   it, please feel free to report an issue!
+
+To support `async fn main()` in a binary, you can use the `start_async` attribute,
+à la `#[tokio::main]`, like this:
+
+# `start_async`
+```rust
+#[wasm_bindgen(start_async)]
+async fn main() {
+    // executed automatically ...
+}
+```
+
+This will otherwise behave the same as `start`, except that it rewrites the function
+to a sync version.
