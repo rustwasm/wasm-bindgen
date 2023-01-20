@@ -10,7 +10,7 @@ use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
-use syn::Lit;
+use syn::{Lit, ReturnType};
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
@@ -81,6 +81,7 @@ macro_rules! attrgen {
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (skip_typescript, SkipTypescript(Span)),
             (start, Start(Span)),
+            (start_async, StartAsync(Span)),
             (skip, Skip(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
             (getter_with_clone, GetterWithClone(Span)),
@@ -745,7 +746,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
-            _ if attrs.start().is_some() => {}
+            _ if attrs.start().is_some() || attrs.start_async().is_some() => {}
             _ => bail_span!(self, "can only #[wasm_bindgen] public functions"),
         }
         if self.sig.constness.is_some() {
@@ -933,9 +934,40 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 // it'll be unused when not building for the wasm target and produce a
                 // `dead_code` warning. So, add `#[allow(dead_code)]` before it to avoid that.
                 tokens.extend(quote::quote! { #[allow(dead_code)] });
-                f.to_tokens(tokens);
+
                 let opts = opts.unwrap_or_default();
-                if opts.start().is_some() {
+
+                if opts.start_async().is_some() {
+                    if f.sig.asyncness.take().is_none() {
+                        bail_span!(f.sig, "the start_async function has to be async",);
+                    }
+
+                    let r#return = f.sig.output;
+                    let return_ty = match &r#return {
+                        ReturnType::Default => quote::quote! { () },
+                        ReturnType::Type(_, ty) => ty.to_token_stream(),
+                    };
+                    f.sig.output = ReturnType::Default;
+                    let body = f.block;
+
+                    f.block = Box::new(
+                        syn::parse2(quote::quote! {
+                            {
+                                async fn __wasm_bindgen_generated_start() #r#return #body
+                                wasm_bindgen_futures::spawn_local(
+                                    async move {
+                                        let _ret = __wasm_bindgen_generated_start();
+                                        <#return_ty as wasm_bindgen::__rt::Start>::start(_ret.await)
+                                    },
+                                )
+                            }
+                        })
+                        .unwrap(),
+                    );
+                }
+                f.to_tokens(tokens);
+
+                if opts.start().is_some() || opts.start_async().is_some() {
                     if f.sig.generics.params.len() > 0 {
                         bail_span!(&f.sig.generics, "the start function cannot have generics",);
                     }
@@ -948,7 +980,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     kind: operation_kind(&opts),
                 });
                 let rust_name = f.sig.ident.clone();
-                let start = opts.start().is_some();
+                let start = opts.start().is_some() || opts.start_async().is_some();
                 program.exports.push(ast::Export {
                     comments,
                     function: f.convert(opts)?,
