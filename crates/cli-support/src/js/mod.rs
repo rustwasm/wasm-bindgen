@@ -787,10 +787,10 @@ impl<'a> Context<'a> {
             for kind in views {
                 writeln!(
                     init_memviews,
-                    // Reset the memory views to empty in case `init` gets called multiple times.
+                    // Reset the memory views to null in case `init` gets called multiple times.
                     // Without this, the `length = 0` check would never detect that the view was
                     // outdated.
-                    "cached{kind}Memory{num} = new {kind}Array();",
+                    "cached{kind}Memory{num} = null;",
                     kind = kind,
                     num = num,
                 )
@@ -1782,14 +1782,12 @@ impl<'a> Context<'a> {
             format!("{cache}.byteLength === 0", cache = cache)
         };
 
-        // Initialize the cache to an empty array, which will trigger the resized check
-        // on the first call and initialise the view.
-        self.global(&format!("let {cache} = new {kind}Array();\n"));
+        self.global(&format!("let {cache} = null;\n"));
 
         self.global(&format!(
             "
             function {name}() {{
-                if ({resized_check}) {{
+                if ({cache} === null || {resized_check}) {{
                     {cache} = new {kind}Array(wasm.{mem}.buffer);
                 }}
                 return {cache};
