@@ -489,7 +489,10 @@ impl TryToTokens for ast::Export {
                     quote! { () },
                     quote! { () },
                     quote! {
-                        <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret.await)
+                        {
+                            use wasm_bindgen::__rt::Start;
+                            wasm_bindgen::__rt::StartWrapper(#ret.await).__wasm_bindgen_start()
+                        }
                     },
                 )
             } else {
@@ -505,7 +508,12 @@ impl TryToTokens for ast::Export {
             (
                 quote! { () },
                 quote! { () },
-                quote! { <#syn_ret as wasm_bindgen::__rt::Start>::start(#ret) },
+                quote! {
+                    {
+                        use wasm_bindgen::__rt::Start;
+                        wasm_bindgen::__rt::StartWrapper(#ret).__wasm_bindgen_start()
+                    }
+                },
             )
         } else {
             (quote! { #syn_ret }, quote! { #syn_ret }, quote! { #ret })

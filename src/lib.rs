@@ -1372,6 +1372,7 @@ pub mod __rt {
     use crate::JsValue;
     use core::borrow::{Borrow, BorrowMut};
     use core::cell::{Cell, UnsafeCell};
+    use core::convert::Infallible;
     use core::ops::{Deref, DerefMut};
 
     pub extern crate core;
@@ -1707,22 +1708,38 @@ pub mod __rt {
         }
     }
 
-    /// An internal helper trait for usage in `#[wasm_bindgen(start)]`
+    /// An internal helper struct for usage in `#[wasm_bindgen(start)]`
     /// functions to throw the error (if it is `Err`).
+    pub struct StartWrapper<T>(pub T);
+
     pub trait Start {
-        fn start(self);
+        fn __wasm_bindgen_start(self);
     }
 
-    impl Start for () {
+    impl Start for StartWrapper<()> {
         #[inline]
-        fn start(self) {}
+        fn __wasm_bindgen_start(self) {}
     }
 
-    impl<E: Into<JsValue>> Start for Result<(), E> {
+    impl Start for StartWrapper<Infallible> {
         #[inline]
-        fn start(self) {
-            if let Err(e) = self {
+        fn __wasm_bindgen_start(self) {}
+    }
+
+    impl<E: Into<JsValue>> Start for StartWrapper<Result<(), E>> {
+        #[inline]
+        fn __wasm_bindgen_start(self) {
+            if let Err(e) = self.0 {
                 crate::throw_val(e.into());
+            }
+        }
+    }
+
+    impl<E: std::fmt::Debug> Start for &StartWrapper<Result<(), E>> {
+        #[inline]
+        fn __wasm_bindgen_start(self) {
+            if let Err(e) = &self.0 {
+                crate::throw_val(std::format!("{:?}", e).into());
             }
         }
     }
