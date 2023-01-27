@@ -1,3 +1,4 @@
+use crate::decode::LocalModule;
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
@@ -345,6 +346,7 @@ impl<'a> Context<'a> {
         id: ImportId,
         module: &decode::ImportModule,
         offset: usize,
+        local_modules: &[LocalModule],
         inline_js: &[&str],
     ) -> Result<(), Error> {
         let descriptor = Function {
@@ -355,7 +357,13 @@ impl<'a> Context<'a> {
         };
         let id = self.import_adapter(id, descriptor, AdapterJsImportKind::Normal)?;
         let (path, content) = match module {
-            decode::ImportModule::Named(n) => (format!("snippets/{}", n), None),
+            decode::ImportModule::Named(n) => (
+                format!("snippets/{}", n),
+                local_modules
+                    .iter()
+                    .find(|m| m.identifier == *n)
+                    .map(|m| m.contents),
+            ),
             decode::ImportModule::RawNamed(n) => (n.to_string(), None),
             decode::ImportModule::Inline(idx) => (
                 format!(
@@ -389,7 +397,7 @@ impl<'a> Context<'a> {
             linked_modules,
         } = program;
 
-        for module in local_modules {
+        for module in &local_modules {
             // All local modules we find should be unique, but the same module
             // may have showed up in a few different blocks. If that's the case
             // all the same identifiers should have the same contents.
@@ -416,7 +424,13 @@ impl<'a> Context<'a> {
             .unwrap_or(0);
         for module in linked_modules {
             match self.function_imports.remove(module.link_function_name) {
-                Some((id, _)) => self.link_module(id, &module.module, offset, &inline_js[..])?,
+                Some((id, _)) => self.link_module(
+                    id,
+                    &module.module,
+                    offset,
+                    &local_modules[..],
+                    &inline_js[..],
+                )?,
                 None => (),
             }
         }
