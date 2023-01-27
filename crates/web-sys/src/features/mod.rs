@@ -1984,6 +1984,12 @@ mod gen_ExtTextureFilterAnisotropic;
 #[cfg(feature = "ExtTextureFilterAnisotropic")]
 pub use gen_ExtTextureFilterAnisotropic::*;
 
+#[cfg(feature = "ExtTextureNorm16")]
+#[allow(non_snake_case)]
+mod gen_ExtTextureNorm16;
+#[cfg(feature = "ExtTextureNorm16")]
+pub use gen_ExtTextureNorm16::*;
+
 #[cfg(feature = "ExtendableEvent")]
 #[allow(non_snake_case)]
 mod gen_ExtendableEvent;
