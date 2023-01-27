@@ -1,23 +1,23 @@
 error: `link_to!` does not support module paths.
-  --> $DIR/link-to.rs:10:37
+  --> ui-tests/link-to.rs:10:37
    |
 10 |     wasm_bindgen::link_to!(module = "package/foo.js")
    |                                     ^^^^^^^^^^^^^^^^
 
 error: `link_to!` does not support module paths.
-  --> $DIR/link-to.rs:14:41
+  --> ui-tests/link-to.rs:14:41
    |
 14 |     wasm_bindgen::link_to!(raw_module = "package/foo.js")
    |                                         ^^^^^^^^^^^^^^^^
 
-error: failed to read file `$WORKSPACE/target/tests/wasm-bindgen-macro/src/not-found.js`: No such file or directory (os error 2)
-  --> $DIR/link-to.rs:18:37
+error: failed to read file `$WORKSPACE/target/tests/trybuild/wasm-bindgen-macro/src/not-found.js`: No such file or directory (os error 2)
+  --> ui-tests/link-to.rs:18:37
    |
 18 |     wasm_bindgen::link_to!(module = "/src/not-found.js")
    |                                     ^^^^^^^^^^^^^^^^^^^
 
 error: `link_to!` requires a module.
-  --> $DIR/link-to.rs:22:5
+  --> ui-tests/link-to.rs:22:5
    |
 22 |     wasm_bindgen::link_to!()
    |     ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -25,7 +25,7 @@ error: `link_to!` requires a module.
    = note: this error originates in the macro `wasm_bindgen::link_to` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unused wasm_bindgen attribute
-  --> $DIR/link-to.rs:28:9
+  --> ui-tests/link-to.rs:28:9
    |
 28 |         js_namespace = foo
    |         ^^^^^^^^^^^^

@@ -121,7 +121,7 @@ impl Bindgen {
             wasm_interface_types,
             encode_into: EncodeInto::Test,
             omit_default_module_path: true,
-            allow_links: false,
+            allow_links: true,
         }
     }
 
