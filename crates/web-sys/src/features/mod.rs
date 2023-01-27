@@ -832,18 +832,6 @@ mod gen_ChannelMergerOptions;
 #[cfg(feature = "ChannelMergerOptions")]
 pub use gen_ChannelMergerOptions::*;
 
-#[cfg(feature = "ChannelPixelLayout")]
-#[allow(non_snake_case)]
-mod gen_ChannelPixelLayout;
-#[cfg(feature = "ChannelPixelLayout")]
-pub use gen_ChannelPixelLayout::*;
-
-#[cfg(feature = "ChannelPixelLayoutDataType")]
-#[allow(non_snake_case)]
-mod gen_ChannelPixelLayoutDataType;
-#[cfg(feature = "ChannelPixelLayoutDataType")]
-pub use gen_ChannelPixelLayoutDataType::*;
-
 #[cfg(feature = "ChannelSplitterNode")]
 #[allow(non_snake_case)]
 mod gen_ChannelSplitterNode;
@@ -2163,6 +2151,12 @@ pub use gen_FlashClassification::*;
 mod gen_FlexLineGrowthState;
 #[cfg(feature = "FlexLineGrowthState")]
 pub use gen_FlexLineGrowthState::*;
+
+#[cfg(feature = "FlowControlType")]
+#[allow(non_snake_case)]
+mod gen_FlowControlType;
+#[cfg(feature = "FlowControlType")]
+pub use gen_FlowControlType::*;
 
 #[cfg(feature = "FocusEvent")]
 #[allow(non_snake_case)]
@@ -3952,12 +3946,6 @@ mod gen_ImageBitmap;
 #[cfg(feature = "ImageBitmap")]
 pub use gen_ImageBitmap::*;
 
-#[cfg(feature = "ImageBitmapFormat")]
-#[allow(non_snake_case)]
-mod gen_ImageBitmapFormat;
-#[cfg(feature = "ImageBitmapFormat")]
-pub use gen_ImageBitmapFormat::*;
-
 #[cfg(feature = "ImageBitmapRenderingContext")]
 #[allow(non_snake_case)]
 mod gen_ImageBitmapRenderingContext;
@@ -5097,6 +5085,12 @@ pub use gen_PannerOptions::*;
 mod gen_PanningModelType;
 #[cfg(feature = "PanningModelType")]
 pub use gen_PanningModelType::*;
+
+#[cfg(feature = "ParityType")]
+#[allow(non_snake_case)]
+mod gen_ParityType;
+#[cfg(feature = "ParityType")]
+pub use gen_ParityType::*;
 
 #[cfg(feature = "Path2d")]
 #[allow(non_snake_case)]
@@ -6513,6 +6507,54 @@ pub use gen_SecurityPolicyViolationEventInit::*;
 mod gen_Selection;
 #[cfg(feature = "Selection")]
 pub use gen_Selection::*;
+
+#[cfg(feature = "Serial")]
+#[allow(non_snake_case)]
+mod gen_Serial;
+#[cfg(feature = "Serial")]
+pub use gen_Serial::*;
+
+#[cfg(feature = "SerialInputSignals")]
+#[allow(non_snake_case)]
+mod gen_SerialInputSignals;
+#[cfg(feature = "SerialInputSignals")]
+pub use gen_SerialInputSignals::*;
+
+#[cfg(feature = "SerialOptions")]
+#[allow(non_snake_case)]
+mod gen_SerialOptions;
+#[cfg(feature = "SerialOptions")]
+pub use gen_SerialOptions::*;
+
+#[cfg(feature = "SerialOutputSignals")]
+#[allow(non_snake_case)]
+mod gen_SerialOutputSignals;
+#[cfg(feature = "SerialOutputSignals")]
+pub use gen_SerialOutputSignals::*;
+
+#[cfg(feature = "SerialPort")]
+#[allow(non_snake_case)]
+mod gen_SerialPort;
+#[cfg(feature = "SerialPort")]
+pub use gen_SerialPort::*;
+
+#[cfg(feature = "SerialPortFilter")]
+#[allow(non_snake_case)]
+mod gen_SerialPortFilter;
+#[cfg(feature = "SerialPortFilter")]
+pub use gen_SerialPortFilter::*;
+
+#[cfg(feature = "SerialPortInfo")]
+#[allow(non_snake_case)]
+mod gen_SerialPortInfo;
+#[cfg(feature = "SerialPortInfo")]
+pub use gen_SerialPortInfo::*;
+
+#[cfg(feature = "SerialPortRequestOptions")]
+#[allow(non_snake_case)]
+mod gen_SerialPortRequestOptions;
+#[cfg(feature = "SerialPortRequestOptions")]
+pub use gen_SerialPortRequestOptions::*;
 
 #[cfg(feature = "ServerSocketOptions")]
 #[allow(non_snake_case)]
@@ -8782,6 +8824,18 @@ mod gen_XrFrame;
 #[cfg(feature = "XrFrame")]
 pub use gen_XrFrame::*;
 
+#[cfg(feature = "XrHand")]
+#[allow(non_snake_case)]
+mod gen_XrHand;
+#[cfg(feature = "XrHand")]
+pub use gen_XrHand::*;
+
+#[cfg(feature = "XrHandJoint")]
+#[allow(non_snake_case)]
+mod gen_XrHandJoint;
+#[cfg(feature = "XrHandJoint")]
+pub use gen_XrHandJoint::*;
+
 #[cfg(feature = "XrHandedness")]
 #[allow(non_snake_case)]
 mod gen_XrHandedness;
@@ -8823,6 +8877,18 @@ pub use gen_XrInputSourcesChangeEvent::*;
 mod gen_XrInputSourcesChangeEventInit;
 #[cfg(feature = "XrInputSourcesChangeEventInit")]
 pub use gen_XrInputSourcesChangeEventInit::*;
+
+#[cfg(feature = "XrJointPose")]
+#[allow(non_snake_case)]
+mod gen_XrJointPose;
+#[cfg(feature = "XrJointPose")]
+pub use gen_XrJointPose::*;
+
+#[cfg(feature = "XrJointSpace")]
+#[allow(non_snake_case)]
+mod gen_XrJointSpace;
+#[cfg(feature = "XrJointSpace")]
+pub use gen_XrJointSpace::*;
 
 #[cfg(feature = "XrLayer")]
 #[allow(non_snake_case)]

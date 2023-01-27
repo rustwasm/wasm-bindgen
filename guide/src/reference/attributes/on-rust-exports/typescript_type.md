@@ -29,7 +29,8 @@ pub struct TextStyle {
 #[wasm_bindgen]
 impl TextStyle {
     #[wasm_bindgen(constructor)]
-    pub fn new(_i: ITextStyle) -> TextStyle {
+    pub fn new(i: ITextStyle) -> TextStyle {
+        let _js_value: JsValue = i.into();
         // parse JsValue
         TextStyle::default()
     }

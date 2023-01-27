@@ -10,7 +10,6 @@
  * liability, trademark and document use rules apply.
  */
 
-[RustDeprecated="doesn't exist in Safari, use parent class methods instead"]
 interface AudioScheduledSourceNode : AudioNode {
 };
 

@@ -30,6 +30,7 @@ pub struct Bindgen {
     typescript: bool,
     omit_imports: bool,
     demangle: bool,
+    keep_lld_exports: bool,
     keep_debug: bool,
     remove_name_section: bool,
     remove_producers_section: bool,
@@ -108,6 +109,7 @@ impl Bindgen {
             typescript: false,
             omit_imports: false,
             demangle: true,
+            keep_lld_exports: false,
             keep_debug: false,
             remove_name_section: false,
             remove_producers_section: false,
@@ -269,6 +271,11 @@ impl Bindgen {
         self
     }
 
+    pub fn keep_lld_exports(&mut self, keep_lld_exports: bool) -> &mut Bindgen {
+        self.keep_lld_exports = keep_lld_exports;
+        self
+    }
+
     pub fn keep_debug(&mut self, keep_debug: bool) -> &mut Bindgen {
         self.keep_debug = keep_debug;
         self
@@ -338,7 +345,8 @@ impl Bindgen {
                 .context("failed getting Wasm module")?,
         };
 
-        self.threads
+        let thread_count = self
+            .threads
             .run(&mut module)
             .with_context(|| "failed to prepare module for threading")?;
 
@@ -347,12 +355,25 @@ impl Bindgen {
         if self.demangle {
             demangle(&mut module);
         }
-        unexported_unused_lld_things(&mut module);
+        if !self.keep_lld_exports {
+            unexported_unused_lld_things(&mut module);
+        }
 
         // We're making quite a few changes, list ourselves as a producer.
         module
             .producers
             .add_processed_by("wasm-bindgen", &wasm_bindgen_shared::version());
+
+        // Parse and remove our custom section before executing descriptors.
+        // That includes checking that the binary has the same schema version
+        // as this version of the CLI, which is why we do it first - to make
+        // sure that this binary was produced by a compatible version of the
+        // wasm-bindgen macro before attempting to interpret our unstable
+        // descriptor format. That way, we give a more helpful version mismatch
+        // error instead of an unhelpful panic if an incompatible descriptor is
+        // found.
+        let mut storage = Vec::new();
+        let programs = wit::extract_programs(&mut module, &mut storage)?;
 
         // Learn about the type signatures of all wasm-bindgen imports and
         // exports by executing `__wbindgen_describe_*` functions. This'll
@@ -360,16 +381,17 @@ impl Bindgen {
         // sections.
         descriptors::execute(&mut module)?;
 
-        // Process and remove our raw custom sections emitted by the
-        // #[wasm_bindgen] macro and the compiler. In their stead insert a
-        // forward-compatible wasm interface types section as well as an
+        // Process the custom section we extracted earlier. In its stead insert
+        // a forward-compatible wasm interface types section as well as an
         // auxiliary section for all sorts of miscellaneous information and
         // features #[wasm_bindgen] supports that aren't covered by wasm
         // interface types.
         wit::process(
             &mut module,
+            programs,
             self.externref,
             self.wasm_interface_types,
+            thread_count,
             self.emit_start,
         )?;
 
@@ -753,8 +775,11 @@ impl Output {
             write(
                 &js_path,
                 format!(
-                    "import * as wasm from \"./{}.wasm\";\nexport * from \"./{}\";{}",
-                    wasm_name, js_name, start
+                    "import * as wasm from \"./{wasm_name}.wasm\";
+import {{ __wbg_set_wasm }} from \"./{js_name}\";
+__wbg_set_wasm(wasm);
+export * from \"./{js_name}\";
+{start}"
                 ),
             )?;
 

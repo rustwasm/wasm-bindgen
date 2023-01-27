@@ -1,6 +1,5 @@
 use js_sys::{Function, Object, Reflect, WebAssembly};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::{spawn_local, JsFuture};
 
 // lifted from the `console_log` example
@@ -42,7 +41,7 @@ async fn run_async() -> Result<(), JsValue> {
 }
 
 #[wasm_bindgen(start)]
-pub fn run() {
+fn run() {
     spawn_local(async {
         run_async().await.unwrap_throw();
     });

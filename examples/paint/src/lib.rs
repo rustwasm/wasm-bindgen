@@ -1,10 +1,9 @@
 use std::cell::Cell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 #[wasm_bindgen(start)]
-pub fn start() -> Result<(), JsValue> {
+fn start() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document
         .create_element("canvas")?

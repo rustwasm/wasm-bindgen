@@ -1,6 +1,5 @@
 use js_sys::{Function, Map, Object, Reflect, WebAssembly};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::{spawn_local, JsFuture};
 
 #[wasm_bindgen]
@@ -13,12 +12,10 @@ extern "C" {
 
 }
 
-#[macro_use]
 macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
-#[macro_use]
 macro_rules! console_error {
     ($($t:tt)*) => (error(&format_args!($($t)*).to_string()))
 }
@@ -76,7 +73,7 @@ impl Imports {
 }
 
 #[wasm_bindgen(start)]
-pub fn run() {
+fn run() {
     spawn_local(async {
         match run_async().await {
             Ok(_) => console_log!("Finished"),

@@ -85,7 +85,7 @@ pub struct ExportedClass {
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 // Must be kept in sync with `src/lib.rs` of the `wasm-bindgen` crate
-const INITIAL_HEAP_OFFSET: usize = 32;
+const INITIAL_HEAP_OFFSET: usize = 128;
 
 impl<'a> Context<'a> {
     pub fn new(
@@ -378,13 +378,13 @@ impl<'a> Context<'a> {
             // function.
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
+                js.push_str("let script_src;\n");
                 js.push_str(
                     "\
-                    let script_src;
                     if (typeof document === 'undefined') {
                         script_src = location.href;
                     } else {
-                        script_src = new URL(document.currentScript.src, location.href).toString();
+                        script_src = document.currentScript.src;
                     }\n",
                 );
                 js.push_str("let wasm;\n");
@@ -446,10 +446,6 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                imports.push_str(&format!(
-                    "import * as wasm from './{}_bg.wasm';\n",
-                    module_name
-                ));
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -467,6 +463,15 @@ impl<'a> Context<'a> {
                         footer.push_str(";\n");
                     }
                 }
+
+                self.imports_post.push_str(
+                    "\
+                    let wasm;
+                    export function __wbg_set_wasm(val) {
+                        wasm = val;
+                    }
+                    ",
+                );
 
                 if needs_manual_start {
                     start = Some("\nwasm.__wbindgen_start();\n".to_string());
@@ -504,20 +509,23 @@ impl<'a> Context<'a> {
             !self.config.mode.uses_es_modules() || js.is_empty(),
             "ES modules require imports to be at the start of the file"
         );
-        js.push_str(&imports);
-        js.push_str("\n");
-        js.push_str(&self.imports_post);
-        js.push_str("\n");
+
+        let mut push_with_newline = |s| {
+            js.push_str(s);
+            if !s.is_empty() {
+                js.push('\n');
+            }
+        };
+
+        push_with_newline(&imports);
+        push_with_newline(&self.imports_post);
 
         // Emit all our exports from this module
-        js.push_str(&self.globals);
-        js.push_str("\n");
+        push_with_newline(&self.globals);
 
         // Generate the initialization glue, if there was any
-        js.push_str(&init_js);
-        js.push_str("\n");
-        js.push_str(&footer);
-        js.push_str("\n");
+        push_with_newline(&init_js);
+        push_with_newline(&footer);
         if self.config.mode.no_modules() {
             js.push_str("})();\n");
         }
@@ -779,10 +787,10 @@ impl<'a> Context<'a> {
             for kind in views {
                 writeln!(
                     init_memviews,
-                    // Reset the memory views to empty in case `init` gets called multiple times.
+                    // Reset the memory views to null in case `init` gets called multiple times.
                     // Without this, the `length = 0` check would never detect that the view was
                     // outdated.
-                    "cached{kind}Memory{num} = new {kind}Array();",
+                    "cached{kind}Memory{num} = null;",
                     kind = kind,
                     num = num,
                 )
@@ -1774,14 +1782,12 @@ impl<'a> Context<'a> {
             format!("{cache}.byteLength === 0", cache = cache)
         };
 
-        // Initialize the cache to an empty array, which will trigger the resized check
-        // on the first call and initialise the view.
-        self.global(&format!("let {cache} = new {kind}Array();\n"));
+        self.global(&format!("let {cache} = null;\n"));
 
         self.global(&format!(
             "
             function {name}() {{
-                if ({resized_check}) {{
+                if ({cache} === null || {resized_check}) {{
                     {cache} = new {kind}Array(wasm.{mem}.buffer);
                 }}
                 return {cache};
@@ -2954,7 +2960,12 @@ impl<'a> Context<'a> {
 
             AuxImport::ValueWithThis(class, name) => {
                 let class = self.import_name(class)?;
-                Ok(format!("{}.{}({})", class, name, variadic_args(&args)?))
+                Ok(format!(
+                    "{}{}({})",
+                    class,
+                    property_accessor(name),
+                    variadic_args(&args)?
+                ))
             }
 
             AuxImport::Instanceof(js) => {
@@ -3026,14 +3037,19 @@ impl<'a> Context<'a> {
                     Some(pair) => pair,
                     None => bail!("structural method calls must have at least one argument"),
                 };
-                Ok(format!("{}.{}({})", receiver, name, variadic_args(args)?))
+                Ok(format!(
+                    "{}{}({})",
+                    receiver,
+                    property_accessor(name),
+                    variadic_args(args)?
+                ))
             }
 
             AuxImport::StructuralGetter(field) => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
-                Ok(format!("{}.{}", args[0], field))
+                Ok(format!("{}{}", args[0], property_accessor(field)))
             }
 
             AuxImport::StructuralClassGetter(class, field) => {
@@ -3041,14 +3057,19 @@ impl<'a> Context<'a> {
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
                 let class = self.import_name(class)?;
-                Ok(format!("{}.{}", class, field))
+                Ok(format!("{}{}", class, property_accessor(field)))
             }
 
             AuxImport::StructuralSetter(field) => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 2);
-                Ok(format!("{}.{} = {}", args[0], field, args[1]))
+                Ok(format!(
+                    "{}{} = {}",
+                    args[0],
+                    property_accessor(field),
+                    args[1]
+                ))
             }
 
             AuxImport::StructuralClassSetter(class, field) => {
@@ -3056,7 +3077,12 @@ impl<'a> Context<'a> {
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let class = self.import_name(class)?;
-                Ok(format!("{}.{} = {}", class, field, args[0]))
+                Ok(format!(
+                    "{}{} = {}",
+                    class,
+                    property_accessor(field),
+                    args[0]
+                ))
             }
 
             AuxImport::IndexingGetterOfClass(class) => {
@@ -3174,6 +3200,11 @@ impl<'a> Context<'a> {
             Intrinsic::IsFunction => {
                 assert_eq!(args.len(), 1);
                 format!("typeof({}) === 'function'", args[0])
+            }
+
+            Intrinsic::IsArray => {
+                assert_eq!(args.len(), 1);
+                format!("Array.isArray({})", args[0])
             }
 
             Intrinsic::IsUndefined => {
@@ -3497,6 +3528,15 @@ impl<'a> Context<'a> {
                 "JSON.stringify(obj === undefined ? null : obj)".to_string()
             }
 
+            Intrinsic::CopyToTypedArray => {
+                assert_eq!(args.len(), 2);
+                format!(
+                    "new Uint8Array({dst}.buffer, {dst}.byteOffset, {dst}.byteLength).set({src})",
+                    src = args[0],
+                    dst = args[1]
+                )
+            }
+
             Intrinsic::ExternrefHeapLiveCount => {
                 assert_eq!(args.len(), 0);
                 self.expose_global_heap();
@@ -3571,7 +3611,7 @@ impl<'a> Context<'a> {
                 if !variant_docs.is_empty() {
                     self.typescript.push_str(&variant_docs);
                 }
-                self.typescript.push_str(&format!("  {},", name));
+                self.typescript.push_str(&format!("  {name} = {value},"));
             }
         }
         if enum_.generate_typescript {
@@ -3940,6 +3980,62 @@ fn require_class<'a>(
         .expect("classes already written")
         .entry(name.to_string())
         .or_insert_with(ExportedClass::default)
+}
+
+/// Returns whether a character has the Unicode `ID_Start` properly.
+///
+/// This is only ever-so-slightly different from `XID_Start` in a few edge
+/// cases, so we handle those edge cases manually and delegate everything else
+/// to `unicode-ident`.
+fn is_id_start(c: char) -> bool {
+    match c {
+        '\u{037A}' | '\u{0E33}' | '\u{0EB3}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}'
+        | '\u{FC5F}' | '\u{FC60}' | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}'
+        | '\u{FDFB}' | '\u{FE70}' | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}'
+        | '\u{FE7A}' | '\u{FE7C}' | '\u{FE7E}' | '\u{FF9E}' | '\u{FF9F}' => true,
+        _ => unicode_ident::is_xid_start(c),
+    }
+}
+
+/// Returns whether a character has the Unicode `ID_Continue` properly.
+///
+/// This is only ever-so-slightly different from `XID_Continue` in a few edge
+/// cases, so we handle those edge cases manually and delegate everything else
+/// to `unicode-ident`.
+fn is_id_continue(c: char) -> bool {
+    match c {
+        '\u{037A}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}' | '\u{FC5F}' | '\u{FC60}'
+        | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}' | '\u{FDFB}' | '\u{FE70}'
+        | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}' | '\u{FE7A}' | '\u{FE7C}'
+        | '\u{FE7E}' => true,
+        _ => unicode_ident::is_xid_continue(c),
+    }
+}
+
+/// Returns whether a string is a valid JavaScript identifier.
+/// Defined at https://tc39.es/ecma262/#prod-IdentifierName.
+fn is_valid_ident(name: &str) -> bool {
+    name.chars().enumerate().all(|(i, char)| {
+        if i == 0 {
+            is_id_start(char) || char == '$' || char == '_'
+        } else {
+            is_id_continue(char) || char == '$' || char == '\u{200C}' || char == '\u{200D}'
+        }
+    })
+}
+
+/// Returns a string to tack on to the end of an expression to access a
+/// property named `name` of the object that expression resolves to.
+///
+/// In most cases, this is `.<name>`, generating accesses like `foo.bar`.
+/// However, if `name` is not a valid JavaScript identifier, it becomes
+/// `["<name>"]` instead, creating accesses like `foo["kebab-case"]`.
+fn property_accessor(name: &str) -> String {
+    if is_valid_ident(name) {
+        format!(".{name}")
+    } else {
+        format!("[\"{}\"]", name.escape_default())
+    }
 }
 
 impl ExportedClass {

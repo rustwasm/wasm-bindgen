@@ -493,7 +493,6 @@ fn test_closure_returner() {
     type ClosureType = dyn FnMut() -> BadStruct;
 
     use js_sys::{Object, Reflect};
-    use wasm_bindgen::JsCast;
 
     js_test_closure_returner();
 

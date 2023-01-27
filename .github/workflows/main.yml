@@ -15,6 +15,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read #  to fetch code (actions/checkout)
+
 jobs:
   # Check Code style quickly by running `rustfmt` over all code
   rustfmt:
@@ -296,7 +299,7 @@ jobs:
         name: benchmarks
         path: benchmarks
 
-  dist_linux:
+  dist_linux_x86_64_musl:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -310,10 +313,26 @@ jobs:
         strip -g target/x86_64-unknown-linux-musl/release/wasm2es6js
     - uses: actions/upload-artifact@v2
       with:
-        name: dist_linux
+        name: dist_linux_x86_64_musl
         path: "target/x86_64-unknown-linux-musl/release/wasm*"
 
-  dist_macos:
+  dist_linux_aarch64_gnu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: rustup target add aarch64-unknown-linux-gnu
+    - run: sudo apt update -y && sudo apt install gcc-aarch64-linux-gnu -y
+    - run: |
+        cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-unknown-linux-gnu --features vendored-openssl --release
+      env:
+        CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+    - uses: actions/upload-artifact@v2
+      with:
+        name: dist_linux_aarch64_gnu
+        path: "target/aarch64-unknown-linux-gnu/release/wasm*"
+
+  dist_macos_x86_64:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -323,8 +342,23 @@ jobs:
         MACOSX_DEPLOYMENT_TARGET: 10.7
     - uses: actions/upload-artifact@v2
       with:
-        name: dist_macos
+        name: dist_macos_x86_64
         path: "target/release/wasm*"
+
+  dist_macos_aarch64:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: rustup target add aarch64-apple-darwin
+    - run: |
+        cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-apple-darwin --release
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.7
+    - uses: actions/upload-artifact@v2
+      with:
+        name: dist_macos_aarch64
+        path: "target/aarch64-apple-darwin/release/wasm*"
 
   dist_windows:
     runs-on: windows-latest
@@ -371,11 +405,16 @@ jobs:
 
 
   deploy:
+    permissions:
+      contents: write #  to push changes in repo (jamesives/github-pages-deploy-action)
+
     needs:
       - doc_api
       - doc_book
-      - dist_linux
-      - dist_macos
+      - dist_linux_x86_64_musl
+      - dist_linux_aarch64_gnu
+      - dist_macos_x86_64
+      - dist_macos_aarch64
       - dist_windows
       - build_examples
       - build_nightly
@@ -409,8 +448,10 @@ jobs:
           chmod +x tmp/$name/wasm*
           tar czvf gh-release/$name.tar.gz -C tmp $name
         }
-        mk x86_64-unknown-linux-musl dist_linux
-        mk x86_64-apple-darwin dist_macos
+        mk x86_64-unknown-linux-musl dist_linux_x86_64_musl
+        mk aarch64-unknown-linux-gnu dist_linux_aarch64_gnu
+        mk x86_64-apple-darwin dist_macos_x86_64
+        mk aarch64-apple-darwin dist_macos_aarch64
         mk x86_64-pc-windows-msvc dist_windows
     - uses: actions/upload-artifact@v2
       with:

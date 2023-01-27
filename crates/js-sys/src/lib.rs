@@ -29,7 +29,6 @@ use std::str;
 use std::str::FromStr;
 
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 // When adding new imports:
 //
@@ -448,6 +447,19 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &Array) -> u32;
 
+    /// Sets the length of the array.
+    ///
+    /// If it is set to less than the current length of the array, it will
+    /// shrink the array.
+    ///
+    /// If it is set to more than the current length of the array, it will
+    /// increase the length of the array, filling the new space with empty
+    /// slots.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+    #[wasm_bindgen(method, setter)]
+    pub fn set_length(this: &Array, value: u32);
+
     /// `map()` calls a provided callback function once for each element in an array,
     /// in order, and constructs a new array from the results. callback is invoked
     /// only for indexes of the array which have assigned values, including undefined.
@@ -823,9 +835,22 @@ pub mod Atomics {
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
         ///
+        /// You should use `add_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/add)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn add(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        /// The static `Atomics.add()` method adds a given value at a given
+        /// position in the array and returns the old value at that position.
+        /// This atomic operation guarantees that no other write happens
+        /// until the modified value is written back.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/add)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = add)]
+        pub fn add_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.and()` method computes a bitwise AND with a given
         /// value at a given position in the array, and returns the old value
@@ -833,9 +858,23 @@ pub mod Atomics {
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
         ///
+        /// You should use `and_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/and)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn and(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        /// The static `Atomics.and()` method computes a bitwise AND with a given
+        /// value at a given position in the array, and returns the old value
+        /// at that position.
+        /// This atomic operation guarantees that no other write happens
+        /// until the modified value is written back.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/and)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = and)]
+        pub fn and_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.compareExchange()` method exchanges a given
         /// replacement value at a given position in the array, if a given expected
@@ -843,6 +882,8 @@ pub mod Atomics {
         /// whether it was equal to the expected value or not.
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
+        ///
+        /// You should use `compare_exchange_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/compareExchange)
         #[wasm_bindgen(js_namespace = Atomics, catch, js_name = compareExchange)]
@@ -853,14 +894,49 @@ pub mod Atomics {
             replacement_value: i32,
         ) -> Result<i32, JsValue>;
 
+        /// The static `Atomics.compareExchange()` method exchanges a given
+        /// replacement value at a given position in the array, if a given expected
+        /// value equals the old value. It returns the old value at that position
+        /// whether it was equal to the expected value or not.
+        /// This atomic operation guarantees that no other write happens
+        /// until the modified value is written back.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/compareExchange)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = compareExchange)]
+        pub fn compare_exchange_bigint(
+            typed_array: &JsValue,
+            index: u32,
+            expected_value: i64,
+            replacement_value: i64,
+        ) -> Result<i64, JsValue>;
+
         /// The static `Atomics.exchange()` method stores a given value at a given
         /// position in the array and returns the old value at that position.
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
         ///
+        /// You should use `exchange_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/exchange)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn exchange(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        /// The static `Atomics.exchange()` method stores a given value at a given
+        /// position in the array and returns the old value at that position.
+        /// This atomic operation guarantees that no other write happens
+        /// until the modified value is written back.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/exchange)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = exchange)]
+        pub fn exchange_bigint(
+            typed_array: &JsValue,
+            index: u32,
+            value: i64,
+        ) -> Result<i64, JsValue>;
 
         /// The static `Atomics.isLockFree()` method is used to determine
         /// whether to use locks or atomic operations. It returns true,
@@ -874,9 +950,20 @@ pub mod Atomics {
         /// The static `Atomics.load()` method returns a value at a given
         /// position in the array.
         ///
+        /// You should use `load_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/load)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn load(typed_array: &JsValue, index: u32) -> Result<i32, JsValue>;
+
+        /// The static `Atomics.load()` method returns a value at a given
+        /// position in the array.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/load)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = load)]
+        pub fn load_bigint(typed_array: &JsValue, index: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.notify()` method notifies up some agents that
         /// are sleeping in the wait queue.
@@ -900,25 +987,62 @@ pub mod Atomics {
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
         ///
+        /// You should use `or_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/or)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn or(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
+        /// The static `Atomics.or()` method computes a bitwise OR with a given value
+        /// at a given position in the array, and returns the old value at that position.
+        /// This atomic operation guarantees that no other write happens
+        /// until the modified value is written back.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/or)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = or)]
+        pub fn or_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
+
         /// The static `Atomics.store()` method stores a given value at the given
         /// position in the array and returns that value.
+        ///
+        /// You should use `store_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/store)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn store(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        /// The static `Atomics.store()` method stores a given value at the given
+        /// position in the array and returns that value.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/store)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = store)]
+        pub fn store_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.sub()` method substracts a given value at a
         /// given position in the array and returns the old value at that position.
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
         ///
+        /// You should use `sub_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/sub)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn sub(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        /// The static `Atomics.sub()` method substracts a given value at a
+        /// given position in the array and returns the old value at that position.
+        /// This atomic operation guarantees that no other write happens
+        /// until the modified value is written back.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/sub)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = sub)]
+        pub fn sub_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
 
         /// The static `Atomics.wait()` method verifies that a given
         /// position in an `Int32Array` still contains a given value
@@ -927,11 +1051,32 @@ pub mod Atomics {
         /// Note: This operation only works with a shared `Int32Array`
         /// and may not be allowed on the main thread.
         ///
+        /// You should use `wait_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn wait(typed_array: &Int32Array, index: u32, value: i32) -> Result<JsString, JsValue>;
 
+        /// The static `Atomics.wait()` method verifies that a given
+        /// position in an `Int32Array` still contains a given value
+        /// and if so sleeps, awaiting a wakeup or a timeout.
+        /// It returns a string which is either "ok", "not-equal", or "timed-out".
+        /// Note: This operation only works with a shared `Int32Array`
+        /// and may not be allowed on the main thread.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        pub fn wait_bigint(
+            typed_array: &Int32Array,
+            index: u32,
+            value: i64,
+        ) -> Result<JsString, JsValue>;
+
         /// Like `wait()`, but with timeout
+        ///
+        /// You should use `wait_with_timeout_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
         #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
@@ -942,15 +1087,42 @@ pub mod Atomics {
             timeout: f64,
         ) -> Result<JsString, JsValue>;
 
+        /// Like `wait()`, but with timeout
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        pub fn wait_with_timeout_bigint(
+            typed_array: &Int32Array,
+            index: u32,
+            value: i64,
+            timeout: f64,
+        ) -> Result<JsString, JsValue>;
+
         /// The static `Atomics.xor()` method computes a bitwise XOR
         /// with a given value at a given position in the array,
         /// and returns the old value at that position.
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
         ///
+        /// You should use `xor_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/xor)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
         pub fn xor(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
+
+        /// The static `Atomics.xor()` method computes a bitwise XOR
+        /// with a given value at a given position in the array,
+        /// and returns the old value at that position.
+        /// This atomic operation guarantees that no other write happens
+        /// until the modified value is written back.
+        ///
+        /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/xor)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = xor)]
+        pub fn xor_bigint(typed_array: &JsValue, index: u32, value: i64) -> Result<i64, JsValue>;
     }
 }
 
@@ -5361,6 +5533,64 @@ pub mod Intl {
     }
 
     impl Default for PluralRules {
+        fn default() -> Self {
+            Self::new(
+                &JsValue::UNDEFINED.unchecked_into(),
+                &JsValue::UNDEFINED.unchecked_into(),
+            )
+        }
+    }
+
+    // Intl.RelativeTimeFormat
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `Intl.RelativeTimeFormat` object is a constructor for objects
+        /// that enable language-sensitive relative time formatting.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
+        #[wasm_bindgen(extends = Object, js_namespace = Intl, typescript_type = "Intl.RelativeTimeFormat")]
+        #[derive(Clone, Debug)]
+        pub type RelativeTimeFormat;
+
+        /// The `Intl.RelativeTimeFormat` object is a constructor for objects
+        /// that enable language-sensitive relative time formatting.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
+        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        pub fn new(locales: &Array, options: &Object) -> RelativeTimeFormat;
+
+        /// The `Intl.RelativeTimeFormat.prototype.format` method formats a `value` and `unit`
+        /// according to the locale and formatting options of this Intl.RelativeTimeFormat object.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/format)
+        #[wasm_bindgen(method, js_class = "Intl.RelativeTimeFormat")]
+        pub fn format(this: &RelativeTimeFormat, value: f64, unit: &str) -> JsString;
+
+        /// The `Intl.RelativeTimeFormat.prototype.formatToParts()` method returns an array of
+        /// objects representing the relative time format in parts that can be used for custom locale-aware formatting.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/formatToParts)
+        #[wasm_bindgen(method, js_class = "Intl.RelativeTimeFormat", js_name = formatToParts)]
+        pub fn format_to_parts(this: &RelativeTimeFormat, value: f64, unit: &str) -> Array;
+
+        /// The `Intl.RelativeTimeFormat.prototype.resolvedOptions()` method returns a new
+        /// object with properties reflecting the locale and relative time formatting
+        /// options computed during initialization of this RelativeTimeFormat object.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/resolvedOptions)
+        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        pub fn resolved_options(this: &RelativeTimeFormat) -> Object;
+
+        /// The `Intl.RelativeTimeFormat.supportedLocalesOf()` method returns an array
+        /// containing those of the provided locales that are supported in date and time
+        /// formatting without having to fall back to the runtime's default locale.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RelativeTimeFormat/supportedLocalesOf)
+        #[wasm_bindgen(static_method_of = RelativeTimeFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
+        pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
+
+    impl Default for RelativeTimeFormat {
         fn default() -> Self {
             Self::new(
                 &JsValue::UNDEFINED.unchecked_into(),

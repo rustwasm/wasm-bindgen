@@ -38,6 +38,7 @@ pub mod no_shims;
 pub mod node;
 pub mod option;
 pub mod optional_primitives;
+pub mod owned;
 pub mod result;
 pub mod result_jserror;
 pub mod rethrow;
@@ -52,6 +53,6 @@ pub mod vendor_prefix;
 
 // should not be executed
 #[wasm_bindgen(start)]
-pub fn start() {
+fn start() {
     panic!();
 }

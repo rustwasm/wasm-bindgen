@@ -28,6 +28,7 @@ tys! {
     STRING
     REF
     REFMUT
+    LONGREF
     SLICE
     VECTOR
     EXTERNREF
@@ -89,7 +90,7 @@ pub struct Closure {
     pub mutable: bool,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum VectorKind {
     I8,
     U8,
@@ -132,6 +133,15 @@ impl Descriptor {
             CLOSURE => Descriptor::Closure(Box::new(Closure::decode(data))),
             REF => Descriptor::Ref(Box::new(Descriptor::_decode(data, clamped))),
             REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data, clamped))),
+            LONGREF => {
+                // This descriptor basically just serves as a macro, where most things
+                // become normal `Ref`s, but long refs to externrefs become owned.
+                let contents = Descriptor::_decode(data, clamped);
+                match contents {
+                    Descriptor::Externref | Descriptor::NamedExternref(_) => contents,
+                    _ => Descriptor::Ref(Box::new(contents)),
+                }
+            }
             SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data, clamped))),
             VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data, clamped))),
             OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data, clamped))),

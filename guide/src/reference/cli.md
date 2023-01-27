@@ -68,6 +68,11 @@ errors, but this output isn't intended to be shipped to production.
 When post-processing the `.wasm` binary, do not demangle Rust symbols in the
 "names" custom section.
 
+### `--keep-lld-exports`
+
+When post-processing the `.wasm` binary, do not remove exports that are
+synthesized by Rust's linker, LLD.
+
 ### `--keep-debug`
 
 When post-processing the `.wasm` binary, do not strip DWARF debug info custom

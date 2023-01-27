@@ -8,6 +8,7 @@ use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
 use wasm_bindgen_shared::struct_function_export_name;
+use wasm_bindgen_threads_xform::ThreadCount;
 
 mod incoming;
 mod nonstandard;
@@ -22,7 +23,9 @@ struct Context<'a> {
     module: &'a mut Module,
     adapters: NonstandardWitSection,
     aux: WasmBindgenAux,
+    /// All of the wasm module's exported functions.
     function_exports: HashMap<String, (ExportId, FunctionId)>,
+    /// All of the wasm module's imported functions.
     function_imports: HashMap<String, (ImportId, FunctionId)>,
     /// A map from the signature of a function in the function table to its adapter, if we've already created it.
     table_adapters: HashMap<Function, AdapterId>,
@@ -32,6 +35,7 @@ struct Context<'a> {
     descriptors: HashMap<String, Descriptor>,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_count: Option<ThreadCount>,
     support_start: bool,
 }
 
@@ -45,13 +49,12 @@ struct InstructionBuilder<'a, 'b> {
 
 pub fn process(
     module: &mut Module,
+    programs: Vec<decode::Program>,
     externref_enabled: bool,
     wasm_interface_types: bool,
+    thread_count: Option<ThreadCount>,
     support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
-    let mut storage = Vec::new();
-    let programs = extract_programs(module, &mut storage)?;
-
     let mut cx = Context {
         adapters: Default::default(),
         aux: Default::default(),
@@ -66,6 +69,7 @@ pub fn process(
         start_found: false,
         externref_enabled,
         wasm_interface_types,
+        thread_count,
         support_start,
     };
     cx.init()?;
@@ -264,7 +268,12 @@ impl<'a> Context<'a> {
                 // type has to be `(i32, i32) -> i32`
                 let ty = self.module.types.get(x.ty());
                 let type_matches = ty.params() == [I32, I32] && ty.results() == [I32];
-                name_matches && type_matches
+                // Having the correct name and signature doesn't necessarily mean that it's
+                // actually a `main` function. Unfortunately, there doesn't seem to be any 100%
+                // reliable way to make sure that it is, but we can at least rule out any
+                // `#[wasm_bindgen]` exported functions.
+                let unknown = !self.adapters.exports.iter().any(|(name, _)| name == "main");
+                name_matches && type_matches && unknown
             })
             .map(|x| x.id());
         let main_id = match main_id {
@@ -307,14 +316,14 @@ impl<'a> Context<'a> {
             self.module
                 .add_import_func(PLACEHOLDER_MODULE, "__wbindgen_init_externref_table", ty);
 
-        self.module.start = Some(match self.module.start {
-            Some(prev_start) => {
-                let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-                builder.func_body().call(import).call(prev_start);
-                builder.finish(Vec::new(), &mut self.module.funcs)
-            }
-            None => import,
-        });
+        if self.module.start.is_some() {
+            let builder =
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
+            builder.func_body().call_at(0, import);
+        } else {
+            self.module.start = Some(import);
+        }
+
         self.bind_intrinsic(import_id, Intrinsic::InitExternrefTable)?;
 
         Ok(())
@@ -524,22 +533,23 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        let prev_start = match self.module.start {
-            Some(f) => f,
-            None => {
-                self.module.start = Some(id);
-                return Ok(());
-            }
-        };
+        if let Some(thread_count) = self.thread_count {
+            let builder =
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
+            thread_count.wrap_start(builder, id);
+        } else if self.module.start.is_some() {
+            let builder =
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
 
-        // Note that we call the previous start function, if any, first. This is
-        // because the start function currently only shows up when it's injected
-        // through thread/externref transforms. These injected start functions
-        // need to happen before user code, so we always schedule them first.
-        let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-        builder.func_body().call(prev_start).call(id);
-        let new_start = builder.finish(Vec::new(), &mut self.module.funcs);
-        self.module.start = Some(new_start);
+            // Note that we leave the previous start function, if any, first. This is
+            // because the start function currently only shows up when it's injected
+            // through thread/externref transforms. These injected start functions
+            // need to happen before user code, so we always schedule them first.
+            builder.func_body().call(id);
+        } else {
+            self.module.start = Some(id);
+        }
+
         Ok(())
     }
 
@@ -1541,7 +1551,11 @@ impl<'a> Context<'a> {
     }
 }
 
-fn extract_programs<'a>(
+/// Extract all of the `Program`s encoded in our custom section.
+///
+/// `program_storage` is used to squirrel away the raw bytes of the custom
+///  section, so that they can be referenced by the `Program`s we return.
+pub fn extract_programs<'a>(
     module: &mut Module,
     program_storage: &'a mut Vec<Vec<u8>>,
 ) -> Result<Vec<decode::Program<'a>>, Error> {

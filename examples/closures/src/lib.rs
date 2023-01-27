@@ -1,10 +1,9 @@
 use js_sys::{Array, Date};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::{Document, Element, HtmlElement, Window};
 
 #[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
+fn run() -> Result<(), JsValue> {
     let window = web_sys::window().expect("should have a window in this context");
     let document = window.document().expect("window should have a document");
 

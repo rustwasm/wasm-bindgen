@@ -1,8 +1,6 @@
 use js_sys::*;
 use std::iter::FromIterator;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
 
 macro_rules! js_array {
@@ -534,6 +532,33 @@ fn for_each() {
     assert_eq!(sum_indices_of_evens(&js_array![2, 4, 6, 8]), 0 + 1 + 2 + 3);
     assert_eq!(sum_indices_of_evens(&js_array![1, 3, 5, 7]), 0);
     assert_eq!(sum_indices_of_evens(&js_array![3, 5, 7, 10]), 3);
+}
+
+#[wasm_bindgen_test]
+fn set_length() {
+    let array = js_array![1, 2, 3, 4, 5];
+    array.set_length(3);
+    assert_eq!(
+        array.iter().collect::<Vec<_>>(),
+        [1.0, 2.0, 3.0].map(|x| JsValue::from_f64(x))
+    );
+
+    array.set_length(7);
+    assert_eq!(
+        array.iter().collect::<Vec<_>>(),
+        [1.0, 2.0, 3.0]
+            .iter()
+            .copied()
+            .map(|x| JsValue::from_f64(x))
+            .chain([JsValue::UNDEFINED; 4])
+            .collect::<Vec<_>>()
+    );
+
+    let mut calls = 0;
+    array.for_each(&mut |_, _, _| calls += 1);
+    // The later elements don't get filled with `undefined`, they get filled with
+    // empty slots, which get skipped by `for_each`.
+    assert_eq!(calls, 3);
 }
 
 #[wasm_bindgen_test]

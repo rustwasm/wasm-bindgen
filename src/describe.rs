@@ -34,6 +34,7 @@ tys! {
     STRING
     REF
     REFMUT
+    LONGREF
     SLICE
     VECTOR
     EXTERNREF

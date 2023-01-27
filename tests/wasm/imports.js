@@ -141,3 +141,6 @@ exports.same_name_from_import = (a) => a * 3;
 exports.same_js_namespace_from_module = {
   func_from_module_1_same_js_namespace: (a) => a * 5
 }
+
+exports["kebab-case"] = () => 42;
+exports["\"string'literal\nbreakers\r"] = () => 42;

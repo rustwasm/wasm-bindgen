@@ -26,6 +26,6 @@
     i32.const 0
     call $#func1<a_externref_shim>)
   (func $dealloc (type 1) (param i32))
-  (table (;0;) 32 externref)
+  (table (;0;) 128 externref)
   (export "foo" (func 2)))
 ;)

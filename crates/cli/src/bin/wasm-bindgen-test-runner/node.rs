@@ -107,6 +107,7 @@ pub fn execute(
     exec(
         Command::new("node")
             .env("NODE_PATH", env::join_paths(&path).unwrap())
+            .arg("--expose-gc")
             .args(&extra_node_args)
             .arg(&js_path)
             .args(args),

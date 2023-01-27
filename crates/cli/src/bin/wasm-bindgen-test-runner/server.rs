@@ -10,23 +10,43 @@ use rouille::{Request, Response, Server};
 pub fn spawn(
     addr: &SocketAddr,
     headless: bool,
-    module: &str,
+    module: &'static str,
     tmpdir: &Path,
     args: &[OsString],
     tests: &[String],
+    no_module: bool,
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
-    let mut js_to_execute = format!(
-        r#"
-        import {{
-            WasmBindgenTestContext as Context,
-            __wbgtest_console_debug,
-            __wbgtest_console_log,
-            __wbgtest_console_info,
-            __wbgtest_console_warn,
-            __wbgtest_console_error,
-            default as init,
-        }} from './{0}';
+    let mut js_to_execute = if no_module {
+        String::from(
+            r#"
+            let Context = wasm_bindgen.WasmBindgenTestContext;
+            let __wbgtest_console_debug = wasm_bindgen.__wbgtest_console_debug;
+            let __wbgtest_console_log = wasm_bindgen.__wbgtest_console_log;
+            let __wbgtest_console_info = wasm_bindgen.__wbgtest_console_info;
+            let __wbgtest_console_warn = wasm_bindgen.__wbgtest_console_warn;
+            let __wbgtest_console_error = wasm_bindgen.__wbgtest_console_error;
+            let init = wasm_bindgen;
+            "#,
+        )
+    } else {
+        format!(
+            r#"
+            import {{
+                WasmBindgenTestContext as Context,
+                __wbgtest_console_debug,
+                __wbgtest_console_log,
+                __wbgtest_console_info,
+                __wbgtest_console_warn,
+                __wbgtest_console_error,
+                default as init,
+            }} from './{}';
+            "#,
+            module,
+        )
+    };
 
+    js_to_execute.push_str(&format!(
+        r#"
         // Now that we've gotten to the point where JS is executing, update our
         // status text as at this point we should be asynchronously fetching the
         // wasm module.
@@ -54,7 +74,7 @@ pub fn spawn(
         const tests = [];
     "#,
         module, args,
-    );
+    ));
     for test in tests {
         js_to_execute.push_str(&format!("tests.push('{}');\n", test));
     }
@@ -75,6 +95,20 @@ pub fn spawn(
                 include_str!("index-headless.html")
             } else {
                 include_str!("index.html")
+            };
+            let s = if no_module {
+                s.replace(
+                    "<!-- {IMPORT_SCRIPTS} -->",
+                    &format!(
+                        "<script src='{}.js'></script>\n<script src='run.js'></script>",
+                        module
+                    ),
+                )
+            } else {
+                s.replace(
+                    "<!-- {IMPORT_SCRIPTS} -->",
+                    "<script src='run.js' type=module></script>",
+                )
             };
             return set_isolate_origin_headers(Response::from_data("text/html", s));
         }

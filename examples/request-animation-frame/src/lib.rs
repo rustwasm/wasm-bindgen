@@ -1,7 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 fn window() -> web_sys::Window {
     web_sys::window().expect("no global `window` exists")
@@ -25,7 +24,7 @@ fn body() -> web_sys::HtmlElement {
 
 // This function is automatically invoked after the wasm module is instantiated.
 #[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
+fn run() -> Result<(), JsValue> {
     // Here we want to call `requestAnimationFrame` in a loop, but only a fixed
     // number of times. After it's done we want all our resources cleaned up. To
     // achieve this we're using an `Rc`. The `Rc` will eventually store the

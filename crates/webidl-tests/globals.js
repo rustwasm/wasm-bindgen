@@ -164,6 +164,61 @@ const map = {
 
 global.get_global = () => map;
 
+global.TestReadOnlyMapLike = class {
+  constructor() {
+    this.map = new Map();
+    this.map.set('a', 1);
+    this.map.set('b', 2);
+    this.map.set('c', 3);
+  }
+
+  entries() {
+    return this.map.entries();
+  }
+
+  forEach(callback, thisArg) {
+    return this.map.forEach(callback, thisArg);
+  }
+
+  get(key) {
+    return this.map.get(key);
+  }
+
+  has(key) {
+    return this.map.has(key);
+  }
+
+  keys() {
+    return this.map.keys();
+  }
+
+  values() {
+    return this.map.values();
+  }
+
+  get size() {
+    return this.map.size;
+  }
+};
+
+global.TestReadWriteMapLike = class extends global.TestReadOnlyMapLike {
+  constructor() {
+    super();
+  }
+
+  set(key, value) {
+    return this.map.set(key, value);
+  }
+
+  delete(key) {
+    return this.map.delete(key);
+  }
+
+  clear() {
+    return this.map.clear();
+  }
+};
+
 global.math_test = {
   pow(base, exp) {
     return Math.pow(base, exp);

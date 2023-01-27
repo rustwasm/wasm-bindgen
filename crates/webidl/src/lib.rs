@@ -35,10 +35,10 @@ use quote::ToTokens;
 use sourcefile::SourceFile;
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 use std::ffi::OsStr;
-use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::{fmt, iter};
 use wasm_bindgen_backend::util::rust_ident;
 use weedle::attribute::ExtendedAttributeList;
 use weedle::common::Identifier;
@@ -335,8 +335,14 @@ impl<'src> FirstPassRecord<'src> {
         // > comprise their identifiers.
         let start = dst.len();
         let members = definition.members.body.iter();
-        let partials = dict_data.partials.iter().flat_map(|d| &d.members.body);
-        for member in members.chain(partials) {
+        let partials = dict_data.partials.iter().flat_map(|d| {
+            d.definition
+                .members
+                .body
+                .iter()
+                .zip(iter::repeat(unstable || d.stability.is_unstable()))
+        });
+        for (member, unstable) in members.zip(iter::repeat(unstable)).chain(partials) {
             match self.dictionary_field(member, unstable, unstable_types) {
                 Some(f) => dst.push(f),
                 None => {
@@ -442,7 +448,7 @@ impl<'src> FirstPassRecord<'src> {
         let mut functions = vec![];
 
         for member in ns.consts.iter() {
-            self.append_ns_const(&mut consts, member, unstable);
+            self.append_ns_const(&mut consts, member.clone(), unstable);
         }
 
         for (id, data) in ns.operations.iter() {
@@ -465,22 +471,22 @@ impl<'src> FirstPassRecord<'src> {
     fn append_ns_const(
         &self,
         consts: &mut Vec<Const>,
-        member: &'src weedle::namespace::ConstNamespaceMember<'src>,
+        member: first_pass::ConstNamespaceData<'src>,
         unstable: bool,
     ) {
-        let idl_type = member.const_type.to_idl_type(self);
+        let idl_type = member.definition.const_type.to_idl_type(self);
         let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
 
-        let js_name = member.identifier.0;
+        let js_name = member.definition.identifier.0;
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
-        let value = webidl_const_v_to_backend_const_v(&member.const_value);
+        let value = webidl_const_v_to_backend_const_v(&member.definition.const_value);
 
         consts.push(Const {
             name,
             js_name: js_name.to_string(),
             ty,
             value,
-            unstable,
+            unstable: unstable || member.stability.is_unstable(),
         });
     }
 
@@ -567,6 +573,8 @@ impl<'src> FirstPassRecord<'src> {
         let mut methods = vec![];
 
         for member in data.consts.iter() {
+            let unstable = unstable || member.stability.is_unstable();
+            let member = member.definition;
             self.append_interface_const(&mut consts, member, unstable);
         }
 
@@ -795,8 +803,6 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         let out_file_path = to.join(format!("gen_{}.rs", name));
 
         fs::write(&out_file_path, &feature.code)?;
-
-        rustfmt(&out_file_path, name)?;
     }
 
     let binding_file = features.keys().map(|name| {
@@ -809,7 +815,12 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
 
     fs::write(to.join("mod.rs"), binding_file)?;
 
-    rustfmt(&to.join("mod.rs"), "mod")?;
+    let to_format = features
+        .iter()
+        .map(|(name, _)| to.join(format!("gen_{}.rs", name)))
+        .chain([to.join("mod.rs")]);
+
+    rustfmt(to_format)?;
 
     return if generate_features {
         let features = features
@@ -846,16 +857,16 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         Ok(source)
     }
 
-    fn rustfmt(path: &PathBuf, name: &str) -> Result<()> {
+    fn rustfmt<'a>(paths: impl IntoIterator<Item = PathBuf>) -> Result<()> {
         // run rustfmt on the generated file - really handy for debugging
         let result = Command::new("rustfmt")
             .arg("--edition")
             .arg("2018")
-            .arg(&path)
+            .args(paths)
             .status()
-            .context(format!("rustfmt on file {}", name))?;
+            .context("rustfmt failed")?;
 
-        assert!(result.success(), "rustfmt on file {}", name);
+        assert!(result.success(), "rustfmt failed");
 
         Ok(())
     }

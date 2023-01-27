@@ -44,12 +44,13 @@ macro_rules! externs {
     )
 }
 
-/// A module which is typically glob imported from:
+/// A module which is typically glob imported.
 ///
 /// ```
 /// use wasm_bindgen::prelude::*;
 /// ```
 pub mod prelude {
+    pub use crate::JsCast;
     pub use crate::JsValue;
     pub use crate::UnwrapThrowExt;
     #[doc(hidden)]
@@ -93,7 +94,7 @@ pub struct JsValue {
     _marker: marker::PhantomData<*mut u8>, // not at all threadsafe
 }
 
-const JSIDX_OFFSET: u32 = 32; // keep in sync with js/mod.rs
+const JSIDX_OFFSET: u32 = 128; // keep in sync with js/mod.rs
 const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET + 0;
 const JSIDX_NULL: u32 = JSIDX_OFFSET + 1;
 const JSIDX_TRUE: u32 = JSIDX_OFFSET + 2;
@@ -348,6 +349,12 @@ impl JsValue {
     #[inline]
     pub fn is_object(&self) -> bool {
         unsafe { __wbindgen_is_object(self.idx) == 1 }
+    }
+
+    /// Tests whether this JS value is an instance of Array.
+    #[inline]
+    pub fn is_array(&self) -> bool {
+        unsafe { __wbindgen_is_array(self.idx) == 1 }
     }
 
     /// Tests whether the type of this JS value is `function`.
@@ -781,6 +788,20 @@ impl<'a> From<&'a str> for JsValue {
     }
 }
 
+impl<T> From<*mut T> for JsValue {
+    #[inline]
+    fn from(s: *mut T) -> JsValue {
+        JsValue::from(s as usize)
+    }
+}
+
+impl<T> From<*const T> for JsValue {
+    #[inline]
+    fn from(s: *const T) -> JsValue {
+        JsValue::from(s as usize)
+    }
+}
+
 if_std! {
     impl<'a> From<&'a String> for JsValue {
         #[inline]
@@ -1005,6 +1026,7 @@ externs! {
         fn __wbindgen_is_undefined(idx: u32) -> u32;
         fn __wbindgen_is_symbol(idx: u32) -> u32;
         fn __wbindgen_is_object(idx: u32) -> u32;
+        fn __wbindgen_is_array(idx: u32) -> u32;
         fn __wbindgen_is_function(idx: u32) -> u32;
         fn __wbindgen_is_string(idx: u32) -> u32;
         fn __wbindgen_is_bigint(idx: u32) -> u32;
@@ -1055,6 +1077,8 @@ externs! {
         fn __wbindgen_json_serialize(idx: u32) -> WasmSlice;
         fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
         fn __wbindgen_jsval_loose_eq(a: u32, b: u32) -> u32;
+
+        fn __wbindgen_copy_to_typed_array(ptr: *const u8, len: usize, idx: u32) -> ();
 
         fn __wbindgen_not(idx: u32) -> u32;
 
@@ -1348,6 +1372,7 @@ pub fn function_table() -> JsValue {
 #[doc(hidden)]
 pub mod __rt {
     use crate::JsValue;
+    use core::borrow::{Borrow, BorrowMut};
     use core::cell::{Cell, UnsafeCell};
     use core::ops::{Deref, DerefMut};
 
@@ -1467,6 +1492,13 @@ pub mod __rt {
         }
     }
 
+    impl<'b, T: ?Sized> Borrow<T> for Ref<'b, T> {
+        #[inline]
+        fn borrow(&self) -> &T {
+            self.value
+        }
+    }
+
     impl<'b, T: ?Sized> Drop for Ref<'b, T> {
         fn drop(&mut self) {
             self.borrow.set(self.borrow.get() - 1);
@@ -1490,6 +1522,20 @@ pub mod __rt {
     impl<'b, T: ?Sized> DerefMut for RefMut<'b, T> {
         #[inline]
         fn deref_mut(&mut self) -> &mut T {
+            self.value
+        }
+    }
+
+    impl<'b, T: ?Sized> Borrow<T> for RefMut<'b, T> {
+        #[inline]
+        fn borrow(&self) -> &T {
+            self.value
+        }
+    }
+
+    impl<'b, T: ?Sized> BorrowMut<T> for RefMut<'b, T> {
+        #[inline]
+        fn borrow_mut(&mut self) -> &mut T {
             self.value
         }
     }

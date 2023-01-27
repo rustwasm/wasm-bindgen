@@ -26,6 +26,7 @@ pub mod consts;
 pub mod dictionary;
 pub mod enums;
 pub mod global;
+pub mod maplike;
 pub mod namespace;
 pub mod no_interface;
 pub mod promise;

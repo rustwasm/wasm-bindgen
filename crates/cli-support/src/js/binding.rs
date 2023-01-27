@@ -716,8 +716,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
             let i = js.tmp();
-            js.prelude(&format!("var ptr{} = {}.ptr;", i, val));
-            js.prelude(&format!("{}.ptr = 0;", val));
+            js.prelude(&format!("var ptr{} = {}.__destroy_into_raw();", i, val));
             js.push(format!("ptr{}", i));
         }
 
@@ -736,8 +735,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.prelude(&format!("if (!isLikeNone({0})) {{", val));
             js.assert_class(&val, class);
             js.assert_not_moved(&val);
-            js.prelude(&format!("ptr{} = {}.ptr;", i, val));
-            js.prelude(&format!("{}.ptr = 0;", val));
+            js.prelude(&format!("ptr{} = {}.__destroy_into_raw();", i, val));
             js.prelude("}");
             js.push(format!("ptr{}", i));
         }
@@ -797,8 +795,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             }
             js.push(format!("!isLikeNone({0})", val));
             js.push(format!(
-                "isLikeNone({val}) ? 0{n} : {val}",
-                n = if *ty == ValType::I64 { "n" } else { "" }
+                "isLikeNone({val}) ? {zero} : {val}",
+                zero = if *ty == ValType::I64 {
+                    "BigInt(0)"
+                } else {
+                    "0"
+                }
             ));
         }
 
@@ -927,15 +929,8 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("len{}", i));
         }
 
-        Instruction::MutableSliceToMemory {
-            kind,
-            malloc,
-            mem,
-            free,
-        } => {
-            // First up, pass the JS value into wasm, getting out a pointer and
-            // a length. These two pointer/length values get pushed onto the
-            // value stack.
+        Instruction::MutableSliceToMemory { kind, malloc, mem } => {
+            // Copy the contents of the typed array into wasm.
             let val = js.pop();
             let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
@@ -948,25 +943,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 malloc = malloc,
             ));
             js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            // Then pass it the pointer and the length of where we copied it.
             js.push(format!("ptr{}", i));
             js.push(format!("len{}", i));
-
-            // Next we set up a `finally` clause which will both update the
-            // original mutable slice with any modifications, and then free the
-            // Rust-backed memory.
-            let free = js.cx.export_name_of(*free);
-            let get = js.cx.memview_function(kind.clone(), *mem);
-            js.finally(&format!(
-                "
-                    {val}.set({get}().subarray(ptr{i} / {size}, ptr{i} / {size} + len{i}));
-                    wasm.{free}(ptr{i}, len{i} * {size});
-                ",
-                val = val,
-                get = get,
-                free = free,
-                size = kind.size(),
-                i = i,
-            ));
+            // Then we give wasm a reference to the original typed array, so that it can
+            // update it with modifications made on the wasm side before returning.
+            js.push(val);
         }
 
         Instruction::BoolFromI32 => {

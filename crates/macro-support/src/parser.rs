@@ -762,6 +762,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
+            _ if attrs.start().is_some() => {}
             _ => bail_span!(self, "can only #[wasm_bindgen] public functions"),
         }
         if self.sig.constness.is_some() {
@@ -945,6 +946,10 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     _ => {}
                 }
                 let comments = extract_doc_comments(&f.attrs);
+                // If the function isn't used for anything other than being exported to JS,
+                // it'll be unused when not building for the wasm target and produce a
+                // `dead_code` warning. So, add `#[allow(dead_code)]` before it to avoid that.
+                tokens.extend(quote::quote! { #[allow(dead_code)] });
                 f.to_tokens(tokens);
                 let opts = opts.unwrap_or_default();
                 if opts.start().is_some() {

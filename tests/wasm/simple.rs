@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::{intern, unintern, JsCast};
+use wasm_bindgen::{intern, unintern};
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/simple.js")]

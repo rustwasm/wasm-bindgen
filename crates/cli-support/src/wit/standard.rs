@@ -65,7 +65,7 @@ pub enum AdapterJsImportKind {
     Normal,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum AdapterType {
     S8,
     S16,
@@ -185,7 +185,6 @@ pub enum Instruction {
     MutableSliceToMemory {
         kind: VectorKind,
         malloc: walrus::FunctionId,
-        free: walrus::FunctionId,
         mem: walrus::MemoryId,
     },
 
@@ -469,12 +468,9 @@ impl walrus::CustomSection for NonstandardWitSection {
                         roots.push_memory(mem);
                         roots.push_func(malloc);
                     }
-                    MutableSliceToMemory {
-                        free, malloc, mem, ..
-                    } => {
+                    MutableSliceToMemory { malloc, mem, .. } => {
                         roots.push_memory(mem);
                         roots.push_func(malloc);
-                        roots.push_func(free);
                     }
                     VectorLoad { free, mem, .. }
                     | OptionVectorLoad { free, mem, .. }

@@ -1,7 +1,7 @@
 //! Converting JavaScript `AsyncIterator`s to Rust `Stream`s.
 //!
-//! Analogous to the promise to future convertion, this module allows the
-//! turing objects implementing the async iterator protocol into `Stream`s
+//! Analogous to the promise to future conversion, this module allows
+//! turning objects implementing the async iterator protocol into `Stream`s
 //! that produce values that can be awaited from.
 //!
 
@@ -11,7 +11,7 @@ use core::pin::Pin;
 use core::task::{Context, Poll};
 use futures_core::stream::Stream;
 use js_sys::{AsyncIterator, IteratorNext};
-use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen::prelude::*;
 
 /// A `Stream` that yields values from an underlying `AsyncIterator`.
 pub struct JsStream {

@@ -19,7 +19,6 @@ enum AudioContextState {
     "closed"
 };
 
-[RustDeprecated="doesn't exist in Safari, use `AudioContext` instead now"]
 interface BaseAudioContext : EventTarget {
 };
 
