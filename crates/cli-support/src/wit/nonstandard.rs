@@ -331,7 +331,9 @@ pub enum AuxImport {
 
     /// This is a function which returns a URL pointing to a specific file,
     /// usually a JS snippet. The supplied path is relative to the JS glue shim.
-    LinkTo(String),
+    /// The Option may contain the contents of the linked file, so it can be
+    /// embedded.
+    LinkTo(String, Option<String>),
 }
 
 /// Values that can be imported verbatim to hook up to an import.

@@ -35,6 +35,7 @@ Options:
     --remove-name-section        Remove the debugging `name` section of the file
     --remove-producers-section   Remove the telemetry `producers` section
     --omit-default-module-path   Don't add WebAssembly fallback imports in generated JavaScript
+    --allow-links                Allow to use the `new URL('…', import.meta.url)` syntax
     --encode-into MODE           Whether or not to use TextEncoder#encodeInto,
                                  valid values are [test, always, never]
     --nodejs                     Deprecated, use `--target nodejs`
@@ -68,6 +69,7 @@ struct Args {
     flag_encode_into: Option<String>,
     flag_target: Option<String>,
     flag_omit_default_module_path: bool,
+    flag_allow_links: bool,
     arg_input: Option<PathBuf>,
 }
 
@@ -120,7 +122,8 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .remove_producers_section(args.flag_remove_producers_section)
         .typescript(typescript)
         .omit_imports(args.flag_omit_imports)
-        .omit_default_module_path(args.flag_omit_default_module_path);
+        .omit_default_module_path(args.flag_omit_default_module_path)
+        .allow_links(args.flag_allow_links);
     if let Some(true) = args.flag_weak_refs {
         b.weak_refs(true);
     }

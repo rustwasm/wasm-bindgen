@@ -3118,23 +3118,36 @@ impl<'a> Context<'a> {
                 self.invoke_intrinsic(intrinsic, args, prelude)
             }
 
-            AuxImport::LinkTo(path) => {
+            AuxImport::LinkTo(path, content) => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
-                let base = match self.config.mode {
-                    OutputMode::Web
-                    | OutputMode::Bundler { .. }
-                    | OutputMode::Deno
-                    | OutputMode::Node {
-                        experimental_modules: true,
-                    } => "import.meta.url",
-                    OutputMode::Node {
-                        experimental_modules: false,
-                    } => "require('url').pathToFileURL(__filename)",
-                    OutputMode::NoModules { .. } => "script_src",
-                };
-                Ok(format!("new URL('{}', {}).toString()", path, base))
+                if self.config.allow_links {
+                    let base = match self.config.mode {
+                        OutputMode::Web
+                        | OutputMode::Bundler { .. }
+                        | OutputMode::Deno
+                        | OutputMode::Node {
+                            experimental_modules: true,
+                        } => "import.meta.url",
+                        OutputMode::Node {
+                            experimental_modules: false,
+                        } => "require('url').pathToFileURL(__filename)",
+                        OutputMode::NoModules { .. } => "script_src",
+                    };
+                    Ok(format!("new URL('{}', {}).toString()", path, base))
+                } else {
+                    if let Some(content) = content {
+                        Ok(format!(
+                            "\"data:application/javascript,\" + encodeURIComponent(`{}`)",
+                            content.replace('`', "\\`")
+                        ))
+                    } else {
+                        Err(anyhow!("wasm-bindgen needs to be invoked with `--allow-links`, because \"{}\" cannot be embedded.\n\
+                             `--allow-links` is safe with webpack 5 or no bundler at all.\n\
+                             For other bundlers, ensure they support the `new URL('…', import.meta.url)` syntax.", path))
+                    }
+                }
             }
         }
     }

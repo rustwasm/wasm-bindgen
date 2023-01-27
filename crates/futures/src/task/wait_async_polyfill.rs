@@ -53,7 +53,16 @@ fn alloc_helper() -> Worker {
             return helper;
         }
 
-        let worker_url = wasm_bindgen::link_to!(module = "/src/task/worker.js");
+        let worker_url = wasm_bindgen::link_to!(
+            inline_js = "
+onmessage = function (ev) {
+    let [ia, index, value] = ev.data;
+    ia = new Int32Array(ia.buffer);
+    let result = Atomics.wait(ia, index, value);
+    postMessage(result);
+};
+"
+        );
         Worker::new(&worker_url).unwrap_or_else(|js| wasm_bindgen::throw_val(js))
     })
 }

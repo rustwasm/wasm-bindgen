@@ -45,6 +45,7 @@ pub struct Bindgen {
     multi_value: bool,
     wasm_interface_types: bool,
     encode_into: EncodeInto,
+    allow_links: bool,
 }
 
 pub struct Output {
@@ -118,6 +119,7 @@ impl Bindgen {
             wasm_interface_types,
             encode_into: EncodeInto::Test,
             omit_default_module_path: true,
+            allow_links: false,
         }
     }
 
@@ -294,6 +296,11 @@ impl Bindgen {
 
     pub fn omit_default_module_path(&mut self, omit_default_module_path: bool) -> &mut Bindgen {
         self.omit_default_module_path = omit_default_module_path;
+        self
+    }
+
+    pub fn allow_links(&mut self, allow_links: bool) -> &mut Bindgen {
+        self.allow_links = allow_links;
         self
     }
 

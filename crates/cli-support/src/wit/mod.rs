@@ -336,6 +336,7 @@ impl<'a> Context<'a> {
         id: ImportId,
         module: &decode::ImportModule,
         offset: usize,
+        inline_js: &[&str],
     ) -> Result<(), Error> {
         let descriptor = Function {
             shim_idx: 0,
@@ -344,18 +345,23 @@ impl<'a> Context<'a> {
             inner_ret: None,
         };
         let id = self.import_adapter(id, descriptor, AdapterJsImportKind::Normal)?;
-        let path = match module {
-            decode::ImportModule::Named(n) => format!("snippets/{}", n),
-            decode::ImportModule::RawNamed(n) => n.to_string(),
-            decode::ImportModule::Inline(idx) => {
+        let (path, content) = match module {
+            decode::ImportModule::Named(n) => (format!("snippets/{}", n), None),
+            decode::ImportModule::RawNamed(n) => (n.to_string(), None),
+            decode::ImportModule::Inline(idx) => (
                 format!(
                     "snippets/{}/inline{}.js",
                     self.unique_crate_identifier,
                     *idx as usize + offset
-                )
-            }
+                ),
+                Some(inline_js[*idx as usize]),
+            ),
         };
-        self.aux.import_map.insert(id, AuxImport::LinkTo(path));
+        self.aux.import_map.insert(
+            id,
+            // content is embedded as data URI, so it should not be too long.
+            AuxImport::LinkTo(path, content.filter(|x| x.len() <= 512).map(str::to_string)),
+        );
         Ok(())
     }
 
@@ -401,7 +407,7 @@ impl<'a> Context<'a> {
             .unwrap_or(0);
         for module in linked_modules {
             match self.function_imports.remove(module.link_function_name) {
-                Some((id, _)) => self.link_module(id, &module.module, offset)?,
+                Some((id, _)) => self.link_module(id, &module.module, offset, &inline_js[..])?,
                 None => (),
             }
         }
