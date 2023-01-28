@@ -722,3 +722,16 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
 [NoInterfaceObject]
 interface EXT_color_buffer_float {
 };
+
+[NoInterfaceObject]
+interface EXT_texture_norm16
+{
+      const GLenum R16_EXT          = 0x822A;
+      const GLenum RG16_EXT         = 0x822C;
+      const GLenum RGB16_EXT        = 0x8054;
+      const GLenum RGBA16_EXT       = 0x805B;
+      const GLenum R16_SNORM_EXT    = 0x8F98;
+      const GLenum RG16_SNORM_EXT   = 0x8F99;
+      const GLenum RGB16_SNORM_EXT  = 0x8F9A;
+      const GLenum RGBA16_SNORM_EXT = 0x8F9B;
+};
