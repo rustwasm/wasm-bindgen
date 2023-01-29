@@ -544,21 +544,18 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
                 Ok(())
             }
             InterfaceMember::Constructor(constr) => constr.first_pass(record, ctx),
+            InterfaceMember::Maplike(ml) => ml.first_pass(record, ctx),
+            InterfaceMember::Setlike(sl) => sl.first_pass(record, ctx),
+            // TODO
             InterfaceMember::Iterable(_iterable) => {
                 log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
                 Ok(())
             }
-            InterfaceMember::Maplike(ml) => ml.first_pass(record, ctx),
-            // TODO
             InterfaceMember::Stringifier(_) => {
                 log::warn!(
                     "Unsupported WebIDL Stringifier interface member: {:?}",
                     self
                 );
-                Ok(())
-            }
-            InterfaceMember::Setlike(_) => {
-                log::warn!("Unsupported WebIDL Setlike interface member: {:?}", self);
                 Ok(())
             }
             InterfaceMember::AsyncIterable(_iterable) => {
@@ -863,6 +860,209 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
                 &None,
                 false,
                 stability,
+            );
+        }
+
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::SetlikeInterfaceMember<'src>
+{
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        ctx: (&'src str, ApiStability),
+    ) -> Result<()> {
+        let value_ty = &self.generics.body;
+        let value_arg = || Arg {
+            name: "value",
+            ty: &value_ty.type_,
+            optional: false,
+            variadic: false,
+        };
+
+        let undefined_ret = || ReturnType::Undefined(term!(undefined));
+
+        // readonly attribute unsigned long size;
+        record
+            .interfaces
+            .get_mut(ctx.0)
+            .unwrap()
+            .attributes
+            .push(AttributeInterfaceData {
+                definition: &AttributeInterfaceMember {
+                    attributes: None,
+                    modifier: None,
+                    readonly: Some(term!(readonly)),
+                    attribute: term!(attribute),
+                    type_: AttributedType {
+                        attributes: None,
+                        type_: Type::Single(SingleType::NonAny(NonAnyType::Integer(MayBeNull {
+                            type_: IntegerType::Long(LongType {
+                                unsigned: Some(term!(unsigned)),
+                                long: term!(long),
+                            }),
+                            q_mark: None,
+                        }))),
+                    },
+                    identifier: Identifier("size"),
+                    semi_colon: term!(;),
+                },
+                stability: ctx.1,
+            });
+
+        // boolean has(V value);
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("has"))],
+            [value_arg()],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Boolean(
+                MayBeNull {
+                    type_: term!(boolean),
+                    q_mark: None,
+                },
+            )))),
+            &None,
+            false,
+            ctx.1,
+        );
+
+        // callback SetlikeForEachCallback = undefined (V value);
+        // TODO: the signature of the callback is erased, could we keep it?
+        let foreach_callback_arg = Arg {
+            name: "callback",
+            ty: &Type::Single(SingleType::NonAny(NonAnyType::Identifier(MayBeNull {
+                type_: Identifier("SetlikeForEachCallback"),
+                q_mark: None,
+            }))),
+            optional: false,
+            variadic: false,
+        };
+
+        record.callbacks.insert("SetlikeForEachCallback");
+
+        // [Throws] undefined forEach(SetlikeForEachCallback cb);
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("forEach"))],
+            [foreach_callback_arg],
+            &undefined_ret(),
+            &THROWS_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // TODO: iterators could have stronger types by generating specialised interfaces for each
+        //       maplike/setlike. Right now, `value` is always `any`.
+
+        // declare the iterator interface
+        record.iterators.insert("SetlikeIterator");
+
+        // [NewObject] SetlikeIterator entries();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("entries"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("SetlikeIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // [NewObject] SetlikeIterator keys();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("keys"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("SetlikeIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // [NewObject] SetlikeIterator values();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("values"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("SetlikeIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // add writeable interface if *not* readonly
+        if self.readonly.is_none() {
+            // undefined clear();
+            first_pass_operation(
+                record,
+                FirstPassOperationType::Interface,
+                ctx.0,
+                &[OperationId::Operation(Some("clear"))],
+                &[],
+                &undefined_ret(),
+                &None,
+                false,
+                ctx.1,
+            );
+
+            // boolean delete(V value);
+            first_pass_operation(
+                record,
+                FirstPassOperationType::Interface,
+                ctx.0,
+                &[OperationId::Operation(Some("delete"))],
+                [value_arg()],
+                &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Boolean(
+                    MayBeNull {
+                        type_: term!(boolean),
+                        q_mark: None,
+                    },
+                )))),
+                &None,
+                false,
+                ctx.1,
+            );
+
+            // TODO: `add` actually returns `this` but we don't have a way to express that just yet
+            // undefined add(V value);
+            first_pass_operation(
+                record,
+                FirstPassOperationType::Interface,
+                ctx.0,
+                &[OperationId::Operation(Some("add"))],
+                [value_arg()],
+                &undefined_ret(),
+                &None,
+                false,
+                ctx.1,
             );
         }
 
