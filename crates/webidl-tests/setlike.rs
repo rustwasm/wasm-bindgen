@@ -12,7 +12,7 @@ macro_rules! read_test_suite {
             // readonly attribute unsigned long size;
             assert_eq!(setlike.size(), 3);
 
-            // boolean has(K key);
+            // boolean has(V value);
             assert!(setlike.has("a"));
             assert!(setlike.has("b"));
             assert!(setlike.has("c"));
@@ -32,11 +32,8 @@ macro_rules! read_test_suite {
 
             for entry in setlike.entries().into_iter() {
                 let entry = entry.unwrap();
-                let value = entry
-                    .dyn_into::<js_sys::JsString>()
-                    .unwrap()
-                    .as_string()
-                    .unwrap();
+                let pair = entry.dyn_into::<js_sys::Array>().unwrap();
+                let value = pair.get(1).as_string().unwrap();
 
                 entries_vec.push(value);
             }
@@ -48,23 +45,21 @@ macro_rules! read_test_suite {
 
             let mut keys_vec = vec![];
 
-            for (i, _) in setlike.keys().into_iter().enumerate() {
-                keys_vec.push(i);
+            for key in setlike.keys().into_iter() {
+                let key = key.unwrap();
+                keys_vec.push(key.as_string().unwrap());
             }
 
-            assert_eq!(&keys_vec, &[0, 1, 2]);
+            assert_eq!(
+                &keys_vec,
+                &["a".to_string(), "b".to_string(), "c".to_string()]
+            );
 
             let mut values_vec = vec![];
 
-            for entry in setlike.values().into_iter() {
-                let entry = entry.unwrap();
-                let value = entry
-                    .dyn_into::<js_sys::JsString>()
-                    .unwrap()
-                    .as_string()
-                    .unwrap();
-
-                values_vec.push(value);
+            for value in setlike.values().into_iter() {
+                let value = value.unwrap();
+                values_vec.push(value.as_string().unwrap());
             }
 
             assert_eq!(

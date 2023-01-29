@@ -219,15 +219,6 @@ global.TestReadWriteMapLike = class extends global.TestReadOnlyMapLike {
   }
 };
 
-
-const set = {
-  global_no_args: () => 3,
-  global_with_args: (a, b) => a + b,
-  global_attribute: 'x',
-};
-
-global.get_global = () => set;
-
 global.TestReadOnlySetLike = class {
   constructor() {
     this.set = new Set();
@@ -244,8 +235,8 @@ global.TestReadOnlySetLike = class {
     return this.set.forEach(callback, thisArg);
   }
 
-  has(key) {
-    return this.set.has(key);
+  has(value) {
+    return this.set.has(value);
   }
 
   keys() {
