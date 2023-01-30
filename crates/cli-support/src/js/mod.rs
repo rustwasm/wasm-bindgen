@@ -3148,7 +3148,7 @@ impl<'a> Context<'a> {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
-                if self.config.allow_links {
+                if self.config.split_linked_modules {
                     let base = match self.config.mode {
                         OutputMode::Web
                         | OutputMode::Bundler { .. }
@@ -3173,8 +3173,8 @@ impl<'a> Context<'a> {
                             "\"data:application/javascript,\" + encodeURIComponent(`{escaped}`)"
                         ))
                     } else {
-                        Err(anyhow!("wasm-bindgen needs to be invoked with `--allow-links`, because \"{}\" cannot be embedded.\n\
-                            See https://rustwasm.github.io/wasm-bindgen/reference/cli.html#--allow-links for details.", path))
+                        Err(anyhow!("wasm-bindgen needs to be invoked with `--split-linked-modules`, because \"{}\" cannot be embedded.\n\
+                            See https://rustwasm.github.io/wasm-bindgen/reference/cli.html#--split-linked-modules for details.", path))
                     }
                 }
             }

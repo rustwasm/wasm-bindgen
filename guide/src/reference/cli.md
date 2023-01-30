@@ -105,12 +105,16 @@ about reference types](./reference-types.md).
 
 Don't add WebAssembly fallback imports in generated JavaScript.
 
-### `--allow-links`
+### `--split-linked-modules`
 
-Allow to use the `new URL('…', import.meta.url)` link syntax. This is safe with
-webpack 5 or no bundler at all.
+Controls whether wasm-bindgen will split linked modules out into their own files.
+Enabling this is recommended, because it allows lazy loading and setting a
+stricter Content Security Policy.
+
+wasm-bindgen uses the `new URL('…', import.meta.url)` syntax to link such split
+out files. This is directly supported when using webpack 5 or no bundler at all.
 
 For other bundlers, ensure they support the link syntax, possibly by enabling an
-extra plugin. Alternatively, configure the bundler to keep the link syntax as is
-and to copy all files in `snippets/` to the output directory preserving their
-paths.
+extra plugin. That's why this option is disabled by default. Alternatively,
+configure the bundler to keep the link syntax as is and to copy all files in
+`snippets/` to the output directory preserving their paths.

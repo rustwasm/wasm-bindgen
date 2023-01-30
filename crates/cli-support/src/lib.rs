@@ -46,7 +46,7 @@ pub struct Bindgen {
     multi_value: bool,
     wasm_interface_types: bool,
     encode_into: EncodeInto,
-    allow_links: bool,
+    split_linked_modules: bool,
 }
 
 pub struct Output {
@@ -121,7 +121,7 @@ impl Bindgen {
             wasm_interface_types,
             encode_into: EncodeInto::Test,
             omit_default_module_path: true,
-            allow_links: true,
+            split_linked_modules: true,
         }
     }
 
@@ -306,8 +306,8 @@ impl Bindgen {
         self
     }
 
-    pub fn allow_links(&mut self, allow_links: bool) -> &mut Bindgen {
-        self.allow_links = allow_links;
+    pub fn split_linked_modules(&mut self, split_linked_modules: bool) -> &mut Bindgen {
+        self.split_linked_modules = split_linked_modules;
         self
     }
 
