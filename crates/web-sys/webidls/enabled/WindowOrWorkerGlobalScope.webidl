@@ -37,9 +37,12 @@ interface mixin WindowOrWorkerGlobalScope {
 
   // ImageBitmap
   [Throws]
-  Promise<ImageBitmap> createImageBitmap(ImageBitmapSource aImage);
+  Promise<ImageBitmap> createImageBitmap(ImageBitmapSource aImage,
+                                         optional ImageBitmapOptions aOptions = {});
   [Throws]
-  Promise<ImageBitmap> createImageBitmap(ImageBitmapSource aImage, long aSx, long aSy, long aSw, long aSh);
+  Promise<ImageBitmap> createImageBitmap(ImageBitmapSource aImage,
+                                         long aSx, long aSy, long aSw, long aSh,
+                                         optional ImageBitmapOptions aOptions = {});
 };
 
 // https://fetch.spec.whatwg.org/#fetch-method
