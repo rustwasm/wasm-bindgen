@@ -3164,9 +3164,13 @@ impl<'a> Context<'a> {
                     Ok(format!("new URL('{}', {}).toString()", path, base))
                 } else {
                     if let Some(content) = content {
+                        let mut escaped = String::with_capacity(content.len());
+                        content.chars().for_each(|c| match c {
+                            '`' | '\\' | '$' => escaped.extend(['\\', c]),
+                            _ => escaped.extend([c]),
+                        });
                         Ok(format!(
-                            "\"data:application/javascript,\" + encodeURIComponent(`{}`)",
-                            content.replace('`', "\\`")
+                            "\"data:application/javascript,\" + encodeURIComponent(`{escaped}`)"
                         ))
                     } else {
                         Err(anyhow!("wasm-bindgen needs to be invoked with `--allow-links`, because \"{}\" cannot be embedded.\n\
