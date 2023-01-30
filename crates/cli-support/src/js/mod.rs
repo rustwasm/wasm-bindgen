@@ -3174,8 +3174,7 @@ impl<'a> Context<'a> {
                         ))
                     } else {
                         Err(anyhow!("wasm-bindgen needs to be invoked with `--allow-links`, because \"{}\" cannot be embedded.\n\
-                             `--allow-links` is safe with webpack 5 or no bundler at all.\n\
-                             For other bundlers, ensure they support the `new URL('…', import.meta.url)` syntax.", path))
+                            See https://rustwasm.github.io/wasm-bindgen/reference/cli.html#--allow-links for details.", path))
                     }
                 }
             }

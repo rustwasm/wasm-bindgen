@@ -104,3 +104,13 @@ about reference types](./reference-types.md).
 ### `--omit-default-module-path`
 
 Don't add WebAssembly fallback imports in generated JavaScript.
+
+### `--allow-links`
+
+Allow to use the `new URL('…', import.meta.url)` link syntax. This is safe with
+webpack 5 or no bundler at all.
+
+For other bundlers, ensure they support the link syntax, possibly by enabling an
+extra plugin. Alternatively, configure the bundler to keep the link syntax as is
+and to copy all files in `snippets/` to the output directory preserving their
+paths.
