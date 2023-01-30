@@ -1,6 +1,6 @@
 const strictEqual = require('assert').strictEqual;
 
-exports.noop = function () {};
+exports.noop = function () { };
 
 global.TestArrays = class {
   strings(x) {
@@ -97,11 +97,11 @@ global.ArrayBufferTest = class {
 };
 
 global.TakeCallbackInterface = class {
-  a() {}
-  b() {}
+  a() { }
+  b() { }
 };
 
-global.assert_dict_c = function(c) {
+global.assert_dict_c = function (c) {
   strictEqual(c.a, 1);
   strictEqual(c.b, 2);
   strictEqual(c.c, 3);
@@ -112,17 +112,17 @@ global.assert_dict_c = function(c) {
   strictEqual(c.h, 8);
 };
 
-global.mk_dict_a = function() {
+global.mk_dict_a = function () {
   return {};
 };
 
-global.assert_dict_required = function(c) {
+global.assert_dict_required = function (c) {
   strictEqual(c.a, 3);
   strictEqual(c.b, "a");
   strictEqual(c.c, 4);
 };
 
-global.assert_camel_case = function(dict) {
+global.assert_camel_case = function (dict) {
   strictEqual(dict.wierd_fieldName, 1);
 }
 
@@ -219,6 +219,57 @@ global.TestReadWriteMapLike = class extends global.TestReadOnlyMapLike {
   }
 };
 
+global.TestReadOnlySetLike = class {
+  constructor() {
+    this.set = new Set();
+    this.set.add('a');
+    this.set.add('b');
+    this.set.add('c');
+  }
+
+  entries() {
+    return this.set.entries();
+  }
+
+  forEach(callback, thisArg) {
+    return this.set.forEach(callback, thisArg);
+  }
+
+  has(value) {
+    return this.set.has(value);
+  }
+
+  keys() {
+    return this.set.keys();
+  }
+
+  values() {
+    return this.set.values();
+  }
+
+  get size() {
+    return this.set.size;
+  }
+};
+
+global.TestReadWriteSetLike = class extends global.TestReadOnlySetLike {
+  constructor() {
+    super();
+  }
+
+  add(value) {
+    return this.set.add(value);
+  }
+
+  delete(value) {
+    return this.set.delete(value);
+  }
+
+  clear() {
+    return this.set.clear();
+  }
+};
+
 global.math_test = {
   pow(base, exp) {
     return Math.pow(base, exp);
@@ -233,7 +284,7 @@ global.GetNoInterfaceObject = class {
   static get() {
     return {
       number: 3,
-      foo: () => {},
+      foo: () => { },
     }
   }
 };
@@ -266,7 +317,7 @@ global.NamedConstructorParent = class NamedConstructor {
     this._value = 0;
   }
 
-  get value(){
+  get value() {
     return this._value;
   }
 };
@@ -296,7 +347,7 @@ global.StaticMethod = class StaticMethod {
 StaticMethod.value = 0;
 
 global.StaticProperty = class StaticProperty {
-  static get value(){
+  static get value() {
     return StaticProperty._value;
   }
 
@@ -308,14 +359,14 @@ global.StaticProperty = class StaticProperty {
 StaticProperty._value = 0;
 
 global.UndefinedMethod = class UndefinedMethod {
-  constructor() {}
+  constructor() { }
   ok_method() {
     return true;
   }
 };
 
 global.NullableMethod = class NullableMethod {
-  constructor() {}
+  constructor() { }
   opt(a) {
     if (a == undefined) {
       return undefined;
@@ -355,14 +406,14 @@ global.Indexing = function () {
 };
 
 global.OptionalAndUnionArguments = class OptionalAndUnionArguments {
-  constructor() {}
+  constructor() { }
   m(a, b = true, c = 123, d = 456) {
     return [typeof a, a, typeof b, b, typeof c, c, typeof d, d].join(', ');
   }
 };
 
 global.Variadic = class Variadic {
-  constructor() {}
+  constructor() { }
   sum(...values) {
     return values.reduce((a, b) => a + b, 0);
   }
@@ -402,7 +453,7 @@ global.MixinFoo = class MixinFoo {
 };
 
 global.Overloads = class {
-  foo() {}
+  foo() { }
 };
 
 global.InvokeCallback = class {
