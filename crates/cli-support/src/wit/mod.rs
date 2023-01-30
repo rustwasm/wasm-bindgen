@@ -374,11 +374,9 @@ impl<'a> Context<'a> {
                 Some(inline_js[*idx as usize]),
             ),
         };
-        self.aux.import_map.insert(
-            id,
-            // content is embedded as data URI, so it should not be too long.
-            AuxImport::LinkTo(path, content.filter(|x| x.len() <= 512).map(str::to_string)),
-        );
+        self.aux
+            .import_map
+            .insert(id, AuxImport::LinkTo(path, content.map(str::to_string)));
         Ok(())
     }
 
