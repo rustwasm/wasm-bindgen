@@ -30,3 +30,17 @@ partial interface ImageBitmap {
   // Dispose of all graphical resources associated with this ImageBitmap.
   undefined close();
 };
+
+enum ImageOrientation { "from-image", "flipY" };
+enum PremultiplyAlpha { "none", "premultiply", "default" };
+enum ColorSpaceConversion { "none", "default" };
+enum ResizeQuality { "pixelated", "low", "medium", "high" };
+
+dictionary ImageBitmapOptions {
+  ImageOrientation imageOrientation = "from-image";
+  PremultiplyAlpha premultiplyAlpha = "default";
+  ColorSpaceConversion colorSpaceConversion = "default";
+  [EnforceRange] unsigned long resizeWidth;
+  [EnforceRange] unsigned long resizeHeight;
+  ResizeQuality resizeQuality = "low";
+};

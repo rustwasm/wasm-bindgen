@@ -970,6 +970,12 @@ mod gen_CollectedClientData;
 #[cfg(feature = "CollectedClientData")]
 pub use gen_CollectedClientData::*;
 
+#[cfg(feature = "ColorSpaceConversion")]
+#[allow(non_snake_case)]
+mod gen_ColorSpaceConversion;
+#[cfg(feature = "ColorSpaceConversion")]
+pub use gen_ColorSpaceConversion::*;
+
 #[cfg(feature = "Comment")]
 #[allow(non_snake_case)]
 mod gen_Comment;
@@ -3952,6 +3958,12 @@ mod gen_ImageBitmap;
 #[cfg(feature = "ImageBitmap")]
 pub use gen_ImageBitmap::*;
 
+#[cfg(feature = "ImageBitmapOptions")]
+#[allow(non_snake_case)]
+mod gen_ImageBitmapOptions;
+#[cfg(feature = "ImageBitmapOptions")]
+pub use gen_ImageBitmapOptions::*;
+
 #[cfg(feature = "ImageBitmapRenderingContext")]
 #[allow(non_snake_case)]
 mod gen_ImageBitmapRenderingContext;
@@ -4011,6 +4023,12 @@ pub use gen_ImageDecoder::*;
 mod gen_ImageDecoderInit;
 #[cfg(feature = "ImageDecoderInit")]
 pub use gen_ImageDecoderInit::*;
+
+#[cfg(feature = "ImageOrientation")]
+#[allow(non_snake_case)]
+mod gen_ImageOrientation;
+#[cfg(feature = "ImageOrientation")]
+pub use gen_ImageOrientation::*;
 
 #[cfg(feature = "ImageTrack")]
 #[allow(non_snake_case)]
@@ -5398,6 +5416,12 @@ mod gen_PositionOptions;
 #[cfg(feature = "PositionOptions")]
 pub use gen_PositionOptions::*;
 
+#[cfg(feature = "PremultiplyAlpha")]
+#[allow(non_snake_case)]
+mod gen_PremultiplyAlpha;
+#[cfg(feature = "PremultiplyAlpha")]
+pub use gen_PremultiplyAlpha::*;
+
 #[cfg(feature = "Presentation")]
 #[allow(non_snake_case)]
 mod gen_Presentation;
@@ -5901,6 +5925,12 @@ pub use gen_ResizeObserverOptions::*;
 mod gen_ResizeObserverSize;
 #[cfg(feature = "ResizeObserverSize")]
 pub use gen_ResizeObserverSize::*;
+
+#[cfg(feature = "ResizeQuality")]
+#[allow(non_snake_case)]
+mod gen_ResizeQuality;
+#[cfg(feature = "ResizeQuality")]
+pub use gen_ResizeQuality::*;
 
 #[cfg(feature = "Response")]
 #[allow(non_snake_case)]

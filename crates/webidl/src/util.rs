@@ -13,7 +13,7 @@ use weedle::common::Identifier;
 use weedle::literal::{ConstValue as ConstValueLit, FloatLit, IntegerLit};
 use weedle::types::{MayBeNull, NonAnyType, SingleType};
 
-use crate::constants::IMMUTABLE_SLICE_WHITELIST;
+use crate::constants::{FIXED_INTERFACES, IMMUTABLE_SLICE_WHITELIST};
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use crate::generator::{ConstValue, InterfaceMethod, InterfaceMethodKind};
 use crate::idl_type::{IdlType, ToIdlType};
@@ -498,6 +498,13 @@ impl<'src> FirstPassRecord<'src> {
                 }
             }
         }
+
+        for interface in &mut ret {
+            if let Some(fixed) = FIXED_INTERFACES.get(&interface.name.to_string().as_ref()) {
+                interface.name = rust_ident(fixed);
+            }
+        }
+
         return ret;
     }
 
