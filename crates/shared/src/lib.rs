@@ -22,12 +22,18 @@ macro_rules! shared_api {
             inline_js: Vec<&'a str>,
             unique_crate_identifier: &'a str,
             package_json: Option<&'a str>,
+            linked_modules: Vec<LinkedModule<'a>>,
         }
 
         struct Import<'a> {
             module: Option<ImportModule<'a>>,
             js_namespace: Option<Vec<String>>,
             kind: ImportKind<'a>,
+        }
+
+        struct LinkedModule<'a> {
+            module: ImportModule<'a>,
+            link_function_name: &'a str,
         }
 
         enum ImportModule<'a> {

@@ -263,7 +263,7 @@ fn default_module_path_target_no_modules() {
     if (typeof document === 'undefined') {
         script_src = location.href;
     } else {
-        script_src = document.currentScript.src;
+        script_src = new URL(document.currentScript.src, location.href).toString();
     }",
     ));
     assert!(contents.contains(

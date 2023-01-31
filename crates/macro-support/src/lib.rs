@@ -40,6 +40,18 @@ pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diag
     Ok(tokens)
 }
 
+/// Takes the parsed input from a `wasm_bindgen::link_to` macro and returns the generated link
+pub fn expand_link_to(input: TokenStream) -> Result<TokenStream, Diagnostic> {
+    parser::reset_attrs_used();
+    let opts = syn::parse2(input)?;
+
+    let mut tokens = proc_macro2::TokenStream::new();
+    let link = parser::link_to(opts)?;
+    link.try_to_tokens(&mut tokens)?;
+
+    Ok(tokens)
+}
+
 /// Takes the parsed input from a `#[wasm_bindgen]` macro and returns the generated bindings
 pub fn expand_class_marker(
     attr: TokenStream,

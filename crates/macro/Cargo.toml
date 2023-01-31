@@ -27,3 +27,4 @@ quote = "1.0"
 trybuild = "1.0"
 wasm-bindgen = { path = "../..", version = "0.2.83" }
 wasm-bindgen-futures = { path = "../futures", version = "0.4.33" }
+web-sys = { path = "../web-sys", version = "0.3.60" }

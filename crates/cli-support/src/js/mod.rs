@@ -384,7 +384,7 @@ impl<'a> Context<'a> {
                     if (typeof document === 'undefined') {
                         script_src = location.href;
                     } else {
-                        script_src = document.currentScript.src;
+                        script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
                 js.push_str("let wasm;\n");
@@ -3142,6 +3142,41 @@ impl<'a> Context<'a> {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 self.invoke_intrinsic(intrinsic, args, prelude)
+            }
+
+            AuxImport::LinkTo(path, content) => {
+                assert!(kind == AdapterJsImportKind::Normal);
+                assert!(!variadic);
+                assert_eq!(args.len(), 0);
+                if self.config.split_linked_modules {
+                    let base = match self.config.mode {
+                        OutputMode::Web
+                        | OutputMode::Bundler { .. }
+                        | OutputMode::Deno
+                        | OutputMode::Node {
+                            experimental_modules: true,
+                        } => "import.meta.url",
+                        OutputMode::Node {
+                            experimental_modules: false,
+                        } => "require('url').pathToFileURL(__filename)",
+                        OutputMode::NoModules { .. } => "script_src",
+                    };
+                    Ok(format!("new URL('{}', {}).toString()", path, base))
+                } else {
+                    if let Some(content) = content {
+                        let mut escaped = String::with_capacity(content.len());
+                        content.chars().for_each(|c| match c {
+                            '`' | '\\' | '$' => escaped.extend(['\\', c]),
+                            _ => escaped.extend([c]),
+                        });
+                        Ok(format!(
+                            "\"data:application/javascript,\" + encodeURIComponent(`{escaped}`)"
+                        ))
+                    } else {
+                        Err(anyhow!("wasm-bindgen needs to be invoked with `--split-linked-modules`, because \"{}\" cannot be embedded.\n\
+                            See https://rustwasm.github.io/wasm-bindgen/reference/cli.html#--split-linked-modules for details.", path))
+                    }
+                }
             }
         }
     }

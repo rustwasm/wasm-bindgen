@@ -355,6 +355,9 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
         AuxImport::Intrinsic(intrinsic) => {
             format!("wasm-bindgen specific intrinsic `{}`", intrinsic.name())
         }
+        AuxImport::LinkTo(path, _) => {
+            format!("wasm-bindgen specific link function for `{}`", path)
+        }
         AuxImport::Closure { .. } => format!("creating a `Closure` wrapper"),
     };
     bail!("import of {} requires JS glue", item);

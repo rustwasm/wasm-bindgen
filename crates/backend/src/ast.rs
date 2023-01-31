@@ -2,7 +2,7 @@
 //! with all the added metadata necessary to generate WASM bindings
 //! for it.
 
-use crate::Diagnostic;
+use crate::{util::ShortHash, Diagnostic};
 use proc_macro2::{Ident, Span};
 use std::hash::{Hash, Hasher};
 use wasm_bindgen_shared as shared;
@@ -16,6 +16,8 @@ pub struct Program {
     pub exports: Vec<Export>,
     /// js -> rust interfaces
     pub imports: Vec<Import>,
+    /// linked-to modules
+    pub linked_modules: Vec<ImportModule>,
     /// rust enums
     pub enums: Vec<Enum>,
     /// rust structs
@@ -36,7 +38,22 @@ impl Program {
             && self.typescript_custom_sections.is_empty()
             && self.inline_js.is_empty()
     }
+
+    /// Name of the link function for a specific linked module
+    pub fn link_function_name(&self, idx: usize) -> String {
+        let hash = match &self.linked_modules[idx] {
+            ImportModule::Inline(idx, _) => ShortHash((1, &self.inline_js[*idx])).to_string(),
+            other => ShortHash((0, other)).to_string(),
+        };
+        format!("__wbindgen_link_{}", hash)
+    }
 }
+
+/// An abstract syntax tree representing a link to a module in Rust.
+/// In contrast to Program, LinkToModule must expand to an expression.
+/// linked_modules of the inner Program must contain exactly one element
+/// whose link is produced by the expression.
+pub struct LinkToModule(pub Program);
 
 /// A rust to js interface. Allows interaction with rust objects/functions
 /// from javascript.
