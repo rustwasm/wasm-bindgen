@@ -112,11 +112,13 @@ files. Enabling this is recommended, because it allows lazy-loading the linked
 modules and setting a stricter Content Security Policy.
 
 wasm-bindgen uses the `new URL('…', import.meta.url)` syntax to resolve the
-links to such split out files. This breaks with most bundlers, since the
-bundler doesn't know to include the linked module in its output. That's why
-this option is disabled by default. Webpack 5 is an exception, which has
-special treatment for that syntax. For other bundlers, you'll need to take
-extra steps to get it to work, likely by using a plugin. Alternatively, you can
-leave the syntax as is and instead manually configure the bundler to copy all
-files in `snippets/` to the output directory, preserving their paths relative
-to whichever bundled file ends up containing the JS shim.
+links to such split out files. This breaks with most bundlers, since the bundler
+doesn't know to include the linked module in its output. That's why this option
+is disabled by default. Webpack 5 is an exception, which has special treatment
+for that syntax.
+
+For other bundlers, you'll need to take extra steps to get it to work, likely by
+using a plugin. Alternatively, you can leave the syntax as is and instead
+manually configure the bundler to copy all files in `snippets/` to the output
+directory, preserving their paths relative to whichever bundled file ends up
+containing the JS shim.
