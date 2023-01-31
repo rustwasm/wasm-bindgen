@@ -40,6 +40,9 @@ pub fn link_to(input: TokenStream) -> TokenStream {
             }
             tokens.into()
         }
+        // This `String::clone` is here so that IDEs know this is supposed to be a
+        // `String` and can keep type-checking the rest of the program even if the macro
+        // fails.
         Err(diagnostic) => (quote! { String::clone(#diagnostic) }).into(),
     }
 }
