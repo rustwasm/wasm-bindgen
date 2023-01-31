@@ -87,10 +87,12 @@ fn write_maplike() {
     let maplike = TestReadWriteMapLike::new().unwrap();
 
     // undefined set(K key, V value);
-    maplike.set("a", 4);
-    maplike.set("d", 5);
+    let ret1 = maplike.set("a", 4);
+    let ret2 = maplike.set("d", 5);
     assert_eq!(maplike.get("a"), Some(4));
     assert_eq!(maplike.get("d"), Some(5));
+    assert_eq!(ret1, maplike);
+    assert_eq!(ret2, maplike);
 
     // boolean delete(K key);
     assert!(maplike.delete("a"));

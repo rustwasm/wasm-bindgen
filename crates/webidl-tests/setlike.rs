@@ -78,8 +78,9 @@ fn write_setlike() {
     // { "a", "b", "c" }
     let setlike = TestReadWriteSetLike::new().unwrap();
 
-    setlike.add("d");
+    let ret = setlike.add("d");
     assert_eq!(setlike.size(), 4);
+    assert_eq!(ret, setlike);
 
     assert!(setlike.delete("d"));
     assert_eq!(setlike.size(), 3);

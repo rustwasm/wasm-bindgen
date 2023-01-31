@@ -848,15 +848,19 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
                 stability,
             );
 
-            // TODO: `set` actually returns `this` but we don't have a way to express that just yet
-            // undefined set(K key, V value);
+            // <interface name> set(K key, V value);
             first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
                 &[OperationId::Operation(Some("set"))],
                 [key_arg(), value_arg()],
-                &undefined_ret(),
+                &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                    MayBeNull {
+                        type_: Identifier(self_name),
+                        q_mark: None,
+                    },
+                )))),
                 &None,
                 false,
                 stability,
@@ -1051,15 +1055,19 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
                 ctx.1,
             );
 
-            // TODO: `add` actually returns `this` but we don't have a way to express that just yet
-            // undefined add(V value);
+            // <interface name> add(V value);
             first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 ctx.0,
                 &[OperationId::Operation(Some("add"))],
                 [value_arg()],
-                &undefined_ret(),
+                &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                    MayBeNull {
+                        type_: Identifier(ctx.0),
+                        q_mark: None,
+                    },
+                )))),
                 &None,
                 false,
                 ctx.1,
