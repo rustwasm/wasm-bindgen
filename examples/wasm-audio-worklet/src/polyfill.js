@@ -21,6 +21,3 @@ if (!globalThis.TextEncoder) {
         }
     };
 }
-
-export function nop() {
-}

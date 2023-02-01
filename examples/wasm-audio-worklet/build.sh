@@ -18,4 +18,5 @@ RUSTFLAGS='-C target-feature=+atomics,+bulk-memory,+mutable-globals' \
 cargo run -p wasm-bindgen-cli -- \
   ../../target/wasm32-unknown-unknown/release/wasm_audio_worklet.wasm \
   --out-dir . \
-  --target web
+  --target web \
+  --split-linked-modules

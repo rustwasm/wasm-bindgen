@@ -53,16 +53,7 @@ pub fn wasm_audio_node(
 }
 
 pub async fn prepare_wasm_audio(ctx: &AudioContext) -> Result<(), JsValue> {
-    nop();
     let mod_url = dependent_module!("worklet.js")?;
     JsFuture::from(ctx.audio_worklet()?.add_module(&mod_url)?).await?;
     Ok(())
-}
-
-// TextEncoder and TextDecoder are not available in Audio Worklets, but there
-// is a dirty workaround: Import polyfill.js to install stub implementations
-// of these classes in globalThis.
-#[wasm_bindgen(module = "/src/polyfill.js")]
-extern "C" {
-    fn nop();
 }
