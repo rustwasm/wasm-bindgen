@@ -207,7 +207,8 @@ global.TestReadWriteMapLike = class extends global.TestReadOnlyMapLike {
   }
 
   set(key, value) {
-    return this.map.set(key, value);
+    this.map.set(key, value);
+    return this;
   }
 
   delete(key) {
@@ -258,7 +259,8 @@ global.TestReadWriteSetLike = class extends global.TestReadOnlySetLike {
   }
 
   add(value) {
-    return this.set.add(value);
+    this.set.add(value);
+    return this;
   }
 
   delete(value) {
