@@ -83,7 +83,7 @@ impl Interner {
             return Ok(ImportModule::Named(self.intern_str(&file.new_identifier)));
         }
         self.check_for_package_json();
-        let path = if id.starts_with("/") {
+        let path = if id.starts_with('/') {
             self.root.join(&id[1..])
         } else if id.starts_with("./") || id.starts_with("../") {
             let msg = "relative module paths aren't supported yet";
@@ -144,7 +144,7 @@ fn shared_program<'a>(
         typescript_custom_sections: prog
             .typescript_custom_sections
             .iter()
-            .map(|x| -> &'a str { &x })
+            .map(|x| -> &'a str { x })
             .collect(),
         linked_modules: prog
             .linked_modules
@@ -405,7 +405,7 @@ impl Encode for usize {
 impl<'a> Encode for &'a [u8] {
     fn encode(&self, dst: &mut Encoder) {
         self.len().encode(dst);
-        dst.dst.extend_from_slice(*self);
+        dst.dst.extend_from_slice(self);
     }
 }
 
@@ -415,7 +415,7 @@ impl<'a> Encode for &'a str {
     }
 }
 
-impl<'a> Encode for String {
+impl Encode for String {
     fn encode(&self, dst: &mut Encoder) {
         self.as_bytes().encode(dst);
     }

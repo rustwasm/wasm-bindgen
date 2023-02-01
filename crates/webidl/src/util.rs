@@ -85,7 +85,7 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     if let Some(method) = method {
         link.push_str(&format!("/{method}"));
     }
-    format!("[MDN Documentation]({link})").into()
+    format!("[MDN Documentation]({link})")
 }
 
 // Array type is borrowed for arguments (`&mut [T]` or `&[T]`) and owned for return value (`Vec<T>`).
@@ -382,7 +382,7 @@ impl<'src> FirstPassRecord<'src> {
             }
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
-            let catch = force_throws || throws(&signature.orig.attrs);
+            let catch = force_throws || throws(signature.orig.attrs);
             let ret_ty = if id == &OperationId::IndexingGetter {
                 // All indexing getters should return optional values (or
                 // otherwise be marked with catch).
@@ -483,7 +483,7 @@ impl<'src> FirstPassRecord<'src> {
                 if let Some(arguments) = arguments {
                     if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
                         ret.push(InterfaceMethod {
-                            name: rust_ident(&format!("{}_{}", rust_name, i)),
+                            name: rust_ident(&format!("{rust_name}_{i}")),
                             js_name: name.to_string(),
                             arguments,
                             kind: kind.clone(),
@@ -663,8 +663,7 @@ pub fn required_doc_string(options: &Options, features: &BTreeSet<String>) -> Op
         .join(", ");
     Some(format!(
         "\n\n*This API requires the following crate features \
-         to be activated: {}*",
-        list,
+         to be activated: {list}*"
     ))
 }
 
@@ -675,7 +674,7 @@ pub fn get_cfg_features(options: &Options, features: &BTreeSet<String>) -> Optio
         None
     } else {
         let features = features
-            .into_iter()
+            .iter()
             .map(|feature| quote!( feature = #feature, ))
             .collect::<TokenStream>();
 

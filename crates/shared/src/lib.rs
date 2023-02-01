@@ -172,7 +172,7 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
         .chars()
         .flat_map(|s| s.to_lowercase())
         .collect::<String>();
-    name.push_str("_");
+    name.push('_');
     name.push_str(f);
     name
 }
@@ -180,7 +180,7 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
 pub fn struct_field_get(struct_: &str, f: &str) -> String {
     let mut name = String::from("__wbg_get_");
     name.extend(struct_.chars().flat_map(|s| s.to_lowercase()));
-    name.push_str("_");
+    name.push('_');
     name.push_str(f);
     name
 }
@@ -188,7 +188,7 @@ pub fn struct_field_get(struct_: &str, f: &str) -> String {
 pub fn struct_field_set(struct_: &str, f: &str) -> String {
     let mut name = String::from("__wbg_set_");
     name.extend(struct_.chars().flat_map(|s| s.to_lowercase()));
-    name.push_str("_");
+    name.push('_');
     name.push_str(f);
     name
 }
@@ -198,7 +198,7 @@ pub fn version() -> String {
     if let Some(s) = option_env!("WBG_VERSION") {
         v.push_str(" (");
         v.push_str(s);
-        v.push_str(")");
+        v.push(')');
     }
     v
 }

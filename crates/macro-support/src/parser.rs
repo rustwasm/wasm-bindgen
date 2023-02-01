@@ -204,7 +204,7 @@ impl BindgenAttrs {
             let pos = attrs
                 .iter()
                 .enumerate()
-                .find(|&(_, ref m)| m.path.segments[0].ident == "wasm_bindgen")
+                .find(|(_, m)| m.path.segments[0].ident == "wasm_bindgen")
                 .map(|a| a.0);
             let pos = match pos {
                 Some(i) => i,
@@ -224,7 +224,7 @@ impl BindgenAttrs {
                 bail_span!(attr, "malformed #[wasm_bindgen] attribute");
             }
             let mut attrs: BindgenAttrs = syn::parse2(group.stream())?;
-            ret.attrs.extend(attrs.attrs.drain(..));
+            ret.attrs.append(&mut attrs.attrs);
             attrs.check_used();
         }
     }
@@ -273,7 +273,7 @@ impl Parse for BindgenAttr {
         let attr = attr.0;
         let attr_span = attr.span();
         let attr_string = attr.to_string();
-        let raw_attr_string = format!("r#{}", attr_string);
+        let raw_attr_string = format!("r#{attr_string}");
 
         macro_rules! parsers {
             ($(($name:ident, $($contents:tt)*),)*) => {
@@ -360,11 +360,11 @@ impl Parse for BindgenAttr {
 
         attrgen!(parsers);
 
-        return Err(original.error(if attr_string.starts_with("_") {
+        Err(original.error(if attr_string.starts_with('_') {
             "unknown attribute: it's safe to remove unused attributes entirely."
         } else {
             "unknown attribute"
-        }));
+        }))
     }
 }
 
@@ -396,7 +396,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
-        if self.generics.params.len() > 0 {
+        if !self.generics.params.is_empty() {
             bail_span!(
                 self.generics,
                 "structs with #[wasm_bindgen] cannot have lifetime or \
@@ -806,7 +806,7 @@ fn function_from_decl(
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
     }
-    if sig.generics.params.len() > 0 {
+    if !sig.generics.params.is_empty() {
         bail_span!(
             sig.generics,
             "can't #[wasm_bindgen] functions with lifetime or type parameters",
@@ -841,7 +841,7 @@ fn function_from_decl(
         if let syn::Pat::Ident(ref mut i) = *i.pat {
             let ident = i.ident.to_string();
             if is_js_keyword(ident.as_str()) {
-                i.ident = Ident::new(format!("_{}", ident).as_str(), i.ident.span());
+                i.ident = Ident::new(format!("_{ident}").as_str(), i.ident.span());
             }
         }
     };
@@ -886,15 +886,15 @@ fn function_from_decl(
             _ => "",
         };
         let name = if prefix.is_empty() && opts.method().is_none() && is_js_keyword(js_name) {
-            format!("_{}", js_name)
+            format!("_{js_name}")
         } else {
-            format!("{}{}", prefix, js_name)
+            format!("{prefix}{js_name}")
         };
         (name, js_name_span, true)
     } else {
         let name =
             if !is_from_impl && opts.method().is_none() && is_js_keyword(&decl_name.to_string()) {
-                format!("_{}", decl_name)
+                format!("_{decl_name}")
             } else {
                 decl_name.to_string()
             };
@@ -939,11 +939,8 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     .enumerate()
                     .filter_map(|(i, m)| m.parse_meta().ok().map(|m| (i, m)))
                     .find(|(_, m)| m.path().is_ident("no_mangle"));
-                match no_mangle {
-                    Some((i, _)) => {
-                        f.attrs.remove(i);
-                    }
-                    _ => {}
+                if let Some((i, _)) = no_mangle {
+                    f.attrs.remove(i);
                 }
                 let comments = extract_doc_comments(&f.attrs);
                 // If the function isn't used for anything other than being exported to JS,
@@ -953,10 +950,10 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 f.to_tokens(tokens);
                 let opts = opts.unwrap_or_default();
                 if opts.start().is_some() {
-                    if f.sig.generics.params.len() > 0 {
+                    if !f.sig.generics.params.is_empty() {
                         bail_span!(&f.sig.generics, "the start function cannot have generics",);
                     }
-                    if f.sig.inputs.len() > 0 {
+                    if !f.sig.inputs.is_empty() {
                         bail_span!(&f.sig.inputs, "the start function cannot have arguments",);
                     }
                 }
@@ -1042,7 +1039,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
         if let Some((_, path, _)) = &self.trait_ {
             bail_span!(path, "#[wasm_bindgen] trait impls are not supported");
         }
-        if self.generics.params.len() > 0 {
+        if !self.generics.params.is_empty() {
             bail_span!(
                 self.generics,
                 "#[wasm_bindgen] generic impls aren't supported"
@@ -1060,7 +1057,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
         };
         let mut errors = Vec::new();
         for item in self.items.iter_mut() {
-            if let Err(e) = prepare_for_impl_recursion(item, &name, &opts) {
+            if let Err(e) = prepare_for_impl_recursion(item, name, &opts) {
                 errors.push(e);
             }
         }
@@ -1120,7 +1117,7 @@ fn prepare_for_impl_recursion(
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
             path: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker },
-            tokens: quote::quote! { (#class = #js_class) }.into(),
+            tokens: quote::quote! { (#class = #js_class) },
         },
     );
 
@@ -1490,7 +1487,7 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, D
         syn::GenericArgument::Type(t) => t,
         other => bail_span!(other, "must be a type parameter"),
     };
-    match get_ty(&ty) {
+    match get_ty(ty) {
         syn::Type::Tuple(t) if t.elems.is_empty() => return Ok(None),
         _ => {}
     }
@@ -1684,7 +1681,7 @@ pub fn link_to(opts: BindgenAttrs) -> Result<ast::LinkToModule, Diagnostic> {
         Diagnostic::span_error(Span::call_site(), "`link_to!` requires a module.")
     })?;
     if let ast::ImportModule::Named(p, s) | ast::ImportModule::RawNamed(p, s) = &module {
-        if !p.starts_with("./") && !p.starts_with("../") && !p.starts_with("/") {
+        if !p.starts_with("./") && !p.starts_with("../") && !p.starts_with('/') {
             return Err(Diagnostic::span_error(
                 *s,
                 "`link_to!` does not support module paths.",

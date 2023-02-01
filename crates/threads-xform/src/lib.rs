@@ -345,7 +345,7 @@ fn inject_start(
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
                 // local = malloc(stack.size) [aka base]
-                with_temp_stack(body, memory, &stack, |body| {
+                with_temp_stack(body, memory, stack, |body| {
                     body.i32_const(stack.size as i32)
                         .call(malloc)
                         .local_tee(local);

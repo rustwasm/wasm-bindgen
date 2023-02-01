@@ -1051,7 +1051,7 @@ impl TryToTokens for ast::ImportFunction {
                     subpat: None,
                     ..
                 }) => ident.clone(),
-                syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{}", i), Span::call_site()),
+                syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{i}"), Span::call_site()),
                 _ => bail_span!(
                     arg.pat,
                     "unsupported pattern in #[wasm_bindgen] imported function",
@@ -1390,7 +1390,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             return;
         }
 
-        let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
+        let name = Ident::new(&format!("__wbindgen_describe_{ident}"), ident.span());
         let inner = &self.inner;
         let attrs = &self.attrs;
         (quote! {
