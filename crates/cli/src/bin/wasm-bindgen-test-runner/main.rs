@@ -18,10 +18,6 @@ use std::path::PathBuf;
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
 
-// no need for jemalloc bloat in this binary (and we don't need speed)
-#[global_allocator]
-static ALLOC: std::alloc::System = std::alloc::System;
-
 mod deno;
 mod headless;
 mod node;

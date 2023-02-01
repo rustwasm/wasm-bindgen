@@ -5,10 +5,6 @@ use std::path::PathBuf;
 use std::process;
 use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 
-// no need for jemalloc bloat in this binary (and we don't need speed)
-#[global_allocator]
-static ALLOC: std::alloc::System = std::alloc::System;
-
 const USAGE: &'static str = "
 Generating JS bindings for a wasm file
 
