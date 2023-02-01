@@ -150,17 +150,17 @@ macro_rules! shared_api {
 } // end of mac definition
 
 pub fn new_function(struct_name: &str) -> String {
-    let mut name = format!("__wbg_");
+    let mut name = "__wbg_".to_string();
     name.extend(struct_name.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_new");
-    return name;
+    name
 }
 
 pub fn free_function(struct_name: &str) -> String {
-    let mut name = format!("__wbg_");
+    let mut name = "__wbg_".to_string();
     name.extend(struct_name.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_free");
-    return name;
+    name
 }
 
 pub fn free_function_export_name(function_name: &str) -> String {
@@ -174,7 +174,7 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
         .collect::<String>();
     name.push_str("_");
     name.push_str(f);
-    return name;
+    name
 }
 
 pub fn struct_field_get(struct_: &str, f: &str) -> String {
@@ -182,7 +182,7 @@ pub fn struct_field_get(struct_: &str, f: &str) -> String {
     name.extend(struct_.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_");
     name.push_str(f);
-    return name;
+    name
 }
 
 pub fn struct_field_set(struct_: &str, f: &str) -> String {
@@ -190,7 +190,7 @@ pub fn struct_field_set(struct_: &str, f: &str) -> String {
     name.extend(struct_.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_");
     name.push_str(f);
-    return name;
+    name
 }
 
 pub fn version() -> String {
@@ -200,5 +200,5 @@ pub fn version() -> String {
         v.push_str(s);
         v.push_str(")");
     }
-    return v;
+    v
 }

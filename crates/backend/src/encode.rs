@@ -186,13 +186,10 @@ fn shared_export<'a>(
     export: &'a ast::Export,
     intern: &'a Interner,
 ) -> Result<Export<'a>, Diagnostic> {
-    let consumed = match export.method_self {
-        Some(ast::MethodSelf::ByValue) => true,
-        _ => false,
-    };
+    let consumed = matches!(export.method_self, Some(ast::MethodSelf::ByValue));
     let method_kind = from_ast_method_kind(&export.function, intern, &export.method_kind)?;
     Ok(Export {
-        class: export.js_class.as_ref().map(|s| &**s),
+        class: export.js_class.as_deref(),
         comments: export.comments.iter().map(|s| &**s).collect(),
         consumed,
         function: shared_function(&export.function, intern),
@@ -210,7 +207,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
             if let syn::Pat::Ident(x) = &*arg.pat {
                 return x.ident.to_string();
             }
-            format!("arg{}", idx)
+            format!("arg{idx}")
         })
         .collect::<Vec<_>>();
     Function {

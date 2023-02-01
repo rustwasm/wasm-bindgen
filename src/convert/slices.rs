@@ -364,7 +364,7 @@ if_std! {
             let ptr = <*mut JsValue>::from_abi(js.ptr);
             let len = js.len as usize;
             let vec: Vec<T> = Vec::from_raw_parts(ptr, len, len).drain(..).map(|js_value| T::unchecked_from_js(js_value)).collect();
-            return vec.into_boxed_slice();
+            vec.into_boxed_slice()
         }
     }
 

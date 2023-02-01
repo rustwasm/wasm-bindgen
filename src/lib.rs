@@ -620,10 +620,10 @@ impl TryFrom<&JsValue> for f64 {
     #[inline]
     fn try_from(val: &JsValue) -> Result<Self, Self::Error> {
         let jsval = unsafe { JsValue::_new(__wbindgen_try_into_number(val.idx)) };
-        return match jsval.as_f64() {
+        match jsval.as_f64() {
             Some(num) => Ok(num),
             None => Err(jsval),
-        };
+        }
     }
 }
 
@@ -1667,7 +1667,7 @@ pub mod __rt {
             };
             GLOBAL_EXNDATA[0] = 0;
             GLOBAL_EXNDATA[1] = 0;
-            return ret;
+            ret
         }
     }
 

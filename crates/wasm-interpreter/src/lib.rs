@@ -105,7 +105,7 @@ impl Interpreter {
 
         ret.functions = module.tables.main_function_table()?;
 
-        return Ok(ret);
+        Ok(ret)
     }
 
     /// Interprets the execution of the descriptor function `func`.
@@ -271,8 +271,8 @@ impl Frame<'_> {
                 self.locals.insert(e.local, val);
             }
             Instr::LocalTee(e) => {
-                let val = stack.last().unwrap().clone();
-                self.locals.insert(e.local, val);
+                let val = stack.last().unwrap();
+                self.locals.insert(e.local, *val);
             }
 
             // Blindly assume all globals are the stack pointer

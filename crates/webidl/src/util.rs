@@ -81,11 +81,11 @@ pub fn snake_case_ident(identifier: &str) -> String {
 
 // Returns a link to MDN
 pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
-    let mut link = format!("https://developer.mozilla.org/en-US/docs/Web/API/{}", class);
+    let mut link = format!("https://developer.mozilla.org/en-US/docs/Web/API/{class}");
     if let Some(method) = method {
-        link.push_str(&format!("/{}", method));
+        link.push_str(&format!("/{method}"));
     }
-    format!("[MDN Documentation]({})", link).into()
+    format!("[MDN Documentation]({link})").into()
 }
 
 // Array type is borrowed for arguments (`&mut [T]` or `&[T]`) and owned for return value (`Vec<T>`).
@@ -338,10 +338,10 @@ impl<'src> FirstPassRecord<'src> {
                 let mut any_different = false;
                 let arg_name = signature.orig.args[i].name;
                 for other in actual_signatures.iter() {
-                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) {
-                        if !ptr::eq(signature, other) {
-                            any_same_name = true;
-                        }
+                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name)
+                        && !ptr::eq(signature, other)
+                    {
+                        any_same_name = true;
                     }
                     if let Some(other) = other.args.get(i) {
                         if other != arg {
@@ -505,7 +505,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        return ret;
+        ret
     }
 
     /// When generating our web_sys APIs we default to setting slice references that
@@ -653,12 +653,12 @@ fn flag_slices_immutable(ty: &mut IdlType) {
 }
 
 pub fn required_doc_string(options: &Options, features: &BTreeSet<String>) -> Option<String> {
-    if !options.features || features.len() == 0 {
+    if !options.features || features.is_empty() {
         return None;
     }
     let list = features
         .iter()
-        .map(|ident| format!("`{}`", ident))
+        .map(|ident| format!("`{ident}`"))
         .collect::<Vec<_>>()
         .join(", ");
     Some(format!(

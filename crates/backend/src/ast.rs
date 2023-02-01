@@ -45,7 +45,7 @@ impl Program {
             ImportModule::Inline(idx, _) => ShortHash((1, &self.inline_js[*idx])).to_string(),
             other => ShortHash((0, other)).to_string(),
         };
-        format!("__wbindgen_link_{}", hash)
+        format!("__wbindgen_link_{hash}")
     }
 }
 

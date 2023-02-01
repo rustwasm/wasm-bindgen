@@ -339,7 +339,7 @@ impl ToTokens for ast::StructField {
         .to_tokens(tokens);
 
         Descriptor {
-            ident: &getter,
+            ident: getter,
             inner: quote! {
                 <#ty as WasmDescribe>::describe();
             },
@@ -434,7 +434,7 @@ impl TryToTokens for ast::Export {
         for (i, arg) in self.function.arguments.iter().enumerate() {
             argtys.push(&*arg.ty);
             let i = i + offset;
-            let ident = Ident::new(&format!("arg{}", i), Span::call_site());
+            let ident = Ident::new(&format!("arg{i}"), Span::call_site());
             let ty = &arg.ty;
             match &*arg.ty {
                 syn::Type::Reference(syn::TypeReference {
@@ -904,7 +904,7 @@ impl ToTokens for ast::ImportEnum {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
         let name = &self.name;
-        let expect_string = format!("attempted to convert invalid {} into JSValue", name);
+        let expect_string = format!("attempted to convert invalid {name} into JSValue");
         let variants = &self.variants;
         let variant_strings = &self.variant_values;
         let attrs = &self.rust_attrs;
@@ -1350,7 +1350,7 @@ impl ToTokens for ast::ImportStatic {
         .to_tokens(into);
 
         Descriptor {
-            ident: &shim_name,
+            ident: shim_name,
             inner: quote! {
                 <#ty as WasmDescribe>::describe();
             },

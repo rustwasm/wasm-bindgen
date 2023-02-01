@@ -296,7 +296,7 @@ fn xform_one(
 
     let wrapper = wrapper.finish(params, &mut module.funcs);
     if let Some(name) = &module.funcs.get(func).name {
-        module.funcs.get_mut(wrapper).name = Some(format!("{} multivalue shim", name));
+        module.funcs.get_mut(wrapper).name = Some(format!("{name} multivalue shim"));
     }
 
     Ok(wrapper)

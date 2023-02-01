@@ -176,7 +176,7 @@ impl Context {
     }
 
     fn function(&self, externref: &[(usize, bool)], ret_externref: bool) -> Option<Function> {
-        if !ret_externref && externref.len() == 0 {
+        if !ret_externref && externref.is_zero() {
             return None;
         }
         Some(Function {
@@ -489,9 +489,7 @@ impl Transform<'_> {
 
         for (i, old_ty) in target_ty.params().iter().enumerate() {
             let is_owned = func.args.remove(&i);
-            let new_ty = is_owned
-                .map(|_which| ValType::Externref)
-                .unwrap_or(old_ty.clone());
+            let new_ty = is_owned.map(|_which| ValType::Externref).unwrap_or(*old_ty);
             param_tys.push(new_ty.clone());
             if new_ty == *old_ty {
                 param_convert.push(Convert::None);

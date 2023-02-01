@@ -32,7 +32,7 @@ pub fn rust_ident(name: &str) -> Ident {
     if name == "" {
         panic!("tried to create empty Ident (from \"\")");
     } else if is_rust_keyword(name) {
-        Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())
+        Ident::new(&format!("{name}_"), proc_macro2::Span::call_site())
 
     // we didn't historically have `async` in the `is_rust_keyword` list above,
     // so for backwards compatibility reasons we need to generate an `async`
@@ -54,7 +54,7 @@ pub fn rust_ident(name: &str) -> Ident {
             _ => unreachable!(),
         }
     } else if name.chars().next().unwrap().is_ascii_digit() {
-        Ident::new(&format!("N{}", name), proc_macro2::Span::call_site())
+        Ident::new(&format!("N{name}"), proc_macro2::Span::call_site())
     } else {
         raw_ident(name)
     }
