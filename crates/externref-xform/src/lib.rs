@@ -176,7 +176,7 @@ impl Context {
     }
 
     fn function(&self, externref: &[(usize, bool)], ret_externref: bool) -> Option<Function> {
-        if !ret_externref && externref.is_zero() {
+        if !ret_externref && externref.is_empty() {
             return None;
         }
         Some(Function {
