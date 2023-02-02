@@ -41,6 +41,8 @@ jobs:
   test_wasm_bindgen:
     name: "Run wasm-bindgen crate tests (unix)"
     runs-on: ubuntu-latest
+    env:
+      WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
     steps:
     - uses: actions/checkout@v2
     - run: rustup update --no-self-update stable && rustup default stable

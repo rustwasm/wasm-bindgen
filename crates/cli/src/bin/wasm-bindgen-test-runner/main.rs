@@ -167,6 +167,10 @@ integration test.\
         TestMode::NoModule => b.no_modules(true)?,
     };
 
+    if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
+        b.split_linked_modules(true);
+    }
+
     b.debug(debug)
         .input_module(module, wasm)
         .keep_debug(false)
