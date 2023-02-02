@@ -27,11 +27,10 @@ the JS console, creating a worker and reacting to message events.
 ## `src/lib.rs`
 
 Creates a struct `NumberEval` with methods to act as stateful object in the
-worker and function `startup` to be launched in the main thread. Also includes
-internal helper functions `setup_input_oninput_callback` to attach a
-`wasm_bindgen::Closure` as callback to the `oninput` event of the input field
-and `get_on_msg_callback` to create a `wasm_bindgen::Closure` which is triggered
-when the worker returns a message.
+worker and `start` function. Also includes internal helper functions
+`setup_input_oninput_callback` to attach a `wasm_bindgen::Closure` as callback
+to the `oninput` event of the input field and `get_on_msg_callback` to create a
+`wasm_bindgen::Closure` which is triggered when the worker returns a message.
 
 ```rust
 {{#include ../../../examples/wasm-in-web-worker/src/lib.rs}}
@@ -51,8 +50,8 @@ both `wasm_in_web_worker.js` and `index.js`.
 
 ## `index.js`
 
-Loads our WASM file asynchronously and calls the entry point `startup` of the
-main thread which will create a worker.
+Loads our WASM file asynchronously which calls the `start` function and creates
+a worker.
 
 ```js
 {{#include ../../../examples/wasm-in-web-worker/index.js}}
