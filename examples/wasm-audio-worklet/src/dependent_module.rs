@@ -17,9 +17,12 @@ extern "C" {
 }
 
 pub fn on_the_fly(code: &str) -> Result<String, JsValue> {
-    // Generate the import of the bindgen ES module, assuming `--target web`:
+    // Generate the import of the bindgen ES module, assuming `--target web`,
+    // preluded by the TextEncoder/TextDecoder polyfill needed inside worklets.
     let header = format!(
-        "import init, * as bindgen from '{}';\n\n",
+        "import '{}';\n\
+        import init, * as bindgen from '{}';\n\n",
+        wasm_bindgen::link_to!(module = "/src/polyfill.js"),
         IMPORT_META.url(),
     );
 
