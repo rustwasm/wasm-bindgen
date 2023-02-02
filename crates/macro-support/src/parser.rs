@@ -1384,11 +1384,16 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 "only foreign mods with the `C` ABI are allowed"
             ));
         }
+        let js_namespace = opts.js_namespace().map(|(s, _)| s.to_owned());
         let module = module_from_opts(program, &opts)
             .map_err(|e| errors.push(e))
             .unwrap_or_default();
         for item in self.items.into_iter() {
-            if let Err(e) = item.macro_parse(program, module.clone()) {
+            let ctx = ForeignItemCtx {
+                module: module.clone(),
+                js_namespace: js_namespace.clone(),
+            };
+            if let Err(e) = item.macro_parse(program, ctx) {
                 errors.push(e);
             }
         }
@@ -1398,11 +1403,16 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
     }
 }
 
-impl MacroParse<Option<ast::ImportModule>> for syn::ForeignItem {
+struct ForeignItemCtx {
+    module: Option<ast::ImportModule>,
+    js_namespace: Option<Vec<String>>,
+}
+
+impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
     fn macro_parse(
         mut self,
         program: &mut ast::Program,
-        module: Option<ast::ImportModule>,
+        ctx: ForeignItemCtx,
     ) -> Result<(), Diagnostic> {
         let item_opts = {
             let attrs = match self {
@@ -1413,7 +1423,13 @@ impl MacroParse<Option<ast::ImportModule>> for syn::ForeignItem {
             };
             BindgenAttrs::find(attrs)?
         };
-        let js_namespace = item_opts.js_namespace().map(|(s, _)| s.to_owned());
+
+        let js_namespace = item_opts
+            .js_namespace()
+            .map(|(s, _)| s.to_owned())
+            .or(ctx.js_namespace);
+        let module = ctx.module;
+
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
             syn::ForeignItem::Type(t) => t.convert(item_opts)?,
