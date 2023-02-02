@@ -260,16 +260,14 @@ fn default_module_path_target_no_modules() {
         fs::read_to_string(out_dir.join("default_module_path_target_no_modules.js")).unwrap();
     assert!(contents.contains(
         "\
-    if (typeof document === 'undefined') {
-        script_src = location.href;
-    } else {
+    if (typeof document !== 'undefined') {
         script_src = new URL(document.currentScript.src, location.href).toString();
     }",
     ));
     assert!(contents.contains(
         "\
     async function init(input) {
-        if (typeof input === 'undefined') {
+        if (typeof input === 'undefined' && script_src !== 'undefined') {
             input = script_src.replace(/\\.js$/, '_bg.wasm');
         }",
     ));

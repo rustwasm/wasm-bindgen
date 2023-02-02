@@ -381,9 +381,7 @@ impl<'a> Context<'a> {
                 js.push_str("let script_src;\n");
                 js.push_str(
                     "\
-                    if (typeof document === 'undefined') {
-                        script_src = location.href;
-                    } else {
+                    if (typeof document !== 'undefined') {
                         script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
@@ -720,7 +718,7 @@ impl<'a> Context<'a> {
                     stem = self.config.stem()?
                 ),
                 OutputMode::NoModules { .. } => "\
-                    if (typeof input === 'undefined') {
+                    if (typeof input === 'undefined' && script_src !== 'undefined') {
                         input = script_src.replace(/\\.js$/, '_bg.wasm');
                     }"
                 .to_string(),

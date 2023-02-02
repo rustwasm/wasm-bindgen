@@ -122,3 +122,7 @@ using a plugin. Alternatively, you can leave the syntax as is and instead
 manually configure the bundler to copy all files in `snippets/` to the output
 directory, preserving their paths relative to whichever bundled file ends up
 containing the JS shim.
+
+On the no-modules target, `link_to!` won't work if used outside of a document,
+e.g. inside a worker. This is because it's impossible to figure out what the
+URL of the linked module is without a reference point like `import.meta.url`.
