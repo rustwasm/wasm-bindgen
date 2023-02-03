@@ -245,7 +245,7 @@ jobs:
         done
       env:
         RUSTFLAGS: --cfg=web_sys_unstable_apis
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: examples1
         path: exbuild
@@ -263,7 +263,7 @@ jobs:
             ./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir
           ) || exit 1;
         done
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: examples2
         path: exbuild
@@ -296,7 +296,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - run: cargo build --manifest-path benchmarks/Cargo.toml --release --target wasm32-unknown-unknown
     - run: cargo run -p wasm-bindgen-cli -- target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm --out-dir benchmarks/pkg --target web
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: benchmarks
         path: benchmarks
@@ -313,7 +313,7 @@ jobs:
         strip -g target/x86_64-unknown-linux-musl/release/wasm-bindgen
         strip -g target/x86_64-unknown-linux-musl/release/wasm-bindgen-test-runner
         strip -g target/x86_64-unknown-linux-musl/release/wasm2es6js
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_linux_x86_64_musl
         path: "target/x86_64-unknown-linux-musl/release/wasm*"
@@ -329,7 +329,7 @@ jobs:
         cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-unknown-linux-gnu --features vendored-openssl --release
       env:
         CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_linux_aarch64_gnu
         path: "target/aarch64-unknown-linux-gnu/release/wasm*"
@@ -342,7 +342,7 @@ jobs:
     - run: cargo build --manifest-path crates/cli/Cargo.toml --release
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.7
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_macos_x86_64
         path: "target/release/wasm*"
@@ -357,7 +357,7 @@ jobs:
         cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-apple-darwin --release
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.7
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_macos_aarch64
         path: "target/aarch64-apple-darwin/release/wasm*"
@@ -370,7 +370,7 @@ jobs:
     - run: cargo build --manifest-path crates/cli/Cargo.toml --release
       env:
         RUSTFLAGS: -Ctarget-feature=+crt-static
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_windows
         path: "target/release/wasm*"
@@ -383,7 +383,7 @@ jobs:
         curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.3.0/mdbook-v0.3.0-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
         echo $PWD >> $GITHUB_PATH
     - run: (cd guide && mdbook build)
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: doc_book
         path: guide/book/html
@@ -400,7 +400,7 @@ jobs:
         RUSTDOCFLAGS: --cfg=web_sys_unstable_apis
     - run: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
     - run: tar czvf docs.tar.gz target/doc
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: doc_api
         path: docs.tar.gz
@@ -455,7 +455,7 @@ jobs:
         mk x86_64-apple-darwin dist_macos_x86_64
         mk aarch64-apple-darwin dist_macos_aarch64
         mk x86_64-pc-windows-msvc dist_windows
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: gh-release
         path: gh-release
@@ -467,7 +467,7 @@ jobs:
         mv artifacts/examples2/* gh-pages/exbuild
         mv artifacts/benchmarks gh-pages/benchmarks
         tar czf gh-pages.tar.gz gh-pages
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: gh-pages
         path: gh-pages.tar.gz
