@@ -47,7 +47,7 @@ impl Config {
         // that we have work to do. If shared memory isn't enabled, though then
         // this isn't an atomic module so there's nothing to do. We still allow,
         // though, an environment variable to force us to go down this path to
-        // remain compatibile with older LLVM outputs.
+        // remain compatible with older LLVM outputs.
         match wasm_conventions::get_memory(module) {
             Ok(memory) => module.memories.get(memory).shared,
             Err(_) => false,
@@ -454,7 +454,7 @@ fn find_function(module: &Module, name: &str) -> Result<FunctionId, Error> {
         .ok_or_else(|| anyhow!("failed to find `{}`", name))?;
     match e.item {
         walrus::ExportItem::Function(f) => Ok(f),
-        _ => bail!("`{}` wasn't a funtion", name),
+        _ => bail!("`{}` wasn't a function", name),
     }
 }
 

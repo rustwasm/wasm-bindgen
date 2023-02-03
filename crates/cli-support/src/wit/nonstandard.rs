@@ -97,14 +97,14 @@ pub struct AuxExport {
 /// currently take integer parameters and require a JS wrapper, but ideally
 /// we'd change them one day to taking/receiving `externref` which then use some
 /// sort of webidl import to customize behavior or something like that. In any
-/// case this doesn't feel quite right in terms of priviledge separation, so
+/// case this doesn't feel quite right in terms of privilege separation, so
 /// we'll want to work on this. For now though it works.
 #[derive(Debug)]
 pub enum AuxExportKind {
     /// A free function that's just listed on the exported module
     Function(String),
 
-    /// A function that's used to create an instane of a class. The function
+    /// A function that's used to create an instance of a class. The function
     /// actually return just an integer which is put on an JS object currently.
     Constructor(String),
 

@@ -1207,7 +1207,7 @@ impl<'a> Context<'a> {
 
         // Another possibility is to use `TextEncoder#encodeInto` which is much
         // newer and isn't implemented everywhere yet. It's more efficient,
-        // however, becaues it allows us to elide an intermediate allocation.
+        // however, because it allows us to elide an intermediate allocation.
         let encode_into = "function (arg, view) {
             return cachedTextEncoder.encodeInto(arg, view);
         }";
@@ -2876,7 +2876,7 @@ impl<'a> Context<'a> {
     /// Generates a JS snippet appropriate for invoking `import`.
     ///
     /// This is generating code for `binding` where `bindings` has more type
-    /// infomation. The `args` array is the list of JS expressions representing
+    /// information. The `args` array is the list of JS expressions representing
     /// the arguments to pass to JS. Finally `variadic` indicates whether the
     /// last argument is a list to be splatted in a variadic way, and `prelude`
     /// is a location to push some more initialization JS if necessary.

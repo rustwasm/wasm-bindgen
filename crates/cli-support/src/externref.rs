@@ -74,7 +74,7 @@ pub fn process(module: &mut Module) -> Result<()> {
         aux.externref_drop_slice = meta.drop_slice;
     }
 
-    // Additonally we may need to update some adapter instructions other than
+    // Additionally we may need to update some adapter instructions other than
     // those found for the externref pass. These are some general "fringe support"
     // things necessary to get absolutely everything working.
     for (_, adapter) in section.adapters.iter_mut() {
@@ -411,7 +411,7 @@ pub fn force_contiguous_elements(module: &mut Module) -> Result<()> {
     // Here we take a look at all element segments in the module to see if we
     // need to split them.
     for segment in module.elements.iter_mut() {
-        // If this segment has all-`Some` members then it's alrady contiguous
+        // If this segment has all-`Some` members then it's already contiguous
         // and we can skip it.
         if segment.members.iter().all(|m| m.is_some()) {
             continue;

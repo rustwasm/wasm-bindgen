@@ -3,7 +3,7 @@
 //! The purpose of this module is to basically execute a pass on a raw wasm
 //! module that just came out of the compiler. The pass will execute all
 //! relevant descriptor functions contained in the module which wasm-bindgen
-//! uses to convey type infomation here, to the CLI.
+//! uses to convey type information here, to the CLI.
 //!
 //! All descriptor functions are removed after this pass runs and in their stead
 //! a new custom section, defined in this module, is inserted into the
