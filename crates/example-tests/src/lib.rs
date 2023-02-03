@@ -58,7 +58,7 @@ impl<R> From<CommandResult<R>> for Result<R, CommandError> {
     }
 }
 
-/// An error that occured while running a command.
+/// An error that occurred while running a command.
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct CommandError {
     /// The kind of error that occurred.
@@ -93,7 +93,7 @@ enum BidiErrorKind {
     /// An invalid argument was passed for a command.
     #[serde(rename = "invalid argument")]
     InvalidArgument,
-    /// Some other kind of error occured.
+    /// Some other kind of error occurred.
     #[serde(rename = "unknown error")]
     UnknownError,
 }
@@ -360,7 +360,7 @@ pub async fn test_example(
 
                             if entry.level == LogLevel::Error {
                                 if let Some(text) = entry.text {
-                                    let mut msg = format!("An error occured: {text}");
+                                    let mut msg = format!("An error occurred: {text}");
 
                                     if let Some(stack_trace) = entry.stack_trace {
                                         write!(msg, "\n\nStack trace:").unwrap();
@@ -371,7 +371,7 @@ pub async fn test_example(
 
                                     bail!("{msg}")
                                 } else {
-                                    bail!("An error occured")
+                                    bail!("An error occurred")
                                 }
                             }
                         }

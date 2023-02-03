@@ -14,7 +14,7 @@ Usage:
 Options:
     -h --help               Show this screen.
     -o --output FILE        File to place output in
-    --out-dir DIR           Directory to place ouptut in
+    --out-dir DIR           Directory to place output in
     --typescript            Output a `*.d.ts` file next to the JS output
     --base64                Inline the wasm module using base64 encoding
     --fetch PATH            Load module by passing the PATH argument to `fetch()`

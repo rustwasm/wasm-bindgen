@@ -18,7 +18,7 @@ async fn pass_after_2s() {
 
 #[wasm_bindgen_test]
 fn fail() {
-    console_log!("helpful messsage, please see me");
+    console_log!("helpful message, please see me");
     panic!("this is a failing test");
 }
 

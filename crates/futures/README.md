@@ -1,6 +1,6 @@
 # `wasm-bindgen-futures`
 
-[API Documention][docs]
+[API Documentation][docs]
 
 This crate bridges the gap between a Rust `Future` and a JavaScript
 `Promise`. It provides two conversions:
