@@ -24,7 +24,7 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup component add rustfmt
     - run: cargo fmt --all -- --check
@@ -34,7 +34,7 @@ jobs:
     name: Check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo check --all
 
@@ -44,7 +44,7 @@ jobs:
     env:
       WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v2
@@ -75,7 +75,7 @@ jobs:
     name: "Run wasm-bindgen crate tests with multithreading enabled"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup default nightly-2022-05-19
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
@@ -90,7 +90,7 @@ jobs:
   #   name: "Run wasm-bindgen crate tests (Windows)"
   #   runs-on: windows-latest
   #   steps:
-  #   - uses: actions/checkout@v2
+  #   - uses: actions/checkout@v3
   #   - run: rustup update --no-self-update stable && rustup default stable
   #   - run: rustup target add wasm32-unknown-unknown
   #   - uses: actions/setup-node@v2
@@ -111,7 +111,7 @@ jobs:
     name: Run native tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v2
@@ -130,7 +130,7 @@ jobs:
     name: "Run web-sys crate tests"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v2
@@ -150,7 +150,7 @@ jobs:
     name: "Verify that web-sys is compiled correctly"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features
     - run: git diff --exit-code
@@ -159,7 +159,7 @@ jobs:
     name: "Run js-sys crate tests"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v2
@@ -175,7 +175,7 @@ jobs:
     name: "Run wasm-bindgen-webidl crate tests"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v2
@@ -193,7 +193,7 @@ jobs:
     name: "Test TypeScript output of wasm-bindgen"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v2
@@ -205,7 +205,7 @@ jobs:
     name: "Build and test the deno example"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: denoland/setup-deno@v1
@@ -217,14 +217,14 @@ jobs:
     name: Run UI compile-fail tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update 1.56.0 && rustup default 1.56.0
     - run: cargo test -p wasm-bindgen-macro
 
   build_examples:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
@@ -253,7 +253,7 @@ jobs:
   build_nightly:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup default nightly-2022-05-19
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
@@ -274,7 +274,7 @@ jobs:
     - build_nightly
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
         name: examples1
@@ -291,7 +291,7 @@ jobs:
   build_benchmarks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - run: cargo build --manifest-path benchmarks/Cargo.toml --release --target wasm32-unknown-unknown
@@ -304,7 +304,7 @@ jobs:
   dist_linux_x86_64_musl:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add x86_64-unknown-linux-musl
     - run: sudo apt update -y && sudo apt install musl-tools -y
@@ -337,7 +337,7 @@ jobs:
   dist_macos_x86_64:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo build --manifest-path crates/cli/Cargo.toml --release
       env:
@@ -350,7 +350,7 @@ jobs:
   dist_macos_aarch64:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add aarch64-apple-darwin
     - run: |
@@ -365,7 +365,7 @@ jobs:
   dist_windows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo build --manifest-path crates/cli/Cargo.toml --release
       env:
@@ -378,7 +378,7 @@ jobs:
   doc_book:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: |
         curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.3.0/mdbook-v0.3.0-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
         echo $PWD >> $GITHUB_PATH
@@ -391,7 +391,7 @@ jobs:
   doc_api:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update nightly && rustup default nightly
     - run: cargo doc --no-deps --features 'serde-serialize'
     - run: cargo doc --no-deps --manifest-path crates/js-sys/Cargo.toml
@@ -423,7 +423,7 @@ jobs:
       - build_benchmarks
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - run: rustup update --no-self-update nightly && rustup default nightly
