@@ -471,7 +471,7 @@ jobs:
       with:
         name: gh-pages
         path: gh-pages.tar.gz
-    - uses: JamesIves/github-pages-deploy-action@4.1.4
+    - uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
         branch: gh-pages
         folder: gh-pages
