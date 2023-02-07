@@ -121,6 +121,7 @@ jobs:
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
     - run: cargo test -p wasm-bindgen-externref-xform
+    - run: cargo test -p wasm-bindgen-macro-support
     - run: cargo test -p wasm-bindgen-multi-value-xform
     - run: cargo test -p wasm-bindgen-wasm-interpreter
     - run: cargo test -p wasm-bindgen-futures
