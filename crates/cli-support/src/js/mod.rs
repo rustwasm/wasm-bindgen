@@ -3157,7 +3157,19 @@ impl<'a> Context<'a> {
                         OutputMode::Node {
                             experimental_modules: false,
                         } => "require('url').pathToFileURL(__filename)",
-                        OutputMode::NoModules { .. } => "script_src",
+                        OutputMode::NoModules { .. } => {
+                            prelude.push_str(
+                                "if (script_src === undefined) {
+                                    throw new Error(
+                                        \"When `--split-linked-modules` is enabled on the `no-modules` target, \
+                                          linked modules cannot be used outside of a web page's main thread.\n\
+                                          \n\
+                                          To fix this, disable `--split-linked-modules`.\"
+                                    );
+                                 }",
+                            );
+                            "script_src"
+                        }
                     };
                     Ok(format!("new URL('{}', {}).toString()", path, base))
                 } else {
