@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
     pub fn width(this: &HtmlCanvasElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLCanvasElement" , js_name = width)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLCanvasElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
-    pub fn set_width(this: &HtmlCanvasElement, value: u32);
+    pub fn set_width(this: &HtmlCanvasElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLCanvasElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
     pub fn height(this: &HtmlCanvasElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLCanvasElement" , js_name = height)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLCanvasElement" , js_name = height)]
     #[doc = "Setter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/height)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
-    pub fn set_height(this: &HtmlCanvasElement, value: u32);
+    pub fn set_height(this: &HtmlCanvasElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = getContext)]
     #[doc = "The `getContext()` method."]
     #[doc = ""]

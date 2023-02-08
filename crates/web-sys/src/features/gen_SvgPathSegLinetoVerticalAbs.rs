@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoVerticalAbs`*"]
     pub fn y(this: &SvgPathSegLinetoVerticalAbs) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegLinetoVerticalAbs" , js_name = y)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegLinetoVerticalAbs" , js_name = y)]
     #[doc = "Setter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegLinetoVerticalAbs/y)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoVerticalAbs`*"]
-    pub fn set_y(this: &SvgPathSegLinetoVerticalAbs, value: f32);
+    pub fn set_y(this: &SvgPathSegLinetoVerticalAbs, value: f32) -> Result<(), JsValue>;
 }

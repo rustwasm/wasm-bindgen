@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
     pub fn align(this: &HtmlParagraphElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLParagraphElement" , js_name = align)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLParagraphElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
-    pub fn set_align(this: &HtmlParagraphElement, value: &str);
+    pub fn set_align(this: &HtmlParagraphElement, value: &str) -> Result<(), JsValue>;
 }

@@ -78,13 +78,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
     pub fn current_time(this: &Animation) -> Option<f64>;
-    # [wasm_bindgen (structural , method , setter , js_class = "Animation" , js_name = currentTime)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "Animation" , js_name = currentTime)]
     #[doc = "Setter for the `currentTime` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Animation/currentTime)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`*"]
-    pub fn set_current_time(this: &Animation, value: Option<f64>);
+    pub fn set_current_time(this: &Animation, value: Option<f64>) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Animation" , js_name = playbackRate)]
     #[doc = "Getter for the `playbackRate` field of this object."]
     #[doc = ""]

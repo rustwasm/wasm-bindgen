@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn autofocus(this: &HtmlSelectElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = autofocus)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = autofocus)]
     #[doc = "Setter for the `autofocus` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_autofocus(this: &HtmlSelectElement, value: bool);
+    pub fn set_autofocus(this: &HtmlSelectElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = autocomplete)]
     #[doc = "Getter for the `autocomplete` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn autocomplete(this: &HtmlSelectElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = autocomplete)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = autocomplete)]
     #[doc = "Setter for the `autocomplete` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/autocomplete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_autocomplete(this: &HtmlSelectElement, value: &str);
+    pub fn set_autocomplete(this: &HtmlSelectElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = disabled)]
     #[doc = "Getter for the `disabled` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn disabled(this: &HtmlSelectElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = disabled)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = disabled)]
     #[doc = "Setter for the `disabled` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/disabled)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_disabled(this: &HtmlSelectElement, value: bool);
+    pub fn set_disabled(this: &HtmlSelectElement, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlFormElement")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = form)]
     #[doc = "Getter for the `form` field of this object."]
@@ -68,13 +68,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn multiple(this: &HtmlSelectElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = multiple)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = multiple)]
     #[doc = "Setter for the `multiple` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/multiple)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_multiple(this: &HtmlSelectElement, value: bool);
+    pub fn set_multiple(this: &HtmlSelectElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
@@ -82,13 +82,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn name(this: &HtmlSelectElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_name(this: &HtmlSelectElement, value: &str);
+    pub fn set_name(this: &HtmlSelectElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = required)]
     #[doc = "Getter for the `required` field of this object."]
     #[doc = ""]
@@ -96,13 +96,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn required(this: &HtmlSelectElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = required)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = required)]
     #[doc = "Setter for the `required` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/required)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_required(this: &HtmlSelectElement, value: bool);
+    pub fn set_required(this: &HtmlSelectElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = size)]
     #[doc = "Getter for the `size` field of this object."]
     #[doc = ""]
@@ -110,13 +110,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn size(this: &HtmlSelectElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = size)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = size)]
     #[doc = "Setter for the `size` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_size(this: &HtmlSelectElement, value: u32);
+    pub fn set_size(this: &HtmlSelectElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -139,13 +139,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn length(this: &HtmlSelectElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = length)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = length)]
     #[doc = "Setter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/length)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_length(this: &HtmlSelectElement, value: u32);
+    pub fn set_length(this: &HtmlSelectElement, value: u32) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlCollection")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = selectedOptions)]
     #[doc = "Getter for the `selectedOptions` field of this object."]
@@ -161,13 +161,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn selected_index(this: &HtmlSelectElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSelectElement" , js_name = selectedIndex)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSelectElement" , js_name = selectedIndex)]
     #[doc = "Setter for the `selectedIndex` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/selectedIndex)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
-    pub fn set_selected_index(this: &HtmlSelectElement, value: i32);
+    pub fn set_selected_index(this: &HtmlSelectElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSelectElement" , js_name = value)]
     #[doc = "Getter for the `value` field of this object."]
     #[doc = ""]

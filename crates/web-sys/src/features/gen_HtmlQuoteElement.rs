@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlQuoteElement`*"]
     pub fn cite(this: &HtmlQuoteElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLQuoteElement" , js_name = cite)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLQuoteElement" , js_name = cite)]
     #[doc = "Setter for the `cite` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLQuoteElement/cite)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlQuoteElement`*"]
-    pub fn set_cite(this: &HtmlQuoteElement, value: &str);
+    pub fn set_cite(this: &HtmlQuoteElement, value: &str) -> Result<(), JsValue>;
 }

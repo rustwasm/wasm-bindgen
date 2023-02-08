@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn name(this: &HtmlFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_name(this: &HtmlFrameElement, value: &str);
+    pub fn set_name(this: &HtmlFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameElement" , js_name = scrolling)]
     #[doc = "Getter for the `scrolling` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn scrolling(this: &HtmlFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = scrolling)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = scrolling)]
     #[doc = "Setter for the `scrolling` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/scrolling)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_scrolling(this: &HtmlFrameElement, value: &str);
+    pub fn set_scrolling(this: &HtmlFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameElement" , js_name = src)]
     #[doc = "Getter for the `src` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn src(this: &HtmlFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = src)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_src(this: &HtmlFrameElement, value: &str);
+    pub fn set_src(this: &HtmlFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameElement" , js_name = frameBorder)]
     #[doc = "Getter for the `frameBorder` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn frame_border(this: &HtmlFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = frameBorder)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = frameBorder)]
     #[doc = "Setter for the `frameBorder` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/frameBorder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_frame_border(this: &HtmlFrameElement, value: &str);
+    pub fn set_frame_border(this: &HtmlFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameElement" , js_name = longDesc)]
     #[doc = "Getter for the `longDesc` field of this object."]
     #[doc = ""]
@@ -74,13 +74,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn long_desc(this: &HtmlFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = longDesc)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = longDesc)]
     #[doc = "Setter for the `longDesc` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/longDesc)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_long_desc(this: &HtmlFrameElement, value: &str);
+    pub fn set_long_desc(this: &HtmlFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameElement" , js_name = noResize)]
     #[doc = "Getter for the `noResize` field of this object."]
     #[doc = ""]
@@ -88,13 +88,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn no_resize(this: &HtmlFrameElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = noResize)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = noResize)]
     #[doc = "Setter for the `noResize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/noResize)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_no_resize(this: &HtmlFrameElement, value: bool);
+    pub fn set_no_resize(this: &HtmlFrameElement, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "Document")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameElement" , js_name = contentDocument)]
     #[doc = "Getter for the `contentDocument` field of this object."]
@@ -118,13 +118,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn margin_height(this: &HtmlFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = marginHeight)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = marginHeight)]
     #[doc = "Setter for the `marginHeight` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/marginHeight)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_margin_height(this: &HtmlFrameElement, value: &str);
+    pub fn set_margin_height(this: &HtmlFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFrameElement" , js_name = marginWidth)]
     #[doc = "Getter for the `marginWidth` field of this object."]
     #[doc = ""]
@@ -132,11 +132,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
     pub fn margin_width(this: &HtmlFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameElement" , js_name = marginWidth)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFrameElement" , js_name = marginWidth)]
     #[doc = "Setter for the `marginWidth` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameElement/marginWidth)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameElement`*"]
-    pub fn set_margin_width(this: &HtmlFrameElement, value: &str);
+    pub fn set_margin_width(this: &HtmlFrameElement, value: &str) -> Result<(), JsValue>;
 }

@@ -34,13 +34,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShadowRoot`*"]
     pub fn inner_html(this: &ShadowRoot) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "ShadowRoot" , js_name = innerHTML)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "ShadowRoot" , js_name = innerHTML)]
     #[doc = "Setter for the `innerHTML` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/innerHTML)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShadowRoot`*"]
-    pub fn set_inner_html(this: &ShadowRoot, value: &str);
+    pub fn set_inner_html(this: &ShadowRoot, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "Element")]
     # [wasm_bindgen (structural , method , getter , js_class = "ShadowRoot" , js_name = activeElement)]
     #[doc = "Getter for the `activeElement` field of this object."]

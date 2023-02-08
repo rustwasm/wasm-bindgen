@@ -26,13 +26,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn src(this: &HtmlMediaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = src)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_src(this: &HtmlMediaElement, value: &str);
+    pub fn set_src(this: &HtmlMediaElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = currentSrc)]
     #[doc = "Getter for the `currentSrc` field of this object."]
     #[doc = ""]
@@ -63,13 +63,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn cross_origin(this: &HtmlMediaElement) -> Option<String>;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = crossOrigin)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = crossOrigin)]
     #[doc = "Setter for the `crossOrigin` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/crossOrigin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_cross_origin(this: &HtmlMediaElement, value: Option<&str>);
+    pub fn set_cross_origin(this: &HtmlMediaElement, value: Option<&str>) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = networkState)]
     #[doc = "Getter for the `networkState` field of this object."]
     #[doc = ""]
@@ -84,13 +84,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn preload(this: &HtmlMediaElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = preload)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = preload)]
     #[doc = "Setter for the `preload` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/preload)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_preload(this: &HtmlMediaElement, value: &str);
+    pub fn set_preload(this: &HtmlMediaElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "TimeRanges")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = buffered)]
     #[doc = "Getter for the `buffered` field of this object."]
@@ -120,13 +120,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn current_time(this: &HtmlMediaElement) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = currentTime)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = currentTime)]
     #[doc = "Setter for the `currentTime` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/currentTime)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_current_time(this: &HtmlMediaElement, value: f64);
+    pub fn set_current_time(this: &HtmlMediaElement, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = duration)]
     #[doc = "Getter for the `duration` field of this object."]
     #[doc = ""]
@@ -148,13 +148,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn default_playback_rate(this: &HtmlMediaElement) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = defaultPlaybackRate)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = defaultPlaybackRate)]
     #[doc = "Setter for the `defaultPlaybackRate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/defaultPlaybackRate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_default_playback_rate(this: &HtmlMediaElement, value: f64);
+    pub fn set_default_playback_rate(this: &HtmlMediaElement, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = playbackRate)]
     #[doc = "Getter for the `playbackRate` field of this object."]
     #[doc = ""]
@@ -162,13 +162,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn playback_rate(this: &HtmlMediaElement) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = playbackRate)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = playbackRate)]
     #[doc = "Setter for the `playbackRate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playbackRate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_playback_rate(this: &HtmlMediaElement, value: f64);
+    pub fn set_playback_rate(this: &HtmlMediaElement, value: f64) -> Result<(), JsValue>;
     #[cfg(feature = "TimeRanges")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = played)]
     #[doc = "Getter for the `played` field of this object."]
@@ -199,13 +199,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn autoplay(this: &HtmlMediaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = autoplay)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = autoplay)]
     #[doc = "Setter for the `autoplay` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/autoplay)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_autoplay(this: &HtmlMediaElement, value: bool);
+    pub fn set_autoplay(this: &HtmlMediaElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = loop)]
     #[doc = "Getter for the `loop` field of this object."]
     #[doc = ""]
@@ -213,13 +213,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn loop_(this: &HtmlMediaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = loop)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = loop)]
     #[doc = "Setter for the `loop` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loop)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_loop(this: &HtmlMediaElement, value: bool);
+    pub fn set_loop(this: &HtmlMediaElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = controls)]
     #[doc = "Getter for the `controls` field of this object."]
     #[doc = ""]
@@ -227,13 +227,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn controls(this: &HtmlMediaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = controls)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = controls)]
     #[doc = "Setter for the `controls` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/controls)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_controls(this: &HtmlMediaElement, value: bool);
+    pub fn set_controls(this: &HtmlMediaElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = volume)]
     #[doc = "Getter for the `volume` field of this object."]
     #[doc = ""]
@@ -241,13 +241,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn volume(this: &HtmlMediaElement) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = volume)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = volume)]
     #[doc = "Setter for the `volume` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volume)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_volume(this: &HtmlMediaElement, value: f64);
+    pub fn set_volume(this: &HtmlMediaElement, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = muted)]
     #[doc = "Getter for the `muted` field of this object."]
     #[doc = ""]
@@ -269,13 +269,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
     pub fn default_muted(this: &HtmlMediaElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLMediaElement" , js_name = defaultMuted)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLMediaElement" , js_name = defaultMuted)]
     #[doc = "Setter for the `defaultMuted` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/defaultMuted)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`*"]
-    pub fn set_default_muted(this: &HtmlMediaElement, value: bool);
+    pub fn set_default_muted(this: &HtmlMediaElement, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "AudioTrackList")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLMediaElement" , js_name = audioTracks)]
     #[doc = "Getter for the `audioTracks` field of this object."]

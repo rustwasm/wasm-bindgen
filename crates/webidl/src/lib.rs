@@ -25,8 +25,9 @@ use crate::generator::{
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, is_structural, is_type_unstable, read_dir, shouty_snake_case_ident,
-    snake_case_ident, throws, webidl_const_v_to_backend_const_v, TypePosition,
+    camel_case_ident, is_structural, is_type_unstable, read_dir, setter_throws,
+    shouty_snake_case_ident, snake_case_ident, throws, webidl_const_v_to_backend_const_v,
+    TypePosition,
 };
 use anyhow::Context;
 use anyhow::Result;
@@ -664,6 +665,7 @@ impl<'src> FirstPassRecord<'src> {
         let structural = is_structural(attrs.as_ref(), container_attrs);
 
         let catch = throws(attrs);
+        let setter_catch = setter_throws(attrs);
 
         let ty = type_
             .type_
@@ -698,7 +700,7 @@ impl<'src> FirstPassRecord<'src> {
                 attributes.push(InterfaceAttribute {
                     is_static,
                     structural,
-                    catch,
+                    catch: catch || setter_catch,
                     ty,
                     js_name,
                     kind,

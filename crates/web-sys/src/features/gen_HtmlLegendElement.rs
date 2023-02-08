@@ -26,11 +26,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLegendElement`*"]
     pub fn align(this: &HtmlLegendElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLLegendElement" , js_name = align)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLLegendElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLegendElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLegendElement`*"]
-    pub fn set_align(this: &HtmlLegendElement, value: &str);
+    pub fn set_align(this: &HtmlLegendElement, value: &str) -> Result<(), JsValue>;
 }

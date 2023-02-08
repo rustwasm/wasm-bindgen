@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDataElement`*"]
     pub fn value(this: &HtmlDataElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLDataElement" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLDataElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDataElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDataElement`*"]
-    pub fn set_value(this: &HtmlDataElement, value: &str);
+    pub fn set_value(this: &HtmlDataElement, value: &str) -> Result<(), JsValue>;
 }

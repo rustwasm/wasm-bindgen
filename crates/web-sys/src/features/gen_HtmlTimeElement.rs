@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTimeElement`*"]
     pub fn date_time(this: &HtmlTimeElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLTimeElement" , js_name = dateTime)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTimeElement" , js_name = dateTime)]
     #[doc = "Setter for the `dateTime` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTimeElement/dateTime)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTimeElement`*"]
-    pub fn set_date_time(this: &HtmlTimeElement, value: &str);
+    pub fn set_date_time(this: &HtmlTimeElement, value: &str) -> Result<(), JsValue>;
 }

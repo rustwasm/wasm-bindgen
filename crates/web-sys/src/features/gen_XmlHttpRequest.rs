@@ -39,13 +39,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub fn timeout(this: &XmlHttpRequest) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequest" , js_name = timeout)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "XMLHttpRequest" , js_name = timeout)]
     #[doc = "Setter for the `timeout` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/timeout)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn set_timeout(this: &XmlHttpRequest, value: u32);
+    pub fn set_timeout(this: &XmlHttpRequest, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequest" , js_name = withCredentials)]
     #[doc = "Getter for the `withCredentials` field of this object."]
     #[doc = ""]
@@ -53,13 +53,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub fn with_credentials(this: &XmlHttpRequest) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequest" , js_name = withCredentials)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "XMLHttpRequest" , js_name = withCredentials)]
     #[doc = "Setter for the `withCredentials` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn set_with_credentials(this: &XmlHttpRequest, value: bool);
+    pub fn set_with_credentials(this: &XmlHttpRequest, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "XmlHttpRequestUpload")]
     # [wasm_bindgen (structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = upload)]
     #[doc = "Getter for the `upload` field of this object."]
@@ -98,13 +98,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`, `XmlHttpRequestResponseType`*"]
     pub fn response_type(this: &XmlHttpRequest) -> XmlHttpRequestResponseType;
     #[cfg(feature = "XmlHttpRequestResponseType")]
-    # [wasm_bindgen (structural , method , setter , js_class = "XMLHttpRequest" , js_name = responseType)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "XMLHttpRequest" , js_name = responseType)]
     #[doc = "Setter for the `responseType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`, `XmlHttpRequestResponseType`*"]
-    pub fn set_response_type(this: &XmlHttpRequest, value: XmlHttpRequestResponseType);
+    pub fn set_response_type(
+        this: &XmlHttpRequest,
+        value: XmlHttpRequestResponseType,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = response)]
     #[doc = "Getter for the `response` field of this object."]
     #[doc = ""]

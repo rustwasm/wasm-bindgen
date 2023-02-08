@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
     pub fn length(this: &HtmlOptionsCollection) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionsCollection" , js_name = length)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOptionsCollection" , js_name = length)]
     #[doc = "Setter for the `length` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection/length)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionsCollection`*"]
-    pub fn set_length(this: &HtmlOptionsCollection, value: u32);
+    pub fn set_length(this: &HtmlOptionsCollection, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "HTMLOptionsCollection" , js_name = selectedIndex)]
     #[doc = "Getter for the `selectedIndex` field of this object."]
     #[doc = ""]

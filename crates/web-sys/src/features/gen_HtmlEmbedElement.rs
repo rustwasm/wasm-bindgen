@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
     pub fn src(this: &HtmlEmbedElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLEmbedElement" , js_name = src)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLEmbedElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLEmbedElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
-    pub fn set_src(this: &HtmlEmbedElement, value: &str);
+    pub fn set_src(this: &HtmlEmbedElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLEmbedElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
     pub fn type_(this: &HtmlEmbedElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLEmbedElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLEmbedElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLEmbedElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
-    pub fn set_type(this: &HtmlEmbedElement, value: &str);
+    pub fn set_type(this: &HtmlEmbedElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLEmbedElement" , js_name = width)]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
     pub fn width(this: &HtmlEmbedElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLEmbedElement" , js_name = width)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLEmbedElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLEmbedElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
-    pub fn set_width(this: &HtmlEmbedElement, value: &str);
+    pub fn set_width(this: &HtmlEmbedElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLEmbedElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
     pub fn height(this: &HtmlEmbedElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLEmbedElement" , js_name = height)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLEmbedElement" , js_name = height)]
     #[doc = "Setter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLEmbedElement/height)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
-    pub fn set_height(this: &HtmlEmbedElement, value: &str);
+    pub fn set_height(this: &HtmlEmbedElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLEmbedElement" , js_name = align)]
     #[doc = "Getter for the `align` field of this object."]
     #[doc = ""]
@@ -74,13 +74,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
     pub fn align(this: &HtmlEmbedElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLEmbedElement" , js_name = align)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLEmbedElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLEmbedElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
-    pub fn set_align(this: &HtmlEmbedElement, value: &str);
+    pub fn set_align(this: &HtmlEmbedElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLEmbedElement" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
@@ -88,13 +88,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
     pub fn name(this: &HtmlEmbedElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLEmbedElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLEmbedElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLEmbedElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlEmbedElement`*"]
-    pub fn set_name(this: &HtmlEmbedElement, value: &str);
+    pub fn set_name(this: &HtmlEmbedElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "Document")]
     # [wasm_bindgen (method , structural , js_class = "HTMLEmbedElement" , js_name = getSVGDocument)]
     #[doc = "The `getSVGDocument()` method."]

@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn accept(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = accept)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = accept)]
     #[doc = "Setter for the `accept` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/accept)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_accept(this: &HtmlInputElement, value: &str);
+    pub fn set_accept(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = alt)]
     #[doc = "Getter for the `alt` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn alt(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = alt)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = alt)]
     #[doc = "Setter for the `alt` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/alt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_alt(this: &HtmlInputElement, value: &str);
+    pub fn set_alt(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = autocomplete)]
     #[doc = "Getter for the `autocomplete` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn autocomplete(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = autocomplete)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = autocomplete)]
     #[doc = "Setter for the `autocomplete` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/autocomplete)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_autocomplete(this: &HtmlInputElement, value: &str);
+    pub fn set_autocomplete(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = autofocus)]
     #[doc = "Getter for the `autofocus` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn autofocus(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = autofocus)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = autofocus)]
     #[doc = "Setter for the `autofocus` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_autofocus(this: &HtmlInputElement, value: bool);
+    pub fn set_autofocus(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = defaultChecked)]
     #[doc = "Getter for the `defaultChecked` field of this object."]
     #[doc = ""]
@@ -74,13 +74,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn default_checked(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = defaultChecked)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = defaultChecked)]
     #[doc = "Setter for the `defaultChecked` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/defaultChecked)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_default_checked(this: &HtmlInputElement, value: bool);
+    pub fn set_default_checked(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = checked)]
     #[doc = "Getter for the `checked` field of this object."]
     #[doc = ""]
@@ -102,13 +102,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn disabled(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = disabled)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = disabled)]
     #[doc = "Setter for the `disabled` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/disabled)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_disabled(this: &HtmlInputElement, value: bool);
+    pub fn set_disabled(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlFormElement")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = form)]
     #[doc = "Getter for the `form` field of this object."]
@@ -140,13 +140,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn form_action(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = formAction)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = formAction)]
     #[doc = "Setter for the `formAction` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/formAction)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_form_action(this: &HtmlInputElement, value: &str);
+    pub fn set_form_action(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = formEnctype)]
     #[doc = "Getter for the `formEnctype` field of this object."]
     #[doc = ""]
@@ -154,13 +154,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn form_enctype(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = formEnctype)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = formEnctype)]
     #[doc = "Setter for the `formEnctype` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/formEnctype)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_form_enctype(this: &HtmlInputElement, value: &str);
+    pub fn set_form_enctype(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = formMethod)]
     #[doc = "Getter for the `formMethod` field of this object."]
     #[doc = ""]
@@ -168,13 +168,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn form_method(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = formMethod)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = formMethod)]
     #[doc = "Setter for the `formMethod` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/formMethod)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_form_method(this: &HtmlInputElement, value: &str);
+    pub fn set_form_method(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = formNoValidate)]
     #[doc = "Getter for the `formNoValidate` field of this object."]
     #[doc = ""]
@@ -182,13 +182,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn form_no_validate(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = formNoValidate)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = formNoValidate)]
     #[doc = "Setter for the `formNoValidate` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/formNoValidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_form_no_validate(this: &HtmlInputElement, value: bool);
+    pub fn set_form_no_validate(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = formTarget)]
     #[doc = "Getter for the `formTarget` field of this object."]
     #[doc = ""]
@@ -196,13 +196,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn form_target(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = formTarget)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = formTarget)]
     #[doc = "Setter for the `formTarget` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/formTarget)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_form_target(this: &HtmlInputElement, value: &str);
+    pub fn set_form_target(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
@@ -210,13 +210,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn height(this: &HtmlInputElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = height)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = height)]
     #[doc = "Setter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/height)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_height(this: &HtmlInputElement, value: u32);
+    pub fn set_height(this: &HtmlInputElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = indeterminate)]
     #[doc = "Getter for the `indeterminate` field of this object."]
     #[doc = ""]
@@ -238,13 +238,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn input_mode(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = inputMode)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = inputMode)]
     #[doc = "Setter for the `inputMode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/inputMode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_input_mode(this: &HtmlInputElement, value: &str);
+    pub fn set_input_mode(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = list)]
     #[doc = "Getter for the `list` field of this object."]
     #[doc = ""]
@@ -259,13 +259,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn max(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = max)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = max)]
     #[doc = "Setter for the `max` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/max)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_max(this: &HtmlInputElement, value: &str);
+    pub fn set_max(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = maxLength)]
     #[doc = "Getter for the `maxLength` field of this object."]
     #[doc = ""]
@@ -273,13 +273,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn max_length(this: &HtmlInputElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = maxLength)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = maxLength)]
     #[doc = "Setter for the `maxLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/maxLength)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_max_length(this: &HtmlInputElement, value: i32);
+    pub fn set_max_length(this: &HtmlInputElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = min)]
     #[doc = "Getter for the `min` field of this object."]
     #[doc = ""]
@@ -287,13 +287,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn min(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = min)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = min)]
     #[doc = "Setter for the `min` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/min)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_min(this: &HtmlInputElement, value: &str);
+    pub fn set_min(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = minLength)]
     #[doc = "Getter for the `minLength` field of this object."]
     #[doc = ""]
@@ -301,13 +301,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn min_length(this: &HtmlInputElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = minLength)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = minLength)]
     #[doc = "Setter for the `minLength` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/minLength)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_min_length(this: &HtmlInputElement, value: i32);
+    pub fn set_min_length(this: &HtmlInputElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = multiple)]
     #[doc = "Getter for the `multiple` field of this object."]
     #[doc = ""]
@@ -315,13 +315,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn multiple(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = multiple)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = multiple)]
     #[doc = "Setter for the `multiple` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/multiple)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_multiple(this: &HtmlInputElement, value: bool);
+    pub fn set_multiple(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
@@ -329,13 +329,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn name(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_name(this: &HtmlInputElement, value: &str);
+    pub fn set_name(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = pattern)]
     #[doc = "Getter for the `pattern` field of this object."]
     #[doc = ""]
@@ -343,13 +343,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn pattern(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = pattern)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = pattern)]
     #[doc = "Setter for the `pattern` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/pattern)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_pattern(this: &HtmlInputElement, value: &str);
+    pub fn set_pattern(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = placeholder)]
     #[doc = "Getter for the `placeholder` field of this object."]
     #[doc = ""]
@@ -357,13 +357,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn placeholder(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = placeholder)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = placeholder)]
     #[doc = "Setter for the `placeholder` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/placeholder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_placeholder(this: &HtmlInputElement, value: &str);
+    pub fn set_placeholder(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = readOnly)]
     #[doc = "Getter for the `readOnly` field of this object."]
     #[doc = ""]
@@ -371,13 +371,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn read_only(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = readOnly)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = readOnly)]
     #[doc = "Setter for the `readOnly` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/readOnly)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_read_only(this: &HtmlInputElement, value: bool);
+    pub fn set_read_only(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = required)]
     #[doc = "Getter for the `required` field of this object."]
     #[doc = ""]
@@ -385,13 +385,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn required(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = required)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = required)]
     #[doc = "Setter for the `required` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/required)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_required(this: &HtmlInputElement, value: bool);
+    pub fn set_required(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = size)]
     #[doc = "Getter for the `size` field of this object."]
     #[doc = ""]
@@ -399,13 +399,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn size(this: &HtmlInputElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = size)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = size)]
     #[doc = "Setter for the `size` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_size(this: &HtmlInputElement, value: u32);
+    pub fn set_size(this: &HtmlInputElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = src)]
     #[doc = "Getter for the `src` field of this object."]
     #[doc = ""]
@@ -413,13 +413,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn src(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = src)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_src(this: &HtmlInputElement, value: &str);
+    pub fn set_src(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = step)]
     #[doc = "Getter for the `step` field of this object."]
     #[doc = ""]
@@ -427,13 +427,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn step(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = step)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = step)]
     #[doc = "Setter for the `step` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/step)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_step(this: &HtmlInputElement, value: &str);
+    pub fn set_step(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -441,13 +441,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn type_(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_type(this: &HtmlInputElement, value: &str);
+    pub fn set_type(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = defaultValue)]
     #[doc = "Getter for the `defaultValue` field of this object."]
     #[doc = ""]
@@ -455,13 +455,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn default_value(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = defaultValue)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = defaultValue)]
     #[doc = "Setter for the `defaultValue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/defaultValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_default_value(this: &HtmlInputElement, value: &str);
+    pub fn set_default_value(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = value)]
     #[doc = "Getter for the `value` field of this object."]
     #[doc = ""]
@@ -469,13 +469,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn value(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_value(this: &HtmlInputElement, value: &str);
+    pub fn set_value(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = valueAsNumber)]
     #[doc = "Getter for the `valueAsNumber` field of this object."]
     #[doc = ""]
@@ -483,13 +483,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn value_as_number(this: &HtmlInputElement) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = valueAsNumber)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = valueAsNumber)]
     #[doc = "Setter for the `valueAsNumber` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/valueAsNumber)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_value_as_number(this: &HtmlInputElement, value: f64);
+    pub fn set_value_as_number(this: &HtmlInputElement, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = width)]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
@@ -497,13 +497,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn width(this: &HtmlInputElement) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = width)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_width(this: &HtmlInputElement, value: u32);
+    pub fn set_width(this: &HtmlInputElement, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = willValidate)]
     #[doc = "Getter for the `willValidate` field of this object."]
     #[doc = ""]
@@ -586,13 +586,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn align(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = align)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_align(this: &HtmlInputElement, value: &str);
+    pub fn set_align(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = useMap)]
     #[doc = "Getter for the `useMap` field of this object."]
     #[doc = ""]
@@ -600,13 +600,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn use_map(this: &HtmlInputElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = useMap)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = useMap)]
     #[doc = "Setter for the `useMap` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/useMap)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_use_map(this: &HtmlInputElement, value: &str);
+    pub fn set_use_map(this: &HtmlInputElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = webkitEntries)]
     #[doc = "Getter for the `webkitEntries` field of this object."]
     #[doc = ""]
@@ -621,13 +621,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn webkitdirectory(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = webkitdirectory)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLInputElement" , js_name = webkitdirectory)]
     #[doc = "Setter for the `webkitdirectory` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/webkitdirectory)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_webkitdirectory(this: &HtmlInputElement, value: bool);
+    pub fn set_webkitdirectory(this: &HtmlInputElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "HTMLInputElement" , js_name = checkValidity)]
     #[doc = "The `checkValidity()` method."]
     #[doc = ""]

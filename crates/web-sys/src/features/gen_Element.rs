@@ -160,13 +160,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
     pub fn inner_html(this: &Element) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = innerHTML)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "Element" , js_name = innerHTML)]
     #[doc = "Setter for the `innerHTML` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_inner_html(this: &Element, value: &str);
+    pub fn set_inner_html(this: &Element, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Element" , js_name = outerHTML)]
     #[doc = "Getter for the `outerHTML` field of this object."]
     #[doc = ""]
@@ -174,13 +174,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
     pub fn outer_html(this: &Element) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = outerHTML)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "Element" , js_name = outerHTML)]
     #[doc = "Setter for the `outerHTML` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/outerHTML)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_outer_html(this: &Element, value: &str);
+    pub fn set_outer_html(this: &Element, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "ShadowRoot")]
     # [wasm_bindgen (structural , method , getter , js_class = "Element" , js_name = shadowRoot)]
     #[doc = "Getter for the `shadowRoot` field of this object."]
@@ -204,13 +204,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
     pub fn slot(this: &Element) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = slot)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "Element" , js_name = slot)]
     #[doc = "Setter for the `slot` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/slot)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn set_slot(this: &Element, value: &str);
+    pub fn set_slot(this: &Element, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Element" , js_name = previousElementSibling)]
     #[doc = "Getter for the `previousElementSibling` field of this object."]
     #[doc = ""]

@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgScriptElement`*"]
     pub fn type_(this: &SvgScriptElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGScriptElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGScriptElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGScriptElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgScriptElement`*"]
-    pub fn set_type(this: &SvgScriptElement, value: &str);
+    pub fn set_type(this: &SvgScriptElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGScriptElement" , js_name = crossOrigin)]
     #[doc = "Getter for the `crossOrigin` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgScriptElement`*"]
     pub fn cross_origin(this: &SvgScriptElement) -> Option<String>;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGScriptElement" , js_name = crossOrigin)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGScriptElement" , js_name = crossOrigin)]
     #[doc = "Setter for the `crossOrigin` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGScriptElement/crossOrigin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgScriptElement`*"]
-    pub fn set_cross_origin(this: &SvgScriptElement, value: Option<&str>);
+    pub fn set_cross_origin(this: &SvgScriptElement, value: Option<&str>) -> Result<(), JsValue>;
     #[cfg(feature = "SvgAnimatedString")]
     # [wasm_bindgen (structural , method , getter , js_class = "SVGScriptElement" , js_name = href)]
     #[doc = "Getter for the `href` field of this object."]

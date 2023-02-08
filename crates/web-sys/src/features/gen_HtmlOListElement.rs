@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
     pub fn reversed(this: &HtmlOListElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOListElement" , js_name = reversed)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOListElement" , js_name = reversed)]
     #[doc = "Setter for the `reversed` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOListElement/reversed)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
-    pub fn set_reversed(this: &HtmlOListElement, value: bool);
+    pub fn set_reversed(this: &HtmlOListElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOListElement" , js_name = start)]
     #[doc = "Getter for the `start` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
     pub fn start(this: &HtmlOListElement) -> i32;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOListElement" , js_name = start)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOListElement" , js_name = start)]
     #[doc = "Setter for the `start` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOListElement/start)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
-    pub fn set_start(this: &HtmlOListElement, value: i32);
+    pub fn set_start(this: &HtmlOListElement, value: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOListElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
     pub fn type_(this: &HtmlOListElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOListElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOListElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOListElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
-    pub fn set_type(this: &HtmlOListElement, value: &str);
+    pub fn set_type(this: &HtmlOListElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOListElement" , js_name = compact)]
     #[doc = "Getter for the `compact` field of this object."]
     #[doc = ""]
@@ -60,11 +60,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
     pub fn compact(this: &HtmlOListElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLOListElement" , js_name = compact)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLOListElement" , js_name = compact)]
     #[doc = "Setter for the `compact` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOListElement/compact)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
-    pub fn set_compact(this: &HtmlOListElement, value: bool);
+    pub fn set_compact(this: &HtmlOListElement, value: bool) -> Result<(), JsValue>;
 }

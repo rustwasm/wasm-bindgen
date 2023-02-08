@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDialogElement`*"]
     pub fn open(this: &HtmlDialogElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLDialogElement" , js_name = open)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLDialogElement" , js_name = open)]
     #[doc = "Setter for the `open` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/open)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDialogElement`*"]
-    pub fn set_open(this: &HtmlDialogElement, value: bool);
+    pub fn set_open(this: &HtmlDialogElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLDialogElement" , js_name = returnValue)]
     #[doc = "Getter for the `returnValue` field of this object."]
     #[doc = ""]

@@ -34,13 +34,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgViewElement`*"]
     pub fn zoom_and_pan(this: &SvgViewElement) -> u16;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGViewElement" , js_name = zoomAndPan)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGViewElement" , js_name = zoomAndPan)]
     #[doc = "Setter for the `zoomAndPan` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGViewElement/zoomAndPan)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgViewElement`*"]
-    pub fn set_zoom_and_pan(this: &SvgViewElement, value: u16);
+    pub fn set_zoom_and_pan(this: &SvgViewElement, value: u16) -> Result<(), JsValue>;
 }
 impl SvgViewElement {
     #[doc = "The `SVGViewElement.SVG_ZOOMANDPAN_UNKNOWN` const."]

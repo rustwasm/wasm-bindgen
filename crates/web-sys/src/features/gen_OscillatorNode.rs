@@ -20,13 +20,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `OscillatorNode`, `OscillatorType`*"]
     pub fn type_(this: &OscillatorNode) -> OscillatorType;
     #[cfg(feature = "OscillatorType")]
-    # [wasm_bindgen (structural , method , setter , js_class = "OscillatorNode" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "OscillatorNode" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorNode`, `OscillatorType`*"]
-    pub fn set_type(this: &OscillatorNode, value: OscillatorType);
+    pub fn set_type(this: &OscillatorNode, value: OscillatorType) -> Result<(), JsValue>;
     #[cfg(feature = "AudioParam")]
     # [wasm_bindgen (structural , method , getter , js_class = "OscillatorNode" , js_name = frequency)]
     #[doc = "Getter for the `frequency` field of this object."]

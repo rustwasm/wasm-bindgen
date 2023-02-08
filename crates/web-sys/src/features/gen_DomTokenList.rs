@@ -25,13 +25,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
     pub fn value(this: &DomTokenList) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "DOMTokenList" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "DOMTokenList" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
-    pub fn set_value(this: &DomTokenList, value: &str);
+    pub fn set_value(this: &DomTokenList, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , variadic , js_class = "DOMTokenList" , js_name = add)]
     #[doc = "The `add()` method."]
     #[doc = ""]

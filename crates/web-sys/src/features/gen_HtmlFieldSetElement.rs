@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
     pub fn disabled(this: &HtmlFieldSetElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFieldSetElement" , js_name = disabled)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFieldSetElement" , js_name = disabled)]
     #[doc = "Setter for the `disabled` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/disabled)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
-    pub fn set_disabled(this: &HtmlFieldSetElement, value: bool);
+    pub fn set_disabled(this: &HtmlFieldSetElement, value: bool) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlFormElement")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = form)]
     #[doc = "Getter for the `form` field of this object."]
@@ -40,13 +40,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
     pub fn name(this: &HtmlFieldSetElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLFieldSetElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLFieldSetElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
-    pub fn set_name(this: &HtmlFieldSetElement, value: &str);
+    pub fn set_name(this: &HtmlFieldSetElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]

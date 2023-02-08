@@ -80,13 +80,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `LineAlignSetting`, `VttCue`*"]
     pub fn line_align(this: &VttCue) -> LineAlignSetting;
     #[cfg(feature = "LineAlignSetting")]
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTCue" , js_name = lineAlign)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTCue" , js_name = lineAlign)]
     #[doc = "Setter for the `lineAlign` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/lineAlign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LineAlignSetting`, `VttCue`*"]
-    pub fn set_line_align(this: &VttCue, value: LineAlignSetting);
+    pub fn set_line_align(this: &VttCue, value: LineAlignSetting) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "VTTCue" , js_name = position)]
     #[doc = "Getter for the `position` field of this object."]
     #[doc = ""]
@@ -94,13 +94,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
     pub fn position(this: &VttCue) -> ::wasm_bindgen::JsValue;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTCue" , js_name = position)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTCue" , js_name = position)]
     #[doc = "Setter for the `position` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/position)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
-    pub fn set_position(this: &VttCue, value: &::wasm_bindgen::JsValue);
+    pub fn set_position(this: &VttCue, value: &::wasm_bindgen::JsValue) -> Result<(), JsValue>;
     #[cfg(feature = "PositionAlignSetting")]
     # [wasm_bindgen (structural , method , getter , js_class = "VTTCue" , js_name = positionAlign)]
     #[doc = "Getter for the `positionAlign` field of this object."]
@@ -110,13 +110,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PositionAlignSetting`, `VttCue`*"]
     pub fn position_align(this: &VttCue) -> PositionAlignSetting;
     #[cfg(feature = "PositionAlignSetting")]
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTCue" , js_name = positionAlign)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTCue" , js_name = positionAlign)]
     #[doc = "Setter for the `positionAlign` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/positionAlign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PositionAlignSetting`, `VttCue`*"]
-    pub fn set_position_align(this: &VttCue, value: PositionAlignSetting);
+    pub fn set_position_align(this: &VttCue, value: PositionAlignSetting) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "VTTCue" , js_name = size)]
     #[doc = "Getter for the `size` field of this object."]
     #[doc = ""]
@@ -124,13 +124,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
     pub fn size(this: &VttCue) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "VTTCue" , js_name = size)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "VTTCue" , js_name = size)]
     #[doc = "Setter for the `size` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
-    pub fn set_size(this: &VttCue, value: f64);
+    pub fn set_size(this: &VttCue, value: f64) -> Result<(), JsValue>;
     #[cfg(feature = "AlignSetting")]
     # [wasm_bindgen (structural , method , getter , js_class = "VTTCue" , js_name = align)]
     #[doc = "Getter for the `align` field of this object."]

@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     pub fn width(this: &OffscreenCanvas) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvas" , js_name = width)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "OffscreenCanvas" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
-    pub fn set_width(this: &OffscreenCanvas, value: u32);
+    pub fn set_width(this: &OffscreenCanvas, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "OffscreenCanvas" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     pub fn height(this: &OffscreenCanvas) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvas" , js_name = height)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "OffscreenCanvas" , js_name = height)]
     #[doc = "Setter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/height)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
-    pub fn set_height(this: &OffscreenCanvas, value: u32);
+    pub fn set_height(this: &OffscreenCanvas, value: u32) -> Result<(), JsValue>;
     #[wasm_bindgen(catch, constructor, js_class = "OffscreenCanvas")]
     #[doc = "The `new OffscreenCanvas(..)` constructor, creating a new instance of `OffscreenCanvas`."]
     #[doc = ""]

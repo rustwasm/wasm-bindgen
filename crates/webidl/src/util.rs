@@ -621,6 +621,11 @@ pub fn throws(attrs: &Option<ExtendedAttributeList>) -> bool {
     has_named_attribute(attrs.as_ref(), "Throws")
 }
 
+/// Whether a webidl attribute is marked as throwing when setting.
+pub fn setter_throws(attrs: &Option<ExtendedAttributeList>) -> bool {
+    has_named_attribute(attrs.as_ref(), "SetterThrows")
+}
+
 fn flag_slices_immutable(ty: &mut IdlType) {
     match ty {
         IdlType::Int8Array { immutable }

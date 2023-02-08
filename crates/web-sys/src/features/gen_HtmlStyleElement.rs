@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlStyleElement`*"]
     pub fn media(this: &HtmlStyleElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLStyleElement" , js_name = media)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLStyleElement" , js_name = media)]
     #[doc = "Setter for the `media` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLStyleElement/media)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlStyleElement`*"]
-    pub fn set_media(this: &HtmlStyleElement, value: &str);
+    pub fn set_media(this: &HtmlStyleElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLStyleElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlStyleElement`*"]
     pub fn type_(this: &HtmlStyleElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLStyleElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLStyleElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLStyleElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlStyleElement`*"]
-    pub fn set_type(this: &HtmlStyleElement, value: &str);
+    pub fn set_type(this: &HtmlStyleElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "StyleSheet")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLStyleElement" , js_name = sheet)]
     #[doc = "Getter for the `sheet` field of this object."]

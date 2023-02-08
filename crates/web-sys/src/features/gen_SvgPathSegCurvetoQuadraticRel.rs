@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
     pub fn x(this: &SvgPathSegCurvetoQuadraticRel) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = x)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = x)]
     #[doc = "Setter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegCurvetoQuadraticRel/x)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
-    pub fn set_x(this: &SvgPathSegCurvetoQuadraticRel, value: f32);
+    pub fn set_x(this: &SvgPathSegCurvetoQuadraticRel, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = y)]
     #[doc = "Getter for the `y` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
     pub fn y(this: &SvgPathSegCurvetoQuadraticRel) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = y)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = y)]
     #[doc = "Setter for the `y` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegCurvetoQuadraticRel/y)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
-    pub fn set_y(this: &SvgPathSegCurvetoQuadraticRel, value: f32);
+    pub fn set_y(this: &SvgPathSegCurvetoQuadraticRel, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = x1)]
     #[doc = "Getter for the `x1` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
     pub fn x1(this: &SvgPathSegCurvetoQuadraticRel) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = x1)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = x1)]
     #[doc = "Setter for the `x1` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegCurvetoQuadraticRel/x1)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
-    pub fn set_x1(this: &SvgPathSegCurvetoQuadraticRel, value: f32);
+    pub fn set_x1(this: &SvgPathSegCurvetoQuadraticRel, value: f32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = y1)]
     #[doc = "Getter for the `y1` field of this object."]
     #[doc = ""]
@@ -60,11 +60,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
     pub fn y1(this: &SvgPathSegCurvetoQuadraticRel) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = y1)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegCurvetoQuadraticRel" , js_name = y1)]
     #[doc = "Setter for the `y1` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegCurvetoQuadraticRel/y1)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegCurvetoQuadraticRel`*"]
-    pub fn set_y1(this: &SvgPathSegCurvetoQuadraticRel, value: f32);
+    pub fn set_y1(this: &SvgPathSegCurvetoQuadraticRel, value: f32) -> Result<(), JsValue>;
 }

@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
     pub fn src(this: &HtmlSourceElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = src)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSourceElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn set_src(this: &HtmlSourceElement, value: &str);
+    pub fn set_src(this: &HtmlSourceElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSourceElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
     pub fn type_(this: &HtmlSourceElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSourceElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn set_type(this: &HtmlSourceElement, value: &str);
+    pub fn set_type(this: &HtmlSourceElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSourceElement" , js_name = srcset)]
     #[doc = "Getter for the `srcset` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
     pub fn srcset(this: &HtmlSourceElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = srcset)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSourceElement" , js_name = srcset)]
     #[doc = "Setter for the `srcset` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/srcset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn set_srcset(this: &HtmlSourceElement, value: &str);
+    pub fn set_srcset(this: &HtmlSourceElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSourceElement" , js_name = sizes)]
     #[doc = "Getter for the `sizes` field of this object."]
     #[doc = ""]
@@ -60,13 +60,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
     pub fn sizes(this: &HtmlSourceElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = sizes)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSourceElement" , js_name = sizes)]
     #[doc = "Setter for the `sizes` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/sizes)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn set_sizes(this: &HtmlSourceElement, value: &str);
+    pub fn set_sizes(this: &HtmlSourceElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLSourceElement" , js_name = media)]
     #[doc = "Getter for the `media` field of this object."]
     #[doc = ""]
@@ -74,11 +74,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
     pub fn media(this: &HtmlSourceElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = media)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLSourceElement" , js_name = media)]
     #[doc = "Setter for the `media` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/media)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn set_media(this: &HtmlSourceElement, value: &str);
+    pub fn set_media(this: &HtmlSourceElement, value: &str) -> Result<(), JsValue>;
 }

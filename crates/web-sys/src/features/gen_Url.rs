@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
     pub fn href(this: &Url) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = href)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "URL" , js_name = href)]
     #[doc = "Setter for the `href` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/href)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn set_href(this: &Url, value: &str);
+    pub fn set_href(this: &Url, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "URL" , js_name = origin)]
     #[doc = "Getter for the `origin` field of this object."]
     #[doc = ""]
@@ -39,13 +39,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
     pub fn protocol(this: &Url) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = protocol)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "URL" , js_name = protocol)]
     #[doc = "Setter for the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/protocol)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn set_protocol(this: &Url, value: &str);
+    pub fn set_protocol(this: &Url, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "URL" , js_name = username)]
     #[doc = "Getter for the `username` field of this object."]
     #[doc = ""]

@@ -18,11 +18,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoHorizontalRel`*"]
     pub fn x(this: &SvgPathSegLinetoHorizontalRel) -> f32;
-    # [wasm_bindgen (structural , method , setter , js_class = "SVGPathSegLinetoHorizontalRel" , js_name = x)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGPathSegLinetoHorizontalRel" , js_name = x)]
     #[doc = "Setter for the `x` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSegLinetoHorizontalRel/x)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSegLinetoHorizontalRel`*"]
-    pub fn set_x(this: &SvgPathSegLinetoHorizontalRel, value: f32);
+    pub fn set_x(this: &SvgPathSegLinetoHorizontalRel, value: f32) -> Result<(), JsValue>;
 }

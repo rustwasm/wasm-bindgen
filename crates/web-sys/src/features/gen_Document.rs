@@ -120,13 +120,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
     pub fn title(this: &Document) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = title)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "Document" , js_name = title)]
     #[doc = "Setter for the `title` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/title)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn set_title(this: &Document, value: &str);
+    pub fn set_title(this: &Document, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = dir)]
     #[doc = "Getter for the `dir` field of this object."]
     #[doc = ""]
@@ -150,13 +150,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Document`, `HtmlElement`*"]
     pub fn body(this: &Document) -> Option<HtmlElement>;
     #[cfg(feature = "HtmlElement")]
-    # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = body)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "Document" , js_name = body)]
     #[doc = "Setter for the `body` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `HtmlElement`*"]
-    pub fn set_body(this: &Document, value: Option<&HtmlElement>);
+    pub fn set_body(this: &Document, value: Option<&HtmlElement>) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlHeadElement")]
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = head)]
     #[doc = "Getter for the `head` field of this object."]

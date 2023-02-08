@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlUListElement`*"]
     pub fn compact(this: &HtmlUListElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLUListElement" , js_name = compact)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLUListElement" , js_name = compact)]
     #[doc = "Setter for the `compact` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement/compact)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlUListElement`*"]
-    pub fn set_compact(this: &HtmlUListElement, value: bool);
+    pub fn set_compact(this: &HtmlUListElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLUListElement" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -32,11 +32,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlUListElement`*"]
     pub fn type_(this: &HtmlUListElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLUListElement" , js_name = type)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLUListElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlUListElement`*"]
-    pub fn set_type(this: &HtmlUListElement, value: &str);
+    pub fn set_type(this: &HtmlUListElement, value: &str) -> Result<(), JsValue>;
 }

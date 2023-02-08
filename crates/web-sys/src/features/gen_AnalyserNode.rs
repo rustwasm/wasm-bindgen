@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn fft_size(this: &AnalyserNode) -> u32;
-    # [wasm_bindgen (structural , method , setter , js_class = "AnalyserNode" , js_name = fftSize)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "AnalyserNode" , js_name = fftSize)]
     #[doc = "Setter for the `fftSize` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/fftSize)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
-    pub fn set_fft_size(this: &AnalyserNode, value: u32);
+    pub fn set_fft_size(this: &AnalyserNode, value: u32) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "AnalyserNode" , js_name = frequencyBinCount)]
     #[doc = "Getter for the `frequencyBinCount` field of this object."]
     #[doc = ""]
@@ -39,13 +39,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn min_decibels(this: &AnalyserNode) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "AnalyserNode" , js_name = minDecibels)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "AnalyserNode" , js_name = minDecibels)]
     #[doc = "Setter for the `minDecibels` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/minDecibels)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
-    pub fn set_min_decibels(this: &AnalyserNode, value: f64);
+    pub fn set_min_decibels(this: &AnalyserNode, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "AnalyserNode" , js_name = maxDecibels)]
     #[doc = "Getter for the `maxDecibels` field of this object."]
     #[doc = ""]
@@ -53,13 +53,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn max_decibels(this: &AnalyserNode) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "AnalyserNode" , js_name = maxDecibels)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "AnalyserNode" , js_name = maxDecibels)]
     #[doc = "Setter for the `maxDecibels` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/maxDecibels)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
-    pub fn set_max_decibels(this: &AnalyserNode, value: f64);
+    pub fn set_max_decibels(this: &AnalyserNode, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "AnalyserNode" , js_name = smoothingTimeConstant)]
     #[doc = "Getter for the `smoothingTimeConstant` field of this object."]
     #[doc = ""]
@@ -67,13 +67,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn smoothing_time_constant(this: &AnalyserNode) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "AnalyserNode" , js_name = smoothingTimeConstant)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "AnalyserNode" , js_name = smoothingTimeConstant)]
     #[doc = "Setter for the `smoothingTimeConstant` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/smoothingTimeConstant)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
-    pub fn set_smoothing_time_constant(this: &AnalyserNode, value: f64);
+    pub fn set_smoothing_time_constant(this: &AnalyserNode, value: f64) -> Result<(), JsValue>;
     #[cfg(feature = "BaseAudioContext")]
     #[wasm_bindgen(catch, constructor, js_class = "AnalyserNode")]
     #[doc = "The `new AnalyserNode(..)` constructor, creating a new instance of `AnalyserNode`."]

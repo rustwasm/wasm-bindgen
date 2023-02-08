@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn src(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = src)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_src(this: &HtmlIFrameElement, value: &str);
+    pub fn set_src(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = srcdoc)]
     #[doc = "Getter for the `srcdoc` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn srcdoc(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = srcdoc)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = srcdoc)]
     #[doc = "Setter for the `srcdoc` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/srcdoc)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_srcdoc(this: &HtmlIFrameElement, value: &str);
+    pub fn set_srcdoc(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
@@ -46,13 +46,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn name(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = name)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_name(this: &HtmlIFrameElement, value: &str);
+    pub fn set_name(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "DomTokenList")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = sandbox)]
     #[doc = "Getter for the `sandbox` field of this object."]
@@ -68,13 +68,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn allow_fullscreen(this: &HtmlIFrameElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = allowFullscreen)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = allowFullscreen)]
     #[doc = "Setter for the `allowFullscreen` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/allowFullscreen)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_allow_fullscreen(this: &HtmlIFrameElement, value: bool);
+    pub fn set_allow_fullscreen(this: &HtmlIFrameElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = allowPaymentRequest)]
     #[doc = "Getter for the `allowPaymentRequest` field of this object."]
     #[doc = ""]
@@ -82,13 +82,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn allow_payment_request(this: &HtmlIFrameElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = allowPaymentRequest)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = allowPaymentRequest)]
     #[doc = "Setter for the `allowPaymentRequest` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/allowPaymentRequest)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_allow_payment_request(this: &HtmlIFrameElement, value: bool);
+    pub fn set_allow_payment_request(this: &HtmlIFrameElement, value: bool) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = width)]
     #[doc = "Getter for the `width` field of this object."]
     #[doc = ""]
@@ -96,13 +96,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn width(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = width)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_width(this: &HtmlIFrameElement, value: &str);
+    pub fn set_width(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = height)]
     #[doc = "Getter for the `height` field of this object."]
     #[doc = ""]
@@ -110,13 +110,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn height(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = height)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = height)]
     #[doc = "Setter for the `height` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/height)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_height(this: &HtmlIFrameElement, value: &str);
+    pub fn set_height(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = referrerPolicy)]
     #[doc = "Getter for the `referrerPolicy` field of this object."]
     #[doc = ""]
@@ -124,13 +124,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn referrer_policy(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = referrerPolicy)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = referrerPolicy)]
     #[doc = "Setter for the `referrerPolicy` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/referrerPolicy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_referrer_policy(this: &HtmlIFrameElement, value: &str);
+    pub fn set_referrer_policy(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "Document")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = contentDocument)]
     #[doc = "Getter for the `contentDocument` field of this object."]
@@ -154,13 +154,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn align(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = align)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_align(this: &HtmlIFrameElement, value: &str);
+    pub fn set_align(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = scrolling)]
     #[doc = "Getter for the `scrolling` field of this object."]
     #[doc = ""]
@@ -168,13 +168,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn scrolling(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = scrolling)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = scrolling)]
     #[doc = "Setter for the `scrolling` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/scrolling)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_scrolling(this: &HtmlIFrameElement, value: &str);
+    pub fn set_scrolling(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = frameBorder)]
     #[doc = "Getter for the `frameBorder` field of this object."]
     #[doc = ""]
@@ -182,13 +182,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn frame_border(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = frameBorder)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = frameBorder)]
     #[doc = "Setter for the `frameBorder` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/frameBorder)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_frame_border(this: &HtmlIFrameElement, value: &str);
+    pub fn set_frame_border(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = longDesc)]
     #[doc = "Getter for the `longDesc` field of this object."]
     #[doc = ""]
@@ -196,13 +196,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn long_desc(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = longDesc)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = longDesc)]
     #[doc = "Setter for the `longDesc` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/longDesc)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_long_desc(this: &HtmlIFrameElement, value: &str);
+    pub fn set_long_desc(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = marginHeight)]
     #[doc = "Getter for the `marginHeight` field of this object."]
     #[doc = ""]
@@ -210,13 +210,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn margin_height(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = marginHeight)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = marginHeight)]
     #[doc = "Setter for the `marginHeight` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/marginHeight)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_margin_height(this: &HtmlIFrameElement, value: &str);
+    pub fn set_margin_height(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLIFrameElement" , js_name = marginWidth)]
     #[doc = "Getter for the `marginWidth` field of this object."]
     #[doc = ""]
@@ -224,13 +224,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
     pub fn margin_width(this: &HtmlIFrameElement) -> String;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLIFrameElement" , js_name = marginWidth)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLIFrameElement" , js_name = marginWidth)]
     #[doc = "Setter for the `marginWidth` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/marginWidth)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlIFrameElement`*"]
-    pub fn set_margin_width(this: &HtmlIFrameElement, value: &str);
+    pub fn set_margin_width(this: &HtmlIFrameElement, value: &str) -> Result<(), JsValue>;
     #[cfg(feature = "Document")]
     # [wasm_bindgen (method , structural , js_class = "HTMLIFrameElement" , js_name = getSVGDocument)]
     #[doc = "The `getSVGDocument()` method."]

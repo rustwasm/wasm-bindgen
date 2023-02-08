@@ -18,13 +18,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlProgressElement`*"]
     pub fn value(this: &HtmlProgressElement) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLProgressElement" , js_name = value)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLProgressElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLProgressElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlProgressElement`*"]
-    pub fn set_value(this: &HtmlProgressElement, value: f64);
+    pub fn set_value(this: &HtmlProgressElement, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLProgressElement" , js_name = max)]
     #[doc = "Getter for the `max` field of this object."]
     #[doc = ""]
@@ -32,13 +32,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlProgressElement`*"]
     pub fn max(this: &HtmlProgressElement) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLProgressElement" , js_name = max)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLProgressElement" , js_name = max)]
     #[doc = "Setter for the `max` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLProgressElement/max)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlProgressElement`*"]
-    pub fn set_max(this: &HtmlProgressElement, value: f64);
+    pub fn set_max(this: &HtmlProgressElement, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLProgressElement" , js_name = position)]
     #[doc = "Getter for the `position` field of this object."]
     #[doc = ""]

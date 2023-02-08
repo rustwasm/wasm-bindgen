@@ -20,13 +20,13 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`, `SourceBufferAppendMode`*"]
     pub fn mode(this: &SourceBuffer) -> SourceBufferAppendMode;
     #[cfg(feature = "SourceBufferAppendMode")]
-    # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = mode)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SourceBuffer" , js_name = mode)]
     #[doc = "Setter for the `mode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/mode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`, `SourceBufferAppendMode`*"]
-    pub fn set_mode(this: &SourceBuffer, value: SourceBufferAppendMode);
+    pub fn set_mode(this: &SourceBuffer, value: SourceBufferAppendMode) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = updating)]
     #[doc = "Getter for the `updating` field of this object."]
     #[doc = ""]
@@ -49,13 +49,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn timestamp_offset(this: &SourceBuffer) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = timestampOffset)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SourceBuffer" , js_name = timestampOffset)]
     #[doc = "Setter for the `timestampOffset` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/timestampOffset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_timestamp_offset(this: &SourceBuffer, value: f64);
+    pub fn set_timestamp_offset(this: &SourceBuffer, value: f64) -> Result<(), JsValue>;
     #[cfg(feature = "AudioTrackList")]
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = audioTracks)]
     #[doc = "Getter for the `audioTracks` field of this object."]
@@ -87,13 +87,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn append_window_start(this: &SourceBuffer) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = appendWindowStart)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SourceBuffer" , js_name = appendWindowStart)]
     #[doc = "Setter for the `appendWindowStart` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/appendWindowStart)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_append_window_start(this: &SourceBuffer, value: f64);
+    pub fn set_append_window_start(this: &SourceBuffer, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = appendWindowEnd)]
     #[doc = "Getter for the `appendWindowEnd` field of this object."]
     #[doc = ""]
@@ -101,13 +101,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn append_window_end(this: &SourceBuffer) -> f64;
-    # [wasm_bindgen (structural , method , setter , js_class = "SourceBuffer" , js_name = appendWindowEnd)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "SourceBuffer" , js_name = appendWindowEnd)]
     #[doc = "Setter for the `appendWindowEnd` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/appendWindowEnd)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
-    pub fn set_append_window_end(this: &SourceBuffer, value: f64);
+    pub fn set_append_window_end(this: &SourceBuffer, value: f64) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "SourceBuffer" , js_name = onupdatestart)]
     #[doc = "Getter for the `onupdatestart` field of this object."]
     #[doc = ""]
