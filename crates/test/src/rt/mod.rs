@@ -151,9 +151,14 @@ struct State {
     formatter: Box<dyn Formatter>,
 }
 
+/// Failure reasons.
 enum Failure {
+    /// Normal failing test.
     Error(JsValue),
+    /// A test that `should_panic` but didn't.
     ShouldPanic,
+    /// A test that `should_panic` with a specific message,
+    /// but panicked with a different message.
     ShouldPanicExpected,
 }
 
