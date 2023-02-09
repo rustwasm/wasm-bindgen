@@ -16,7 +16,7 @@ pub fn wasm_bindgen_test(
 ) -> proc_macro::TokenStream {
     let mut attr = attr.into_iter();
     let mut r#async = false;
-    let mut should_panic = false;
+    let mut should_panic = None;
     while let Some(token) = attr.next() {
         match &token {
             proc_macro::TokenTree::Ident(i) if i.to_string() == "async" => r#async = true,
@@ -37,21 +37,65 @@ pub fn wasm_bindgen_test(
         leading_tokens.push(token.clone());
 
         match token {
+            // Parse a potential `should_panic` attribute
+            // Start by parsing the `#`
             TokenTree::Punct(op) if op.as_char() == '#' => {
-                if let Some(token) = body.next() {
+                // We need to peek into the next token, save it before we continue.
+                let token = if let Some(token) = body.next() {
                     leading_tokens.push(token.clone());
+                    token
+                } else {
+                    continue;
+                };
 
-                    match token {
-                        TokenTree::Group(group) if group.delimiter() == Delimiter::Bracket => {
-                            let mut stream = group.stream().into_iter();
+                // Parse `[...]`
+                let group = match token {
+                    TokenTree::Group(group) if group.delimiter() == Delimiter::Bracket => group,
+                    _ => continue,
+                };
 
-                            if let Some(TokenTree::Ident(token)) = stream.next() {
-                                if token == "should_panic" {
-                                    should_panic = true;
-                                }
-                            }
-                        }
-                        _ => panic!("expected an attribute"),
+                let mut stream = group.stream().into_iter();
+
+                // Parse `should_panic`
+                match stream.next() {
+                    Some(TokenTree::Ident(token)) if token == "should_panic" => (),
+                    _ => continue,
+                }
+
+                should_panic = Some(None);
+
+                // We are interested in the `expected` attribute if there is any
+                // Parse the `(...)` in `#[should_panic(...)]`
+                let group = match stream.next() {
+                    Some(TokenTree::Group(group))
+                        if group.delimiter() == Delimiter::Parenthesis =>
+                    {
+                        group
+                    }
+                    _ => continue,
+                };
+
+                let mut stream = group.stream().into_iter();
+
+                // Parse `expected`
+                match stream.next() {
+                    Some(TokenTree::Ident(token)) if token == "expected" => (),
+                    _ => continue,
+                }
+
+                // Parse `=`
+                match stream.next() {
+                    Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
+                    _ => continue,
+                }
+
+                // Parse string in `#[should_panic(expected "string")]`
+                if let Some(TokenTree::Literal(lit)) = stream.next() {
+                    let string = lit.to_string();
+
+                    // Verify it's a string.
+                    if string.starts_with('"') && string.ends_with('"') {
+                        should_panic = Some(Some(lit));
                     }
                 }
             }
@@ -69,6 +113,12 @@ pub fn wasm_bindgen_test(
     let ident = find_ident(&mut body).expect("expected a function name");
 
     let mut tokens = Vec::<TokenTree>::new();
+
+    let should_panic = match should_panic {
+        Some(Some(lit)) => quote! { Some(Some(#lit)) },
+        Some(None) => quote! { Some(None) },
+        None => quote! { None },
+    };
 
     let test_body = if r#async {
         quote! { cx.execute_async(test_name, #ident, #should_panic); }

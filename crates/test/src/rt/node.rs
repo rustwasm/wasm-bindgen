@@ -33,12 +33,8 @@ impl super::Formatter for Node {
         super::js_console_log(line);
     }
 
-    fn log_test(&self, name: &str, result: &Result<(), JsValue>, should_panic: bool) {
-        let s = if (result.is_ok() && !should_panic) || (result.is_err() && should_panic) {
-            "ok"
-        } else {
-            "FAIL"
-        };
+    fn log_test(&self, name: &str, result: &Result<(), JsValue>) {
+        let s = if result.is_ok() { "ok" } else { "FAIL" };
         self.writeln(&format!("test {} ... {}", name, s));
     }
 
