@@ -66,4 +66,4 @@ extern "C" {
 }
 ```
 
-`js_namespace = …` on individual items have precedence over its outer block's `js_namespace = …`.
+`js_namespace = …` on an individual item takes precedence over the outer block's `js_namespace = …`.
