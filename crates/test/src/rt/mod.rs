@@ -177,6 +177,7 @@ struct Output {
     warn: String,
     error: String,
     panic: String,
+    should_panic: bool,
 }
 
 trait Formatter {
@@ -219,10 +220,15 @@ impl Context {
         static SET_HOOK: Once = Once::new();
         SET_HOOK.call_once(|| {
             std::panic::set_hook(Box::new(|panic_info| {
-                CURRENT_OUTPUT.with(|output| {
-                    output.borrow_mut().panic.push_str(&panic_info.to_string());
+                let should_panic = CURRENT_OUTPUT.with(|output| {
+                    let mut output = output.borrow_mut();
+                    output.panic.push_str(&panic_info.to_string());
+                    output.should_panic
                 });
-                console_error_panic_hook::hook(panic_info);
+
+                if !should_panic {
+                    console_error_panic_hook::hook(panic_info);
+                }
             }));
         });
 
@@ -435,7 +441,11 @@ impl Context {
 
         // Looks like we've got a test that needs to be executed! Push it onto
         // the list of remaining tests.
-        let output = Rc::new(RefCell::new(Output::default()));
+        let output = Output {
+            should_panic: should_panic.is_some(),
+            ..Default::default()
+        };
+        let output = Rc::new(RefCell::new(output));
         let future = TestFuture {
             output: output.clone(),
             test,
