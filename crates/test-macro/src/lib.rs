@@ -16,6 +16,7 @@ pub fn wasm_bindgen_test(
 ) -> proc_macro::TokenStream {
     let mut attr = attr.into_iter();
     let mut r#async = false;
+    let mut should_panic = false;
     while let Some(token) = attr.next() {
         match &token {
             proc_macro::TokenTree::Ident(i) if i.to_string() == "async" => r#async = true,
@@ -34,13 +35,35 @@ pub fn wasm_bindgen_test(
     let mut leading_tokens = Vec::new();
     while let Some(token) = body.next() {
         leading_tokens.push(token.clone());
-        if let TokenTree::Ident(token) = token {
-            if token == "async" {
-                r#async = true;
+
+        match token {
+            TokenTree::Punct(op) if op.as_char() == '#' => {
+                if let Some(token) = body.next() {
+                    leading_tokens.push(token.clone());
+
+                    match token {
+                        TokenTree::Group(group) if group.delimiter() == Delimiter::Bracket => {
+                            let mut stream = group.stream().into_iter();
+
+                            if let Some(TokenTree::Ident(token)) = stream.next() {
+                                if token == "should_panic" {
+                                    should_panic = true;
+                                }
+                            }
+                        }
+                        _ => panic!("expected an attribute"),
+                    }
+                }
             }
-            if token == "fn" {
-                break;
+            TokenTree::Ident(token) => {
+                if token == "async" {
+                    r#async = true;
+                }
+                if token == "fn" {
+                    break;
+                }
             }
+            _ => (),
         }
     }
     let ident = find_ident(&mut body).expect("expected a function name");
@@ -48,9 +71,9 @@ pub fn wasm_bindgen_test(
     let mut tokens = Vec::<TokenTree>::new();
 
     let test_body = if r#async {
-        quote! { cx.execute_async(test_name, #ident); }
+        quote! { cx.execute_async(test_name, #ident, #should_panic); }
     } else {
-        quote! { cx.execute_sync(test_name, #ident); }
+        quote! { cx.execute_sync(test_name, #ident, #should_panic); }
     };
 
     // We generate a `#[no_mangle]` with a known prefix so the test harness can

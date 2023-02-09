@@ -158,6 +158,7 @@ struct Test {
     name: String,
     future: Pin<Box<dyn Future<Output = Result<(), JsValue>>>>,
     output: Rc<RefCell<Output>>,
+    should_panic: bool,
 }
 
 /// Captured output of each test.
@@ -175,7 +176,7 @@ trait Formatter {
     fn writeln(&self, line: &str);
 
     /// Log the result of a test, either passing or failing.
-    fn log_test(&self, name: &str, result: &Result<(), JsValue>);
+    fn log_test(&self, name: &str, result: &Result<(), JsValue>, should_panic: bool);
 
     /// Convert a thrown value into a string, using platform-specific apis
     /// perhaps to turn the error into a string.
@@ -375,22 +376,32 @@ impl<E: std::fmt::Debug> Termination for Result<(), E> {
 impl Context {
     /// Entry point for a synchronous test in wasm. The `#[wasm_bindgen_test]`
     /// macro generates invocations of this method.
-    pub fn execute_sync<T: Termination>(&self, name: &str, f: impl 'static + FnOnce() -> T) {
-        self.execute(name, async { f().into_js_result() });
+    pub fn execute_sync<T: Termination>(
+        &self,
+        name: &str,
+        f: impl 'static + FnOnce() -> T,
+        should_panic: bool,
+    ) {
+        self.execute(name, async { f().into_js_result() }, should_panic);
     }
 
     /// Entry point for an asynchronous in wasm. The
     /// `#[wasm_bindgen_test(async)]` macro generates invocations of this
     /// method.
-    pub fn execute_async<F>(&self, name: &str, f: impl FnOnce() -> F + 'static)
+    pub fn execute_async<F>(&self, name: &str, f: impl FnOnce() -> F + 'static, should_panic: bool)
     where
         F: Future + 'static,
         F::Output: Termination,
     {
-        self.execute(name, async { f().await.into_js_result() })
+        self.execute(name, async { f().await.into_js_result() }, should_panic)
     }
 
-    fn execute(&self, name: &str, test: impl Future<Output = Result<(), JsValue>> + 'static) {
+    fn execute(
+        &self,
+        name: &str,
+        test: impl Future<Output = Result<(), JsValue>> + 'static,
+        should_panic: bool,
+    ) {
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
@@ -413,6 +424,7 @@ impl Context {
             name: name.to_string(),
             future: Pin::from(Box::new(future)),
             output,
+            should_panic,
         });
     }
 }
@@ -475,13 +487,21 @@ impl Future for ExecuteTests {
 impl State {
     fn log_test_result(&self, test: Test, result: Result<(), JsValue>) {
         // Print out information about the test passing or failing
-        self.formatter.log_test(&test.name, &result);
+        self.formatter
+            .log_test(&test.name, &result, test.should_panic);
 
         // Save off the test for later processing when we print the final
         // results.
-        match result {
-            Ok(()) => self.succeeded.set(self.succeeded.get() + 1),
-            Err(e) => self.failures.borrow_mut().push((test, e)),
+        if test.should_panic {
+            match result {
+                Err(e) => self.succeeded.set(self.succeeded.get() + 1),
+                Ok(()) => self.failures.borrow_mut().push((test, JsValue::NULL)),
+            }
+        } else {
+            match result {
+                Ok(()) => self.succeeded.set(self.succeeded.get() + 1),
+                Err(e) => self.failures.borrow_mut().push((test, e)),
+            }
         }
     }
 
@@ -528,9 +548,14 @@ impl State {
         self.accumulate_console_output(&mut logs, "info", &output.info);
         self.accumulate_console_output(&mut logs, "warn", &output.warn);
         self.accumulate_console_output(&mut logs, "error", &output.error);
-        logs.push_str("JS exception that was thrown:\n");
-        let error_string = self.formatter.stringify_error(error);
-        logs.push_str(&tab(&error_string));
+
+        if test.should_panic {
+            logs.push_str(&format!("note: {} did not panic as expected", test.name));
+        } else {
+            logs.push_str("JS exception that was thrown:\n");
+            let error_string = self.formatter.stringify_error(error);
+            logs.push_str(&tab(&error_string));
+        }
 
         let msg = format!("---- {} output ----\n{}", test.name, tab(&logs));
         self.formatter.writeln(&msg);
