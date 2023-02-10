@@ -29,96 +29,30 @@ pub fn wasm_bindgen_test(
         }
     }
 
-    let mut body = TokenStream::from(body).into_iter();
+    let mut body = TokenStream::from(body).into_iter().peekable();
 
     // Skip over other attributes to `fn #ident ...`, and extract `#ident`
     let mut leading_tokens = Vec::new();
-    while let Some(token) = body.next() {
-        match token {
-            // Parse a potential `should_panic` attribute
-            // Start by parsing the `#`
-            TokenTree::Punct(op) if op.as_char() == '#' => {
-                let token = if let Some(token) = body.next() {
-                    token
-                } else {
-                    leading_tokens.push(op.into());
-                    continue;
-                };
+    while let Some(mut token) = body.next() {
+        should_panic = parse_should_panic(&mut body, &token);
 
-                // Parse `[...]`
-                let group = match token {
-                    TokenTree::Group(group) if group.delimiter() == Delimiter::Bracket => group,
-                    token => {
-                        leading_tokens.push(token);
-                        continue;
-                    }
-                };
-
-                let mut stream = group.stream().into_iter();
-
-                // Parse `should_panic`
-                match stream.next() {
-                    Some(TokenTree::Ident(token)) if token == "should_panic" => (),
-                    Some(token) => {
-                        leading_tokens.push(token);
-                        continue;
-                    }
-                    None => continue,
-                }
-
-                // We are interested in the `expected` attribute or string if there is any
-                match stream.next() {
-                    // Parse the `(...)` in `#[should_panic(...)]`
-                    Some(TokenTree::Group(group))
-                        if group.delimiter() == Delimiter::Parenthesis =>
-                    {
-                        stream = group.stream().into_iter();
-
-                        // Parse `expected`
-                        match stream.next() {
-                            Some(TokenTree::Ident(token)) if token == "expected" => (),
-                            _ => panic!("malformed `#[should_panic(...)]` attribute"),
-                        }
-
-                        // Parse `=`
-                        match stream.next() {
-                            Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
-                            _ => panic!("malformed `#[should_panic(...)]` attribute"),
-                        }
-                    }
-                    // Parse `=`
-                    Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
-                    Some(_) => panic!("malformed `#[should_panic = \"...\"]` attribute"),
-                    None => {
-                        should_panic = Some(None);
-                        continue;
-                    }
-                }
-
-                // Parse string in `#[should_panic(expected = "string")]` or `#[should_panic = "string"]`
-                if let Some(TokenTree::Literal(lit)) = stream.next() {
-                    let string = lit.to_string();
-
-                    // Verify it's a string.
-                    if string.starts_with('"') && string.ends_with('"') {
-                        should_panic = Some(Some(lit));
-                        continue;
-                    }
-                }
-
-                panic!("malformed `#[should_panic]` attribute");
+        // If we found a `should_panic`, we should skip two tokens, the `#` and `[...]`.
+        if should_panic.is_some() {
+            if let Some(new_token) = body.nth(2) {
+                token = new_token;
+            } else {
+                break;
             }
-            TokenTree::Ident(token) => {
-                leading_tokens.push(token.clone().into());
+        }
 
-                if token == "async" {
-                    r#async = true;
-                }
-                if token == "fn" {
-                    break;
-                }
+        leading_tokens.push(token.clone());
+        if let TokenTree::Ident(token) = token {
+            if token == "async" {
+                r#async = true;
             }
-            token => leading_tokens.push(token),
+            if token == "fn" {
+                break;
+            }
         }
     }
     let ident = find_ident(&mut body).expect("expected a function name");
@@ -160,7 +94,70 @@ pub fn wasm_bindgen_test(
     tokens.into_iter().collect::<TokenStream>().into()
 }
 
-fn find_ident(iter: &mut token_stream::IntoIter) -> Option<Ident> {
+fn parse_should_panic(
+    body: &mut std::iter::Peekable<token_stream::IntoIter>,
+    token: &TokenTree,
+) -> Option<Option<Literal>> {
+    // Start by parsing the `#`
+    match token {
+        TokenTree::Punct(op) if op.as_char() == '#' => (),
+        _ => return None,
+    }
+
+    // Parse `[...]`
+    let group = match body.peek()? {
+        TokenTree::Group(group) if group.delimiter() == Delimiter::Bracket => group,
+        _ => return None,
+    };
+
+    let mut stream = group.stream().into_iter();
+
+    // Parse `should_panic`
+    match stream.next()? {
+        TokenTree::Ident(token) if token == "should_panic" => (),
+        _ => return None,
+    }
+
+    // We are interested in the `expected` attribute or string if there is any
+    match stream.next() {
+        // Parse the `(...)` in `#[should_panic(...)]`
+        Some(TokenTree::Group(group)) if group.delimiter() == Delimiter::Parenthesis => {
+            stream = group.stream().into_iter();
+
+            // Parse `expected`
+            match stream.next() {
+                Some(TokenTree::Ident(token)) if token == "expected" => (),
+                _ => panic!("malformed `#[should_panic(...)]` attribute"),
+            }
+
+            // Parse `=`
+            match stream.next() {
+                Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
+                _ => panic!("malformed `#[should_panic(...)]` attribute"),
+            }
+        }
+        // Parse `=`
+        Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
+        Some(_) => panic!("malformed `#[should_panic = \"...\"]` attribute"),
+        None => {
+            return Some(None);
+        }
+    }
+
+    // Parse string in `#[should_panic(expected = "string")]` or `#[should_panic = "string"]`
+    if let Some(TokenTree::Literal(lit)) = stream.next() {
+        let string = lit.to_string();
+
+        // Verify it's a string.
+        if string.starts_with('"') && string.ends_with('"') {
+            return Some(Some(lit));
+        }
+    }
+
+    panic!("malformed `#[should_panic]` attribute");
+}
+
+fn find_ident(iter: &mut impl Iterator<Item = TokenTree>) -> Option<Ident> {
     match iter.next()? {
         TokenTree::Ident(i) => Some(i),
         TokenTree::Group(g) if g.delimiter() == Delimiter::None => {
