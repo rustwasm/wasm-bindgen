@@ -5,9 +5,9 @@ use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::quote_spanned;
 use quote::{quote, ToTokens};
-use syn::spanned::Spanned;
 use std::collections::{HashMap, HashSet};
 use std::sync::Mutex;
+use syn::spanned::Spanned;
 use wasm_bindgen_shared as shared;
 
 /// A trait for converting AST structs into Tokens and adding them to a TokenStream,
