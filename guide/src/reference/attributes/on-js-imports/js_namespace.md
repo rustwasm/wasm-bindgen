@@ -39,3 +39,31 @@ write("hello, document!");
 ```
 
 This example shows how to bind `window.document.write` in Rust.
+
+If all items in the `extern "C" { … }` block have the same `js_namespace = …`:
+
+```rust
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = Math)]
+    fn random() -> f64;
+    #[wasm_bindgen(js_namespace = Math)]
+    fn log(a: f64) -> f64;
+    // ...
+}
+```
+
+Then that macro argument can also be moved to the outer block:
+
+```rust
+#[wasm_bindgen(js_namespace = Math)]
+extern "C" {
+    #[wasm_bindgen]
+    fn random() -> f64;
+    #[wasm_bindgen]
+    fn log(a: f64) -> f64;
+    // ...
+}
+```
+
+`js_namespace = …` on an individual item takes precedence over the outer block's `js_namespace = …`.
