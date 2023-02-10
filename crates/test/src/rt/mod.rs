@@ -538,6 +538,7 @@ impl State {
                 self.formatter.log_test(&test.name, &Ok(()));
                 self.succeeded.set(self.succeeded.get() + 1);
             } else {
+                self.formatter.log_test(&test.name, &Err(JsValue::NULL));
                 self.failures
                     .borrow_mut()
                     .push((test, Failure::ShouldPanic));

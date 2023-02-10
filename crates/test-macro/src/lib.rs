@@ -70,7 +70,7 @@ pub fn wasm_bindgen_test(
                     Some(TokenTree::Group(group))
                         if group.delimiter() == Delimiter::Parenthesis =>
                     {
-                        let mut stream = group.stream().into_iter();
+                        stream = group.stream().into_iter();
 
                         // Parse `expected`
                         match stream.next() {
