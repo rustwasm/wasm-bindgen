@@ -3,7 +3,9 @@ use crate::encode;
 use crate::Diagnostic;
 use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
+use quote::quote_spanned;
 use quote::{quote, ToTokens};
+use syn::spanned::Spanned;
 use std::collections::{HashMap, HashSet};
 use std::sync::Mutex;
 use wasm_bindgen_shared as shared;
@@ -302,18 +304,17 @@ impl ToTokens for ast::StructField {
         let getter = &self.getter;
         let setter = &self.setter;
 
-        let maybe_assert_copy = if self.getter_with_clone {
+        let maybe_assert_copy = if self.getter_with_clone.is_some() {
             quote! {}
         } else {
             quote! { assert_copy::<#ty>() }
         };
         let maybe_assert_copy = respan(maybe_assert_copy, ty);
 
-        let maybe_clone = if self.getter_with_clone {
-            quote! { .clone() }
-        } else {
-            quote! {}
-        };
+        let mut val = quote_spanned!(self.rust_name.span()=> (*js).borrow().#rust_name);
+        if let Some(span) = self.getter_with_clone {
+            val = quote_spanned!(span=> <#ty as Clone>::clone(&#val) );
+        }
 
         (quote! {
             #[automatically_derived]
@@ -331,7 +332,7 @@ impl ToTokens for ast::StructField {
 
                     let js = js as *mut WasmRefCell<#struct_name>;
                     assert_not_null(js);
-                    let val = (*js).borrow().#rust_name#maybe_clone;
+                    let val = #val;
                     <#ty as IntoWasmAbi>::into_abi(val)
                 }
             };
