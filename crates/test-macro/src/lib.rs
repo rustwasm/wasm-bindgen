@@ -64,32 +64,32 @@ pub fn wasm_bindgen_test(
 
                 should_panic = Some(None);
 
-                // We are interested in the `expected` attribute if there is any
-                // Parse the `(...)` in `#[should_panic(...)]`
-                let group = match stream.next() {
+                // We are interested in the `expected` attribute or string if there is any
+                match stream.next() {
+                    // Parse the `(...)` in `#[should_panic(...)]`
                     Some(TokenTree::Group(group))
                         if group.delimiter() == Delimiter::Parenthesis =>
                     {
-                        group
+                        let mut stream = group.stream().into_iter();
+
+                        // Parse `expected`
+                        match stream.next() {
+                            Some(TokenTree::Ident(token)) if token == "expected" => (),
+                            _ => continue,
+                        }
+
+                        // Parse `=`
+                        match stream.next() {
+                            Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
+                            _ => continue,
+                        }
                     }
-                    _ => continue,
-                };
-
-                let mut stream = group.stream().into_iter();
-
-                // Parse `expected`
-                match stream.next() {
-                    Some(TokenTree::Ident(token)) if token == "expected" => (),
-                    _ => continue,
-                }
-
-                // Parse `=`
-                match stream.next() {
+                    // Parse `=`
                     Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
                     _ => continue,
                 }
 
-                // Parse string in `#[should_panic(expected "string")]`
+                // Parse string in `#[should_panic(expected = "string")]` or `#[should_panic = "string"]`
                 if let Some(TokenTree::Literal(lit)) = stream.next() {
                     let string = lit.to_string();
 
