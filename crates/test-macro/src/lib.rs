@@ -201,5 +201,5 @@ fn find_ident(iter: &mut impl Iterator<Item = TokenTree>) -> Option<Ident> {
 }
 
 fn compile_error(span: Span, msg: &str) -> proc_macro::TokenStream {
-    quote_spanned! { span => compile_error!(#msg) }.into()
+    quote_spanned! { span => compile_error!(#msg); }.into()
 }
