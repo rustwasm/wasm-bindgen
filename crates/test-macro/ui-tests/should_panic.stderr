@@ -1,0 +1,188 @@
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:28:15
+   |
+28 | #[should_panic::error]
+   |               ^^
+   |
+help: change the delimiters to curly braces
+   |
+28 | #[should_panic{}error]
+   |               ~
+help: add a semicolon
+   |
+28 | #[should_panic::;error]
+   |                 +
+
+error: malformed `#[should_panic = "..."]` attribute
+  --> ui-tests/should_panic.rs:28:15
+   |
+28 | #[should_panic::error]
+   |               ^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:32:18
+   |
+32 | #[should_panic = 42]
+   |                  ^^
+   |
+help: change the delimiters to curly braces
+   |
+32 | #[should_panic = {}]
+   |                  ~
+help: add a semicolon
+   |
+32 | #[should_panic = 42;]
+   |                    +
+
+error: malformed `#[should_panic]` attribute
+  --> ui-tests/should_panic.rs:32:18
+   |
+32 | #[should_panic = 42]
+   |                  ^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:36:15
+   |
+36 | #[should_panic[]]
+   |               ^^
+   |
+help: change the delimiters to curly braces
+   |
+36 | #[should_panic{}]
+   |               ~
+help: add a semicolon
+   |
+36 | #[should_panic[];]
+   |                 +
+
+error: malformed `#[should_panic = "..."]` attribute
+  --> ui-tests/should_panic.rs:36:15
+   |
+36 | #[should_panic[]]
+   |               ^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:40:15
+   |
+40 | #[should_panic(42)]
+   |               ^^^^
+   |
+help: change the delimiters to curly braces
+   |
+40 | #[should_panic{}]
+   |               ~
+help: add a semicolon
+   |
+40 | #[should_panic(42);]
+   |                   +
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:40:15
+   |
+40 | #[should_panic(42)]
+   |               ^^^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:44:15
+   |
+44 | #[should_panic(test)]
+   |               ^^^^^^
+   |
+help: change the delimiters to curly braces
+   |
+44 | #[should_panic{}]
+   |               ~
+help: add a semicolon
+   |
+44 | #[should_panic(test);]
+   |                     +
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:44:15
+   |
+44 | #[should_panic(test)]
+   |               ^^^^^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:48:15
+   |
+48 | #[should_panic(expected)]
+   |               ^^^^^^^^^^
+   |
+help: change the delimiters to curly braces
+   |
+48 | #[should_panic{}]
+   |               ~
+help: add a semicolon
+   |
+48 | #[should_panic(expected);]
+   |                         +
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:48:15
+   |
+48 | #[should_panic(expected)]
+   |               ^^^^^^^^^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:52:15
+   |
+52 | #[should_panic(expected::error)]
+   |               ^^^^^^^^^^^^^^^^^
+   |
+help: change the delimiters to curly braces
+   |
+52 | #[should_panic{}]
+   |               ~
+help: add a semicolon
+   |
+52 | #[should_panic(expected::error);]
+   |                                +
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:52:15
+   |
+52 | #[should_panic(expected::error)]
+   |               ^^^^^^^^^^^^^^^^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:56:3
+   |
+56 | #[should_panic(expected =)]
+   |   ^^^^^^^^^^^^
+   |
+help: change the delimiters to curly braces
+   |
+56 | #[{}(expected =)]
+   |   ~
+help: add a semicolon
+   |
+56 | #[should_panic;(expected =)]
+   |               +
+
+error: malformed `#[should_panic]` attribute
+  --> ui-tests/should_panic.rs:56:3
+   |
+56 | #[should_panic(expected =)]
+   |   ^^^^^^^^^^^^
+
+error: macros that expand to items must be delimited with braces or followed by a semicolon
+  --> ui-tests/should_panic.rs:60:27
+   |
+60 | #[should_panic(expected = 5)]
+   |                           ^
+   |
+help: change the delimiters to curly braces
+   |
+60 | #[should_panic(expected = {})]
+   |                           ~
+help: add a semicolon
+   |
+60 | #[should_panic(expected = 5;)]
+   |                            +
+
+error: malformed `#[should_panic]` attribute
+  --> ui-tests/should_panic.rs:60:27
+   |
+60 | #[should_panic(expected = 5)]
+   |                           ^
