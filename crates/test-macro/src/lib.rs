@@ -5,6 +5,7 @@ extern crate proc_macro;
 
 use proc_macro2::*;
 use quote::quote;
+use quote::quote_spanned;
 use std::sync::atomic::*;
 
 static CNT: AtomicUsize = AtomicUsize::new(0);
@@ -20,11 +21,21 @@ pub fn wasm_bindgen_test(
     while let Some(token) = attr.next() {
         match &token {
             proc_macro::TokenTree::Ident(i) if i.to_string() == "async" => r#async = true,
-            _ => panic!("malformed `#[wasm_bindgen_test]` attribute"),
+            _ => {
+                return compile_error(
+                    token.span().into(),
+                    "malformed `#[wasm_bindgen_test]` attribute",
+                )
+            }
         }
         match &attr.next() {
             Some(proc_macro::TokenTree::Punct(op)) if op.as_char() == ',' => {}
-            Some(_) => panic!("malformed `#[wasm_bindgen_test]` attribute"),
+            Some(_) => {
+                return compile_error(
+                    token.span().into(),
+                    "malformed `#[wasm_bindgen_test]` attribute",
+                )
+            }
             None => break,
         }
     }
@@ -34,15 +45,20 @@ pub fn wasm_bindgen_test(
     // Skip over other attributes to `fn #ident ...`, and extract `#ident`
     let mut leading_tokens = Vec::new();
     while let Some(mut token) = body.next() {
-        should_panic = parse_should_panic(&mut body, &token);
+        match parse_should_panic(&mut body, &token) {
+            Ok(new_should_panic) => {
+                // If we found a `should_panic`, we should skip two tokens, the `#` and `[...]`.
+                if new_should_panic.is_some() {
+                    should_panic = new_should_panic;
 
-        // If we found a `should_panic`, we should skip two tokens, the `#` and `[...]`.
-        if should_panic.is_some() {
-            if let Some(new_token) = body.nth(2) {
-                token = new_token;
-            } else {
-                break;
+                    if let Some(new_token) = body.nth(1) {
+                        token = new_token;
+                    } else {
+                        break;
+                    }
+                }
             }
+            Err(error) => return error,
         }
 
         leading_tokens.push(token.clone());
@@ -97,64 +113,81 @@ pub fn wasm_bindgen_test(
 fn parse_should_panic(
     body: &mut std::iter::Peekable<token_stream::IntoIter>,
     token: &TokenTree,
-) -> Option<Option<Literal>> {
+) -> Result<Option<Option<Literal>>, proc_macro::TokenStream> {
     // Start by parsing the `#`
     match token {
         TokenTree::Punct(op) if op.as_char() == '#' => (),
-        _ => return None,
+        _ => return Ok(None),
     }
 
     // Parse `[...]`
-    let group = match body.peek()? {
-        TokenTree::Group(group) if group.delimiter() == Delimiter::Bracket => group,
-        _ => return None,
+    let group = match body.peek() {
+        Some(TokenTree::Group(group)) if group.delimiter() == Delimiter::Bracket => group,
+        _ => return Ok(None),
     };
 
     let mut stream = group.stream().into_iter();
 
     // Parse `should_panic`
-    match stream.next()? {
-        TokenTree::Ident(token) if token == "should_panic" => (),
-        _ => return None,
-    }
+    let mut span = match stream.next() {
+        Some(TokenTree::Ident(token)) if token == "should_panic" => token.span(),
+        _ => return Ok(None),
+    };
 
     // We are interested in the `expected` attribute or string if there is any
     match stream.next() {
         // Parse the `(...)` in `#[should_panic(...)]`
         Some(TokenTree::Group(group)) if group.delimiter() == Delimiter::Parenthesis => {
+            let span = group.span();
             stream = group.stream().into_iter();
 
             // Parse `expected`
             match stream.next() {
                 Some(TokenTree::Ident(token)) if token == "expected" => (),
-                _ => panic!("malformed `#[should_panic(...)]` attribute"),
+                _ => {
+                    return Err(compile_error(
+                        span,
+                        "malformed `#[should_panic(...)]` attribute",
+                    ))
+                }
             }
 
             // Parse `=`
             match stream.next() {
                 Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
-                _ => panic!("malformed `#[should_panic(...)]` attribute"),
+                _ => {
+                    return Err(compile_error(
+                        span,
+                        "malformed `#[should_panic(...)]` attribute",
+                    ))
+                }
             }
         }
         // Parse `=`
         Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
-        Some(_) => panic!("malformed `#[should_panic = \"...\"]` attribute"),
+        Some(token) => {
+            return Err(compile_error(
+                token.span(),
+                "malformed `#[should_panic = \"...\"]` attribute",
+            ))
+        }
         None => {
-            return Some(None);
+            return Ok(Some(None));
         }
     }
 
     // Parse string in `#[should_panic(expected = "string")]` or `#[should_panic = "string"]`
     if let Some(TokenTree::Literal(lit)) = stream.next() {
+        span = lit.span();
         let string = lit.to_string();
 
         // Verify it's a string.
         if string.starts_with('"') && string.ends_with('"') {
-            return Some(Some(lit));
+            return Ok(Some(Some(lit)));
         }
     }
 
-    panic!("malformed `#[should_panic]` attribute");
+    Err(compile_error(span, "malformed `#[should_panic]` attribute"))
 }
 
 fn find_ident(iter: &mut impl Iterator<Item = TokenTree>) -> Option<Ident> {
@@ -165,4 +198,8 @@ fn find_ident(iter: &mut impl Iterator<Item = TokenTree>) -> Option<Ident> {
         }
         _ => None,
     }
+}
+
+fn compile_error(span: Span, msg: &str) -> proc_macro::TokenStream {
+    quote_spanned! { span => compile_error!(#msg) }.into()
 }
