@@ -6,6 +6,7 @@ description = "Internal testing crate for wasm-bindgen"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 edition = "2018"
+rust-version = "1.56"
 
 [dependencies]
 console_error_panic_hook = '0.1'

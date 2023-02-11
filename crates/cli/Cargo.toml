@@ -13,6 +13,7 @@ information see https://github.com/rustwasm/wasm-bindgen.
 """
 edition = '2018'
 default-run = 'wasm-bindgen'
+rust-version = "1.56"
 
 [dependencies]
 curl = "0.4.13"

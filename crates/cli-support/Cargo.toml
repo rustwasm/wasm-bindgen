@@ -10,6 +10,7 @@ description = """
 Shared support for the wasm-bindgen-cli package, an internal dependency
 """
 edition = '2018'
+rust-version = "1.56"
 
 [dependencies]
 anyhow = "1.0"
