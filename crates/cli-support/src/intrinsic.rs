@@ -252,6 +252,9 @@ intrinsics! {
         #[symbol = "__wbindgen_memory"]
         #[signature = fn() -> Externref]
         Memory,
+        #[symbol = "__wbindgen_exports"]
+        #[signature = fn() -> Externref]
+        Exports,
         #[symbol = "__wbindgen_module"]
         #[signature = fn() -> Externref]
         Module,
