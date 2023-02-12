@@ -386,9 +386,7 @@ impl<'src> FirstPassRecord<'src> {
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
         match ty {
-            syn::Type::Reference(ref i) if matches!(&*i.elem, syn::Type::Slice(_)) => {
-                return None
-            },
+            syn::Type::Reference(ref i) if matches!(&*i.elem, syn::Type::Slice(_)) => return None,
             syn::Type::Path(ref path, ..) =>
             // check that our inner don't contains slices either
             {
@@ -397,7 +395,7 @@ impl<'src> FirstPassRecord<'src> {
                         for elem in &arg.args {
                             if let syn::GenericArgument::Type(syn::Type::Reference(ref i)) = elem {
                                 if matches!(&*i.elem, syn::Type::Slice(_)) {
-                                    return None
+                                    return None;
                                 }
                             }
                         }

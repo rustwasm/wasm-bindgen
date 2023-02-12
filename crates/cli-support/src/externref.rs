@@ -357,36 +357,33 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
             AdapterKind::Local { instructions } => instructions,
             AdapterKind::Import { .. } => return false,
         };
-        instructions.iter().any(|instr| matches!(instr.instr,
-            VectorToMemory {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | MutableSliceToMemory {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | OptionVector {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | VectorLoad {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | OptionVectorLoad {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | View {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-            | OptionView {
-                kind: VectorKind::Externref | VectorKind::NamedExternref(_),
-                ..
-            }
-        ))
+        instructions.iter().any(|instr| {
+            matches!(
+                instr.instr,
+                VectorToMemory {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | MutableSliceToMemory {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | OptionVector {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | VectorLoad {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | OptionVectorLoad {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | View {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                } | OptionView {
+                    kind: VectorKind::Externref | VectorKind::NamedExternref(_),
+                    ..
+                }
+            )
+        })
     })
 }
 

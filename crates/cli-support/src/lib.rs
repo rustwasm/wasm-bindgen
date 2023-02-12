@@ -546,13 +546,14 @@ fn demangle(module: &mut Module) {
 
 impl OutputMode {
     fn uses_es_modules(&self) -> bool {
-        matches!(self,
+        matches!(
+            self,
             OutputMode::Bundler { .. }
-            | OutputMode::Web
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
-            | OutputMode::Deno
+                | OutputMode::Web
+                | OutputMode::Node {
+                    experimental_modules: true,
+                }
+                | OutputMode::Deno
         )
     }
 
@@ -578,11 +579,12 @@ impl OutputMode {
     }
 
     fn esm_integration(&self) -> bool {
-        matches!(self,
+        matches!(
+            self,
             OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
+                | OutputMode::Node {
+                    experimental_modules: true,
+                }
         )
     }
 }

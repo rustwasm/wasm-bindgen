@@ -28,7 +28,12 @@ fn invalid_enum_return() {
     let actually_a_triangle = Shape::triangle();
     assert!(!actually_a_triangle.is_circle());
     assert!(!actually_a_triangle.is_square());
-    assert!(!(matches!(actually_a_triangle.get_shape(), ShapeType::Circle | ShapeType::Square)));
+    assert!(
+        !(matches!(
+            actually_a_triangle.get_shape(),
+            ShapeType::Circle | ShapeType::Square
+        ))
+    );
 }
 
 #[wasm_bindgen_test]

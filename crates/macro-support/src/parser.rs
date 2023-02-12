@@ -1276,7 +1276,11 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
 
         // Check if the first value is a string literal
         if let Some((_, expr)) = &self.variants[0].discriminant {
-            if let syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(_), .. }) = get_expr(expr) {
+            if let syn::Expr::Lit(syn::ExprLit {
+                lit: syn::Lit::Str(_),
+                ..
+            }) = get_expr(expr)
+            {
                 opts.check_used();
                 return import_enum(self, program);
             }

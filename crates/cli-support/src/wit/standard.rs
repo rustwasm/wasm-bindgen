@@ -463,7 +463,9 @@ impl walrus::CustomSection for NonstandardWitSection {
                             roots.push_func(id);
                         }
                     }
-                    I32FromOptionExternref { table_and_alloc: Some((table, alloc)) } => {
+                    I32FromOptionExternref {
+                        table_and_alloc: Some((table, alloc)),
+                    } => {
                         roots.push_table(table);
                         roots.push_func(alloc);
                     }

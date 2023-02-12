@@ -14,14 +14,17 @@ use crate::ast;
 use proc_macro2::{self, Ident};
 
 /// Check whether a given `&str` is a Rust keyword
+#[rustfmt::skip]
 fn is_rust_keyword(name: &str) -> bool {
-    matches!(name, "abstract" | "alignof" | "as" | "become" | "box" | "break" | "const" | "continue"
+    matches!(name,
+        "abstract" | "alignof" | "as" | "become" | "box" | "break" | "const" | "continue"
         | "crate" | "do" | "else" | "enum" | "extern" | "false" | "final" | "fn" | "for" | "if"
         | "impl" | "in" | "let" | "loop" | "macro" | "match" | "mod" | "move" | "mut"
         | "offsetof" | "override" | "priv" | "proc" | "pub" | "pure" | "ref" | "return"
         | "Self" | "self" | "sizeof" | "static" | "struct" | "super" | "trait" | "true"
         | "type" | "typeof" | "unsafe" | "unsized" | "use" | "virtual" | "where" | "while"
-        | "yield" | "bool" | "_")
+        | "yield" | "bool" | "_"
+    )
 }
 
 /// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.

@@ -1,6 +1,6 @@
 use crate::generated::*;
-use std::f64::consts::{PI, E};
 use js_sys::Object;
+use std::f64::consts::{E, PI};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 

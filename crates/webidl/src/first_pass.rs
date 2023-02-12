@@ -1404,11 +1404,7 @@ impl<'a> FirstPassRecord<'a> {
         set.into_iter()
     }
 
-    fn fill_mixins<'me>(
-        &'me self,
-        mixin_name: &str,
-        list: &mut Vec<&'me MixinData<'a>>,
-    ) {
+    fn fill_mixins<'me>(&'me self, mixin_name: &str, list: &mut Vec<&'me MixinData<'a>>) {
         if let Some(mixin_data) = self.mixins.get(mixin_name) {
             list.push(mixin_data);
         }
