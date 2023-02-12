@@ -1570,11 +1570,7 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
         .filter_map(|a| {
             // if the path segments include an ident of "doc" we know this
             // this is a doc comment
-            if a.path()
-                .segments
-                .iter()
-                .any(|s| s.ident == "doc")
-            {
+            if a.path().segments.iter().any(|s| s.ident == "doc") {
                 let tokens = match &a.meta {
                     syn::Meta::Path(_) => None,
                     syn::Meta::List(list) => Some(list.tokens.clone()),

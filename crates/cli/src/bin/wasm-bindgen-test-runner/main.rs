@@ -142,8 +142,8 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
     if env::var_os("WASM_BINDGEN_TEST_ONLY_WEB").is_some() && node {
-                println!(
-                    "\
+        println!(
+            "\
     This test suite is only configured to run in node.js, but we're only running
     browser tests so skipping. If you'd like to run the tests in a browser
     include this in your crate when testing:
@@ -153,9 +153,9 @@ fn main() -> anyhow::Result<()> {
     You'll likely want to put that in a `#[cfg(test)]` module or at the top of an
     integration test.\
     "
-                );
-                return Ok(());
-            }
+        );
+        return Ok(());
+    }
 
     let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
         .map(|timeout| {

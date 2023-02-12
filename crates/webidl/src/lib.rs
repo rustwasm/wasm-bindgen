@@ -605,7 +605,9 @@ impl<'src> FirstPassRecord<'src> {
                 let member = member.definition;
                 self.member_attribute(
                     &mut attributes,
-                    member.stringifier.map(weedle::interface::StringifierOrInheritOrStatic::Stringifier),
+                    member
+                        .stringifier
+                        .map(weedle::interface::StringifierOrInheritOrStatic::Stringifier),
                     member.readonly.is_some(),
                     &member.type_,
                     member.identifier.0.to_string(),
@@ -809,7 +811,9 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
 
     fs::write(to.join("mod.rs"), binding_file)?;
 
-    let to_format = features.keys().map(|name| to.join(format!("gen_{}.rs", name)))
+    let to_format = features
+        .keys()
+        .map(|name| to.join(format!("gen_{}.rs", name)))
         .chain([to.join("mod.rs")]);
 
     rustfmt(to_format)?;

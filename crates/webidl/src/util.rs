@@ -338,7 +338,9 @@ impl<'src> FirstPassRecord<'src> {
                 let mut any_different = false;
                 let arg_name = signature.orig.args[i].name;
                 for other in actual_signatures.iter() {
-                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) && !ptr::eq(signature, other) {
+                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name)
+                        && !ptr::eq(signature, other)
+                    {
                         any_same_name = true;
                     }
                     if let Some(other) = other.args.get(i) {

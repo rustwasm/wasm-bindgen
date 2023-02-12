@@ -1134,35 +1134,41 @@ impl<'a> Context<'a> {
         if !self.should_write_global("assert_num") {
             return;
         }
-        self.global("
+        self.global(
+            "
             function _assertNum(n) {
                 if (typeof(n) !== 'number') throw new Error('expected a number argument');
             }
-            ");
+            ",
+        );
     }
 
     fn expose_assert_bigint(&mut self) {
         if !self.should_write_global("assert_bigint") {
             return;
         }
-        self.global("
+        self.global(
+            "
             function _assertBigInt(n) {
                 if (typeof(n) !== 'bigint') throw new Error('expected a bigint argument');
             }
-            ");
+            ",
+        );
     }
 
     fn expose_assert_bool(&mut self) {
         if !self.should_write_global("assert_bool") {
             return;
         }
-        self.global("
+        self.global(
+            "
             function _assertBoolean(n) {
                 if (typeof(n) !== 'boolean') {
                     throw new Error('expected a boolean argument');
                 }
             }
-            ");
+            ",
+        );
     }
 
     fn expose_wasm_vector_len(&mut self) {

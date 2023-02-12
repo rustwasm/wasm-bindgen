@@ -317,8 +317,7 @@ impl<'a> Context<'a> {
                 .add_import_func(PLACEHOLDER_MODULE, "__wbindgen_init_externref_table", ty);
 
         if self.module.start.is_some() {
-            let builder =
-                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
+            let builder = wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
             builder.func_body().call_at(0, import);
         } else {
             self.module.start = Some(import);
@@ -546,12 +545,10 @@ impl<'a> Context<'a> {
         }
 
         if let Some(thread_count) = self.thread_count {
-            let builder =
-                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
+            let builder = wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
             thread_count.wrap_start(builder, id);
         } else if self.module.start.is_some() {
-            let builder =
-                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
+            let builder = wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
 
             // Note that we leave the previous start function, if any, first. This is
             // because the start function currently only shows up when it's injected
@@ -1026,9 +1023,7 @@ impl<'a> Context<'a> {
                     name,
                 }
             }
-            None => JsImportName::Global {
-                name,
-            },
+            None => JsImportName::Global { name },
         };
         Ok(JsImport { name, fields })
     }

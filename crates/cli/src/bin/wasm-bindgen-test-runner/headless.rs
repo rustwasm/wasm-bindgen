@@ -69,8 +69,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             // Spawn the driver binary, collecting its stdout/stderr in separate
             // threads. We'll print this output later.
             let mut cmd = Command::new(path);
-            cmd.args(args)
-                .arg(format!("--port={}", driver_addr.port()));
+            cmd.args(args).arg(format!("--port={}", driver_addr.port()));
             let mut child = BackgroundChild::spawn(path, &mut cmd, shell)?;
             drop_log = Box::new(move || child.print_stdio_on_drop = false);
 

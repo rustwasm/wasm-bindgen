@@ -489,9 +489,7 @@ impl Transform<'_> {
 
         for (i, old_ty) in target_ty.params().iter().enumerate() {
             let is_owned = func.args.remove(&i);
-            let new_ty = is_owned
-                .map(|_which| ValType::Externref)
-                .unwrap_or(*old_ty);
+            let new_ty = is_owned.map(|_which| ValType::Externref).unwrap_or(*old_ty);
             param_tys.push(new_ty);
             if new_ty == *old_ty {
                 param_convert.push(Convert::None);
