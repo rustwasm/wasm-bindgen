@@ -51,3 +51,9 @@ error: malformed `#[should_panic]` attribute
    |
 60 | #[should_panic(expected = 5)]
    |                           ^
+
+error: duplicate `should_panic` attribute
+  --> ui-tests/should_panic.rs:65:3
+   |
+65 | #[should_panic = "test"]
+   |   ^^^^^^^^^^^^

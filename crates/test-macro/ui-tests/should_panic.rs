@@ -60,4 +60,9 @@ fn fail_8() {}
 #[should_panic(expected = 5)]
 fn fail_9() {}
 
+#[wasm_bindgen_test]
+#[should_panic = "test"]
+#[should_panic = "test"]
+fn fail_10() {}
+
 fn main() {}

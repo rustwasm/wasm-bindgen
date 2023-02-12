@@ -44,20 +44,19 @@ pub fn wasm_bindgen_test(
 
     // Skip over other attributes to `fn #ident ...`, and extract `#ident`
     let mut leading_tokens = Vec::new();
-    while let Some(mut token) = body.next() {
+    while let Some(token) = body.next() {
         match parse_should_panic(&mut body, &token) {
-            Ok(new_should_panic) => {
-                // If we found a `should_panic`, we should skip two tokens, the `#` and `[...]`.
-                if new_should_panic.is_some() {
-                    should_panic = new_should_panic;
-
-                    if let Some(new_token) = body.nth(1) {
-                        token = new_token;
-                    } else {
-                        break;
-                    }
+            Ok(Some((new_should_panic, span))) => {
+                if should_panic.replace(new_should_panic).is_some() {
+                    return compile_error(span, "duplicate `should_panic` attribute");
                 }
+
+                // If we found a `should_panic`, we should skip the `#` and `[...]`.
+                // The `[...]` is skipped here, the current `#` is skipped by using `continue`.
+                body.next();
+                continue;
             }
+            Ok(None) => (),
             Err(error) => return error,
         }
 
@@ -113,7 +112,7 @@ pub fn wasm_bindgen_test(
 fn parse_should_panic(
     body: &mut std::iter::Peekable<token_stream::IntoIter>,
     token: &TokenTree,
-) -> Result<Option<Option<Literal>>, proc_macro::TokenStream> {
+) -> Result<Option<(Option<Literal>, Span)>, proc_macro::TokenStream> {
     // Start by parsing the `#`
     match token {
         TokenTree::Punct(op) if op.as_char() == '#' => (),
@@ -133,6 +132,8 @@ fn parse_should_panic(
         Some(TokenTree::Ident(token)) if token == "should_panic" => token.span(),
         _ => return Ok(None),
     };
+
+    let should_panic = span;
 
     // We are interested in the `expected` attribute or string if there is any
     match stream.next() {
@@ -172,7 +173,7 @@ fn parse_should_panic(
             ))
         }
         None => {
-            return Ok(Some(None));
+            return Ok(Some((None, should_panic)));
         }
     }
 
@@ -183,7 +184,7 @@ fn parse_should_panic(
 
         // Verify it's a string.
         if string.starts_with('"') && string.ends_with('"') {
-            return Ok(Some(Some(lit)));
+            return Ok(Some((Some(lit), should_panic)));
         }
     }
 
