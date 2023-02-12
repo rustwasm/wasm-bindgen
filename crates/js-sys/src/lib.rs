@@ -5091,8 +5091,9 @@ impl JsString {
 }
 
 impl PartialEq<str> for JsString {
+    #[allow(clippy::cmp_owned)] // prevent infinite recursion
     fn eq(&self, other: &str) -> bool {
-        *self == other
+        String::from(self) == other
     }
 }
 
