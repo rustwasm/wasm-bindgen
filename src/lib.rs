@@ -1374,6 +1374,7 @@ pub mod __rt {
     use crate::JsValue;
     use core::borrow::{Borrow, BorrowMut};
     use core::cell::{Cell, UnsafeCell};
+    use core::convert::Infallible;
     use core::ops::{Deref, DerefMut};
 
     pub extern crate core;
@@ -1726,6 +1727,49 @@ pub mod __rt {
             if let Err(e) = self {
                 crate::throw_val(e.into());
             }
+        }
+    }
+
+    /// An internal helper struct for usage in `#[wasm_bindgen(main)]`
+    /// functions to throw the error (if it is `Err`).
+    pub struct MainWrapper<T>(pub Option<T>);
+
+    pub trait Main {
+        fn __wasm_bindgen_main(&mut self);
+    }
+
+    impl Main for &mut &mut MainWrapper<()> {
+        #[inline]
+        fn __wasm_bindgen_main(&mut self) {}
+    }
+
+    impl Main for &mut &mut MainWrapper<Infallible> {
+        #[inline]
+        fn __wasm_bindgen_main(&mut self) {}
+    }
+
+    impl<E: Into<JsValue>> Main for &mut &mut MainWrapper<Result<(), E>> {
+        #[inline]
+        fn __wasm_bindgen_main(&mut self) {
+            if let Err(e) = self.0.take().unwrap() {
+                crate::throw_val(e.into());
+            }
+        }
+    }
+
+    impl<E: std::fmt::Debug> Main for &mut MainWrapper<Result<(), E>> {
+        #[inline]
+        fn __wasm_bindgen_main(&mut self) {
+            if let Err(e) = self.0.take().unwrap() {
+                crate::throw_val(std::format!("{:?}", e).into());
+            }
+        }
+    }
+
+    impl<T: std::process::Termination> Main for MainWrapper<T> {
+        #[inline]
+        fn __wasm_bindgen_main(&mut self) {
+            crate::throw_val(std::format!("{:?}", self.0.take().unwrap().report()).into());
         }
     }
 }
