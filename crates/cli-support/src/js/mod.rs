@@ -159,8 +159,7 @@ impl<'a> Context<'a> {
             }
             | OutputMode::Web
             | OutputMode::Deno => {
-                if contents.starts_with("function") {
-                    let body = &contents[8..];
+                if let Some(body) = contents.strip_prefix("function") {
                     if export_name == definition_name {
                         format!("export function {}{}\n", export_name, body)
                     } else {
@@ -447,8 +446,7 @@ impl<'a> Context<'a> {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
-                    if js.starts_with("function") {
-                        let body = &js[8..];
+                    if let Some(body) = js.strip_prefix("function") {
                         footer.push_str("\nexport function ");
                         footer.push_str(&import.name);
                         footer.push_str(body.trim());
@@ -544,7 +542,7 @@ impl<'a> Context<'a> {
 
         match &self.config.mode {
             OutputMode::NoModules { .. } => {
-                for (module, _items) in self.js_imports.iter() {
+                if let Some((module, _items)) = self.js_imports.iter().next() {
                     bail!(
                         "importing from `{}` isn't supported with `--target no-modules`",
                         module
@@ -761,10 +759,7 @@ impl<'a> Context<'a> {
             .filter(|i| {
                 // Importing memory is handled specially in this area, so don't
                 // consider this a candidate for importing from extra modules.
-                match i.kind {
-                    walrus::ImportKind::Memory(_) => false,
-                    _ => true,
-                }
+                !(matches!(i.kind, walrus::ImportKind::Memory(_)))
             })
             .map(|i| &i.module)
             .collect::<BTreeSet<_>>();
@@ -2601,13 +2596,10 @@ impl<'a> Context<'a> {
         // on what's being exported.
         match kind {
             Kind::Export(export) => {
-                assert_eq!(catch, false);
-                assert_eq!(log_error, false);
+                assert!(!catch);
+                assert!(!log_error);
 
-                let ts_sig = match export.generate_typescript {
-                    true => Some(ts_sig.as_str()),
-                    false => None,
-                };
+                let ts_sig = export.generate_typescript.then(|| ts_sig.as_str());
 
                 let js_docs = format_doc_comments(&export.comments, Some(js_doc));
                 let ts_docs = format_doc_comments(&export.comments, None);
@@ -2708,8 +2700,8 @@ impl<'a> Context<'a> {
                 self.wasm_import_definitions.insert(core, code);
             }
             Kind::Adapter => {
-                assert_eq!(catch, false);
-                assert_eq!(log_error, false);
+                assert!(!catch);
+                assert!(!log_error);
 
                 self.globals.push_str("function ");
                 self.globals.push_str(&self.adapter_name(id));

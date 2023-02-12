@@ -226,18 +226,16 @@ impl WebDriver {
         if let Some(event) = self.events.pop_front() {
             Ok(event)
         } else {
-            loop {
-                let msg = self
-                    .ws
-                    .next()
-                    .await
-                    .unwrap_or(Err(tungstenite::Error::AlreadyClosed))?;
+            let msg = self
+                .ws
+                .next()
+                .await
+                .unwrap_or(Err(tungstenite::Error::AlreadyClosed))?;
 
-                let message: BidiMessage<Value> = serde_json::from_str(&msg.into_text()?)?;
-                match message {
-                    BidiMessage::CommandResponse { .. } => bail!("unexpected command response"),
-                    BidiMessage::Event(event) => return Ok(event),
-                }
+            let message: BidiMessage<Value> = serde_json::from_str(&msg.into_text()?)?;
+            match message {
+                BidiMessage::CommandResponse { .. } => bail!("unexpected command response"),
+                BidiMessage::Event(event) => Ok(event),
             }
         }
     }

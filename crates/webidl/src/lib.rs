@@ -386,9 +386,8 @@ impl<'src> FirstPassRecord<'src> {
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
         match ty {
-            syn::Type::Reference(ref i) => match &*i.elem {
-                syn::Type::Slice(_) => return None,
-                _ => (),
+            syn::Type::Reference(ref i) if matches!(&*i.elem, syn::Type::Slice(_)) => {
+                return None
             },
             syn::Type::Path(ref path, ..) =>
             // check that our inner don't contains slices either
@@ -397,9 +396,8 @@ impl<'src> FirstPassRecord<'src> {
                     if let syn::PathArguments::AngleBracketed(ref arg) = seg.arguments {
                         for elem in &arg.args {
                             if let syn::GenericArgument::Type(syn::Type::Reference(ref i)) = elem {
-                                match &*i.elem {
-                                    syn::Type::Slice(_) => return None,
-                                    _ => (),
+                                if matches!(&*i.elem, syn::Type::Slice(_)) {
+                                    return None
                                 }
                             }
                         }
@@ -853,7 +851,7 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         Ok(source)
     }
 
-    fn rustfmt<'a>(paths: impl IntoIterator<Item = PathBuf>) -> Result<()> {
+    fn rustfmt(paths: impl IntoIterator<Item = PathBuf>) -> Result<()> {
         // run rustfmt on the generated file - really handy for debugging
         let result = Command::new("rustfmt")
             .arg("--edition")

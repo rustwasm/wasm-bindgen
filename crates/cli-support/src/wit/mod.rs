@@ -419,15 +419,14 @@ impl<'a> Context<'a> {
             .map(|s| s.len())
             .unwrap_or(0);
         for module in linked_modules {
-            match self.function_imports.remove(module.link_function_name) {
-                Some((id, _)) => self.link_module(
+            if let Some((id, _)) = self.function_imports.remove(module.link_function_name) {
+                self.link_module(
                     id,
                     &module.module,
                     offset,
                     &local_modules[..],
                     &inline_js[..],
-                )?,
-                None => (),
+                )?;
             }
         }
 
@@ -1509,7 +1508,7 @@ fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
     Some(a)
 }
 
-fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
+fn verify_schema_matches(data: &[u8]) -> Result<Option<&str>, Error> {
     macro_rules! bad {
         () => {
             bail!("failed to decode what looked like wasm-bindgen data")

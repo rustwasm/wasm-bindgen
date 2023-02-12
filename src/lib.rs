@@ -126,6 +126,7 @@ impl JsValue {
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will
     /// be owned by the JS garbage collector.
+    #[allow(clippy::should_implement_trait)] // cannot fix without breaking change
     #[inline]
     pub fn from_str(s: &str) -> JsValue {
         unsafe { JsValue::_new(__wbindgen_string_new(s.as_ptr(), s.len())) }

@@ -968,11 +968,8 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     .iter()
                     .enumerate()
                     .find(|(_, m)| m.path().is_ident("no_mangle"));
-                match no_mangle {
-                    Some((i, _)) => {
-                        f.attrs.remove(i);
-                    }
-                    _ => {}
+                if let Some((i, _)) = no_mangle {
+                    f.attrs.remove(i);
                 }
                 let comments = extract_doc_comments(&f.attrs);
                 // If the function isn't used for anything other than being exported to JS,
@@ -1279,15 +1276,9 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
 
         // Check if the first value is a string literal
         if let Some((_, expr)) = &self.variants[0].discriminant {
-            match get_expr(expr) {
-                syn::Expr::Lit(syn::ExprLit {
-                    attrs: _,
-                    lit: syn::Lit::Str(_),
-                }) => {
-                    opts.check_used();
-                    return import_enum(self, program);
-                }
-                _ => {}
+            if let syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(_), .. }) = get_expr(expr) {
+                opts.check_used();
+                return import_enum(self, program);
             }
         }
         let js_name = opts

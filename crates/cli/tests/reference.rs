@@ -150,10 +150,7 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     let ids = module
         .exports
         .iter()
-        .filter(|e| match e.item {
-            walrus::ExportItem::Global(_) => true,
-            _ => false,
-        })
+        .filter(|e| matches!(e.item, walrus::ExportItem::Global(_)))
         .map(|d| d.id())
         .collect::<Vec<_>>();
     for id in ids {

@@ -113,8 +113,8 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
         ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::FloatLiteral(s.0.parse().unwrap()),
         ConstValueLit::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
-                let (negative, text) = if orig_text.starts_with('-') {
-                    (true, &orig_text[1..])
+                let (negative, text) = if let Some(text) = orig_text.strip_prefix('-') {
+                    (true, text)
                 } else {
                     (false, orig_text)
                 };

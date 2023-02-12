@@ -83,8 +83,8 @@ impl Interner {
             return Ok(ImportModule::Named(self.intern_str(&file.new_identifier)));
         }
         self.check_for_package_json();
-        let path = if id.starts_with('/') {
-            self.root.join(&id[1..])
+        let path = if let Some(id) = id.strip_prefix('/') {
+            self.root.join(id)
         } else if id.starts_with("./") || id.starts_with("../") {
             let msg = "relative module paths aren't supported yet";
             return Err(Diagnostic::span_error(span, msg));
@@ -186,10 +186,7 @@ fn shared_export<'a>(
     export: &'a ast::Export,
     intern: &'a Interner,
 ) -> Result<Export<'a>, Diagnostic> {
-    let consumed = match export.method_self {
-        Some(ast::MethodSelf::ByValue) => true,
-        _ => false,
-    };
+    let consumed = matches!(export.method_self, Some(ast::MethodSelf::ByValue));
     let method_kind = from_ast_method_kind(&export.function, intern, &export.method_kind)?;
     Ok(Export {
         class: export.js_class.as_deref(),
@@ -420,7 +417,7 @@ impl<'a> Encode for &'a str {
     }
 }
 
-impl<'a> Encode for String {
+impl Encode for String {
     fn encode(&self, dst: &mut Encoder) {
         self.as_bytes().encode(dst);
     }

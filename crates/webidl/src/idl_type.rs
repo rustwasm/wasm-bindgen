@@ -635,10 +635,7 @@ impl<'a> IdlType<'a> {
                 //    Such an enum, however, might have a relatively high
                 //    overhead in creating it from a JS value, but would be
                 //    cheap to convert from a variant back to a JS value.
-                if idl_types.iter().all(|idl_type| match idl_type {
-                    IdlType::Interface(..) => true,
-                    _ => false,
-                }) {
+                if idl_types.iter().all(|idl_type| matches!(idl_type, IdlType::Interface(..))) {
                     IdlType::Object.to_syn_type(pos)
                 } else {
                     IdlType::Any.to_syn_type(pos)

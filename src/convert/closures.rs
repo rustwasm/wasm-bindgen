@@ -1,3 +1,5 @@
+#![allow(clippy::fn_to_numeric_cast)]
+
 use core::mem;
 
 use crate::convert::slices::WasmSlice;

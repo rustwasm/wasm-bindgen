@@ -460,8 +460,7 @@ impl Client {
     fn close_window(&mut self, id: &str) -> Result<(), Error> {
         #[derive(Deserialize)]
         struct Response {}
-        let x: Response = self.delete(&format!("/session/{}/window", id))?;
-        drop(x);
+        let _: Response = self.delete(&format!("/session/{}/window", id))?;
         Ok(())
     }
 
@@ -476,8 +475,7 @@ impl Client {
         let request = Request {
             url: url.to_string(),
         };
-        let x: Response = self.post(&format!("/session/{}/url", id), &request)?;
-        drop(x);
+        let _: Response = self.post(&format!("/session/{}/url", id), &request)?;
         Ok(())
     }
 

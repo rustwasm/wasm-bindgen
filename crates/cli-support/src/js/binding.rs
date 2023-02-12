@@ -129,22 +129,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         // method, so the leading parameter is the this pointer stored on
         // the JS object, so synthesize that here.
         let mut js = JsBuilder::new(self.cx);
-        match self.method {
-            Some(consumes_self) => {
-                drop(params.next());
-                if js.cx.config.debug {
-                    js.prelude(
-                        "if (this.__wbg_ptr == 0) throw new Error('Attempt to use a moved value');",
-                    );
-                }
-                if consumes_self {
-                    js.prelude("const ptr = this.__destroy_into_raw();");
-                    js.args.push("ptr".into());
-                } else {
-                    js.args.push("this.__wbg_ptr".into());
-                }
+        if let Some(consumes_self) = self.method {
+            let _ = params.next();
+            if js.cx.config.debug {
+                js.prelude(
+                    "if (this.__wbg_ptr == 0) throw new Error('Attempt to use a moved value');",
+                );
             }
-            None => {}
+            if consumes_self {
+                js.prelude("const ptr = this.__destroy_into_raw();");
+                js.args.push("ptr".into());
+            } else {
+                js.args.push("this.__wbg_ptr".into());
+            }
         }
         for (i, param) in params.enumerate() {
             let arg = match explicit_arg_names {

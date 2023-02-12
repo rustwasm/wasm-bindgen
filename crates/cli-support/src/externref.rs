@@ -182,10 +182,7 @@ fn import_xform(
         match instr.instr {
             Instruction::CallAdapter(_) => break,
             Instruction::ExternrefLoadOwned { .. } | Instruction::TableGet => {
-                let owned = match instr.instr {
-                    Instruction::TableGet => false,
-                    _ => true,
-                };
+                let owned = !(matches!(instr.instr, Instruction::TableGet));
                 let mut arg: Arg = match args.pop().unwrap() {
                     Some(arg) => arg,
                     None => panic!("previous instruction must be `arg.get`"),
@@ -223,18 +220,12 @@ fn import_xform(
 
     let mut ret_externref = false;
     for (i, instr) in iter {
-        match instr.instr {
-            Instruction::I32FromExternrefOwned => {
-                assert_eq!(results.len(), 1);
-                match results[0] {
-                    AdapterType::I32 => {}
-                    _ => panic!("must be `i32` type"),
-                }
-                results[0] = AdapterType::Externref;
-                ret_externref = true;
-                to_delete.push(i);
-            }
-            _ => {}
+        if matches!(instr.instr, Instruction::I32FromExternrefOwned) {
+            assert_eq!(results.len(), 1);
+            assert!(matches!(results[0], AdapterType::I32), "must be `i32` type");
+            results[0] = AdapterType::Externref;
+            ret_externref = true;
+            to_delete.push(i);
         }
     }
 
@@ -366,7 +357,7 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
             AdapterKind::Local { instructions } => instructions,
             AdapterKind::Import { .. } => return false,
         };
-        instructions.iter().any(|instr| match instr.instr {
+        instructions.iter().any(|instr| matches!(instr.instr,
             VectorToMemory {
                 kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
@@ -394,9 +385,8 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
             | OptionView {
                 kind: VectorKind::Externref | VectorKind::NamedExternref(_),
                 ..
-            } => true,
-            _ => false,
-        })
+            }
+        ))
     })
 }
 

@@ -4,6 +4,8 @@
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
 
+#![allow(clippy::fn_to_numeric_cast)]
+
 use std::fmt;
 use std::mem::{self, ManuallyDrop};
 use std::prelude::v1::*;

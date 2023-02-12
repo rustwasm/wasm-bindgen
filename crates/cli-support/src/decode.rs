@@ -10,7 +10,7 @@ pub trait Decode<'src>: Sized {
     }
 }
 
-fn get<'a>(b: &mut &'a [u8]) -> u8 {
+fn get(b: &mut &[u8]) -> u8 {
     let r = b[0];
     *b = &b[1..];
     r

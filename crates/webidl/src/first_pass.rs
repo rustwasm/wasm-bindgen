@@ -1196,7 +1196,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             record,
             FirstPassOperationType::Mixin,
             ctx.0,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -1328,7 +1328,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             record,
             FirstPassOperationType::Namespace,
             self_name,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -1400,13 +1400,12 @@ impl<'a> FirstPassRecord<'a> {
         interface: &str,
     ) -> impl Iterator<Item = &'me MixinData<'a>> + 'me {
         let mut set = Vec::new();
-        self.fill_mixins(interface, interface, &mut set);
+        self.fill_mixins(interface, &mut set);
         set.into_iter()
     }
 
     fn fill_mixins<'me>(
         &'me self,
-        self_name: &str,
         mixin_name: &str,
         list: &mut Vec<&'me MixinData<'a>>,
     ) {
@@ -1415,7 +1414,7 @@ impl<'a> FirstPassRecord<'a> {
         }
         if let Some(mixin_names) = self.includes.get(mixin_name) {
             for mixin_name in mixin_names {
-                self.fill_mixins(self_name, mixin_name, list);
+                self.fill_mixins(mixin_name, list);
             }
         }
     }

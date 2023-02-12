@@ -25,10 +25,9 @@ fn runtest(test: &Test) -> Result<String> {
     config.run(&mut module)?;
     walrus::passes::gc::run(&mut module);
 
-    let features = {
-        let mut features = wasmparser::WasmFeatures::default();
-        features.threads = true;
-        features
+    let features = wasmparser::WasmFeatures {
+        threads: true,
+        ..Default::default()
     };
 
     wasmparser::Validator::new()

@@ -339,8 +339,8 @@ impl Frame<'_> {
                 // effects we're interested in.
                 } else if Some(e.func) == self.interp.describe_closure_id {
                     let val = stack.pop().unwrap();
-                    drop(stack.pop());
-                    drop(stack.pop());
+                    stack.pop();
+                    stack.pop();
                     log::debug!("__wbindgen_describe_closure({})", val);
                     self.interp.descriptor_table_idx = Some(val as u32);
                     stack.push(0)
