@@ -349,8 +349,12 @@ pub struct StructField {
     pub comments: Vec<String>,
     /// Whether to generate a typescript definition for this field
     pub generate_typescript: bool,
-    /// Whether to use .clone() in the auto-generated getter for this field
-    pub getter_with_clone: bool,
+    /// The span of the `#[wasm_bindgen(getter_with_clone)]` attribute applied
+    /// to this field, if any.
+    ///
+    /// If this is `Some`, the auto-generated getter for this field must clone
+    /// the field instead of copying it.
+    pub getter_with_clone: Option<Span>,
 }
 
 /// Information about an Enum being exported
