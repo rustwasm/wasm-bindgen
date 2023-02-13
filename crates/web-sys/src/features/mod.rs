@@ -8440,6 +8440,102 @@ mod gen_WebSocketElement;
 #[cfg(feature = "WebSocketElement")]
 pub use gen_WebSocketElement::*;
 
+#[cfg(feature = "WebTransport")]
+#[allow(non_snake_case)]
+mod gen_WebTransport;
+#[cfg(feature = "WebTransport")]
+pub use gen_WebTransport::*;
+
+#[cfg(feature = "WebTransportBidirectionalStream")]
+#[allow(non_snake_case)]
+mod gen_WebTransportBidirectionalStream;
+#[cfg(feature = "WebTransportBidirectionalStream")]
+pub use gen_WebTransportBidirectionalStream::*;
+
+#[cfg(feature = "WebTransportCloseInfo")]
+#[allow(non_snake_case)]
+mod gen_WebTransportCloseInfo;
+#[cfg(feature = "WebTransportCloseInfo")]
+pub use gen_WebTransportCloseInfo::*;
+
+#[cfg(feature = "WebTransportCongestionControl")]
+#[allow(non_snake_case)]
+mod gen_WebTransportCongestionControl;
+#[cfg(feature = "WebTransportCongestionControl")]
+pub use gen_WebTransportCongestionControl::*;
+
+#[cfg(feature = "WebTransportDatagramDuplexStream")]
+#[allow(non_snake_case)]
+mod gen_WebTransportDatagramDuplexStream;
+#[cfg(feature = "WebTransportDatagramDuplexStream")]
+pub use gen_WebTransportDatagramDuplexStream::*;
+
+#[cfg(feature = "WebTransportDatagramStats")]
+#[allow(non_snake_case)]
+mod gen_WebTransportDatagramStats;
+#[cfg(feature = "WebTransportDatagramStats")]
+pub use gen_WebTransportDatagramStats::*;
+
+#[cfg(feature = "WebTransportError")]
+#[allow(non_snake_case)]
+mod gen_WebTransportError;
+#[cfg(feature = "WebTransportError")]
+pub use gen_WebTransportError::*;
+
+#[cfg(feature = "WebTransportErrorInit")]
+#[allow(non_snake_case)]
+mod gen_WebTransportErrorInit;
+#[cfg(feature = "WebTransportErrorInit")]
+pub use gen_WebTransportErrorInit::*;
+
+#[cfg(feature = "WebTransportErrorSource")]
+#[allow(non_snake_case)]
+mod gen_WebTransportErrorSource;
+#[cfg(feature = "WebTransportErrorSource")]
+pub use gen_WebTransportErrorSource::*;
+
+#[cfg(feature = "WebTransportHash")]
+#[allow(non_snake_case)]
+mod gen_WebTransportHash;
+#[cfg(feature = "WebTransportHash")]
+pub use gen_WebTransportHash::*;
+
+#[cfg(feature = "WebTransportOptions")]
+#[allow(non_snake_case)]
+mod gen_WebTransportOptions;
+#[cfg(feature = "WebTransportOptions")]
+pub use gen_WebTransportOptions::*;
+
+#[cfg(feature = "WebTransportReceiveStream")]
+#[allow(non_snake_case)]
+mod gen_WebTransportReceiveStream;
+#[cfg(feature = "WebTransportReceiveStream")]
+pub use gen_WebTransportReceiveStream::*;
+
+#[cfg(feature = "WebTransportReceiveStreamStats")]
+#[allow(non_snake_case)]
+mod gen_WebTransportReceiveStreamStats;
+#[cfg(feature = "WebTransportReceiveStreamStats")]
+pub use gen_WebTransportReceiveStreamStats::*;
+
+#[cfg(feature = "WebTransportSendStreamOptions")]
+#[allow(non_snake_case)]
+mod gen_WebTransportSendStreamOptions;
+#[cfg(feature = "WebTransportSendStreamOptions")]
+pub use gen_WebTransportSendStreamOptions::*;
+
+#[cfg(feature = "WebTransportSendStreamStats")]
+#[allow(non_snake_case)]
+mod gen_WebTransportSendStreamStats;
+#[cfg(feature = "WebTransportSendStreamStats")]
+pub use gen_WebTransportSendStreamStats::*;
+
+#[cfg(feature = "WebTransportStats")]
+#[allow(non_snake_case)]
+mod gen_WebTransportStats;
+#[cfg(feature = "WebTransportStats")]
+pub use gen_WebTransportStats::*;
+
 #[cfg(feature = "WebglColorBufferFloat")]
 #[allow(non_snake_case)]
 mod gen_WebglColorBufferFloat;

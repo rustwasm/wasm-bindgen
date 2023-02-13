@@ -1,0 +1,136 @@
+#![allow(unused_imports)]
+use super::*;
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+extern "C" {
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = WebTransport , typescript_type = "WebTransport")]
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    #[doc = "The `WebTransport` class."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub type WebTransport;
+    # [wasm_bindgen (structural , method , getter , js_class = "WebTransport" , js_name = ready)]
+    #[doc = "Getter for the `ready` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/ready)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub fn ready(this: &WebTransport) -> ::js_sys::Promise;
+    #[cfg(feature = "WebTransportCongestionControl")]
+    # [wasm_bindgen (structural , method , getter , js_class = "WebTransport" , js_name = congestionControl)]
+    #[doc = "Getter for the `congestionControl` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/congestionControl)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`, `WebTransportCongestionControl`*"]
+    pub fn congestion_control(this: &WebTransport) -> WebTransportCongestionControl;
+    # [wasm_bindgen (structural , method , getter , js_class = "WebTransport" , js_name = closed)]
+    #[doc = "Getter for the `closed` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/closed)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub fn closed(this: &WebTransport) -> ::js_sys::Promise;
+    #[cfg(feature = "WebTransportDatagramDuplexStream")]
+    # [wasm_bindgen (structural , method , getter , js_class = "WebTransport" , js_name = datagrams)]
+    #[doc = "Getter for the `datagrams` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/datagrams)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`, `WebTransportDatagramDuplexStream`*"]
+    pub fn datagrams(this: &WebTransport) -> WebTransportDatagramDuplexStream;
+    #[cfg(feature = "ReadableStream")]
+    # [wasm_bindgen (structural , method , getter , js_class = "WebTransport" , js_name = incomingBidirectionalStreams)]
+    #[doc = "Getter for the `incomingBidirectionalStreams` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/incomingBidirectionalStreams)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `WebTransport`*"]
+    pub fn incoming_bidirectional_streams(this: &WebTransport) -> ReadableStream;
+    #[cfg(feature = "ReadableStream")]
+    # [wasm_bindgen (structural , method , getter , js_class = "WebTransport" , js_name = incomingUnidirectionalStreams)]
+    #[doc = "Getter for the `incomingUnidirectionalStreams` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/incomingUnidirectionalStreams)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `WebTransport`*"]
+    pub fn incoming_unidirectional_streams(this: &WebTransport) -> ReadableStream;
+    #[wasm_bindgen(catch, constructor, js_class = "WebTransport")]
+    #[doc = "The `new WebTransport(..)` constructor, creating a new instance of `WebTransport`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/WebTransport)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub fn new(url: &str) -> Result<WebTransport, JsValue>;
+    #[cfg(feature = "WebTransportOptions")]
+    #[wasm_bindgen(catch, constructor, js_class = "WebTransport")]
+    #[doc = "The `new WebTransport(..)` constructor, creating a new instance of `WebTransport`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/WebTransport)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`, `WebTransportOptions`*"]
+    pub fn new_with_options(
+        url: &str,
+        options: &WebTransportOptions,
+    ) -> Result<WebTransport, JsValue>;
+    # [wasm_bindgen (method , structural , js_class = "WebTransport" , js_name = close)]
+    #[doc = "The `close()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/close)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub fn close(this: &WebTransport);
+    #[cfg(feature = "WebTransportCloseInfo")]
+    # [wasm_bindgen (method , structural , js_class = "WebTransport" , js_name = close)]
+    #[doc = "The `close()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/close)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`, `WebTransportCloseInfo`*"]
+    pub fn close_with_close_info(this: &WebTransport, close_info: &WebTransportCloseInfo);
+    # [wasm_bindgen (method , structural , js_class = "WebTransport" , js_name = createBidirectionalStream)]
+    #[doc = "The `createBidirectionalStream()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/createBidirectionalStream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub fn create_bidirectional_stream(this: &WebTransport) -> ::js_sys::Promise;
+    #[cfg(feature = "WebTransportSendStreamOptions")]
+    # [wasm_bindgen (method , structural , js_class = "WebTransport" , js_name = createBidirectionalStream)]
+    #[doc = "The `createBidirectionalStream()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/createBidirectionalStream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`, `WebTransportSendStreamOptions`*"]
+    pub fn create_bidirectional_stream_with_options(
+        this: &WebTransport,
+        options: &WebTransportSendStreamOptions,
+    ) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "WebTransport" , js_name = createUnidirectionalStream)]
+    #[doc = "The `createUnidirectionalStream()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/createUnidirectionalStream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub fn create_unidirectional_stream(this: &WebTransport) -> ::js_sys::Promise;
+    #[cfg(feature = "WebTransportSendStreamOptions")]
+    # [wasm_bindgen (method , structural , js_class = "WebTransport" , js_name = createUnidirectionalStream)]
+    #[doc = "The `createUnidirectionalStream()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/createUnidirectionalStream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`, `WebTransportSendStreamOptions`*"]
+    pub fn create_unidirectional_stream_with_options(
+        this: &WebTransport,
+        options: &WebTransportSendStreamOptions,
+    ) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "WebTransport" , js_name = getStats)]
+    #[doc = "The `getStats()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport/getStats)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransport`*"]
+    pub fn get_stats(this: &WebTransport) -> ::js_sys::Promise;
+}
