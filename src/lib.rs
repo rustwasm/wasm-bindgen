@@ -1548,10 +1548,7 @@ pub mod __rt {
 
     #[cfg(feature = "std")]
     fn borrow_fail<T: ?Sized>() -> ! {
-        let mut msg = std::string::String::new();
-        msg.push_str("recursive use of a ");
-        msg.push_str(std::any::type_name::<T>());
-        msg.push_str(" object detected which would lead to unsafe aliasing in rust");
+        let msg = std::format!("recursive use of a {} object detected which would lead to unsafe aliasing in rust", std::any::type_name::<T>());
         super::throw_str(&msg);
     }
 
