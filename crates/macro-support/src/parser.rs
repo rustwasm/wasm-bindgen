@@ -909,6 +909,7 @@ fn function_from_decl(
             ret,
             rust_attrs: attrs,
             rust_vis: vis,
+            r#unsafe: sig.unsafety.is_some(),
             r#async: sig.asyncness.is_some(),
             generate_typescript: opts.skip_typescript().is_none(),
             variadic: opts.variadic().is_some(),
