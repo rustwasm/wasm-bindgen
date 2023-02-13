@@ -1447,7 +1447,7 @@ pub mod __rt {
         pub fn borrow(&self) -> Ref<T> {
             unsafe {
                 if self.borrow.get() == usize::max_value() {
-                    borrow_fail();
+                    borrow_fail::<T>();
                 }
                 self.borrow.set(self.borrow.get() + 1);
                 Ref {
@@ -1460,7 +1460,7 @@ pub mod __rt {
         pub fn borrow_mut(&self) -> RefMut<T> {
             unsafe {
                 if self.borrow.get() != 0 {
-                    borrow_fail();
+                    borrow_fail::<T>();
                 }
                 self.borrow.set(usize::max_value());
                 RefMut {
@@ -1546,11 +1546,18 @@ pub mod __rt {
         }
     }
 
-    fn borrow_fail() -> ! {
-        super::throw_str(
-            "recursive use of an object detected which would lead to \
-             unsafe aliasing in rust",
-        );
+    #[cfg(feature = "std")]
+    fn borrow_fail<T: ?Sized>() -> ! {
+        let mut msg = std::string::String::new();
+        msg.push_str("recursive use of a ");
+        msg.push_str(std::any::type_name::<T>());
+        msg.push_str(" object detected which would lead to unsafe aliasing in rust");
+        super::throw_str(&msg);
+    }
+
+    #[cfg(not(feature = "std"))]
+    fn borrow_fail<T: ?Sized>() -> ! {
+        super::throw_str("recursive use of an object detected which would lead to unsafe aliasing in rust");
     }
 
     if_std! {
