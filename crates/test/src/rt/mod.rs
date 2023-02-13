@@ -93,6 +93,7 @@ use std::fmt;
 use std::future::Future;
 use std::pin::Pin;
 use std::rc::Rc;
+use std::sync::Once;
 use std::task::{self, Poll};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::future_to_promise;
@@ -135,7 +136,7 @@ struct State {
     ///
     /// Each test listed here is paired with a `JsValue` that represents the
     /// exception thrown which caused the test to fail.
-    failures: RefCell<Vec<(Test, JsValue)>>,
+    failures: RefCell<Vec<(Test, Failure)>>,
 
     /// Remaining tests to execute, when empty we're just waiting on the
     /// `Running` tests to finish.
@@ -150,6 +151,17 @@ struct State {
     formatter: Box<dyn Formatter>,
 }
 
+/// Failure reasons.
+enum Failure {
+    /// Normal failing test.
+    Error(JsValue),
+    /// A test that `should_panic` but didn't.
+    ShouldPanic,
+    /// A test that `should_panic` with a specific message,
+    /// but panicked with a different message.
+    ShouldPanicExpected,
+}
+
 /// Representation of one test that needs to be executed.
 ///
 /// Tests are all represented as futures, and tests perform no work until their
@@ -158,6 +170,7 @@ struct Test {
     name: String,
     future: Pin<Box<dyn Future<Output = Result<(), JsValue>>>>,
     output: Rc<RefCell<Output>>,
+    should_panic: Option<Option<&'static str>>,
 }
 
 /// Captured output of each test.
@@ -168,6 +181,8 @@ struct Output {
     info: String,
     warn: String,
     error: String,
+    panic: String,
+    should_panic: bool,
 }
 
 trait Formatter {
@@ -207,7 +222,20 @@ impl Context {
     /// tests.
     #[wasm_bindgen(constructor)]
     pub fn new() -> Context {
-        console_error_panic_hook::set_once();
+        static SET_HOOK: Once = Once::new();
+        SET_HOOK.call_once(|| {
+            std::panic::set_hook(Box::new(|panic_info| {
+                let should_panic = CURRENT_OUTPUT.with(|output| {
+                    let mut output = output.borrow_mut();
+                    output.panic.push_str(&panic_info.to_string());
+                    output.should_panic
+                });
+
+                if !should_panic {
+                    console_error_panic_hook::hook(panic_info);
+                }
+            }));
+        });
 
         let formatter = match node::Node::new() {
             Some(node) => Box::new(node) as Box<dyn Formatter>,
@@ -375,22 +403,36 @@ impl<E: std::fmt::Debug> Termination for Result<(), E> {
 impl Context {
     /// Entry point for a synchronous test in wasm. The `#[wasm_bindgen_test]`
     /// macro generates invocations of this method.
-    pub fn execute_sync<T: Termination>(&self, name: &str, f: impl 'static + FnOnce() -> T) {
-        self.execute(name, async { f().into_js_result() });
+    pub fn execute_sync<T: Termination>(
+        &self,
+        name: &str,
+        f: impl 'static + FnOnce() -> T,
+        should_panic: Option<Option<&'static str>>,
+    ) {
+        self.execute(name, async { f().into_js_result() }, should_panic);
     }
 
     /// Entry point for an asynchronous in wasm. The
     /// `#[wasm_bindgen_test(async)]` macro generates invocations of this
     /// method.
-    pub fn execute_async<F>(&self, name: &str, f: impl FnOnce() -> F + 'static)
-    where
+    pub fn execute_async<F>(
+        &self,
+        name: &str,
+        f: impl FnOnce() -> F + 'static,
+        should_panic: Option<Option<&'static str>>,
+    ) where
         F: Future + 'static,
         F::Output: Termination,
     {
-        self.execute(name, async { f().await.into_js_result() })
+        self.execute(name, async { f().await.into_js_result() }, should_panic)
     }
 
-    fn execute(&self, name: &str, test: impl Future<Output = Result<(), JsValue>> + 'static) {
+    fn execute(
+        &self,
+        name: &str,
+        test: impl Future<Output = Result<(), JsValue>> + 'static,
+        should_panic: Option<Option<&'static str>>,
+    ) {
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
@@ -404,7 +446,11 @@ impl Context {
 
         // Looks like we've got a test that needs to be executed! Push it onto
         // the list of remaining tests.
-        let output = Rc::new(RefCell::new(Output::default()));
+        let output = Output {
+            should_panic: should_panic.is_some(),
+            ..Default::default()
+        };
+        let output = Rc::new(RefCell::new(output));
         let future = TestFuture {
             output: output.clone(),
             test,
@@ -413,6 +459,7 @@ impl Context {
             name: name.to_string(),
             future: Pin::from(Box::new(future)),
             output,
+            should_panic,
         });
     }
 }
@@ -474,14 +521,35 @@ impl Future for ExecuteTests {
 
 impl State {
     fn log_test_result(&self, test: Test, result: Result<(), JsValue>) {
-        // Print out information about the test passing or failing
-        self.formatter.log_test(&test.name, &result);
-
         // Save off the test for later processing when we print the final
         // results.
-        match result {
-            Ok(()) => self.succeeded.set(self.succeeded.get() + 1),
-            Err(e) => self.failures.borrow_mut().push((test, e)),
+        if let Some(should_panic) = test.should_panic {
+            if let Err(e) = result {
+                if let Some(expected) = should_panic {
+                    if !test.output.borrow().panic.contains(expected) {
+                        self.formatter.log_test(&test.name, &Err(JsValue::NULL));
+                        self.failures
+                            .borrow_mut()
+                            .push((test, Failure::ShouldPanicExpected));
+                        return;
+                    }
+                }
+
+                self.formatter.log_test(&test.name, &Ok(()));
+                self.succeeded.set(self.succeeded.get() + 1);
+            } else {
+                self.formatter.log_test(&test.name, &Err(JsValue::NULL));
+                self.failures
+                    .borrow_mut()
+                    .push((test, Failure::ShouldPanic));
+            }
+        } else {
+            self.formatter.log_test(&test.name, &result);
+
+            match result {
+                Ok(()) => self.succeeded.set(self.succeeded.get() + 1),
+                Err(e) => self.failures.borrow_mut().push((test, Failure::Error(e))),
+            }
         }
     }
 
@@ -489,8 +557,8 @@ impl State {
         let failures = self.failures.borrow();
         if failures.len() > 0 {
             self.formatter.writeln("\nfailures:\n");
-            for (test, error) in failures.iter() {
-                self.print_failure(test, error);
+            for (test, failure) in failures.iter() {
+                self.print_failure(test, failure);
             }
             self.formatter.writeln("failures:\n");
             for (test, _) in failures.iter() {
@@ -520,17 +588,39 @@ impl State {
         logs.push('\n');
     }
 
-    fn print_failure(&self, test: &Test, error: &JsValue) {
+    fn print_failure(&self, test: &Test, failure: &Failure) {
         let mut logs = String::new();
         let output = test.output.borrow();
+
+        match failure {
+            Failure::ShouldPanic => {
+                logs.push_str(&format!(
+                    "note: {} did not panic as expected\n\n",
+                    test.name
+                ));
+            }
+            Failure::ShouldPanicExpected => {
+                logs.push_str("note: panic did not contain expected string\n");
+                logs.push_str(&format!("      panic message: `\"{}\"`,\n", output.panic));
+                logs.push_str(&format!(
+                    " expected substring: `\"{}\"`\n\n",
+                    test.should_panic.unwrap().unwrap()
+                ));
+            }
+            _ => (),
+        }
+
         self.accumulate_console_output(&mut logs, "debug", &output.debug);
         self.accumulate_console_output(&mut logs, "log", &output.log);
         self.accumulate_console_output(&mut logs, "info", &output.info);
         self.accumulate_console_output(&mut logs, "warn", &output.warn);
         self.accumulate_console_output(&mut logs, "error", &output.error);
-        logs.push_str("JS exception that was thrown:\n");
-        let error_string = self.formatter.stringify_error(error);
-        logs.push_str(&tab(&error_string));
+
+        if let Failure::Error(error) = failure {
+            logs.push_str("JS exception that was thrown:\n");
+            let error_string = self.formatter.stringify_error(&error);
+            logs.push_str(&tab(&error_string));
+        }
 
         let msg = format!("---- {} output ----\n{}", test.name, tab(&logs));
         self.formatter.writeln(&msg);
