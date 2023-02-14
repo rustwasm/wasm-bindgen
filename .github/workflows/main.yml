@@ -43,6 +43,7 @@ jobs:
     name: Clippy
     runs-on: ubuntu-latest
     env:
+      # keep allowed lints in sync with .cargo/config
       RUSTFLAGS: >-
         -D warnings
         -A dead_code
