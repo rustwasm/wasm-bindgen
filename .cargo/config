@@ -9,7 +9,6 @@ rustflags = [
     "-Adead_code",
     "-Anon_upper_case_globals",
     "-Aunused_doc_comments",
-    "-Aclippy::disallowed_names",
     "-Aclippy::large_enum_variant",
     "-Aclippy::missing_safety_doc",
     "-Aclippy::new_without_default",
