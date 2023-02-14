@@ -140,10 +140,10 @@ impl Enum {
 }
 
 pub enum ConstValue {
-    BooleanLiteral(bool),
-    FloatLiteral(f64),
-    SignedIntegerLiteral(i64),
-    UnsignedIntegerLiteral(u64),
+    Boolean(bool),
+    Float(f64),
+    SignedInteger(i64),
+    UnsignedInteger(u64),
 }
 
 impl ConstValue {
@@ -151,25 +151,25 @@ impl ConstValue {
         use ConstValue::*;
 
         match self {
-            BooleanLiteral(false) => quote!(false),
-            BooleanLiteral(true) => quote!(true),
+            Boolean(false) => quote!(false),
+            Boolean(true) => quote!(true),
             // the actual type is unknown because of typedefs
             // so we cannot use std::fxx::INFINITY
             // but we can use type inference
-            FloatLiteral(f) if f.is_infinite() && f.is_sign_positive() => quote!(1.0 / 0.0),
-            FloatLiteral(f) if f.is_infinite() && f.is_sign_negative() => quote!(-1.0 / 0.0),
-            FloatLiteral(f) if f.is_nan() => quote!(0.0 / 0.0),
+            Float(f) if f.is_infinite() && f.is_sign_positive() => quote!(1.0 / 0.0),
+            Float(f) if f.is_infinite() && f.is_sign_negative() => quote!(-1.0 / 0.0),
+            Float(f) if f.is_nan() => quote!(0.0 / 0.0),
             // again no suffix
             // panics on +-inf, nan
-            FloatLiteral(f) => {
+            Float(f) => {
                 let f = Literal::f64_suffixed(*f);
                 quote!(#f)
             }
-            SignedIntegerLiteral(i) => {
+            SignedInteger(i) => {
                 let i = Literal::i64_suffixed(*i);
                 quote!(#i)
             }
-            UnsignedIntegerLiteral(i) => {
+            UnsignedInteger(i) => {
                 let i = Literal::u64_suffixed(*i);
                 quote!(#i)
             }

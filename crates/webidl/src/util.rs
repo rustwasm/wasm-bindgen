@@ -106,11 +106,11 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
     use std::f64::{INFINITY, NAN, NEG_INFINITY};
 
     match *v {
-        ConstValueLit::Boolean(b) => ConstValue::BooleanLiteral(b.0),
-        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::FloatLiteral(NEG_INFINITY),
-        ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::FloatLiteral(INFINITY),
-        ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::FloatLiteral(NAN),
-        ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::FloatLiteral(s.0.parse().unwrap()),
+        ConstValueLit::Boolean(b) => ConstValue::Boolean(b.0),
+        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::Float(NEG_INFINITY),
+        ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::Float(INFINITY),
+        ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::Float(NAN),
+        ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::Float(s.0.parse().unwrap()),
         ConstValueLit::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
                 let (negative, text) = if let Some(text) = orig_text.strip_prefix('-') {
@@ -119,7 +119,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
                     (false, orig_text)
                 };
                 if text == "0" {
-                    return ConstValue::SignedIntegerLiteral(0);
+                    return ConstValue::SignedInteger(0);
                 }
                 let text = &text[offset..];
                 let n = u64::from_str_radix(text, base)
@@ -130,9 +130,9 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
                     } else {
                         n.wrapping_neg() as i64
                     };
-                    ConstValue::SignedIntegerLiteral(n)
+                    ConstValue::SignedInteger(n)
                 } else {
-                    ConstValue::UnsignedIntegerLiteral(n)
+                    ConstValue::UnsignedInteger(n)
                 }
             };
             match lit {

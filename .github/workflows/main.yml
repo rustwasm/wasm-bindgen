@@ -50,7 +50,6 @@ jobs:
         -A non_upper_case_globals
         -A unused_doc_comments
         -A clippy::disallowed_names
-        -A clippy::enum_variant_names
         -A clippy::large_enum_variant
         -A clippy::missing_safety_doc
         -A clippy::new_without_default
