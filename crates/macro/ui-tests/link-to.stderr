@@ -10,7 +10,7 @@ error: `link_to!` does not support module paths.
 14 |     wasm_bindgen::link_to!(raw_module = "package/foo.js")
    |                                         ^^^^^^^^^^^^^^^^
 
-error: failed to read file `$WORKSPACE/target/tests/wasm-bindgen-macro/src/not-found.js`: No such file or directory (os error 2)
+error: failed to read file `$WORKSPACE/target/tests/trybuild/wasm-bindgen-macro/src/not-found.js`: No such file or directory (os error 2)
   --> ui-tests/link-to.rs:18:37
    |
 18 |     wasm_bindgen::link_to!(module = "/src/not-found.js")
