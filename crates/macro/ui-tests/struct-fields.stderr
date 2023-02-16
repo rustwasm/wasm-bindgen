@@ -16,5 +16,3 @@ error[E0277]: the trait bound `Foo: Clone` is not satisfied
    |
 11 |     #[wasm_bindgen(getter_with_clone)]
    |                    ^^^^^^^^^^^^^^^^^ the trait `Clone` is not implemented for `Foo`
-   |
-note: required by `clone`
