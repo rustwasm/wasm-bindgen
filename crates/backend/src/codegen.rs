@@ -1178,6 +1178,11 @@ impl TryToTokens for ast::ImportFunction {
             &self.rust_name,
         );
 
+        let maybe_unsafe = if self.function.r#unsafe {
+            Some(quote! {unsafe})
+        } else {
+            None
+        };
         let maybe_async = if self.function.r#async {
             Some(quote! {async})
         } else {
@@ -1190,7 +1195,7 @@ impl TryToTokens for ast::ImportFunction {
             #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
             #(#attrs)*
             #[doc = #doc_comment]
-            #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
+            #vis #maybe_async #maybe_unsafe fn #rust_name(#me #(#arguments),*) #ret {
                 #extern_fn
 
                 unsafe {

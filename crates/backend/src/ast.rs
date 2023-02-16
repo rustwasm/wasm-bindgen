@@ -301,6 +301,8 @@ pub struct Function {
     pub rust_attrs: Vec<syn::Attribute>,
     /// The visibility of this function in Rust
     pub rust_vis: syn::Visibility,
+    /// Whether this is an `unsafe` function
+    pub r#unsafe: bool,
     /// Whether this is an `async` function
     pub r#async: bool,
     /// Whether to generate a typescript definition for this function
