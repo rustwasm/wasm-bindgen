@@ -754,11 +754,11 @@ mod gen_CacheStorageNamespace;
 #[cfg(feature = "CacheStorageNamespace")]
 pub use gen_CacheStorageNamespace::*;
 
-#[cfg(feature = "CanvasCaptureMediaStream")]
+#[cfg(feature = "CanvasCaptureMediaStreamTrack")]
 #[allow(non_snake_case)]
-mod gen_CanvasCaptureMediaStream;
-#[cfg(feature = "CanvasCaptureMediaStream")]
-pub use gen_CanvasCaptureMediaStream::*;
+mod gen_CanvasCaptureMediaStreamTrack;
+#[cfg(feature = "CanvasCaptureMediaStreamTrack")]
+pub use gen_CanvasCaptureMediaStreamTrack::*;
 
 #[cfg(feature = "CanvasGradient")]
 #[allow(non_snake_case)]
