@@ -240,6 +240,8 @@ fn default_module_path_target_web() {
     assert!(contents.contains(
         "\
 async function init(input) {
+    if (wasm !== undefined) return wasm;
+
     if (typeof input === 'undefined') {
         input = new URL('default_module_path_target_web_bg.wasm', import.meta.url);
     }",
@@ -267,6 +269,8 @@ fn default_module_path_target_no_modules() {
     assert!(contents.contains(
         "\
     async function init(input) {
+        if (wasm !== undefined) return wasm;
+
         if (typeof input === 'undefined' && script_src !== 'undefined') {
             input = script_src.replace(/\\.js$/, '_bg.wasm');
         }",
@@ -288,6 +292,8 @@ fn omit_default_module_path_target_web() {
     assert!(contents.contains(
         "\
 async function init(input) {
+    if (wasm !== undefined) return wasm;
+
 
     const imports = getImports();",
     ));
@@ -308,6 +314,8 @@ fn omit_default_module_path_target_no_modules() {
     assert!(contents.contains(
         "\
     async function init(input) {
+        if (wasm !== undefined) return wasm;
+
 
         const imports = getImports();",
     ));
