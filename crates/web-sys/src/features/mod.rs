@@ -5008,6 +5008,12 @@ mod gen_OffscreenCanvas;
 #[cfg(feature = "OffscreenCanvas")]
 pub use gen_OffscreenCanvas::*;
 
+#[cfg(feature = "OffscreenCanvasRenderingContext2d")]
+#[allow(non_snake_case)]
+mod gen_OffscreenCanvasRenderingContext2d;
+#[cfg(feature = "OffscreenCanvasRenderingContext2d")]
+pub use gen_OffscreenCanvasRenderingContext2d::*;
+
 #[cfg(feature = "OpenWindowEventDetail")]
 #[allow(non_snake_case)]
 mod gen_OpenWindowEventDetail;
