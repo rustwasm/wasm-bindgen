@@ -140,7 +140,12 @@ impl JsValue {
     /// be owned by the JS garbage collector.
     #[inline]
     pub fn from_str(s: &str) -> JsValue {
-        unsafe { JsValue::_new(__wbindgen_string_new(WasmSlice { ptr: s.as_ptr() as u32, len: s.len() as u32 })) }
+        unsafe {
+            JsValue::_new(__wbindgen_string_new(WasmSlice {
+                ptr: s.as_ptr() as u32,
+                len: s.len() as u32,
+            }))
+        }
     }
 
     /// Creates a new JS value which is a number.
@@ -158,7 +163,12 @@ impl JsValue {
     /// allocated large integer) and returns a handle to the JS version of it.
     #[inline]
     pub fn bigint_from_str(s: &str) -> JsValue {
-        unsafe { JsValue::_new(__wbindgen_bigint_from_str(WasmSlice { ptr: s.as_ptr() as u32, len: s.len() as u32  })) }
+        unsafe {
+            JsValue::_new(__wbindgen_bigint_from_str(WasmSlice {
+                ptr: s.as_ptr() as u32,
+                len: s.len() as u32,
+            }))
+        }
     }
 
     /// Creates a new JS value which is a boolean.
@@ -193,12 +203,10 @@ impl JsValue {
     pub fn symbol(description: Option<&str>) -> JsValue {
         unsafe {
             match description {
-                Some(description) => JsValue::_new(__wbindgen_symbol_named_new(
-                    WasmSlice {
-                        ptr: description.as_ptr() as u32,
-                        len: description.len() as u32,
-                    },
-                )),
+                Some(description) => JsValue::_new(__wbindgen_symbol_named_new(WasmSlice {
+                    ptr: description.as_ptr() as u32,
+                    len: description.len() as u32,
+                })),
                 None => JsValue::_new(__wbindgen_symbol_anonymous_new()),
             }
         }
@@ -234,7 +242,12 @@ impl JsValue {
         T: serde::ser::Serialize + ?Sized,
     {
         let s = serde_json::to_string(t)?;
-        unsafe { Ok(JsValue::_new(__wbindgen_json_parse(WasmSlice { ptr: s.as_ptr() as u32, len: s.len() as u32 }))) }
+        unsafe {
+            Ok(JsValue::_new(__wbindgen_json_parse(WasmSlice {
+                ptr: s.as_ptr() as u32,
+                len: s.len() as u32,
+            })))
+        }
     }
 
     /// Invokes `JSON.stringify` on this value and then parses the resulting
@@ -1201,7 +1214,10 @@ pub fn throw(s: &str) -> ! {
 #[inline(never)]
 pub fn throw_str(s: &str) -> ! {
     unsafe {
-        __wbindgen_throw(WasmSlice { ptr: s.as_ptr() as u32, len: s.len() as u32 });
+        __wbindgen_throw(WasmSlice {
+            ptr: s.as_ptr() as u32,
+            len: s.len() as u32,
+        });
     }
 }
 
@@ -1827,7 +1843,12 @@ impl JsError {
     #[inline]
     pub fn new(s: &str) -> JsError {
         Self {
-            value: unsafe { JsValue::_new(crate::__wbindgen_error_new(WasmSlice { ptr: s.as_ptr() as u32, len: s.len() as u32 })) },
+            value: unsafe {
+                JsValue::_new(crate::__wbindgen_error_new(WasmSlice {
+                    ptr: s.as_ptr() as u32,
+                    len: s.len() as u32,
+                }))
+            },
         }
     }
 }

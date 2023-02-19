@@ -642,11 +642,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let i = js.tmp();
             let mem = js.cx.expose_uint32_memory(*mem);
 
-            js.prelude(&format!("
+            js.prelude(&format!(
+                "
                 const argPtr{i} = wasm.__wbindgen_add_to_stack_pointer(-16);
                 {mem}()[argPtr{i} / 4] = {ptr};
                 {mem}()[argPtr{i} / 4 + 1] = {len};
-            "));
+            "
+            ));
 
             js.push(format!("argPtr{i}"));
 
@@ -662,12 +664,14 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let i = js.tmp();
             let mem = js.cx.expose_uint32_memory(*mem);
 
-            js.prelude(&format!("
+            js.prelude(&format!(
+                "
                 const argPtr{i} = wasm.__wbindgen_add_to_stack_pointer(-16);
                 {mem}()[argPtr{i} / 4] = {ptr};
                 {mem}()[argPtr{i} / 4 + 1] = {len};
                 {mem}()[argPtr{i} / 4 + 2] = {idx};
-            "));
+            "
+            ));
 
             js.push(format!("argPtr{i}"));
 
@@ -679,10 +683,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let arg_ptr = js.pop();
             let i = js.tmp();
 
-            js.prelude(&format!("
+            js.prelude(&format!(
+                "
                 var ptr{i} = {mem}()[{arg_ptr} / 4];
                 var len{i} = {mem}()[{arg_ptr} / 4 + 1];
-            "));
+            "
+            ));
 
             js.push(format!("ptr{i}"));
             js.push(format!("len{i}"));
@@ -707,11 +713,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 _ => bail!("Unexpected type passed to PackOption"),
             };
 
-            js.prelude(&format!("
+            js.prelude(&format!(
+                "
                 const argPtr{i} = wasm.__wbindgen_add_to_stack_pointer(-16);
                 {mem32}()[argPtr{i} / 4] = {discriminant};
                 {content_mem}()[argPtr{i} / {content_size} + 1] = {content};
-            "));
+            "
+            ));
 
             js.push(format!("argPtr{i}"));
 
@@ -732,10 +740,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let arg_ptr = js.pop();
             let i = js.tmp();
 
-            js.prelude(&format!("
+            js.prelude(&format!(
+                "
                 var discriminant{i} = {mem32}()[{arg_ptr} / 4];
                 var content{i} = {content_mem}()[{arg_ptr} / {content_size} + 1];
-            "));
+            "
+            ));
 
             js.push(format!("discriminant{i}"));
             js.push(format!("content{i}"));
