@@ -171,6 +171,10 @@ integration test.\
         b.split_linked_modules(true);
     }
 
+    if env::var("TEST_WASI_ABI").is_ok() {
+        b.wasi_abi(true);
+    }
+
     b.debug(debug)
         .input_module(module, wasm)
         .keep_debug(false)

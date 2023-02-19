@@ -51,8 +51,10 @@ if_std! {
         fn drop(&mut self) {
             unsafe {
                 __wbindgen_copy_to_typed_array(
-                    self.contents.as_ptr() as *const u8,
-                    self.contents.len() * mem::size_of::<T>(),
+                    WasmSlice {
+                        ptr: self.contents.as_ptr() as u32,
+                        len: (self.contents.len() * mem::size_of::<T>()) as u32,
+                    },
                     self.js.idx
                 );
             }

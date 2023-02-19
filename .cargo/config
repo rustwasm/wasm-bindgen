@@ -2,3 +2,6 @@
 # that.
 [target.wasm32-unknown-unknown]
 runner = 'cargo run -p wasm-bindgen-cli --bin wasm-bindgen-test-runner --'
+
+[target.wasm32-wasi]
+runner = 'cargo run -p wasm-bindgen-cli --bin wasm-bindgen-test-runner --'

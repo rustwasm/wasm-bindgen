@@ -38,6 +38,7 @@ struct Context<'a> {
     wasm_interface_types: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
+    wasi_abi: bool,
 }
 
 struct InstructionBuilder<'a, 'b> {
@@ -55,6 +56,7 @@ pub fn process(
     wasm_interface_types: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
+    wasi_abi: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
     let mut cx = Context {
         adapters: Default::default(),
@@ -72,6 +74,7 @@ pub fn process(
         wasm_interface_types,
         thread_count,
         support_start,
+        wasi_abi,
     };
     cx.init()?;
 
