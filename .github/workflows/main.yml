@@ -86,34 +86,24 @@ jobs:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test --target wasm32-wasi
-      env:
-        REROUTE_WASI_SNAPSHOT_PREVIEW1: ./tests/wasi/wasi_browser.js
     - run: cargo test --target wasm32-wasi --features serde-serialize
-      env:
-        REROUTE_WASI_SNAPSHOT_PREVIEW1: ./tests/wasi/wasi_browser.js
     - run: cargo test --target wasm32-wasi --features enable-interning
-      env:
-        REROUTE_WASI_SNAPSHOT_PREVIEW1: ./tests/wasi/wasi_browser.js
     - run: cargo test --target wasm32-wasi -p no-std
-    # - run: cargo test --target wasm32-wasi -p wasm-bindgen-futures
+    - run: cargo test --target wasm32-wasi -p wasm-bindgen-futures
     - run: cargo test --target wasm32-wasi --test wasm
       env:
         WASM_BINDGEN_WEAKREF: 1
-        REROUTE_WASI_SNAPSHOT_PREVIEW1: tests/wasi/wasi_node.js
     - run: cargo test --target wasm32-wasi --test wasm
       env:
         WASM_BINDGEN_WEAKREF: 1
         WASM_BINDGEN_NO_DEBUG: 1
-        REROUTE_WASI_SNAPSHOT_PREVIEW1: tests/wasi/wasi_node.js
     - run: cargo test --target wasm32-wasi --test wasm --features serde-serialize
       env:
         WASM_BINDGEN_WEAKREF: 1
-        REROUTE_WASI_SNAPSHOT_PREVIEW1: tests/wasi/wasi_node.js
     - run: cargo test --target wasm32-wasi
       env:
         WASM_BINDGEN_EXTERNREF: 1
         NODE_ARGS: --experimental-wasm-reftypes
-        REROUTE_WASI_SNAPSHOT_PREVIEW1: tests/wasi/wasi_node.js
 
   test_threads:
     name: "Run wasm-bindgen crate tests with multithreading enabled"

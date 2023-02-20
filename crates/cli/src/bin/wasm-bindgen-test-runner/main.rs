@@ -173,6 +173,12 @@ integration test.\
 
     if env::var("TEST_WASI_ABI").is_ok() {
         b.wasi_abi(true);
+
+        match test_mode {
+            TestMode::Node => env::set_var("REROUTE_WASI_SNAPSHOT_PREVIEW1", concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/wasi/wasi_node.js")),
+            TestMode::Browser => env::set_var("REROUTE_WASI_SNAPSHOT_PREVIEW1", "./tests/wasi/wasi_browser.js"),
+            _ => {},
+        }
     }
 
     b.debug(debug)

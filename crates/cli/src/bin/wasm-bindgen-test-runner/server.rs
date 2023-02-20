@@ -120,6 +120,9 @@ pub fn spawn(
         if !response.is_success() {
             response = try_asset(&request, ".".as_ref());
         }
+        if !response.is_success() {
+            response = try_asset(&request, concat!(env!("CARGO_MANIFEST_DIR"), "/../../").as_ref());
+        }
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
