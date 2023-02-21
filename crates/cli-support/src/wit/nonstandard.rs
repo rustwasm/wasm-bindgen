@@ -1,4 +1,4 @@
-use crate::intrinsic::Intrinsic;
+use crate::intrinsic::{Intrinsic, WasiIntrinsic};
 use crate::wit::AdapterId;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
@@ -328,6 +328,8 @@ pub enum AuxImport {
     /// This is an intrinsic function expected to be implemented with a JS glue
     /// shim. Each intrinsic has its own expected signature and implementation.
     Intrinsic(Intrinsic),
+
+    WasiIntrinsic(WasiIntrinsic),
 
     /// This is a function which returns a URL pointing to a specific file,
     /// usually a JS snippet. The supplied path is relative to the JS glue shim.

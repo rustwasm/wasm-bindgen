@@ -388,10 +388,12 @@ impl Bindgen {
         // sections.
         descriptors::execute(&mut module)?;
 
-        for import in module.imports.iter_mut() {
-            let env_name = format!("REROUTE_{}", import.module.to_uppercase());
-            if let Ok(reroute) = env::var(env_name) {
-                import.module = reroute;
+        if env::var("WASM_BINDGEN_EMULATE_WASI").is_ok() {
+            for import in module.imports.iter_mut() {
+                if import.module == "wasi_snapshot_preview1" {
+                    import.module = PLACEHOLDER_MODULE.to_string();
+                    import.name = format!("__wbindgen_wasi_{}", import.name);
+                }
             }
         }
 
