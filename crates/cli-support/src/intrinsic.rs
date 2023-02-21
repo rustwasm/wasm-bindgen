@@ -279,7 +279,7 @@ intrinsics! {
     }
 }
 
-intrinsics!{
+intrinsics! {
     pub enum WasiIntrinsic {
         #[symbol = "__wbindgen_wasi_clock_time_get"]
         #[signature = fn(I32, I64, I32) -> I32]

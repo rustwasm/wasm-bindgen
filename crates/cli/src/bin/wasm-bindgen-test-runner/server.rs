@@ -121,7 +121,10 @@ pub fn spawn(
             response = try_asset(&request, ".".as_ref());
         }
         if !response.is_success() {
-            response = try_asset(&request, concat!(env!("CARGO_MANIFEST_DIR"), "/../../").as_ref());
+            response = try_asset(
+                &request,
+                concat!(env!("CARGO_MANIFEST_DIR"), "/../../").as_ref(),
+            );
         }
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)

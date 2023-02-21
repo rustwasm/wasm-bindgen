@@ -1,4 +1,4 @@
-use anyhow::{Error, bail, anyhow};
+use anyhow::{anyhow, bail, Error};
 use walrus::MemoryId;
 
 use crate::intrinsic::WasiIntrinsic;
@@ -34,13 +34,15 @@ impl<'a> Context<'a> {
                 let mem = self.expose_int64_memory(self.get_memory()?);
                 let res_ptr = &args[2];
 
-                prelude.push_str(&format!("
+                prelude.push_str(&format!(
+                    "
                     let time = BigInt(new Date().getTime());
                     {mem}()[{res_ptr} / 8] = time;
-                "));
+                "
+                ));
 
                 "0".to_string()
-            },
+            }
             WasiIntrinsic::FdWrite => {
                 assert_eq!(args.len(), 4);
 
@@ -51,9 +53,7 @@ impl<'a> Context<'a> {
 
                 "8".to_string()
             }
-            WasiIntrinsic::FdSeek => {
-                "8".to_string()
-            }
+            WasiIntrinsic::FdSeek => "8".to_string(),
             WasiIntrinsic::SchedYield => {
                 assert_eq!(args.len(), 0);
                 String::default()
@@ -65,9 +65,11 @@ impl<'a> Context<'a> {
                 let ptr = &args[0];
                 let len = &args[1];
 
-                prelude.push_str(&format!("
+                prelude.push_str(&format!(
+                    "
                     crypto.getRandomValues({mem}().subarray({ptr}, {ptr} + {len}));
-                "));
+                "
+                ));
 
                 "0".to_string()
             }
@@ -82,56 +84,42 @@ impl<'a> Context<'a> {
                 let count_ptr = &args[0];
                 let size_ptr = &args[1];
 
-                prelude.push_str(&format!("
+                prelude.push_str(&format!(
+                    "
                     {mem}()[{count_ptr} / 4] = 0;
                     {mem}()[{size_ptr} / 4] = 0;
-                "));
+                "
+                ));
 
                 "0".to_string()
             }
-            WasiIntrinsic::FdClose => {
-                "8".to_string()
-            }
-            WasiIntrinsic::FdFdStatGet => {
-                "8".to_string()
-            }
-            WasiIntrinsic::FdFdStatSetFlags => {
-                "8".to_string()
-            }
-            WasiIntrinsic::FdPrestatGet => {
-                "8".to_string()
-            }
-            WasiIntrinsic::FdPrestatDirName => {
-                "8".to_string()
-            }
-            WasiIntrinsic::PathOpen => {
-                "-1".to_string()
-            }
+            WasiIntrinsic::FdClose => "8".to_string(),
+            WasiIntrinsic::FdFdStatGet => "8".to_string(),
+            WasiIntrinsic::FdFdStatSetFlags => "8".to_string(),
+            WasiIntrinsic::FdPrestatGet => "8".to_string(),
+            WasiIntrinsic::FdPrestatDirName => "8".to_string(),
+            WasiIntrinsic::PathOpen => "-1".to_string(),
             WasiIntrinsic::ProcExit => {
                 let code = &args[0];
                 format!("throw \"proc_exit called with code \" + {code};")
             }
-            WasiIntrinsic::ArgsGet => {
-                "0".to_string()
-            }
+            WasiIntrinsic::ArgsGet => "0".to_string(),
             WasiIntrinsic::ArgsSizesGet => {
                 let mem = self.expose_uint32_memory(self.get_memory()?);
                 let count_ptr = &args[0];
                 let size_ptr = &args[1];
 
-                prelude.push_str(&format!("
+                prelude.push_str(&format!(
+                    "
                     {mem}()[{count_ptr} / 4] = 0;
                     {mem}()[{size_ptr} / 4] = 0;
-                "));
+                "
+                ));
 
                 "0".to_string()
             }
-            WasiIntrinsic::FdFileStatGet => {
-                "8".to_string()
-            }
-            WasiIntrinsic::PathFileStatGet => {
-                "-1".to_string()
-            }
+            WasiIntrinsic::FdFileStatGet => "8".to_string(),
+            WasiIntrinsic::PathFileStatGet => "-1".to_string(),
         };
         Ok(expr)
     }
