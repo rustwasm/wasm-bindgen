@@ -2104,11 +2104,23 @@ mod gen_FileSystem;
 #[cfg(feature = "FileSystem")]
 pub use gen_FileSystem::*;
 
+#[cfg(feature = "FileSystemCreateWritableOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemCreateWritableOptions;
+#[cfg(feature = "FileSystemCreateWritableOptions")]
+pub use gen_FileSystemCreateWritableOptions::*;
+
 #[cfg(feature = "FileSystemDirectoryEntry")]
 #[allow(non_snake_case)]
 mod gen_FileSystemDirectoryEntry;
 #[cfg(feature = "FileSystemDirectoryEntry")]
 pub use gen_FileSystemDirectoryEntry::*;
+
+#[cfg(feature = "FileSystemDirectoryHandle")]
+#[allow(non_snake_case)]
+mod gen_FileSystemDirectoryHandle;
+#[cfg(feature = "FileSystemDirectoryHandle")]
+pub use gen_FileSystemDirectoryHandle::*;
 
 #[cfg(feature = "FileSystemDirectoryReader")]
 #[allow(non_snake_case)]
@@ -2140,11 +2152,65 @@ mod gen_FileSystemFileEntry;
 #[cfg(feature = "FileSystemFileEntry")]
 pub use gen_FileSystemFileEntry::*;
 
+#[cfg(feature = "FileSystemFileHandle")]
+#[allow(non_snake_case)]
+mod gen_FileSystemFileHandle;
+#[cfg(feature = "FileSystemFileHandle")]
+pub use gen_FileSystemFileHandle::*;
+
 #[cfg(feature = "FileSystemFlags")]
 #[allow(non_snake_case)]
 mod gen_FileSystemFlags;
 #[cfg(feature = "FileSystemFlags")]
 pub use gen_FileSystemFlags::*;
+
+#[cfg(feature = "FileSystemGetDirectoryOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemGetDirectoryOptions;
+#[cfg(feature = "FileSystemGetDirectoryOptions")]
+pub use gen_FileSystemGetDirectoryOptions::*;
+
+#[cfg(feature = "FileSystemGetFileOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemGetFileOptions;
+#[cfg(feature = "FileSystemGetFileOptions")]
+pub use gen_FileSystemGetFileOptions::*;
+
+#[cfg(feature = "FileSystemHandle")]
+#[allow(non_snake_case)]
+mod gen_FileSystemHandle;
+#[cfg(feature = "FileSystemHandle")]
+pub use gen_FileSystemHandle::*;
+
+#[cfg(feature = "FileSystemHandleKind")]
+#[allow(non_snake_case)]
+mod gen_FileSystemHandleKind;
+#[cfg(feature = "FileSystemHandleKind")]
+pub use gen_FileSystemHandleKind::*;
+
+#[cfg(feature = "FileSystemReadWriteOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemReadWriteOptions;
+#[cfg(feature = "FileSystemReadWriteOptions")]
+pub use gen_FileSystemReadWriteOptions::*;
+
+#[cfg(feature = "FileSystemRemoveOptions")]
+#[allow(non_snake_case)]
+mod gen_FileSystemRemoveOptions;
+#[cfg(feature = "FileSystemRemoveOptions")]
+pub use gen_FileSystemRemoveOptions::*;
+
+#[cfg(feature = "FileSystemSyncAccessHandle")]
+#[allow(non_snake_case)]
+mod gen_FileSystemSyncAccessHandle;
+#[cfg(feature = "FileSystemSyncAccessHandle")]
+pub use gen_FileSystemSyncAccessHandle::*;
+
+#[cfg(feature = "FileSystemWritableFileStream")]
+#[allow(non_snake_case)]
+mod gen_FileSystemWritableFileStream;
+#[cfg(feature = "FileSystemWritableFileStream")]
+pub use gen_FileSystemWritableFileStream::*;
 
 #[cfg(feature = "FillMode")]
 #[allow(non_snake_case)]
@@ -8793,6 +8859,18 @@ pub use gen_WritableStreamDefaultController::*;
 mod gen_WritableStreamDefaultWriter;
 #[cfg(feature = "WritableStreamDefaultWriter")]
 pub use gen_WritableStreamDefaultWriter::*;
+
+#[cfg(feature = "WriteCommandType")]
+#[allow(non_snake_case)]
+mod gen_WriteCommandType;
+#[cfg(feature = "WriteCommandType")]
+pub use gen_WriteCommandType::*;
+
+#[cfg(feature = "WriteParams")]
+#[allow(non_snake_case)]
+mod gen_WriteParams;
+#[cfg(feature = "WriteParams")]
+pub use gen_WriteParams::*;
 
 #[cfg(feature = "XPathExpression")]
 #[allow(non_snake_case)]
