@@ -1434,7 +1434,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_encoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextEncoder", "('utf-8')")
+        self.expose_text_processor("TextEncoder", "('utf-8')", None)
     }
 
     fn expose_text_decoder(&mut self) -> Result<(), Error> {
@@ -1442,18 +1442,27 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
-        // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
-        self.expose_text_processor("TextDecoder", "('utf-8', { ignoreBOM: true, fatal: true })")?;
-
         // This is needed to workaround a bug in Safari
         // See: https://github.com/rustwasm/wasm-bindgen/issues/1825
-        self.global("cachedTextDecoder.decode();");
+        let init = Some("cachedTextDecoder.decode();");
+
+        // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
+        // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
+        self.expose_text_processor(
+            "TextDecoder",
+            "('utf-8', { ignoreBOM: true, fatal: true })",
+            init,
+        )?;
 
         Ok(())
     }
 
-    fn expose_text_processor(&mut self, s: &str, args: &str) -> Result<(), Error> {
+    fn expose_text_processor(
+        &mut self,
+        s: &str,
+        args: &str,
+        init: Option<&str>,
+    ) -> Result<(), Error> {
         match &self.config.mode {
             OutputMode::Node { .. } => {
                 let name = self.import_name(&JsImport {
@@ -1481,9 +1490,25 @@ impl<'a> Context<'a> {
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("const cached{0} = new {0}{1};", s, args))
+                self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ decode: () => {{ throw Error('{0} not available') }} }} );", s, args))
             }
         };
+
+        if let Some(init) = init {
+            match &self.config.mode {
+                OutputMode::Node { .. }
+                | OutputMode::Bundler {
+                    browser_only: false,
+                } => self.global(init),
+                OutputMode::Deno
+                | OutputMode::Web
+                | OutputMode::NoModules { .. }
+                | OutputMode::Bundler { browser_only: true } => self.global(&format!(
+                    "if (typeof {} !== 'undefined') {{ {} }};",
+                    s, init
+                )),
+            }
+        }
 
         Ok(())
     }
