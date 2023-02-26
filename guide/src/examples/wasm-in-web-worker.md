@@ -1,8 +1,9 @@
 # Wasm in Web Worker
 
-[View full source code][code]
+[View full source code][code] or [view compiled example online][online]
 
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/wasm-in-web-worker
+[online]: https://sgasse.github.io/wasm_worker_interaction/wasm_worker_interaction/www/index.html
 
 A simple example of parallel execution by spawning a web worker with `web_sys`,
 loading Wasm code in the web worker and interacting between the main thread and
@@ -14,6 +15,15 @@ At the time of this writing, only Chrome supports modules in web workers, e.g.
 Firefox does not. To have compatibility across browsers, the whole example is
 set up without relying on ES modules as target. Therefore we have to build
 with `--target no-modules`. The full command can be found in `build.sh`.
+
+However note that this may no longer be true when you read this. The
+[related bug][ff_worker_module_bug] has been closed. ES modules in web workers
+already work in Firefox 111.a nightly build. If you want to check if ES
+modules work as target for web workers in your current browser, check out if
+[this example][wasm_worker_with_modules] behaves as expected.
+
+[ff_worker_module_bug]: https://bugzilla.mozilla.org/show_bug.cgi?id=1247687
+[wasm_worker_with_modules]: https://sgasse.github.io/wasm_worker_interaction/wasm_module_js_worker/www/index.html
 
 ## `Cargo.toml`
 
