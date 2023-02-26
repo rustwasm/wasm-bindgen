@@ -1,24 +1,21 @@
 <html>
-
-<head>
+  <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
+  <body>
     <div id="wrapper">
-        <h1>Main Thread/WASM Web Worker Interaction</h1>
+      <h1>Main Thread/Wasm Web Worker Interaction</h1>
 
-        <input type="text" id="inputNumber">
+      <input type="text" id="inputNumber" />
 
-        <div id="resultField"></div>
+      <div id="resultField"></div>
     </div>
 
     <!-- Make `wasm_bindgen` available for `index.js` -->
-    <script src='./pkg/wasm_in_web_worker.js'></script>
+    <script src="./pkg/wasm_in_web_worker.js"></script>
     <!-- Note that there is no `type="module"` in the script tag -->
     <script src="./index.js"></script>
-
-</body>
-
+  </body>
 </html>

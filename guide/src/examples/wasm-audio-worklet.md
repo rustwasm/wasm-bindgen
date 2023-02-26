@@ -1,4 +1,4 @@
-# WASM audio worklet
+# Wasm audio worklet
 
 [View full source code][code] or [view the compiled example online][online]
 
