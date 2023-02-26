@@ -1,4 +1,4 @@
-use crate::decode::LocalModule;
+use crate::decode::{LocalModule, ModuleContentBuf};
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
@@ -362,7 +362,7 @@ impl<'a> Context<'a> {
                 local_modules
                     .iter()
                     .find(|m| m.identifier == *n)
-                    .map(|m| m.contents),
+                    .map(|m| m.contents.to_owned()),
             ),
             decode::ImportModule::RawNamed(n) => (n.to_string(), None),
             decode::ImportModule::Inline(idx) => (
@@ -371,12 +371,12 @@ impl<'a> Context<'a> {
                     self.unique_crate_identifier,
                     *idx as usize + offset
                 ),
-                Some(inline_js[*idx as usize]),
+                Some(inline_js[*idx as usize].to_string().into()),
             ),
         };
         self.aux
             .import_map
-            .insert(id, AuxImport::LinkTo(path, content.map(str::to_string)));
+            .insert(id, AuxImport::LinkTo(path, content));
         Ok(())
     }
 
@@ -402,9 +402,9 @@ impl<'a> Context<'a> {
             if let Some(prev) = self
                 .aux
                 .local_modules
-                .insert(module.identifier.to_string(), module.contents.to_string())
+                .insert(module.identifier.to_string(), module.contents.to_owned())
             {
-                assert_eq!(prev, module.contents);
+                assert_eq!(prev, module.contents.to_owned());
             }
         }
         if let Some(s) = package_json {

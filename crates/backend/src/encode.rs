@@ -1,10 +1,13 @@
 use crate::util::ShortHash;
 use proc_macro2::{Ident, Span};
 use std::cell::{Cell, RefCell};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::env;
-use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+
+use swc_common::{sync::Lrc, SourceMap};
+use swc_ecma_ast::EsVersion;
+use swc_ecma_parser::Syntax;
 
 use crate::ast;
 use crate::Diagnostic;
@@ -44,6 +47,22 @@ struct LocalFile {
     path: PathBuf,
     definition: Span,
     new_identifier: String,
+}
+
+impl LocalFile {
+    fn join(&self, rel: &str) -> Self {
+        Self {
+            path: self.path.parent().unwrap().join(rel),
+            definition: self.definition,
+            new_identifier: Path::new(&self.new_identifier)
+                .parent()
+                .unwrap()
+                .join(rel)
+                .to_str()
+                .unwrap()
+                .to_owned(),
+        }
+    }
 }
 
 impl Interner {
@@ -120,6 +139,105 @@ impl Interner {
     }
 }
 
+trait CollectImports<'a, 'b>
+where
+    Self: Sized + Iterator<Item = &'b LocalFile>,
+{
+    fn collect_imports(self, intern: &'a Interner) -> ImportCollector<'a, 'b, Self>;
+}
+
+impl<'a, 'b, I: Iterator<Item = &'b LocalFile>> CollectImports<'a, 'b> for I {
+    fn collect_imports(self, intern: &'a Interner) -> ImportCollector<'a, 'b, Self> {
+        ImportCollector {
+            base: self,
+            intern,
+            stack: Vec::new(),
+            done: HashSet::new(),
+        }
+    }
+}
+
+struct ImportCollector<'a, 'b, I: Iterator<Item = &'b LocalFile>> {
+    base: I,
+    intern: &'a Interner,
+    stack: Vec<LocalFile>,
+    done: HashSet<PathBuf>,
+}
+
+impl<'a, 'b, I: Iterator<Item = &'b LocalFile>> Iterator for ImportCollector<'a, 'b, I> {
+    type Item = Result<LocalModule<'a>, Diagnostic>;
+
+    fn next(&mut self) -> Option<Result<LocalModule<'a>, Diagnostic>> {
+        let pop = self.stack.pop();
+        let file = pop.as_ref().or_else(|| self.base.next())?;
+
+        let cm: Lrc<SourceMap> = Default::default();
+        let fm = match cm.load_file(&file.path) {
+            Ok(fm) => fm,
+            Err(e) => {
+                let msg = format!("failed to read file `{}`: {}", file.path.display(), e);
+                return Some(Err(Diagnostic::span_error(file.definition, msg)));
+            }
+        };
+
+        let r = match swc_ecma_parser::parse_file_as_module(
+            &*fm,
+            Syntax::Es(Default::default()),
+            EsVersion::latest(),
+            None,
+            &mut Vec::new(),
+        ) {
+            Ok(r) => r,
+            Err(e) => {
+                let msg = format!("failed to parse file `{}`: {:?}", file.path.display(), e);
+                return Some(Err(Diagnostic::span_error(file.definition, msg)));
+            }
+        };
+
+        let mut pl = Vec::new();
+        for imp in r
+            .body
+            .iter()
+            .flat_map(|i| i.as_module_decl().and_then(|i| i.as_import()))
+        {
+            let val = imp.src.value.as_ref();
+            if val == "$wbg_main" {
+                pl.push((imp.src.span.lo.0 + 1, imp.src.span.hi.0 - 1));
+            } else {
+                let f = file.join(val);
+                let fc = f.path.canonicalize().unwrap_or_else(|_| f.path.clone());
+                if !self.done.contains(&fc) {
+                    self.stack.push(f);
+                    self.done.insert(fc);
+                }
+            }
+        }
+
+        let mut v = vec![&fm.src[..]];
+        let mut lolen = 0;
+        for &(a, b) in pl.iter() {
+            let s = v.pop().unwrap();
+            let (lo, hi) = s.split_at(a as usize - lolen);
+            v.push(lo);
+            v.push(&hi[(b - a) as usize..]);
+            lolen += lo.len();
+        }
+        Some(Ok(LocalModule {
+            identifier: self.intern.intern_str(&file.new_identifier),
+            contents: ModuleContent {
+                head: self.intern.intern_str(v[0]),
+                tail: v[1..]
+                    .iter()
+                    .map(|x| ContentPart {
+                        p: ContentPlaceholder::WbgMain,
+                        t: self.intern.intern_str(x),
+                    })
+                    .collect(),
+            },
+        }))
+    }
+}
+
 fn shared_program<'a>(
     prog: &'a ast::Program,
     intern: &'a Interner,
@@ -156,18 +274,8 @@ fn shared_program<'a>(
             .files
             .borrow()
             .values()
-            .map(|file| {
-                fs::read_to_string(&file.path)
-                    .map(|s| LocalModule {
-                        identifier: intern.intern_str(&file.new_identifier),
-                        contents: intern.intern_str(&s),
-                    })
-                    .map_err(|e| {
-                        let msg = format!("failed to read file `{}`: {}", file.path.display(), e);
-                        Diagnostic::span_error(file.definition, msg)
-                    })
-            })
-            .collect::<Result<Vec<_>, _>>()?,
+            .collect_imports(intern)
+            .collect::<Result<Vec<LocalModule<'a>>, _>>()?,
         inline_js: prog
             .inline_js
             .iter()

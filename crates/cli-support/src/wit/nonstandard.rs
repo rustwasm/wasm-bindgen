@@ -1,3 +1,4 @@
+use crate::decode::ModuleContentBuf;
 use crate::intrinsic::Intrinsic;
 use crate::wit::AdapterId;
 use std::borrow::Cow;
@@ -17,7 +18,7 @@ pub struct WasmBindgenAux {
 
     /// A map from identifier to the contents of each local module defined via
     /// the `#[wasm_bindgen(module = "/foo.js")]` import options.
-    pub local_modules: HashMap<String, String>,
+    pub local_modules: HashMap<String, crate::decode::ModuleContentBuf>,
 
     /// A map from unique crate identifier to the list of inline JS snippets for
     /// that crate identifier.
@@ -333,7 +334,7 @@ pub enum AuxImport {
     /// usually a JS snippet. The supplied path is relative to the JS glue shim.
     /// The Option may contain the contents of the linked file, so it can be
     /// embedded.
-    LinkTo(String, Option<String>),
+    LinkTo(String, Option<ModuleContentBuf>),
 }
 
 /// Values that can be imported verbatim to hook up to an import.

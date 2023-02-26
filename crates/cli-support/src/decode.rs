@@ -155,3 +155,85 @@ macro_rules! decode_api {
 }
 
 wasm_bindgen_shared::shared_api!(decode_api);
+
+#[derive(PartialEq, Clone)]
+pub enum ContentPlaceholderBuf {
+    WbgMain,
+}
+
+#[derive(PartialEq, Clone)]
+pub struct ContentPartBuf {
+    p: ContentPlaceholderBuf,
+    t: String,
+}
+
+#[derive(PartialEq, Clone)]
+pub struct ModuleContentBuf {
+    head: String,
+    tail: Vec<ContentPartBuf>,
+}
+
+impl core::fmt::Debug for ModuleContentBuf {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        write!(fmt, "{}", self.head)
+    }
+}
+
+impl core::fmt::Debug for ModuleContent<'_> {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        write!(fmt, "{}", self.head)
+    }
+}
+
+impl ModuleContent<'_> {
+    pub fn to_owned(&self) -> ModuleContentBuf {
+        ModuleContentBuf {
+            head: self.head.to_string(),
+            tail: self
+                .tail
+                .iter()
+                .map(|c| ContentPartBuf {
+                    p: ContentPlaceholderBuf::WbgMain,
+                    t: c.t.to_string(),
+                })
+                .collect(),
+        }
+    }
+}
+
+impl From<String> for ModuleContentBuf {
+    fn from(head: String) -> Self {
+        Self {
+            head,
+            tail: Vec::new(),
+        }
+    }
+}
+
+impl ModuleContentBuf {
+    pub fn fill(&self, wbg_main: &str) -> String {
+        Some(&self.head[..])
+            .into_iter()
+            .chain(self.tail.iter().flat_map(|p| [&wbg_main, &p.t[..]]))
+            .fold(String::new(), |a, b| a + b)
+    }
+
+    pub fn escape<F>(&self, mut f: F) -> String
+    where
+        F: FnMut(&ContentPlaceholderBuf) -> String,
+    {
+        let mut escaped = String::with_capacity(self.head.len());
+        self.head.chars().for_each(|c| match c {
+            '`' | '\\' | '$' => escaped.extend(['\\', c]),
+            _ => escaped.extend([c]),
+        });
+        for part in &self.tail {
+            escaped.push_str(&f(&part.p));
+            part.t.chars().for_each(|c| match c {
+                '`' | '\\' | '$' => escaped.extend(['\\', c]),
+                _ => escaped.extend([c]),
+            });
+        }
+        escaped
+    }
+}

@@ -1,5 +1,6 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
+use crate::decode::ModuleContentBuf;
 use anyhow::{bail, Context, Error};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::env;
@@ -66,7 +67,7 @@ struct JsGenerated {
     ts: String,
     start: Option<String>,
     snippets: HashMap<String, Vec<String>>,
-    local_modules: HashMap<String, String>,
+    local_modules: HashMap<String, ModuleContentBuf>,
     npm_dependencies: HashMap<String, (PathBuf, String)>,
     typescript: bool,
 }
@@ -676,7 +677,7 @@ impl Output {
         &self.gen().snippets
     }
 
-    pub fn local_modules(&self) -> &HashMap<String, String> {
+    pub fn local_modules(&self) -> &HashMap<String, ModuleContentBuf> {
         &self.gen().local_modules
     }
 
@@ -731,12 +732,30 @@ impl Output {
             }
         }
 
+        // And now that we've got all our JS and TypeScript, actually write it
+        // out to the filesystem.
+        let extension = if gen.mode.nodejs_experimental_modules() {
+            "mjs"
+        } else {
+            "js"
+        };
+
+        let js_path = Path::new(&self.stem).with_extension(extension);
+
         for (path, contents) in gen.local_modules.iter() {
-            let path = out_dir.join("snippets").join(path);
+            let path = Path::new("snippets").join(path);
+            let backlink = path
+                .with_file_name("")
+                .components()
+                .fold(PathBuf::new(), |a, _| a.join(".."))
+                .join(&js_path);
+            let path = out_dir.join(path);
             fs::create_dir_all(path.parent().unwrap())?;
-            fs::write(&path, contents)
+            fs::write(&path, contents.fill(backlink.to_str().unwrap()))
                 .with_context(|| format!("failed to write `{}`", path.display()))?;
         }
+
+        let js_path = out_dir.join(&js_path);
 
         if gen.npm_dependencies.len() > 0 {
             let map = gen
@@ -748,14 +767,6 @@ impl Output {
             fs::write(out_dir.join("package.json"), json)?;
         }
 
-        // And now that we've got all our JS and TypeScript, actually write it
-        // out to the filesystem.
-        let extension = if gen.mode.nodejs_experimental_modules() {
-            "mjs"
-        } else {
-            "js"
-        };
-
         fn write<P, C>(path: P, contents: C) -> Result<(), anyhow::Error>
         where
             P: AsRef<Path>,
@@ -764,8 +775,6 @@ impl Output {
             fs::write(&path, contents)
                 .with_context(|| format!("failed to write `{}`", path.as_ref().display()))
         }
-
-        let js_path = out_dir.join(&self.stem).with_extension(extension);
 
         if gen.mode.esm_integration() {
             let js_name = format!("{}_bg.{}", self.stem, extension);

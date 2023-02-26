@@ -23,3 +23,6 @@ proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '1.0', features = ['full'] }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.84" }
+swc_ecma_parser = "0.99.1"
+swc_ecma_ast = "0.74.0"
+swc_common = "0.17.25"
