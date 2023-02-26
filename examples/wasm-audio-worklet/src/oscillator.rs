@@ -1,4 +1,4 @@
-// WASM audio processors can be implemented in Rust without knowing
+// Wasm audio processors can be implemented in Rust without knowing
 // about audio worklets.
 
 use std::sync::atomic::{AtomicU8, Ordering};

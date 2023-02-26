@@ -49,7 +49,7 @@ pub fn startup() {
     // `Rc<RefCell>` following the interior mutability pattern. Here, it would
     // not be needed but we include the wrapping anyway as example.
     let worker_handle = Rc::new(RefCell::new(Worker::new("./worker.js").unwrap()));
-    console::log_1(&"Created a new worker from within WASM".into());
+    console::log_1(&"Created a new worker from within Wasm".into());
 
     // Pass the worker to the function which sets up the `oninput` callback.
     setup_input_oninput_callback(worker_handle.clone());
