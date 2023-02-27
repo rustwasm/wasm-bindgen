@@ -20,7 +20,7 @@ The methods of deployment and integration here are primarily tied to the
 [`web`]: #without-a-bundler
 [`no-modules`]: #without-a-bundler
 [`nodejs`]: #nodejs
-[`deno`]: #Deno
+[`deno`]: #deno
 
 ## Bundlers
 
