@@ -26,7 +26,7 @@ function loadWasm() {
     return
   }
 
-  wasm_bindgen('./raytrace_parallel_bg.wasm')
+  wasm_bindgen()
     .then(run)
     .catch(console.error);
 }
