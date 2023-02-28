@@ -852,6 +852,8 @@ impl<'a> Context<'a> {
                 }}
 
                 function initSync(module{init_memory_arg}) {{
+                    if (wasm !== undefined) return wasm;
+
                     const imports = getImports();
 
                     initMemory(imports{init_memory_arg});
