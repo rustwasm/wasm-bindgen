@@ -123,6 +123,7 @@ macro_rules! shared_api {
             asyncness: bool,
             name: &'a str,
             generate_typescript: bool,
+            generate_jsdoc: bool,
             variadic: bool,
         }
 
@@ -139,6 +140,7 @@ macro_rules! shared_api {
             readonly: bool,
             comments: Vec<&'a str>,
             generate_typescript: bool,
+            generate_jsdoc: bool,
         }
 
         struct LocalModule<'a> {

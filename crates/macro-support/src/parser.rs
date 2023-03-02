@@ -80,6 +80,7 @@ macro_rules! attrgen {
             (variadic, Variadic(Span)),
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (skip_typescript, SkipTypescript(Span)),
+            (skip_jsdoc, SkipJsDoc(Span)),
             (start, Start(Span)),
             (skip, Skip(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
@@ -445,6 +446,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 setter: Ident::new(&setter, Span::call_site()),
                 comments,
                 generate_typescript: attrs.skip_typescript().is_none(),
+                generate_jsdoc: attrs.skip_jsdoc().is_none(),
                 getter_with_clone: attrs.getter_with_clone().or(getter_with_clone).copied(),
             });
             attrs.check_used();
@@ -912,6 +914,7 @@ fn function_from_decl(
             r#unsafe: sig.unsafety.is_some(),
             r#async: sig.asyncness.is_some(),
             generate_typescript: opts.skip_typescript().is_none(),
+            generate_jsdoc: opts.skip_jsdoc().is_none(),
             variadic: opts.variadic().is_some(),
         },
         method_self,

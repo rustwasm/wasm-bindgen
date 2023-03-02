@@ -2514,11 +2514,13 @@ impl<'a> Context<'a> {
         let mut arg_names = &None;
         let mut asyncness = false;
         let mut variadic = false;
+        let mut generate_jsdoc = false;
         match kind {
             Kind::Export(export) => {
                 arg_names = &export.arg_names;
                 asyncness = export.asyncness;
                 variadic = export.variadic;
+                generate_jsdoc = export.generate_jsdoc;
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
@@ -2546,7 +2548,14 @@ impl<'a> Context<'a> {
             catch,
             log_error,
         } = builder
-            .process(&adapter, instrs, arg_names, asyncness, variadic)
+            .process(
+                &adapter,
+                instrs,
+                arg_names,
+                asyncness,
+                variadic,
+                generate_jsdoc,
+            )
             .with_context(|| match kind {
                 Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
                 Kind::Import(i) => {

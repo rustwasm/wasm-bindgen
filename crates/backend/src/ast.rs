@@ -307,6 +307,8 @@ pub struct Function {
     pub r#async: bool,
     /// Whether to generate a typescript definition for this function
     pub generate_typescript: bool,
+    /// Whether to generate jsdoc documentation for this function
+    pub generate_jsdoc: bool,
     /// Whether this is a function with a variadict parameter
     pub variadic: bool,
 }
@@ -351,6 +353,8 @@ pub struct StructField {
     pub comments: Vec<String>,
     /// Whether to generate a typescript definition for this field
     pub generate_typescript: bool,
+    /// Whether to generate jsdoc documentation for this field
+    pub generate_jsdoc: bool,
     /// The span of the `#[wasm_bindgen(getter_with_clone)]` attribute applied
     /// to this field, if any.
     ///
