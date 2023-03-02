@@ -10,4 +10,5 @@ pub enum RtcRtpTransceiverDirection {
     Sendonly = "sendonly",
     Recvonly = "recvonly",
     Inactive = "inactive",
+    Stopped = "stopped",
 }

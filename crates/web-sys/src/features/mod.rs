@@ -6178,6 +6178,12 @@ mod gen_RtcLifecycleEvent;
 #[cfg(feature = "RtcLifecycleEvent")]
 pub use gen_RtcLifecycleEvent::*;
 
+#[cfg(feature = "RtcLocalSessionDescriptionInit")]
+#[allow(non_snake_case)]
+mod gen_RtcLocalSessionDescriptionInit;
+#[cfg(feature = "RtcLocalSessionDescriptionInit")]
+pub use gen_RtcLocalSessionDescriptionInit::*;
+
 #[cfg(feature = "RtcMediaStreamStats")]
 #[allow(non_snake_case)]
 mod gen_RtcMediaStreamStats;
@@ -6225,6 +6231,12 @@ pub use gen_RtcPeerConnectionIceEvent::*;
 mod gen_RtcPeerConnectionIceEventInit;
 #[cfg(feature = "RtcPeerConnectionIceEventInit")]
 pub use gen_RtcPeerConnectionIceEventInit::*;
+
+#[cfg(feature = "RtcPeerConnectionState")]
+#[allow(non_snake_case)]
+mod gen_RtcPeerConnectionState;
+#[cfg(feature = "RtcPeerConnectionState")]
+pub use gen_RtcPeerConnectionState::*;
 
 #[cfg(feature = "RtcPriorityType")]
 #[allow(non_snake_case)]

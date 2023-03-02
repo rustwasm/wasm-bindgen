@@ -3,8 +3,8 @@ use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 
 use web_sys::{
-    RtcPeerConnection, RtcRtpTransceiver, RtcRtpTransceiverDirection, RtcRtpTransceiverInit,
-    RtcSessionDescriptionInit,
+    RtcLocalSessionDescriptionInit, RtcPeerConnection, RtcRtpTransceiver,
+    RtcRtpTransceiverDirection, RtcRtpTransceiverInit, RtcSessionDescriptionInit,
 };
 
 #[wasm_bindgen(
@@ -61,20 +61,30 @@ async fn exchange_sdps(
     p2: RtcPeerConnection,
 ) -> (RtcPeerConnection, RtcPeerConnection) {
     let offer = JsFuture::from(p1.create_offer()).await.unwrap();
-    let offer = offer.unchecked_into::<RtcSessionDescriptionInit>();
-    JsFuture::from(p1.set_local_description(&offer))
+
+    let offer = offer
+        .clone()
+        .unchecked_into::<RtcLocalSessionDescriptionInit>();
+    JsFuture::from(p1.set_local_description_with_description(&offer))
         .await
         .unwrap();
+
+    let offer = offer.unchecked_into::<RtcSessionDescriptionInit>();
     JsFuture::from(p2.set_remote_description(&offer))
         .await
         .unwrap();
+
     let answer = JsFuture::from(p2.create_answer()).await.unwrap();
-    let answer = answer.unchecked_into::<RtcSessionDescriptionInit>();
-    JsFuture::from(p2.set_local_description(&answer))
+
+    let answer = answer.unchecked_into::<RtcLocalSessionDescriptionInit>();
+    JsFuture::from(p2.set_local_description_with_description(&answer))
         .await
         .unwrap();
+
+    let answer = answer.unchecked_into::<RtcSessionDescriptionInit>();
     JsFuture::from(p1.set_remote_description(&answer))
         .await
         .unwrap();
+
     (p1, p2)
 }

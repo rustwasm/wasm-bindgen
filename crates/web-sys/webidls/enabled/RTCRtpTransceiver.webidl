@@ -8,10 +8,11 @@
  */
 
 enum RTCRtpTransceiverDirection {
-    "sendrecv",
-    "sendonly",
-    "recvonly",
-    "inactive"
+  "sendrecv",
+  "sendonly",
+  "recvonly",
+  "inactive",
+  "stopped"
 };
 
 dictionary RTCRtpTransceiverInit {
@@ -21,58 +22,13 @@ dictionary RTCRtpTransceiverInit {
     // sequence<RTCRtpEncodingParameters> sendEncodings;
 };
 
-[Pref="media.peerconnection.enabled",
- JSImplementation="@mozilla.org/dom/rtptransceiver;1"]
+[Exposed=Window]
 interface RTCRtpTransceiver {
-    readonly attribute DOMString?                  mid;
-    [SameObject]
-    readonly attribute RTCRtpSender                sender;
-    [SameObject]
-    readonly attribute RTCRtpReceiver              receiver;
-    readonly attribute boolean                     stopped;
-             attribute RTCRtpTransceiverDirection  direction;
-    readonly attribute RTCRtpTransceiverDirection? currentDirection;
-
-    undefined stop();
-    // TODO: bug 1396922
-    // undefined setCodecPreferences(sequence<RTCRtpCodecCapability> codecs);
-
-    [ChromeOnly]
-    undefined setRemoteTrackId(DOMString trackId);
-    [ChromeOnly]
-    boolean remoteTrackIdIs(DOMString trackId);
-
-    // Mostly for testing
-    [Pref="media.peerconnection.remoteTrackId.enabled"]
-    DOMString getRemoteTrackId();
-
-    [ChromeOnly]
-    undefined setAddTrackMagic();
-    [ChromeOnly]
-    readonly attribute boolean addTrackMagic;
-    [ChromeOnly]
-    attribute boolean shouldRemove;
-    [ChromeOnly]
-    undefined setCurrentDirection(RTCRtpTransceiverDirection direction);
-    [ChromeOnly]
-    undefined setDirectionInternal(RTCRtpTransceiverDirection direction);
-    [ChromeOnly]
-    undefined setMid(DOMString mid);
-    [ChromeOnly]
-    undefined unsetMid();
-    [ChromeOnly]
-    undefined setStopped();
-
-    [ChromeOnly]
-    DOMString getKind();
-    [ChromeOnly]
-    boolean hasBeenUsedToSend();
-    [ChromeOnly]
-    undefined sync();
-
-    [ChromeOnly]
-    undefined insertDTMF(DOMString tones,
-                    optional unsigned long duration = 100,
-                    optional unsigned long interToneGap = 70);
+  readonly attribute DOMString? mid;
+  [SameObject] readonly attribute RTCRtpSender sender;
+  [SameObject] readonly attribute RTCRtpReceiver receiver;
+  attribute RTCRtpTransceiverDirection direction;
+  readonly attribute RTCRtpTransceiverDirection? currentDirection;
+  undefined stop();
+  undefined setCodecPreferences(sequence<RTCRtpCodecCapability> codecs);
 };
-

@@ -19,13 +19,10 @@ dictionary RTCSessionDescriptionInit {
   DOMString sdp = "";
 };
 
-[Pref="media.peerconnection.enabled",
- JSImplementation="@mozilla.org/dom/rtcsessiondescription;1",
- Constructor(optional RTCSessionDescriptionInit descriptionInitDict)]
+[Exposed=Window]
 interface RTCSessionDescription {
-  // These should be readonly, but writing causes deprecation warnings for a bit
-  attribute RTCSdpType type;
-  attribute DOMString sdp;
-
+  constructor(RTCSessionDescriptionInit descriptionInitDict);
+  readonly attribute RTCSdpType type;
+  readonly attribute DOMString sdp;
   [Default] object toJSON();
 };

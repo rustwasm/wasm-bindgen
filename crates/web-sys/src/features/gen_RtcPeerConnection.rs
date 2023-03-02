@@ -67,13 +67,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSignalingState`*"]
     pub fn signaling_state(this: &RtcPeerConnection) -> RtcSignalingState;
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = canTrickleIceCandidates)]
-    #[doc = "Getter for the `canTrickleIceCandidates` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/canTrickleIceCandidates)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn can_trickle_ice_candidates(this: &RtcPeerConnection) -> Option<bool>;
     #[cfg(feature = "RtcIceGatheringState")]
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = iceGatheringState)]
     #[doc = "Getter for the `iceGatheringState` field of this object."]
@@ -90,20 +83,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceConnectionState`, `RtcPeerConnection`*"]
     pub fn ice_connection_state(this: &RtcPeerConnection) -> RtcIceConnectionState;
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = peerIdentity)]
-    #[doc = "Getter for the `peerIdentity` field of this object."]
+    #[cfg(feature = "RtcPeerConnectionState")]
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = connectionState)]
+    #[doc = "Getter for the `connectionState` field of this object."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/peerIdentity)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/connectionState)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcPeerConnectionState`*"]
+    pub fn connection_state(this: &RtcPeerConnection) -> RtcPeerConnectionState;
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = canTrickleIceCandidates)]
+    #[doc = "Getter for the `canTrickleIceCandidates` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/canTrickleIceCandidates)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn peer_identity(this: &RtcPeerConnection) -> ::js_sys::Promise;
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = idpLoginUrl)]
-    #[doc = "Getter for the `idpLoginUrl` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/idpLoginUrl)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn idp_login_url(this: &RtcPeerConnection) -> Option<String>;
+    pub fn can_trickle_ice_candidates(this: &RtcPeerConnection) -> Option<bool>;
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onnegotiationneeded)]
     #[doc = "Getter for the `onnegotiationneeded` field of this object."]
     #[doc = ""]
@@ -132,6 +126,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn set_onicecandidate(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onicecandidateerror)]
+    #[doc = "Getter for the `onicecandidateerror` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicecandidateerror)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn onicecandidateerror(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onicecandidateerror)]
+    #[doc = "Setter for the `onicecandidateerror` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onicecandidateerror)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_onicecandidateerror(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onsignalingstatechange)]
     #[doc = "Getter for the `onsignalingstatechange` field of this object."]
     #[doc = ""]
@@ -146,62 +154,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn set_onsignalingstatechange(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onaddstream)]
-    #[doc = "Getter for the `onaddstream` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddstream)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn onaddstream(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
-    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onaddstream)]
-    #[doc = "Setter for the `onaddstream` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddstream)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onaddstream(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onaddtrack)]
-    #[doc = "Getter for the `onaddtrack` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddtrack)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn onaddtrack(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
-    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onaddtrack)]
-    #[doc = "Setter for the `onaddtrack` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onaddtrack)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onaddtrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = ontrack)]
-    #[doc = "Getter for the `ontrack` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn ontrack(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
-    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = ontrack)]
-    #[doc = "Setter for the `ontrack` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_ontrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onremovestream)]
-    #[doc = "Getter for the `onremovestream` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onremovestream)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn onremovestream(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
-    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onremovestream)]
-    #[doc = "Setter for the `onremovestream` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onremovestream)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_onremovestream(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = oniceconnectionstatechange)]
     #[doc = "Getter for the `oniceconnectionstatechange` field of this object."]
     #[doc = ""]
@@ -236,20 +188,37 @@ extern "C" {
         this: &RtcPeerConnection,
         value: Option<&::js_sys::Function>,
     );
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = ondatachannel)]
-    #[doc = "Getter for the `ondatachannel` field of this object."]
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onconnectionstatechange)]
+    #[doc = "Getter for the `onconnectionstatechange` field of this object."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn ondatachannel(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
-    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = ondatachannel)]
-    #[doc = "Setter for the `ondatachannel` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onconnectionstatechange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_ondatachannel(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
+    pub fn onconnectionstatechange(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onconnectionstatechange)]
+    #[doc = "Setter for the `onconnectionstatechange` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onconnectionstatechange)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_onconnectionstatechange(
+        this: &RtcPeerConnection,
+        value: Option<&::js_sys::Function>,
+    );
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = ontrack)]
+    #[doc = "Getter for the `ontrack` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn ontrack(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = ontrack)]
+    #[doc = "Setter for the `ontrack` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ontrack)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_ontrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "RTCPeerConnection")]
     #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`."]
     #[doc = ""]
@@ -267,17 +236,13 @@ extern "C" {
     pub fn new_with_configuration(
         configuration: &RtcConfiguration,
     ) -> Result<RtcPeerConnection, JsValue>;
-    #[cfg(feature = "RtcConfiguration")]
-    #[wasm_bindgen(catch, constructor, js_class = "RTCPeerConnection")]
-    #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`."]
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = addIceCandidate)]
+    #[doc = "The `addIceCandidate()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcPeerConnection`*"]
-    pub fn new_with_configuration_and_constraints(
-        configuration: &RtcConfiguration,
-        constraints: Option<&::js_sys::Object>,
-    ) -> Result<RtcPeerConnection, JsValue>;
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn add_ice_candidate(this: &RtcPeerConnection) -> ::js_sys::Promise;
     #[cfg(feature = "RtcIceCandidateInit")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = addIceCandidate)]
     #[doc = "The `addIceCandidate()` method."]
@@ -285,42 +250,23 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`, `RtcPeerConnection`*"]
-    pub fn add_ice_candidate_with_opt_rtc_ice_candidate_init(
+    pub fn add_ice_candidate_with_candidate(
         this: &RtcPeerConnection,
-        candidate: Option<&RtcIceCandidateInit>,
+        candidate: &RtcIceCandidateInit,
     ) -> ::js_sys::Promise;
-    #[cfg(feature = "RtcIceCandidate")]
+    #[cfg(feature = "RtcIceCandidateInit")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = addIceCandidate)]
     #[doc = "The `addIceCandidate()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnection`*"]
-    pub fn add_ice_candidate_with_opt_rtc_ice_candidate(
+    #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`, `RtcPeerConnection`*"]
+    pub fn add_ice_candidate_with_candidate_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
-        candidate: Option<&RtcIceCandidate>,
-    ) -> ::js_sys::Promise;
-    #[cfg(feature = "RtcIceCandidate")]
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = addIceCandidate)]
-    #[doc = "The `addIceCandidate()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnection`*"]
-    pub fn add_ice_candidate_with_rtc_ice_candidate_and_success_callback_and_failure_callback(
-        this: &RtcPeerConnection,
-        candidate: &RtcIceCandidate,
+        candidate: &RtcIceCandidateInit,
         success_callback: &::js_sys::Function,
         failure_callback: &::js_sys::Function,
     ) -> ::js_sys::Promise;
-    #[cfg(feature = "MediaStream")]
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = addStream)]
-    #[doc = "The `addStream()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addStream)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `RtcPeerConnection`*"]
-    pub fn add_stream(this: &RtcPeerConnection, stream: &MediaStream);
     #[cfg(all(
         feature = "MediaStream",
         feature = "MediaStreamTrack",
@@ -335,25 +281,16 @@ extern "C" {
     pub fn add_track(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams: &::js_sys::Array,
+        streams: &::js_sys::Array,
     ) -> RtcRtpSender;
-    #[cfg(all(
-        feature = "MediaStream",
-        feature = "MediaStreamTrack",
-        feature = "RtcRtpSender",
-    ))]
+    #[cfg(all(feature = "MediaStreamTrack", feature = "RtcRtpSender",))]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = addTrack)]
     #[doc = "The `addTrack()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addTrack)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamTrack`, `RtcPeerConnection`, `RtcRtpSender`*"]
-    pub fn add_track_0(
-        this: &RtcPeerConnection,
-        track: &MediaStreamTrack,
-        stream: &MediaStream,
-    ) -> RtcRtpSender;
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`, `RtcRtpSender`*"]
+    pub fn add_track_0(this: &RtcPeerConnection, track: &MediaStreamTrack) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",
         feature = "MediaStreamTrack",
@@ -368,8 +305,7 @@ extern "C" {
     pub fn add_track_1(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams_1: &MediaStream,
+        streams_1: &MediaStream,
     ) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",
@@ -385,9 +321,8 @@ extern "C" {
     pub fn add_track_2(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams_1: &MediaStream,
-        more_streams_2: &MediaStream,
+        streams_1: &MediaStream,
+        streams_2: &MediaStream,
     ) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",
@@ -403,10 +338,9 @@ extern "C" {
     pub fn add_track_3(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams_1: &MediaStream,
-        more_streams_2: &MediaStream,
-        more_streams_3: &MediaStream,
+        streams_1: &MediaStream,
+        streams_2: &MediaStream,
+        streams_3: &MediaStream,
     ) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",
@@ -422,11 +356,10 @@ extern "C" {
     pub fn add_track_4(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams_1: &MediaStream,
-        more_streams_2: &MediaStream,
-        more_streams_3: &MediaStream,
-        more_streams_4: &MediaStream,
+        streams_1: &MediaStream,
+        streams_2: &MediaStream,
+        streams_3: &MediaStream,
+        streams_4: &MediaStream,
     ) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",
@@ -442,12 +375,11 @@ extern "C" {
     pub fn add_track_5(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams_1: &MediaStream,
-        more_streams_2: &MediaStream,
-        more_streams_3: &MediaStream,
-        more_streams_4: &MediaStream,
-        more_streams_5: &MediaStream,
+        streams_1: &MediaStream,
+        streams_2: &MediaStream,
+        streams_3: &MediaStream,
+        streams_4: &MediaStream,
+        streams_5: &MediaStream,
     ) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",
@@ -463,13 +395,12 @@ extern "C" {
     pub fn add_track_6(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams_1: &MediaStream,
-        more_streams_2: &MediaStream,
-        more_streams_3: &MediaStream,
-        more_streams_4: &MediaStream,
-        more_streams_5: &MediaStream,
-        more_streams_6: &MediaStream,
+        streams_1: &MediaStream,
+        streams_2: &MediaStream,
+        streams_3: &MediaStream,
+        streams_4: &MediaStream,
+        streams_5: &MediaStream,
+        streams_6: &MediaStream,
     ) -> RtcRtpSender;
     #[cfg(all(
         feature = "MediaStream",
@@ -485,14 +416,13 @@ extern "C" {
     pub fn add_track_7(
         this: &RtcPeerConnection,
         track: &MediaStreamTrack,
-        stream: &MediaStream,
-        more_streams_1: &MediaStream,
-        more_streams_2: &MediaStream,
-        more_streams_3: &MediaStream,
-        more_streams_4: &MediaStream,
-        more_streams_5: &MediaStream,
-        more_streams_6: &MediaStream,
-        more_streams_7: &MediaStream,
+        streams_1: &MediaStream,
+        streams_2: &MediaStream,
+        streams_3: &MediaStream,
+        streams_4: &MediaStream,
+        streams_5: &MediaStream,
+        streams_6: &MediaStream,
+        streams_7: &MediaStream,
     ) -> RtcRtpSender;
     #[cfg(all(feature = "MediaStreamTrack", feature = "RtcRtpTransceiver",))]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = addTransceiver)]
@@ -580,26 +510,6 @@ extern "C" {
         success_callback: &::js_sys::Function,
         failure_callback: &::js_sys::Function,
     ) -> ::js_sys::Promise;
-    #[cfg(feature = "RtcDataChannel")]
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createDataChannel)]
-    #[doc = "The `createDataChannel()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcPeerConnection`*"]
-    pub fn create_data_channel(this: &RtcPeerConnection, label: &str) -> RtcDataChannel;
-    #[cfg(all(feature = "RtcDataChannel", feature = "RtcDataChannelInit",))]
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createDataChannel)]
-    #[doc = "The `createDataChannel()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelInit`, `RtcPeerConnection`*"]
-    pub fn create_data_channel_with_data_channel_dict(
-        this: &RtcPeerConnection,
-        label: &str,
-        data_channel_dict: &RtcDataChannelInit,
-    ) -> RtcDataChannel;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createOffer)]
     #[doc = "The `createOffer()` method."]
     #[doc = ""]
@@ -642,24 +552,6 @@ extern "C" {
         failure_callback: &::js_sys::Function,
         options: &RtcOfferOptions,
     ) -> ::js_sys::Promise;
-    # [wasm_bindgen (catch , static_method_of = RtcPeerConnection , js_class = "RTCPeerConnection" , js_name = generateCertificate)]
-    #[doc = "The `generateCertificate()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn generate_certificate_with_object(
-        keygen_algorithm: &::js_sys::Object,
-    ) -> Result<::js_sys::Promise, JsValue>;
-    # [wasm_bindgen (catch , static_method_of = RtcPeerConnection , js_class = "RTCPeerConnection" , js_name = generateCertificate)]
-    #[doc = "The `generateCertificate()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn generate_certificate_with_str(
-        keygen_algorithm: &str,
-    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "RtcConfiguration")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getConfiguration)]
     #[doc = "The `getConfiguration()` method."]
@@ -668,20 +560,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcPeerConnection`*"]
     pub fn get_configuration(this: &RtcPeerConnection) -> RtcConfiguration;
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getIdentityAssertion)]
-    #[doc = "The `getIdentityAssertion()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getIdentityAssertion)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn get_identity_assertion(this: &RtcPeerConnection) -> ::js_sys::Promise;
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getLocalStreams)]
-    #[doc = "The `getLocalStreams()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getLocalStreams)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn get_local_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getReceivers)]
     #[doc = "The `getReceivers()` method."]
     #[doc = ""]
@@ -689,13 +567,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn get_receivers(this: &RtcPeerConnection) -> ::js_sys::Array;
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getRemoteStreams)]
-    #[doc = "The `getRemoteStreams()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getRemoteStreams)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn get_remote_streams(this: &RtcPeerConnection) -> ::js_sys::Array;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getSenders)]
     #[doc = "The `getSenders()` method."]
     #[doc = ""]
@@ -703,37 +574,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn get_senders(this: &RtcPeerConnection) -> ::js_sys::Array;
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
-    #[doc = "The `getStats()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn get_stats(this: &RtcPeerConnection) -> ::js_sys::Promise;
-    #[cfg(feature = "MediaStreamTrack")]
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
-    #[doc = "The `getStats()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
-    pub fn get_stats_with_selector(
-        this: &RtcPeerConnection,
-        selector: Option<&MediaStreamTrack>,
-    ) -> ::js_sys::Promise;
-    #[cfg(feature = "MediaStreamTrack")]
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getStats)]
-    #[doc = "The `getStats()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/getStats)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcPeerConnection`*"]
-    pub fn get_stats_with_selector_and_success_callback_and_failure_callback(
-        this: &RtcPeerConnection,
-        selector: Option<&MediaStreamTrack>,
-        success_callback: &::js_sys::Function,
-        failure_callback: &::js_sys::Function,
-    ) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = getTransceivers)]
     #[doc = "The `getTransceivers()` method."]
     #[doc = ""]
@@ -749,46 +589,59 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcRtpSender`*"]
     pub fn remove_track(this: &RtcPeerConnection, sender: &RtcRtpSender);
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setIdentityProvider)]
-    #[doc = "The `setIdentityProvider()` method."]
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = restartIce)]
+    #[doc = "The `restartIce()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setIdentityProvider)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/restartIce)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn set_identity_provider(this: &RtcPeerConnection, provider: &str);
-    #[cfg(feature = "RtcIdentityProviderOptions")]
-    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setIdentityProvider)]
-    #[doc = "The `setIdentityProvider()` method."]
+    pub fn restart_ice(this: &RtcPeerConnection);
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setConfiguration)]
+    #[doc = "The `setConfiguration()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setIdentityProvider)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`, `RtcPeerConnection`*"]
-    pub fn set_identity_provider_with_options(
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_configuration(this: &RtcPeerConnection);
+    #[cfg(feature = "RtcConfiguration")]
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setConfiguration)]
+    #[doc = "The `setConfiguration()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcPeerConnection`*"]
+    pub fn set_configuration_with_configuration(
         this: &RtcPeerConnection,
-        provider: &str,
-        options: &RtcIdentityProviderOptions,
+        configuration: &RtcConfiguration,
     );
-    #[cfg(feature = "RtcSessionDescriptionInit")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setLocalDescription)]
     #[doc = "The `setLocalDescription()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setLocalDescription)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
-    pub fn set_local_description(
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_local_description(this: &RtcPeerConnection) -> ::js_sys::Promise;
+    #[cfg(feature = "RtcLocalSessionDescriptionInit")]
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setLocalDescription)]
+    #[doc = "The `setLocalDescription()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setLocalDescription)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcLocalSessionDescriptionInit`, `RtcPeerConnection`*"]
+    pub fn set_local_description_with_description(
         this: &RtcPeerConnection,
-        description: &RtcSessionDescriptionInit,
+        description: &RtcLocalSessionDescriptionInit,
     ) -> ::js_sys::Promise;
-    #[cfg(feature = "RtcSessionDescriptionInit")]
+    #[cfg(feature = "RtcLocalSessionDescriptionInit")]
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setLocalDescription)]
     #[doc = "The `setLocalDescription()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setLocalDescription)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcSessionDescriptionInit`*"]
-    pub fn set_local_description_with_success_callback_and_failure_callback(
+    #[doc = "*This API requires the following crate features to be activated: `RtcLocalSessionDescriptionInit`, `RtcPeerConnection`*"]
+    pub fn set_local_description_with_description_and_success_callback_and_failure_callback(
         this: &RtcPeerConnection,
-        description: &RtcSessionDescriptionInit,
+        description: &RtcLocalSessionDescriptionInit,
         success_callback: &::js_sys::Function,
         failure_callback: &::js_sys::Function,
     ) -> ::js_sys::Promise;

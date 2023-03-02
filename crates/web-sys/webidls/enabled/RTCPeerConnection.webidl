@@ -36,6 +36,15 @@ enum RTCIceConnectionState {
     "closed"
 };
 
+enum RTCPeerConnectionState {
+  "closed",
+  "failed",
+  "disconnected",
+  "new",
+  "connecting",
+  "connected"
+};
+
 dictionary RTCDataChannelInit {
   boolean        ordered = true;
   unsigned short maxPacketLifeTime;
@@ -61,106 +70,70 @@ dictionary RTCOfferOptions : RTCOfferAnswerOptions {
   boolean iceRestart = false;
 };
 
-[Pref="media.peerconnection.enabled",
- JSImplementation="@mozilla.org/dom/peerconnection;1",
- Constructor (optional RTCConfiguration configuration,
-              optional object? constraints)]
-interface RTCPeerConnection : EventTarget  {
-  [Throws, StaticClassOverride="mozilla::dom::RTCCertificate"]
-  static Promise<RTCCertificate> generateCertificate (AlgorithmIdentifier keygenAlgorithm);
+dictionary RTCLocalSessionDescriptionInit {
+  RTCSdpType type;
+  DOMString sdp = "";
+};
 
-  [Pref="media.peerconnection.identity.enabled"]
-  undefined setIdentityProvider (DOMString provider,
-                            optional RTCIdentityProviderOptions options);
-  [Pref="media.peerconnection.identity.enabled"]
-  Promise<DOMString> getIdentityAssertion();
-  Promise<RTCSessionDescriptionInit> createOffer (optional RTCOfferOptions options);
-  Promise<RTCSessionDescriptionInit> createAnswer (optional RTCAnswerOptions options);
-  Promise<undefined> setLocalDescription (RTCSessionDescriptionInit description);
-  Promise<undefined> setRemoteDescription (RTCSessionDescriptionInit description);
+[Exposed=Window]
+interface RTCPeerConnection : EventTarget  {
+  constructor(optional RTCConfiguration configuration = {});
+  Promise<RTCSessionDescriptionInit> createOffer(optional RTCOfferOptions options = {});
+  Promise<RTCSessionDescriptionInit> createAnswer(optional RTCAnswerOptions options = {});
+  Promise<undefined> setLocalDescription(optional RTCLocalSessionDescriptionInit description = {});
   readonly attribute RTCSessionDescription? localDescription;
   readonly attribute RTCSessionDescription? currentLocalDescription;
   readonly attribute RTCSessionDescription? pendingLocalDescription;
+  Promise<undefined> setRemoteDescription(RTCSessionDescriptionInit description);
   readonly attribute RTCSessionDescription? remoteDescription;
   readonly attribute RTCSessionDescription? currentRemoteDescription;
   readonly attribute RTCSessionDescription? pendingRemoteDescription;
+  Promise<undefined> addIceCandidate(optional RTCIceCandidateInit candidate = {});
   readonly attribute RTCSignalingState signalingState;
-  Promise<undefined> addIceCandidate ((RTCIceCandidateInit or RTCIceCandidate)? candidate);
-  readonly attribute boolean? canTrickleIceCandidates;
   readonly attribute RTCIceGatheringState iceGatheringState;
   readonly attribute RTCIceConnectionState iceConnectionState;
-  [Pref="media.peerconnection.identity.enabled"]
-  readonly attribute Promise<RTCIdentityAssertion> peerIdentity;
-  [Pref="media.peerconnection.identity.enabled"]
-  readonly attribute DOMString? idpLoginUrl;
+  readonly attribute RTCPeerConnectionState connectionState;
+  readonly attribute boolean? canTrickleIceCandidates;
+  undefined restartIce();
+  RTCConfiguration getConfiguration();
+  undefined setConfiguration(optional RTCConfiguration configuration = {});
+  undefined close();
+  attribute EventHandler onnegotiationneeded;
+  attribute EventHandler onicecandidate;
+  attribute EventHandler onicecandidateerror;
+  attribute EventHandler onsignalingstatechange;
+  attribute EventHandler oniceconnectionstatechange;
+  attribute EventHandler onicegatheringstatechange;
+  attribute EventHandler onconnectionstatechange;
 
-  [ChromeOnly]
-  attribute DOMString id;
+  // Legacy Interface Extensions
+  // Supporting the methods in this section is optional.
+  // If these methods are supported
+  // they must be implemented as defined
+  // in section "Legacy Interface Extensions"
+  Promise<undefined> createOffer(RTCSessionDescriptionCallback successCallback,
+                            RTCPeerConnectionErrorCallback failureCallback,
+                            optional RTCOfferOptions options = {});
+  Promise<undefined> setLocalDescription(RTCLocalSessionDescriptionInit description,
+                                    VoidFunction successCallback,
+                                    RTCPeerConnectionErrorCallback failureCallback);
+  Promise<undefined> createAnswer(RTCSessionDescriptionCallback successCallback,
+                             RTCPeerConnectionErrorCallback failureCallback);
+  Promise<undefined> setRemoteDescription(RTCSessionDescriptionInit description,
+                                     VoidFunction successCallback,
+                                     RTCPeerConnectionErrorCallback failureCallback);
+  Promise<undefined> addIceCandidate(RTCIceCandidateInit candidate,
+                                VoidFunction successCallback,
+                                RTCPeerConnectionErrorCallback failureCallback);
+};
 
-  RTCConfiguration      getConfiguration ();
-  [Deprecated="RTCPeerConnectionGetStreams"]
-  sequence<MediaStream> getLocalStreams ();
-  [Deprecated="RTCPeerConnectionGetStreams"]
-  sequence<MediaStream> getRemoteStreams ();
-  undefined addStream (MediaStream stream);
-
-  // replaces addStream; fails if already added
-  // because a track can be part of multiple streams, stream parameters
-  // indicate which particular streams should be referenced in signaling
-
-  RTCRtpSender addTrack(MediaStreamTrack track,
-                        MediaStream stream,
-                        MediaStream... moreStreams);
-  undefined removeTrack(RTCRtpSender sender);
-
-  RTCRtpTransceiver addTransceiver((MediaStreamTrack or DOMString) trackOrKind,
-                                   optional RTCRtpTransceiverInit init);
-
+partial interface RTCPeerConnection {
   sequence<RTCRtpSender> getSenders();
   sequence<RTCRtpReceiver> getReceivers();
   sequence<RTCRtpTransceiver> getTransceivers();
-
-  undefined close ();
-  attribute EventHandler onnegotiationneeded;
-  attribute EventHandler onicecandidate;
-  attribute EventHandler onsignalingstatechange;
-  attribute EventHandler onaddstream; // obsolete
-  attribute EventHandler onaddtrack;  // obsolete
-  attribute EventHandler ontrack;     // replaces onaddtrack and onaddstream.
-  attribute EventHandler onremovestream;
-  attribute EventHandler oniceconnectionstatechange;
-  attribute EventHandler onicegatheringstatechange;
-
-  Promise<RTCStatsReport> getStats (optional MediaStreamTrack? selector);
-
-  // Data channel.
-  RTCDataChannel createDataChannel (DOMString label,
-                                    optional RTCDataChannelInit dataChannelDict);
-  attribute EventHandler ondatachannel;
-};
-
-// Legacy callback API
-
-partial interface RTCPeerConnection {
-
-  // Dummy Promise<undefined> return values avoid "WebIDL.WebIDLError: error:
-  // We have overloads with both Promise and non-Promise return types"
-
-  Promise<undefined> createOffer (RTCSessionDescriptionCallback successCallback,
-                             RTCPeerConnectionErrorCallback failureCallback,
-                             optional RTCOfferOptions options);
-  Promise<undefined> createAnswer (RTCSessionDescriptionCallback successCallback,
-                              RTCPeerConnectionErrorCallback failureCallback);
-  Promise<undefined> setLocalDescription (RTCSessionDescriptionInit description,
-                                     VoidFunction successCallback,
-                                     RTCPeerConnectionErrorCallback failureCallback);
-  Promise<undefined> setRemoteDescription (RTCSessionDescriptionInit description,
-                                      VoidFunction successCallback,
-                                      RTCPeerConnectionErrorCallback failureCallback);
-  Promise<undefined> addIceCandidate (RTCIceCandidate candidate,
-                                 VoidFunction successCallback,
-                                 RTCPeerConnectionErrorCallback failureCallback);
-  Promise<undefined> getStats (MediaStreamTrack? selector,
-                          RTCStatsCallback successCallback,
-                          RTCPeerConnectionErrorCallback failureCallback);
+  RTCRtpSender addTrack(MediaStreamTrack track, MediaStream... streams);
+  undefined removeTrack(RTCRtpSender sender);
+  RTCRtpTransceiver addTransceiver((MediaStreamTrack or DOMString) trackOrKind,
+                                   optional RTCRtpTransceiverInit init = {});
+  attribute EventHandler ontrack;
 };

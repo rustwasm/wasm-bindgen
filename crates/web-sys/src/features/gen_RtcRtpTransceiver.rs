@@ -34,13 +34,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`, `RtcRtpTransceiver`*"]
     pub fn receiver(this: &RtcRtpTransceiver) -> RtcRtpReceiver;
-    # [wasm_bindgen (structural , method , getter , js_class = "RTCRtpTransceiver" , js_name = stopped)]
-    #[doc = "Getter for the `stopped` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpTransceiver/stopped)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`*"]
-    pub fn stopped(this: &RtcRtpTransceiver) -> bool;
     #[cfg(feature = "RtcRtpTransceiverDirection")]
     # [wasm_bindgen (structural , method , getter , js_class = "RTCRtpTransceiver" , js_name = direction)]
     #[doc = "Getter for the `direction` field of this object."]
@@ -65,13 +58,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`, `RtcRtpTransceiverDirection`*"]
     pub fn current_direction(this: &RtcRtpTransceiver) -> Option<RtcRtpTransceiverDirection>;
-    # [wasm_bindgen (method , structural , js_class = "RTCRtpTransceiver" , js_name = getRemoteTrackId)]
-    #[doc = "The `getRemoteTrackId()` method."]
+    # [wasm_bindgen (method , structural , js_class = "RTCRtpTransceiver" , js_name = setCodecPreferences)]
+    #[doc = "The `setCodecPreferences()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpTransceiver/getRemoteTrackId)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpTransceiver/setCodecPreferences)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`*"]
-    pub fn get_remote_track_id(this: &RtcRtpTransceiver) -> String;
+    pub fn set_codec_preferences(this: &RtcRtpTransceiver, codecs: &::wasm_bindgen::JsValue);
     # [wasm_bindgen (method , structural , js_class = "RTCRtpTransceiver" , js_name = stop)]
     #[doc = "The `stop()` method."]
     #[doc = ""]
