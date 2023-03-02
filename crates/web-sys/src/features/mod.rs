@@ -760,6 +760,12 @@ mod gen_CanvasCaptureMediaStream;
 #[cfg(feature = "CanvasCaptureMediaStream")]
 pub use gen_CanvasCaptureMediaStream::*;
 
+#[cfg(feature = "CanvasCaptureMediaStreamTrack")]
+#[allow(non_snake_case)]
+mod gen_CanvasCaptureMediaStreamTrack;
+#[cfg(feature = "CanvasCaptureMediaStreamTrack")]
+pub use gen_CanvasCaptureMediaStreamTrack::*;
+
 #[cfg(feature = "CanvasGradient")]
 #[allow(non_snake_case)]
 mod gen_CanvasGradient;

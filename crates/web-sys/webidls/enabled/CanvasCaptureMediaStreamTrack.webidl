@@ -10,8 +10,8 @@
  * W3C liability, trademark and document use rules apply.
  */
 
-[Deprecated]
-interface CanvasCaptureMediaStream : MediaStream {
+[Exposed=Window]
+interface CanvasCaptureMediaStreamTrack : MediaStreamTrack {
     readonly attribute HTMLCanvasElement canvas;
     undefined requestFrame();
 };
