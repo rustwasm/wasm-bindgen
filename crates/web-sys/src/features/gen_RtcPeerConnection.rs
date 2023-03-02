@@ -219,6 +219,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn set_ontrack(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = ondatachannel)]
+    #[doc = "Getter for the `ondatachannel` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn ondatachannel(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = ondatachannel)]
+    #[doc = "Setter for the `ondatachannel` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/ondatachannel)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_ondatachannel(this: &RtcPeerConnection, value: Option<&::js_sys::Function>);
     #[wasm_bindgen(catch, constructor, js_class = "RTCPeerConnection")]
     #[doc = "The `new RtcPeerConnection(..)` constructor, creating a new instance of `RtcPeerConnection`."]
     #[doc = ""]
@@ -510,6 +524,26 @@ extern "C" {
         success_callback: &::js_sys::Function,
         failure_callback: &::js_sys::Function,
     ) -> ::js_sys::Promise;
+    #[cfg(feature = "RtcDataChannel")]
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createDataChannel)]
+    #[doc = "The `createDataChannel()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcPeerConnection`*"]
+    pub fn create_data_channel(this: &RtcPeerConnection, label: &str) -> RtcDataChannel;
+    #[cfg(all(feature = "RtcDataChannel", feature = "RtcDataChannelInit",))]
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createDataChannel)]
+    #[doc = "The `createDataChannel()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelInit`, `RtcPeerConnection`*"]
+    pub fn create_data_channel_with_data_channel_dict(
+        this: &RtcPeerConnection,
+        label: &str,
+        data_channel_dict: &RtcDataChannelInit,
+    ) -> RtcDataChannel;
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = createOffer)]
     #[doc = "The `createOffer()` method."]
     #[doc = ""]

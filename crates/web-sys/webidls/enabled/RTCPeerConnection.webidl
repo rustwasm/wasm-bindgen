@@ -137,3 +137,10 @@ partial interface RTCPeerConnection {
                                    optional RTCRtpTransceiverInit init = {});
   attribute EventHandler ontrack;
 };
+
+partial interface RTCPeerConnection {
+  readonly attribute RTCSctpTransport? sctp;
+  RTCDataChannel createDataChannel(USVString label,
+                                   optional RTCDataChannelInit dataChannelDict = {});
+  attribute EventHandler ondatachannel;
+};
