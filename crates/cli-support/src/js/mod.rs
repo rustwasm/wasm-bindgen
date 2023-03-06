@@ -385,7 +385,7 @@ impl<'a> Context<'a> {
                         script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
-                js.push_str("let wasm;\n");
+                js.push_str("let wasm = undefined;\n");
                 init = self.gen_init(needs_manual_start, None)?;
                 footer.push_str(&format!(
                     "{} = Object.assign(init, {{ initSync }}, __exports);\n",
@@ -852,6 +852,8 @@ impl<'a> Context<'a> {
                 }}
 
                 function initSync(module{init_memory_arg}) {{
+                    if (wasm !== undefined) return wasm;
+
                     const imports = getImports();
 
                     initMemory(imports{init_memory_arg});
@@ -866,6 +868,8 @@ impl<'a> Context<'a> {
                 }}
 
                 async function init(input{init_memory_arg}) {{
+                    if (wasm !== undefined) return wasm;
+
                     {default_module_path}
                     const imports = getImports();
 
