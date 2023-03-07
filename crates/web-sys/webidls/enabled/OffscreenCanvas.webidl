@@ -23,8 +23,7 @@ interface OffscreenCanvas : EventTarget {
   [Throws]
   ImageBitmap transferToImageBitmap();
   [Throws]
-  Promise<Blob> toBlob(optional DOMString type = "",
-                       optional any encoderOptions);
+  Promise<Blob> convertToBlob(optional any options = {});
 };
 
 // OffscreenCanvas includes Transferable;
