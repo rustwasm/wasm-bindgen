@@ -4030,6 +4030,12 @@ mod gen_ImageDecoderInit;
 #[cfg(feature = "ImageDecoderInit")]
 pub use gen_ImageDecoderInit::*;
 
+#[cfg(feature = "ImageEncodeOptions")]
+#[allow(non_snake_case)]
+mod gen_ImageEncodeOptions;
+#[cfg(feature = "ImageEncodeOptions")]
+pub use gen_ImageEncodeOptions::*;
+
 #[cfg(feature = "ImageOrientation")]
 #[allow(non_snake_case)]
 mod gen_ImageOrientation;

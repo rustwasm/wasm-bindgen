@@ -53,15 +53,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     pub fn convert_to_blob(this: &OffscreenCanvas) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(feature = "ImageEncodeOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = convertToBlob)]
     #[doc = "The `convertToBlob()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/convertToBlob)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
+    #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`, `OffscreenCanvas`*"]
     pub fn convert_to_blob_with_options(
         this: &OffscreenCanvas,
-        options: &::wasm_bindgen::JsValue,
+        options: &ImageEncodeOptions,
     ) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = getContext)]
     #[doc = "The `getContext()` method."]
