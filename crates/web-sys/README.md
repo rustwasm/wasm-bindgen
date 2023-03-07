@@ -2,9 +2,9 @@
 
 Raw bindings to Web APIs for projects using `wasm-bindgen`.
 
-- [The `web-sys` section of the `wasm-bindgen`
+* [The `web-sys` section of the `wasm-bindgen`
   guide](https://rustwasm.github.io/wasm-bindgen/web-sys/index.html)
-- [API Documentation](https://rustwasm.github.io/wasm-bindgen/api/web_sys/)
+* [API Documentation](https://rustwasm.github.io/wasm-bindgen/api/web_sys/)
 
 ## Crate features
 
