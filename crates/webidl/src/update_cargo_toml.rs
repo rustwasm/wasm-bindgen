@@ -22,9 +22,10 @@ pub fn update_cargo_toml_features(
                 .unwrap_or(0);
 
             let end = cargo_toml_text[features_start..]
-                .find("\n[")
-                .map(|i| i + features_start)
-                .unwrap_or_else(|| cargo_toml_text.len());
+                .find("\n[") // find start of next toml table
+                .map(|i| i + features_start) 
+                .unwrap_or_else(|| cargo_toml_text.len()); // or end of file
+
             cargo_toml_text.replace_range(comment_start..end, &features_table);
         }
         None => {
