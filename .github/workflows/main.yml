@@ -153,7 +153,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
-    - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features
+    - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features ./Cargo.toml
     - run: git diff --exit-code
 
   test_js_sys:

@@ -11,15 +11,15 @@
    grep -rn MyWebApi crates/web-sys/webidls
    ```
 
-   * If your interface is defined in a `.webidl` file that is inside the
+   - If your interface is defined in a `.webidl` file that is inside the
      `crates/web-sys/webidls/enabled` directory, skip to step (3).
 
-   * If your interface isn't defined in any file yet, find the WebIDL definition
+   - If your interface isn't defined in any file yet, find the WebIDL definition
      in the relevant standard and add it as a new `.webidl` file in
      `crates/web-sys/webidls/enabled`. Make sure that it is a standard Web API!
      We don't want to add non-standard APIs to this crate.
 
-   * If your interface is defined in a `.webidl` file within any of the
+   - If your interface is defined in a `.webidl` file within any of the
      `crates/web-sys/webidls/unavailable_*` directories, you need to move it into
      `crates/web-sys/webidls/enabled`, e.g.:
 
@@ -33,7 +33,7 @@
 
    ```sh
    cd crates/web-sys
-   cargo run --release --package wasm-bindgen-webidl -- webidls src/features
+   cargo run --release --package wasm-bindgen-webidl -- webidls src/features ./Cargo.toml
    ```
 
    You can then use `git diff` to ensure the bindings look correct.
