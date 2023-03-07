@@ -11,7 +11,7 @@ fn new_undefined() {
 
 #[allow(deprecated)]
 #[wasm_bindgen_test]
-fn new_truely() {
+fn new_truly() {
     assert_eq!(Boolean::new(&JsValue::from("foo")).value_of(), true);
 }
 
