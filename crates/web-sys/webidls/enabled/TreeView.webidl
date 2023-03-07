@@ -110,7 +110,7 @@ interface TreeView
   /**
    * The level is an integer value that represents
    * the level of indentation.  It is multiplied by the width specified in the 
-   * :moz-tree-indentation pseudoelement to compute the exact indendation.
+   * :moz-tree-indentation pseudoelement to compute the exact indentation.
    */
   [Throws]
   long getLevel(long row);
