@@ -38,7 +38,11 @@ fn main() -> Result<()> {
     )?;
 
     if let Some(cargo_toml_path) = opt.cargo_toml_path {
-        update_cargo_toml_features(&cargo_toml_path, &generated_features)?;
+        if features {
+            update_cargo_toml_features(&cargo_toml_path, &generated_features)?;
+        } else {
+            log::warn!("with no_features, not updating Cargo.toml");
+        }
     }
 
     Ok(())
