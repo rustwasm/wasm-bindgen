@@ -31,4 +31,4 @@ picked up by wasm-bindgen-cli. This would be equivalent to the contents of
 the TS_APPEND_CONTENT string in the first example.
 
 This feature allows plain data objects to be typechecked in Rust and in
-TypeScript by outputing a type definition generated at compile time.
+TypeScript by outputting a type definition generated at compile time.
