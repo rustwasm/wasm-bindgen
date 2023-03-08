@@ -19,7 +19,7 @@ pub fn update_cargo_toml_features(
         Some(features_start) => {
             let comment_start = cargo_toml_text[..features_start]
                 .rfind(comment)
-                .unwrap_or(0);
+                .unwrap_or(features_start);
 
             let end = cargo_toml_text[features_start..]
                 .find("\n[") // find start of next toml table
