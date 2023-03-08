@@ -33,7 +33,7 @@ pub fn update_cargo_toml_features(
         }
     }
 
-    fs::write(cargo_toml_path, cargo_toml_text).context("writing features to current directory")?;
+    fs::write(cargo_toml_path, cargo_toml_text).context("writing features to Cargo.toml")?;
 
     Ok(())
 }
