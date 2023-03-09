@@ -1,0 +1,16 @@
+[package]
+name = "sample"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[lib]
+test = false
+
+[dependencies]
+js-sys = { path = '../../js-sys' }
+wasm-bindgen = { path = '../../..' }
+wasm-bindgen-futures = { path = '../../futures' }
+
+[dev-dependencies]
+wasm-bindgen-test = { path = '..' }

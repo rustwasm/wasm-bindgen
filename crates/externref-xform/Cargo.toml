@@ -1,0 +1,26 @@
+[package]
+name = "wasm-bindgen-externref-xform"
+version = "0.2.84"
+authors = ["The wasm-bindgen Developers"]
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/externref-xform"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+documentation = "https://docs.rs/wasm-bindgen-externref-xform"
+description = """
+Internal externref transformations for wasm-bindgen
+"""
+edition = '2018'
+
+[dependencies]
+anyhow = "1.0"
+walrus = "0.19.0"
+
+[dev-dependencies]
+rayon = "1.0"
+wasmprinter = "0.2"
+wast = "21.0"
+wat = "1.0"
+
+[[test]]
+name = "all"
+harness = false

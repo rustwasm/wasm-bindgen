@@ -1,0 +1,12 @@
+[package]
+name = "console_log"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.84"
+web-sys = { version = "0.3.61", features = ['console'] }

@@ -1,0 +1,11 @@
+[package]
+name = "wasm2js"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.84"

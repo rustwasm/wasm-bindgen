@@ -1,0 +1,9 @@
+[package]
+name = "wasm-bindgen-test-crate-b"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+license = "MIT/Apache-2.0"
+description = "internal test crate for wasm-bindgen"
+
+[dependencies]
+wasm-bindgen = { path = '../../..', version = '0.2' }

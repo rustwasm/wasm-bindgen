@@ -1,0 +1,19 @@
+[package]
+name = "wasm-bindgen-test"
+version = "0.3.34"
+authors = ["The wasm-bindgen Developers"]
+description = "Internal testing crate for wasm-bindgen"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rustwasm/wasm-bindgen"
+edition = "2018"
+
+[dependencies]
+console_error_panic_hook = '0.1'
+js-sys = { path = '../js-sys', version = '0.3.61' }
+scoped-tls = "1.0"
+wasm-bindgen = { path = '../..', version = '0.2.84' }
+wasm-bindgen-futures = { path = '../futures', version = '0.4.34' }
+wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.34' }
+
+[lib]
+test = false

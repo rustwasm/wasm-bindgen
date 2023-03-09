@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  </head>
+  <body>
+    <pre id='output'>Loading scripts...</pre>
+    <script>
+     const wrap = method => {
+         const og = console[method];
+         const on_method = `on_console_${method}`;
+         console[method] = function (...args) {
+             if (window[on_method]) {
+                 window[on_method](args);
+             }
+             og.apply(this, args);
+         };
+     };
+
+     wrap("debug");
+     wrap("log");
+     wrap("info");
+     wrap("warn");
+     wrap("error");
+
+     window.__wbg_test_invoke = f => f();
+    </script>
+    <!-- {IMPORT_SCRIPTS} -->
+  </body>
+</html>

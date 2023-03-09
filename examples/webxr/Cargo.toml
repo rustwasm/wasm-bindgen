@@ -1,0 +1,65 @@
+[package]
+name = "webxr"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+futures = "0.3.4"
+js-sys = "0.3.61"
+wasm-bindgen = "0.2.84"
+wasm-bindgen-futures = "0.4.34"
+
+[dependencies.web-sys]
+version = "0.3.36"
+features = [
+  'Document',
+  'Element',
+  'Gpu',
+  'Headers',
+  'HtmlCanvasElement',
+  'Navigator',
+  'Request',
+  'RequestInit',
+  'RequestMode',
+  'Response',
+  'WebGl2RenderingContext',
+  'Window',
+  'XrBoundedReferenceSpace',
+  'XrEye',
+  'XrFrame',
+  'XrHandedness',
+  'XrInputSource',
+  'XrInputSourceArray',
+  'XrInputSourceEvent',
+  'XrInputSourceEventInit',
+  'XrInputSourcesChangeEvent',
+  'XrJointPose',
+  'XrJointSpace',
+  'XrPose',
+  'XrReferenceSpace',
+  'XrReferenceSpaceEvent',
+  'XrReferenceSpaceEventInit',
+  'XrReferenceSpaceType',
+  'XrRenderState',
+  'XrRenderStateInit',
+  'XrRigidTransform',
+  'XrSession',
+  'XrSessionEvent',
+  'XrSessionEventInit',
+  'XrSessionInit',
+  'XrSessionMode',
+  'XrSpace',
+  'XrTargetRayMode',
+  'XrView',
+  'XrViewerPose',
+  'XrViewport',
+  'XrVisibilityState',
+  'XrWebGlLayer',
+  'XrWebGlLayerInit',
+  'XrSystem',
+  'console'
+]

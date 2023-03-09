@@ -1,0 +1,27 @@
+[package]
+name = "wasm-bindgen-paint"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+js-sys = "0.3.61"
+wasm-bindgen = "0.2.84"
+
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+  'CanvasRenderingContext2d',
+  'CssStyleDeclaration',
+  'Document',
+  'Element',
+  'EventTarget',
+  'HtmlCanvasElement',
+  'HtmlElement',
+  'MouseEvent',
+  'Node',
+  'Window',
+]
