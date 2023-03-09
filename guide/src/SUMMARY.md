@@ -83,6 +83,7 @@
       - [`js_name = Blah`](./reference/attributes/on-rust-exports/js_name.md)
       - [`readonly`](./reference/attributes/on-rust-exports/readonly.md)
       - [`skip`](./reference/attributes/on-rust-exports/skip.md)
+      - [`skip_jsdoc`](./reference/attributes/on-rust-exports/skip_jsdoc.md)
       - [`start`](./reference/attributes/on-rust-exports/start.md)
       - [`typescript_custom_section`](./reference/attributes/on-rust-exports/typescript_custom_section.md)
       - [`getter` and `setter`](./reference/attributes/on-rust-exports/getter-and-setter.md)
