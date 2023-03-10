@@ -16,7 +16,7 @@ self.onmessage = ({ data: bytes }) => {
 };
 
 /**
- * Once the Web Worker was spwaned we ask the main thread to fetch the bytes
+ * Once the Web Worker was spawned we ask the main thread to fetch the bytes
  * for the WebAssembly module. Once fetched it will send the bytes back via
  * a `postMessage` (see above).
  */

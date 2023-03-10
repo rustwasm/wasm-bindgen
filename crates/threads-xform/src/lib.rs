@@ -175,7 +175,7 @@ impl Config {
         //   from the follower thread, after initialization.
         // - The leader does _not_ need to block.
         // - Similar restrictions apply: the follower thread should be considered unusable afterwards,
-        //   the leader should not call this function with the same set of parameteres twice.
+        //   the leader should not call this function with the same set of parameters twice.
         // - Moreover, concurrent calls can lead to UB: the follower could be in the middle of a
         //   call while the leader is destroying its stack! You should make sure that this cannot happen.
         inject_destroy(module, &tls, &stack, memory)?;
