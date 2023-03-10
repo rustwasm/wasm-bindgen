@@ -2551,9 +2551,7 @@ impl<'a> Context<'a> {
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
-                    AuxExportKind::Method {
-                        receiver, ..
-                    } => match receiver {
+                    AuxExportKind::Method { receiver, .. } => match receiver {
                         AuxReceiverKind::None => {}
                         AuxReceiverKind::Borrowed => builder.method(false),
                         AuxReceiverKind::Owned => builder.method(true),
