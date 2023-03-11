@@ -15,6 +15,7 @@ pub fn spawn(
     args: &[OsString],
     tests: &[String],
     no_module: bool,
+    worker: bool,
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = if no_module {
         String::from(
@@ -45,36 +46,129 @@ pub fn spawn(
         )
     };
 
-    js_to_execute.push_str(&format!(
-        r#"
-        // Now that we've gotten to the point where JS is executing, update our
-        // status text as at this point we should be asynchronously fetching the
-        // wasm module.
-        document.getElementById('output').textContent = "Loading wasm module...";
+    if worker {
+        let worker_script = format!(
+            r#"
+                importScripts("{0}.js");
 
-        async function main(test) {{
-            const wasm = await init('./{0}_bg.wasm');
+                const wrap = method => {{
+                    self.console[method] = function (...args) {{
+                        postMessage(["__wbgtest_" + method, args]);
+                    }};
+                }};
 
-            const cx = new Context();
-            window.on_console_debug = __wbgtest_console_debug;
-            window.on_console_log = __wbgtest_console_log;
-            window.on_console_info = __wbgtest_console_info;
-            window.on_console_warn = __wbgtest_console_warn;
-            window.on_console_error = __wbgtest_console_error;
 
-            // Forward runtime arguments. These arguments are also arguments to the
-            // `wasm-bindgen-test-runner` which forwards them to node which we
-            // forward to the test harness. this is basically only used for test
-            // filters for now.
-            cx.args({1:?});
+                self.__wbg_test_invoke = f => f();
 
-            await cx.run(test.map(s => wasm[s]));
-        }}
+                wrap("debug");
+                wrap("log");
+                wrap("info");
+                wrap("warn");
+                wrap("error");
 
-        const tests = [];
-    "#,
-        module, args,
-    ));
+                async function run_in_worker(tests) {{
+                    const wbg = await wasm_bindgen("./{0}_bg.wasm");
+                    const t = self;
+                    const cx = new wasm_bindgen.WasmBindgenTestContext();
+                    cx.args({1:?});
+                    await cx.run(tests.map(s => wbg[s]));
+                }}
+
+                onmessage = function(e) {{
+                    let tests = e.data;
+                    run_in_worker(tests);
+                }}
+            "#,
+            module, args,
+        );
+
+        let worker_js_path = tmpdir.join("worker.js");
+        fs::write(&worker_js_path, worker_script).context("failed to write JS file")?;
+
+        js_to_execute.push_str(&format!(
+            r#"
+                // Now that we've gotten to the point where JS is executing, update our
+                // status text as at this point we should be asynchronously fetching the
+                // wasm module.
+                document.getElementById('output').textContent = "Loading wasm module...";
+                const worker = new Worker("worker.js", {{module: {1}}});
+
+                worker.addEventListener("message", function(e) {{
+                    console.log(e);
+                    // Checking the whether the message is from wasm_bindgen_test
+                    if(
+                        e.data &&
+                        Array.isArray(e.data) &&
+                        e.data[0] &&
+                        typeof e.data[0] == "string" &&
+                        e.data[0].slice(0,10)=="__wbgtest_"
+                    ) {{
+                        const method = e.data[0].slice(10);
+                        const args = e.data.slice(1);
+
+                        if (
+                            method == "log" || method == "warn" ||
+                            method == "warn" || method == "info" ||
+                            method == "debug"
+                        ) {{
+                            console[method].apply(undefined, args[0]);
+                        }} else if (method == "start") {{
+                            document.getElementById("output").textContent = "";
+                        }} else if (method == "output") {{
+                            document.getElementById("output").textContent += args[0] + "\n";
+                        }}
+                    }}
+                }});
+
+                async function main(test) {{
+                    const wasm = await init('./{0}_bg.wasm');
+
+                    window.on_console_debug = __wbgtest_console_debug;
+                    window.on_console_log = __wbgtest_console_log;
+                    window.on_console_info = __wbgtest_console_info;
+                    window.on_console_warn = __wbgtest_console_warn;
+                    window.on_console_error = __wbgtest_console_error;
+
+                    worker.postMessage(test)
+                }}
+
+                const tests = [];
+            "#,
+            module,
+            if no_module { "true" } else { "false" },
+        ));
+    } else {
+        js_to_execute.push_str(&format!(
+            r#"
+                // Now that we've gotten to the point where JS is executing, update our
+                // status text as at this point we should be asynchronously fetching the
+                // wasm module.
+                document.getElementById('output').textContent = "Loading wasm module...";
+
+                async function main(test) {{
+                    const wasm = await init('./{0}_bg.wasm');
+
+                    const cx = new Context();
+                    window.on_console_debug = __wbgtest_console_debug;
+                    window.on_console_log = __wbgtest_console_log;
+                    window.on_console_info = __wbgtest_console_info;
+                    window.on_console_warn = __wbgtest_console_warn;
+                    window.on_console_error = __wbgtest_console_error;
+
+                    // Forward runtime arguments. These arguments are also arguments to the
+                    // `wasm-bindgen-test-runner` which forwards them to node which we
+                    // forward to the test harness. this is basically only used for test
+                    // filters for now.
+                    cx.args({1:?});
+
+                    await cx.run(test.map(s => wasm[s]));
+                }}
+
+                const tests = [];
+            "#,
+            module, args,
+        ));
+    }
     for test in tests {
         js_to_execute.push_str(&format!("tests.push('{}');\n", test));
     }

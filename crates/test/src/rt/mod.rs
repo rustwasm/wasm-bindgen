@@ -108,6 +108,7 @@ const CONCURRENCY: usize = 1;
 pub mod browser;
 pub mod detect;
 pub mod node;
+pub mod worker;
 
 /// Runtime test harness support instantiated in JS.
 ///
@@ -209,10 +210,12 @@ impl Context {
     pub fn new() -> Context {
         console_error_panic_hook::set_once();
 
-        let formatter = match node::Node::new() {
-            Some(node) => Box::new(node) as Box<dyn Formatter>,
-            None => Box::new(browser::Browser::new()),
+        let formatter = match detect::detect() {
+            detect::Runtime::Browser => Box::new(browser::Browser::new()) as Box<dyn Formatter>,
+            detect::Runtime::Node => Box::new(node::Node::new()) as Box<dyn Formatter>,
+            detect::Runtime::Worker => Box::new(worker::Worker::new()) as Box<dyn Formatter>,
         };
+
         Context {
             state: Rc::new(State {
                 filter: Default::default(),
