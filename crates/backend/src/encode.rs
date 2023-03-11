@@ -218,6 +218,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         asyncness: func.r#async,
         name: &func.name,
         generate_typescript: func.generate_typescript,
+        generate_jsdoc: func.generate_jsdoc,
         variadic: func.variadic,
     }
 }
@@ -351,6 +352,7 @@ fn shared_struct_field<'a>(s: &'a ast::StructField, _intern: &'a Interner) -> St
         readonly: s.readonly,
         comments: s.comments.iter().map(|s| &**s).collect(),
         generate_typescript: s.generate_typescript,
+        generate_jsdoc: s.generate_jsdoc,
     }
 }
 

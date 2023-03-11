@@ -22,6 +22,12 @@ error: unused variable: `readonly`
 21 | #[wasm_bindgen(readonly)]
    |                ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_readonly`
 
+error: unused variable: `typescript_type`
+  --> ui-tests/unused-attributes.rs:26:28
+   |
+26 |     #[wasm_bindgen(getter, typescript_type = "Thing[]")]
+   |                            ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_typescript_type`
+
 error: unused variable: `getter_with_clone`
   --> ui-tests/unused-attributes.rs:24:16
    |
@@ -33,9 +39,3 @@ error: unused variable: `final`
    |
 24 | #[wasm_bindgen(getter_with_clone, final)]
    |                                   ^^^^^ help: if this is intentional, prefix it with an underscore: `_final`
-
-error: unused variable: `typescript_type`
-  --> ui-tests/unused-attributes.rs:26:28
-   |
-26 |     #[wasm_bindgen(getter, typescript_type = "Thing[]")]
-   |                            ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_typescript_type`

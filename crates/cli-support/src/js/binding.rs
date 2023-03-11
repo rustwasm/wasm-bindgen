@@ -106,6 +106,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         explicit_arg_names: &Option<Vec<String>>,
         asyncness: bool,
         variadic: bool,
+        generate_jsdoc: bool,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -243,7 +244,11 @@ impl<'a, 'b> Builder<'a, 'b> {
             asyncness,
             variadic,
         );
-        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic);
+        let js_doc = if generate_jsdoc {
+            self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic)
+        } else {
+            String::new()
+        };
 
         Ok(JsFunction {
             code,

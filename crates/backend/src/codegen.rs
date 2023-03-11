@@ -3,9 +3,11 @@ use crate::encode;
 use crate::Diagnostic;
 use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
+use quote::quote_spanned;
 use quote::{quote, ToTokens};
 use std::collections::{HashMap, HashSet};
 use std::sync::Mutex;
+use syn::spanned::Spanned;
 use wasm_bindgen_shared as shared;
 
 /// A trait for converting AST structs into Tokens and adding them to a TokenStream,
@@ -302,18 +304,17 @@ impl ToTokens for ast::StructField {
         let getter = &self.getter;
         let setter = &self.setter;
 
-        let maybe_assert_copy = if self.getter_with_clone {
+        let maybe_assert_copy = if self.getter_with_clone.is_some() {
             quote! {}
         } else {
             quote! { assert_copy::<#ty>() }
         };
         let maybe_assert_copy = respan(maybe_assert_copy, ty);
 
-        let maybe_clone = if self.getter_with_clone {
-            quote! { .clone() }
-        } else {
-            quote! {}
-        };
+        let mut val = quote_spanned!(self.rust_name.span()=> (*js).borrow().#rust_name);
+        if let Some(span) = self.getter_with_clone {
+            val = quote_spanned!(span=> <#ty as Clone>::clone(&#val) );
+        }
 
         (quote! {
             #[automatically_derived]
@@ -331,7 +332,7 @@ impl ToTokens for ast::StructField {
 
                     let js = js as *mut WasmRefCell<#struct_name>;
                     assert_not_null(js);
-                    let val = (*js).borrow().#rust_name#maybe_clone;
+                    let val = #val;
                     <#ty as IntoWasmAbi>::into_abi(val)
                 }
             };
@@ -1177,6 +1178,11 @@ impl TryToTokens for ast::ImportFunction {
             &self.rust_name,
         );
 
+        let maybe_unsafe = if self.function.r#unsafe {
+            Some(quote! {unsafe})
+        } else {
+            None
+        };
         let maybe_async = if self.function.r#async {
             Some(quote! {async})
         } else {
@@ -1189,7 +1195,7 @@ impl TryToTokens for ast::ImportFunction {
             #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
             #(#attrs)*
             #[doc = #doc_comment]
-            #vis #maybe_async fn #rust_name(#me #(#arguments),*) #ret {
+            #vis #maybe_async #maybe_unsafe fn #rust_name(#me #(#arguments),*) #ret {
                 #extern_fn
 
                 unsafe {

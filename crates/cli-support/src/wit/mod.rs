@@ -528,6 +528,7 @@ impl<'a> Context<'a> {
                 asyncness: export.function.asyncness,
                 kind,
                 generate_typescript: export.function.generate_typescript,
+                generate_jsdoc: export.function.generate_jsdoc,
                 variadic: export.function.variadic,
             },
         );
@@ -889,6 +890,7 @@ impl<'a> Context<'a> {
                         kind: AuxExportedMethodKind::Getter,
                     },
                     generate_typescript: field.generate_typescript,
+                    generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
                 },
             );
@@ -920,6 +922,7 @@ impl<'a> Context<'a> {
                         kind: AuxExportedMethodKind::Setter,
                     },
                     generate_typescript: field.generate_typescript,
+                    generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
                 },
             );
@@ -1148,6 +1151,7 @@ impl<'a> Context<'a> {
                 asyncness: false,
                 kind,
                 generate_typescript: true,
+                generate_jsdoc: true,
                 variadic: false,
             };
             assert!(self.aux.export_map.insert(id, export).is_none());

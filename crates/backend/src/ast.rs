@@ -301,10 +301,14 @@ pub struct Function {
     pub rust_attrs: Vec<syn::Attribute>,
     /// The visibility of this function in Rust
     pub rust_vis: syn::Visibility,
+    /// Whether this is an `unsafe` function
+    pub r#unsafe: bool,
     /// Whether this is an `async` function
     pub r#async: bool,
     /// Whether to generate a typescript definition for this function
     pub generate_typescript: bool,
+    /// Whether to generate jsdoc documentation for this function
+    pub generate_jsdoc: bool,
     /// Whether this is a function with a variadict parameter
     pub variadic: bool,
 }
@@ -349,8 +353,14 @@ pub struct StructField {
     pub comments: Vec<String>,
     /// Whether to generate a typescript definition for this field
     pub generate_typescript: bool,
-    /// Whether to use .clone() in the auto-generated getter for this field
-    pub getter_with_clone: bool,
+    /// Whether to generate jsdoc documentation for this field
+    pub generate_jsdoc: bool,
+    /// The span of the `#[wasm_bindgen(getter_with_clone)]` attribute applied
+    /// to this field, if any.
+    ///
+    /// If this is `Some`, the auto-generated getter for this field must clone
+    /// the field instead of copying it.
+    pub getter_with_clone: Option<Span>,
 }
 
 /// Information about an Enum being exported

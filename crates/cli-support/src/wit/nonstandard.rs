@@ -79,6 +79,8 @@ pub struct AuxExport {
     pub kind: AuxExportKind,
     /// Whether typescript bindings should be generated for this export.
     pub generate_typescript: bool,
+    /// Whether jsdoc comments should be generated for this export.
+    pub generate_jsdoc: bool,
     /// Whether typescript bindings should be generated for this export.
     pub variadic: bool,
 }
