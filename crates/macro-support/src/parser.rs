@@ -80,6 +80,7 @@ macro_rules! attrgen {
             (variadic, Variadic(Span)),
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (skip_typescript, SkipTypescript(Span)),
+            (skip_jsdoc, SkipJsDoc(Span)),
             (start, Start(Span)),
             (skip, Skip(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
@@ -409,7 +410,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
         let is_inspectable = attrs.inspectable().is_some();
-        let getter_with_clone = attrs.getter_with_clone().is_some();
+        let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
@@ -445,7 +446,8 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 setter: Ident::new(&setter, Span::call_site()),
                 comments,
                 generate_typescript: attrs.skip_typescript().is_none(),
-                getter_with_clone: getter_with_clone || attrs.getter_with_clone().is_some(),
+                generate_jsdoc: attrs.skip_jsdoc().is_none(),
+                getter_with_clone: attrs.getter_with_clone().or(getter_with_clone).copied(),
             });
             attrs.check_used();
         }
@@ -909,8 +911,10 @@ fn function_from_decl(
             ret,
             rust_attrs: attrs,
             rust_vis: vis,
+            r#unsafe: sig.unsafety.is_some(),
             r#async: sig.asyncness.is_some(),
             generate_typescript: opts.skip_typescript().is_none(),
+            generate_jsdoc: opts.skip_jsdoc().is_none(),
             variadic: opts.variadic().is_some(),
         },
         method_self,

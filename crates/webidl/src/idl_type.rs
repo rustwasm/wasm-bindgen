@@ -615,7 +615,7 @@ impl<'a> IdlType<'a> {
                 // Note that most union types have already been expanded to
                 // their components via `flatten`. Unions in a return position
                 // or dictionary fields, however, haven't been flattened, which
-                // means we may need to conver them to a `syn` type.
+                // means we may need to convert them to a `syn` type.
                 //
                 // Currently this does a bit of a "poor man's" tree traversal by
                 // saying that if all union members are interfaces we can assume

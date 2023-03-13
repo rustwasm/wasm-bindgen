@@ -116,7 +116,7 @@ The `arg1` and `arg2` values here are actually a pointer and a length to a utf-8
 encoded string, and with host bindings we'll be able to annotate that this
 import should take those two arguments and convert them to a JS string (that is,
 the *host* should do this, the WebAssembly engine). Using that feature we can
-futher trim this down to:
+further trim this down to:
 
 ```js
 const __wbg_bar_target = Foo.prototype.bar;

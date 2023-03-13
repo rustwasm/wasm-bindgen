@@ -6,7 +6,7 @@ const {startup} = wasm_bindgen;
 async function run_wasm() {
     // Load the wasm file by awaiting the Promise returned by `wasm_bindgen`
     // `wasm_bindgen` was imported in `index.html`
-    await wasm_bindgen('./pkg/wasm_in_web_worker_bg.wasm');
+    await wasm_bindgen();
 
     console.log('index.js loaded');
 

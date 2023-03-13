@@ -239,7 +239,9 @@ fn default_module_path_target_web() {
     let contents = fs::read_to_string(out_dir.join("default_module_path_target_web.js")).unwrap();
     assert!(contents.contains(
         "\
-async function init(input) {
+async function __wbg_init(input) {
+    if (wasm !== undefined) return wasm;
+
     if (typeof input === 'undefined') {
         input = new URL('default_module_path_target_web_bg.wasm', import.meta.url);
     }",
@@ -266,7 +268,9 @@ fn default_module_path_target_no_modules() {
     ));
     assert!(contents.contains(
         "\
-    async function init(input) {
+    async function __wbg_init(input) {
+        if (wasm !== undefined) return wasm;
+
         if (typeof input === 'undefined' && script_src !== 'undefined') {
             input = script_src.replace(/\\.js$/, '_bg.wasm');
         }",
@@ -287,9 +291,11 @@ fn omit_default_module_path_target_web() {
         fs::read_to_string(out_dir.join("omit_default_module_path_target_web.js")).unwrap();
     assert!(contents.contains(
         "\
-async function init(input) {
+async function __wbg_init(input) {
+    if (wasm !== undefined) return wasm;
 
-    const imports = getImports();",
+
+    const imports = __wbg_get_imports();",
     ));
 }
 
@@ -307,9 +313,11 @@ fn omit_default_module_path_target_no_modules() {
         fs::read_to_string(out_dir.join("omit_default_module_path_target_no_modules.js")).unwrap();
     assert!(contents.contains(
         "\
-    async function init(input) {
+    async function __wbg_init(input) {
+        if (wasm !== undefined) return wasm;
 
-        const imports = getImports();",
+
+        const imports = __wbg_get_imports();",
     ));
 }
 

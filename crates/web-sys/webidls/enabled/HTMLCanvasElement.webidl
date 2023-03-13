@@ -36,8 +36,15 @@ interface HTMLCanvasElement : HTMLElement {
 // For OffscreenCanvas
 // Reference: https://wiki.whatwg.org/wiki/OffscreenCanvas
 partial interface HTMLCanvasElement {
-  [Pref="gfx.offscreencanvas.enabled", Throws]
+  [Throws]
   OffscreenCanvas transferControlToOffscreen();
+};
+
+// For MediaStream
+// Reference: https://w3c.github.io/mediacapture-main/getusermedia.html#idl-def-mediastream
+partial interface HTMLCanvasElement {
+  [Throws]
+  MediaStream captureStream (optional double frameRequestRate);
 };
 
 callback BlobCallback = undefined(Blob? blob);

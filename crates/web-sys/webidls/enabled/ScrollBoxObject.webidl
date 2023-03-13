@@ -18,7 +18,7 @@ interface ScrollBoxObject : BoxObject {
 
   /**
    * Scroll the given amount of device pixels to the right and down.
-   * Values will be clamped to make the resuling position legal.
+   * Values will be clamped to make the resulting position legal.
    */
   [Throws]
   undefined scrollBy(long dx, long dy);

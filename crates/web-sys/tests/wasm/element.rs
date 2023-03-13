@@ -98,7 +98,7 @@ fn element() {
     );
     /* Tests needed for:
     remove_attribute_ns
-    has_attribure_ns
+    has_attribute_ns
     closest
     */
 
