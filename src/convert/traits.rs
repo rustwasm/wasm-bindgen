@@ -132,7 +132,7 @@ unsafe impl WasmAbi for i64 {}
 unsafe impl WasmAbi for f32 {}
 unsafe impl WasmAbi for f64 {}
 
-/// A trait representing how to interepret the return value of a function for
+/// A trait representing how to interpret the return value of a function for
 /// the wasm ABI.
 ///
 /// This is very similar to the `IntoWasmAbi` trait and in fact has a blanket

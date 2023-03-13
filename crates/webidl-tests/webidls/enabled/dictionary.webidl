@@ -47,5 +47,5 @@ dictionary Required {
 };
 
 dictionary PreserveNames {
-  long wierd_fieldName;
+  long weird_fieldName;
 };

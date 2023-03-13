@@ -6,6 +6,12 @@
 
 pub use wasm_bindgen_test_macro::wasm_bindgen_test;
 
+// Custom allocator that only returns pointers in the 2GB-4GB range
+// To ensure we actually support more than 2GB of memory
+#[cfg(all(test, feature = "gg-alloc"))]
+#[global_allocator]
+static A: gg_alloc::GgAlloc<std::alloc::System> = gg_alloc::GgAlloc::new(std::alloc::System);
+
 /// Helper macro which acts like `println!` only routes to `console.log`
 /// instead.
 #[macro_export]

@@ -43,7 +43,7 @@ impl Slab {
                 if self.base == 0 {
                     self.base = r as usize;
                 } else if self.base + self.data.len() != r as usize {
-                    internal_error("someone else allocated table entires?")
+                    internal_error("someone else allocated table entries?")
                 }
 
                 // poor man's `try_reserve_exact` until that's stable

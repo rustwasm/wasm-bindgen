@@ -123,7 +123,7 @@ global.assert_dict_required = function (c) {
 };
 
 global.assert_camel_case = function (dict) {
-  strictEqual(dict.wierd_fieldName, 1);
+  strictEqual(dict.weird_fieldName, 1);
 }
 
 global.Shape = class Shape {

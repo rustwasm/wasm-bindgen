@@ -419,7 +419,7 @@ Released 2020-03-03.
   tightended up a bit.
   [#1987](https://github.com/rustwasm/wasm-bindgen/pull/1987)
 
-* The `self` identifier is no longe used on the `no-modules` target, making it a
+* The `self` identifier is no longer used on the `no-modules` target, making it a
   bit more flexible in more environments.
   [#1995](https://github.com/rustwasm/wasm-bindgen/pull/1995)
 
@@ -662,7 +662,7 @@ Released 2019-08-14.
 * Add binding for `Element.getElementsByClassName`.
   [#1665](https://github.com/rustwasm/wasm-bindgen/pull/1665)
 
-* `PartialEq` and `Eq` are now implementd for all `web-sys` types.
+* `PartialEq` and `Eq` are now implemented for all `web-sys` types.
   [#1673](https://github.com/rustwasm/wasm-bindgen/pull/1673)
 
 * The `wasm-bindgen-futures` crate now has support for futures when the
@@ -793,7 +793,7 @@ Released 2019-06-14.
 * Bindings for `Array#flat` and `Array#flatMap` have been added.
   [#1573](https://github.com/rustwasm/wasm-bindgen/pull/1573)
 
-* All `#[wasm_bindgen]` types now `AsRef` to themslves.
+* All `#[wasm_bindgen]` types now `AsRef` to themselves.
   [#1583](https://github.com/rustwasm/wasm-bindgen/pull/1583)
 
 * When using `--target web` the path passed to `init` is no longer required.
@@ -1117,7 +1117,7 @@ Released 2019-03-04.
   landed and is enabled with `WASM_BINDGEN_ANYREF=1`.
   [#1002](https://github.com/rustwasm/wasm-bindgen/pull/1002)
 
-* Support fot the new browser `TextEncode#encodeInto` API has been added.
+* Support for the new browser `TextEncode#encodeInto` API has been added.
   [#1279](https://github.com/rustwasm/wasm-bindgen/pull/1279)
 
 * JS doc comments are now added to TypeScript bindings in addition to the JS

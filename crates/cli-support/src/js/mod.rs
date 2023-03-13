@@ -385,7 +385,7 @@ impl<'a> Context<'a> {
                         script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
-                js.push_str("let wasm;\n");
+                js.push_str("let wasm = undefined;\n");
                 init = self.gen_init(needs_manual_start, None)?;
                 footer.push_str(&format!(
                     "{} = Object.assign(init, {{ initSync }}, __exports);\n",
@@ -852,6 +852,8 @@ impl<'a> Context<'a> {
                 }}
 
                 function initSync(module{init_memory_arg}) {{
+                    if (wasm !== undefined) return wasm;
+
                     const imports = getImports();
 
                     initMemory(imports{init_memory_arg});
@@ -866,6 +868,8 @@ impl<'a> Context<'a> {
                 }}
 
                 async function init(input{init_memory_arg}) {{
+                    if (wasm !== undefined) return wasm;
+
                     {default_module_path}
                     const imports = getImports();
 
@@ -920,6 +924,7 @@ impl<'a> Context<'a> {
             dst.push_str(&format!(
                 "
                 static __wrap(ptr) {{
+                    ptr = ptr >>> 0;
                     const obj = Object.create({}.prototype);
                     obj.ptr = ptr;
                     {}
@@ -937,7 +942,7 @@ impl<'a> Context<'a> {
 
         if self.config.weak_refs {
             self.global(&format!(
-                "const {}Finalization = new FinalizationRegistry(ptr => wasm.{}(ptr));",
+                "const {}Finalization = new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));",
                 name,
                 wasm_bindgen_shared::free_function(&name),
             ));
@@ -1259,14 +1264,14 @@ impl<'a> Context<'a> {
             "\
                 if (realloc === undefined) {{
                     const buf = cachedTextEncoder.encode(arg);
-                    const ptr = malloc(buf.length);
+                    const ptr = malloc(buf.length) >>> 0;
                     {mem}().subarray(ptr, ptr + buf.length).set(buf);
                     WASM_VECTOR_LEN = buf.length;
                     return ptr;
                 }}
 
                 let len = arg.length;
-                let ptr = malloc(len);
+                let ptr = malloc(len) >>> 0;
 
                 const mem = {mem}();
 
@@ -1294,7 +1299,7 @@ impl<'a> Context<'a> {
                     if (offset !== 0) {{
                         arg = arg.slice(offset);
                     }}
-                    ptr = realloc(ptr, len, len = offset + arg.length * 3);
+                    ptr = realloc(ptr, len, len = offset + arg.length * 3) >>> 0;
                     const view = {mem}().subarray(ptr + offset, ptr + len);
                     const ret = encodeString(arg, view);
                     {debug_end}
@@ -1366,7 +1371,7 @@ impl<'a> Context<'a> {
                 self.global(&format!(
                     "
                         function {}(array, malloc) {{
-                            const ptr = malloc(array.length * 4);
+                            const ptr = malloc(array.length * 4) >>> 0;
                             const mem = {}();
                             for (let i = 0; i < array.length; i++) {{
                                 mem[ptr / 4 + i] = {}(array[i]);
@@ -1383,7 +1388,7 @@ impl<'a> Context<'a> {
                 self.global(&format!(
                     "
                         function {}(array, malloc) {{
-                            const ptr = malloc(array.length * 4);
+                            const ptr = malloc(array.length * 4) >>> 0;
                             const mem = {}();
                             for (let i = 0; i < array.length; i++) {{
                                 mem[ptr / 4 + i] = addHeapObject(array[i]);
@@ -1416,7 +1421,7 @@ impl<'a> Context<'a> {
         self.global(&format!(
             "
             function {}(arg, malloc) {{
-                const ptr = malloc(arg.length * {size});
+                const ptr = malloc(arg.length * {size}) >>> 0;
                 {}().set(arg, ptr / {size});
                 WASM_VECTOR_LEN = arg.length;
                 return ptr;
@@ -1433,7 +1438,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_encoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextEncoder", "('utf-8')")
+        self.expose_text_processor("TextEncoder", "('utf-8')", None)
     }
 
     fn expose_text_decoder(&mut self) -> Result<(), Error> {
@@ -1441,18 +1446,27 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
-        // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
-        self.expose_text_processor("TextDecoder", "('utf-8', { ignoreBOM: true, fatal: true })")?;
-
         // This is needed to workaround a bug in Safari
         // See: https://github.com/rustwasm/wasm-bindgen/issues/1825
-        self.global("cachedTextDecoder.decode();");
+        let init = Some("cachedTextDecoder.decode();");
+
+        // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
+        // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
+        self.expose_text_processor(
+            "TextDecoder",
+            "('utf-8', { ignoreBOM: true, fatal: true })",
+            init,
+        )?;
 
         Ok(())
     }
 
-    fn expose_text_processor(&mut self, s: &str, args: &str) -> Result<(), Error> {
+    fn expose_text_processor(
+        &mut self,
+        s: &str,
+        args: &str,
+        init: Option<&str>,
+    ) -> Result<(), Error> {
         match &self.config.mode {
             OutputMode::Node { .. } => {
                 let name = self.import_name(&JsImport {
@@ -1480,9 +1494,25 @@ impl<'a> Context<'a> {
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("const cached{0} = new {0}{1};", s, args))
+                self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ decode: () => {{ throw Error('{0} not available') }} }} );", s, args))
             }
         };
+
+        if let Some(init) = init {
+            match &self.config.mode {
+                OutputMode::Node { .. }
+                | OutputMode::Bundler {
+                    browser_only: false,
+                } => self.global(init),
+                OutputMode::Deno
+                | OutputMode::Web
+                | OutputMode::NoModules { .. }
+                | OutputMode::Bundler { browser_only: true } => self.global(&format!(
+                    "if (typeof {} !== 'undefined') {{ {} }};",
+                    s, init
+                )),
+            }
+        }
 
         Ok(())
     }
@@ -1513,6 +1543,7 @@ impl<'a> Context<'a> {
         self.global(&format!(
             "
             function {}(ptr, len) {{
+                ptr = ptr >>> 0;
                 return cachedTextDecoder.decode({}().{}(ptr, ptr + len));
             }}
             ",
@@ -1583,6 +1614,7 @@ impl<'a> Context<'a> {
                 self.global(&format!(
                     "
                     function {}(ptr, len) {{
+                        ptr = ptr >>> 0;
                         const mem = {}();
                         const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                         const result = [];
@@ -1601,6 +1633,7 @@ impl<'a> Context<'a> {
                 self.global(&format!(
                     "
                     function {}(ptr, len) {{
+                        ptr = ptr >>> 0;
                         const mem = {}();
                         const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                         const result = [];
@@ -1683,6 +1716,7 @@ impl<'a> Context<'a> {
         self.global(&format!(
             "
             function {name}(ptr, len) {{
+                ptr = ptr >>> 0;
                 return {mem}().subarray(ptr / {size}, ptr / {size} + len);
             }}
             ",
@@ -2509,17 +2543,17 @@ impl<'a> Context<'a> {
         let mut arg_names = &None;
         let mut asyncness = false;
         let mut variadic = false;
+        let mut generate_jsdoc = false;
         match kind {
             Kind::Export(export) => {
                 arg_names = &export.arg_names;
                 asyncness = export.asyncness;
                 variadic = export.variadic;
+                generate_jsdoc = export.generate_jsdoc;
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
-                    AuxExportKind::Method {
-                        receiver: reciever, ..
-                    } => match reciever {
+                    AuxExportKind::Method { receiver, .. } => match receiver {
                         AuxReceiverKind::None => {}
                         AuxReceiverKind::Borrowed => builder.method(false),
                         AuxReceiverKind::Owned => builder.method(true),
@@ -2541,7 +2575,14 @@ impl<'a> Context<'a> {
             catch,
             log_error,
         } = builder
-            .process(&adapter, instrs, arg_names, asyncness, variadic)
+            .process(
+                &adapter,
+                instrs,
+                arg_names,
+                asyncness,
+                variadic,
+                generate_jsdoc,
+            )
             .with_context(|| match kind {
                 Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
                 Kind::Import(i) => {

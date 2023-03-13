@@ -110,7 +110,7 @@ interface Element : Node {
   /**
    * Set this during a mousedown event to grab and retarget all mouse events
    * to this element until the mouse button is released or releaseCapture is
-   * called. If retargetToElement is true, then all events are targetted at
+   * called. If retargetToElement is true, then all events are targeted at
    * this element. If false, events can also fire at descendants of this
    * element.
    *

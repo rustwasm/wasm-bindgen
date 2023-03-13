@@ -7,9 +7,13 @@ license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 edition = "2018"
 
+[lib]
+proc-macro = true
+
 [dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
 
-[lib]
-proc-macro = true
+[dev-dependencies]
+wasm-bindgen-test = { path = "../test" }
+trybuild = "1.0"

@@ -28,7 +28,7 @@ interface ImageBitmapRenderingContext {
   // it does not change the canvas's intrinsic width or height.
   //
   // The ImageBitmap, when displayed, is clipped to the rectangle
-  // defined by the canvas's instrinsic width and height. Pixels that
+  // defined by the canvas's intrinsic width and height. Pixels that
   // would be covered by the canvas's bitmap which are not covered by
   // the supplied ImageBitmap are rendered transparent black. Any CSS
   // styles affecting the display of the canvas are applied as usual.
