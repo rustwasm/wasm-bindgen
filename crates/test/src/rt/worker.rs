@@ -18,26 +18,20 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     fn stack(this: &WorkerError) -> JsValue;
 
-    #[wasm_bindgen(js_name="postMessage")]
-    fn post_message(data: Vec<JsValue>);
+    #[wasm_bindgen(js_name = "__wbg_test_output_writeln")]
+    fn write_output_line(data: JsValue);
 }
 
 impl Worker {
     /// Attempts to create a new formatter for web worker
     pub fn new() -> Worker {
-        post_message(vec![
-            JsValue::from(String::from("__wbgtest_start"))
-        ]);
         Worker {}
     }
 }
 
 impl super::Formatter for Worker {
     fn writeln(&self, line: &str) {
-        post_message(vec![
-            JsValue::from(String::from("__wbgtest_output")),
-            JsValue::from(String::from(line)),
-        ]);
+        write_output_line(JsValue::from(String::from(line)));
     }
 
     fn log_test(&self, name: &str, result: &Result<(), JsValue>) {

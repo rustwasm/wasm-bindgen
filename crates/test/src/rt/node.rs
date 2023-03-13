@@ -20,7 +20,7 @@ extern "C" {
 impl Node {
     /// Attempts to create a new formatter for node.js
     pub fn new() -> Node {
-       Node {}
+        Node {}
     }
 }
 
