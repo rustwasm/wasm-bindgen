@@ -54,6 +54,8 @@ few caveats:
 
 * It does not support [local JS snippets][snippets]
 * It does not generate an ES module
+* It does not support `--split-linked-modules` outside of a document, e.g.
+  inside a worker
 
 With that in mind the main difference is how the wasm/JS code is loaded, and
 here's an example of loading the output of `wasm-pack` for the same module as
