@@ -1364,7 +1364,7 @@ pub fn memory() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_memory()) }
 }
 
-/// Returns the URL to the script that instantiated the wasm module.
+/// Returns the URL of the generated JS shim.
 ///
 /// This will currently return `None` on every target except `web` and `no-modules`.
 /// Additionally it will return `None` when used with the `no-modules` target but
