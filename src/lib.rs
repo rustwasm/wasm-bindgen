@@ -1376,9 +1376,15 @@ pub fn function_table() -> JsValue {
 pub enum ShimFormat {
     /// The shim is an ES module.
     EsModule,
-    /// The shim is regular JavaScript.
+    /// The shim doesn't use any module system, and instead exposes a global variable
+    /// with its API.
+    ///
+    /// It has to be imported as a script to work properly, as the global variable is
+    /// created by simply declaring a top-level variable, which only works in scripts.
     NoModules {
-        /// The name of the global variable.
+        /// The name of the global variable the shim exposes.
+        ///
+        /// By default, this is `"wasm_bindgen"`.
         global_name: String,
     },
 }
