@@ -100,6 +100,7 @@ members = [
   "examples/synchronous-instantiation",
   "tests/no-std",
 ]
+resolver = "2"
 
 [patch.crates-io]
 wasm-bindgen = { path = '.' }

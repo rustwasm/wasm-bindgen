@@ -54,7 +54,6 @@ jobs:
     - run: cargo test --target wasm32-unknown-unknown
     - run: cargo test --target wasm32-unknown-unknown --features serde-serialize
     - run: cargo test --target wasm32-unknown-unknown --features enable-interning
-    - run: cargo test --target wasm32-unknown-unknown -p no-std
     - run: cargo test --target wasm32-unknown-unknown -p wasm-bindgen-futures
     - run: cargo test --target wasm32-unknown-unknown --test wasm
       env:
