@@ -5,12 +5,13 @@
 use crate::{util::ShortHash, Diagnostic};
 use proc_macro2::{Ident, Span};
 use std::hash::{Hash, Hasher};
+use syn::Path;
 use wasm_bindgen_shared as shared;
 
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
-#[derive(Default, Clone)]
+#[derive(Clone)]
 pub struct Program {
     /// rust -> js interfaces
     pub exports: Vec<Export>,
@@ -26,6 +27,26 @@ pub struct Program {
     pub typescript_custom_sections: Vec<String>,
     /// Inline JS snippets
     pub inline_js: Vec<String>,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
+    /// Path to wasm_bindgen_futures
+    pub wasm_bindgen_futures: Path,
+}
+
+impl Default for Program {
+    fn default() -> Self {
+        Self {
+            exports: Default::default(),
+            imports: Default::default(),
+            linked_modules: Default::default(),
+            enums: Default::default(),
+            structs: Default::default(),
+            typescript_custom_sections: Default::default(),
+            inline_js: Default::default(),
+            wasm_bindgen: syn::parse_quote! { wasm_bindgen },
+            wasm_bindgen_futures: syn::parse_quote! { wasm_bindgen_futures },
+        }
+    }
 }
 
 impl Program {
@@ -77,6 +98,10 @@ pub struct Export {
     /// Whether or not this function should be flagged as the wasm start
     /// function.
     pub start: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
+    /// Path to wasm_bindgen_futures
+    pub wasm_bindgen_futures: Path,
 }
 
 /// The 3 types variations of `self`.
@@ -166,6 +191,10 @@ pub struct ImportFunction {
     pub shim: Ident,
     /// The doc comment on this import, if one is provided
     pub doc_comment: String,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
+    /// Path to wasm_bindgen_futures
+    pub wasm_bindgen_futures: Path,
 }
 
 /// The type of a function being imported
@@ -237,6 +266,8 @@ pub struct ImportStatic {
     pub rust_name: Ident,
     /// The name of this static on the JS side
     pub js_name: String,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The metadata for a type being imported
@@ -265,6 +296,8 @@ pub struct ImportType {
     pub vendor_prefixes: Vec<Ident>,
     /// If present, don't generate a `Deref` impl
     pub no_deref: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The metadata for an Enum being imported
@@ -281,6 +314,8 @@ pub struct ImportEnum {
     pub variant_values: Vec<String>,
     /// Attributes to apply to the Rust enum
     pub rust_attrs: Vec<syn::Attribute>,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// Information about a function being imported or exported
@@ -329,6 +364,8 @@ pub struct Struct {
     pub is_inspectable: bool,
     /// Whether to generate a typescript definition for this struct
     pub generate_typescript: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The field of a struct
@@ -361,6 +398,8 @@ pub struct StructField {
     /// If this is `Some`, the auto-generated getter for this field must clone
     /// the field instead of copying it.
     pub getter_with_clone: Option<Span>,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// Information about an Enum being exported
@@ -379,6 +418,8 @@ pub struct Enum {
     pub hole: u32,
     /// Whether to generate a typescript definition for this enum
     pub generate_typescript: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The variant of an enum

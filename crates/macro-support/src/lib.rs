@@ -62,7 +62,7 @@ pub fn expand_class_marker(
     let opts: ClassMarker = syn::parse2(attr)?;
 
     let mut program = backend::ast::Program::default();
-    item.macro_parse(&mut program, (&opts.class, &opts.js_class))?;
+    item.macro_parse(&mut program, &opts)?;
 
     // This is where things are slightly different, we are being expanded in the
     // context of an impl so we can't inject arbitrary item-like tokens into the
@@ -105,6 +105,8 @@ pub fn expand_class_marker(
 struct ClassMarker {
     class: syn::Ident,
     js_class: String,
+    wasm_bindgen: syn::Path,
+    wasm_bindgen_futures: syn::Path,
 }
 
 impl Parse for ClassMarker {
@@ -112,6 +114,51 @@ impl Parse for ClassMarker {
         let class = input.parse::<syn::Ident>()?;
         input.parse::<Token![=]>()?;
         let js_class = input.parse::<syn::LitStr>()?.value();
-        Ok(ClassMarker { class, js_class })
+
+        let mut wasm_bindgen = None;
+        let mut wasm_bindgen_futures = None;
+
+        loop {
+            if input.parse::<Option<Token![,]>>()?.is_some() {
+                let ident = input.parse::<syn::Ident>()?;
+
+                if ident == "wasm_bindgen" {
+                    if wasm_bindgen.is_some() {
+                        return Err(syn::Error::new(
+                            ident.span(),
+                            "found duplicate `wasm_bindgen`",
+                        ));
+                    }
+
+                    input.parse::<Token![=]>()?;
+                    wasm_bindgen = Some(input.parse::<syn::Path>()?);
+                } else if ident == "wasm_bindgen_futures" {
+                    if wasm_bindgen_futures.is_some() {
+                        return Err(syn::Error::new(
+                            ident.span(),
+                            "found duplicate `wasm_bindgen_futures`",
+                        ));
+                    }
+
+                    input.parse::<Token![=]>()?;
+                    wasm_bindgen_futures = Some(input.parse::<syn::Path>()?);
+                } else {
+                    return Err(syn::Error::new(
+                        ident.span(),
+                        "expected `wasm_bindgen` or `wasm_bindgen_futures`",
+                    ));
+                }
+            } else {
+                break;
+            }
+        }
+
+        Ok(ClassMarker {
+            class,
+            js_class,
+            wasm_bindgen: wasm_bindgen.unwrap_or_else(|| syn::parse_quote! { wasm_bindgen }),
+            wasm_bindgen_futures: wasm_bindgen_futures
+                .unwrap_or_else(|| syn::parse_quote! { wasm_bindgen_futures }),
+        })
     }
 }
