@@ -136,13 +136,13 @@ impl TraverseType for syn::GenericArgument {
     {
         match self {
             Self::Type(x) => x.traverse_type(f),
-            Self::Binding(x) => x.traverse_type(f),
+            Self::AssocType(x) => x.traverse_type(f),
             _ => {}
         }
     }
 }
 
-impl TraverseType for syn::Binding {
+impl TraverseType for syn::AssocType {
     fn traverse_type<F>(&self, f: &mut F)
     where
         F: FnMut(&Ident),

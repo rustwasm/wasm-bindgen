@@ -28,11 +28,11 @@ error: paths with type parameters are not supported yet
 20 |     fn f4(x: &Bar<T>);
    |               ^^^^^^
 
-error: paths with type parameters are not supported yet
+error: first argument of method must be a path
   --> ui-tests/invalid-imports.rs:22:15
    |
-22 |     fn f4(x: &Fn(T));
-   |               ^^^^^
+22 |     fn f4(x: &dyn Fn(T));
+   |               ^^^^^^^^^
 
 error: constructor returns must be bare types
   --> ui-tests/invalid-imports.rs:25:5
