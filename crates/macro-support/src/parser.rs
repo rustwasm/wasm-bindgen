@@ -6,11 +6,11 @@ use ast::OperationKind;
 use backend::ast;
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
-use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
+use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
-use syn::Lit;
+use syn::{Lit, MacroDelimiter};
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
@@ -205,26 +205,25 @@ impl BindgenAttrs {
             let pos = attrs
                 .iter()
                 .enumerate()
-                .find(|&(_, ref m)| m.path.segments[0].ident == "wasm_bindgen")
+                .find(|&(_, ref m)| m.path().segments[0].ident == "wasm_bindgen")
                 .map(|a| a.0);
             let pos = match pos {
                 Some(i) => i,
                 None => return Ok(ret),
             };
             let attr = attrs.remove(pos);
-            let mut tts = attr.tokens.clone().into_iter();
-            let group = match tts.next() {
-                Some(TokenTree::Group(d)) => d,
-                Some(_) => bail_span!(attr, "malformed #[wasm_bindgen] attribute"),
-                None => continue,
+            let tokens = match attr.meta {
+                syn::Meta::Path(_) => continue,
+                syn::Meta::List(syn::MetaList {
+                    delimiter: MacroDelimiter::Paren(_),
+                    tokens,
+                    ..
+                }) => tokens,
+                syn::Meta::List(_) | syn::Meta::NameValue(_) => {
+                    bail_span!(attr, "malformed #[wasm_bindgen] attribute")
+                }
             };
-            if tts.next().is_some() {
-                bail_span!(attr, "malformed #[wasm_bindgen] attribute");
-            }
-            if group.delimiter() != Delimiter::Parenthesis {
-                bail_span!(attr, "malformed #[wasm_bindgen] attribute");
-            }
-            let mut attrs: BindgenAttrs = syn::parse2(group.stream())?;
+            let mut attrs: BindgenAttrs = syn::parse2(tokens)?;
             ret.attrs.extend(attrs.attrs.drain(..));
             attrs.check_used();
         }
@@ -620,29 +619,22 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::Fo
         let mut doc_comment = String::new();
         // Extract the doc comments from our list of attributes.
         wasm.rust_attrs.retain(|attr| {
-            struct DocContents {
-                contents: String,
-            }
-
-            impl Parse for DocContents {
-                fn parse(input: ParseStream) -> SynResult<Self> {
-                    <Token![=]>::parse(input)?;
-                    match Lit::parse(input)? {
-                        Lit::Str(str) => Ok(Self {
-                            contents: str.value(),
-                        }),
-                        other => Err(syn::Error::new_spanned(other, "expected a string literal")),
-                    }
-                }
-            }
-
             /// Returns the contents of the passed `#[doc = "..."]` attribute,
             /// or `None` if it isn't one.
             fn get_docs(attr: &syn::Attribute) -> Option<String> {
-                if attr.path.is_ident("doc") {
-                    syn::parse2::<DocContents>(attr.tokens.clone())
-                        .ok()
-                        .map(|doc| doc.contents)
+                if attr.path().is_ident("doc") {
+                    if let syn::Meta::NameValue(syn::MetaNameValue {
+                        value:
+                            syn::Expr::Lit(syn::ExprLit {
+                                lit: Lit::Str(str), ..
+                            }),
+                        ..
+                    }) = &attr.meta
+                    {
+                        Some(str.value())
+                    } else {
+                        None
+                    }
                 } else {
                     None
                 }
@@ -732,7 +724,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::Fo
         self,
         (opts, module): (BindgenAttrs, &'a Option<ast::ImportModule>),
     ) -> Result<Self::Target, Diagnostic> {
-        if self.mutability.is_some() {
+        if let syn::StaticMutability::Mut(_) = self.mutability {
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
 
@@ -941,7 +933,6 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     .attrs
                     .iter()
                     .enumerate()
-                    .filter_map(|(i, m)| m.parse_meta().ok().map(|m| (i, m)))
                     .find(|(_, m)| m.path().is_ident("no_mangle"));
                 match no_mangle {
                     Some((i, _)) => {
@@ -1088,7 +1079,7 @@ fn prepare_for_impl_recursion(
     impl_opts: &BindgenAttrs,
 ) -> Result<(), Diagnostic> {
     let method = match item {
-        syn::ImplItem::Method(m) => m,
+        syn::ImplItem::Fn(m) => m,
         syn::ImplItem::Const(_) => {
             bail_span!(
                 &*item,
@@ -1123,15 +1114,14 @@ fn prepare_for_impl_recursion(
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            path: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker },
-            tokens: quote::quote! { (#class = #js_class) }.into(),
+            meta: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class) },
         },
     );
 
     Ok(())
 }
 
-impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
+impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemFn {
     fn macro_parse(
         self,
         program: &mut ast::Program,
@@ -1526,10 +1516,20 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
         .filter_map(|a| {
             // if the path segments include an ident of "doc" we know this
             // this is a doc comment
-            if a.path.segments.iter().any(|s| s.ident.to_string() == "doc") {
+            if a.path()
+                .segments
+                .iter()
+                .any(|s| s.ident.to_string() == "doc")
+            {
+                let tokens = match &a.meta {
+                    syn::Meta::Path(_) => None,
+                    syn::Meta::List(list) => Some(list.tokens.clone()),
+                    syn::Meta::NameValue(name_value) => Some(name_value.value.to_token_stream()),
+                };
+
                 Some(
                     // We want to filter out any Puncts so just grab the Literals
-                    a.tokens.clone().into_iter().filter_map(|t| match t {
+                    tokens.into_iter().flatten().filter_map(|t| match t {
                         TokenTree::Literal(lit) => {
                             let quoted = lit.to_string();
                             Some(try_unescape(&quoted).unwrap_or_else(|| quoted))

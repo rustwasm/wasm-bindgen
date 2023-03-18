@@ -58,7 +58,7 @@ pub fn expand_class_marker(
     input: TokenStream,
 ) -> Result<TokenStream, Diagnostic> {
     parser::reset_attrs_used();
-    let mut item = syn::parse2::<syn::ImplItemMethod>(input)?;
+    let mut item = syn::parse2::<syn::ImplItemFn>(input)?;
     let opts: ClassMarker = syn::parse2(attr)?;
 
     let mut program = backend::ast::Program::default();
@@ -73,7 +73,7 @@ pub fn expand_class_marker(
     // statics and such, and they should all be valid in the context of the
     // start of a function.
     //
-    // We manually implement `ToTokens for ImplItemMethod` here, injecting our
+    // We manually implement `ToTokens for ImplItemFn` here, injecting our
     // program's tokens before the actual method's inner body tokens.
     let mut tokens = proc_macro2::TokenStream::new();
     tokens.append_all(item.attrs.iter().filter(|attr| match attr.style {
