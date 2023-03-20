@@ -131,7 +131,7 @@ interface HTMLInputElement : HTMLElement {
 
   [Throws]
   undefined setRangeText(DOMString replacement, unsigned long start,
-    unsigned long end, optional SelectionMode selectionMode = "preserve");
+    unsigned long end, optional DOMString mode);
   [Throws]
   undefined setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
 

@@ -675,6 +675,19 @@ extern "C" {
         start: u32,
         end: u32,
     ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLInputElement" , js_name = setRangeText)]
+    #[doc = "The `setRangeText()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setRangeText)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
+    pub fn set_range_text_with_start_and_end_and_mode(
+        this: &HtmlInputElement,
+        replacement: &str,
+        start: u32,
+        end: u32,
+        mode: &str,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLInputElement" , js_name = setSelectionRange)]
     #[doc = "The `setSelectionRange()` method."]
     #[doc = ""]
