@@ -17,6 +17,7 @@ use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
+use wasmparser::Payload;
 
 fn target_dir() -> PathBuf {
     let mut dir = PathBuf::from(env::current_exe().unwrap());
@@ -220,6 +221,98 @@ fn bin_crate_works() {
     cmd.assert().success();
     Command::new("node")
         .arg("bin_crate_works.js")
+        .current_dir(out_dir)
+        .assert()
+        .success()
+        .stdout("hello, world\n");
+}
+
+#[test]
+fn bin_crate_works_without_name_section() {
+    let mut project = Project::new("bin_crate_works_without_name_section");
+    project
+        .file(
+            "src/main.rs",
+            r#"
+            use wasm_bindgen::prelude::*;
+            #[wasm_bindgen]
+            extern "C" {
+                #[wasm_bindgen(js_namespace = console)]
+                fn log(data: &str);
+            }
+
+            fn main() {
+                log("hello, world");
+            }
+        "#,
+        )
+        .file(
+            "Cargo.toml",
+            &format!(
+                "
+                    [package]
+                    name = \"bin_crate_works_without_name_section\"
+                    authors = []
+                    version = \"1.0.0\"
+                    edition = '2018'
+
+                    [dependencies]
+                    wasm-bindgen = {{ path = '{}' }}
+
+                    [workspace]
+                ",
+                repo_root().display(),
+            ),
+        );
+    let wasm = project.build();
+
+    // Remove the name section from the module.
+    // This simulates a situation like #3362 where it fails to parse because one of
+    // the names is too long.
+    // Unfortunately, we can't use `walrus` to do this because it gives the name
+    // section special treatment, so instead we use `wasmparser` directly.
+    let mut contents = fs::read(&wasm).unwrap();
+    for payload in wasmparser::Parser::new(0).parse_all(&contents.clone()) {
+        match payload.unwrap() {
+            Payload::CustomSection(reader) if reader.name() == "name" => {
+                /// Figures out how many bytes `x` will take up when encoded in
+                /// unsigned LEB128.
+                fn leb128_len(x: u32) -> usize {
+                    match x {
+                        0..=0x07f => 1,
+                        0x80..=0x3fff => 2,
+                        0x4000..=0x1fffff => 3,
+                        0x200000..=0xfffffff => 4,
+                        0x10000000..=0xffffffff => 5,
+                    }
+                }
+
+                // Figure out the length of the section header.
+                let header_len = 1 + leb128_len(reader.data().len() as u32);
+
+                // Remove the section.
+                contents.drain(reader.range().start - header_len..reader.range().end);
+            }
+            // Ignore everything else.
+            _ => {}
+        }
+    }
+
+    fs::write(&wasm, contents).unwrap();
+
+    // Then run wasm-bindgen on the result.
+    let out_dir = project.root.join("pkg");
+    fs::create_dir_all(&out_dir).unwrap();
+    let mut cmd = Command::cargo_bin("wasm-bindgen").unwrap();
+    cmd.arg("--out-dir")
+        .arg(&out_dir)
+        .arg(&wasm)
+        .arg("--target")
+        .arg("nodejs");
+    cmd.assert().success();
+
+    Command::new("node")
+        .arg("bin_crate_works_without_name_section.js")
         .current_dir(out_dir)
         .assert()
         .success()

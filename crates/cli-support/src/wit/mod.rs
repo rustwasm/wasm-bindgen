@@ -261,13 +261,19 @@ impl<'a> Context<'a> {
         // find a `main(i32, i32) -> i32`
         let main_id = self
             .module
-            .functions()
-            .find(|x| {
+            .exports
+            .iter()
+            .filter_map(|export| match export.item {
+                walrus::ExportItem::Function(id) => Some((export, self.module.funcs.get(id))),
+                _ => None,
+            })
+            .find(|(export, func)| {
                 use walrus::ValType::I32;
+
                 // name has to be `main`
-                let name_matches = x.name.as_ref().map_or(false, |x| x == "main");
+                let name_matches = export.name == "main";
                 // type has to be `(i32, i32) -> i32`
-                let ty = self.module.types.get(x.ty());
+                let ty = self.module.types.get(func.ty());
                 let type_matches = ty.params() == [I32, I32] && ty.results() == [I32];
                 // Having the correct name and signature doesn't necessarily mean that it's
                 // actually a `main` function. Unfortunately, there doesn't seem to be any 100%
@@ -276,7 +282,8 @@ impl<'a> Context<'a> {
                 let unknown = !self.adapters.exports.iter().any(|(name, _)| name == "main");
                 name_matches && type_matches && unknown
             })
-            .map(|x| x.id());
+            .map(|(_, func)| func.id());
+
         let main_id = match main_id {
             Some(x) => x,
             None => return Ok(()),
