@@ -35,6 +35,7 @@ diff = "0.1"
 predicates = "1.0.0"
 rayon = "1.0"
 tempfile = "3.0"
+wasmparser = "0.102.0"
 wasmprinter = "0.2, <=0.2.33" # pinned for wit-printer
 wit-printer = "0.2"
 wit-text = "0.8"
