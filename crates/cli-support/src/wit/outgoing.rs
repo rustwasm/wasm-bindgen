@@ -507,7 +507,6 @@ impl InstructionBuilder<'_, '_> {
         let instr = Instruction::WasmToInt {
             input: walrus::ValType::I32,
             output: output.clone(),
-            trap: false,
         };
         self.instruction(&[AdapterType::I32], instr, &[output]);
     }
@@ -516,7 +515,6 @@ impl InstructionBuilder<'_, '_> {
         let instr = Instruction::WasmToInt {
             input: walrus::ValType::I64,
             output: output.clone(),
-            trap: false,
         };
         self.instruction(&[AdapterType::I64], instr, &[output]);
     }

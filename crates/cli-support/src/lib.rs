@@ -53,11 +53,7 @@ pub struct Output {
     generated: Generated,
 }
 
-enum Generated {
-    Js(JsGenerated),
-}
-
-struct JsGenerated {
+struct Generated {
     mode: OutputMode,
     js: String,
     ts: String,
@@ -447,7 +443,7 @@ impl Bindgen {
         let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
         cx.generate()?;
         let (js, ts, start) = cx.finalize(stem)?;
-        let generated = Generated::Js(JsGenerated {
+        let generated = Generated {
             snippets: aux.snippets.clone(),
             local_modules: aux.local_modules.clone(),
             mode: self.mode.clone(),
@@ -456,7 +452,7 @@ impl Bindgen {
             js,
             ts,
             start,
-        });
+        };
 
         Ok(Output {
             module,
@@ -626,38 +622,31 @@ fn unexported_unused_lld_things(module: &mut Module) {
 
 impl Output {
     pub fn js(&self) -> &str {
-        &self.gen().js
+        &self.generated.js
     }
 
     pub fn ts(&self) -> Option<&str> {
-        let gen = self.gen();
-        if gen.typescript {
-            Some(&gen.ts)
+        if self.generated.typescript {
+            Some(&self.generated.ts)
         } else {
             None
         }
     }
 
     pub fn start(&self) -> Option<&String> {
-        self.gen().start.as_ref()
+        self.generated.start.as_ref()
     }
 
     pub fn snippets(&self) -> &HashMap<String, Vec<String>> {
-        &self.gen().snippets
+        &self.generated.snippets
     }
 
     pub fn local_modules(&self) -> &HashMap<String, String> {
-        &self.gen().local_modules
+        &self.generated.local_modules
     }
 
     pub fn npm_dependencies(&self) -> &HashMap<String, (PathBuf, String)> {
-        &self.gen().npm_dependencies
-    }
-
-    fn gen(&self) -> &JsGenerated {
-        match &self.generated {
-            Generated::Js(gen) => &gen,
-        }
+        &self.generated.npm_dependencies
     }
 
     pub fn wasm(&self) -> &walrus::Module {
@@ -673,18 +662,14 @@ impl Output {
     }
 
     fn _emit(&mut self, out_dir: &Path) -> Result<(), Error> {
-        let wasm_name = match &self.generated {
-            Generated::Js(_) => format!("{}_bg", self.stem),
-        };
+        let wasm_name = format!("{}_bg", self.stem);
         let wasm_path = out_dir.join(&wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
         let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|| format!("failed to write `{}`", wasm_path.display()))?;
 
-        let gen = match &self.generated {
-            Generated::Js(gen) => gen,
-        };
+        let gen = &self.generated;
 
         // Write out all local JS snippets to the final destination now that
         // we've collected them from all the programs.

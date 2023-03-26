@@ -400,7 +400,6 @@ impl InstructionBuilder<'_, '_> {
         let instr = Instruction::IntToWasm {
             input: input.clone(),
             output,
-            trap: false,
         };
         self.instruction(&[input], instr, &[AdapterType::from_wasm(output).unwrap()]);
     }

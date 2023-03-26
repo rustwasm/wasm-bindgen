@@ -129,13 +129,11 @@ pub enum Instruction {
     IntToWasm {
         input: AdapterType,
         output: walrus::ValType,
-        trap: bool,
     },
     /// Pops a wasm `i32` or `i64` and pushes a typed integer (`u8`, `s16`, etc.) equivalent.
     WasmToInt {
         input: walrus::ValType,
         output: AdapterType,
-        trap: bool,
     },
 
     /// Pops a `bool` from the stack and pushes an `i32` equivalent

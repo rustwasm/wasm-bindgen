@@ -579,9 +579,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             }
         }
 
-        Instruction::IntToWasm {
-            trap: false, input, ..
-        } => {
+        Instruction::IntToWasm { input, .. } => {
             let val = js.pop();
             if matches!(
                 input,
@@ -597,21 +595,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         // When converting to a JS number we need to specially handle the `u32`
         // case because if the high bit is set then it comes out as a negative
         // number, but we want to switch that to an unsigned representation.
-        Instruction::WasmToInt {
-            trap: false,
-            output,
-            ..
-        } => {
+        Instruction::WasmToInt { output, .. } => {
             let val = js.pop();
             match output {
                 AdapterType::U32 => js.push(format!("{} >>> 0", val)),
                 AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
                 _ => js.push(val),
             }
-        }
-
-        Instruction::WasmToInt { trap: true, .. } | Instruction::IntToWasm { trap: true, .. } => {
-            bail!("trapping wasm-to-int and int-to-wasm instructions not supported")
         }
 
         Instruction::MemoryToString(mem) => {
