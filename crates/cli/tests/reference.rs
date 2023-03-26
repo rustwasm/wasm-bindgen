@@ -75,7 +75,6 @@ fn runtest(test: &Path) -> Result<()> {
         repo_root().display(),
         test.display(),
     );
-    let interface_types = contents.contains("// interface-types");
 
     fs::write(td.path().join("Cargo.toml"), manifest)?;
     let target_dir = target_dir();
@@ -98,26 +97,16 @@ fn runtest(test: &Path) -> Result<()> {
     if contents.contains("// enable-externref") {
         bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
     }
-    if interface_types {
-        bindgen.env("WASM_INTERFACE_TYPES", "1");
-    }
     exec(&mut bindgen)?;
 
-    if interface_types {
-        let wasm = td.path().join("reference_test.wasm");
-        wit_validator::validate(&fs::read(&wasm)?)?;
-        let wat = sanitize_wasm(&wasm)?;
+    if !contents.contains("async") {
+        let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
+        assert_same(&js, &test.with_extension("js"))?;
+        let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
         assert_same(&wat, &test.with_extension("wat"))?;
-    } else {
-        if !contents.contains("async") {
-            let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
-            assert_same(&js, &test.with_extension("js"))?;
-            let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
-            assert_same(&wat, &test.with_extension("wat"))?;
-        }
-        let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
-        assert_same(&d_ts, &test.with_extension("d.ts"))?;
     }
+    let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
+    assert_same(&d_ts, &test.with_extension("d.ts"))?;
 
     Ok(())
 }
@@ -136,9 +125,7 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     // Clean up the wasm module by removing all function
     // implementations/instructions, data sections, etc. This'll help us largely
     // only deal with exports/imports which is all we're really interested in.
-    let mut module = walrus::ModuleConfig::new()
-        .on_parse(wit_walrus::on_parse)
-        .parse_file(wasm)?;
+    let mut module = walrus::Module::from_file(wasm)?;
     for func in module.funcs.iter_mut() {
         let local = match &mut func.kind {
             walrus::FunctionKind::Local(l) => l,
@@ -173,7 +160,7 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
         module.exports.delete(id);
     }
     walrus::passes::gc::run(&mut module);
-    let mut wat = wit_printer::print_bytes(&module.emit_wasm())?;
+    let mut wat = wasmprinter::print_bytes(&module.emit_wasm())?;
     wat.push_str("\n");
     Ok(wat)
 }

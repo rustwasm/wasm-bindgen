@@ -51,15 +51,6 @@ macro_rules! intrinsics {
                     )*
                 }
             }
-
-            /// Returns the symbol name of this intrinsic
-            pub fn name(&self) -> &'static str {
-                match self {
-                    $(
-                        Intrinsic::$name => $sym,
-                    )*
-                }
-            }
         }
     };
 }

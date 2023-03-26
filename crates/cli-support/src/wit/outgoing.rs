@@ -104,9 +104,8 @@ impl InstructionBuilder<'_, '_> {
 
                 // ... then defer a call to `free` to happen later
                 let free = self.cx.free()?;
-                let std = wit_walrus::Instruction::DeferCallCore(free);
                 self.instructions.push(InstructionData {
-                    instr: Instruction::Standard(std),
+                    instr: Instruction::DeferCallCore(free),
                     stack_change: StackChange::Modified {
                         popped: 2,
                         pushed: 2,
@@ -114,9 +113,8 @@ impl InstructionBuilder<'_, '_> {
                 });
 
                 // ... and then convert it to a string type
-                let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
                 self.instructions.push(InstructionData {
-                    instr: Instruction::Standard(std),
+                    instr: Instruction::MemoryToString(self.cx.memory()?),
                     stack_change: StackChange::Modified {
                         popped: 2,
                         pushed: 1,
@@ -181,10 +179,9 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::CachedString => self.cached_string(false, false)?,
 
             Descriptor::String => {
-                let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
                 self.instruction(
                     &[AdapterType::I32, AdapterType::I32],
-                    Instruction::Standard(std),
+                    Instruction::MemoryToString(self.cx.memory()?),
                     &[AdapterType::String],
                 );
             }
@@ -390,10 +387,9 @@ impl InstructionBuilder<'_, '_> {
                 // check we did not add any deferred calls, because we have undermined the idea of
                 // running them unconditionally in a finally {} block. String does this, but we
                 // special case it.
-                assert!(!self.instructions[len..].iter().any(|idata| matches!(
-                    idata.instr,
-                    Instruction::Standard(wit_walrus::Instruction::DeferCallCore(_))
-                )));
+                assert!(!self.instructions[len..]
+                    .iter()
+                    .any(|idata| matches!(idata.instr, Instruction::DeferCallCore(_))));
 
                 // Finally, we add the two inputs to UnwrapResult, and everything checks out
                 //
@@ -432,9 +428,8 @@ impl InstructionBuilder<'_, '_> {
                 // implementation is always safe. We do this in UnwrapResultString's
                 // implementation.
                 let free = self.cx.free()?;
-                let std = wit_walrus::Instruction::DeferCallCore(free);
                 self.instructions.push(InstructionData {
-                    instr: Instruction::Standard(std),
+                    instr: Instruction::DeferCallCore(free),
                     stack_change: StackChange::Modified {
                         popped: 2,
                         pushed: 2,
@@ -442,9 +437,8 @@ impl InstructionBuilder<'_, '_> {
                 });
 
                 // ... and then convert it to a string type
-                let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
                 self.instructions.push(InstructionData {
-                    instr: Instruction::Standard(std),
+                    instr: Instruction::MemoryToString(self.cx.memory()?),
                     stack_change: StackChange::Modified {
                         popped: 2,
                         pushed: 1,
@@ -510,21 +504,21 @@ impl InstructionBuilder<'_, '_> {
     }
 
     fn outgoing_i32(&mut self, output: AdapterType) {
-        let std = wit_walrus::Instruction::WasmToInt {
+        let instr = Instruction::WasmToInt {
             input: walrus::ValType::I32,
-            output: output.to_wit().unwrap(),
+            output: output.clone(),
             trap: false,
         };
-        self.instruction(&[AdapterType::I32], Instruction::Standard(std), &[output]);
+        self.instruction(&[AdapterType::I32], instr, &[output]);
     }
 
     fn outgoing_i64(&mut self, output: AdapterType) {
-        let std = wit_walrus::Instruction::WasmToInt {
+        let instr = Instruction::WasmToInt {
             input: walrus::ValType::I64,
-            output: output.to_wit().unwrap(),
+            output: output.clone(),
             trap: false,
         };
-        self.instruction(&[AdapterType::I64], Instruction::Standard(std), &[output]);
+        self.instruction(&[AdapterType::I64], instr, &[output]);
     }
 
     fn cached_string(&mut self, optional: bool, owned: bool) -> Result<(), Error> {

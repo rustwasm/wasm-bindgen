@@ -1,7 +1,8 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{
-    Adapter, AdapterId, AdapterJsImportKind, AuxExportedMethodKind, AuxReceiverKind, AuxValue,
+    Adapter, AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, AuxReceiverKind,
+    AuxValue,
 };
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
@@ -2757,10 +2758,7 @@ impl<'a> Context<'a> {
                 }
                 Instruction::CallExport(_)
                 | Instruction::CallTableElement(_)
-                | Instruction::Standard(wit_walrus::Instruction::CallCore(_))
-                | Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => {
-                    return Ok(false)
-                }
+                | Instruction::CallCore(_) => return Ok(false),
                 _ => {}
             }
         }
@@ -2862,20 +2860,15 @@ impl<'a> Context<'a> {
 
     fn representable_without_js_glue(&self, instrs: &[InstructionData]) -> bool {
         use Instruction::*;
-        let standard_enabled = self.config.wasm_interface_types;
 
         let mut last_arg = None;
         let mut saw_call = false;
         for instr in instrs {
             match instr.instr {
-                // Is an adapter section getting emitted? If so, then every
-                // standard operation is natively supported!
-                Standard(_) if standard_enabled => {}
-
                 // Fetching arguments is just that, a fetch, so no need for
                 // glue. Note though that the arguments must be fetched in order
                 // for this to actually work,
-                Standard(wit_walrus::Instruction::ArgGet(i)) => {
+                ArgGet(i) => {
                     if saw_call {
                         return false;
                     }
@@ -2892,16 +2885,16 @@ impl<'a> Context<'a> {
 
                 // Conversions to wasm integers are always supported since
                 // they're coerced into i32/f32/f64 appropriately.
-                Standard(wit_walrus::Instruction::IntToWasm { .. }) => {}
+                IntToWasm { .. } => {}
 
                 // Converts from wasm to JS, however, only supports most
                 // integers. Converting into a u32 isn't supported because we
                 // need to generate glue to change the sign.
-                Standard(wit_walrus::Instruction::WasmToInt {
-                    output: wit_walrus::ValType::U32,
+                WasmToInt {
+                    output: AdapterType::U32,
                     ..
-                }) => return false,
-                Standard(wit_walrus::Instruction::WasmToInt { .. }) => {}
+                } => return false,
+                WasmToInt { .. } => {}
 
                 // JS spec automatically coerces boolean values to i32 of 0 or 1
                 // depending on true/false

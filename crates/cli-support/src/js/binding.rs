@@ -533,20 +533,16 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
 
 fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) -> Result<(), Error> {
     match instr {
-        Instruction::Standard(wit_walrus::Instruction::ArgGet(n)) => {
+        Instruction::ArgGet(n) => {
             let arg = js.arg(*n).to_string();
             js.push(arg);
         }
 
-        Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => {
-            panic!("standard call adapter functions should be mapped to our adapters");
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::CallCore(_))
+        Instruction::CallCore(_)
         | Instruction::CallExport(_)
         | Instruction::CallAdapter(_)
         | Instruction::CallTableElement(_)
-        | Instruction::Standard(wit_walrus::Instruction::DeferCallCore(_)) => {
+        | Instruction::DeferCallCore(_) => {
             let invoc = Invocation::from(instr, js.cx.module)?;
             let (params, results) = invoc.params_results(js.cx);
 
@@ -583,13 +579,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             }
         }
 
-        Instruction::Standard(wit_walrus::Instruction::IntToWasm {
+        Instruction::IntToWasm {
             trap: false, input, ..
-        }) => {
+        } => {
             let val = js.pop();
             if matches!(
                 input,
-                wit_walrus::ValType::I64 | wit_walrus::ValType::S64 | wit_walrus::ValType::U64
+                AdapterType::I64 | AdapterType::S64 | AdapterType::U64
             ) {
                 js.assert_bigint(&val);
             } else {
@@ -601,33 +597,28 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         // When converting to a JS number we need to specially handle the `u32`
         // case because if the high bit is set then it comes out as a negative
         // number, but we want to switch that to an unsigned representation.
-        Instruction::Standard(wit_walrus::Instruction::WasmToInt {
+        Instruction::WasmToInt {
             trap: false,
             output,
             ..
-        }) => {
+        } => {
             let val = js.pop();
             match output {
-                wit_walrus::ValType::U32 => js.push(format!("{} >>> 0", val)),
-                wit_walrus::ValType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
+                AdapterType::U32 => js.push(format!("{} >>> 0", val)),
+                AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
                 _ => js.push(val),
             }
         }
 
-        Instruction::Standard(wit_walrus::Instruction::WasmToInt { trap: true, .. })
-        | Instruction::Standard(wit_walrus::Instruction::IntToWasm { trap: true, .. }) => {
+        Instruction::WasmToInt { trap: true, .. } | Instruction::IntToWasm { trap: true, .. } => {
             bail!("trapping wasm-to-int and int-to-wasm instructions not supported")
         }
 
-        Instruction::Standard(wit_walrus::Instruction::MemoryToString(mem)) => {
+        Instruction::MemoryToString(mem) => {
             let len = js.pop();
             let ptr = js.pop();
             let get = js.cx.expose_get_string_from_wasm(*mem)?;
             js.push(format!("{}({}, {})", get, ptr, len));
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::StringToMemory { mem, malloc }) => {
-            js.string_to_memory(*mem, *malloc, None)?;
         }
 
         Instruction::StringToMemory {
@@ -1186,12 +1177,12 @@ impl Invocation {
     fn from(instr: &Instruction, module: &Module) -> Result<Invocation, Error> {
         use Instruction::*;
         Ok(match instr {
-            Standard(wit_walrus::Instruction::CallCore(f)) => Invocation::Core {
+            CallCore(f) => Invocation::Core {
                 id: *f,
                 defer: false,
             },
 
-            Standard(wit_walrus::Instruction::DeferCallCore(f)) => Invocation::Core {
+            DeferCallCore(f) => Invocation::Core {
                 id: *f,
                 defer: true,
             },

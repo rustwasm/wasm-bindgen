@@ -77,7 +77,7 @@ fn extract_xform<'a>(
         let slot = instructions
             .iter_mut()
             .filter_map(|i| match &mut i.instr {
-                Instruction::Standard(wit_walrus::Instruction::CallCore(f)) => Some(Slot::Id(f)),
+                Instruction::CallCore(f) => Some(Slot::Id(f)),
                 Instruction::CallExport(e) => Some(Slot::Export(*e)),
                 _ => None,
             })
