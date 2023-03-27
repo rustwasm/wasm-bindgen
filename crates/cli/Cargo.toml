@@ -42,9 +42,5 @@ wasmprinter = "0.2.54"
 name = "reference"
 harness = false
 
-[[test]]
-name = "interface-types"
-harness = false
-
 [features]
 vendored-openssl = ['openssl/vendored']

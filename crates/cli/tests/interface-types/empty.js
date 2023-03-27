@@ -1,2 +1,0 @@
-const m = require('wasm');
-
