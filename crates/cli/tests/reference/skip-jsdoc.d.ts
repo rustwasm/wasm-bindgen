@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @returns {string}
+* Manually documented function
+*
+* @param {number} arg - This is my arg. It is mine.
+* @returns to whence I came
 */
-export function exported(): string;
+export function docme(arg: number): number;
