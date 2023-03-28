@@ -11,7 +11,6 @@
 
 use anyhow::{bail, Result};
 use assert_cmd::prelude::*;
-use rayon::prelude::*;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -37,7 +36,7 @@ fn main() -> Result<()> {
     tests.sort();
 
     let errs = tests
-        .par_iter()
+        .iter()
         .filter_map(|t| runtest(t).err().map(|e| (t, e)))
         .collect::<Vec<_>>();
 
