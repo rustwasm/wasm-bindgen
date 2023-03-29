@@ -10,7 +10,7 @@
 use crate::descriptor::{self, Descriptor, Function};
 
 macro_rules! intrinsics {
-    (pub enum Intrinsic {
+    (pub enum $enum_name:ident {
         $(
             #[symbol = $sym:tt]
             #[signature = fn($($arg:expr),*) -> $ret:expr]
@@ -20,16 +20,16 @@ macro_rules! intrinsics {
         /// All wasm-bindgen intrinsics that could be depended on by a wasm
         /// module.
         #[derive(Debug)]
-        pub enum Intrinsic {
+        pub enum $enum_name {
             $($name,)*
         }
 
-        impl Intrinsic {
+        impl $enum_name {
             /// Returns the corresponding intrinsic for a symbol name, if one
             /// matches.
-            pub fn from_symbol(symbol: &str) -> Option<Intrinsic> {
+            pub fn from_symbol(symbol: &str) -> Option<Self> {
                 match symbol {
-                    $($sym => Some(Intrinsic::$name),)*
+                    $($sym => Some(Self::$name),)*
                     _ => None,
                 }
             }
@@ -40,7 +40,7 @@ macro_rules! intrinsics {
                 use crate::descriptor::Descriptor::*;
                 match self {
                     $(
-                        Intrinsic::$name => {
+                        Self::$name => {
                             descriptor::Function {
                                 shim_idx: 0,
                                 arguments: vec![$($arg),*],
@@ -56,7 +56,7 @@ macro_rules! intrinsics {
             pub fn name(&self) -> &'static str {
                 match self {
                     $(
-                        Intrinsic::$name => $sym,
+                        Self::$name => $sym,
                     )*
                 }
             }
@@ -276,5 +276,67 @@ intrinsics! {
         #[symbol = "__wbindgen_init_externref_table"]
         #[signature = fn() -> Unit]
         InitExternrefTable,
+    }
+}
+
+intrinsics! {
+    pub enum WasiIntrinsic {
+        #[symbol = "__wbindgen_wasi_clock_time_get"]
+        #[signature = fn(I32, I64, I32) -> I32]
+        ClockTimeGet,
+        #[symbol = "__wbindgen_wasi_fd_write"]
+        #[signature = fn(I32, I32, I32, I32) -> I32]
+        FdWrite,
+        #[symbol = "__wbindgen_wasi_fd_read"]
+        #[signature = fn(I32, I32, I32, I32) -> I32]
+        FdRead,
+        #[symbol = "__wbindgen_wasi_sched_yield"]
+        #[signature = fn() -> Unit]
+        SchedYield,
+        #[symbol = "__wbindgen_wasi_random_get"]
+        #[signature = fn(I32, I32) -> I32]
+        RandomGet,
+        #[symbol = "__wbindgen_wasi_environ_get"]
+        #[signature = fn(I32, I32) -> I32]
+        EnvironGet,
+        #[symbol = "__wbindgen_wasi_environ_sizes_get"]
+        #[signature = fn(I32, I32) -> I32]
+        EnvironSizesGet,
+        #[symbol = "__wbindgen_wasi_fd_close"]
+        #[signature = fn(I32) -> I32]
+        FdClose,
+        #[symbol = "__wbindgen_wasi_fd_fdstat_get"]
+        #[signature = fn(I32, I32) -> I32]
+        FdFdStatGet,
+        #[symbol = "__wbindgen_wasi_fd_filestat_get"]
+        #[signature = fn(I32, I32) -> I32]
+        FdFileStatGet,
+        #[symbol = "__wbindgen_wasi_path_filestat_get"]
+        #[signature = fn(I32, I32, I32, I32, I32) -> I32]
+        PathFileStatGet,
+        #[symbol = "__wbindgen_wasi_fd_fdstat_set_flags"]
+        #[signature = fn(I32, U16) -> I32]
+        FdFdStatSetFlags,
+        #[symbol = "__wbindgen_wasi_fd_prestat_get"]
+        #[signature = fn(I32, I32) -> I32]
+        FdPrestatGet,
+        #[symbol = "__wbindgen_wasi_fd_prestat_dir_name"]
+        #[signature = fn(I32, I32) -> I32]
+        FdPrestatDirName,
+        #[symbol = "__wbindgen_wasi_fd_seek"]
+        #[signature = fn(I32, I64, U8) -> I32]
+        FdSeek,
+        #[symbol = "__wbindgen_wasi_path_open"]
+        #[signature = fn(I32, I32, I32, I32, I32, I64, I64, I32, I32) -> I32]
+        PathOpen,
+        #[symbol = "__wbindgen_wasi_proc_exit"]
+        #[signature = fn(I32) -> Unit]
+        ProcExit,
+        #[symbol = "__wbindgen_wasi_args_get"]
+        #[signature = fn(I32, I32) -> I32]
+        ArgsGet,
+        #[symbol = "__wbindgen_wasi_args_sizes_get"]
+        #[signature = fn(I32, I32) -> I32]
+        ArgsSizesGet,
     }
 }

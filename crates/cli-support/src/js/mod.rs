@@ -17,6 +17,7 @@ use std::path::{Path, PathBuf};
 use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
+mod wasi_intrinsics;
 
 pub struct Context<'a> {
     globals: String,
@@ -3181,6 +3182,12 @@ impl<'a> Context<'a> {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 self.invoke_intrinsic(intrinsic, args, prelude)
+            }
+
+            AuxImport::WasiIntrinsic(intrinsic) => {
+                assert!(kind == AdapterJsImportKind::Normal);
+                assert!(!variadic);
+                self.invoke_wasi_intrinsic(intrinsic, args, prelude)
             }
 
             AuxImport::LinkTo(path, content) => {

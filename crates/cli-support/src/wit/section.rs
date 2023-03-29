@@ -236,6 +236,14 @@ fn translate_instruction(
             mem: *mem,
             malloc: *malloc,
         }),
+        PackSlice(_) | PackMutSlice(_) | UnpackSlice(_) => {
+            bail!("slices not supported in wasm interface types with wasi ABI");
+        }
+        PackOption(_, _) | UnpackOption(_, _) => {
+            bail!(
+                "Options with primitive types not supported in wasm interface types with wasi ABI"
+            );
+        }
         StoreRetptr { .. } | LoadRetptr { .. } | Retptr { .. } => {
             bail!("return pointers aren't supported in wasm interface types");
         }
@@ -354,6 +362,9 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
         }
         AuxImport::Intrinsic(intrinsic) => {
             format!("wasm-bindgen specific intrinsic `{}`", intrinsic.name())
+        }
+        AuxImport::WasiIntrinsic(intrinsic) => {
+            format!("wasm-bindgen wasi intrinsic `{}`", intrinsic.name())
         }
         AuxImport::LinkTo(path, _) => {
             format!("wasm-bindgen specific link function for `{}`", path)

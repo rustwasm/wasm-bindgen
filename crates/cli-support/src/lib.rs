@@ -47,6 +47,7 @@ pub struct Bindgen {
     wasm_interface_types: bool,
     encode_into: EncodeInto,
     split_linked_modules: bool,
+    wasi_abi: bool,
 }
 
 pub struct Output {
@@ -122,6 +123,7 @@ impl Bindgen {
             encode_into: EncodeInto::Test,
             omit_default_module_path: true,
             split_linked_modules: false,
+            wasi_abi: false,
         }
     }
 
@@ -311,6 +313,11 @@ impl Bindgen {
         self
     }
 
+    pub fn wasi_abi(&mut self, enable: bool) -> &mut Bindgen {
+        self.wasi_abi = enable;
+        self
+    }
+
     pub fn generate<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
         self.generate_output()?.emit(path.as_ref())
     }
@@ -381,6 +388,15 @@ impl Bindgen {
         // sections.
         descriptors::execute(&mut module)?;
 
+        if env::var("WASM_BINDGEN_EMULATE_WASI").is_ok() {
+            for import in module.imports.iter_mut() {
+                if import.module == "wasi_snapshot_preview1" {
+                    import.module = PLACEHOLDER_MODULE.to_string();
+                    import.name = format!("__wbindgen_wasi_{}", import.name);
+                }
+            }
+        }
+
         // Process the custom section we extracted earlier. In its stead insert
         // a forward-compatible wasm interface types section as well as an
         // auxiliary section for all sorts of miscellaneous information and
@@ -393,6 +409,7 @@ impl Bindgen {
             self.wasm_interface_types,
             thread_count,
             self.emit_start,
+            self.wasi_abi,
         )?;
 
         // Now that we've got type information from the webidl processing pass,

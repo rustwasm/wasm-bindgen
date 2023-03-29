@@ -98,9 +98,20 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::CachedString => self.cached_string(false, true)?,
 
             Descriptor::String => {
-                // fetch the ptr/length ...
-                self.get(AdapterType::I32);
-                self.get(AdapterType::I32);
+                if self.cx.wasi_abi && !self.return_position {
+                    self.get(AdapterType::I32);
+                    self.instructions.push(InstructionData {
+                        instr: Instruction::UnpackSlice(self.cx.memory()?),
+                        stack_change: StackChange::Modified {
+                            popped: 1,
+                            pushed: 2,
+                        },
+                    });
+                } else {
+                    // fetch the ptr/length ...
+                    self.get(AdapterType::I32);
+                    self.get(AdapterType::I32);
+                }
 
                 // ... then defer a call to `free` to happen later
                 let free = self.cx.free()?;
@@ -134,15 +145,32 @@ impl InstructionBuilder<'_, '_> {
                 })?;
                 let mem = self.cx.memory()?;
                 let free = self.cx.free()?;
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32],
-                    Instruction::VectorLoad {
-                        kind: kind.clone(),
-                        mem,
-                        free,
-                    },
-                    &[AdapterType::Vector(kind)],
-                );
+                if self.cx.wasi_abi && !self.return_position {
+                    self.instruction(
+                        &[AdapterType::I32],
+                        Instruction::UnpackSlice(mem),
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                    self.late_instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::VectorLoad {
+                            kind: kind.clone(),
+                            mem,
+                            free,
+                        },
+                        &[AdapterType::Vector(kind)],
+                    );
+                } else {
+                    self.instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::VectorLoad {
+                            kind: kind.clone(),
+                            mem,
+                            free,
+                        },
+                        &[AdapterType::Vector(kind)],
+                    );
+                }
             }
 
             Descriptor::Option(d) => self.outgoing_option(d)?,
@@ -181,12 +209,26 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::CachedString => self.cached_string(false, false)?,
 
             Descriptor::String => {
-                let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32],
-                    Instruction::Standard(std),
-                    &[AdapterType::String],
-                );
+                if self.cx.wasi_abi && !self.return_position {
+                    self.instruction(
+                        &[AdapterType::I32],
+                        Instruction::UnpackSlice(self.cx.memory()?),
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                    let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
+                    self.late_instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::Standard(std),
+                        &[AdapterType::String],
+                    );
+                } else {
+                    let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
+                    self.instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::Standard(std),
+                        &[AdapterType::String],
+                    );
+                }
             }
             Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
@@ -196,14 +238,30 @@ impl InstructionBuilder<'_, '_> {
                     )
                 })?;
                 let mem = self.cx.memory()?;
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32],
-                    Instruction::View {
-                        kind: kind.clone(),
-                        mem,
-                    },
-                    &[AdapterType::Vector(kind)],
-                );
+                if self.cx.wasi_abi && !self.return_position {
+                    self.instruction(
+                        &[AdapterType::I32],
+                        Instruction::UnpackSlice(self.cx.memory()?),
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                    self.late_instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::View {
+                            kind: kind.clone(),
+                            mem,
+                        },
+                        &[AdapterType::Vector(kind)],
+                    );
+                } else {
+                    self.instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::View {
+                            kind: kind.clone(),
+                            mem,
+                        },
+                        &[AdapterType::Vector(kind)],
+                    );
+                }
             }
 
             Descriptor::Function(descriptor) => {
@@ -216,15 +274,32 @@ impl InstructionBuilder<'_, '_> {
                 let adapter = self
                     .cx
                     .table_element_adapter(descriptor.shim_idx, descriptor)?;
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32],
-                    Instruction::StackClosure {
-                        adapter,
-                        nargs,
-                        mutable,
-                    },
-                    &[AdapterType::Function],
-                );
+                if self.cx.wasi_abi && !self.return_position {
+                    self.instruction(
+                        &[AdapterType::I32],
+                        Instruction::UnpackSlice(self.cx.memory()?),
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                    self.late_instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::StackClosure {
+                            adapter,
+                            nargs,
+                            mutable,
+                        },
+                        &[AdapterType::Function],
+                    );
+                } else {
+                    self.instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::StackClosure {
+                            adapter,
+                            nargs,
+                            mutable,
+                        },
+                        &[AdapterType::Function],
+                    );
+                }
             }
 
             _ => bail!(
@@ -261,12 +336,12 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U8 => self.out_option_sentinel(AdapterType::U8),
             Descriptor::I16 => self.out_option_sentinel(AdapterType::S16),
             Descriptor::U16 => self.out_option_sentinel(AdapterType::U16),
-            Descriptor::I32 => self.option_native(true, ValType::I32),
-            Descriptor::U32 => self.option_native(false, ValType::I32),
-            Descriptor::I64 => self.option_native(true, ValType::I64),
-            Descriptor::U64 => self.option_native(false, ValType::I64),
-            Descriptor::F32 => self.option_native(true, ValType::F32),
-            Descriptor::F64 => self.option_native(true, ValType::F64),
+            Descriptor::I32 => self.option_native(true, ValType::I32)?,
+            Descriptor::U32 => self.option_native(false, ValType::I32)?,
+            Descriptor::I64 => self.option_native(true, ValType::I64)?,
+            Descriptor::U64 => self.option_native(false, ValType::I64)?,
+            Descriptor::F32 => self.option_native(true, ValType::F32)?,
+            Descriptor::F64 => self.option_native(true, ValType::F64)?,
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::I32],
@@ -311,15 +386,32 @@ impl InstructionBuilder<'_, '_> {
                 })?;
                 let mem = self.cx.memory()?;
                 let free = self.cx.free()?;
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32],
-                    Instruction::OptionVectorLoad {
-                        kind: kind.clone(),
-                        mem,
-                        free,
-                    },
-                    &[AdapterType::Vector(kind).option()],
-                );
+                if self.cx.wasi_abi && !self.return_position {
+                    self.instruction(
+                        &[AdapterType::I32],
+                        Instruction::UnpackSlice(mem),
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                    self.late_instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::OptionVectorLoad {
+                            kind: kind.clone(),
+                            mem,
+                            free,
+                        },
+                        &[AdapterType::Vector(kind).option()],
+                    );
+                } else {
+                    self.instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::OptionVectorLoad {
+                            kind: kind.clone(),
+                            mem,
+                            free,
+                        },
+                        &[AdapterType::Vector(kind).option()],
+                    );
+                }
             }
 
             _ => bail!(
@@ -492,14 +584,30 @@ impl InstructionBuilder<'_, '_> {
                     )
                 })?;
                 let mem = self.cx.memory()?;
-                self.instruction(
-                    &[AdapterType::I32, AdapterType::I32],
-                    Instruction::OptionView {
-                        kind: kind.clone(),
-                        mem,
-                    },
-                    &[AdapterType::Vector(kind).option()],
-                );
+                if self.cx.wasi_abi && !self.return_position {
+                    self.instruction(
+                        &[AdapterType::I32],
+                        Instruction::UnpackSlice(mem),
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                    self.late_instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::OptionView {
+                            kind: kind.clone(),
+                            mem,
+                        },
+                        &[AdapterType::Vector(kind).option()],
+                    );
+                } else {
+                    self.instruction(
+                        &[AdapterType::I32, AdapterType::I32],
+                        Instruction::OptionView {
+                            kind: kind.clone(),
+                            mem,
+                        },
+                        &[AdapterType::Vector(kind).option()],
+                    );
+                }
             }
             _ => bail!(
                 "unsupported optional ref argument type for calling JS function from Rust: {:?}",
@@ -530,27 +638,60 @@ impl InstructionBuilder<'_, '_> {
     fn cached_string(&mut self, optional: bool, owned: bool) -> Result<(), Error> {
         let mem = self.cx.memory()?;
         let free = self.cx.free()?;
-        self.instruction(
-            &[AdapterType::I32, AdapterType::I32],
-            Instruction::CachedStringLoad {
-                owned,
-                optional,
-                mem,
-                free,
-                table: None,
-            },
-            &[AdapterType::String],
-        );
+        if self.cx.wasi_abi && !self.return_position {
+            self.instruction(
+                &[AdapterType::I32],
+                Instruction::UnpackSlice(mem),
+                &[AdapterType::I32, AdapterType::I32],
+            );
+            self.late_instruction(
+                &[AdapterType::I32, AdapterType::I32],
+                Instruction::CachedStringLoad {
+                    owned,
+                    optional,
+                    mem,
+                    free,
+                    table: None,
+                },
+                &[AdapterType::String],
+            );
+        } else {
+            self.instruction(
+                &[AdapterType::I32, AdapterType::I32],
+                Instruction::CachedStringLoad {
+                    owned,
+                    optional,
+                    mem,
+                    free,
+                    table: None,
+                },
+                &[AdapterType::String],
+            );
+        }
         Ok(())
     }
 
-    fn option_native(&mut self, signed: bool, ty: ValType) {
+    fn option_native(&mut self, signed: bool, ty: ValType) -> Result<(), Error> {
         let adapter_ty = AdapterType::from_wasm(ty).unwrap();
-        self.instruction(
-            &[AdapterType::I32, adapter_ty.clone()],
-            Instruction::ToOptionNative { signed, ty },
-            &[adapter_ty.option()],
-        );
+        if self.cx.wasi_abi && !self.return_position {
+            self.instruction(
+                &[AdapterType::I32],
+                Instruction::UnpackOption(self.cx.memory()?, adapter_ty.clone()),
+                &[AdapterType::I32, adapter_ty.clone()],
+            );
+            self.late_instruction(
+                &[AdapterType::I32, adapter_ty.clone()],
+                Instruction::ToOptionNative { signed, ty },
+                &[adapter_ty.option()],
+            );
+        } else {
+            self.instruction(
+                &[AdapterType::I32, adapter_ty.clone()],
+                Instruction::ToOptionNative { signed, ty },
+                &[adapter_ty.option()],
+            );
+        }
+        Ok(())
     }
 
     fn out_option_sentinel(&mut self, ty: AdapterType) {

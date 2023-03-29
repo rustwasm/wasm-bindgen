@@ -638,6 +638,124 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.string_to_memory(*mem, *malloc, *realloc)?;
         }
 
+        Instruction::PackSlice(mem) => {
+            js.cx.inject_stack_pointer_shim()?;
+
+            let len = js.pop();
+            let ptr = js.pop();
+
+            let i = js.tmp();
+            let mem = js.cx.expose_uint32_memory(*mem);
+
+            js.prelude(&format!(
+                "
+                const argPtr{i} = wasm.__wbindgen_add_to_stack_pointer(-16);
+                {mem}()[argPtr{i} / 4] = {ptr};
+                {mem}()[argPtr{i} / 4 + 1] = {len};
+            "
+            ));
+
+            js.push(format!("argPtr{i}"));
+
+            js.finally(&format!("wasm.__wbindgen_add_to_stack_pointer(16);"));
+        }
+        Instruction::PackMutSlice(mem) => {
+            js.cx.inject_stack_pointer_shim()?;
+
+            let idx = js.pop();
+            let len = js.pop();
+            let ptr = js.pop();
+
+            let i = js.tmp();
+            let mem = js.cx.expose_uint32_memory(*mem);
+
+            js.prelude(&format!(
+                "
+                const argPtr{i} = wasm.__wbindgen_add_to_stack_pointer(-16);
+                {mem}()[argPtr{i} / 4] = {ptr};
+                {mem}()[argPtr{i} / 4 + 1] = {len};
+                {mem}()[argPtr{i} / 4 + 2] = {idx};
+            "
+            ));
+
+            js.push(format!("argPtr{i}"));
+
+            js.finally(&format!("wasm.__wbindgen_add_to_stack_pointer(16);"));
+        }
+        Instruction::UnpackSlice(mem) => {
+            let mem = js.cx.expose_uint32_memory(*mem);
+
+            let arg_ptr = js.pop();
+            let i = js.tmp();
+
+            js.prelude(&format!(
+                "
+                var ptr{i} = {mem}()[{arg_ptr} / 4];
+                var len{i} = {mem}()[{arg_ptr} / 4 + 1];
+            "
+            ));
+
+            js.push(format!("ptr{i}"));
+            js.push(format!("len{i}"));
+        }
+
+        Instruction::PackOption(mem, ty) => {
+            js.cx.inject_stack_pointer_shim()?;
+
+            let content = js.pop();
+            let discriminant = js.pop();
+
+            let i = js.tmp();
+            let mem32 = js.cx.expose_uint32_memory(*mem);
+
+            let (content_mem, content_size) = match ty {
+                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
+                AdapterType::U32 => (js.cx.expose_uint32_memory(*mem), 4),
+                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
+                AdapterType::I64 => (js.cx.expose_int64_memory(*mem), 8),
+                AdapterType::U64 => (js.cx.expose_uint64_memory(*mem), 8),
+                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
+                _ => bail!("Unexpected type passed to PackOption"),
+            };
+
+            js.prelude(&format!(
+                "
+                const argPtr{i} = wasm.__wbindgen_add_to_stack_pointer(-16);
+                {mem32}()[argPtr{i} / 4] = {discriminant};
+                {content_mem}()[argPtr{i} / {content_size} + 1] = {content};
+            "
+            ));
+
+            js.push(format!("argPtr{i}"));
+
+            js.finally(&format!("wasm.__wbindgen_add_to_stack_pointer(16);"));
+        }
+        Instruction::UnpackOption(mem, ty) => {
+            let mem32 = js.cx.expose_uint32_memory(*mem);
+            let (content_mem, content_size) = match ty {
+                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
+                AdapterType::U32 => (js.cx.expose_uint32_memory(*mem), 4),
+                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
+                AdapterType::I64 => (js.cx.expose_int64_memory(*mem), 8),
+                AdapterType::U64 => (js.cx.expose_uint64_memory(*mem), 8),
+                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
+                _ => bail!("Unexpected type passed to PackOption"),
+            };
+
+            let arg_ptr = js.pop();
+            let i = js.tmp();
+
+            js.prelude(&format!(
+                "
+                var discriminant{i} = {mem32}()[{arg_ptr} / 4];
+                var content{i} = {content_mem}()[{arg_ptr} / {content_size} + 1];
+            "
+            ));
+
+            js.push(format!("discriminant{i}"));
+            js.push(format!("content{i}"));
+        }
+
         Instruction::Retptr { size } => {
             js.cx.inject_stack_pointer_shim()?;
             js.prelude(&format!(

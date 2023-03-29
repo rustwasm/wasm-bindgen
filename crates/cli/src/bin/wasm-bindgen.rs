@@ -41,6 +41,7 @@ Options:
     --no-modules                 Deprecated, use `--target no-modules`
     --weak-refs                  Enable usage of the JS weak references proposal
     --reference-types            Enable usage of WebAssembly reference types
+    --wasi-abi                   Generate bindings for the wasm32-wasi target
     -V --version                 Print the version number of wasm-bindgen
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/reference/cli.html
@@ -71,6 +72,7 @@ struct Args {
     flag_target: Option<String>,
     flag_omit_default_module_path: bool,
     flag_split_linked_modules: bool,
+    flag_wasi_abi: bool,
     arg_input: Option<PathBuf>,
 }
 
@@ -125,7 +127,8 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .typescript(typescript)
         .omit_imports(args.flag_omit_imports)
         .omit_default_module_path(args.flag_omit_default_module_path)
-        .split_linked_modules(args.flag_split_linked_modules);
+        .split_linked_modules(args.flag_split_linked_modules)
+        .wasi_abi(args.flag_wasi_abi);
     if let Some(true) = args.flag_weak_refs {
         b.weak_refs(true);
     }

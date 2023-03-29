@@ -94,6 +94,13 @@ pub enum Instruction {
     /// A known instruction in the "standard"
     Standard(wit_walrus::Instruction),
 
+    PackSlice(walrus::MemoryId),
+    PackMutSlice(walrus::MemoryId),
+    UnpackSlice(walrus::MemoryId),
+
+    PackOption(walrus::MemoryId, AdapterType),
+    UnpackOption(walrus::MemoryId, AdapterType),
+
     /// A call to one of our own defined adapters, similar to the standard
     /// call-adapter instruction
     CallAdapter(AdapterId),

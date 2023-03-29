@@ -1,7 +1,7 @@
 use crate::decode::LocalModule;
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
-use crate::intrinsic::Intrinsic;
+use crate::intrinsic::{Intrinsic, WasiIntrinsic};
 use crate::{decode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
 use std::collections::{HashMap, HashSet};
@@ -38,6 +38,7 @@ struct Context<'a> {
     wasm_interface_types: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
+    wasi_abi: bool,
 }
 
 struct InstructionBuilder<'a, 'b> {
@@ -55,6 +56,7 @@ pub fn process(
     wasm_interface_types: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
+    wasi_abi: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
     let mut cx = Context {
         adapters: Default::default(),
@@ -72,6 +74,7 @@ pub fn process(
         wasm_interface_types,
         thread_count,
         support_start,
+        wasi_abi,
     };
     cx.init()?;
 
@@ -113,6 +116,7 @@ impl<'a> Context<'a> {
         // placeholder module name which we'll want to be sure that we've got a
         // location listed of what to import there for each item.
         let mut intrinsics = Vec::new();
+        let mut wasi_intrinsics = Vec::new();
         let mut duplicate_import_map = HashMap::new();
         let mut imports_to_delete = HashSet::new();
         for import in self.module.imports.iter() {
@@ -146,9 +150,15 @@ impl<'a> Context<'a> {
             if let Some(intrinsic) = Intrinsic::from_symbol(&import.name) {
                 intrinsics.push((import.id(), intrinsic));
             }
+            if let Some(intrinsic) = WasiIntrinsic::from_symbol(&import.name) {
+                wasi_intrinsics.push((import.id(), intrinsic));
+            }
         }
         for (id, intrinsic) in intrinsics {
             self.bind_intrinsic(id, intrinsic)?;
+        }
+        for (id, intrinsic) in wasi_intrinsics {
+            self.bind_wasi_intrinsic(id, intrinsic)?;
         }
         for import in imports_to_delete {
             self.module.imports.delete(import);
@@ -345,6 +355,14 @@ impl<'a> Context<'a> {
         self.aux
             .import_map
             .insert(id, AuxImport::Intrinsic(intrinsic));
+        Ok(())
+    }
+
+    fn bind_wasi_intrinsic(&mut self, id: ImportId, intrinsic: WasiIntrinsic) -> Result<(), Error> {
+        let id = self.import_adapter(id, intrinsic.signature(), AdapterJsImportKind::Normal)?;
+        self.aux
+            .import_map
+            .insert(id, AuxImport::WasiIntrinsic(intrinsic));
         Ok(())
     }
 
