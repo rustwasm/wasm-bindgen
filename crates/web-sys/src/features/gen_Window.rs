@@ -1966,13 +1966,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
     pub fn blur(this: &Window) -> Result<(), JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = cancelAnimationFrame)]
-    #[doc = "The `cancelAnimationFrame()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn cancel_animation_frame(this: &Window, handle: i32) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "Window" , js_name = cancelIdleCallback)]
     #[doc = "The `cancelIdleCallback()` method."]
     #[doc = ""]
@@ -2167,16 +2160,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
     pub fn release_events(this: &Window);
-    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = requestAnimationFrame)]
-    #[doc = "The `requestAnimationFrame()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn request_animation_frame(
-        this: &Window,
-        callback: &::js_sys::Function,
-    ) -> Result<i32, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = requestIdleCallback)]
     #[doc = "The `requestIdleCallback()` method."]
     #[doc = ""]
@@ -2293,6 +2276,23 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
     pub fn get(this: &Window, name: &str) -> Option<::js_sys::Object>;
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = cancelAnimationFrame)]
+    #[doc = "The `cancelAnimationFrame()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn cancel_animation_frame(this: &Window, handle: i32) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = requestAnimationFrame)]
+    #[doc = "The `requestAnimationFrame()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn request_animation_frame(
+        this: &Window,
+        callback: &::js_sys::Function,
+    ) -> Result<i32, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = atob)]
     #[doc = "The `atob()` method."]
     #[doc = ""]

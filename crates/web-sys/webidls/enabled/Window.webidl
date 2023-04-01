@@ -9,7 +9,6 @@
  * https://dvcs.w3.org/hg/IndexedDB/raw-file/tip/Overview.html
  * http://dev.w3.org/csswg/cssom/
  * http://dev.w3.org/csswg/cssom-view/
- * https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/RequestAnimationFrame/Overview.html
  * https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming/Overview.html
  * https://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html
  * http://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html
@@ -195,13 +194,6 @@ partial interface Window {
   [Throws, NeedsCallerType] attribute any outerHeight;
   [Replaceable] readonly attribute double devicePixelRatio;
 };
-
-// https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/RequestAnimationFrame/Overview.html
-partial interface Window {
-  [Throws] long requestAnimationFrame(FrameRequestCallback callback);
-  [Throws] undefined cancelAnimationFrame(long handle);
-};
-callback FrameRequestCallback = undefined (DOMHighResTimeStamp time);
 
 // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming/Overview.html
 partial interface Window {
