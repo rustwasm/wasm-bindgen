@@ -114,7 +114,7 @@ pub fn spawn(
             // status text as at this point we should be asynchronously fetching the
             // wasm module.
             document.getElementById('output').textContent = "Loading wasm module...";
-            const worker = new Worker("worker.js", {{module: {}}});
+            const worker = new Worker("worker.js", {{type: "{}"}});
 
             worker.addEventListener("message", function(e) {{
                 // Checking the whether the message is from wasm_bindgen_test
@@ -146,7 +146,7 @@ pub fn spawn(
 
             const tests = [];
             "#,
-            no_module,
+            if no_module {"classic"} else {"module"}
         ));
     } else {
         js_to_execute.push_str(&wbg_import_script);
