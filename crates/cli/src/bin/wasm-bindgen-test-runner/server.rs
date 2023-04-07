@@ -146,7 +146,7 @@ pub fn spawn(
 
             const tests = [];
             "#,
-            if no_module {"classic"} else {"module"}
+            if no_module { "classic" } else { "module" }
         ));
     } else {
         js_to_execute.push_str(&wbg_import_script);
