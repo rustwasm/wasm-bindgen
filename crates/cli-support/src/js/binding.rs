@@ -8,6 +8,7 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
+use std::fmt::Write;
 use walrus::{Module, ValType};
 
 /// A one-size-fits-all builder for processing WebIDL bindings and generating
@@ -38,6 +39,9 @@ pub struct JsBuilder<'a, 'b> {
     /// The "prelude" of the function, or largely just the JS function we've
     /// built so far.
     prelude: String,
+
+    /// Code which should go before the `try {` in a try-finally block.
+    pre_try: String,
 
     /// JS code to execute in a `finally` block in case any exceptions happen.
     finally: String,
@@ -211,10 +215,14 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         code.push_str(") {\n");
 
-        let mut call = js.prelude;
-        if js.finally.len() != 0 {
-            call = format!("try {{\n{}}} finally {{\n{}}}\n", call, js.finally);
-        }
+        let call = if js.finally.len() != 0 {
+            format!(
+                "{}try {{\n{}}} finally {{\n{}}}\n",
+                js.pre_try, js.prelude, js.finally
+            )
+        } else {
+            js.pre_try + &js.prelude
+        };
 
         if self.catch {
             js.cx.expose_handle_error()?;
@@ -387,6 +395,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             cx,
             args: Vec::new(),
             tmp: 0,
+            pre_try: String::new(),
             finally: String::new(),
             prelude: String::new(),
             stack: Vec::new(),
@@ -546,12 +555,25 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let invoc = Invocation::from(instr, js.cx.module)?;
             let (params, results) = invoc.params_results(js.cx);
 
-            // Pop off the number of parameters for the function we're calling
             let mut args = Vec::new();
-            for _ in 0..params {
-                args.push(js.pop());
+            let tmp = js.tmp();
+            if invoc.defer() {
+                // If the call is deferred, the arguments to the function still need to be
+                // accessible in the `finally` block, so we declare variables to hold the args
+                // outside of the try-finally block and then set those to the args.
+                for (i, arg) in js.stack[js.stack.len() - params..].iter().enumerate() {
+                    let name = format!("deferred{tmp}_{i}");
+                    writeln!(js.pre_try, "let {name};").unwrap();
+                    writeln!(js.prelude, "{name} = {arg};").unwrap();
+                    args.push(name);
+                }
+            } else {
+                // Otherwise, pop off the number of parameters for the function we're calling.
+                for _ in 0..params {
+                    args.push(js.pop());
+                }
+                args.reverse();
             }
-            args.reverse();
 
             // Call the function through an export of the underlying module.
             let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error)?;
@@ -562,7 +584,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             match (invoc.defer(), results) {
                 (true, 0) => {
                     js.finally(&format!("{};", call));
-                    js.stack.extend(args);
                 }
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),

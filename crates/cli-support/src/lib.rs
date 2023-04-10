@@ -416,10 +416,6 @@ impl Bindgen {
         // Using all of our metadata convert our module to a multi-value using
         // module if applicable.
         if self.multi_value {
-            anyhow::bail!(
-                "Wasm multi-value is currently only available when \
-                     Wasm interface types is also enabled"
-            );
             multivalue::run(&mut module)
                 .context("failed to transform return pointers into multi-value Wasm")?;
         }
