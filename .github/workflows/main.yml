@@ -70,6 +70,9 @@ jobs:
       env:
         WASM_BINDGEN_EXTERNREF: 1
         NODE_ARGS: --experimental-wasm-reftypes
+    - run: cargo test --target wasm32-unknown-unknown
+      env:
+        WASM_BINDGEN_MULTI_VALUE: 1
 
   test_threads:
     name: "Run wasm-bindgen crate tests with multithreading enabled"

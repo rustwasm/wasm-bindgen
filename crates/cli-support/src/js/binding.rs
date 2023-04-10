@@ -8,6 +8,7 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
+use std::fmt::Write;
 use walrus::{Module, ValType};
 
 /// A one-size-fits-all builder for processing WebIDL bindings and generating
@@ -38,6 +39,9 @@ pub struct JsBuilder<'a, 'b> {
     /// The "prelude" of the function, or largely just the JS function we've
     /// built so far.
     prelude: String,
+
+    /// Code which should go before the `try {` in a try-finally block.
+    pre_try: String,
 
     /// JS code to execute in a `finally` block in case any exceptions happen.
     finally: String,
@@ -211,10 +215,14 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         code.push_str(") {\n");
 
-        let mut call = js.prelude;
-        if js.finally.len() != 0 {
-            call = format!("try {{\n{}}} finally {{\n{}}}\n", call, js.finally);
-        }
+        let call = if js.finally.len() != 0 {
+            format!(
+                "{}try {{\n{}}} finally {{\n{}}}\n",
+                js.pre_try, js.prelude, js.finally
+            )
+        } else {
+            js.pre_try + &js.prelude
+        };
 
         if self.catch {
             js.cx.expose_handle_error()?;
@@ -387,6 +395,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             cx,
             args: Vec::new(),
             tmp: 0,
+            pre_try: String::new(),
             finally: String::new(),
             prelude: String::new(),
             stack: Vec::new(),
@@ -533,29 +542,38 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
 
 fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) -> Result<(), Error> {
     match instr {
-        Instruction::Standard(wit_walrus::Instruction::ArgGet(n)) => {
+        Instruction::ArgGet(n) => {
             let arg = js.arg(*n).to_string();
             js.push(arg);
         }
 
-        Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => {
-            panic!("standard call adapter functions should be mapped to our adapters");
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::CallCore(_))
+        Instruction::CallCore(_)
         | Instruction::CallExport(_)
         | Instruction::CallAdapter(_)
         | Instruction::CallTableElement(_)
-        | Instruction::Standard(wit_walrus::Instruction::DeferCallCore(_)) => {
+        | Instruction::DeferCallCore(_) => {
             let invoc = Invocation::from(instr, js.cx.module)?;
             let (params, results) = invoc.params_results(js.cx);
 
-            // Pop off the number of parameters for the function we're calling
             let mut args = Vec::new();
-            for _ in 0..params {
-                args.push(js.pop());
+            let tmp = js.tmp();
+            if invoc.defer() {
+                // If the call is deferred, the arguments to the function still need to be
+                // accessible in the `finally` block, so we declare variables to hold the args
+                // outside of the try-finally block and then set those to the args.
+                for (i, arg) in js.stack[js.stack.len() - params..].iter().enumerate() {
+                    let name = format!("deferred{tmp}_{i}");
+                    writeln!(js.pre_try, "let {name};").unwrap();
+                    writeln!(js.prelude, "{name} = {arg};").unwrap();
+                    args.push(name);
+                }
+            } else {
+                // Otherwise, pop off the number of parameters for the function we're calling.
+                for _ in 0..params {
+                    args.push(js.pop());
+                }
+                args.reverse();
             }
-            args.reverse();
 
             // Call the function through an export of the underlying module.
             let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error)?;
@@ -566,7 +584,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             match (invoc.defer(), results) {
                 (true, 0) => {
                     js.finally(&format!("{};", call));
-                    js.stack.extend(args);
                 }
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),
@@ -583,13 +600,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             }
         }
 
-        Instruction::Standard(wit_walrus::Instruction::IntToWasm {
-            trap: false, input, ..
-        }) => {
+        Instruction::IntToWasm { input, .. } => {
             let val = js.pop();
             if matches!(
                 input,
-                wit_walrus::ValType::I64 | wit_walrus::ValType::S64 | wit_walrus::ValType::U64
+                AdapterType::I64 | AdapterType::S64 | AdapterType::U64
             ) {
                 js.assert_bigint(&val);
             } else {
@@ -601,33 +616,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         // When converting to a JS number we need to specially handle the `u32`
         // case because if the high bit is set then it comes out as a negative
         // number, but we want to switch that to an unsigned representation.
-        Instruction::Standard(wit_walrus::Instruction::WasmToInt {
-            trap: false,
-            output,
-            ..
-        }) => {
+        Instruction::WasmToInt { output, .. } => {
             let val = js.pop();
             match output {
-                wit_walrus::ValType::U32 => js.push(format!("{} >>> 0", val)),
-                wit_walrus::ValType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
+                AdapterType::U32 => js.push(format!("{} >>> 0", val)),
+                AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
                 _ => js.push(val),
             }
         }
 
-        Instruction::Standard(wit_walrus::Instruction::WasmToInt { trap: true, .. })
-        | Instruction::Standard(wit_walrus::Instruction::IntToWasm { trap: true, .. }) => {
-            bail!("trapping wasm-to-int and int-to-wasm instructions not supported")
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::MemoryToString(mem)) => {
+        Instruction::MemoryToString(mem) => {
             let len = js.pop();
             let ptr = js.pop();
             let get = js.cx.expose_get_string_from_wasm(*mem)?;
             js.push(format!("{}({}, {})", get, ptr, len));
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::StringToMemory { mem, malloc }) => {
-            js.string_to_memory(*mem, *malloc, None)?;
         }
 
         Instruction::StringToMemory {
@@ -1186,12 +1188,12 @@ impl Invocation {
     fn from(instr: &Instruction, module: &Module) -> Result<Invocation, Error> {
         use Instruction::*;
         Ok(match instr {
-            Standard(wit_walrus::Instruction::CallCore(f)) => Invocation::Core {
+            CallCore(f) => Invocation::Core {
                 id: *f,
                 defer: false,
             },
 
-            Standard(wit_walrus::Instruction::DeferCallCore(f)) => Invocation::Core {
+            DeferCallCore(f) => Invocation::Core {
                 id: *f,
                 defer: true,
             },

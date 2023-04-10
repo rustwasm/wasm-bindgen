@@ -14,7 +14,6 @@ use wasm_bindgen_threads_xform::ThreadCount;
 mod incoming;
 mod nonstandard;
 mod outgoing;
-pub mod section;
 mod standard;
 pub use self::nonstandard::*;
 pub use self::standard::*;
@@ -35,7 +34,6 @@ struct Context<'a> {
     unique_crate_identifier: &'a str,
     descriptors: HashMap<String, Descriptor>,
     externref_enabled: bool,
-    wasm_interface_types: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
 }
@@ -52,7 +50,6 @@ pub fn process(
     module: &mut Module,
     programs: Vec<decode::Program>,
     externref_enabled: bool,
-    wasm_interface_types: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
@@ -69,7 +66,6 @@ pub fn process(
         module,
         start_found: false,
         externref_enabled,
-        wasm_interface_types,
         thread_count,
         support_start,
     };
@@ -81,10 +77,6 @@ pub fn process(
 
     if !cx.start_found {
         cx.discover_main()?;
-    }
-
-    if let Some(standard) = cx.module.customs.delete_typed() {
-        cx.standard(&standard)?;
     }
 
     cx.verify()?;
@@ -315,7 +307,7 @@ impl<'a> Context<'a> {
     // since that's a slightly different environment for now which doesn't have
     // quite the same initialization.
     fn inject_externref_initialization(&mut self) -> Result<(), Error> {
-        if !self.externref_enabled || self.wasm_interface_types {
+        if !self.externref_enabled {
             return Ok(());
         }
 
@@ -1039,142 +1031,6 @@ impl<'a> Context<'a> {
             },
         };
         Ok(JsImport { name, fields })
-    }
-
-    fn standard(&mut self, std: &wit_walrus::WasmInterfaceTypes) -> Result<(), Error> {
-        let mut walrus2us = HashMap::new();
-        let params_and_results = |id: wit_walrus::TypeId| -> (Vec<_>, Vec<_>) {
-            let ty = std.types.get(id);
-            let params = ty
-                .params()
-                .iter()
-                .cloned()
-                .map(AdapterType::from_wit)
-                .collect();
-            let results = ty
-                .results()
-                .iter()
-                .cloned()
-                .map(AdapterType::from_wit)
-                .collect();
-            (params, results)
-        };
-
-        // Register all imports, allocating our own id for them and configuring
-        // where the JS value for the import is coming from.
-        for import in std.imports.iter() {
-            let func = std.funcs.get(import.func);
-            let (params, results) = params_and_results(func.ty);
-            let id = self.adapters.append(
-                params,
-                results,
-                vec![],
-                AdapterKind::Import {
-                    module: import.module.clone(),
-                    name: import.name.clone(),
-                    kind: AdapterJsImportKind::Normal,
-                },
-            );
-            walrus2us.insert(import.func, id);
-            let js = JsImport {
-                name: JsImportName::Module {
-                    module: import.module.clone(),
-                    name: import.name.clone(),
-                },
-                fields: Vec::new(),
-            };
-            let value = AuxValue::Bare(js);
-            assert!(self
-                .aux
-                .import_map
-                .insert(id, AuxImport::Value(value))
-                .is_none());
-        }
-
-        // Register all functions, allocating our own id system for each of the
-        // functions.
-        for func in std.funcs.iter() {
-            if let wit_walrus::FuncKind::Import(_) = func.kind {
-                continue;
-            }
-            let (params, results) = params_and_results(func.ty);
-            walrus2us.insert(
-                func.id(),
-                self.adapters.append(
-                    params,
-                    results,
-                    vec![],
-                    AdapterKind::Local {
-                        instructions: Vec::new(),
-                    },
-                ),
-            );
-        }
-
-        // .. and then actually translate all functions using our id mapping,
-        // now that we're able to remap all the `CallAdapter` instructions.
-        for func in std.funcs.iter() {
-            let instrs = match &func.kind {
-                wit_walrus::FuncKind::Local(instrs) => instrs,
-                wit_walrus::FuncKind::Import(_) => continue,
-            };
-            let instrs = instrs
-                .iter()
-                .map(|i| match i {
-                    wit_walrus::Instruction::CallAdapter(f) => {
-                        Instruction::CallAdapter(walrus2us[&f])
-                    }
-                    other => Instruction::Standard(other.clone()),
-                })
-                .map(|instr| InstructionData {
-                    instr,
-                    stack_change: StackChange::Unknown,
-                })
-                .collect::<Vec<_>>();
-
-            // Store the instrs into the adapter function directly.
-            let adapter = self
-                .adapters
-                .adapters
-                .get_mut(&walrus2us[&func.id()])
-                .unwrap();
-            match &mut adapter.kind {
-                AdapterKind::Local { instructions } => *instructions = instrs,
-                _ => unreachable!(),
-            }
-        }
-
-        // next up register all exports, ensuring that our export map says
-        // what's happening as well for JS
-        for export in std.exports.iter() {
-            let id = walrus2us[&export.func];
-            self.adapters.exports.push((export.name.clone(), id));
-
-            let kind = AuxExportKind::Function(export.name.clone());
-            let export = AuxExport {
-                debug_name: format!("standard export {:?}", id),
-                comments: String::new(),
-                arg_names: None,
-                asyncness: false,
-                kind,
-                generate_typescript: true,
-                generate_jsdoc: true,
-                variadic: false,
-            };
-            assert!(self.aux.export_map.insert(id, export).is_none());
-        }
-
-        // ... and finally the `implements` section
-        for i in std.implements.iter() {
-            let import_id = match &self.module.funcs.get(i.core_func).kind {
-                walrus::FunctionKind::Import(i) => i.import,
-                _ => panic!("malformed wasm interface typess section"),
-            };
-            self.adapters
-                .implements
-                .push((import_id, i.core_func, walrus2us[&i.adapter_func]));
-        }
-        Ok(())
     }
 
     /// Perform a small verification pass over the module to perform some

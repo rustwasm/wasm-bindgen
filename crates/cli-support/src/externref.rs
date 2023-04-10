@@ -99,7 +99,7 @@ pub fn process(module: &mut Module) -> Result<()> {
                         AuxImport::Intrinsic(Intrinsic::ExternrefHeapLiveCount) => {}
                         _ => continue,
                     }
-                    instr.instr = Instruction::Standard(wit_walrus::Instruction::CallCore(id));
+                    instr.instr = Instruction::CallCore(id);
                 }
 
                 // Optional externref values are now managed in the wasm module, so
@@ -199,7 +199,7 @@ fn import_xform(
                 args.push(Some(arg));
                 to_delete.push(i);
             }
-            Instruction::Standard(wit_walrus::Instruction::ArgGet(n)) => {
+            Instruction::ArgGet(n) => {
                 args.push(Some(Arg {
                     idx: n as usize,
                     externref: None,

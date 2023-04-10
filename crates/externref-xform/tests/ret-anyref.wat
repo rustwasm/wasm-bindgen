@@ -14,16 +14,19 @@
   (type (;0;) (func (result i32)))
   (type (;1;) (func (result externref)))
   (type (;2;) (func (param i32)))
-  (func $#func0<foo_externref_shim> (@name "foo externref shim") (type 1) (result externref)
+  (func $#func0<foo_externref_shim> (@name "foo externref shim") (;0;) (type 1) (result externref)
     (local i32)
     call $foo
     local.tee 0
     table.get 0
     local.get 0
-    call $dealloc)
-  (func $foo (type 0) (result i32)
-    i32.const 0)
-  (func $dealloc (type 2) (param i32))
+    call $dealloc
+  )
+  (func $foo (;1;) (type 0) (result i32)
+    i32.const 0
+  )
+  (func $dealloc (;2;) (type 2) (param i32))
   (table (;0;) 128 externref)
-  (export "foo" (func $#func0<foo_externref_shim>)))
+  (export "foo" (func $#func0<foo_externref_shim>))
+)
 ;)
