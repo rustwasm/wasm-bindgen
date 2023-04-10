@@ -12,7 +12,7 @@
   (type (;0;) (func (result i32)))
   (type (;1;) (func (param f32 i32 i64 i32 i32)))
   (type (;2;) (func (param f32 externref i64 externref i32)))
-  (func $#func0<a_externref_shim> (@name "a externref shim") (type 2) (param f32 externref i64 externref i32)
+  (func $#func0<a_externref_shim> (@name "a externref shim") (;0;) (type 2) (param f32 externref i64 externref i32)
     (local i32 i32)
     global.get 0
     i32.const 1
@@ -38,11 +38,14 @@
     local.get 5
     i32.const 1
     i32.add
-    global.set 0)
-  (func $alloc (type 0) (result i32)
-    i32.const 0)
-  (func $a (type 1) (param f32 i32 i64 i32 i32))
+    global.set 0
+  )
+  (func $alloc (;1;) (type 0) (result i32)
+    i32.const 0
+  )
+  (func $a (;2;) (type 1) (param f32 i32 i64 i32 i32))
   (table (;0;) 128 externref)
   (global (;0;) (mut i32) i32.const 128)
-  (export "a" (func $#func0<a_externref_shim>)))
+  (export "a" (func $#func0<a_externref_shim>))
+)
 ;)

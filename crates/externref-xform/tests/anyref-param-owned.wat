@@ -12,17 +12,20 @@
   (type (;0;) (func (result i32)))
   (type (;1;) (func (param i32)))
   (type (;2;) (func (param externref)))
-  (func $#func0<foo_externref_shim> (@name "foo externref shim") (type 2) (param externref)
+  (func $#func0<foo_externref_shim> (@name "foo externref shim") (;0;) (type 2) (param externref)
     (local i32)
     call $alloc
     local.tee 1
     local.get 0
     table.set 0
     local.get 1
-    call $foo)
-  (func $alloc (type 0) (result i32)
-    i32.const 0)
-  (func $foo (type 1) (param i32))
+    call $foo
+  )
+  (func $alloc (;1;) (type 0) (result i32)
+    i32.const 0
+  )
+  (func $foo (;2;) (type 1) (param i32))
   (table (;0;) 128 externref)
-  (export "foo" (func $#func0<foo_externref_shim>)))
+  (export "foo" (func $#func0<foo_externref_shim>))
+)
 ;)
