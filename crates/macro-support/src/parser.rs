@@ -12,6 +12,8 @@ use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
 use syn::{Lit, MacroDelimiter};
 
+use crate::ClassMarker;
+
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
 /// Javascript keywords which are not keywords in Rust.
@@ -82,6 +84,8 @@ macro_rules! attrgen {
             (skip_typescript, SkipTypescript(Span)),
             (skip_jsdoc, SkipJsDoc(Span)),
             (start, Start(Span)),
+            (wasm_bindgen, WasmBindgen(Span, syn::Path)),
+            (wasm_bindgen_futures, WasmBindgenFutures(Span, syn::Path)),
             (skip, Skip(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
             (getter_with_clone, GetterWithClone(Span)),
@@ -392,10 +396,13 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
+impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
-    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+    fn convert(
+        self,
+        (program, attrs): (&ast::Program, BindgenAttrs),
+    ) -> Result<Self::Target, Diagnostic> {
         if self.generics.params.len() > 0 {
             bail_span!(
                 self.generics,
@@ -447,6 +454,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 generate_typescript: attrs.skip_typescript().is_none(),
                 generate_jsdoc: attrs.skip_jsdoc().is_none(),
                 getter_with_clone: attrs.getter_with_clone().or(getter_with_clone).copied(),
+                wasm_bindgen: program.wasm_bindgen.clone(),
             });
             attrs.check_used();
         }
@@ -460,6 +468,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             comments,
             is_inspectable,
             generate_typescript,
+            wasm_bindgen: program.wasm_bindgen.clone(),
         })
     }
 }
@@ -480,12 +489,14 @@ fn get_expr(mut expr: &syn::Expr) -> &syn::Expr {
     expr
 }
 
-impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::ForeignItemFn {
+impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>)>
+    for syn::ForeignItemFn
+{
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (BindgenAttrs, &'a Option<ast::ImportModule>),
+        (program, opts, module): (&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>),
     ) -> Result<Self::Target, Diagnostic> {
         let mut wasm = function_from_decl(
             &self.sig.ident,
@@ -666,6 +677,8 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::Fo
             rust_name: self.sig.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment,
+            wasm_bindgen: program.wasm_bindgen.clone(),
+            wasm_bindgen_futures: program.wasm_bindgen_futures.clone(),
         });
         opts.check_used();
 
@@ -673,10 +686,13 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::Fo
     }
 }
 
-impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
+impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
-    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+    fn convert(
+        self,
+        (program, attrs): (&ast::Program, BindgenAttrs),
+    ) -> Result<Self::Target, Diagnostic> {
         let js_name = attrs
             .js_name()
             .map(|s| s.0)
@@ -713,16 +729,19 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             extends,
             vendor_prefixes,
             no_deref,
+            wasm_bindgen: program.wasm_bindgen.clone(),
         }))
     }
 }
 
-impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::ForeignItemStatic {
+impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>)>
+    for syn::ForeignItemStatic
+{
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (BindgenAttrs, &'a Option<ast::ImportModule>),
+        (program, opts, module): (&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>),
     ) -> Result<Self::Target, Diagnostic> {
         if let syn::StaticMutability::Mut(_) = self.mutability {
             bail_span!(self.mutability, "cannot import mutable globals yet")
@@ -746,6 +765,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<ast::ImportModule>)> for syn::Fo
             rust_name: self.ident.clone(),
             js_name,
             shim: Ident::new(&shim, Span::call_site()),
+            wasm_bindgen: program.wasm_bindgen.clone(),
         }))
     }
 }
@@ -947,6 +967,12 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 tokens.extend(quote::quote! { #[allow(dead_code)] });
                 f.to_tokens(tokens);
                 let opts = opts.unwrap_or_default();
+                if let Some(path) = opts.wasm_bindgen() {
+                    program.wasm_bindgen = path.clone();
+                }
+                if let Some(path) = opts.wasm_bindgen_futures() {
+                    program.wasm_bindgen_futures = path.clone();
+                }
                 if opts.start().is_some() {
                     if f.sig.generics.params.len() > 0 {
                         bail_span!(&f.sig.generics, "the start function cannot have generics",);
@@ -970,11 +996,13 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     rust_class: None,
                     rust_name,
                     start,
+                    wasm_bindgen: program.wasm_bindgen.clone(),
+                    wasm_bindgen_futures: program.wasm_bindgen_futures.clone(),
                 });
             }
             syn::Item::Struct(mut s) => {
                 let opts = opts.unwrap_or_default();
-                program.structs.push((&mut s).convert(opts)?);
+                program.structs.push((&mut s).convert((program, opts))?);
                 s.to_tokens(tokens);
             }
             syn::Item::Impl(mut i) => {
@@ -1017,11 +1045,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
 }
 
 impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
-    fn macro_parse(
-        self,
-        _program: &mut ast::Program,
-        opts: BindgenAttrs,
-    ) -> Result<(), Diagnostic> {
+    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
                 self.defaultness,
@@ -1055,7 +1079,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
         };
         let mut errors = Vec::new();
         for item in self.items.iter_mut() {
-            if let Err(e) = prepare_for_impl_recursion(item, &name, &opts) {
+            if let Err(e) = prepare_for_impl_recursion(item, &name, program, &opts) {
                 errors.push(e);
             }
         }
@@ -1076,6 +1100,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
 fn prepare_for_impl_recursion(
     item: &mut syn::ImplItem,
     class: &syn::Path,
+    program: &ast::Program,
     impl_opts: &BindgenAttrs,
 ) -> Result<(), Diagnostic> {
     let method = match item {
@@ -1108,25 +1133,35 @@ fn prepare_for_impl_recursion(
         .map(|s| s.0.to_string())
         .unwrap_or(ident.to_string());
 
+    let wasm_bindgen = &program.wasm_bindgen;
+    let wasm_bindgen_futures = &program.wasm_bindgen_futures;
     method.attrs.insert(
         0,
         syn::Attribute {
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            meta: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class) },
+            meta: syn::parse_quote! { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
         },
     );
 
     Ok(())
 }
 
-impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemFn {
+impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
     fn macro_parse(
         self,
         program: &mut ast::Program,
-        (class, js_class): (&'a Ident, &'a str),
+        ClassMarker {
+            class,
+            js_class,
+            wasm_bindgen,
+            wasm_bindgen_futures,
+        }: &ClassMarker,
     ) -> Result<(), Diagnostic> {
+        program.wasm_bindgen = wasm_bindgen.clone();
+        program.wasm_bindgen_futures = wasm_bindgen_futures.clone();
+
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => return Ok(()),
@@ -1169,6 +1204,8 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemFn {
             rust_class: Some(class.clone()),
             rust_name: self.sig.ident.clone(),
             start: false,
+            wasm_bindgen: program.wasm_bindgen.clone(),
+            wasm_bindgen_futures: program.wasm_bindgen_futures.clone(),
         });
         opts.check_used();
         Ok(())
@@ -1215,6 +1252,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
             variants,
             variant_values,
             rust_attrs: enum_.attrs,
+            wasm_bindgen: program.wasm_bindgen.clone(),
         }),
     });
 
@@ -1339,6 +1377,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             comments,
             hole,
             generate_typescript,
+            wasm_bindgen: program.wasm_bindgen.clone(),
         });
         Ok(())
     }
@@ -1425,9 +1464,9 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
         let module = ctx.module;
 
         let kind = match self {
-            syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
-            syn::ForeignItem::Type(t) => t.convert(item_opts)?,
-            syn::ForeignItem::Static(s) => s.convert((item_opts, &module))?,
+            syn::ForeignItem::Fn(f) => f.convert((program, item_opts, &module))?,
+            syn::ForeignItem::Type(t) => t.convert((program, item_opts))?,
+            syn::ForeignItem::Static(s) => s.convert((program, item_opts, &module))?,
             _ => panic!("only foreign functions/types allowed for now"),
         };
 
@@ -1445,6 +1484,14 @@ pub fn module_from_opts(
     program: &mut ast::Program,
     opts: &BindgenAttrs,
 ) -> Result<Option<ast::ImportModule>, Diagnostic> {
+    if let Some(path) = opts.wasm_bindgen() {
+        program.wasm_bindgen = path.clone();
+    }
+
+    if let Some(path) = opts.wasm_bindgen_futures() {
+        program.wasm_bindgen_futures = path.clone();
+    }
+
     let mut errors = Vec::new();
     let module = if let Some((name, span)) = opts.module() {
         if opts.inline_js().is_some() {
