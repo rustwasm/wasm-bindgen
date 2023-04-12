@@ -10,7 +10,7 @@ use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
-use syn::{Lit, MacroDelimiter};
+use syn::{ItemFn, Lit, MacroDelimiter, ReturnType};
 
 use crate::ClassMarker;
 
@@ -83,6 +83,7 @@ macro_rules! attrgen {
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (skip_typescript, SkipTypescript(Span)),
             (skip_jsdoc, SkipJsDoc(Span)),
+            (main, Main(Span)),
             (start, Start(Span)),
             (wasm_bindgen, WasmBindgen(Span, syn::Path)),
             (wasm_bindgen_futures, WasmBindgenFutures(Span, syn::Path)),
@@ -949,6 +950,19 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
     ) -> Result<(), Diagnostic> {
         match self {
             syn::Item::Fn(mut f) => {
+                let opts = opts.unwrap_or_default();
+                if let Some(path) = opts.wasm_bindgen() {
+                    program.wasm_bindgen = path.clone();
+                }
+                if let Some(path) = opts.wasm_bindgen_futures() {
+                    program.wasm_bindgen_futures = path.clone();
+                }
+
+                if opts.main().is_some() {
+                    opts.check_used();
+                    return main(program, f, tokens);
+                }
+
                 let no_mangle = f
                     .attrs
                     .iter()
@@ -966,13 +980,6 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 // `dead_code` warning. So, add `#[allow(dead_code)]` before it to avoid that.
                 tokens.extend(quote::quote! { #[allow(dead_code)] });
                 f.to_tokens(tokens);
-                let opts = opts.unwrap_or_default();
-                if let Some(path) = opts.wasm_bindgen() {
-                    program.wasm_bindgen = path.clone();
-                }
-                if let Some(path) = opts.wasm_bindgen_futures() {
-                    program.wasm_bindgen_futures = path.clone();
-                }
                 if opts.start().is_some() {
                     if f.sig.generics.params.len() > 0 {
                         bail_span!(&f.sig.generics, "the start function cannot have generics",);
@@ -1738,6 +1745,62 @@ pub fn link_to(opts: BindgenAttrs) -> Result<ast::LinkToModule, Diagnostic> {
     opts.enforce_used()?;
     program.linked_modules.push(module);
     Ok(ast::LinkToModule(program))
+}
+
+fn main(program: &ast::Program, mut f: ItemFn, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
+    if f.sig.ident != "main" {
+        bail_span!(&f.sig.ident, "the main function has to be called main");
+    }
+    if let Some(constness) = f.sig.constness {
+        bail_span!(&constness, "the main function cannot be const");
+    }
+    if !f.sig.generics.params.is_empty() {
+        bail_span!(&f.sig.generics, "the main function cannot have generics");
+    }
+    if !f.sig.inputs.is_empty() {
+        bail_span!(&f.sig.inputs, "the main function cannot have arguments");
+    }
+
+    let r#return = f.sig.output;
+    f.sig.output = ReturnType::Default;
+    let body = f.block;
+
+    let wasm_bindgen = &program.wasm_bindgen;
+    let wasm_bindgen_futures = &program.wasm_bindgen_futures;
+
+    if f.sig.asyncness.take().is_some() {
+        f.block = Box::new(
+            syn::parse2(quote::quote! {
+                {
+                    async fn __wasm_bindgen_generated_main() #r#return #body
+                    #wasm_bindgen_futures::spawn_local(
+                        async move {
+                            use #wasm_bindgen::__rt::Main;
+                            let __ret = __wasm_bindgen_generated_main();
+                            (&mut &mut &mut #wasm_bindgen::__rt::MainWrapper(Some(__ret.await))).__wasm_bindgen_main()
+                        },
+                    )
+                }
+            })
+            .unwrap(),
+        );
+    } else {
+        f.block = Box::new(
+            syn::parse2(quote::quote! {
+                {
+                    fn __wasm_bindgen_generated_main() #r#return #body
+                    use #wasm_bindgen::__rt::Main;
+                    let __ret = __wasm_bindgen_generated_main();
+                    (&mut &mut &mut #wasm_bindgen::__rt::MainWrapper(Some(__ret))).__wasm_bindgen_main()
+                }
+            })
+            .unwrap(),
+        );
+    }
+
+    f.to_tokens(tokens);
+
+    Ok(())
 }
 
 #[cfg(test)]
