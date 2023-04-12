@@ -1,8 +1,7 @@
 # `main`
 
-When attached to the `fn main()` function this attribute will adjust it to
-properly throw errors if they can be. This is only intended to be used for
-binaries.
+When attached to the `main` function this attribute will adjust it to properly
+throw errors if they can be.
 
 ```rust
 #[wasm_bindgen(main)]
@@ -21,10 +20,9 @@ async fn main() {
 }
 ```
 
-Unlike `#[wasm_bindgen(start)]` this will not export a function to be executed
-on startup, it should only be used in Cargo binaries or examples for the `main`
-function. `#[wasm_bindgen(start)]` will prevent the `main` function to start and
-should not be used in conjunction.
+This attribute is intended to be used on the `main` function of binaries or
+examples only. Unlike `#[wasm_bindgen(start)]`, it will not cause a function to
+be executed on start in a library.
 
 Any return value that is supported by Rust is supported here, see
 [`Termination`]. In order, wasm-bindgen will first detect a

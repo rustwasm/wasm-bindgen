@@ -1761,7 +1761,7 @@ pub mod __rt {
         #[inline]
         fn __wasm_bindgen_main(&mut self) {
             if let Err(e) = self.0.take().unwrap() {
-                crate::throw_val(std::format!("{:?}", e).into());
+                crate::throw_str(&std::format!("{:?}", e));
             }
         }
     }
