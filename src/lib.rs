@@ -1765,13 +1765,6 @@ pub mod __rt {
             }
         }
     }
-
-    impl<T: std::process::Termination> Main for MainWrapper<T> {
-        #[inline]
-        fn __wasm_bindgen_main(&mut self) {
-            crate::throw_val(std::format!("{:?}", self.0.take().unwrap().report()).into());
-        }
-    }
 }
 
 /// A wrapper type around slices and vectors for binding the `Uint8ClampedArray`
