@@ -497,4 +497,216 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "Element")]
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = querySelector)]
+    #[doc = "The `querySelector()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/querySelector)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`, `Element`*"]
+    pub fn query_selector(this: &DocumentFragment, selectors: &str) -> Option<Element>;
+    #[cfg(feature = "NodeList")]
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = querySelectorAll)]
+    #[doc = "The `querySelectorAll()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/querySelectorAll)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`, `NodeList`*"]
+    pub fn query_selector_all(this: &DocumentFragment, selectors: &str) -> NodeList;
+    # [wasm_bindgen (method , structural , variadic , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node(this: &DocumentFragment, nodes: &::js_sys::Array);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_0(this: &DocumentFragment);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_1(this: &DocumentFragment, nodes_1: &Node);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_2(this: &DocumentFragment, nodes_1: &Node, nodes_2: &Node);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_3(
+        this: &DocumentFragment,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_4(
+        this: &DocumentFragment,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_5(
+        this: &DocumentFragment,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+        nodes_5: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_6(
+        this: &DocumentFragment,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+        nodes_5: &Node,
+        nodes_6: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_node_7(
+        this: &DocumentFragment,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+        nodes_5: &Node,
+        nodes_6: &Node,
+        nodes_7: &Node,
+    );
+    # [wasm_bindgen (method , structural , variadic , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str(this: &DocumentFragment, nodes: &::js_sys::Array);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_0(this: &DocumentFragment);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_1(this: &DocumentFragment, nodes_1: &str);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_2(this: &DocumentFragment, nodes_1: &str, nodes_2: &str);
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_3(
+        this: &DocumentFragment,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_4(
+        this: &DocumentFragment,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_5(
+        this: &DocumentFragment,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+        nodes_5: &str,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_6(
+        this: &DocumentFragment,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+        nodes_5: &str,
+        nodes_6: &str,
+    );
+    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`*"]
+    pub fn replace_children_with_str_7(
+        this: &DocumentFragment,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+        nodes_5: &str,
+        nodes_6: &str,
+        nodes_7: &str,
+    );
 }

@@ -21,4 +21,10 @@ interface mixin ParentNode {
   undefined prepend((Node or DOMString)... nodes);
   [CEReactions, Throws, Unscopable]
   undefined append((Node or DOMString)... nodes);
+  [CEReactions, Unscopable]
+  undefined replaceChildren((Node or DOMString)... nodes);
+
+  Element? querySelector(DOMString selectors);
+  [NewObject]
+  NodeList querySelectorAll(DOMString selectors);
 };
