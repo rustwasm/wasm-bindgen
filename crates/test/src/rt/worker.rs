@@ -41,10 +41,10 @@ impl super::Formatter for Worker {
 
     fn stringify_error(&self, err: &JsValue) -> String {
         // TODO: this should be a checked cast to `Error`
-        let err = Error::from(err.clone());
-        let name = String::from(err.name());
-        let message = String::from(err.message());
-        let err = WorkerError::from(JsValue::from(err));
+        let error = Error::from(err.clone());
+        let name = String::from(error.name());
+        let message = String::from(error.message());
+        let err = WorkerError::from(err.clone());
         let stack = err.stack();
 
         let header = format!("{}: {}", name, message);
