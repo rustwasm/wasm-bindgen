@@ -10,6 +10,16 @@ use wasm_bindgen_test::wasm_bindgen_test_configure;
 wasm_bindgen_test_configure!(run_in_browser);
 ```
 
+Or if you need to run your tests inside a web worker, you can also
+configured it using the `wasm_bindgen_test_configure` macro as following
+snippet.
+
+```rust
+use wasm_bindgen_test::wasm_bindgen_test_configure;
+
+wasm_bindgen_test_configure!(run_in_worker);
+```
+
 Note that although a particular test crate must target either headless browsers
 or Node.js, you can have test suites for both Node.js and browsers for your
 project by using multiple test crates. For example:
@@ -18,6 +28,7 @@ project by using multiple test crates. For example:
 $MY_CRATE/
 `-- tests
     |-- node.rs    # The tests in this suite use the default Node.js.
+    |-- worker.rs  # The tests in this suite are configured for workers.
     `-- web.rs     # The tests in this suite are configured for browsers.
 ```
 
@@ -74,6 +85,12 @@ Full list supported capabilities can be found:
 * for Firefox - [here](https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions)
 
 Note that the `headless` argument is always enabled for both browsers.
+
+You have to enable the special preference `dom.workers.modules.enabled` for
+firefox when running the tests in Web Workers without using
+`WASM_BINDGEN_USE_NO_MODULE` variable. Because firefox supported
+ECMAScript modules in last release (2023-03-14) behind a special
+preference. 
 
 ### Debugging Headless Browser Tests
 
