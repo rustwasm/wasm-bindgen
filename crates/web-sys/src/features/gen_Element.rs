@@ -1949,21 +1949,6 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
-    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = querySelector)]
-    #[doc = "The `querySelector()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn query_selector(this: &Element, selectors: &str) -> Option<Element>;
-    #[cfg(feature = "NodeList")]
-    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = querySelectorAll)]
-    #[doc = "The `querySelectorAll()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAll)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Element`, `NodeList`*"]
-    pub fn query_selector_all(this: &Element, selectors: &str) -> NodeList;
     # [wasm_bindgen (method , structural , variadic , js_class = "Element" , js_name = replaceChildren)]
     #[doc = "The `replaceChildren()` method."]
     #[doc = ""]

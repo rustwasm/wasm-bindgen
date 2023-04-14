@@ -497,22 +497,6 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Element")]
-    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = querySelector)]
-    #[doc = "The `querySelector()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/querySelector)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`, `Element`*"]
-    pub fn query_selector(this: &DocumentFragment, selectors: &str) -> Option<Element>;
-    #[cfg(feature = "NodeList")]
-    # [wasm_bindgen (method , structural , js_class = "DocumentFragment" , js_name = querySelectorAll)]
-    #[doc = "The `querySelectorAll()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment/querySelectorAll)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DocumentFragment`, `NodeList`*"]
-    pub fn query_selector_all(this: &DocumentFragment, selectors: &str) -> NodeList;
     # [wasm_bindgen (method , structural , variadic , js_class = "DocumentFragment" , js_name = replaceChildren)]
     #[doc = "The `replaceChildren()` method."]
     #[doc = ""]
