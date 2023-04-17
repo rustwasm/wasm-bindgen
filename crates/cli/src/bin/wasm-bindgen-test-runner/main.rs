@@ -44,6 +44,11 @@ fn main() -> anyhow::Result<()> {
         None => bail!("must have a file to test as first argument"),
     };
 
+    let wasm_file_to_test_name = wasm_file_to_test
+        .file_name()
+        .and_then(|s| s.to_str())
+        .ok_or_else(|| anyhow!("file to test is not a valid file, can't extract file name"))?;
+
     // wasm_file_to_test may be
     // - a cargo-like directory layout and generate output at
     //      `target/wasm32-unknown-unknown/...`
@@ -61,7 +66,7 @@ fn main() -> anyhow::Result<()> {
             .and_then(|p| p.parent()) // chop off `deps`
             .and_then(|p| p.parent()) // chop off `debug`
     }
-    .map(|p| p.join("wbg-tmp"))
+    .map(|p| p.join(format!("wbg-tmp-{}", wasm_file_to_test_name)))
     .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
 
     // Make sure there's no stale state from before
