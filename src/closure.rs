@@ -329,7 +329,7 @@ where
         // about what's going on here.
 
         extern "C" fn describe<T: WasmClosure + ?Sized>() {
-            inform(CLOSURE);
+            unsafe { inform(CLOSURE) };
             T::describe()
         }
 
@@ -464,7 +464,7 @@ where
     T: WasmClosure + ?Sized,
 {
     fn describe() {
-        inform(EXTERNREF);
+        unsafe { inform(EXTERNREF) };
     }
 }
 
@@ -587,7 +587,7 @@ macro_rules! doit {
                     ret.return_abi()
                 }
 
-                inform(invoke::<$($var,)* R> as u32);
+                unsafe { inform(invoke::<$($var,)* R> as u32) };
 
                 unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
@@ -605,7 +605,7 @@ macro_rules! doit {
                         fields: (a, b)
                     }.ptr));
                 }
-                inform(destroy::<$($var,)* R> as u32);
+                unsafe { inform(destroy::<$($var,)* R> as u32) };
 
                 <&Self>::describe();
             }
@@ -640,7 +640,7 @@ macro_rules! doit {
                     ret.return_abi()
                 }
 
-                inform(invoke::<$($var,)* R> as u32);
+                unsafe { inform(invoke::<$($var,)* R> as u32) };
 
                 unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
@@ -654,7 +654,7 @@ macro_rules! doit {
                         fields: (a, b)
                     }.ptr));
                 }
-                inform(destroy::<$($var,)* R> as u32);
+                unsafe { inform(destroy::<$($var,)* R> as u32) };
 
                 <&mut Self>::describe();
             }
@@ -772,7 +772,7 @@ where
             ret.return_abi()
         }
 
-        inform(invoke::<A, R> as u32);
+        unsafe { inform(invoke::<A, R> as u32) };
 
         unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
@@ -783,7 +783,7 @@ where
                 FatPtr::<dyn Fn(&A) -> R> { fields: (a, b) }.ptr,
             ));
         }
-        inform(destroy::<A, R> as u32);
+        unsafe { inform(destroy::<A, R> as u32) };
 
         <&Self>::describe();
     }
@@ -816,7 +816,7 @@ where
             ret.return_abi()
         }
 
-        inform(invoke::<A, R> as u32);
+        unsafe { inform(invoke::<A, R> as u32) };
 
         unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
             // See `Fn()` above for why we simply return
@@ -827,7 +827,7 @@ where
                 FatPtr::<dyn FnMut(&A) -> R> { fields: (a, b) }.ptr,
             ));
         }
-        inform(destroy::<A, R> as u32);
+        unsafe { inform(destroy::<A, R> as u32) };
 
         <&mut Self>::describe();
     }

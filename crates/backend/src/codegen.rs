@@ -180,8 +180,8 @@ impl ToTokens for ast::Struct {
                         }
                     }
                     use #wasm_bindgen::describe::*;
-                    inform(RUST_STRUCT);
-                    inform(#name_len);
+                    unsafe { inform(RUST_STRUCT) };
+                    unsafe { inform(#name_len) };
                     #(inform(#name_chars);)*
                 }
             }
@@ -611,7 +611,7 @@ impl TryToTokens for ast::Export {
                 {
                     let inner = &reference.elem;
                     quote! {
-                        inform(LONGREF);
+                        unsafe { inform(LONGREF) };
                         <#inner as WasmDescribe>::describe();
                     }
                 }
@@ -639,9 +639,9 @@ impl TryToTokens for ast::Export {
         Descriptor {
             ident: &export,
             inner: quote! {
-                inform(FUNCTION);
-                inform(0);
-                inform(#nargs);
+                unsafe { inform(FUNCTION) };
+                unsafe { inform(0) };
+                unsafe { inform(#nargs) };
                 #describe_args
                 #describe_ret
             },
@@ -693,8 +693,8 @@ impl ToTokens for ast::ImportType {
             let typescript_type_chars = typescript_type.chars().map(|c| c as u32);
             quote! {
                 use #wasm_bindgen::describe::*;
-                inform(NAMED_EXTERNREF);
-                inform(#typescript_type_len);
+                unsafe { inform(NAMED_EXTERNREF) };
+                unsafe { inform(#typescript_type_len) };
                 #(inform(#typescript_type_chars);)*
             }
         } else {
@@ -1268,9 +1268,9 @@ impl<'a> ToTokens for DescribeImport<'a> {
         Descriptor {
             ident: &f.shim,
             inner: quote! {
-                inform(FUNCTION);
-                inform(0);
-                inform(#nargs);
+                unsafe { inform(FUNCTION);
+                unsafe { inform(0) };
+                unsafe { inform(#nargs) };
                 #(<#argtys as WasmDescribe>::describe();)*
                 #inform_ret
                 #inform_ret
@@ -1334,8 +1334,8 @@ impl ToTokens for ast::Enum {
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
                 fn describe() {
                     use #wasm_bindgen::describe::*;
-                    inform(ENUM);
-                    inform(#hole);
+                    unsafe { inform(ENUM) };
+                    unsafe { inform(#hole) };
                 }
             }
         })
@@ -1469,7 +1469,7 @@ fn extern_fn(
 }
 
 /// Converts `span` into a stream of tokens, and attempts to ensure that `input`
-/// has all the appropriate span information so errors in it point to `span`.
+/// has all the appropriate span ation so errors in it point to `span`.
 fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
     let mut first_span = Span::call_site();
     let mut last_span = Span::call_site();

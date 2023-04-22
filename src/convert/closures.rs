@@ -48,9 +48,9 @@ macro_rules! stack_closures {
                   R: ReturnWasmAbi
         {
             fn describe() {
-                inform(FUNCTION);
-                inform($invoke::<$($var,)* R> as u32);
-                inform($cnt);
+                unsafe { inform(FUNCTION) };
+                unsafe { inform($invoke::<$($var,)* R> as u32) };
+                unsafe { inform($cnt) };
                 $(<$var as WasmDescribe>::describe();)*
                 <R as WasmDescribe>::describe();
                 <R as WasmDescribe>::describe();
@@ -97,9 +97,9 @@ macro_rules! stack_closures {
                   R: ReturnWasmAbi
         {
             fn describe() {
-                inform(FUNCTION);
-                inform($invoke_mut::<$($var,)* R> as u32);
-                inform($cnt);
+                unsafe { inform(FUNCTION) };
+                unsafe { inform($invoke_mut::<$($var,)* R> as u32) };
+                unsafe { inform($cnt) };
                 $(<$var as WasmDescribe>::describe();)*
                 <R as WasmDescribe>::describe();
                 <R as WasmDescribe>::describe();
@@ -163,9 +163,9 @@ where
     R: ReturnWasmAbi,
 {
     fn describe() {
-        inform(FUNCTION);
-        inform(invoke1_ref::<A, R> as u32);
-        inform(1);
+        unsafe { inform(FUNCTION) };
+        unsafe { inform(invoke1_ref::<A, R> as u32) };
+        unsafe { inform(1) };
         <&A as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();
@@ -215,9 +215,9 @@ where
     R: ReturnWasmAbi,
 {
     fn describe() {
-        inform(FUNCTION);
-        inform(invoke1_mut_ref::<A, R> as u32);
-        inform(1);
+        unsafe { inform(FUNCTION) };
+        unsafe { inform(invoke1_mut_ref::<A, R> as u32) };
+        unsafe { inform(1) };
         <&A as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();

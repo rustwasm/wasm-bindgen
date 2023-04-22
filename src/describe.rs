@@ -49,7 +49,7 @@ tys! {
 }
 
 #[inline(always)] // see the wasm-interpreter crate
-pub fn inform(a: u32) {
+pub unsafe fn inform(a: u32) {
     unsafe { super::__wbindgen_describe(a) }
 }
 
@@ -60,7 +60,7 @@ pub trait WasmDescribe {
 macro_rules! simple {
     ($($t:ident => $d:ident)*) => ($(
         impl WasmDescribe for $t {
-            fn describe() { inform($d) }
+            fn describe() { unsafe { inform($d) } }
         }
     )*)
 }
@@ -98,33 +98,33 @@ cfg_if! {
 
 impl<T> WasmDescribe for *const T {
     fn describe() {
-        inform(I32)
+        unsafe { inform(I32) }
     }
 }
 
 impl<T> WasmDescribe for *mut T {
     fn describe() {
-        inform(I32)
+        unsafe { inform(I32) }
     }
 }
 
 impl<T: WasmDescribe> WasmDescribe for [T] {
     fn describe() {
-        inform(SLICE);
+        unsafe { inform(SLICE) };
         T::describe();
     }
 }
 
 impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a T {
     fn describe() {
-        inform(REF);
+        unsafe { inform(REF) };
         T::describe();
     }
 }
 
 impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a mut T {
     fn describe() {
-        inform(REFMUT);
+        unsafe { inform(REFMUT) };
         T::describe();
     }
 }
@@ -147,7 +147,7 @@ if_std! {
 
     impl<T: WasmDescribe> WasmDescribe for Box<[T]> {
         fn describe() {
-            inform(VECTOR);
+            unsafe { inform(VECTOR) };
             T::describe();
         }
     }
@@ -161,27 +161,27 @@ if_std! {
 
 impl<T: WasmDescribe> WasmDescribe for Option<T> {
     fn describe() {
-        inform(OPTIONAL);
+        unsafe { inform(OPTIONAL) };
         T::describe();
     }
 }
 
 impl WasmDescribe for () {
     fn describe() {
-        inform(UNIT)
+        unsafe { inform(UNIT) }
     }
 }
 
 impl<T: WasmDescribe, E: Into<JsValue>> WasmDescribe for Result<T, E> {
     fn describe() {
-        inform(RESULT);
+        unsafe { inform(RESULT) };
         T::describe();
     }
 }
 
 impl<T: WasmDescribe> WasmDescribe for Clamped<T> {
     fn describe() {
-        inform(CLAMPED);
+        unsafe { inform(CLAMPED) };
         T::describe();
     }
 }
