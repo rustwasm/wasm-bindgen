@@ -8644,11 +8644,11 @@ mod gen_WebTransportError;
 #[cfg(feature = "WebTransportError")]
 pub use gen_WebTransportError::*;
 
-#[cfg(feature = "WebTransportErrorInit")]
+#[cfg(feature = "WebTransportErrorOptions")]
 #[allow(non_snake_case)]
-mod gen_WebTransportErrorInit;
-#[cfg(feature = "WebTransportErrorInit")]
-pub use gen_WebTransportErrorInit::*;
+mod gen_WebTransportErrorOptions;
+#[cfg(feature = "WebTransportErrorOptions")]
+pub use gen_WebTransportErrorOptions::*;
 
 #[cfg(feature = "WebTransportErrorSource")]
 #[allow(non_snake_case)]
@@ -8679,6 +8679,12 @@ pub use gen_WebTransportReceiveStream::*;
 mod gen_WebTransportReceiveStreamStats;
 #[cfg(feature = "WebTransportReceiveStreamStats")]
 pub use gen_WebTransportReceiveStreamStats::*;
+
+#[cfg(feature = "WebTransportReliabilityMode")]
+#[allow(non_snake_case)]
+mod gen_WebTransportReliabilityMode;
+#[cfg(feature = "WebTransportReliabilityMode")]
+pub use gen_WebTransportReliabilityMode::*;
 
 #[cfg(feature = "WebTransportSendStream")]
 #[allow(non_snake_case)]
