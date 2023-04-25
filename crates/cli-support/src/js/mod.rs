@@ -383,8 +383,8 @@ impl<'a> Context<'a> {
                 js.push_str("let script_src;\n");
                 js.push_str(
                     "\
-                    if (typeof document !== 'undefined') {
-                        script_src = new URL((document.currentScript && document.currentScript.src) ? document.currentScript.src : '', location.href).toString();
+                    if (typeof document !== 'undefined' && document.currentScript && document.currentScript.src) {
+                        script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
                 js.push_str("let wasm = undefined;\n");
