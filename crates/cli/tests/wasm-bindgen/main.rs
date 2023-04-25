@@ -356,7 +356,7 @@ fn default_module_path_target_no_modules() {
     assert!(contents.contains(
         "\
     if (typeof document !== 'undefined') {
-        script_src = new URL(document.currentScript.src, location.href).toString();
+        script_src = new URL((document.currentScript && document.currentScript.src) ? document.currentScript.src : '', location.href).toString();
     }",
     ));
     assert!(contents.contains(
