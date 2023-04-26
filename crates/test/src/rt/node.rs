@@ -18,13 +18,9 @@ extern "C" {
 }
 
 impl Node {
-    /// Attempts to create a new formatter for node.js, returning `None` if this
-    /// is executing in a browser and Node won't work.
-    pub fn new() -> Option<Node> {
-        if super::detect::is_browser() {
-            return None;
-        }
-        Some(Node {})
+    /// Attempts to create a new formatter for node.js
+    pub fn new() -> Node {
+        Node {}
     }
 }
 
