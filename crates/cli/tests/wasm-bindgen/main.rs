@@ -355,7 +355,7 @@ fn default_module_path_target_no_modules() {
         fs::read_to_string(out_dir.join("default_module_path_target_no_modules.js")).unwrap();
     assert!(contents.contains(
         "\
-    if (typeof document !== 'undefined' && document.currentScript) {
+    if (typeof document !== 'undefined' && typeof document.currentScript !== 'null') {
         script_src = new URL(document.currentScript.src, location.href).toString();
     }",
     ));
