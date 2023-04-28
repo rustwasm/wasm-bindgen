@@ -927,14 +927,14 @@ impl<'a> Context<'a> {
                 static __wrap(ptr) {{
                     ptr = ptr >>> 0;
                     const obj = Object.create({}.prototype);
-                    obj.ptr = ptr;
+                    obj.__wbg_ptr = ptr;
                     {}
                     return obj;
                 }}
                 ",
                 name,
                 if self.config.weak_refs {
-                    format!("{}Finalization.register(obj, obj.ptr, obj);", name)
+                    format!("{}Finalization.register(obj, obj.__wbg_ptr, obj);", name)
                 } else {
                     String::new()
                 },
@@ -1010,8 +1010,8 @@ impl<'a> Context<'a> {
         dst.push_str(&format!(
             "
             __destroy_into_raw() {{
-                const ptr = this.ptr;
-                this.ptr = 0;
+                const ptr = this.__wbg_ptr;
+                this.__wbg_ptr = 0;
                 {}
                 return ptr;
             }}

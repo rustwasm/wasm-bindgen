@@ -134,14 +134,14 @@ impl<'a, 'b> Builder<'a, 'b> {
                 drop(params.next());
                 if js.cx.config.debug {
                     js.prelude(
-                        "if (this.ptr == 0) throw new Error('Attempt to use a moved value');",
+                        "if (this.__wbg_ptr == 0) throw new Error('Attempt to use a moved value');",
                     );
                 }
                 if consumes_self {
                     js.prelude("const ptr = this.__destroy_into_raw();");
                     js.args.push("ptr".into());
                 } else {
-                    js.args.push("this.ptr".into());
+                    js.args.push("this.__wbg_ptr".into());
                 }
             }
             None => {}
