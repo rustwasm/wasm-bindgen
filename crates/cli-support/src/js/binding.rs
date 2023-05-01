@@ -503,7 +503,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         }
         self.prelude(&format!(
             "\
-                if ({0}.ptr === 0) {{
+                if ({0}.__wbg_ptr === 0) {{
                     throw new Error('Attempt to use a moved value');
                 }}
             ",
@@ -731,7 +731,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let val = js.pop();
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
-            js.push(format!("{}.ptr", val));
+            js.push(format!("{}.__wbg_ptr", val));
         }
 
         Instruction::I32FromOptionRust { class } => {
