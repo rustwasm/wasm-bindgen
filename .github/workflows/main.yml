@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - run: rustup default nightly-2022-05-19
+    - run: rustup default nightly-2023-05-08
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
     # Note: we only run the browser tests here, because wasm-bindgen doesn't support threading in Node yet.
@@ -258,7 +258,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - run: rustup default nightly-2022-05-19
+    - run: rustup default nightly-2023-05-08
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
     - run: |
