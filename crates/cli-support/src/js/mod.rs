@@ -377,12 +377,13 @@ impl<'a> Context<'a> {
             // In `--target no-modules` mode we need to both expose a name on
             // the global object as well as generate our own custom start
             // function.
+            // `document.currentScript` property can be null in browser extensions
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let script_src;\n");
                 js.push_str(
                     "\
-                    if (typeof document !== 'undefined') {
+                    if (typeof document !== 'undefined' && typeof document.currentScript !== 'null') {
                         script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
