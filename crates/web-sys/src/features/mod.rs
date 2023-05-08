@@ -4636,6 +4636,30 @@ mod gen_MediaTrackSupportedConstraints;
 #[cfg(feature = "MediaTrackSupportedConstraints")]
 pub use gen_MediaTrackSupportedConstraints::*;
 
+#[cfg(feature = "MemoryAttribution")]
+#[allow(non_snake_case)]
+mod gen_MemoryAttribution;
+#[cfg(feature = "MemoryAttribution")]
+pub use gen_MemoryAttribution::*;
+
+#[cfg(feature = "MemoryAttributionContainer")]
+#[allow(non_snake_case)]
+mod gen_MemoryAttributionContainer;
+#[cfg(feature = "MemoryAttributionContainer")]
+pub use gen_MemoryAttributionContainer::*;
+
+#[cfg(feature = "MemoryBreakdownEntry")]
+#[allow(non_snake_case)]
+mod gen_MemoryBreakdownEntry;
+#[cfg(feature = "MemoryBreakdownEntry")]
+pub use gen_MemoryBreakdownEntry::*;
+
+#[cfg(feature = "MemoryMeasurement")]
+#[allow(non_snake_case)]
+mod gen_MemoryMeasurement;
+#[cfg(feature = "MemoryMeasurement")]
+pub use gen_MemoryMeasurement::*;
+
 #[cfg(feature = "MessageChannel")]
 #[allow(non_snake_case)]
 mod gen_MessageChannel;
