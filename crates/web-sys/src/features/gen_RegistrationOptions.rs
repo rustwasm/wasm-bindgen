@@ -32,6 +32,19 @@ impl RegistrationOptions {
         let _ = r;
         self
     }
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
+    pub fn type_(&mut self, val: &str) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
     #[doc = "Change the `updateViaCache` field of this object."]
     #[doc = ""]
