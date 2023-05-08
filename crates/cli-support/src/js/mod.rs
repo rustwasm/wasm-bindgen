@@ -377,12 +377,13 @@ impl<'a> Context<'a> {
             // In `--target no-modules` mode we need to both expose a name on
             // the global object as well as generate our own custom start
             // function.
+            // `document.currentScript` property can be null in browser extensions
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let script_src;\n");
                 js.push_str(
                     "\
-                    if (typeof document !== 'undefined') {
+                    if (typeof document !== 'undefined' && typeof document.currentScript !== 'null') {
                         script_src = new URL(document.currentScript.src, location.href).toString();
                     }\n",
                 );
@@ -927,14 +928,14 @@ impl<'a> Context<'a> {
                 static __wrap(ptr) {{
                     ptr = ptr >>> 0;
                     const obj = Object.create({}.prototype);
-                    obj.ptr = ptr;
+                    obj.__wbg_ptr = ptr;
                     {}
                     return obj;
                 }}
                 ",
                 name,
                 if self.config.weak_refs {
-                    format!("{}Finalization.register(obj, obj.ptr, obj);", name)
+                    format!("{}Finalization.register(obj, obj.__wbg_ptr, obj);", name)
                 } else {
                     String::new()
                 },
@@ -1010,8 +1011,8 @@ impl<'a> Context<'a> {
         dst.push_str(&format!(
             "
             __destroy_into_raw() {{
-                const ptr = this.ptr;
-                this.ptr = 0;
+                const ptr = this.__wbg_ptr;
+                this.__wbg_ptr = 0;
                 {}
                 return ptr;
             }}
@@ -1439,7 +1440,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_encoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextEncoder", "('utf-8')", None)
+        self.expose_text_processor("TextEncoder", "encode", "('utf-8')", None)
     }
 
     fn expose_text_decoder(&mut self) -> Result<(), Error> {
@@ -1455,6 +1456,7 @@ impl<'a> Context<'a> {
         // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
         self.expose_text_processor(
             "TextDecoder",
+            "decode",
             "('utf-8', { ignoreBOM: true, fatal: true })",
             init,
         )?;
@@ -1465,6 +1467,7 @@ impl<'a> Context<'a> {
     fn expose_text_processor(
         &mut self,
         s: &str,
+        op: &str,
         args: &str,
         init: Option<&str>,
     ) -> Result<(), Error> {
@@ -1495,7 +1498,7 @@ impl<'a> Context<'a> {
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ decode: () => {{ throw Error('{0} not available') }} }} );", s, args))
+                self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ {2}: () => {{ throw Error('{0} not available') }} }} );", s, args, op))
             }
         };
 

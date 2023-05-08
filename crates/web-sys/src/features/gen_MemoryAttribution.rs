@@ -4,21 +4,21 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = WebTransportErrorInit)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = MemoryAttribution)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `WebTransportErrorInit` dictionary."]
+    #[doc = "The `MemoryAttribution` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type WebTransportErrorInit;
+    pub type MemoryAttribution;
 }
 #[cfg(web_sys_unstable_apis)]
-impl WebTransportErrorInit {
-    #[doc = "Construct a new `WebTransportErrorInit`."]
+impl MemoryAttribution {
+    #[doc = "Construct a new `MemoryAttribution`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -28,17 +28,18 @@ impl WebTransportErrorInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `message` field of this object."]
+    #[cfg(feature = "MemoryAttributionContainer")]
+    #[doc = "Change the `container` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`, `MemoryAttributionContainer`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn message(&mut self, val: &str) -> &mut Self {
+    pub fn container(&mut self, val: &MemoryAttributionContainer) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
-            &JsValue::from("message"),
+            &JsValue::from("container"),
             &JsValue::from(val),
         );
         debug_assert!(
@@ -49,19 +50,32 @@ impl WebTransportErrorInit {
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `streamErrorCode` field of this object."]
+    #[doc = "Change the `scope` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorInit`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn stream_error_code(&mut self, val: u8) -> &mut Self {
+    pub fn scope(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("streamErrorCode"),
-            &JsValue::from(val),
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("scope"), &JsValue::from(val));
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
         );
+        let _ = r;
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `url` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn url(&mut self, val: &str) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("url"), &JsValue::from(val));
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"
@@ -71,7 +85,7 @@ impl WebTransportErrorInit {
     }
 }
 #[cfg(web_sys_unstable_apis)]
-impl Default for WebTransportErrorInit {
+impl Default for MemoryAttribution {
     fn default() -> Self {
         Self::new()
     }

@@ -4030,6 +4030,12 @@ mod gen_ImageDecoderInit;
 #[cfg(feature = "ImageDecoderInit")]
 pub use gen_ImageDecoderInit::*;
 
+#[cfg(feature = "ImageEncodeOptions")]
+#[allow(non_snake_case)]
+mod gen_ImageEncodeOptions;
+#[cfg(feature = "ImageEncodeOptions")]
+pub use gen_ImageEncodeOptions::*;
+
 #[cfg(feature = "ImageOrientation")]
 #[allow(non_snake_case)]
 mod gen_ImageOrientation;
@@ -4635,6 +4641,30 @@ pub use gen_MediaTrackSettings::*;
 mod gen_MediaTrackSupportedConstraints;
 #[cfg(feature = "MediaTrackSupportedConstraints")]
 pub use gen_MediaTrackSupportedConstraints::*;
+
+#[cfg(feature = "MemoryAttribution")]
+#[allow(non_snake_case)]
+mod gen_MemoryAttribution;
+#[cfg(feature = "MemoryAttribution")]
+pub use gen_MemoryAttribution::*;
+
+#[cfg(feature = "MemoryAttributionContainer")]
+#[allow(non_snake_case)]
+mod gen_MemoryAttributionContainer;
+#[cfg(feature = "MemoryAttributionContainer")]
+pub use gen_MemoryAttributionContainer::*;
+
+#[cfg(feature = "MemoryBreakdownEntry")]
+#[allow(non_snake_case)]
+mod gen_MemoryBreakdownEntry;
+#[cfg(feature = "MemoryBreakdownEntry")]
+pub use gen_MemoryBreakdownEntry::*;
+
+#[cfg(feature = "MemoryMeasurement")]
+#[allow(non_snake_case)]
+mod gen_MemoryMeasurement;
+#[cfg(feature = "MemoryMeasurement")]
+pub use gen_MemoryMeasurement::*;
 
 #[cfg(feature = "MessageChannel")]
 #[allow(non_snake_case)]
@@ -6231,6 +6261,12 @@ pub use gen_RtcPeerConnectionIceEvent::*;
 mod gen_RtcPeerConnectionIceEventInit;
 #[cfg(feature = "RtcPeerConnectionIceEventInit")]
 pub use gen_RtcPeerConnectionIceEventInit::*;
+
+#[cfg(feature = "RtcPeerConnectionState")]
+#[allow(non_snake_case)]
+mod gen_RtcPeerConnectionState;
+#[cfg(feature = "RtcPeerConnectionState")]
+pub use gen_RtcPeerConnectionState::*;
 
 #[cfg(feature = "RtcPriorityType")]
 #[allow(non_snake_case)]
@@ -8644,11 +8680,11 @@ mod gen_WebTransportError;
 #[cfg(feature = "WebTransportError")]
 pub use gen_WebTransportError::*;
 
-#[cfg(feature = "WebTransportErrorInit")]
+#[cfg(feature = "WebTransportErrorOptions")]
 #[allow(non_snake_case)]
-mod gen_WebTransportErrorInit;
-#[cfg(feature = "WebTransportErrorInit")]
-pub use gen_WebTransportErrorInit::*;
+mod gen_WebTransportErrorOptions;
+#[cfg(feature = "WebTransportErrorOptions")]
+pub use gen_WebTransportErrorOptions::*;
 
 #[cfg(feature = "WebTransportErrorSource")]
 #[allow(non_snake_case)]
@@ -8679,6 +8715,12 @@ pub use gen_WebTransportReceiveStream::*;
 mod gen_WebTransportReceiveStreamStats;
 #[cfg(feature = "WebTransportReceiveStreamStats")]
 pub use gen_WebTransportReceiveStreamStats::*;
+
+#[cfg(feature = "WebTransportReliabilityMode")]
+#[allow(non_snake_case)]
+mod gen_WebTransportReliabilityMode;
+#[cfg(feature = "WebTransportReliabilityMode")]
+pub use gen_WebTransportReliabilityMode::*;
 
 #[cfg(feature = "WebTransportSendStream")]
 #[allow(non_snake_case)]
