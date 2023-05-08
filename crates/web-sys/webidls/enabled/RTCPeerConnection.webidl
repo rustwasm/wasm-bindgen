@@ -36,6 +36,15 @@ enum RTCIceConnectionState {
     "closed"
 };
 
+enum RTCPeerConnectionState {
+  "closed",
+  "failed",
+  "disconnected",
+  "new",
+  "connecting",
+  "connected"
+};
+
 dictionary RTCDataChannelInit {
   boolean        ordered = true;
   unsigned short maxPacketLifeTime;
@@ -89,6 +98,7 @@ interface RTCPeerConnection : EventTarget  {
   readonly attribute boolean? canTrickleIceCandidates;
   readonly attribute RTCIceGatheringState iceGatheringState;
   readonly attribute RTCIceConnectionState iceConnectionState;
+  readonly attribute RTCPeerConnectionState connectionState;
   [Pref="media.peerconnection.identity.enabled"]
   readonly attribute Promise<RTCIdentityAssertion> peerIdentity;
   [Pref="media.peerconnection.identity.enabled"]
@@ -130,6 +140,7 @@ interface RTCPeerConnection : EventTarget  {
   attribute EventHandler onremovestream;
   attribute EventHandler oniceconnectionstatechange;
   attribute EventHandler onicegatheringstatechange;
+  attribute EventHandler onconnectionstatechange;
 
   Promise<RTCStatsReport> getStats (optional MediaStreamTrack? selector);
 

@@ -6232,6 +6232,12 @@ mod gen_RtcPeerConnectionIceEventInit;
 #[cfg(feature = "RtcPeerConnectionIceEventInit")]
 pub use gen_RtcPeerConnectionIceEventInit::*;
 
+#[cfg(feature = "RtcPeerConnectionState")]
+#[allow(non_snake_case)]
+mod gen_RtcPeerConnectionState;
+#[cfg(feature = "RtcPeerConnectionState")]
+pub use gen_RtcPeerConnectionState::*;
+
 #[cfg(feature = "RtcPriorityType")]
 #[allow(non_snake_case)]
 mod gen_RtcPriorityType;
