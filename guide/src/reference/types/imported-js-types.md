@@ -2,7 +2,7 @@
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | Yes | No | Yes | Yes | Yes | Instances of the extant `Whatever` JavaScript class / prototype constructor |
+| Yes | Yes | No | Yes | Yes | Yes | Instances of the extern `Whatever` JavaScript class / prototype constructor |
 
 ## Example Rust Usage
 
