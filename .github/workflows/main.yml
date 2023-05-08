@@ -384,7 +384,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: |
-        curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.3.0/mdbook-v0.3.0-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
+        curl -L https://github.com/rust-lang/mdBook/releases/download/v0.4.28/mdbook-v0.4.28-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
         echo $PWD >> $GITHUB_PATH
     - run: (cd guide && mdbook build)
     - uses: actions/upload-artifact@v3
