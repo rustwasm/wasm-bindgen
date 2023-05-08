@@ -1440,7 +1440,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_encoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextEncoder", "('utf-8')", None)
+        self.expose_text_processor("TextEncoder", "encode", "('utf-8')", None)
     }
 
     fn expose_text_decoder(&mut self) -> Result<(), Error> {
@@ -1456,6 +1456,7 @@ impl<'a> Context<'a> {
         // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
         self.expose_text_processor(
             "TextDecoder",
+            "decode",
             "('utf-8', { ignoreBOM: true, fatal: true })",
             init,
         )?;
@@ -1466,6 +1467,7 @@ impl<'a> Context<'a> {
     fn expose_text_processor(
         &mut self,
         s: &str,
+        op: &str,
         args: &str,
         init: Option<&str>,
     ) -> Result<(), Error> {
@@ -1496,7 +1498,7 @@ impl<'a> Context<'a> {
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ decode: () => {{ throw Error('{0} not available') }} }} );", s, args))
+                self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ {2}: () => {{ throw Error('{0} not available') }} }} );", s, args, op))
             }
         };
 
