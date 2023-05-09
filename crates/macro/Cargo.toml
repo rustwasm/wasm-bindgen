@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-macro"
-version = "0.2.84"
+version = "0.2.85"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro"
@@ -20,11 +20,11 @@ xxx_debug_only_print_generated_code = []
 strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 
 [dependencies]
-wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.84" }
+wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.85" }
 quote = "1.0"
 
 [dev-dependencies]
 trybuild = "1.0"
-wasm-bindgen = { path = "../..", version = "0.2.84" }
-wasm-bindgen-futures = { path = "../futures", version = "0.4.34" }
-web-sys = { path = "../web-sys", version = "0.3.61", features = ["Worker"] }
+wasm-bindgen = { path = "../..", version = "0.2.85" }
+wasm-bindgen-futures = { path = "../futures", version = "0.4.35" }
+web-sys = { path = "../web-sys", version = "0.3.62", features = ["Worker"] }
