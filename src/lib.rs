@@ -1082,6 +1082,7 @@ externs! {
 
         fn __wbindgen_not(idx: u32) -> u32;
 
+        fn __wbindgen_exports() -> u32;
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
         fn __wbindgen_function_table() -> u32;
@@ -1356,6 +1357,11 @@ where
 #[doc(hidden)]
 pub fn module() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_module()) }
+}
+
+/// Returns a handle to this wasm instance's `WebAssembly.Instance.prototype.exports`
+pub fn exports() -> JsValue {
+    unsafe { JsValue::_new(__wbindgen_exports()) }
 }
 
 /// Returns a handle to this wasm instance's `WebAssembly.Memory`

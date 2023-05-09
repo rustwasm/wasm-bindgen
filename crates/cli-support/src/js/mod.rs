@@ -3535,6 +3535,11 @@ impl<'a> Context<'a> {
                 format!("__wbg_init.__wbindgen_wasm_module")
             }
 
+            Intrinsic::Exports => {
+                assert_eq!(args.len(), 0);
+                "wasm".to_string()
+            }
+
             Intrinsic::Memory => {
                 assert_eq!(args.len(), 0);
                 let mut memories = self.module.memories.iter();
