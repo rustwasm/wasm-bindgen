@@ -1,6 +1,7 @@
 [Exposed = (Window, Worker)]
 interface OffscreenCanvasRenderingContext2D {
-  undefined commit();
+  // `commit()` doesn't exist, spec has to be updated: <https://github.com/whatwg/html/pull/3872>
+  // undefined commit();
   readonly attribute OffscreenCanvas canvas;
 };
 
