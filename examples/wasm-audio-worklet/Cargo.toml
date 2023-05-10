@@ -23,6 +23,7 @@ features = [
   "Blob",
   "BlobPropertyBag",
   "Document",
+  "Event",
   "HtmlInputElement",
   "HtmlLabelElement",
   "Url",
