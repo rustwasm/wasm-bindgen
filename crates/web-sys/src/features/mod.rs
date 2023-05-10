@@ -2188,6 +2188,12 @@ mod gen_FocusEventInit;
 #[cfg(feature = "FocusEventInit")]
 pub use gen_FocusEventInit::*;
 
+#[cfg(feature = "FontData")]
+#[allow(non_snake_case)]
+mod gen_FontData;
+#[cfg(feature = "FontData")]
+pub use gen_FontData::*;
+
 #[cfg(feature = "FontFace")]
 #[allow(non_snake_case)]
 mod gen_FontFace;
@@ -5751,6 +5757,12 @@ pub use gen_PushSubscriptionOptions::*;
 mod gen_PushSubscriptionOptionsInit;
 #[cfg(feature = "PushSubscriptionOptionsInit")]
 pub use gen_PushSubscriptionOptionsInit::*;
+
+#[cfg(feature = "QueryOptions")]
+#[allow(non_snake_case)]
+mod gen_QueryOptions;
+#[cfg(feature = "QueryOptions")]
+pub use gen_QueryOptions::*;
 
 #[cfg(feature = "QueuingStrategy")]
 #[allow(non_snake_case)]

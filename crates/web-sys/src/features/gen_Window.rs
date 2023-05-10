@@ -2153,6 +2153,32 @@ extern "C" {
         message: &str,
         default: &str,
     ) -> Result<Option<String>, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = queryLocalFonts)]
+    #[doc = "The `queryLocalFonts()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/queryLocalFonts)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn query_local_fonts(this: &Window) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "QueryOptions")]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = queryLocalFonts)]
+    #[doc = "The `queryLocalFonts()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/queryLocalFonts)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `QueryOptions`, `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn query_local_fonts_with_options(
+        this: &Window,
+        options: &QueryOptions,
+    ) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "Window" , js_name = releaseEvents)]
     #[doc = "The `releaseEvents()` method."]
     #[doc = ""]
