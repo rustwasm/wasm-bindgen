@@ -662,6 +662,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
     pub fn webkit_matches_selector(this: &Element, selector: &str) -> Result<bool, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Animation")]
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
     #[doc = "The `animate()` method."]
@@ -669,7 +670,11 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`, `Element`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn animate(this: &Element, keyframes: Option<&::js_sys::Object>) -> Animation;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Animation")]
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
     #[doc = "The `animate()` method."]
@@ -677,11 +682,15 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`, `Element`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn animate_with_f64(
         this: &Element,
         keyframes: Option<&::js_sys::Object>,
         options: f64,
     ) -> Animation;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "Animation", feature = "KeyframeAnimationOptions",))]
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
     #[doc = "The `animate()` method."]
@@ -689,6 +698,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Animation`, `Element`, `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn animate_with_keyframe_animation_options(
         this: &Element,
         keyframes: Option<&::js_sys::Object>,
