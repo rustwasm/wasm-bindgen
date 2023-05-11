@@ -1309,17 +1309,31 @@ pub fn anyref_heap_live_count() -> u32 {
 pub trait UnwrapThrowExt<T>: Sized {
     /// Unwrap this `Option` or `Result`, but instead of panicking on failure,
     /// throw an exception to JavaScript.
+    #[cfg_attr(debug_assertions, track_caller)]
     fn unwrap_throw(self) -> T {
-        self.expect_throw("`unwrap_throw` failed")
+        if cfg!(all(debug_assertions, feature = "std")) {
+            let loc = core::panic::Location::caller();
+            let msg = std::format!(
+                "`unwrap_throw` failed ({}:{}:{})",
+                loc.file(),
+                loc.line(),
+                loc.column()
+            );
+            self.expect_throw(&msg)
+        } else {
+            self.expect_throw("`unwrap_throw` failed")
+        }
     }
 
     /// Unwrap this container's `T` value, or throw an error to JS with the
     /// given message if the `T` value is unavailable (e.g. an `Option<T>` is
     /// `None`).
+    #[cfg_attr(debug_assertions, track_caller)]
     fn expect_throw(self, message: &str) -> T;
 }
 
 impl<T> UnwrapThrowExt<T> for Option<T> {
+    #[cfg_attr(debug_assertions, track_caller)]
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
             match self {
@@ -1336,6 +1350,7 @@ impl<T, E> UnwrapThrowExt<T> for Result<T, E>
 where
     E: core::fmt::Debug,
 {
+    #[cfg_attr(debug_assertions, track_caller)]
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
             match self {
