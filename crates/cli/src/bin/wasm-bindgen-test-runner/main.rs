@@ -12,6 +12,7 @@
 //! and source code.
 
 use anyhow::{anyhow, bail, Context};
+use log::error;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -32,6 +33,16 @@ enum TestMode {
     Worker { no_modules: bool },
 }
 
+struct TmpDirDeleteGuard(PathBuf);
+
+impl Drop for TmpDirDeleteGuard {
+    fn drop(&mut self) {
+        if let Err(e) = fs::remove_dir_all(&self.0) {
+            error!("failed to remove temporary directory: {}", e);
+        }
+    }
+}
+
 fn main() -> anyhow::Result<()> {
     env_logger::init();
     let mut args = env::args_os().skip(1);
@@ -44,10 +55,10 @@ fn main() -> anyhow::Result<()> {
         None => bail!("must have a file to test as first argument"),
     };
 
-    let wasm_file_to_test_name = wasm_file_to_test
+    let file_name = wasm_file_to_test
         .file_name()
         .and_then(|s| s.to_str())
-        .ok_or_else(|| anyhow!("file to test is not a valid file, can't extract file name"))?;
+        .context("file to test is not a valid file, can't extract file name")?;
 
     // wasm_file_to_test may be
     // - a cargo-like directory layout and generate output at
@@ -66,12 +77,13 @@ fn main() -> anyhow::Result<()> {
             .and_then(|p| p.parent()) // chop off `deps`
             .and_then(|p| p.parent()) // chop off `debug`
     }
-    .map(|p| p.join(format!("wbg-tmp-{}", wasm_file_to_test_name)))
+    .map(|p| p.join(format!("wbg-tmp-{}", file_name)))
     .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
 
     // Make sure there's no stale state from before
     drop(fs::remove_dir_all(&tmpdir));
     fs::create_dir(&tmpdir).context("creating temporary directory")?;
+    let _guard = TmpDirDeleteGuard(tmpdir.clone());
 
     let module = "wasm-bindgen-test";
 
