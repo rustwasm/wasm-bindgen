@@ -28,8 +28,8 @@ mod shell;
 enum TestMode {
     Node,
     Deno,
-    Browser,
-    NoModule,
+    Browser { no_modules: bool },
+    Worker { no_modules: bool },
 }
 
 fn main() -> anyhow::Result<()> {
@@ -105,13 +105,12 @@ fn main() -> anyhow::Result<()> {
 
     let custom_section = wasm.customs.remove_raw("__wasm_bindgen_test_unstable");
     let test_mode = match custom_section {
-        Some(section) if section.data.contains(&0x01) => {
-            if std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok() {
-                TestMode::NoModule
-            } else {
-                TestMode::Browser
-            }
-        }
+        Some(section) if section.data.contains(&0x01) => TestMode::Browser {
+            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+        },
+        Some(section) if section.data.contains(&0x10) => TestMode::Worker {
+            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+        },
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
         None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
         None => TestMode::Node,
@@ -168,8 +167,12 @@ integration test.\
     match test_mode {
         TestMode::Node => b.nodejs(true)?,
         TestMode::Deno => b.deno(true)?,
-        TestMode::Browser => b.web(true)?,
-        TestMode::NoModule => b.no_modules(true)?,
+        TestMode::Browser { no_modules: false } | TestMode::Worker { no_modules: false } => {
+            b.web(true)?
+        }
+        TestMode::Browser { no_modules: true } | TestMode::Worker { no_modules: true } => {
+            b.no_modules(true)?
+        }
     };
 
     if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
@@ -189,7 +192,7 @@ integration test.\
     match test_mode {
         TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
         TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
-        TestMode::Browser | TestMode::NoModule => {
+        TestMode::Browser { no_modules } | TestMode::Worker { no_modules } => {
             let srv = server::spawn(
                 &if headless {
                     "127.0.0.1:0".parse().unwrap()
@@ -203,7 +206,8 @@ integration test.\
                 &tmpdir,
                 &args,
                 &tests,
-                matches!(test_mode, TestMode::NoModule),
+                no_modules,
+                matches!(test_mode, TestMode::Worker { no_modules: _ }),
             )
             .context("failed to spawn server")?;
             let addr = srv.server_addr();

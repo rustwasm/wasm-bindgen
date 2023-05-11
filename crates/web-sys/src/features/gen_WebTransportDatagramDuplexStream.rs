@@ -60,7 +60,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn incoming_max_age(this: &WebTransportDatagramDuplexStream) -> Option<f64>;
+    pub fn incoming_max_age(this: &WebTransportDatagramDuplexStream) -> f64;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "WebTransportDatagramDuplexStream" , js_name = incomingMaxAge)]
     #[doc = "Setter for the `incomingMaxAge` field of this object."]
@@ -71,7 +71,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_incoming_max_age(this: &WebTransportDatagramDuplexStream, value: Option<f64>);
+    pub fn set_incoming_max_age(this: &WebTransportDatagramDuplexStream, value: f64);
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "WebTransportDatagramDuplexStream" , js_name = outgoingMaxAge)]
     #[doc = "Getter for the `outgoingMaxAge` field of this object."]
@@ -82,7 +82,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn outgoing_max_age(this: &WebTransportDatagramDuplexStream) -> Option<f64>;
+    pub fn outgoing_max_age(this: &WebTransportDatagramDuplexStream) -> f64;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "WebTransportDatagramDuplexStream" , js_name = outgoingMaxAge)]
     #[doc = "Setter for the `outgoingMaxAge` field of this object."]
@@ -93,7 +93,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_outgoing_max_age(this: &WebTransportDatagramDuplexStream, value: Option<f64>);
+    pub fn set_outgoing_max_age(this: &WebTransportDatagramDuplexStream, value: f64);
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "WebTransportDatagramDuplexStream" , js_name = incomingHighWaterMark)]
     #[doc = "Getter for the `incomingHighWaterMark` field of this object."]
@@ -104,7 +104,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn incoming_high_water_mark(this: &WebTransportDatagramDuplexStream) -> i32;
+    pub fn incoming_high_water_mark(this: &WebTransportDatagramDuplexStream) -> f64;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "WebTransportDatagramDuplexStream" , js_name = incomingHighWaterMark)]
     #[doc = "Setter for the `incomingHighWaterMark` field of this object."]
@@ -115,7 +115,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_incoming_high_water_mark(this: &WebTransportDatagramDuplexStream, value: i32);
+    pub fn set_incoming_high_water_mark(this: &WebTransportDatagramDuplexStream, value: f64);
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "WebTransportDatagramDuplexStream" , js_name = outgoingHighWaterMark)]
     #[doc = "Getter for the `outgoingHighWaterMark` field of this object."]
@@ -126,7 +126,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn outgoing_high_water_mark(this: &WebTransportDatagramDuplexStream) -> i32;
+    pub fn outgoing_high_water_mark(this: &WebTransportDatagramDuplexStream) -> f64;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "WebTransportDatagramDuplexStream" , js_name = outgoingHighWaterMark)]
     #[doc = "Setter for the `outgoingHighWaterMark` field of this object."]
@@ -137,5 +137,5 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_outgoing_high_water_mark(this: &WebTransportDatagramDuplexStream, value: i32);
+    pub fn set_outgoing_high_water_mark(this: &WebTransportDatagramDuplexStream, value: f64);
 }

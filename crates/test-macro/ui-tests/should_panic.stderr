@@ -2,7 +2,7 @@ error: malformed `#[should_panic = "..."]` attribute
   --> ui-tests/should_panic.rs:28:15
    |
 28 | #[should_panic::error]
-   |               ^^
+   |               ^
 
 error: malformed `#[should_panic]` attribute
   --> ui-tests/should_panic.rs:32:18

@@ -16,10 +16,10 @@ interface WebTransportDatagramDuplexStream {
   readonly attribute WritableStream writable;
 
   readonly attribute unsigned long maxDatagramSize;
-  attribute double? incomingMaxAge;
-  attribute double? outgoingMaxAge;
-  attribute long incomingHighWaterMark;
-  attribute long outgoingHighWaterMark;
+  attribute unrestricted double incomingMaxAge;
+  attribute unrestricted double outgoingMaxAge;
+  attribute unrestricted double incomingHighWaterMark;
+  attribute unrestricted double outgoingHighWaterMark;
 };
 
 [Exposed=(Window,Worker), SecureContext]
@@ -31,6 +31,7 @@ interface WebTransport {
   readonly attribute WebTransportReliabilityMode reliability;
   readonly attribute WebTransportCongestionControl congestionControl;
   readonly attribute Promise<WebTransportCloseInfo> closed;
+  readonly attribute Promise<undefined> draining;
   undefined close(optional WebTransportCloseInfo closeInfo = {});
 
   readonly attribute WebTransportDatagramDuplexStream datagrams;
@@ -44,6 +45,12 @@ interface WebTransport {
       optional WebTransportSendStreamOptions options = {});
   /* a ReadableStream of WebTransportReceiveStream objects */
   readonly attribute ReadableStream incomingUnidirectionalStreams;
+};
+
+enum WebTransportReliabilityMode {
+  "pending",
+  "reliable-only",
+  "supports-unreliable",
 };
 
 dictionary WebTransportHash {
@@ -88,16 +95,16 @@ dictionary WebTransportStats {
   WebTransportDatagramStats datagrams;
 };
 
-[Exposed=(Window,Worker), SecureContext, Transferable]
-interface WebTransportSendStream : WritableStream {
-  Promise<WebTransportSendStreamStats> getStats();
-};
-
 dictionary WebTransportDatagramStats {
   DOMHighResTimeStamp timestamp;
   unsigned long long expiredOutgoing;
   unsigned long long droppedIncoming;
   unsigned long long lostOutgoing;
+};
+
+[Exposed=(Window,Worker), SecureContext, Transferable]
+interface WebTransportSendStream : WritableStream {
+  Promise<WebTransportSendStreamStats> getStats();
 };
 
 dictionary WebTransportSendStreamStats {
@@ -124,17 +131,17 @@ interface WebTransportBidirectionalStream {
   readonly attribute WebTransportSendStream writable;
 };
 
-[Exposed=(Window,Worker), SecureContext]
+[Exposed=(Window,Worker), Serializable, SecureContext]
 interface WebTransportError : DOMException {
-  constructor(optional WebTransportErrorInit init = {});
+  constructor(optional DOMString message = "", optional WebTransportErrorOptions options = {});
 
   readonly attribute WebTransportErrorSource source;
   readonly attribute octet? streamErrorCode;
 };
 
-dictionary WebTransportErrorInit {
-  [Clamp] octet streamErrorCode;
-  DOMString message;
+dictionary WebTransportErrorOptions {
+  WebTransportErrorSource source = "stream";
+  [Clamp] octet? streamErrorCode = null;
 };
 
 enum WebTransportErrorSource {

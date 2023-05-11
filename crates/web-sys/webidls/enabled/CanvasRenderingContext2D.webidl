@@ -124,7 +124,7 @@ CanvasRenderingContext2D includes CanvasDrawImage;
 CanvasRenderingContext2D includes CanvasImageData;
 CanvasRenderingContext2D includes CanvasPathDrawingStyles;
 CanvasRenderingContext2D includes CanvasTextDrawingStyles;
-CanvasRenderingContext2D includes CanvasPathMethods;
+CanvasRenderingContext2D includes CanvasPath;
 CanvasRenderingContext2D includes CanvasHitRegions;
 
 interface mixin CanvasState {
@@ -201,7 +201,7 @@ interface mixin CanvasRect {
 };
 
 interface mixin CanvasDrawPath {
-  // path API (see also CanvasPathMethods)
+  // path API (see also CanvasPath)
   undefined beginPath();
   undefined fill(optional CanvasWindingRule winding = "nonzero");
   undefined fill(Path2D path, optional CanvasWindingRule winding = "nonzero");
@@ -286,31 +286,22 @@ interface mixin CanvasTextDrawingStyles {
   attribute DOMString textBaseline; // "top", "hanging", "middle", "alphabetic", "ideographic", "bottom" (default: "alphabetic")
 };
 
-interface mixin CanvasPathMethods {
+interface mixin CanvasPath {
   // shared path API methods
   undefined closePath();
-  [LenientFloat]
-  undefined moveTo(double x, double y);
-  [LenientFloat]
-  undefined lineTo(double x, double y);
-  [LenientFloat]
-  undefined quadraticCurveTo(double cpx, double cpy, double x, double y);
-
-  [LenientFloat]
-  undefined bezierCurveTo(double cp1x, double cp1y, double cp2x, double cp2y, double x, double y);
-
-  [Throws, LenientFloat]
-  undefined arcTo(double x1, double y1, double x2, double y2, double radius);
-// NOT IMPLEMENTED  [LenientFloat] undefined arcTo(double x1, double y1, double x2, double y2, double radiusX, double radiusY, double rotation);
-
-  [LenientFloat]
-  undefined rect(double x, double y, double w, double h);
-
-  [Throws, LenientFloat]
-  undefined arc(double x, double y, double radius, double startAngle, double endAngle, optional boolean anticlockwise = false);
-
-  [Throws, LenientFloat]
-  undefined ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, optional boolean anticlockwise = false);
+  undefined moveTo(unrestricted double x, unrestricted double y);
+  undefined lineTo(unrestricted double x, unrestricted double y);
+  undefined quadraticCurveTo(unrestricted double cpx, unrestricted double cpy, unrestricted double x, unrestricted double y);
+  undefined bezierCurveTo(unrestricted double cp1x, unrestricted double cp1y, unrestricted double cp2x, unrestricted double cp2y, unrestricted double x, unrestricted double y);
+  [Throws]
+  undefined arcTo(unrestricted double x1, unrestricted double y1, unrestricted double x2, unrestricted double y2, unrestricted double radius); 
+  undefined rect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
+  [Throws]
+  undefined roundRect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h, optional (unrestricted double or DOMPointInit or sequence<(unrestricted double or DOMPointInit)>) radii = 0);
+  [Throws]
+  undefined arc(unrestricted double x, unrestricted double y, unrestricted double radius, unrestricted double startAngle, unrestricted double endAngle, optional boolean anticlockwise = false); 
+  [Throws]
+  undefined ellipse(unrestricted double x, unrestricted double y, unrestricted double radiusX, unrestricted double radiusY, unrestricted double rotation, unrestricted double startAngle, unrestricted double endAngle, optional boolean anticlockwise = false);
 };
 
 interface mixin CanvasHitRegions {
@@ -371,4 +362,4 @@ interface Path2D
 {
   undefined addPath(Path2D path, optional SVGMatrix transformation);
 };
-Path2D includes CanvasPathMethods;
+Path2D includes CanvasPath;
