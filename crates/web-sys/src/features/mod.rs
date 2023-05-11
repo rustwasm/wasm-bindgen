@@ -6604,6 +6604,12 @@ mod gen_Selection;
 #[cfg(feature = "Selection")]
 pub use gen_Selection::*;
 
+#[cfg(feature = "SelectionMode")]
+#[allow(non_snake_case)]
+mod gen_SelectionMode;
+#[cfg(feature = "SelectionMode")]
+pub use gen_SelectionMode::*;
+
 #[cfg(feature = "Serial")]
 #[allow(non_snake_case)]
 mod gen_Serial;
