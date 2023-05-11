@@ -12,7 +12,6 @@
  * and create derivative works of this document.
  */
 
-/*TODO
 enum SelectionMode {
   "select",
   "start",
@@ -20,6 +19,7 @@ enum SelectionMode {
   "preserve",
 };
 
+/*TODO
 interface XULControllers;
 */
 
