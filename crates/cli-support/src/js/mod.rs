@@ -3239,7 +3239,7 @@ impl<'a> Context<'a> {
         let expr = match intrinsic {
             Intrinsic::JsvalPtr => {
                 assert_eq!(args.len(), 1);
-                format!("{}.ptr", args[0])
+                format!("{}.__wbg_ptr", args[0])
             }
 
             Intrinsic::JsvalEq => {

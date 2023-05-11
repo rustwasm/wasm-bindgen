@@ -123,10 +123,10 @@ fn as_ptr_and_downcast() {
         foo: u8,
     }
 
-    let js_val: JsValue = JsvalPtr { foo: 42 }.into();
+    let js_val = JsValue::from(JsvalPtr { foo: 42 });
 
     let expected_ptr = {
-        let ptr = Reflect::get(&js_val, &JsValue::from_str("ptr"))
+        let ptr = Reflect::get(&js_val, &JsValue::from_str("__wbg_ptr"))
             .expect("failed to read the `JsValue` pointer");
 
         ptr.as_f64()
