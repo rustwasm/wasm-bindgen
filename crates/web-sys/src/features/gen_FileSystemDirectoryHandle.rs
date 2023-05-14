@@ -16,7 +16,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type FileSystemDirectoryHandle;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getDirectoryHandle)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getDirectoryHandle)]
     #[doc = "The `getDirectoryHandle()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/getDirectoryHandle)"]
@@ -25,13 +25,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn get_directory_handle(
-        this: &FileSystemDirectoryHandle,
-        name: &str,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn get_directory_handle(this: &FileSystemDirectoryHandle, name: &str) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemGetDirectoryOptions")]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getDirectoryHandle)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getDirectoryHandle)]
     #[doc = "The `getDirectoryHandle()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/getDirectoryHandle)"]
@@ -44,9 +41,9 @@ extern "C" {
         this: &FileSystemDirectoryHandle,
         name: &str,
         options: &FileSystemGetDirectoryOptions,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getFileHandle)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getFileHandle)]
     #[doc = "The `getFileHandle()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/getFileHandle)"]
@@ -55,13 +52,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn get_file_handle(
-        this: &FileSystemDirectoryHandle,
-        name: &str,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn get_file_handle(this: &FileSystemDirectoryHandle, name: &str) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemGetFileOptions")]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getFileHandle)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = getFileHandle)]
     #[doc = "The `getFileHandle()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/getFileHandle)"]
@@ -74,9 +68,9 @@ extern "C" {
         this: &FileSystemDirectoryHandle,
         name: &str,
         options: &FileSystemGetFileOptions,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryHandle" , js_name = removeEntry)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = removeEntry)]
     #[doc = "The `removeEntry()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/removeEntry)"]
@@ -85,13 +79,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn remove_entry(
-        this: &FileSystemDirectoryHandle,
-        name: &str,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn remove_entry(this: &FileSystemDirectoryHandle, name: &str) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemRemoveOptions")]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemDirectoryHandle" , js_name = removeEntry)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = removeEntry)]
     #[doc = "The `removeEntry()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/removeEntry)"]
@@ -104,7 +95,7 @@ extern "C" {
         this: &FileSystemDirectoryHandle,
         name: &str,
         options: &FileSystemRemoveOptions,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = resolve)]
     #[doc = "The `resolve()` method."]

@@ -16,7 +16,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type FileSystemFileHandle;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemFileHandle" , js_name = createSyncAccessHandle)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemFileHandle" , js_name = createSyncAccessHandle)]
     #[doc = "The `createSyncAccessHandle()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileHandle/createSyncAccessHandle)"]
@@ -25,11 +25,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn create_sync_access_handle(
-        this: &FileSystemFileHandle,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn create_sync_access_handle(this: &FileSystemFileHandle) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemFileHandle" , js_name = createWritable)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemFileHandle" , js_name = createWritable)]
     #[doc = "The `createWritable()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileHandle/createWritable)"]
@@ -38,10 +36,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn create_writable(this: &FileSystemFileHandle) -> Result<::js_sys::Promise, JsValue>;
+    pub fn create_writable(this: &FileSystemFileHandle) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemCreateWritableOptions")]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemFileHandle" , js_name = createWritable)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemFileHandle" , js_name = createWritable)]
     #[doc = "The `createWritable()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileHandle/createWritable)"]
@@ -53,9 +51,9 @@ extern "C" {
     pub fn create_writable_with_options(
         this: &FileSystemFileHandle,
         options: &FileSystemCreateWritableOptions,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemFileHandle" , js_name = getFile)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemFileHandle" , js_name = getFile)]
     #[doc = "The `getFile()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileHandle/getFile)"]
@@ -64,5 +62,5 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn get_file(this: &FileSystemFileHandle) -> Result<::js_sys::Promise, JsValue>;
+    pub fn get_file(this: &FileSystemFileHandle) -> ::js_sys::Promise;
 }

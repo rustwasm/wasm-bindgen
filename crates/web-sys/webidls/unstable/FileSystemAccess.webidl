@@ -17,11 +17,9 @@ dictionary FileSystemCreateWritableOptions {
 
 [Exposed=(Window,Worker), SecureContext, Serializable]
 interface FileSystemFileHandle : FileSystemHandle {
-  [Throws]
   Promise<File> getFile();
-  [Throws]
   Promise<FileSystemWritableFileStream> createWritable(optional FileSystemCreateWritableOptions options = {});
-  [Exposed=DedicatedWorker, Throws]
+  [Exposed=DedicatedWorker]
   Promise<FileSystemSyncAccessHandle> createSyncAccessHandle();
 };
 
@@ -39,15 +37,11 @@ dictionary FileSystemRemoveOptions {
 
 [Exposed=(Window,Worker), SecureContext, Serializable]
 interface FileSystemDirectoryHandle : FileSystemHandle {
-  [Throws]
   async iterable<USVString, FileSystemHandle>;
 
-  [Throws]
   Promise<FileSystemFileHandle> getFileHandle(USVString name, optional FileSystemGetFileOptions options = {});
-  [Throws]
   Promise<FileSystemDirectoryHandle> getDirectoryHandle(USVString name, optional FileSystemGetDirectoryOptions options = {});
 
-  [Throws]
   Promise<undefined> removeEntry(USVString name, optional FileSystemRemoveOptions options = {});
 
   Promise<sequence<USVString>?> resolve(FileSystemHandle possibleDescendant);
@@ -70,8 +64,11 @@ typedef (BufferSource or Blob or USVString or WriteParams) FileSystemWriteChunkT
 
 [Exposed=(Window,Worker), SecureContext]
 interface FileSystemWritableFileStream : WritableStream {
+  [Throws]
   Promise<undefined> write(FileSystemWriteChunkType data);
+  [Throws]
   Promise<undefined> seek(unsigned long long position);
+  [Throws]
   Promise<undefined> truncate(unsigned long long size);
 };
 
