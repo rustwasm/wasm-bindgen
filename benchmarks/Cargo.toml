@@ -1,0 +1,11 @@
+[package]
+name = "wasm-bindgen-benchmark"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+
+[dependencies]
+wasm-bindgen = "0.2.43"
+web-sys = { version = "0.3.20", features = ['Node'] }
+
+[lib]
+crate-type = ['cdylib']

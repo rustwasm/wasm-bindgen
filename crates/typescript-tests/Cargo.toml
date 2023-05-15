@@ -1,0 +1,14 @@
+[package]
+name = "typescript-tests"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[dependencies]
+wasm-bindgen = { path = '../..' }
+wasm-bindgen-futures = { path = '../futures' }
+web-sys = { path = '../web-sys', features = [ 'HtmlElement', 'Node', 'Document' ] }
+js-sys = { path = '../js-sys' }
+
+[lib]
+crate-type = ['cdylib']

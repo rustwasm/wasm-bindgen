@@ -1,0 +1,59 @@
+error: malformed `#[should_panic = "..."]` attribute
+  --> ui-tests/should_panic.rs:28:15
+   |
+28 | #[should_panic::error]
+   |               ^
+
+error: malformed `#[should_panic]` attribute
+  --> ui-tests/should_panic.rs:32:18
+   |
+32 | #[should_panic = 42]
+   |                  ^^
+
+error: malformed `#[should_panic = "..."]` attribute
+  --> ui-tests/should_panic.rs:36:15
+   |
+36 | #[should_panic[]]
+   |               ^^
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:40:15
+   |
+40 | #[should_panic(42)]
+   |               ^^^^
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:44:15
+   |
+44 | #[should_panic(test)]
+   |               ^^^^^^
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:48:15
+   |
+48 | #[should_panic(expected)]
+   |               ^^^^^^^^^^
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:52:15
+   |
+52 | #[should_panic(expected::error)]
+   |               ^^^^^^^^^^^^^^^^^
+
+error: malformed `#[should_panic]` attribute
+  --> ui-tests/should_panic.rs:56:3
+   |
+56 | #[should_panic(expected =)]
+   |   ^^^^^^^^^^^^
+
+error: malformed `#[should_panic]` attribute
+  --> ui-tests/should_panic.rs:60:27
+   |
+60 | #[should_panic(expected = 5)]
+   |                           ^
+
+error: duplicate `should_panic` attribute
+  --> ui-tests/should_panic.rs:65:3
+   |
+65 | #[should_panic = "test"]
+   |   ^^^^^^^^^^^^

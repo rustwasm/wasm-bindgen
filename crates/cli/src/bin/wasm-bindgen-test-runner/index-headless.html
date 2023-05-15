@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  </head>
+  <body>
+    <pre id="output">Loading scripts...</pre>
+    <pre id="console_debug"></pre>
+    <pre id="console_log"></pre>
+    <pre id="console_info"></pre>
+    <pre id="console_warn"></pre>
+    <pre id="console_error"></pre>
+    <script>
+     const orig = id => (...args) => {
+         const logs = document.getElementById(id);
+         for (let msg of args) {
+             logs.textContent += `${msg}\n`;
+         }
+     };
+
+     const wrap = method => {
+         const og = orig(`console_${method}`);
+         const on_method = `on_console_${method}`;
+         console[method] = function (...args) {
+             if (window[on_method]) {
+                 window[on_method](args);
+             }
+             og.apply(this, args);
+         };
+     };
+
+     wrap("debug");
+     wrap("log");
+     wrap("info");
+     wrap("warn");
+     wrap("error");
+
+     window.__wbg_test_invoke = f => f();
+    </script>
+    <!-- {IMPORT_SCRIPTS} -->
+  </body>
+</html>

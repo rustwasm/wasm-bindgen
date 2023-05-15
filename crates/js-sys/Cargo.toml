@@ -1,0 +1,27 @@
+[package]
+name = "js-sys"
+version = "0.3.62"
+authors = ["The wasm-bindgen Developers"]
+readme = "./README.md"
+categories = ["wasm"]
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/js-sys"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+documentation = "https://docs.rs/js-sys"
+description = """
+Bindings for all JS global objects and functions in all JS environments like
+Node.js and browsers, built on `#[wasm_bindgen]` using the `wasm-bindgen` crate.
+"""
+license = "MIT/Apache-2.0"
+edition = "2018"
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+wasm-bindgen = { path = "../..", version = "0.2.85" }
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = { path = '../test', version = '=0.3.35' }
+wasm-bindgen-futures = { path = '../futures', version = '0.4.35' }
+web-sys = { path = "../web-sys", version = "0.3.62", features = ["Headers", "Response", "ResponseInit"] }
