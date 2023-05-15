@@ -103,31 +103,19 @@ const JSIDX_RESERVED: u32 = JSIDX_OFFSET + 4;
 
 impl JsValue {
     /// The `null` JS value constant.
-    pub const NULL: JsValue = JsValue {
-        idx: JSIDX_NULL,
-        _marker: marker::PhantomData,
-    };
+    pub const NULL: JsValue = JsValue::_new(JSIDX_NULL);
 
     /// The `undefined` JS value constant.
-    pub const UNDEFINED: JsValue = JsValue {
-        idx: JSIDX_UNDEFINED,
-        _marker: marker::PhantomData,
-    };
+    pub const UNDEFINED: JsValue = JsValue::_new(JSIDX_UNDEFINED);
 
     /// The `true` JS value constant.
-    pub const TRUE: JsValue = JsValue {
-        idx: JSIDX_TRUE,
-        _marker: marker::PhantomData,
-    };
+    pub const TRUE: JsValue = JsValue::_new(JSIDX_TRUE);
 
     /// The `false` JS value constant.
-    pub const FALSE: JsValue = JsValue {
-        idx: JSIDX_FALSE,
-        _marker: marker::PhantomData,
-    };
+    pub const FALSE: JsValue = JsValue::_new(JSIDX_FALSE);
 
     #[inline]
-    fn _new(idx: u32) -> JsValue {
+    const fn _new(idx: u32) -> JsValue {
         JsValue {
             idx,
             _marker: marker::PhantomData,
@@ -166,7 +154,7 @@ impl JsValue {
     /// This function creates a JS object representing a boolean (a heap
     /// allocated boolean) and returns a handle to the JS version of it.
     #[inline]
-    pub fn from_bool(b: bool) -> JsValue {
+    pub const fn from_bool(b: bool) -> JsValue {
         if b {
             JsValue::TRUE
         } else {
@@ -176,13 +164,13 @@ impl JsValue {
 
     /// Creates a new JS value representing `undefined`.
     #[inline]
-    pub fn undefined() -> JsValue {
+    pub const fn undefined() -> JsValue {
         JsValue::UNDEFINED
     }
 
     /// Creates a new JS value representing `null`.
     #[inline]
-    pub fn null() -> JsValue {
+    pub const fn null() -> JsValue {
         JsValue::NULL
     }
 
