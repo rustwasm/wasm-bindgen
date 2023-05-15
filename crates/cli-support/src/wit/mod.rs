@@ -1475,8 +1475,8 @@ pub fn extract_programs<'a>(
 it looks like the Rust project used to create this wasm file was linked against
 version of wasm-bindgen that uses a different bindgen format than this binary:
 
-  rust wasm file schema version: {}
-     this binary schema version: {}
+  rust wasm file schema version: {their_version}
+     this binary schema version: {my_version}
 
 Currently the bindgen format is unstable enough that these two schema versions
 must exactly match. You can accomplish this by either updating this binary or 
@@ -1493,9 +1493,7 @@ binary with:
 
 if this warning fails to go away though and you're not sure what to do feel free
 to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
-",
-                    their_version,
-                    my_version,
+"
                 );
             }
             let next = get_remaining(&mut payload).unwrap();
