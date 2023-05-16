@@ -42,44 +42,31 @@ jobs:
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
-    env:
-      # keep allowed lints in sync with .cargo/config
-      RUSTFLAGS: >-
-        -D warnings
-        -A dead_code
-        -A non_upper_case_globals
-        -A unused_doc_comments
-        -A clippy::large_enum_variant
-        -A clippy::missing_safety_doc
-        -A clippy::new_without_default
-        -A clippy::overly_complex_bool_expr
-        -A clippy::too_many_arguments
-        -A clippy::type_complexity
     steps:
     - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-backend
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli-support
-    - run: cargo clippy --no-deps --all-features -p example-tests
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-externref-xform
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-futures
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p js-sys
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro-support
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-multi-value-xform
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-shared
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-test
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-test-macro
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-threads-xform
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p typescript-tests
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-conventions
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-interpreter
-    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-webidl
-    # webidl-tests not checked due to https://github.com/rust-lang/cargo/issues/4423
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p web-sys
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-backend -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli-support -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p example-tests -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-externref-xform -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p js-sys -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro-support -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-multi-value-xform -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-shared -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-test -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-test-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-threads-xform -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p typescript-tests -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-conventions -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-interpreter -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-webidl -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p webidl-tests -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p web-sys -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -- -D warnings
 
   test_wasm_bindgen:
     name: "Run wasm-bindgen crate tests (unix)"

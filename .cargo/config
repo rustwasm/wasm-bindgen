@@ -4,7 +4,6 @@
 runner = 'cargo run -p wasm-bindgen-cli --bin wasm-bindgen-test-runner --'
 
 [target.'cfg(all())']
-# keep allowed lints in sync with .github/workflows/main.yml
 rustflags = [
     "-Adead_code",
     "-Anon_upper_case_globals",
