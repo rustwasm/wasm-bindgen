@@ -124,6 +124,7 @@ impl Enum {
 
         quote! {
             #![allow(unused_imports)]
+            #![allow(clippy::all)]
             use wasm_bindgen::prelude::*;
 
             #unstable_attr
@@ -590,6 +591,7 @@ impl Interface {
 
         quote! {
             #![allow(unused_imports)]
+            #![allow(clippy::all)]
             use super::*;
             use wasm_bindgen::prelude::*;
 
@@ -732,6 +734,7 @@ impl Dictionary {
 
         let mut base_stream = quote! {
             #![allow(unused_imports)]
+            #![allow(clippy::all)]
             use super::*;
             use wasm_bindgen::prelude::*;
 
@@ -916,6 +919,7 @@ impl Namespace {
             #unstable_docs
             pub mod #name {
                 #![allow(unused_imports)]
+                #![allow(clippy::all)]
                 use super::super::*;
                 use wasm_bindgen::prelude::*;
 

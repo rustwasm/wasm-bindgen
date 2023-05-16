@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 #[doc = "The `ClientType` enum."]
