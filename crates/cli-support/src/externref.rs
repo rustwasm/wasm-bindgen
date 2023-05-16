@@ -182,7 +182,7 @@ fn import_xform(
         match instr.instr {
             Instruction::CallAdapter(_) => break,
             Instruction::ExternrefLoadOwned { .. } | Instruction::TableGet => {
-                let owned = !(matches!(instr.instr, Instruction::TableGet));
+                let owned = !matches!(instr.instr, Instruction::TableGet);
                 let mut arg: Arg = match args.pop().unwrap() {
                     Some(arg) => arg,
                     None => panic!("previous instruction must be `arg.get`"),
