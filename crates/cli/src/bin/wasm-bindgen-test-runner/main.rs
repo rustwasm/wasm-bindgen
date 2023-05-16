@@ -232,10 +232,8 @@ fn main() -> anyhow::Result<()> {
                 println!("is specified in the environment of this process. Once you're");
                 println!("done with testing you'll need to kill this server with");
                 println!("Ctrl-C.");
-                return {
-                    srv.run();
-                    Ok(())
-                };
+                srv.run();
+                return Ok(());
             }
 
             thread::spawn(|| srv.run());
