@@ -18,6 +18,7 @@
 use anyhow::{anyhow, bail, Error};
 use std::cmp;
 use std::collections::{BTreeMap, HashMap, HashSet};
+use std::mem;
 
 use walrus::ir::*;
 use walrus::{ElementId, ExportId, ImportId, InstrLocId, TypeId};
@@ -418,7 +419,7 @@ impl Transform<'_> {
         // Create shims for all our functions and append them all to the segment
         // which places elements at the end.
         let mut new_segment = Vec::new();
-        for (idx, function) in std::mem::take(&mut self.cx.new_elements) {
+        for (idx, function) in mem::take(&mut self.cx.new_elements) {
             let (&offset, &orig_element) = self
                 .cx
                 .elements
