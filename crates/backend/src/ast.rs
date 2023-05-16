@@ -74,6 +74,8 @@ impl Program {
 /// In contrast to Program, LinkToModule must expand to an expression.
 /// linked_modules of the inner Program must contain exactly one element
 /// whose link is produced by the expression.
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone)]
 pub struct LinkToModule(pub Program);
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -349,7 +351,7 @@ pub struct Function {
 }
 
 /// Information about a Struct being exported
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Struct {
     /// The name of the struct in Rust code
@@ -369,7 +371,7 @@ pub struct Struct {
 }
 
 /// The field of a struct
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct StructField {
     /// The name of the field in Rust code
