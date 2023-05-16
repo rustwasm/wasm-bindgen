@@ -1527,7 +1527,7 @@ fn verify_schema_matches(data: &[u8]) -> Result<Option<&str>, Error> {
         Some(i) => &data[i + needle.len()..],
         None => bad!(),
     };
-    let their_schema_version = match rest.find('\"') {
+    let their_schema_version = match rest.find('"') {
         Some(i) => &rest[..i],
         None => bad!(),
     };
