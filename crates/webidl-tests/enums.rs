@@ -29,10 +29,10 @@ fn invalid_enum_return() {
     assert!(!actually_a_triangle.is_circle());
     assert!(!actually_a_triangle.is_square());
     assert!(
-        !(matches!(
+        !matches!(
             actually_a_triangle.get_shape(),
             ShapeType::Circle | ShapeType::Square
-        ))
+        )
     );
 }
 
