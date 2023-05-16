@@ -354,7 +354,7 @@ impl NonstandardWitSection {
                 kind,
             },
         );
-        return id;
+        id
     }
 
     /// Removes any dead entries in `adapters` that are no longer necessary

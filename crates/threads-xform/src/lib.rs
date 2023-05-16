@@ -279,7 +279,7 @@ fn allocate_static_data(
         let address = (*offset as u32 + (align - 1)) & !(align - 1); // align up
         let base = *offset;
 
-        *offset = *offset + (pages * PAGE_SIZE) as i32;
+        *offset += (pages * PAGE_SIZE) as i32;
 
         (base, address)
     };
@@ -345,7 +345,7 @@ fn inject_start(
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
                 // local = malloc(stack.size) [aka base]
-                with_temp_stack(body, memory, &stack, |body| {
+                with_temp_stack(body, memory, stack, |body| {
                     body.i32_const(stack.size as i32)
                         .call(malloc)
                         .local_tee(local);
@@ -427,8 +427,8 @@ fn inject_destroy(
                 .i32_const(stack.size as i32)
                 .call(free);
         },
-        |mut body| {
-            with_temp_stack(&mut body, memory, stack, |body| {
+        |body| {
+            with_temp_stack(body, memory, stack, |body| {
                 body.global_get(stack.alloc)
                     .i32_const(stack.size as i32)
                     .call(free);

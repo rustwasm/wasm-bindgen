@@ -47,7 +47,7 @@ fn runtest(test: &Test) -> Result<String> {
     }
     cx.run(&mut walrus)?;
     walrus::passes::gc::run(&mut walrus);
-    let printed = wasmprinter::print_bytes(&walrus.emit_wasm())?;
+    let printed = wasmprinter::print_bytes(walrus.emit_wasm())?;
     Ok(printed)
 }
 
@@ -142,14 +142,14 @@ impl Test {
         while let Some(line) = iter.next() {
             if line.starts_with("(; CHECK-ALL:") {
                 let mut pattern = String::new();
-                while let Some(line) = iter.next() {
+                for line in iter.by_ref() {
                     if line == ";)" {
                         break;
                     }
                     pattern.push_str(line);
-                    pattern.push_str("\n");
+                    pattern.push('\n');
                 }
-                while pattern.ends_with("\n") {
+                while pattern.ends_with('\n') {
                     pattern.pop();
                 }
                 if iter.next().is_some() {
@@ -182,8 +182,8 @@ impl Test {
             }
             bail!(
                 "expected\n    {}\n\nactual\n    {}",
-                pattern.replace("\n", "\n    "),
-                output.replace("\n", "\n    ")
+                pattern.replace('\n', "\n    "),
+                output.replace('\n', "\n    ")
             );
         } else {
             bail!(
@@ -202,7 +202,7 @@ fn update_output(path: &Path, output: &str) -> Result<()> {
     let mut new_output = String::new();
     for line in output.lines() {
         new_output.push_str(line);
-        new_output.push_str("\n");
+        new_output.push('\n');
     }
     let new = format!(
         "{}\n\n(; CHECK-ALL:\n{}\n;)\n",

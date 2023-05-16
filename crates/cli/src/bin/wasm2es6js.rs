@@ -4,7 +4,7 @@ use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 
-const USAGE: &'static str = "
+const USAGE: &str = "
 Converts a wasm file to an ES6 JS module
 
 Usage:

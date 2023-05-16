@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use std::process;
 use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 
-const USAGE: &'static str = "
+const USAGE: &str = "
 Generating JS bindings for a wasm file
 
 Usage:

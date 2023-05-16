@@ -188,7 +188,7 @@ pub fn spawn(
     js_to_execute.push_str("main(tests);\n");
 
     let js_path = tmpdir.join("run.js");
-    fs::write(&js_path, js_to_execute).context("failed to write JS file")?;
+    fs::write(js_path, js_to_execute).context("failed to write JS file")?;
 
     // For now, always run forever on this port. We may update this later!
     let tmpdir = tmpdir.to_path_buf();
@@ -223,14 +223,14 @@ pub fn spawn(
         // Otherwise we need to find the asset here. It may either be in our
         // temporary directory (generated files) or in the main directory
         // (relative import paths to JS). Try to find both locations.
-        let mut response = try_asset(&request, &tmpdir);
+        let mut response = try_asset(request, &tmpdir);
         if !response.is_success() {
-            response = try_asset(&request, ".".as_ref());
+            response = try_asset(request, ".".as_ref());
         }
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
-        return set_isolate_origin_headers(response);
+        set_isolate_origin_headers(response)
     })
     .map_err(|e| anyhow!("{}", e))?;
     return Ok(srv);
@@ -246,7 +246,7 @@ pub fn spawn(
         // 'foo'` instead of `from 'foo.js'`. Fixup those paths here to see if a
         // `js` file exists.
         if let Some(part) = request.url().split('/').last() {
-            if !part.contains(".") {
+            if !part.contains('.') {
                 let new_request = Request::fake_http(
                     request.method(),
                     format!("{}.js", request.url()),
@@ -282,5 +282,5 @@ fn set_isolate_origin_headers(mut response: Response) -> Response {
         Cow::Borrowed("require-corp"),
     ));
 
-    return response;
+    response
 }

@@ -85,7 +85,7 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     if let Some(method) = method {
         link.push_str(&format!("/{}", method));
     }
-    format!("[MDN Documentation]({})", link).into()
+    format!("[MDN Documentation]({})", link)
 }
 
 // Array type is borrowed for arguments (`&mut [T]` or `&[T]`) and owned for return value (`Vec<T>`).
@@ -113,7 +113,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
         ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::FloatLiteral(s.0.parse().unwrap()),
         ConstValueLit::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
-                let (negative, text) = if orig_text.starts_with("-") {
+                let (negative, text) = if orig_text.starts_with('-') {
                     (true, &orig_text[1..])
                 } else {
                     (false, orig_text)
@@ -338,10 +338,8 @@ impl<'src> FirstPassRecord<'src> {
                 let mut any_different = false;
                 let arg_name = signature.orig.args[i].name;
                 for other in actual_signatures.iter() {
-                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) {
-                        if !ptr::eq(signature, other) {
-                            any_same_name = true;
-                        }
+                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) && !ptr::eq(signature, other) {
+                        any_same_name = true;
                     }
                     if let Some(other) = other.args.get(i) {
                         if other != arg {
@@ -382,13 +380,13 @@ impl<'src> FirstPassRecord<'src> {
             }
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
-            let catch = force_throws || throws(&signature.orig.attrs);
+            let catch = force_throws || throws(signature.orig.attrs);
             let ret_ty = if id == &OperationId::IndexingGetter {
                 // All indexing getters should return optional values (or
                 // otherwise be marked with catch).
                 match ret_ty {
                     IdlType::Nullable(_) => ret_ty,
-                    ref ty @ _ => {
+                    ref ty => {
                         if catch {
                             ret_ty
                         } else {
@@ -505,7 +503,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        return ret;
+        ret
     }
 
     /// When generating our web_sys APIs we default to setting slice references that
@@ -653,7 +651,7 @@ fn flag_slices_immutable(ty: &mut IdlType) {
 }
 
 pub fn required_doc_string(options: &Options, features: &BTreeSet<String>) -> Option<String> {
-    if !options.features || features.len() == 0 {
+    if !options.features || features.is_empty() {
         return None;
     }
     let list = features
@@ -675,7 +673,7 @@ pub fn get_cfg_features(options: &Options, features: &BTreeSet<String>) -> Optio
         None
     } else {
         let features = features
-            .into_iter()
+            .iter()
             .map(|feature| quote!( feature = #feature, ))
             .collect::<TokenStream>();
 

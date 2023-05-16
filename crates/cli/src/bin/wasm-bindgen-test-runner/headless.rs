@@ -70,8 +70,8 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             // threads. We'll print this output later.
             let mut cmd = Command::new(path);
             cmd.args(args)
-                .arg(format!("--port={}", driver_addr.port().to_string()));
-            let mut child = BackgroundChild::spawn(&path, &mut cmd, shell)?;
+                .arg(format!("--port={}", driver_addr.port()));
+            let mut child = BackgroundChild::spawn(path, &mut cmd, shell)?;
             drop_log = Box::new(move || child.print_stdio_on_drop = false);
 
             // Wait for the driver to come online and bind its port before we try to
@@ -80,7 +80,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             let max = Duration::new(5, 0);
             let mut bound = false;
             while start.elapsed() < max {
-                if TcpStream::connect(&driver_addr).is_ok() {
+                if TcpStream::connect(driver_addr).is_ok() {
                     bound = true;
                     break;
                 }
@@ -171,14 +171,14 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
         drop_log();
     } else {
         println!("Failed to detect test as having been run. It might have timed out.");
-        if output.len() > 0 {
+        if !output.is_empty() {
             println!("output div contained:\n{}", tab(&output));
         }
     }
-    if logs.len() > 0 {
+    if !logs.is_empty() {
         println!("console.log div contained:\n{}", tab(&logs));
     }
-    if errors.len() > 0 {
+    if !errors.is_empty() {
         println!("console.log div contained:\n{}", tab(&errors));
     }
 
@@ -505,10 +505,10 @@ impl Client {
             value: selector.to_string(),
         };
         let x: Response = self.post(&format!("/session/{}/element", id), &request)?;
-        Ok(x.value
+        x.value
             .gecko_reference
             .or(x.value.safari_reference)
-            .ok_or(format_err!("failed to find element reference in response"))?)
+            .ok_or(format_err!("failed to find element reference in response"))
     }
 
     fn text(&mut self, id: &str, element: &str) -> Result<String, Error> {
@@ -616,9 +616,9 @@ fn tab(s: &str) -> String {
     for line in s.lines() {
         result.push_str("    ");
         result.push_str(line);
-        result.push_str("\n");
+        result.push('\n');
     }
-    return result;
+    result
 }
 
 struct BackgroundChild<'a> {
@@ -668,11 +668,11 @@ impl<'a> Drop for BackgroundChild<'a> {
         println!("driver status: {}", status);
 
         let stdout = self.stdout.take().unwrap().join().unwrap().unwrap();
-        if stdout.len() > 0 {
+        if !stdout.is_empty() {
             println!("driver stdout:\n{}", tab(&String::from_utf8_lossy(&stdout)));
         }
         let stderr = self.stderr.take().unwrap().join().unwrap().unwrap();
-        if stderr.len() > 0 {
+        if !stderr.is_empty() {
             println!("driver stderr:\n{}", tab(&String::from_utf8_lossy(&stderr)));
         }
     }

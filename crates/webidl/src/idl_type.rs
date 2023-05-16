@@ -736,7 +736,7 @@ impl<'a> IdlType<'a> {
                     },
                 ]
             }
-            idl_type @ _ => vec![idl_type.clone()],
+            idl_type => vec![idl_type.clone()],
         }
     }
 }

@@ -67,7 +67,7 @@ fn one_method_with_an_undefined_import_doesnt_break_all_other_methods() {
 fn nullable_method() {
     let f = NullableMethod::new().unwrap();
     assert!(f.opt(Some(15)) == Some(16));
-    assert!(f.opt(None) == None);
+    assert!(f.opt(None).is_none());
 }
 
 #[wasm_bindgen]

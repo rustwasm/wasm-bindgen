@@ -165,7 +165,7 @@ impl<'a> Context<'a> {
 
             // If any closures exist we need to prevent the function table from
             // getting gc'd
-            if closure_imports.len() > 0 {
+            if !closure_imports.is_empty() {
                 self.aux.function_table = self.module.tables.main_function_table()?;
             }
 
@@ -318,7 +318,7 @@ impl<'a> Context<'a> {
 
         if self.module.start.is_some() {
             let builder =
-                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
             builder.func_body().call_at(0, import);
         } else {
             self.module.start = Some(import);
@@ -437,7 +437,7 @@ impl<'a> Context<'a> {
         // apply to all the imports.
         for import in imports.iter() {
             if let decode::ImportKind::Type(ty) = &import.kind {
-                if ty.vendor_prefixes.len() == 0 {
+                if ty.vendor_prefixes.is_empty() {
                     continue;
                 }
                 self.vendor_prefixes
@@ -547,11 +547,11 @@ impl<'a> Context<'a> {
 
         if let Some(thread_count) = self.thread_count {
             let builder =
-                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
             thread_count.wrap_start(builder, id);
         } else if self.module.start.is_some() {
             let builder =
-                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(&mut self.module);
+                wasm_bindgen_wasm_conventions::get_or_insert_start_builder(self.module);
 
             // Note that we leave the previous start function, if any, first. This is
             // because the start function currently only shows up when it's injected
@@ -605,7 +605,7 @@ impl<'a> Context<'a> {
         // to the WebAssembly instance.
         let (id, import) = match method {
             Some(data) => {
-                let class = self.determine_import(import, &data.class)?;
+                let class = self.determine_import(import, data.class)?;
                 match &data.kind {
                     // NB: `structural` is ignored for constructors since the
                     // js type isn't expected to change anyway.
@@ -800,7 +800,7 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, &static_.name)?;
+        let import = self.determine_import(import, static_.name)?;
         self.aux.import_map.insert(id, AuxImport::Static(import));
         Ok(())
     }
@@ -829,7 +829,7 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, &type_.name)?;
+        let import = self.determine_import(import, type_.name)?;
         self.aux
             .import_map
             .insert(id, AuxImport::Instanceof(import));
@@ -859,8 +859,8 @@ impl<'a> Context<'a> {
 
     fn struct_(&mut self, struct_: decode::Struct<'_>) -> Result<(), Error> {
         for field in struct_.fields {
-            let getter = wasm_bindgen_shared::struct_field_get(&struct_.name, &field.name);
-            let setter = wasm_bindgen_shared::struct_field_set(&struct_.name, &field.name);
+            let getter = wasm_bindgen_shared::struct_field_get(struct_.name, field.name);
+            let setter = wasm_bindgen_shared::struct_field_set(struct_.name, field.name);
             let descriptor = match self.descriptors.remove(&getter) {
                 None => continue,
                 Some(d) => d,
@@ -957,7 +957,7 @@ impl<'a> Context<'a> {
         // packages or other imported items.
         let vendor_prefixes = self.vendor_prefixes.get(item);
         if let Some(vendor_prefixes) = vendor_prefixes {
-            assert!(vendor_prefixes.len() > 0);
+            assert!(!vendor_prefixes.is_empty());
 
             if let Some(decode::ImportModule::Inline(_) | decode::ImportModule::Named(_)) =
                 &import.module
@@ -997,7 +997,7 @@ impl<'a> Context<'a> {
 
         let (name, fields) = match import.js_namespace {
             Some(ref ns) => {
-                let mut tail = (&ns[1..]).to_owned();
+                let mut tail = ns[1..].to_owned();
                 tail.push(item.to_string());
                 (ns[0].to_owned(), tail)
             }
@@ -1007,11 +1007,11 @@ impl<'a> Context<'a> {
         let name = match import.module {
             Some(decode::ImportModule::Named(module)) => JsImportName::LocalModule {
                 module: module.to_string(),
-                name: name.to_string(),
+                name,
             },
             Some(decode::ImportModule::RawNamed(module)) => JsImportName::Module {
                 module: module.to_string(),
-                name: name.to_string(),
+                name,
             },
             Some(decode::ImportModule::Inline(idx)) => {
                 let offset = self
@@ -1023,11 +1023,11 @@ impl<'a> Context<'a> {
                 JsImportName::InlineJs {
                     unique_crate_identifier: self.unique_crate_identifier.to_string(),
                     snippet_idx_in_crate: idx as usize + offset,
-                    name: name.to_string(),
+                    name,
                 }
             }
             None => JsImportName::Global {
-                name: name.to_string(),
+                name,
             },
         };
         Ok(JsImport { name, fields })
@@ -1064,7 +1064,7 @@ impl<'a> Context<'a> {
                 bail!("import of `{}` doesn't have an adapter listed", import.name);
             }
         }
-        if implemented.len() != 0 {
+        if !implemented.is_empty() {
             bail!("more implementations listed than imports");
         }
 
@@ -1221,7 +1221,7 @@ impl<'a> Context<'a> {
             match descriptor {
                 Descriptor::NamedExternref(_) => *descriptor = Descriptor::Externref,
 
-                Descriptor::Function(function) => strip_function_externref_names(&mut **function),
+                Descriptor::Function(function) => strip_function_externref_names(function),
                 Descriptor::Closure(closure) => {
                     strip_function_externref_names(&mut closure.function)
                 }
@@ -1230,7 +1230,7 @@ impl<'a> Context<'a> {
                 | Descriptor::Slice(descriptor)
                 | Descriptor::Vector(descriptor)
                 | Descriptor::Option(descriptor)
-                | Descriptor::Result(descriptor) => strip_externref_names(&mut **descriptor),
+                | Descriptor::Result(descriptor) => strip_externref_names(descriptor),
 
                 _ => {}
             }
@@ -1505,7 +1505,7 @@ to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
 }
 
 fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
-    if data.len() == 0 {
+    if data.is_empty() {
         return None;
     }
     let len = u32::from_le_bytes([data[0], data[1], data[2], data[3]]) as usize;
@@ -1525,7 +1525,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Err(_) => bad!(),
     };
     log::debug!("found version specifier {}", data);
-    if !data.starts_with("{") || !data.ends_with("}") {
+    if !data.starts_with('{') || !data.ends_with('}') {
         bad!()
     }
     let needle = "\"schema_version\":\"";
@@ -1533,7 +1533,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Some(i) => &data[i + needle.len()..],
         None => bad!(),
     };
-    let their_schema_version = match rest.find("\"") {
+    let their_schema_version = match rest.find('\"') {
         Some(i) => &rest[..i],
         None => bad!(),
     };
@@ -1545,7 +1545,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Some(i) => &data[i + needle.len()..],
         None => bad!(),
     };
-    let their_version = match rest.find("\"") {
+    let their_version = match rest.find('\"') {
         Some(i) => &rest[..i],
         None => bad!(),
     };
@@ -1553,7 +1553,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
 }
 
 fn concatenate_comments(comments: &[&str]) -> String {
-    comments.iter().map(|&s| s).collect::<Vec<_>>().join("\n")
+    comments.to_vec().join("\n")
 }
 
 /// The C struct packing algorithm, in terms of u32.

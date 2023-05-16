@@ -62,7 +62,7 @@ fn maybe_unstable_docs(unstable: bool) -> Option<proc_macro2::TokenStream> {
 
 fn generate_arguments(arguments: &[(Ident, Type)], variadic: bool) -> Vec<TokenStream> {
     arguments
-        .into_iter()
+        .iter()
         .enumerate()
         .map(|(i, (name, ty))| {
             if variadic && i + 1 == arguments.len() {
@@ -118,7 +118,7 @@ impl Enum {
         );
 
         let variants = variants
-            .into_iter()
+            .iter()
             .map(|variant| variant.generate())
             .collect::<Vec<_>>();
 
@@ -420,15 +420,15 @@ impl InterfaceMethod {
             }
             InterfaceMethodKind::IndexingGetter => {
                 extra_args.push(quote!(indexing_getter));
-                format!("Indexing getter.\n\n")
+                "Indexing getter.\n\n".to_string()
             }
             InterfaceMethodKind::IndexingSetter => {
                 extra_args.push(quote!(indexing_setter));
-                format!("Indexing setter.\n\n")
+                "Indexing setter.\n\n".to_string()
             }
             InterfaceMethodKind::IndexingDeleter => {
                 extra_args.push(quote!(indexing_deleter));
-                format!("Indexing deleter.\n\n")
+                "Indexing deleter.\n\n".to_string()
             }
         };
 
@@ -556,13 +556,13 @@ impl Interface {
         };
 
         let extends = parents
-            .into_iter()
+            .iter()
             .map(|x| quote!( extends = #x, ))
             .collect::<Vec<_>>();
 
         let consts = consts
-            .into_iter()
-            .map(|x| x.generate(options, &name, js_name))
+            .iter()
+            .map(|x| x.generate(options, name, js_name))
             .collect::<Vec<_>>();
 
         let consts = if consts.is_empty() {
@@ -577,13 +577,13 @@ impl Interface {
         };
 
         let attributes = attributes
-            .into_iter()
-            .map(|x| x.generate(options, &name, js_name, &parents))
+            .iter()
+            .map(|x| x.generate(options, name, js_name, parents))
             .collect::<Vec<_>>();
 
         let methods = methods
-            .into_iter()
-            .map(|x| x.generate(options, &name, js_name.to_string(), &parents))
+            .iter()
+            .map(|x| x.generate(options, name, js_name.to_string(), parents))
             .collect::<Vec<_>>();
 
         let js_ident = raw_ident(js_name);
@@ -726,7 +726,7 @@ impl Dictionary {
         );
 
         let fields = fields
-            .into_iter()
+            .iter()
             .map(|field| field.generate_rust(options, name.to_string()))
             .collect::<Vec<_>>();
 
@@ -814,7 +814,7 @@ impl Function {
             "The `{}.{}()` function.\n\n{}",
             parent_js_name,
             js_name,
-            mdn_doc(&parent_js_name, Some(&js_name))
+            mdn_doc(&parent_js_name, Some(js_name))
         );
 
         let mut features = BTreeSet::new();
@@ -891,8 +891,8 @@ impl Namespace {
         let unstable_docs = maybe_unstable_docs(*unstable);
 
         let functions = functions
-            .into_iter()
-            .map(|x| x.generate(options, &name, js_name.to_string()))
+            .iter()
+            .map(|x| x.generate(options, name, js_name.to_string()))
             .collect::<Vec<_>>();
 
         let functions = if functions.is_empty() {
@@ -907,8 +907,8 @@ impl Namespace {
         };
 
         let consts = consts
-            .into_iter()
-            .map(|x| x.generate(options, &name, js_name))
+            .iter()
+            .map(|x| x.generate(options, name, js_name))
             .collect::<Vec<_>>();
 
         quote! {

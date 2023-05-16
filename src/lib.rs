@@ -95,7 +95,7 @@ pub struct JsValue {
 }
 
 const JSIDX_OFFSET: u32 = 128; // keep in sync with js/mod.rs
-const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET + 0;
+const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET;
 const JSIDX_NULL: u32 = JSIDX_OFFSET + 1;
 const JSIDX_TRUE: u32 = JSIDX_OFFSET + 2;
 const JSIDX_FALSE: u32 = JSIDX_OFFSET + 3;
@@ -608,10 +608,10 @@ impl TryFrom<&JsValue> for f64 {
     #[inline]
     fn try_from(val: &JsValue) -> Result<Self, Self::Error> {
         let jsval = unsafe { JsValue::_new(__wbindgen_try_into_number(val.idx)) };
-        return match jsval.as_f64() {
+        match jsval.as_f64() {
             Some(num) => Ok(num),
             None => Err(jsval),
-        };
+        }
     }
 }
 
@@ -1677,7 +1677,7 @@ pub mod __rt {
             };
             GLOBAL_EXNDATA[0] = 0;
             GLOBAL_EXNDATA[1] = 0;
-            return ret;
+            ret
         }
     }
 

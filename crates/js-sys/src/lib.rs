@@ -5092,7 +5092,7 @@ impl JsString {
 
 impl PartialEq<str> for JsString {
     fn eq(&self, other: &str) -> bool {
-        String::from(self) == other
+        *self == other
     }
 }
 

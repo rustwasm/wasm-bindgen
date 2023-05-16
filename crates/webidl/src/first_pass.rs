@@ -370,21 +370,21 @@ fn first_pass_operation<'src, A: Into<Arg<'src>> + 'src>(
             let x = record
                 .interfaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} interface", self_name));
+                .unwrap_or_else(|| panic!("not found {} interface", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Mixin => {
             let x = record
                 .mixins
                 .get_mut(self_name)
-                .expect(&format!("not found {} mixin", self_name));
+                .unwrap_or_else(|| panic!("not found {} mixin", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Namespace => {
             let x = record
                 .namespaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} namespace", self_name));
+                .unwrap_or_else(|| panic!("not found {} namespace", self_name));
             &mut x.operations
         }
     };
@@ -1389,11 +1389,9 @@ impl<'a> FirstPassRecord<'a> {
             Some(class) => class,
             None => return,
         };
-        if self.interfaces.contains_key(superclass) {
-            if set.insert(superclass) {
-                list.push(camel_case_ident(superclass));
-                self.fill_superclasses(superclass, set, list);
-            }
+        if self.interfaces.contains_key(superclass) && set.insert(superclass) {
+            list.push(camel_case_ident(superclass));
+            self.fill_superclasses(superclass, set, list);
         }
     }
 

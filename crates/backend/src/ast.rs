@@ -464,10 +464,10 @@ impl Export {
     pub(crate) fn rust_symbol(&self) -> Ident {
         let mut generated_name = String::from("__wasm_bindgen_generated");
         if let Some(class) = &self.js_class {
-            generated_name.push_str("_");
+            generated_name.push('_');
             generated_name.push_str(class);
         }
-        generated_name.push_str("_");
+        generated_name.push('_');
         generated_name.push_str(&self.function.name.to_string());
         Ident::new(&generated_name, Span::call_site())
     }
