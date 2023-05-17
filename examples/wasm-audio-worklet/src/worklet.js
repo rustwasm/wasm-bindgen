@@ -1,3 +1,5 @@
+import init, * as bindgen from 'wbg_es_shim';
+
 registerProcessor("WasmProcessor", class WasmProcessor extends AudioWorkletProcessor {
     constructor(options) {
         super();

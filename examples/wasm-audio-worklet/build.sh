@@ -20,3 +20,5 @@ cargo run -p wasm-bindgen-cli -- \
   --out-dir . \
   --target web \
   --split-linked-modules
+
+find snippets/ -name '*.js' -exec sh -c 'for i; do sed -i "s#wbg_es_shim#$(realpath --relative-to="$i" wasm_audio_worklet.js)#g" "$i"; done' "" {} +
