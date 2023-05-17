@@ -10,6 +10,7 @@ description = """
 Support for threading-related transformations in wasm-bindgen
 """
 edition = "2018"
+rust-version = "1.56"
 
 [dependencies]
 anyhow = "1.0"

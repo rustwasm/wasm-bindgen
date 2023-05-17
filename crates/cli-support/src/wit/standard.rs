@@ -354,7 +354,7 @@ impl NonstandardWitSection {
                 kind,
             },
         );
-        return id;
+        id
     }
 
     /// Removes any dead entries in `adapters` that are no longer necessary
@@ -463,11 +463,11 @@ impl walrus::CustomSection for NonstandardWitSection {
                             roots.push_func(id);
                         }
                     }
-                    I32FromOptionExternref { table_and_alloc } => {
-                        if let Some((table, alloc)) = table_and_alloc {
-                            roots.push_table(table);
-                            roots.push_func(alloc);
-                        }
+                    I32FromOptionExternref {
+                        table_and_alloc: Some((table, alloc)),
+                    } => {
+                        roots.push_table(table);
+                        roots.push_func(alloc);
                     }
                     UnwrapResult { table_and_drop } | UnwrapResultString { table_and_drop } => {
                         if let Some((table, drop)) = table_and_drop {

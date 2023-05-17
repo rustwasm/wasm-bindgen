@@ -5053,9 +5053,9 @@ impl JsString {
     ///
     /// This method will call `char_code_at` for each code in this JS string,
     /// returning an iterator of the codes in sequence.
-    pub fn iter<'a>(
-        &'a self,
-    ) -> impl ExactSizeIterator<Item = u16> + DoubleEndedIterator<Item = u16> + 'a {
+    pub fn iter(
+        &self,
+    ) -> impl ExactSizeIterator<Item = u16> + DoubleEndedIterator<Item = u16> + '_ {
         (0..self.length()).map(move |i| self.char_code_at(i) as u16)
     }
 
@@ -5091,6 +5091,7 @@ impl JsString {
 }
 
 impl PartialEq<str> for JsString {
+    #[allow(clippy::cmp_owned)] // prevent infinite recursion
     fn eq(&self, other: &str) -> bool {
         String::from(self) == other
     }

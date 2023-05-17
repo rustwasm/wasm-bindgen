@@ -348,7 +348,7 @@ impl ToTokens for ast::StructField {
         .to_tokens(tokens);
 
         Descriptor {
-            ident: &getter,
+            ident: getter,
             inner: quote! {
                 <#ty as WasmDescribe>::describe();
             },
@@ -1276,7 +1276,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
                 #inform_ret
             },
             attrs: f.function.rust_attrs.clone(),
-            wasm_bindgen: &self.wasm_bindgen,
+            wasm_bindgen: self.wasm_bindgen,
         }
         .to_tokens(tokens);
     }
@@ -1377,7 +1377,7 @@ impl ToTokens for ast::ImportStatic {
         .to_tokens(into);
 
         Descriptor {
-            ident: &shim_name,
+            ident: shim_name,
             inner: quote! {
                 <#ty as WasmDescribe>::describe();
             },

@@ -105,7 +105,7 @@ pub fn get_function_table_entry(module: &Module, idx: u32) -> Result<FunctionTab
                 return Ok(FunctionTableEntry {
                     element: segment.id(),
                     idx,
-                    func: slot.clone(),
+                    func: *slot,
                 })
             }
             None => continue,

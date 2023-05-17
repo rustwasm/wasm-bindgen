@@ -70,7 +70,7 @@ impl Diagnostic {
     /// Attempt to generate a `Diagnostic` from a vector of other `Diagnostic` instances.
     /// If the `Vec` is empty, returns `Ok(())`, otherwise returns the new `Diagnostic`
     pub fn from_vec(diagnostics: Vec<Diagnostic>) -> Result<(), Diagnostic> {
-        if diagnostics.len() == 0 {
+        if diagnostics.is_empty() {
             Ok(())
         } else {
             Err(Diagnostic {

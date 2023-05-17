@@ -33,7 +33,7 @@ impl Config {
     }
 
     pub fn generate(&mut self, wasm: &[u8]) -> Result<Output, Error> {
-        if !self.base64 && !self.fetch_path.is_some() {
+        if !self.base64 && self.fetch_path.is_none() {
             bail!("one of --base64 or --fetch is required");
         }
         let module = Module::from_buffer(wasm)?;
@@ -100,7 +100,7 @@ pub fn interface(module: &Module) -> Result<String, Error> {
 }
 
 pub fn typescript(module: &Module) -> Result<String, Error> {
-    let mut exports = format!("/* tslint:disable */\n/* eslint-disable */\n");
+    let mut exports = "/* tslint:disable */\n/* eslint-disable */\n".to_string();
     for entry in module.exports.iter() {
         let id = match entry.item {
             walrus::ExportItem::Function(i) => i,

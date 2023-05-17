@@ -11,6 +11,7 @@ description = """
 Support for parsing WebIDL specific to wasm-bindgen
 """
 edition = "2018"
+rust-version = "1.56"
 
 [dependencies]
 env_logger = "0.8.1"

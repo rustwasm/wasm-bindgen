@@ -160,7 +160,7 @@ impl WasmBindgenDescriptorsSection {
             replacement: FunctionId,
         }
 
-        impl<'a> VisitorMut for UpdateDescribeClosure {
+        impl VisitorMut for UpdateDescribeClosure {
             fn visit_call_mut(&mut self, call: &mut Call) {
                 if call.func == self.wbindgen_describe_closure {
                     call.func = self.replacement;

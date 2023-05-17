@@ -306,7 +306,7 @@ fn xform_one(
 mod tests {
     #[test]
     fn round_up_to_alignment_works() {
-        for (n, align, expected) in vec![
+        for &(n, align, expected) in &[
             (0, 1, 0),
             (1, 1, 1),
             (2, 1, 2),

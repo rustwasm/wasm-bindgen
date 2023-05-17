@@ -120,9 +120,11 @@ pub trait OptionFromWasmAbi: FromWasmAbi {
 /// An unsafe trait which represents types that are ABI-safe to pass via wasm
 /// arguments.
 ///
+/// # Safety
+///
 /// This is an unsafe trait to implement as there's no guarantee the type is
 /// actually safe to transfer across the was boundary, it's up to you to
-/// guarantee this so codegen works correctly.
+/// guarantee this, so codegen works correctly.
 pub unsafe trait WasmAbi {}
 
 unsafe impl WasmAbi for u32 {}

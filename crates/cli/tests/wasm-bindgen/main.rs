@@ -20,13 +20,13 @@ use std::process::Command;
 use wasmparser::Payload;
 
 fn target_dir() -> PathBuf {
-    let mut dir = PathBuf::from(env::current_exe().unwrap());
+    let mut dir = env::current_exe().unwrap();
     dir.pop(); // current exe
     if dir.ends_with("deps") {
         dir.pop();
     }
     dir.pop(); // debug and/or release
-    return dir;
+    dir
 }
 
 fn repo_root() -> PathBuf {

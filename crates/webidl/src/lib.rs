@@ -254,7 +254,7 @@ impl<'src> FirstPassRecord<'src> {
             .iter()
             .map(|v| {
                 let name = if !v.0.is_empty() {
-                    rust_ident(camel_case_ident(&v.0).as_str())
+                    rust_ident(camel_case_ident(v.0).as_str())
                 } else {
                     rust_ident("None")
                 };
@@ -362,7 +362,7 @@ impl<'src> FirstPassRecord<'src> {
         }
         dst[start..].sort_by_key(|f| f.js_name.clone());
 
-        return true;
+        true
     }
 
     fn dictionary_field(
@@ -386,10 +386,7 @@ impl<'src> FirstPassRecord<'src> {
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
         match ty {
-            syn::Type::Reference(ref i) => match &*i.elem {
-                syn::Type::Slice(_) => return None,
-                _ => (),
-            },
+            syn::Type::Reference(ref i) if matches!(&*i.elem, syn::Type::Slice(_)) => return None,
             syn::Type::Path(ref path, ..) =>
             // check that our inner don't contains slices either
             {
@@ -397,9 +394,8 @@ impl<'src> FirstPassRecord<'src> {
                     if let syn::PathArguments::AngleBracketed(ref arg) = seg.arguments {
                         for elem in &arg.args {
                             if let syn::GenericArgument::Type(syn::Type::Reference(ref i)) = elem {
-                                match &*i.elem {
-                                    syn::Type::Slice(_) => return None,
-                                    _ => (),
+                                if matches!(&*i.elem, syn::Type::Slice(_)) {
+                                    return None;
                                 }
                             }
                         }
@@ -414,10 +410,8 @@ impl<'src> FirstPassRecord<'src> {
         let mut any_64bit = false;
 
         ty.traverse_type(&mut |ident| {
-            if !any_64bit {
-                if ident == "u64" || ident == "i64" {
-                    any_64bit = true;
-                }
+            if !any_64bit && (ident == "u64" || ident == "i64") {
+                any_64bit = true;
             }
         });
 
@@ -607,11 +601,9 @@ impl<'src> FirstPassRecord<'src> {
                 let member = member.definition;
                 self.member_attribute(
                     &mut attributes,
-                    if let Some(s) = member.stringifier {
-                        Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
-                    } else {
-                        None
-                    },
+                    member
+                        .stringifier
+                        .map(weedle::interface::StringifierOrInheritOrStatic::Stringifier),
                     member.readonly.is_some(),
                     &member.type_,
                     member.identifier.0.to_string(),
@@ -794,10 +786,10 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
     let features = parse_webidl(generate_features, source, unstable_source)?;
 
     if to.exists() {
-        fs::remove_dir_all(&to).context("Removing features directory")?;
+        fs::remove_dir_all(to).context("Removing features directory")?;
     }
 
-    fs::create_dir_all(&to).context("Creating features directory")?;
+    fs::create_dir_all(to).context("Creating features directory")?;
 
     for (name, feature) in features.iter() {
         let out_file_path = to.join(format!("gen_{}.rs", name));
@@ -816,8 +808,8 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
     fs::write(to.join("mod.rs"), binding_file)?;
 
     let to_format = features
-        .iter()
-        .map(|(name, _)| to.join(format!("gen_{}.rs", name)))
+        .keys()
+        .map(|name| to.join(format!("gen_{}.rs", name)))
         .chain([to.join("mod.rs")]);
 
     rustfmt(to_format)?;
@@ -857,7 +849,7 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         Ok(source)
     }
 
-    fn rustfmt<'a>(paths: impl IntoIterator<Item = PathBuf>) -> Result<()> {
+    fn rustfmt(paths: impl IntoIterator<Item = PathBuf>) -> Result<()> {
         // run rustfmt on the generated file - really handy for debugging
         let result = Command::new("rustfmt")
             .arg("--edition")
@@ -897,7 +889,7 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
                         return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
                     }
                 }
-                return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
+                Err(e.context("compiling WebIDL into wasm-bindgen bindings"))
             }
         }
     }

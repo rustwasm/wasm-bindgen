@@ -105,7 +105,7 @@ impl Interpreter {
 
         ret.functions = module.tables.main_function_table()?;
 
-        return Ok(ret);
+        Ok(ret)
     }
 
     /// Interprets the execution of the descriptor function `func`.
@@ -271,7 +271,7 @@ impl Frame<'_> {
                 self.locals.insert(e.local, val);
             }
             Instr::LocalTee(e) => {
-                let val = stack.last().unwrap().clone();
+                let val = *stack.last().unwrap();
                 self.locals.insert(e.local, val);
             }
 
@@ -339,8 +339,8 @@ impl Frame<'_> {
                 // effects we're interested in.
                 } else if Some(e.func) == self.interp.describe_closure_id {
                     let val = stack.pop().unwrap();
-                    drop(stack.pop());
-                    drop(stack.pop());
+                    stack.pop();
+                    stack.pop();
                     log::debug!("__wbindgen_describe_closure({})", val);
                     self.interp.descriptor_table_idx = Some(val as u32);
                     stack.push(0)

@@ -105,7 +105,7 @@ fn main() -> anyhow::Result<()> {
     // Right now there's a bug where if no tests are present then the
     // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
     // early saying everything is ok.
-    if tests.len() == 0 {
+    if tests.is_empty() {
         println!("no tests to run!");
         return Ok(());
     }
@@ -134,31 +134,27 @@ fn main() -> anyhow::Result<()> {
     // Gracefully handle requests to execute only node or only web tests.
     let node = test_mode == TestMode::Node;
 
-    if env::var_os("WASM_BINDGEN_TEST_ONLY_NODE").is_some() {
-        if !node {
-            println!(
-                "this test suite is only configured to run in a browser, \
-                 but we're only testing node.js tests so skipping"
-            );
-            return Ok(());
-        }
+    if env::var_os("WASM_BINDGEN_TEST_ONLY_NODE").is_some() && !node {
+        println!(
+            "this test suite is only configured to run in a browser, \
+             but we're only testing node.js tests so skipping"
+        );
+        return Ok(());
     }
-    if env::var_os("WASM_BINDGEN_TEST_ONLY_WEB").is_some() {
-        if node {
-            println!(
-                "\
-This test suite is only configured to run in node.js, but we're only running
-browser tests so skipping. If you'd like to run the tests in a browser
-include this in your crate when testing:
+    if env::var_os("WASM_BINDGEN_TEST_ONLY_WEB").is_some() && node {
+        println!(
+            "\
+    This test suite is only configured to run in node.js, but we're only running
+    browser tests so skipping. If you'd like to run the tests in a browser
+    include this in your crate when testing:
 
-    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+        wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-You'll likely want to put that in a `#[cfg(test)]` module or at the top of an
-integration test.\
-"
-            );
-            return Ok(());
-        }
+    You'll likely want to put that in a `#[cfg(test)]` module or at the top of an
+    integration test.\
+    "
+        );
+        return Ok(());
     }
 
     let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
@@ -202,8 +198,8 @@ integration test.\
     let args: Vec<_> = args.collect();
 
     match test_mode {
-        TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
-        TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
+        TestMode::Node => node::execute(module, &tmpdir, &args, &tests)?,
+        TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests)?,
         TestMode::Browser { no_modules } | TestMode::Worker { no_modules } => {
             let srv = server::spawn(
                 &if headless {
@@ -214,7 +210,7 @@ integration test.\
                     "127.0.0.1:8000".parse().unwrap()
                 },
                 headless,
-                &module,
+                module,
                 &tmpdir,
                 &args,
                 &tests,
@@ -231,12 +227,13 @@ integration test.\
                     "Interactive browsers tests are now available at http://{}",
                     addr
                 );
-                println!("");
+                println!();
                 println!("Note that interactive mode is enabled because `NO_HEADLESS`");
                 println!("is specified in the environment of this process. Once you're");
                 println!("done with testing you'll need to kill this server with");
                 println!("Ctrl-C.");
-                return Ok(srv.run());
+                srv.run();
+                return Ok(());
             }
 
             thread::spawn(|| srv.run());

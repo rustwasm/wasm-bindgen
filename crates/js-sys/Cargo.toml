@@ -13,6 +13,7 @@ Node.js and browsers, built on `#[wasm_bindgen]` using the `wasm-bindgen` crate.
 """
 license = "MIT/Apache-2.0"
 edition = "2018"
+rust-version = "1.56"
 
 [lib]
 test = false

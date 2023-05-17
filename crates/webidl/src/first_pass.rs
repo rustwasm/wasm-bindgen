@@ -370,21 +370,21 @@ fn first_pass_operation<'src, A: Into<Arg<'src>> + 'src>(
             let x = record
                 .interfaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} interface", self_name));
+                .unwrap_or_else(|| panic!("not found {} interface", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Mixin => {
             let x = record
                 .mixins
                 .get_mut(self_name)
-                .expect(&format!("not found {} mixin", self_name));
+                .unwrap_or_else(|| panic!("not found {} mixin", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Namespace => {
             let x = record
                 .namespaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} namespace", self_name));
+                .unwrap_or_else(|| panic!("not found {} namespace", self_name));
             &mut x.operations
         }
     };
@@ -1196,7 +1196,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             record,
             FirstPassOperationType::Mixin,
             ctx.0,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -1328,7 +1328,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             record,
             FirstPassOperationType::Namespace,
             self_name,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -1389,11 +1389,9 @@ impl<'a> FirstPassRecord<'a> {
             Some(class) => class,
             None => return,
         };
-        if self.interfaces.contains_key(superclass) {
-            if set.insert(superclass) {
-                list.push(camel_case_ident(superclass));
-                self.fill_superclasses(superclass, set, list);
-            }
+        if self.interfaces.contains_key(superclass) && set.insert(superclass) {
+            list.push(camel_case_ident(superclass));
+            self.fill_superclasses(superclass, set, list);
         }
     }
 
@@ -1402,22 +1400,17 @@ impl<'a> FirstPassRecord<'a> {
         interface: &str,
     ) -> impl Iterator<Item = &'me MixinData<'a>> + 'me {
         let mut set = Vec::new();
-        self.fill_mixins(interface, interface, &mut set);
+        self.fill_mixins(interface, &mut set);
         set.into_iter()
     }
 
-    fn fill_mixins<'me>(
-        &'me self,
-        self_name: &str,
-        mixin_name: &str,
-        list: &mut Vec<&'me MixinData<'a>>,
-    ) {
+    fn fill_mixins<'me>(&'me self, mixin_name: &str, list: &mut Vec<&'me MixinData<'a>>) {
         if let Some(mixin_data) = self.mixins.get(mixin_name) {
             list.push(mixin_data);
         }
         if let Some(mixin_names) = self.includes.get(mixin_name) {
             for mixin_name in mixin_names {
-                self.fill_mixins(self_name, mixin_name, list);
+                self.fill_mixins(mixin_name, list);
             }
         }
     }

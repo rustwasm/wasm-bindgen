@@ -10,6 +10,7 @@ description = """
 Backend code generation of the wasm-bindgen tool
 """
 edition = "2018"
+rust-version = "1.56"
 
 [features]
 spans = []

@@ -129,22 +129,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         // method, so the leading parameter is the this pointer stored on
         // the JS object, so synthesize that here.
         let mut js = JsBuilder::new(self.cx);
-        match self.method {
-            Some(consumes_self) => {
-                drop(params.next());
-                if js.cx.config.debug {
-                    js.prelude(
-                        "if (this.__wbg_ptr == 0) throw new Error('Attempt to use a moved value');",
-                    );
-                }
-                if consumes_self {
-                    js.prelude("const ptr = this.__destroy_into_raw();");
-                    js.args.push("ptr".into());
-                } else {
-                    js.args.push("this.__wbg_ptr".into());
-                }
+        if let Some(consumes_self) = self.method {
+            let _ = params.next();
+            if js.cx.config.debug {
+                js.prelude(
+                    "if (this.__wbg_ptr == 0) throw new Error('Attempt to use a moved value');",
+                );
             }
-            None => {}
+            if consumes_self {
+                js.prelude("const ptr = this.__destroy_into_raw();");
+                js.args.push("ptr".into());
+            } else {
+                js.args.push("this.__wbg_ptr".into());
+            }
         }
         for (i, param) in params.enumerate() {
             let arg = match explicit_arg_names {
@@ -201,11 +198,11 @@ impl<'a, 'b> Builder<'a, 'b> {
         // }
 
         let mut code = String::new();
-        code.push_str("(");
+        code.push('(');
         if variadic {
             if let Some((last, non_variadic_args)) = function_args.split_last() {
                 code.push_str(&non_variadic_args.join(", "));
-                if non_variadic_args.len() > 0 {
+                if !non_variadic_args.is_empty() {
                     code.push_str(", ");
                 }
                 code.push_str((String::from("...") + last).as_str())
@@ -215,7 +212,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         code.push_str(") {\n");
 
-        let call = if js.finally.len() != 0 {
+        let call = if !js.finally.is_empty() {
             format!(
                 "{}try {{\n{}}} finally {{\n{}}}\n",
                 js.pre_try, js.prelude, js.finally
@@ -237,7 +234,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
 
         code.push_str(&call);
-        code.push_str("}");
+        code.push('}');
 
         // Rust Structs' fields converted into Getter and Setter functions before
         // we decode them from webassembly, finding if a function is a field
@@ -317,15 +314,15 @@ impl<'a, 'b> Builder<'a, 'b> {
         if variadic {
             if let Some((last, non_variadic_args)) = ts_args.split_last() {
                 ts.push_str(&non_variadic_args.join(", "));
-                if non_variadic_args.len() > 0 {
+                if !non_variadic_args.is_empty() {
                     ts.push_str(", ");
                 }
                 ts.push_str((String::from("...") + last).as_str())
             }
         } else {
-            ts.push_str(&format!("{}", ts_args.join(", ")));
+            ts.push_str(&ts_args.join(", "));
         };
-        ts.push_str(")");
+        ts.push(')');
 
         // If this function is an optional field's setter, it should have only
         // one arg, and omittable should be `true`.
@@ -349,7 +346,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             ts.push_str(&ret);
             ts_ret = Some(ret);
         }
-        return (ts, ts_arg_tys, ts_ret);
+        (ts, ts_arg_tys, ts_ret)
     }
 
     /// Returns a helpful JS doc comment which lists types for all parameters
@@ -371,14 +368,14 @@ impl<'a, 'b> Builder<'a, 'b> {
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
-            ret.push_str("\n");
+            ret.push('\n');
         }
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             ret.push_str("@param {...");
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
-            ret.push_str("\n");
+            ret.push('\n');
         }
         if let Some(ts) = ts_ret {
             if ts != "void" {
@@ -410,7 +407,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         for line in prelude.trim().lines().map(|l| l.trim()) {
             if !line.is_empty() {
                 self.prelude.push_str(line);
-                self.prelude.push_str("\n");
+                self.prelude.push('\n');
             }
         }
     }
@@ -419,7 +416,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         for line in finally.trim().lines().map(|l| l.trim()) {
             if !line.is_empty() {
                 self.finally.push_str(line);
-                self.finally.push_str("\n");
+                self.finally.push('\n');
             }
         }
     }
@@ -427,7 +424,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     pub fn tmp(&mut self) -> usize {
         let ret = self.tmp;
         self.tmp += 1;
-        return ret;
+        ret
     }
 
     fn pop(&mut self) -> String {
@@ -720,7 +717,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::I32FromExternrefRustOwned { class } => {
             let val = js.pop();
-            js.assert_class(&val, &class);
+            js.assert_class(&val, class);
             js.assert_not_moved(&val);
             let i = js.tmp();
             js.prelude(&format!("var ptr{} = {}.__destroy_into_raw();", i, val));
@@ -729,7 +726,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::I32FromExternrefRustBorrow { class } => {
             let val = js.pop();
-            js.assert_class(&val, &class);
+            js.assert_class(&val, class);
             js.assert_not_moved(&val);
             js.push(format!("{}.__wbg_ptr", val));
         }

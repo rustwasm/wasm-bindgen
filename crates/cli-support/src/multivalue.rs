@@ -99,7 +99,6 @@ fn extract_xform<'a>(
         };
         to_xform.push((id, 0, types));
         slots.push(slot);
-        return;
     }
 
     // If the last instruction is a `StoreRetptr`, then this must be an adapter

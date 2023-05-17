@@ -1,3 +1,6 @@
+// > `disallowed_names` lint should not be triggered inside of the test code.
+#![allow(clippy::disallowed_names)]
+
 pub mod custom_section;
 pub mod enums;
 pub mod getters_setters;

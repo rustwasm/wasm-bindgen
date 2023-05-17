@@ -271,7 +271,7 @@ impl Context {
         let mut filter = self.state.filter.borrow_mut();
         for arg in args {
             let arg = arg.as_string().unwrap();
-            if arg.starts_with("-") {
+            if arg.starts_with('-') {
                 panic!("flag {} not supported", arg);
             } else if filter.is_some() {
                 panic!("more than one filter argument cannot be passed");
@@ -377,11 +377,11 @@ fn record(args: &Array, dst: impl FnOnce(&mut Output) -> &mut String) {
         let dst = dst(&mut out);
         args.for_each(&mut |val, idx, _array| {
             if idx != 0 {
-                dst.push_str(" ");
+                dst.push(' ');
             }
             dst.push_str(&stringify(&val));
         });
-        dst.push_str("\n");
+        dst.push('\n');
     });
 }
 
@@ -527,7 +527,7 @@ impl State {
         // Save off the test for later processing when we print the final
         // results.
         if let Some(should_panic) = test.should_panic {
-            if let Err(e) = result {
+            if let Err(_e) = result {
                 if let Some(expected) = should_panic {
                     if !test.output.borrow().panic.contains(expected) {
                         self.formatter.log_test(&test.name, &Err(JsValue::NULL));
@@ -621,7 +621,7 @@ impl State {
 
         if let Failure::Error(error) = failure {
             logs.push_str("JS exception that was thrown:\n");
-            let error_string = self.formatter.stringify_error(&error);
+            let error_string = self.formatter.stringify_error(error);
             logs.push_str(&tab(&error_string));
         }
 
@@ -698,7 +698,7 @@ fn tab(s: &str) -> String {
     for line in s.lines() {
         result.push_str("    ");
         result.push_str(line);
-        result.push_str("\n");
+        result.push('\n');
     }
-    return result;
+    result
 }

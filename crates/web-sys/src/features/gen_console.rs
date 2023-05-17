@@ -1,5 +1,6 @@
 pub mod console {
     #![allow(unused_imports)]
+    #![allow(clippy::all)]
     use super::super::*;
     use wasm_bindgen::prelude::*;
     #[wasm_bindgen]
