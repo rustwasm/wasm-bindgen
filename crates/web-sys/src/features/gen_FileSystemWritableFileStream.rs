@@ -16,7 +16,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type FileSystemWritableFileStream;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = seek)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = seek)]
     #[doc = "The `seek()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/seek)"]
@@ -25,12 +25,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn seek_with_u32(
-        this: &FileSystemWritableFileStream,
-        position: u32,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn seek_with_u32(this: &FileSystemWritableFileStream, position: u32) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = seek)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = seek)]
     #[doc = "The `seek()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/seek)"]
@@ -39,12 +36,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn seek_with_f64(
-        this: &FileSystemWritableFileStream,
-        position: f64,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn seek_with_f64(this: &FileSystemWritableFileStream, position: f64) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = truncate)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = truncate)]
     #[doc = "The `truncate()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/truncate)"]
@@ -53,12 +47,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn truncate_with_u32(
-        this: &FileSystemWritableFileStream,
-        size: u32,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn truncate_with_u32(this: &FileSystemWritableFileStream, size: u32) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = truncate)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = truncate)]
     #[doc = "The `truncate()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/truncate)"]
@@ -67,12 +58,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn truncate_with_f64(
-        this: &FileSystemWritableFileStream,
-        size: f64,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn truncate_with_f64(this: &FileSystemWritableFileStream, size: f64) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/write)"]
@@ -84,9 +72,9 @@ extern "C" {
     pub fn write_with_buffer_source(
         this: &FileSystemWritableFileStream,
         data: &::js_sys::Object,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/write)"]
@@ -98,10 +86,10 @@ extern "C" {
     pub fn write_with_u8_array(
         this: &FileSystemWritableFileStream,
         data: &mut [u8],
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Blob")]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/write)"]
@@ -110,12 +98,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn write_with_blob(
-        this: &FileSystemWritableFileStream,
-        data: &Blob,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn write_with_blob(this: &FileSystemWritableFileStream, data: &Blob) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/write)"]
@@ -124,13 +109,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn write_with_str(
-        this: &FileSystemWritableFileStream,
-        data: &str,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    pub fn write_with_str(this: &FileSystemWritableFileStream, data: &str) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WriteParams")]
-    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/write)"]
@@ -142,5 +124,5 @@ extern "C" {
     pub fn write_with_write_params(
         this: &FileSystemWritableFileStream,
         data: &WriteParams,
-    ) -> Result<::js_sys::Promise, JsValue>;
+    ) -> ::js_sys::Promise;
 }

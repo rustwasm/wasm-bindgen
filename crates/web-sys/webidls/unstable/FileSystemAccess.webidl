@@ -64,11 +64,8 @@ typedef (BufferSource or Blob or USVString or WriteParams) FileSystemWriteChunkT
 
 [Exposed=(Window,Worker), SecureContext]
 interface FileSystemWritableFileStream : WritableStream {
-  [Throws]
   Promise<undefined> write(FileSystemWriteChunkType data);
-  [Throws]
   Promise<undefined> seek(unsigned long long position);
-  [Throws]
   Promise<undefined> truncate(unsigned long long size);
 };
 
