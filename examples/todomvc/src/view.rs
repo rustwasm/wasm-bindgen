@@ -417,7 +417,6 @@ impl View {
 
 impl Drop for View {
     fn drop(&mut self) {
-        exit("calling drop on view");
         let callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)> =
             self.callbacks.drain(..).collect();
         for callback in callbacks {
@@ -429,5 +428,6 @@ impl Drop for View {
                 )
                 .unwrap();
         }
+        exit("calling drop on view");
     }
 }
