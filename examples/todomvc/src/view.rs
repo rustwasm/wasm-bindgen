@@ -417,9 +417,7 @@ impl View {
 
 impl Drop for View {
     fn drop(&mut self) {
-        let callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)> =
-            self.callbacks.drain(..).collect();
-        for callback in callbacks {
+        for callback in self.callbacks.drain(..) {
             callback
                 .0
                 .remove_event_listener_with_callback(
