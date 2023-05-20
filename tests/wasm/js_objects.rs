@@ -145,6 +145,7 @@ fn another_vector_string_return() {
 
 #[cfg(feature = "serde-serialize")]
 #[wasm_bindgen_test]
+#[allow(deprecated)]
 fn serde() {
     #[derive(Deserialize, Serialize)]
     pub struct SerdeFoo {
