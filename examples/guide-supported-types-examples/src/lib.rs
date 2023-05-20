@@ -1,4 +1,4 @@
-#![allow(unused_variables, dead_code)]
+#![allow(unused_variables, dead_code, clippy::boxed_local)]
 
 pub mod bool;
 pub mod boxed_js_value_slice;

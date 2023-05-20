@@ -28,10 +28,7 @@ impl NumberEval {
     /// * `number` - The number to be checked for being even/odd.
     pub fn is_even(&mut self, number: i32) -> bool {
         self.number = number;
-        match self.number % 2 {
-            0 => true,
-            _ => false,
-        }
+        self.number % 2 == 0
     }
 
     /// Get last number that was checked - this method is added to work with

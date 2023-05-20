@@ -25,7 +25,7 @@ pub fn arg_is_keyword(class: u8) -> u8 {
 }
 
 #[wasm_bindgen]
-struct Class {
+pub struct Class {
     name: String,
 }
 #[wasm_bindgen]

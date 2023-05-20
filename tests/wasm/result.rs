@@ -20,9 +20,9 @@ extern "C" {
     fn error_new(message: &str) -> JsValue;
 }
 
-impl Into<JsValue> for MyError {
-    fn into(self) -> JsValue {
-        error_new(&format!("{}", self))
+impl From<MyError> for JsValue {
+    fn from(e: MyError) -> Self {
+        error_new(&format!("{}", e))
     }
 }
 

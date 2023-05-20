@@ -1,4 +1,5 @@
 #![cfg(target_arch = "wasm32")]
+#![allow(drop_ref, clippy::drop_non_drop)]
 
 extern crate js_sys;
 extern crate wasm_bindgen;

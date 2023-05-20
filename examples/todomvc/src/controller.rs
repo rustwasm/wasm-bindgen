@@ -104,8 +104,7 @@ impl Controller {
         if let Some(data) = self.store.find(ItemQuery::Id { id: id.clone() }) {
             if let Some(todo) = data.get(0) {
                 let title = todo.title.to_string();
-                let citem = id;
-                message = Some(ViewMessage::EditItemDone(citem, title));
+                message = Some(ViewMessage::EditItemDone(id, title));
             }
         }
         if let Some(message) = message {
@@ -140,11 +139,9 @@ impl Controller {
     /// Set all items to complete or active.
     fn toggle_all(&mut self, completed: bool) {
         let mut vals = Vec::new();
-        self.store.find(ItemQuery::EmptyItemQuery).map(|data| {
-            for item in data.iter() {
-                vals.push(item.id.clone());
-            }
-        });
+        if let Some(data) = self.store.find(ItemQuery::EmptyItemQuery) {
+            vals.extend(data.iter().map(|item| item.id.clone()));
+        }
         for id in vals.iter() {
             self.toggle_completed(id.to_string(), completed);
         }
