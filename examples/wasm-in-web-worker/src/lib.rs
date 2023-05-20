@@ -118,8 +118,6 @@ fn setup_input_oninput_callback(worker: Rc<RefCell<web_sys::Worker>>) {
 
 /// Create a closure to act on the message returned by the worker
 fn get_on_msg_callback() -> Closure<dyn FnMut(MessageEvent)> {
-    
-
     Closure::new(move |event: MessageEvent| {
         console::log_2(&"Received response: ".into(), &event.data());
 

@@ -22,10 +22,7 @@ impl Counter {
     }
     pub fn new(key: char, count: i32) -> Counter {
         log(&format!("Counter::new({}, {})", key, count));
-        Counter {
-            key,
-            count,
-        }
+        Counter { key, count }
     }
 
     pub fn key(&self) -> char {
