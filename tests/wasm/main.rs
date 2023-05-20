@@ -1,5 +1,6 @@
 #![cfg(target_arch = "wasm32")]
-#![allow(drop_ref, clippy::drop_non_drop)]
+#![allow(renamed_and_removed_lints)] // clippy::drop_ref will be renamed to drop_ref
+#![allow(clippy::drop_ref, clippy::drop_non_drop)]
 
 extern crate js_sys;
 extern crate wasm_bindgen;
