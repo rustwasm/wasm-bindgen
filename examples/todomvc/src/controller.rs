@@ -92,7 +92,7 @@ impl Controller {
                 id: id.clone(),
                 title: title.clone(),
             });
-            self.add_message(ViewMessage::EditItemDone(id.to_string(), title.to_string()));
+            self.add_message(ViewMessage::EditItemDone(id.to_string(), title));
         } else {
             self.remove_item(&id);
         }
@@ -104,7 +104,7 @@ impl Controller {
         if let Some(data) = self.store.find(ItemQuery::Id { id: id.clone() }) {
             if let Some(todo) = data.get(0) {
                 let title = todo.title.to_string();
-                let citem = id.to_string();
+                let citem = id;
                 message = Some(ViewMessage::EditItemDone(citem, title));
             }
         }
@@ -133,7 +133,7 @@ impl Controller {
             id: id.clone(),
             completed,
         });
-        let tid = id.to_string();
+        let tid = id;
         self.add_message(ViewMessage::SetItemComplete(tid, completed));
     }
 
@@ -155,7 +155,7 @@ impl Controller {
     fn _filter(&mut self, force: bool) {
         let route = &self.active_route;
 
-        if force || self.last_active_route != "" || &self.last_active_route != route {
+        if force || !self.last_active_route.is_empty() || &self.last_active_route != route {
             let query = match route.as_str() {
                 "completed" => ItemQuery::Completed { completed: true },
                 "active" => ItemQuery::Completed { completed: false },

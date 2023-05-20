@@ -87,7 +87,7 @@ impl Struct {
 
     #[wasm_bindgen]
     pub fn new_err() -> Result<Struct, MyError> {
-        Err(MyError::Variant.into())
+        Err(MyError::Variant)
     }
 
     #[wasm_bindgen]

@@ -11,8 +11,8 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 pub async fn web_main() {
     // On the application level, audio worklet internals are abstracted by wasm_audio:
-    let params: &'static Params = Box::leak(Box::new(Params::default()));
-    let mut osc = Oscillator::new(&params);
+    let params: &'static Params = Box::leak(Box::default());
+    let mut osc = Oscillator::new(params);
     let ctx = wasm_audio(Box::new(move |buf| osc.process(buf)))
         .await
         .unwrap();

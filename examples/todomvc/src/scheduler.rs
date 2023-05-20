@@ -46,7 +46,7 @@ impl Scheduler {
     pub fn add_message(&self, message: Message) {
         let running = {
             if let Ok(running) = self.running.try_borrow() {
-                running.clone()
+                *running
             } else {
                 exit("This might be a deadlock");
                 false
@@ -69,7 +69,7 @@ impl Scheduler {
         let mut events_len = 0;
         {
             if let Ok(events) = self.events.try_borrow() {
-                events_len = events.len().clone();
+                events_len = events.len();
             } else {
                 exit("This might be a deadlock");
             }

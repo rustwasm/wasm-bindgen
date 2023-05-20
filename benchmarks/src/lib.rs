@@ -59,7 +59,7 @@ pub fn fibonacci(n: i32) -> i32 {
     unsafe {
         FIB_HIGH = (a >> 32) as i32;
     }
-    return a as i32;
+    a as i32
 }
 
 #[wasm_bindgen]

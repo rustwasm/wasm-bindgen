@@ -33,7 +33,7 @@ pub enum Message {
 
 /// Used for debugging to the console
 pub fn exit(message: &str) {
-    let v = wasm_bindgen::JsValue::from_str(&message.to_string());
+    let v = wasm_bindgen::JsValue::from_str(message);
     web_sys::console::exception_1(&v);
     std::process::abort();
 }

@@ -21,28 +21,20 @@ impl From<web_sys::EventTarget> for Element {
 
 impl From<Element> for Option<web_sys::Node> {
     fn from(obj: Element) -> Option<web_sys::Node> {
-        if let Some(el) = obj.el {
-            Some(el.into())
-        } else {
-            None
-        }
+        obj.el.map(|el| el.into())
     }
 }
 
 impl From<Element> for Option<EventTarget> {
     fn from(obj: Element) -> Option<EventTarget> {
-        if let Some(el) = obj.el {
-            Some(el.into())
-        } else {
-            None
-        }
+        obj.el.map(|el| el.into())
     }
 }
 
 impl Element {
     // Create an element from a tag name
     pub fn create_element(tag: &str) -> Option<Element> {
-        if let Some(el) = web_sys::window()?.document()?.create_element(tag).ok() {
+        if let Ok(el) = web_sys::window()?.document()?.create_element(tag) {
             Some(el.into())
         } else {
             None
@@ -81,7 +73,7 @@ impl Element {
         mut handler: T,
         use_capture: bool,
     ) where
-        T: 'static + FnMut(web_sys::Event) -> (),
+        T: 'static + FnMut(web_sys::Event),
     {
         let el = match self.el.take() {
             Some(e) => e,
@@ -154,7 +146,7 @@ impl Element {
     pub fn set_text_content(&mut self, value: &str) {
         if let Some(el) = self.el.as_ref() {
             if let Some(node) = &el.dyn_ref::<web_sys::Node>() {
-                node.set_text_content(Some(&value));
+                node.set_text_content(Some(value));
             }
         }
     }
@@ -204,14 +196,14 @@ impl Element {
     /// ```
     pub fn class_list_remove(&mut self, value: &str) {
         if let Some(el) = self.el.take() {
-            el.class_list().remove_1(&value).unwrap();
+            el.class_list().remove_1(value).unwrap();
             self.el = Some(el);
         }
     }
 
     pub fn class_list_add(&mut self, value: &str) {
         if let Some(el) = self.el.take() {
-            el.class_list().add_1(&value).unwrap();
+            el.class_list().add_1(value).unwrap();
             self.el = Some(el);
         }
     }
@@ -233,7 +225,7 @@ impl Element {
     /// Sets the whole class value for `self.el`
     pub fn set_class_name(&mut self, class_name: &str) {
         if let Some(el) = self.el.take() {
-            el.set_class_name(&class_name);
+            el.set_class_name(class_name);
             self.el = Some(el);
         }
     }
@@ -307,7 +299,7 @@ impl Element {
     pub fn set_value(&mut self, value: &str) {
         if let Some(el) = self.el.take() {
             if let Some(el) = wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlInputElement>(&el) {
-                el.set_value(&value);
+                el.set_value(value);
             }
             self.el = Some(el);
         }

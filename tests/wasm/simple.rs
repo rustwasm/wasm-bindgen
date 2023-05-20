@@ -60,7 +60,7 @@ pub fn simple_return_and_take_bool(a: bool, b: bool) -> bool {
 pub fn simple_raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
     unsafe {
         (*a) = (*b) as u32;
-        return a;
+        a
     }
 }
 
@@ -220,7 +220,7 @@ pub fn do_string_roundtrip(s: String) -> String {
 #[wasm_bindgen_test]
 fn externref_heap_live_count() {
     let x = wasm_bindgen::externref_heap_live_count();
-    let y = JsValue::null().clone();
+    let y = JsValue::null();
     assert!(wasm_bindgen::externref_heap_live_count() > x);
     drop(y);
     assert_eq!(x, wasm_bindgen::externref_heap_live_count());
