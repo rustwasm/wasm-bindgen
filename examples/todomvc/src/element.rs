@@ -21,24 +21,21 @@ impl From<web_sys::EventTarget> for Element {
 
 impl From<Element> for Option<web_sys::Node> {
     fn from(obj: Element) -> Option<web_sys::Node> {
-        obj.el.map(|el| el.into())
+        obj.el.map(Into::into)
     }
 }
 
 impl From<Element> for Option<EventTarget> {
     fn from(obj: Element) -> Option<EventTarget> {
-        obj.el.map(|el| el.into())
+        obj.el.map(Into::into)
     }
 }
 
 impl Element {
     // Create an element from a tag name
     pub fn create_element(tag: &str) -> Option<Element> {
-        if let Ok(el) = web_sys::window()?.document()?.create_element(tag) {
-            Some(el.into())
-        } else {
-            None
-        }
+        let el = web_sys::window()?.document()?.create_element(tag).ok()?;
+        Some(el.into())
     }
 
     pub fn qs(selector: &str) -> Option<Element> {
