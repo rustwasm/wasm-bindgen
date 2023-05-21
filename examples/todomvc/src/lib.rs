@@ -32,10 +32,10 @@ pub enum Message {
 }
 
 /// Used for debugging to the console
-pub fn exit(message: &str) -> ! {
+pub fn exit(message: &str) {
     let v = wasm_bindgen::JsValue::from_str(message);
     web_sys::console::exception_1(&v);
-    std::process::abort()
+    std::process::abort();
 }
 
 fn app(name: &str) {
