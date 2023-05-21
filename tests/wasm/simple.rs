@@ -57,11 +57,9 @@ pub fn simple_return_and_take_bool(a: bool, b: bool) -> bool {
 }
 
 #[wasm_bindgen]
-pub fn simple_raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
-    unsafe {
-        (*a) = (*b) as u32;
-        return a;
-    }
+pub unsafe fn simple_raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
+    (*a) = (*b) as u32;
+    a
 }
 
 #[wasm_bindgen_test]
@@ -218,6 +216,7 @@ pub fn do_string_roundtrip(s: String) -> String {
 }
 
 #[wasm_bindgen_test]
+#[allow(clippy::redundant_clone)] // clone to increase heap live count
 fn externref_heap_live_count() {
     let x = wasm_bindgen::externref_heap_live_count();
     let y = JsValue::null().clone();

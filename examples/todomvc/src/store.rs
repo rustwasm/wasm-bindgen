@@ -79,7 +79,7 @@ impl Store {
     ///
     /// ```
     ///  let data = db.find(ItemQuery::Completed {completed: true});
-    ///	 // data will contain items whose completed properties are true
+    ///  // data will contain items whose completed properties are true
     /// ```
     pub fn find(&mut self, query: ItemQuery) -> Option<ItemListSlice<'_>> {
         Some(
@@ -194,7 +194,7 @@ impl ItemListTrait<Item> for ItemList {
     }
 }
 use std::iter::FromIterator;
-impl<'a> FromIterator<Item> for ItemList {
+impl FromIterator<Item> for ItemList {
     fn from_iter<I: IntoIterator<Item = Item>>(iter: I) -> Self {
         let mut c = ItemList::new();
         for i in iter {
@@ -238,10 +238,10 @@ impl<'a> FromIterator<&'a Item> for ItemListSlice<'a> {
     }
 }
 
-impl<'a> Into<ItemList> for ItemListSlice<'a> {
-    fn into(self) -> ItemList {
+impl From<ItemListSlice<'_>> for ItemList {
+    fn from(s: ItemListSlice<'_>) -> Self {
         let mut i = ItemList::new();
-        let items = self.list.into_iter();
+        let items = s.list.into_iter();
         for j in items {
             // TODO neaten this cloning?
             let item = Item {

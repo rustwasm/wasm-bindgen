@@ -1,6 +1,7 @@
 //! dox
 
 #![deny(missing_docs)] // test that documenting public bindings is enough
+#![allow(clippy::redundant_clone)] // test specifically with cloned objects
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;

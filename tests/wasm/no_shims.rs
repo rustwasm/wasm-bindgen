@@ -22,7 +22,7 @@ use wasm_bindgen_test::*;
     module.exports.incoming_u32 = function () { return 4294967295; };
     module.exports.incoming_i32 = function () { return 0; };
     module.exports.incoming_f32 = function () { return 1.5; };
-    module.exports.incoming_f64 = function () { return 13.37; };
+    module.exports.incoming_f64 = function () { return Math.PI; };
 
     module.exports.outgoing_u8 = function (k) { assert_eq(k, 255); };
     module.exports.outgoing_i8 = function (i) { assert_eq(i, -127); };
@@ -30,12 +30,12 @@ use wasm_bindgen_test::*;
     module.exports.outgoing_i16 = function (j) { assert_eq(j, 32767); };
     module.exports.outgoing_i32 = function (x) { assert_eq(x, 0); };
     module.exports.outgoing_f32 = function (y) { assert_eq(y, 1.5); };
-    module.exports.outgoing_f64 = function (z) { assert_eq(z, 13.37); };
+    module.exports.outgoing_f64 = function (pi) { assert_eq(pi, Math.PI); };
 
-    module.exports.many = function (x, y, z) {
+    module.exports.many = function (x, y, pi) {
         assert_eq(x, 0);
         assert_eq(y, 1.5);
-        assert_eq(z, 13.37);
+        assert_eq(pi, Math.PI);
         return 42;
     };
 
@@ -45,8 +45,8 @@ use wasm_bindgen_test::*;
     };
 
     module.exports.MyNamespace = {};
-    module.exports.MyNamespace.incoming_namespaced = function () { return 3.14; };
-    module.exports.MyNamespace.outgoing_namespaced = function (pi) { assert_eq(3.14, pi); };
+    module.exports.MyNamespace.incoming_namespaced = function () { return 13.37; };
+    module.exports.MyNamespace.outgoing_namespaced = function (w) { assert_eq(13.37, w); };
 ")]
 extern "C" {
     #[wasm_bindgen(assert_no_shim)]
@@ -132,16 +132,16 @@ fn no_shims() {
     assert_eq!(y, 1.5);
     outgoing_f32(y);
 
-    let z = incoming_f64();
-    assert_eq!(z, 13.37);
-    outgoing_f64(z);
+    let pi = incoming_f64();
+    assert_eq!(pi, std::f64::consts::PI);
+    outgoing_f64(pi);
 
-    let w = many(x, y, z);
-    assert_eq!(w, 42);
+    let z = many(x, y, pi);
+    assert_eq!(z, 42);
 
-    let pi = incoming_namespaced();
-    assert_eq!(pi, 3.14);
-    outgoing_namespaced(pi);
+    let w = incoming_namespaced();
+    assert_eq!(w, 13.37);
+    outgoing_namespaced(w);
 
     let b = incoming_bool();
     assert!(b);

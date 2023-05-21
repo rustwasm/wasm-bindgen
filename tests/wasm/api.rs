@@ -82,14 +82,14 @@ pub fn api_mk_symbol() -> JsValue {
     let a = JsValue::symbol(None);
     assert!(a.is_symbol());
     assert_eq!(format!("{:?}", a), "JsValue(Symbol)");
-    return a;
+    a
 }
 
 #[wasm_bindgen]
 pub fn api_mk_symbol2(s: &str) -> JsValue {
     let a = JsValue::symbol(Some(s));
     assert!(a.is_symbol());
-    return a;
+    a
 }
 
 #[wasm_bindgen]
@@ -121,6 +121,7 @@ pub fn eq_test(a: &JsValue, b: &JsValue) -> bool {
 }
 
 #[wasm_bindgen]
+#[allow(clippy::eq_op)]
 pub fn eq_test1(a: &JsValue) -> bool {
     a == a
 }
@@ -132,8 +133,8 @@ pub fn api_completely_variadic(args: &JsValue) -> JsValue {
 
 #[wasm_bindgen(variadic)]
 pub fn api_variadic_with_prefixed_params(
-    first: &JsValue,
-    second: &JsValue,
+    _first: &JsValue,
+    _second: &JsValue,
     args: &JsValue,
 ) -> JsValue {
     args.into()

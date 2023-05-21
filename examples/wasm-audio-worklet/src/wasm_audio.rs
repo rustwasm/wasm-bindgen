@@ -42,9 +42,9 @@ pub fn wasm_audio_node(
     process: Box<dyn FnMut(&mut [f32]) -> bool>,
 ) -> Result<AudioWorkletNode, JsValue> {
     AudioWorkletNode::new_with_options(
-        &ctx,
+        ctx,
         "WasmProcessor",
-        &AudioWorkletNodeOptions::new().processor_options(Some(&js_sys::Array::of3(
+        AudioWorkletNodeOptions::new().processor_options(Some(&js_sys::Array::of3(
             &wasm_bindgen::module(),
             &wasm_bindgen::memory(),
             &WasmAudioProcessor(process).pack().into(),

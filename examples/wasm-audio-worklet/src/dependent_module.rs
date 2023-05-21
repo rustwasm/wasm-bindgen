@@ -25,7 +25,7 @@ pub fn on_the_fly(code: &str) -> Result<String, JsValue> {
 
     Url::create_object_url_with_blob(&Blob::new_with_str_sequence_and_options(
         &Array::of2(&JsValue::from(header.as_str()), &JsValue::from(code)),
-        &BlobPropertyBag::new().type_("text/javascript"),
+        BlobPropertyBag::new().type_("text/javascript"),
     )?)
 }
 
@@ -40,6 +40,6 @@ pub fn on_the_fly(code: &str) -> Result<String, JsValue> {
 #[macro_export]
 macro_rules! dependent_module {
     ($file_name:expr) => {
-        crate::dependent_module::on_the_fly(include_str!($file_name))
+        $crate::dependent_module::on_the_fly(include_str!($file_name))
     };
 }

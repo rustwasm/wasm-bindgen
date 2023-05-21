@@ -93,9 +93,9 @@ pub struct AsyncCustomError {
     pub val: JsValue,
 }
 
-impl Into<JsValue> for AsyncCustomError {
-    fn into(self) -> JsValue {
-        self.val
+impl From<AsyncCustomError> for JsValue {
+    fn from(e: AsyncCustomError) -> Self {
+        e.val
     }
 }
 
