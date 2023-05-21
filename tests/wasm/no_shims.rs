@@ -30,12 +30,12 @@ use wasm_bindgen_test::*;
     module.exports.outgoing_i16 = function (j) { assert_eq(j, 32767); };
     module.exports.outgoing_i32 = function (x) { assert_eq(x, 0); };
     module.exports.outgoing_f32 = function (y) { assert_eq(y, 1.5); };
-    module.exports.outgoing_f64 = function (z) { assert_eq(z, Math.PI); };
+    module.exports.outgoing_f64 = function (pi) { assert_eq(pi, Math.PI); };
 
-    module.exports.many = function (x, y, z) {
+    module.exports.many = function (x, y, pi) {
         assert_eq(x, 0);
         assert_eq(y, 1.5);
-        assert_eq(z, Math.PI);
+        assert_eq(pi, Math.PI);
         return 42;
     };
 
@@ -46,7 +46,7 @@ use wasm_bindgen_test::*;
 
     module.exports.MyNamespace = {};
     module.exports.MyNamespace.incoming_namespaced = function () { return 13.37; };
-    module.exports.MyNamespace.outgoing_namespaced = function (pi) { assert_eq(13.37, pi); };
+    module.exports.MyNamespace.outgoing_namespaced = function (w) { assert_eq(13.37, w); };
 ")]
 extern "C" {
     #[wasm_bindgen(assert_no_shim)]
@@ -134,10 +134,10 @@ fn no_shims() {
 
     let pi = incoming_f64();
     assert_eq!(pi, std::f64::consts::PI);
-    outgoing_f64(z);
+    outgoing_f64(pi);
 
     let z = many(x, y, pi);
-    assert_eq!(w, 42);
+    assert_eq!(z, 42);
 
     let w = incoming_namespaced();
     assert_eq!(w, 13.37);
