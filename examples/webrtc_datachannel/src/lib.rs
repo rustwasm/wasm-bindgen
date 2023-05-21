@@ -43,9 +43,10 @@ async fn start() -> Result<(), JsValue> {
 
     let dc1_clone = dc1.clone();
     let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |ev: MessageEvent| {
-        let Some(message) = ev.data().as_string() else { return };
-        console_warn!("{:?}", message);
-        dc1_clone.send_with_str("Pong from pc1.dc!").unwrap();
+        if let Some(message) = ev.data().as_string() {
+            console_warn!("{:?}", message);
+            dc1_clone.send_with_str("Pong from pc1.dc!").unwrap();
+        }
     });
     dc1.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
     onmessage_callback.forget();
@@ -59,8 +60,9 @@ async fn start() -> Result<(), JsValue> {
         console_log!("pc2.ondatachannel!: {:?}", dc2.label());
 
         let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |ev: MessageEvent| {
-            let Some(message) = ev.data().as_string() else { return };
-            console_warn!("{:?}", message);
+            if let Some(message) = ev.data().as_string() {
+                console_warn!("{:?}", message);
+            }
         });
         dc2.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
         onmessage_callback.forget();
@@ -82,9 +84,10 @@ async fn start() -> Result<(), JsValue> {
     let pc2_clone = pc2.clone();
     let onicecandidate_callback1 =
         Closure::<dyn FnMut(_)>::new(move |ev: RtcPeerConnectionIceEvent| {
-            let Some(candidate) = ev.candidate() else { return };
-            console_log!("pc1.onicecandidate: {:#?}", candidate.candidate());
-            let _ = pc2_clone.add_ice_candidate_with_opt_rtc_ice_candidate(Some(&candidate));
+            if let Some(candidate) = ev.candidate() {
+                console_log!("pc1.onicecandidate: {:#?}", candidate.candidate());
+                let _ = pc2_clone.add_ice_candidate_with_opt_rtc_ice_candidate(Some(&candidate));
+            }
         });
     pc1.set_onicecandidate(Some(onicecandidate_callback1.as_ref().unchecked_ref()));
     onicecandidate_callback1.forget();
@@ -92,9 +95,10 @@ async fn start() -> Result<(), JsValue> {
     let pc1_clone = pc1.clone();
     let onicecandidate_callback2 =
         Closure::<dyn FnMut(_)>::new(move |ev: RtcPeerConnectionIceEvent| {
-            let Some(candidate) = ev.candidate() else { return };
-            console_log!("pc2.onicecandidate: {:#?}", candidate.candidate());
-            let _ = pc1_clone.add_ice_candidate_with_opt_rtc_ice_candidate(Some(&candidate));
+            if let Some(candidate) = ev.candidate() {
+                console_log!("pc2.onicecandidate: {:#?}", candidate.candidate());
+                let _ = pc1_clone.add_ice_candidate_with_opt_rtc_ice_candidate(Some(&candidate));
+            }
         });
     pc2.set_onicecandidate(Some(onicecandidate_callback2.as_ref().unchecked_ref()));
     onicecandidate_callback2.forget();
