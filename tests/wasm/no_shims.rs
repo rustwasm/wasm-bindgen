@@ -132,16 +132,16 @@ fn no_shims() {
     assert_eq!(y, 1.5);
     outgoing_f32(y);
 
-    let z = incoming_f64();
-    assert_eq!(z, std::f64::consts::PI);
+    let pi = incoming_f64();
+    assert_eq!(pi, std::f64::consts::PI);
     outgoing_f64(z);
 
-    let w = many(x, y, z);
+    let z = many(x, y, pi);
     assert_eq!(w, 42);
 
-    let pi = incoming_namespaced();
-    assert_eq!(pi, 13.37);
-    outgoing_namespaced(pi);
+    let w = incoming_namespaced();
+    assert_eq!(w, 13.37);
+    outgoing_namespaced(w);
 
     let b = incoming_bool();
     assert!(b);
