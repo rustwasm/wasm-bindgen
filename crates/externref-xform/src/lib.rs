@@ -652,19 +652,12 @@ impl Transform<'_> {
         // Note that we pave over all our stack slots with `ref.null` to ensure
         // that the table doesn't accidentally hold a strong reference to items
         // no longer in use by our wasm instance.
-        //
-        // TODO: use `table.fill` once that's spec'd
         if externref_stack > 0 {
-            for i in 0..externref_stack {
-                body.local_get(fp);
-                if i > 0 {
-                    body.i32_const(i).binop(BinaryOp::I32Add);
-                }
-                body.ref_null(ValType::Externref);
-                body.table_set(self.table);
-            }
-
             body.local_get(fp)
+                .ref_null(ValType::Externref)
+                .i32_const(externref_stack)
+                .table_fill(self.table)
+                .local_get(fp)
                 .i32_const(externref_stack)
                 .binop(BinaryOp::I32Add)
                 .global_set(self.stack_pointer);
