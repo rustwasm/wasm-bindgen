@@ -100,12 +100,11 @@ fn test_input_element() {
         "The height attribute should be 12"
     );
 
-    /*TODO fails in chrome
     element.set_type("checkbox");
+    element.set_indeterminate(true);
     assert!(element.indeterminate(), "Should be indeterminate");
-    element.set_checked(true);
+    element.set_indeterminate(false);
     assert!(!element.indeterminate(), "Shouldn't be indeterminate");
-    */
     /*TODO add tests
     pub fn indeterminate(&self) -> bool
     pub fn set_indeterminate(&self, indeterminate: bool)
@@ -164,11 +163,9 @@ fn test_input_element() {
     pub fn default_value(&self) -> String
     pub fn set_default_value(&self, default_value: &str)
     */
-    /*TODO fails in chrome
-        assert_eq!(element.value(), "", "Should have no value");
-        element.set_value("hey!");
-        assert_eq!(element.value(), "hey!", "Should have a value");
-    */
+    assert_eq!(element.value(), "", "Should have no value");
+    element.set_value("hey!");
+    assert_eq!(element.value(), "hey!", "Should have a value");
     element.set_type("number");
     element.set_value("1");
     assert_eq!(element.value_as_number(), 1.0, "Should have value 1");
