@@ -85,7 +85,11 @@ fn element() {
         "Should return nothing if set correctly"
     );
     assert!(element.has_attribute("title"), "Should have a title");
-    // TODO check get_attribute here when supported
+    assert_eq!(
+        element.get_attribute("title").unwrap(),
+        "boop",
+        "Title should be 'boop'"
+    );
     assert_eq!(
         element.remove_attribute("title").unwrap(),
         (),

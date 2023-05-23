@@ -93,7 +93,12 @@ fn test_input_element() {
 
     assert_eq!(element.height(), 0, "Should have no height");
     element.set_height(12);
-    assert_eq!(element.height(), 0, "Should have no height"); // Doesn't change, TODO check with get_attribute("height")=="12"
+    assert_eq!(element.height(), 0, "Should have no height");
+    assert_eq!(
+        element.get_attribute("height").unwrap(),
+        "12",
+        "The height attribute should be 12"
+    );
 
     /*TODO fails in chrome
     element.set_type("checkbox");
@@ -173,7 +178,12 @@ fn test_input_element() {
 
     assert_eq!(element.width(), 0, "Should have no width");
     element.set_width(12);
-    assert_eq!(element.width(), 0, "Should have no width"); // Doesn't change, TODO check with get_attribute("width")=="12"
+    assert_eq!(element.width(), 0, "Should have no width");
+    assert_eq!(
+        element.get_attribute("width").unwrap(),
+        "12",
+        "The width attribute should be 12"
+    );
 
     assert_eq!(element.will_validate(), false, "Shouldn't validate");
     assert_eq!(
