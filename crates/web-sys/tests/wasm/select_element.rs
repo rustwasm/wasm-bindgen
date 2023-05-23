@@ -26,9 +26,12 @@ fn test_select_element() {
         "Select element should have a false autofocus property."
     );
 
-    //    TODO: This test currently fails on Firefox, but not Chrome.  In Firefox, even though we select.set_autocomplete(), select.autocomplete() yields an empty String.
-    //    select.set_autocomplete("tomato");
-    //    assert_eq!(select.autocomplete(), "tomato", "Select element should have a 'tomato' autocomplete property.");
+    select.set_autocomplete("country");
+    assert_eq!(
+        select.autocomplete(),
+        "country",
+        "Select element should have a 'country' autocomplete property."
+    );
 
     select.set_disabled(true);
     assert_eq!(
