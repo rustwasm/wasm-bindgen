@@ -1,0 +1,5 @@
+*.wasm
+wasm_audio_worklet_bg.wasm.d.ts
+wasm_audio_worklet.d.ts
+wasm_audio_worklet.js
+snippets/
