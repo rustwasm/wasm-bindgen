@@ -149,12 +149,11 @@ fn test_input_element() {
     pub fn size(&self) -> u32
     pub fn set_size(&self, size: u32)
     */
-    /*TODO fails in chrome
-        element.set_type("image");
-        assert_eq!(element.src(), "", "Should have no src");
-        element.set_value("hey.png");
-        assert_eq!(element.src(), "hey.png", "Should have a src");
-    */
+    element.set_type("image");
+    assert_eq!(element.src(), "", "Should have no src");
+    const EMPTY_IMAGE: &str = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E";
+    element.set_src(EMPTY_IMAGE);
+    assert_eq!(element.src(), EMPTY_IMAGE, "Should have a src");
     /*TODO add tests
     pub fn src(&self) -> String
     pub fn set_src(&self, src: &str)
