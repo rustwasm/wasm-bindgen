@@ -11,8 +11,10 @@
  * and create derivative works of this document.
  */
 
-// http://www.whatwg.org/specs/web-apps/current-work/#the-menuitem-element
-[HTMLConstructor]
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu
+// > The related <menuitem> element has been deprecated.
+// Keep this in wasm-bindgen to prevent breaking changes.
+[HTMLConstructor, RustDeprecated="Absent in all major browsers"]
 interface HTMLMenuItemElement : HTMLElement {
            [CEReactions, SetterThrows]
            attribute DOMString type;
