@@ -40,11 +40,9 @@ fn test_input_element() {
     element.set_default_checked(true);
     assert!(element.default_checked(), "Should have an default_checked");
 
-    /*TODO fix
-        assert!(!element.checked(), "Shouldn't be checked");
-        element.set_checked(true);
-        assert!(element.checked(), "Should be checked");
-    */
+    assert!(element.checked(), "Should be checked");
+    element.set_checked(false);
+    assert!(!element.checked(), "Shouldn't be checked");
 
     assert!(!element.disabled(), "Shouldn't be disabled");
     element.set_disabled(true);
