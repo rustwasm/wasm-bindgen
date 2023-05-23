@@ -124,7 +124,7 @@ fn test_html_element() {
     element.set_spellcheck(false);
     assert!(!element.spellcheck(), "Shouldn't be spellchecked");
     element.set_spellcheck(true);
-    assert!(element.spellcheck(), "Should be dragspellcheckedgable");
+    assert!(element.spellcheck(), "Should be spellchecked");
 
     // TODO verify case where we have an offset_parent
     match element.offset_parent() {
