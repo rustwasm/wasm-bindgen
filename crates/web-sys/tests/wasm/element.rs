@@ -145,8 +145,6 @@ fn element() {
         "Should return nothing if removed"
     );
 
-    // TODO non standard moz_matches_selector should we even support?
-
     /* Tests needed for:
     insert_adjacent_element
     insert_adjacent_text
