@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use web_sys::{HtmlButtonElement, HtmlFormElement, Node};
+use web_sys::{HtmlButtonElement, HtmlFormElement};
 
 #[wasm_bindgen(module = "/tests/wasm/element.js")]
 extern "C" {
@@ -99,15 +99,9 @@ fn test_button_element_in_form() {
     let form = new_form();
     form.set_name("test-form");
 
-    // TODO: implement `Clone` for types in `web_sys` to make this easier.
-    let button = JsValue::from(button);
-    let as_node = Node::from(button.clone());
-    Node::from(JsValue::from(form))
-        .append_child(&as_node)
-        .unwrap();
+    form.append_child(&button).unwrap();
 
-    let element = HtmlButtonElement::from(button);
-    match element.form() {
+    match button.form() {
         None => assert!(false, "Should have a form"),
         Some(form) => {
             assert!(true, "Should have a form");
@@ -118,5 +112,5 @@ fn test_button_element_in_form() {
             );
         }
     };
-    assert_eq!(element.type_(), "reset", "Should have a type");
+    assert_eq!(button.type_(), "reset", "Should have a type");
 }

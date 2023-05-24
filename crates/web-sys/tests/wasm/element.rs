@@ -57,14 +57,26 @@ fn element() {
     get_attribute_ns
     */
 
-    /*TODO should we enable toggle_attribute tests? (Firefox Nightly + Chrome canary only)
-        // TODO toggle_attribute should permit a single argument when optional arguments are supported
-        assert!(!element.has_attribute("disabled"), "Should not be disabled");
-        assert!(element.toggle_attribute("disabled", true).unwrap(), "Should return true when attribute is set");
-        assert!(element.has_attribute("disabled"), "Should be disabled");
-        assert!(!element.toggle_attribute("disabled", false).unwrap(), "Should return false when attribute is not set");
-        assert!(!element.has_attribute("disabled"), "Should not be disabled");
-    */
+    assert!(!element.has_attribute("disabled"), "Should not be disabled");
+    assert!(
+        element.toggle_attribute("disabled").unwrap(),
+        "Should return true when attribute is set"
+    );
+    assert!(element.has_attribute("disabled"), "Should be disabled");
+    assert!(
+        element
+            .toggle_attribute_with_force("disabled", true)
+            .unwrap(),
+        "Should return true when attribute is set"
+    );
+    assert!(element.has_attribute("disabled"), "Should be disabled");
+    assert!(
+        !element
+            .toggle_attribute_with_force("disabled", false)
+            .unwrap(),
+        "Should return false when attribute is not set"
+    );
+    assert!(!element.has_attribute("disabled"), "Should not be disabled");
 
     assert!(!element.has_attribute("title"), "Should not have a title");
     assert_eq!(
@@ -73,7 +85,11 @@ fn element() {
         "Should return nothing if set correctly"
     );
     assert!(element.has_attribute("title"), "Should have a title");
-    // TODO check get_attribute here when supported
+    assert_eq!(
+        element.get_attribute("title").unwrap(),
+        "boop",
+        "Title should be 'boop'"
+    );
     assert_eq!(
         element.remove_attribute("title").unwrap(),
         (),
@@ -128,8 +144,6 @@ fn element() {
         (),
         "Should return nothing if removed"
     );
-
-    // TODO non standard moz_matches_selector should we even support?
 
     /* Tests needed for:
     insert_adjacent_element

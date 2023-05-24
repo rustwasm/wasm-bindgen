@@ -42,8 +42,10 @@ fn test_output_element() {
     output.set_value("49");
     assert_eq!(output.value(), "49", "Output value should be '49'.");
 
-    // TODO: Fails in Chrome, but not in Firefox.
-    //assert!(output.will_validate(), "Output should validate by default (maybe browser dependent?)");
+    assert!(
+        !output.will_validate(),
+        "Output is not a submittable element, so willValidate must be false"
+    );
 
     assert!(
         output.validity().valid(),
