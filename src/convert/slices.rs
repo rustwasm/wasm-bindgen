@@ -11,6 +11,7 @@ use crate::convert::{
     FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi,
 };
 use cfg_if::cfg_if;
+use crate::describe::WasmDescribe;
 
 if_std! {
     use core::mem;
@@ -24,6 +25,45 @@ pub struct WasmSlice {
 }
 
 unsafe impl WasmAbi for WasmSlice {}
+
+// unsafe impl<const LEN: usize> WasmAbi for [u16; LEN] {}
+//
+// impl WasmDescribe for [u16; LEN] {
+//     fn describe() {
+//         todo!()
+//     }
+// }
+//
+// impl<const LEN: usize> IntoWasmAbi for [u16; LEN] {
+//     type Abi = [u16; LEN];
+//
+//     #[inline]
+//     fn into_abi(self) -> Self::Abi {
+//
+//     }
+// }
+
+unsafe impl WasmAbi for [u16; 3] {}
+
+
+impl IntoWasmAbi for [u16;3] {
+    type Abi = [u16; 3];
+
+    #[inline]
+    fn into_abi(self) -> Self::Abi {
+        self
+    }
+}
+
+impl FromWasmAbi for [u16; 3] {
+    type Abi = [u16; 3];
+
+    #[inline]
+    unsafe fn from_abi(js: Self::Abi) -> [u16; 3] {
+        js as [u16; 3]
+    }
+}
+
 
 #[inline]
 fn null_slice() -> WasmSlice {

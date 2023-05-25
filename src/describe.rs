@@ -46,6 +46,7 @@ tys! {
     RESULT
     UNIT
     CLAMPED
+    FIXED_ARRAY
 }
 
 #[inline(always)] // see the wasm-interpreter crate

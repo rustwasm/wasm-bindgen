@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use crate::descriptor::Descriptor;
 use crate::wit::{AdapterType, Instruction, InstructionBuilder};
 use crate::wit::{InstructionData, StackChange};
@@ -146,13 +147,36 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Option(d) => self.outgoing_option(d)?,
             Descriptor::Result(d) => self.outgoing_result(d)?,
 
-            Descriptor::Function(_) | Descriptor::Closure(_) | Descriptor::Slice(_) => bail!(
+            Descriptor::Function(_) | Descriptor::Closure(_) | Descriptor::Slice(_)  => bail!(
                 "unsupported argument type for calling JS function from Rust: {:?}",
                 arg
             ),
 
             // nothing to do
             Descriptor::Unit => {}
+
+            // we dont know what to do...
+            Descriptor::FixedArray(d,length) => {
+                let mut outputs: Vec<AdapterType> = vec![];
+                let return_ty = match d.deref() {
+                    Descriptor::U16 => AdapterType::U16,
+                    _ => unimplemented!("Fixed array only works on U16, sorry")
+                };
+                for _ in 0..*length {
+                    self.get(AdapterType::I32);
+                    outputs.push(return_ty.clone());
+                }
+                // let instr = Instruction::WasmToInt {
+                //     input: walrus::ValType::I32,
+                //     output: AdapterType::U16,
+                // };
+                // self.instruction(
+                //     &[AdapterType::I32, AdapterType::I32, AdapterType::I32],
+                //     instr,
+                //     &[AdapterType::U16],
+                // )
+                self.output.push(AdapterType::I32);
+            }
 
             // Largely synthetic and can't show up
             Descriptor::ClampedU8 => unreachable!(),
@@ -350,7 +374,9 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::CachedString
             | Descriptor::Option(_)
             | Descriptor::Vector(_)
-            | Descriptor::Unit => {
+            | Descriptor::Unit
+            // we dont know what to do...
+            | Descriptor::FixedArray(_,_) => {
                 // We must throw before reading the Ok type, if there is an error. However, the
                 // structure of ResultAbi is that the Err value + discriminant come last (for
                 // alignment reasons). So the UnwrapResult instruction must come first, but the

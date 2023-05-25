@@ -5,6 +5,7 @@ use walrus::ir::Value;
 use walrus::{FunctionId, InitExpr, Module};
 use wasm_bindgen_multi_value_xform as multi_value_xform;
 use wasm_bindgen_wasm_conventions as wasm_conventions;
+use wasm_bindgen_wasm_conventions::get_func_name_from_id;
 
 pub fn run(module: &mut Module) -> Result<(), Error> {
     let mut adapters = module
@@ -59,9 +60,13 @@ fn extract_xform<'a>(
     to_xform: &mut Vec<(walrus::FunctionId, usize, Vec<walrus::ValType>)>,
     slots: &mut Vec<Slot<'a>>,
 ) {
+    let adapter_clone = adapter.clone();
     let instructions = match &mut adapter.kind {
         AdapterKind::Local { instructions } => instructions,
-        AdapterKind::Import { .. } => return,
+        AdapterKind::Import { .. } => {
+            println!("Import adapter: {adapter_clone:#?}");
+            return
+        },
     };
 
     // If the first instruction is a `Retptr`, then this must be an exported
@@ -97,8 +102,107 @@ fn extract_xform<'a>(
             },
             Slot::TableElement(func_index) => resolve_table_entry(module, *func_index),
         };
+        println!("About to transform `{}`: {:#?}", get_func_name_from_id(module, id), adapter_clone);
         to_xform.push((id, 0, types));
         slots.push(slot);
+    } else {
+        println!("Adapter that we didn't xform: {:#?}", adapter_clone);
+        if let Some(slot) = instructions
+            .iter_mut()
+            .find_map(|i| match &mut i.instr {
+                Instruction::CallCore(f) => Some(Slot::Id(f)),
+                Instruction::CallExport(e) => Some(Slot::Export(*e)),
+                Instruction::CallTableElement(index) => Some(Slot::TableElement(*index)),
+                _ => None,
+            }) {
+            let id = match &slot {
+                Slot::Id(i) => **i,
+                Slot::Export(e) => match module.exports.get(*e).item {
+                    walrus::ExportItem::Function(f) => f,
+                    _ => panic!("found call to non-function export"),
+                },
+                Slot::TableElement(func_index) => resolve_table_entry(module, *func_index),
+            };
+
+            println!("Got name for adapter function {:?} with ID {:?}: {}", adapter_clone.id, id, get_func_name_from_id(module, id));
+
+        }
+
+        // LLVM currently always uses the first parameter for the return
+        // pointer. We hard code that here, since we have no better option.
+        // let ix = instructions.first().map(|e| &e.instr);
+        // if let Some(ix) = ix {
+        //     match ix {
+        //         Instruction::CallCore(_) => {}
+        //         Instruction::DeferCallCore(_) => {}
+        //         Instruction::CallAdapter(_) => {}
+        //         Instruction::CallExport(_) => {}
+        //         Instruction::CallTableElement(_) => {}
+        //         Instruction::ArgGet(_) => {}
+        //         Instruction::StoreRetptr { .. } => {}
+        //         Instruction::LoadRetptr { .. } => {}
+        //         Instruction::Retptr { .. } => {}
+        //         Instruction::IntToWasm { .. } => {}
+        //         Instruction::WasmToInt { .. } => {}
+        //         Instruction::I32FromBool => {}
+        //         Instruction::I32FromStringFirstChar => {}
+        //         Instruction::I32FromExternrefOwned => {}
+        //         Instruction::I32FromExternrefBorrow => {}
+        //         Instruction::I32FromExternrefRustOwned { .. } => {}
+        //         Instruction::I32FromExternrefRustBorrow { .. } => {}
+        //         Instruction::I32FromOptionRust { .. } => {}
+        //         Instruction::I32FromOptionExternref { .. } => {}
+        //         Instruction::I32FromOptionU32Sentinel => {}
+        //         Instruction::I32FromOptionBool => {}
+        //         Instruction::I32FromOptionChar => {}
+        //         Instruction::I32FromOptionEnum { .. } => {}
+        //         Instruction::FromOptionNative { .. } => {}
+        //         Instruction::VectorToMemory { .. } => {}
+        //         Instruction::MutableSliceToMemory { .. } => {}
+        //         Instruction::OptionString { .. } => {}
+        //         Instruction::StringToMemory { .. } => {}
+        //         Instruction::MemoryToString(_) => {}
+        //         Instruction::OptionVector { .. } => {}
+        //         Instruction::UnwrapResult { .. } => {}
+        //         Instruction::UnwrapResultString { .. } => {}
+        //         Instruction::BoolFromI32 => {}
+        //         Instruction::ExternrefLoadOwned { .. } => {}
+        //         Instruction::StringFromChar => {}
+        //         Instruction::RustFromI32 { .. } => {}
+        //         Instruction::OptionRustFromI32 { .. } => {}
+        //         Instruction::CachedStringLoad { .. } => {}
+        //         Instruction::VectorLoad { .. } => {}
+        //         Instruction::OptionVectorLoad { .. } => {}
+        //         Instruction::TableGet => {}
+        //         Instruction::StackClosure { .. } => {}
+        //         Instruction::View { .. } => {}
+        //         Instruction::OptionView { .. } => {}
+        //         Instruction::OptionU32Sentinel => {}
+        //         Instruction::ToOptionNative { .. } => {}
+        //         Instruction::OptionBoolFromI32 => {}
+        //         Instruction::OptionCharFromI32 => {}
+        //         Instruction::OptionEnumFromI32 { .. } => {}
+        //     }
+        // }
+        // // let slot = instructions
+        // //     .iter_mut()
+        // //     .find_map(|i| match &mut i.instr {
+        // //         Instruction::CallCore(f) => Some(Slot::Id(f)),
+        // //         Instruction::CallExport(e) => Some(Slot::Export(*e)),
+        // //         Instruction::CallTableElement(index) => Some(Slot::TableElement(*index)),
+        // //         _ => None,
+        // //     })
+        // //     .expect("adapter never calls the underlying function");
+        // // let id = match &slot {
+        // //     Slot::Id(i) => **i,
+        // //     Slot::Export(e) => match module.exports.get(*e).item {
+        // //         walrus::ExportItem::Function(f) => f,
+        // //         _ => panic!("found call to non-function export"),
+        // //     },
+        // //     Slot::TableElement(func_index) => resolve_table_entry(module, *func_index),
+        // // };
+        //
+        // // println!("Not transforming func: {}", &module.funcs.get(id).name.clone().unwrap());
     }
 
     // If the last instruction is a `StoreRetptr`, then this must be an adapter
