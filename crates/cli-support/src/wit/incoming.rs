@@ -12,6 +12,8 @@ use crate::wit::InstructionData;
 use crate::wit::{AdapterType, Instruction, InstructionBuilder, StackChange};
 use anyhow::{bail, format_err, Error};
 use walrus::ValType;
+use std::ops::Deref;
+
 
 impl InstructionBuilder<'_, '_> {
     /// Process a `Descriptor` as if it's being passed from JS to Rust. This
@@ -146,6 +148,34 @@ impl InstructionBuilder<'_, '_> {
 
             // Largely synthetic and can't show up
             Descriptor::ClampedU8 => unreachable!(),
+            Descriptor::FixedArray(d,length) => {
+                let kind = arg.vector_kind().ok_or_else(|| {
+                    format_err!(
+                        "unsupported argument type for calling Rust function from JS {:?}",
+                        arg
+                    )
+                })?;
+                let mut outputs: Vec<AdapterType> = vec![];
+                let return_ty = match d.deref() {
+                    Descriptor::U16 => AdapterType::U16,
+                    _ => unimplemented!("Fixed array only works on U16, sorry")
+                };
+                for _ in 0..*length {
+                    outputs.push(return_ty.clone());
+                }
+                let mem = self.cx.memory()?;
+                let free = self.cx.free()?;
+                self.instruction(
+                    // single pointer as input
+                    &[AdapterType::I32],
+                    Instruction::VectorLoad {
+                        kind,
+                        mem,
+                        free,
+                    },
+                    &outputs,
+                );
+            }
         }
         Ok(())
     }
@@ -223,6 +253,7 @@ impl InstructionBuilder<'_, '_> {
                     );
                 }
             }
+            Descriptor::FixedArray(_,_) => {}
             _ => bail!(
                 "unsupported reference argument type for calling Rust function from JS: {:?}",
                 arg
