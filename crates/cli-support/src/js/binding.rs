@@ -1093,6 +1093,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("v{}", i))
         }
 
+        Instruction::ArrayLoad { kind, length } => {
+
+        }
+
         Instruction::OptionVectorLoad { kind, mem, free } => {
             let len = js.pop();
             let ptr = js.pop();
