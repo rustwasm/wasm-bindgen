@@ -11,7 +11,6 @@ use crate::convert::{
     FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi,
 };
 use cfg_if::cfg_if;
-use crate::describe::WasmDescribe;
 
 if_std! {
     use core::mem;
