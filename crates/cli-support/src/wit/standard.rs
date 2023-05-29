@@ -87,7 +87,7 @@ pub enum AdapterType {
     Struct(String),
     NamedExternref(String),
     Function,
-    Array(Box<AdapterType>, Box<AdapterType>)
+    Array(Box<AdapterType>, usize),
 }
 
 #[derive(Debug, Clone)]
@@ -278,7 +278,7 @@ pub enum Instruction {
     },
     ArrayLoad {
         kind: AdapterType,
-        length: AdapterType,
+        length: usize,
     },
     /// pops i32, loads externref from externref table
     TableGet,
