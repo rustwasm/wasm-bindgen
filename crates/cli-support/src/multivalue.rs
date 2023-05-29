@@ -1,9 +1,10 @@
-use crate::wit::{Adapter, NonstandardWitSection};
+use crate::wit::{Adapter, AdapterType, NonstandardWitSection};
 use crate::wit::{AdapterKind, Instruction, WasmBindgenAux};
 use anyhow::{anyhow, Error};
 use walrus::ir::Value;
 use walrus::{FunctionId, InitExpr, Module};
 use wasm_bindgen_multi_value_xform as multi_value_xform;
+use wasm_bindgen_multi_value_xform::{ArrayLoad, ToTransform};
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 use wasm_bindgen_wasm_conventions::get_func_name_from_id;
 
@@ -12,7 +13,7 @@ pub fn run(module: &mut Module) -> Result<(), Error> {
         .customs
         .delete_typed::<NonstandardWitSection>()
         .unwrap();
-    let mut to_xform = Vec::new();
+    let mut to_xform: Vec<ToTransform> = Vec::new();
     let mut slots = Vec::new();
 
     for (_, adapter) in adapters.adapters.iter_mut() {
@@ -57,7 +58,7 @@ enum Slot<'a> {
 fn extract_xform<'a>(
     module: &Module,
     adapter: &'a mut Adapter,
-    to_xform: &mut Vec<(walrus::FunctionId, usize, Vec<walrus::ValType>)>,
+    to_xform: &mut Vec<ToTransform>,
     slots: &mut Vec<Slot<'a>>,
 ) {
     let adapter_clone = adapter.clone();
@@ -65,8 +66,8 @@ fn extract_xform<'a>(
         AdapterKind::Local { instructions } => instructions,
         AdapterKind::Import { .. } => {
             println!("Import adapter: {adapter_clone:#?}");
-            return
-        },
+            return;
+        }
     };
 
     // If the first instruction is a `Retptr`, then this must be an exported
@@ -81,6 +82,16 @@ fn extract_xform<'a>(
                 false
             }
             _ => true,
+        });
+        let array_config = instructions.iter().find_map(|i| match &i.instr {
+            Instruction::ArrayLoad { kind, length: _ } => match kind {
+                AdapterType::S8 => Some(ArrayLoad::I8),
+                AdapterType::S16 => Some(ArrayLoad::I16),
+                AdapterType::U8 => Some(ArrayLoad::U8),
+                AdapterType::U16 => Some(ArrayLoad::U16),
+                _ => None,
+            },
+            _ => None,
         });
         let slot = instructions
             .iter_mut()
@@ -102,19 +113,21 @@ fn extract_xform<'a>(
             },
             Slot::TableElement(func_index) => resolve_table_entry(module, *func_index),
         };
-        println!("About to transform `{}`: {:#?}", get_func_name_from_id(module, id), adapter_clone);
-        to_xform.push((id, 0, types));
+        println!(
+            "About to transform `{}`: {:#?}",
+            get_func_name_from_id(module, id),
+            adapter_clone
+        );
+        to_xform.push((id, 0, types, array_config));
         slots.push(slot);
     } else {
         println!("Adapter that we didn't xform: {:#?}", adapter_clone);
-        if let Some(slot) = instructions
-            .iter_mut()
-            .find_map(|i| match &mut i.instr {
-                Instruction::CallCore(f) => Some(Slot::Id(f)),
-                Instruction::CallExport(e) => Some(Slot::Export(*e)),
-                Instruction::CallTableElement(index) => Some(Slot::TableElement(*index)),
-                _ => None,
-            }) {
+        if let Some(slot) = instructions.iter_mut().find_map(|i| match &mut i.instr {
+            Instruction::CallCore(f) => Some(Slot::Id(f)),
+            Instruction::CallExport(e) => Some(Slot::Export(*e)),
+            Instruction::CallTableElement(index) => Some(Slot::TableElement(*index)),
+            _ => None,
+        }) {
             let id = match &slot {
                 Slot::Id(i) => **i,
                 Slot::Export(e) => match module.exports.get(*e).item {
@@ -124,8 +137,12 @@ fn extract_xform<'a>(
                 Slot::TableElement(func_index) => resolve_table_entry(module, *func_index),
             };
 
-            println!("Got name for adapter function {:?} with ID {:?}: {}", adapter_clone.id, id, get_func_name_from_id(module, id));
-
+            println!(
+                "Got name for adapter function {:?} with ID {:?}: {}",
+                adapter_clone.id,
+                id,
+                get_func_name_from_id(module, id)
+            );
         }
 
         // LLVM currently always uses the first parameter for the return
