@@ -20,9 +20,9 @@ extern "C" {
     fn error_new(message: &str) -> JsValue;
 }
 
-impl Into<JsValue> for MyError {
-    fn into(self) -> JsValue {
-        error_new(&format!("{}", self))
+impl From<MyError> for JsValue {
+    fn from(e: MyError) -> Self {
+        error_new(&format!("{}", e))
     }
 }
 
@@ -87,7 +87,7 @@ impl Struct {
 
     #[wasm_bindgen]
     pub fn new_err() -> Result<Struct, MyError> {
-        Err(MyError::Variant.into())
+        Err(MyError::Variant)
     }
 
     #[wasm_bindgen]

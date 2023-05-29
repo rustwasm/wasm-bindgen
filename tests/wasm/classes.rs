@@ -599,12 +599,12 @@ impl OverriddenInspectable {
     }
 
     #[wasm_bindgen(js_name = toJSON)]
-    pub fn to_json(&self) -> String {
+    pub fn js_to_json(&self) -> String {
         String::from("JSON was overwritten")
     }
 
     #[wasm_bindgen(js_name = toString)]
-    pub fn to_string(&self) -> String {
+    pub fn js_to_string(&self) -> String {
         String::from("string was overwritten")
     }
 }

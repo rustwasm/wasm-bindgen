@@ -26,9 +26,12 @@ fn test_select_element() {
         "Select element should have a false autofocus property."
     );
 
-    //    TODO: This test currently fails on Firefox, but not Chrome.  In Firefox, even though we select.set_autocomplete(), select.autocomplete() yields an empty String.
-    //    select.set_autocomplete("tomato");
-    //    assert_eq!(select.autocomplete(), "tomato", "Select element should have a 'tomato' autocomplete property.");
+    select.set_autocomplete("country");
+    assert_eq!(
+        select.autocomplete(),
+        "country",
+        "Select element should have a 'country' autocomplete property."
+    );
 
     select.set_disabled(true);
     assert_eq!(
@@ -173,9 +176,13 @@ fn test_select_element() {
         "There should be no labels associated with our select element."
     );
 
-    // TODO: This test won't work until this bug is fixed: https://www.w3.org/Bugs/Public/show_bug.cgi?id=20720.  Sometime in the future, either remove this test or uncomment after bug is fixed.
-    // assert!(select.named_item("tomato").is_some(), "Should be able to find the 'tomato' option before removing it.");
-    // select.remove(0);
-    // assert!(select.named_item("tomato").is_none(), "Shouldn't be able to find the 'tomato' option after removing it.")
-    // TODO: As a result, we are missing a test for the remove() method.
+    assert!(
+        select.named_item("tomato").is_some(),
+        "Should be able to find the 'tomato' option before removing it."
+    );
+    select.remove_with_index(0);
+    assert!(
+        select.named_item("tomato").is_none(),
+        "Shouldn't be able to find the 'tomato' option after removing it."
+    );
 }

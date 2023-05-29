@@ -59,7 +59,7 @@ pub fn fibonacci(n: i32) -> i32 {
     unsafe {
         FIB_HIGH = (a >> 32) as i32;
     }
-    return a as i32;
+    a as i32
 }
 
 #[wasm_bindgen]
@@ -68,16 +68,16 @@ pub fn fibonacci_high() -> i32 {
 }
 
 #[wasm_bindgen]
-pub fn call_foo_bar_final_n_times(n: usize, foo: &Foo) {
+pub fn call_foo_bar_final_n_times(n: usize, js_foo: &Foo) {
     for _ in 0..n {
-        foo.bar_final();
+        js_foo.bar_final();
     }
 }
 
 #[wasm_bindgen]
-pub fn call_foo_bar_structural_n_times(n: usize, foo: &Foo) {
+pub fn call_foo_bar_structural_n_times(n: usize, js_foo: &Foo) {
     for _ in 0..n {
-        foo.bar_structural();
+        js_foo.bar_structural();
     }
 }
 

@@ -13,6 +13,7 @@ impl OwnedValue {
         Self { n }
     }
 
+    #[allow(clippy::should_implement_trait)] // traits unsupported by wasm_bindgen
     pub fn add(self, other: OwnedValue) -> Self {
         Self {
             n: self.n + other.n,

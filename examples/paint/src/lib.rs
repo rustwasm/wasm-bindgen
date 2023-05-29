@@ -44,8 +44,6 @@ fn start() -> Result<(), JsValue> {
         closure.forget();
     }
     {
-        let context = context.clone();
-        let pressed = pressed.clone();
         let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
             pressed.set(false);
             context.line_to(event.offset_x() as f64, event.offset_y() as f64);

@@ -116,6 +116,7 @@ export function new_select_with_food_opts() {
 
   for(let i = 0; i < opts.length; i++) {
       let opt = document.createElement("option");
+      opt.id = opts[i];
       opt.value = opts[i];
       opt.text = opts[i];
       select.appendChild(opt);

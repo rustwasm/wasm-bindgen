@@ -121,18 +121,10 @@ fn test_html_element() {
     );
     assert!(element.is_content_editable(), "Should be content_editable");
 
-    /*TODO doesn't work in Chrome
-        // TODO verify case where menu is passed
-        match element.context_menu() {
-            None => assert!(true, "Shouldn't have a custom menu set"),
-            _ => assert!(false, "Shouldn't have a custom menu set")
-        };
-    */
-
-    // TODO: This test is also broken in Chrome (but not Firefox).
-    // assert!(!element.spellcheck(), "Shouldn't be spellchecked");
+    element.set_spellcheck(false);
+    assert!(!element.spellcheck(), "Shouldn't be spellchecked");
     element.set_spellcheck(true);
-    assert!(element.spellcheck(), "Should be dragspellcheckedgable");
+    assert!(element.spellcheck(), "Should be spellchecked");
 
     // TODO verify case where we have an offset_parent
     match element.offset_parent() {
