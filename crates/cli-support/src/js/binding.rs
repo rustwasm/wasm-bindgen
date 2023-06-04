@@ -1095,23 +1095,21 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::WasmToFixedArray { kind, length } => {
             // Need to convert to JS num here
-            if matches!(kind, AdapterType::U32 | AdapterType::U64) {
-                let convert_to_js_num = |val: &str| -> String {
-                    match kind {
-                        AdapterType::U32 => format!("{} >>> 0", val),
-                        AdapterType::U64 => format!("BigInt.asUintN(64, {val})"),
-                        _ => unreachable!(),
-                    }
-                };
-                for _ in 0..*length {
-                    let val = js.pop();
-                    js.prelude(&format!("{} = {};", val, convert_to_js_num(&val)));
+            let convert_to_js_num = |val: &str| -> String {
+                match kind {
+                    AdapterType::U32 => format!("{} >>> 0", val),
+                    AdapterType::U64 => format!("BigInt.asUintN(64, {val})"),
+                    _ => val.to_string(),
                 }
-            } else {
-                js.stack.truncate(js.stack.len() - *length);
-            }
-            let ret = if *length == 1 { "[ret]" } else { "ret" };
-            js.push(ret.to_string());
+            };
+            let mut to_ret = (0..*length)
+                .map(|_| {
+                    let val = js.pop();
+                    convert_to_js_num(&val)
+                })
+                .collect::<Vec<_>>();
+            to_ret.reverse();
+            js.push(format!("[{}]", to_ret.join(", ")));
         }
 
         Instruction::FixedArrayToWasm { kind, length } => {

@@ -377,9 +377,7 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::CachedString
             | Descriptor::Option(_)
             | Descriptor::Vector(_)
-            | Descriptor::Unit
-            // we dont know what to do...
-            | Descriptor::FixedArray(_,_) => {
+            | Descriptor::Unit => {
                 // We must throw before reading the Ok type, if there is an error. However, the
                 // structure of ResultAbi is that the Err value + discriminant come last (for
                 // alignment reasons). So the UnwrapResult instruction must come first, but the
@@ -430,6 +428,11 @@ impl InstructionBuilder<'_, '_> {
                 self.get(AdapterType::I32);
                 self.get(AdapterType::I32);
             }
+
+            Descriptor::FixedArray(_, _) => {
+                bail!("SoonTM")
+            }
+
             Descriptor::String => {
                 // fetch the ptr/length ...
                 self.get(AdapterType::I32);
