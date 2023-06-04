@@ -1094,9 +1094,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::WasmToFixedArray { kind, length } => {
-            let prelude = js.prelude.clone();
-            let args = js.args.clone();
-            let stack = js.stack.clone();
             // Need to convert to JS num here
             if matches!(kind, AdapterType::U32 | AdapterType::U64) {
                 let convert_to_js_num = |val: &str| -> String {
@@ -1113,7 +1110,8 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             } else {
                 js.stack.truncate(js.stack.len() - *length);
             }
-            js.push("ret".to_string());
+            let ret = if *length == 1 { "[ret]" } else { "ret" };
+            js.push(ret.to_string());
         }
 
         Instruction::FixedArrayToWasm { kind, length } => {
