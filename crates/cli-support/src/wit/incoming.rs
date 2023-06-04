@@ -11,9 +11,8 @@ use crate::descriptor::Descriptor;
 use crate::wit::InstructionData;
 use crate::wit::{AdapterType, Instruction, InstructionBuilder, StackChange};
 use anyhow::{bail, format_err, Error};
-use walrus::ValType;
 use std::ops::Deref;
-
+use walrus::ValType;
 
 impl InstructionBuilder<'_, '_> {
     /// Process a `Descriptor` as if it's being passed from JS to Rust. This
@@ -149,32 +148,26 @@ impl InstructionBuilder<'_, '_> {
             // Largely synthetic and can't show up
             Descriptor::ClampedU8 => unreachable!(),
             Descriptor::FixedArray(d,length) => {
-                let kind = arg.vector_kind().ok_or_else(|| {
-                    format_err!(
-                        "unsupported argument type for calling Rust function from JS {:?}",
-                        arg
-                    )
-                })?;
-                let mut outputs: Vec<AdapterType> = vec![];
-                let return_ty = match d.deref() {
-                    Descriptor::U16 => AdapterType::U16,
-                    _ => unimplemented!("Fixed array only works on U16, sorry")
+                let (input_ty, output_ty) = match d.deref() {
+                    Descriptor::U8 => (AdapterType::U8, AdapterType::I32),
+                    Descriptor::I8 => (AdapterType::S8, AdapterType::I32),
+                    Descriptor::U16 => (AdapterType::U16, AdapterType::I32),
+                    Descriptor::I16 => (AdapterType::S16, AdapterType::I32),
+                    Descriptor::U32 => (AdapterType::U32, AdapterType::I32),
+                    Descriptor::I32 => (AdapterType::S32, AdapterType::I32),
+                    Descriptor::U64 => (AdapterType::U64, AdapterType::I64),
+                    Descriptor::I64 => (AdapterType::S64, AdapterType::I64),
+                    Descriptor::F32 => (AdapterType::F32, AdapterType::F32),
+                    Descriptor::F64 => (AdapterType::F64, AdapterType::F64),
+                    d => unimplemented!("unsupported type for fixed size arrays: {d:?}"),
                 };
-                for _ in 0..*length {
-                    outputs.push(return_ty.clone());
-                }
-                let mem = self.cx.memory()?;
-                let free = self.cx.free()?;
-                self.instruction(
-                    // single pointer as input
-                    &[AdapterType::I32],
-                    Instruction::VectorLoad {
-                        kind,
-                        mem,
-                        free,
-                    },
-                    &outputs,
-                );
+                let input = AdapterType::Array(Box::new(input_ty.clone()), *length as usize);
+                let instr = Instruction::FixedArrayToWasm {
+                    kind: input_ty,
+                    length: *length as usize,
+                };
+                let outputs = (0..*length).map(|_| output_ty.clone()).collect::<Vec<_>>();
+                self.instruction(&[input], instr, &outputs);
             }
         }
         Ok(())
@@ -253,7 +246,6 @@ impl InstructionBuilder<'_, '_> {
                     );
                 }
             }
-            Descriptor::FixedArray(_,_) => {}
             _ => bail!(
                 "unsupported reference argument type for calling Rust function from JS: {:?}",
                 arg

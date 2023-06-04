@@ -1093,8 +1093,44 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("v{}", i))
         }
 
-        Instruction::ArrayLoad { kind, length } => {
+        Instruction::WasmToFixedArray { kind, length } => {
+            let prelude = js.prelude.clone();
+            let args = js.args.clone();
+            let stack = js.stack.clone();
+            // Need to convert to JS num here
+            if matches!(kind, AdapterType::U32 | AdapterType::U64) {
+                let convert_to_js_num = |val: &str| -> String {
+                    match kind {
+                        AdapterType::U32 => format!("{} >>> 0", val),
+                        AdapterType::U64 => format!("BigInt.asUintN(64, {val})"),
+                        _ => unreachable!(),
+                    }
+                };
+                for _ in 0..*length {
+                    let val = js.pop();
+                    js.prelude(&format!("{} = {};", val, convert_to_js_num(&val)));
+                }
+            } else {
+                js.stack.truncate(js.stack.len() - *length);
+            }
+            js.push("ret".to_string());
+        }
 
+        Instruction::FixedArrayToWasm { kind, length } => {
+            let input = js.pop();
+            js.prelude(&format!("if ({input}.length !== {length}) {{\n throw new Error(`Expected an Array of length {length}, received array of length ${{{input}.length}}`);\n}}"));
+            // if matches!(kind, AdapterType::I64 | AdapterType::S64 | AdapterType::U64) {
+            //     js.assert_bigint(&element);
+            // } else {
+            //     js.assert_number(&element);
+            // }
+            // let elements = (0..*length)
+            //     .map(|i| format!("{}[{}]", input, i))
+            //     .collect::<Vec<_>>();
+            for i in 0..*length {
+                let element = format!("{}[{}]", input, i);
+                js.push(element);
+            }
         }
 
         Instruction::OptionVectorLoad { kind, mem, free } => {
@@ -1296,5 +1332,10 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
+        AdapterType::Array(ty, _) => {
+            let mut inner = String::new();
+            adapter2ts(ty, &mut inner);
+            dst.push_str(&format!("Array<{}>", inner));
+        }
     }
 }

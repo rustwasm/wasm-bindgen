@@ -84,7 +84,7 @@ fn extract_xform<'a>(
             _ => true,
         });
         let array_config = instructions.iter().find_map(|i| match &i.instr {
-            Instruction::ArrayLoad { kind, length: _ } => match kind {
+            Instruction::WasmToFixedArray { kind, length: _ } => match kind {
                 AdapterType::S8 => Some(ArrayLoad::I8),
                 AdapterType::S16 => Some(ArrayLoad::I16),
                 AdapterType::U8 => Some(ArrayLoad::U8),

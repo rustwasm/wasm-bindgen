@@ -155,11 +155,10 @@ impl InstructionBuilder<'_, '_> {
             // nothing to do
             Descriptor::Unit => {}
 
-            // we dont know what to do...
             Descriptor::FixedArray(d, length) => {
                 let (output_ty, input_ty) = match d.deref() {
                     Descriptor::U8 => (AdapterType::U8, AdapterType::I32),
-                    Descriptor::I8 => (AdapterType::S8, AdapterType::I64),
+                    Descriptor::I8 => (AdapterType::S8, AdapterType::I32),
                     Descriptor::U16 => (AdapterType::U16, AdapterType::I32),
                     Descriptor::I16 => (AdapterType::S16, AdapterType::I32),
                     Descriptor::U32 => (AdapterType::U32, AdapterType::I32),
@@ -171,7 +170,7 @@ impl InstructionBuilder<'_, '_> {
                     d => unimplemented!("unsupported type for fixed size arrays: {d:?}",),
                 };
                 let inputs = (0..*length).map(|_| input_ty.clone()).collect::<Vec<_>>();
-                let instr = Instruction::ArrayLoad {
+                let instr = Instruction::WasmToFixedArray {
                     kind: output_ty.clone(),
                     length: *length as usize,
                 };

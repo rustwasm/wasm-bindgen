@@ -276,7 +276,11 @@ pub enum Instruction {
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
     },
-    ArrayLoad {
+    FixedArrayToWasm {
+        kind: AdapterType,
+        length: usize,
+    },
+    WasmToFixedArray {
         kind: AdapterType,
         length: usize,
     },
