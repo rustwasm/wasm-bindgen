@@ -377,7 +377,6 @@ impl Bindgen {
         // auxiliary section for all sorts of miscellaneous information and
         // features #[wasm_bindgen] supports that aren't covered by wasm
         // interface types.
-
         wit::process(
             &mut module,
             programs,
