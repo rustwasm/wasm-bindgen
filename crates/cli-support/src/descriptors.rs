@@ -47,8 +47,12 @@ impl WasmBindgenDescriptorsSection {
         interpreter: &mut Interpreter,
     ) -> Result<(), Error> {
         let mut to_remove = Vec::new();
-        let to_print = module.exports.iter().map(|m|m.name.clone()).collect::<Vec<_>>();
-                println!("All module exports:\n{to_print:#?}");
+        let to_print = module
+            .exports
+            .iter()
+            .map(|m| m.name.clone())
+            .collect::<Vec<_>>();
+        println!("All module exports:\n{to_print:#?}");
         for export in module.exports.iter() {
             let prefix = "__wbindgen_describe_";
             if !export.name.starts_with(prefix) {

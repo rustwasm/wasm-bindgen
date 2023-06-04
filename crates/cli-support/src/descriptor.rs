@@ -73,7 +73,7 @@ pub enum Descriptor {
     Option(Box<Descriptor>),
     Result(Box<Descriptor>),
     Unit,
-    FixedArray(Box<Descriptor>, u32)
+    FixedArray(Box<Descriptor>, u32),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -163,7 +163,9 @@ impl Descriptor {
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
             CLAMPED => Descriptor::_decode(data, true),
-            FIXED_ARRAY => Descriptor::FixedArray(Box::new(Descriptor::_decode(data, clamped)), get(data)),
+            FIXED_ARRAY => {
+                Descriptor::FixedArray(Box::new(Descriptor::_decode(data, clamped)), get(data))
+            }
             other => panic!("unknown descriptor: {}", other),
         }
     }
