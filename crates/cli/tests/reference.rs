@@ -15,6 +15,7 @@ use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use walrus::ModuleConfig;
 
 fn main() -> Result<()> {
     let filter = env::args().nth(1);
@@ -93,7 +94,11 @@ fn runtest(test: &Path) -> Result<()> {
         .join("reference_test.wasm");
 
     let mut bindgen = Command::cargo_bin("wasm-bindgen")?;
-    bindgen.arg("--out-dir").arg(td.path()).arg(&wasm);
+    bindgen
+        .arg("--out-dir")
+        .arg(td.path())
+        .arg(&wasm)
+        .arg("--remove-producers-section");
     if contents.contains("// enable-externref") {
         bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
     }
@@ -125,7 +130,9 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     // Clean up the wasm module by removing all function
     // implementations/instructions, data sections, etc. This'll help us largely
     // only deal with exports/imports which is all we're really interested in.
-    let mut module = walrus::Module::from_file(wasm)?;
+    let mut module = ModuleConfig::new()
+        .generate_producers_section(false)
+        .parse_file(wasm)?;
     for func in module.funcs.iter_mut() {
         let local = match &mut func.kind {
             walrus::FunctionKind::Local(l) => l,

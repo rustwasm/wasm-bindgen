@@ -11,6 +11,7 @@ use rayon::prelude::*;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
+use walrus::ModuleConfig;
 
 fn main() {
     run("tests".as_ref(), runtest);
@@ -18,7 +19,9 @@ fn main() {
 
 fn runtest(test: &Test) -> Result<String> {
     let wasm = wat::parse_file(&test.file)?;
-    let mut module = walrus::Module::from_buffer(&wasm)?;
+    let mut module = ModuleConfig::new()
+        .generate_producers_section(false)
+        .parse(&wasm)?;
 
     let config = wasm_bindgen_threads_xform::Config::new();
 
