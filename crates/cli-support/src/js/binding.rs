@@ -550,11 +550,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         | Instruction::CallTableElement(_)
         | Instruction::DeferCallCore(_) => {
             let invoc = Invocation::from(instr, js.cx.module)?;
-            let (params, results) = invoc.params_results(js.cx);
+            let (mut params, results) = invoc.params_results(js.cx);
 
             let mut args = Vec::new();
             let tmp = js.tmp();
             if invoc.defer() {
+                // substract alignment
+                params -= 1;
                 // If the call is deferred, the arguments to the function still need to be
                 // accessible in the `finally` block, so we declare variables to hold the args
                 // outside of the try-finally block and then set those to the args.
@@ -564,6 +566,8 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                     writeln!(js.prelude, "{name} = {arg};").unwrap();
                     args.push(name);
                 }
+                // add alignment
+                args.push(String::from("4"));
             } else {
                 // Otherwise, pop off the number of parameters for the function we're calling.
                 for _ in 0..params {
@@ -813,12 +817,14 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
+            let align = std::cmp::max(kind.size(), 4);
             js.prelude(&format!(
-                "const ptr{i} = {f}({0}, wasm.{malloc});",
+                "const ptr{i} = {f}({0}, wasm.{malloc}, {align});",
                 val,
                 i = i,
                 f = func,
                 malloc = malloc,
+                align = align,
             ));
             js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
             js.push(format!("ptr{}", i));
@@ -922,7 +928,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let malloc = js.cx.export_name_of(*malloc);
             let val = js.pop();
             js.prelude(&format!(
-                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc});",
+                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc}, 4);",
                 val,
                 i = i,
                 f = func,
@@ -940,7 +946,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
             js.prelude(&format!(
-                "var ptr{i} = {f}({val}, wasm.{malloc});",
+                "var ptr{i} = {f}({val}, wasm.{malloc}, 4);",
                 val = val,
                 i = i,
                 f = func,
