@@ -1,6 +1,63 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...main)
+
+### Changed
+
+* Deprecate `HtmlMenuItemElement` and parts of `HtmlMenuElement`.
+  [#3448](https://github.com/rustwasm/wasm-bindgen/pull/3448)
+
+* Stabilize `ResizeObserver`.
+  [#3459](https://github.com/rustwasm/wasm-bindgen/pull/3459)
+
+### Fixed
+
+* Take alignment into consideration during (de/re)allocation.
+  [#3463](https://github.com/rustwasm/wasm-bindgen/pull/3463)
+
+--------------------------------------------------------------------------------
+
+## 0.2.86
+
+Released 2023-05-16.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.85...0.2.86)
+
+--------------------------------------------------------------------------------
+
+## 0.2.85
+
+Released 2023-05-09.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.84...0.2.85)
+
+--------------------------------------------------------------------------------
+
+## 0.2.84
+
+Released 2023-02-01.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.83...0.2.84)
+
+--------------------------------------------------------------------------------
+
+## 0.2.83
+
+Released 2022-09-12.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.82...0.2.83)
+
+--------------------------------------------------------------------------------
+
+## 0.2.82
+
+Released 2022-07-25.
+
+[changes](https://github.com/rustwasm/wasm-bindgen/compare/0.2.81...0.2.82)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.81
 
 Released 2022-06-14.
