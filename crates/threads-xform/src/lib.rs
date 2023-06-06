@@ -344,9 +344,10 @@ fn inject_start(
             // we give ourselves a stack and we update our stack
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
-                // local = malloc(stack.size) [aka base]
+                // local = malloc(stack.size, align) [aka base]
                 with_temp_stack(body, memory, stack, |body| {
                     body.i32_const(stack.size as i32)
+                        .i32_const(16)
                         .call(malloc)
                         .local_tee(local);
                 });
@@ -368,7 +369,6 @@ fn inject_start(
     // Afterwards we need to initialize our thread-local state.
     body.i32_const(tls.size as i32)
         .i32_const(tls.align as i32)
-        .drop() // TODO: need to actually respect alignment
         .call(malloc)
         .global_set(tls.base)
         .global_get(tls.base)
@@ -406,11 +406,13 @@ fn inject_destroy(
         |body| {
             body.local_get(tls_base)
                 .i32_const(tls.size as i32)
+                .i32_const(tls.align as i32)
                 .call(free);
         },
         |body| {
             body.global_get(tls.base)
                 .i32_const(tls.size as i32)
+                .i32_const(tls.align as i32)
                 .call(free);
 
             // set tls.base = i32::MIN to trigger invalid memory
@@ -425,12 +427,14 @@ fn inject_destroy(
             // we're destroying somebody else's stack, so we can use our own
             body.local_get(stack_alloc)
                 .i32_const(stack.size as i32)
+                .i32_const(16)
                 .call(free);
         },
         |body| {
             with_temp_stack(body, memory, stack, |body| {
                 body.global_get(stack.alloc)
                     .i32_const(stack.size as i32)
+                    .i32_const(16)
                     .call(free);
             });
 

@@ -1566,11 +1566,9 @@ pub mod __rt {
 
     if_std! {
         use std::alloc::{alloc, dealloc, realloc, Layout};
-        use std::mem;
 
         #[no_mangle]
-        pub extern "C" fn __wbindgen_malloc(size: usize) -> *mut u8 {
-            let align = mem::align_of::<usize>();
+        pub extern "C" fn __wbindgen_malloc(size: usize, align: usize) -> *mut u8 {
             if let Ok(layout) = Layout::from_size_align(size, align) {
                 unsafe {
                     if layout.size() > 0 {
@@ -1588,8 +1586,7 @@ pub mod __rt {
         }
 
         #[no_mangle]
-        pub unsafe extern "C" fn __wbindgen_realloc(ptr: *mut u8, old_size: usize, new_size: usize) -> *mut u8 {
-            let align = mem::align_of::<usize>();
+        pub unsafe extern "C" fn __wbindgen_realloc(ptr: *mut u8, old_size: usize, new_size: usize, align: usize) -> *mut u8 {
             debug_assert!(old_size > 0);
             debug_assert!(new_size > 0);
             if let Ok(layout) = Layout::from_size_align(old_size, align) {
@@ -1611,13 +1608,12 @@ pub mod __rt {
         }
 
         #[no_mangle]
-        pub unsafe extern "C" fn __wbindgen_free(ptr: *mut u8, size: usize) {
+        pub unsafe extern "C" fn __wbindgen_free(ptr: *mut u8, size: usize, align: usize) {
             // This happens for zero-length slices, and in that case `ptr` is
             // likely bogus so don't actually send this to the system allocator
             if size == 0 {
                 return
             }
-            let align = mem::align_of::<usize>();
             let layout = Layout::from_size_align_unchecked(size, align);
             dealloc(ptr, layout);
         }
