@@ -548,15 +548,17 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         | Instruction::CallExport(_)
         | Instruction::CallAdapter(_)
         | Instruction::CallTableElement(_)
-        | Instruction::DeferCallCore(_) => {
+        | Instruction::DeferFree { .. } => {
             let invoc = Invocation::from(instr, js.cx.module)?;
             let (mut params, results) = invoc.params_results(js.cx);
 
             let mut args = Vec::new();
             let tmp = js.tmp();
             if invoc.defer() {
-                // substract alignment
-                params -= 1;
+                if let Instruction::DeferFree { .. } = instr {
+                    // substract alignment
+                    params -= 1;
+                }
                 // If the call is deferred, the arguments to the function still need to be
                 // accessible in the `finally` block, so we declare variables to hold the args
                 // outside of the try-finally block and then set those to the args.
@@ -566,8 +568,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                     writeln!(js.prelude, "{name} = {arg};").unwrap();
                     args.push(name);
                 }
-                // add alignment
-                args.push(String::from("4"));
+                if let Instruction::DeferFree { align, .. } = instr {
+                    // add alignment
+                    args.push(align.to_string());
+                }
             } else {
                 // Otherwise, pop off the number of parameters for the function we're calling.
                 for _ in 0..params {
@@ -1194,8 +1198,8 @@ impl Invocation {
                 defer: false,
             },
 
-            DeferCallCore(f) => Invocation::Core {
-                id: *f,
+            DeferFree { free, .. } => Invocation::Core {
+                id: *free,
                 defer: true,
             },
 

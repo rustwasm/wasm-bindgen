@@ -95,7 +95,10 @@ pub enum Instruction {
     CallCore(walrus::FunctionId),
     /// Schedules a function to be called after the whole lift/lower cycle is
     /// finished, e.g. to deallocate a string or something.
-    DeferCallCore(walrus::FunctionId),
+    DeferFree {
+        free: walrus::FunctionId,
+        align: usize,
+    },
     /// A call to one of our own defined adapters, similar to the standard
     /// call-adapter instruction
     CallAdapter(AdapterId),
@@ -423,7 +426,7 @@ impl walrus::CustomSection for NonstandardWitSection {
             };
             for instr in instrs {
                 match instr.instr {
-                    DeferCallCore(f) | CallCore(f) => {
+                    DeferFree { free: f, .. } | CallCore(f) => {
                         roots.push_func(f);
                     }
                     StoreRetptr { mem, .. }
