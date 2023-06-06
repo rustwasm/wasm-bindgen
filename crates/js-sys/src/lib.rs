@@ -50,6 +50,8 @@ use wasm_bindgen::prelude::*;
 // * Arguments that are `JsValue`s or imported JavaScript types should be taken
 //   by reference.
 
+pub use wasm_bindgen::prelude::JsValue;
+
 macro_rules! forward_deref_unop {
     (impl $imp:ident, $method:ident for $t:ty) => {
         impl $imp for $t {
