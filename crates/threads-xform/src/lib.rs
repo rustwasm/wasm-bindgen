@@ -347,7 +347,7 @@ fn inject_start(
                 // local = malloc(stack.size, align) [aka base]
                 with_temp_stack(body, memory, stack, |body| {
                     body.i32_const(stack.size as i32)
-                        .i32_const(4)
+                        .i32_const(16)
                         .call(malloc)
                         .local_tee(local);
                 });
@@ -427,14 +427,14 @@ fn inject_destroy(
             // we're destroying somebody else's stack, so we can use our own
             body.local_get(stack_alloc)
                 .i32_const(stack.size as i32)
-                .i32_const(4)
+                .i32_const(16)
                 .call(free);
         },
         |body| {
             with_temp_stack(body, memory, stack, |body| {
                 body.global_get(stack.alloc)
                     .i32_const(stack.size as i32)
-                    .i32_const(4)
+                    .i32_const(16)
                     .call(free);
             });
 

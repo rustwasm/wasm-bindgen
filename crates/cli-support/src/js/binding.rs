@@ -817,14 +817,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
-            let align = std::cmp::max(kind.size(), 4);
             js.prelude(&format!(
-                "const ptr{i} = {f}({0}, wasm.{malloc}, {align});",
+                "const ptr{i} = {f}({0}, wasm.{malloc});",
                 val,
                 i = i,
                 f = func,
                 malloc = malloc,
-                align = align,
             ));
             js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
             js.push(format!("ptr{}", i));
@@ -928,7 +926,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let malloc = js.cx.export_name_of(*malloc);
             let val = js.pop();
             js.prelude(&format!(
-                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc}, 4);",
+                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc});",
                 val,
                 i = i,
                 f = func,
@@ -946,7 +944,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
             js.prelude(&format!(
-                "var ptr{i} = {f}({val}, wasm.{malloc}, 4);",
+                "var ptr{i} = {f}({val}, wasm.{malloc});",
                 val = val,
                 i = i,
                 f = func,
