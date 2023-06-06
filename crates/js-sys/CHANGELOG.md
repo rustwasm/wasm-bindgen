@@ -8,7 +8,7 @@ Released YYYY-MM-DD.
 
 ### Added
 
-* TODO (or remove section if none)
+* Added a re-export of `wasm-bindgen`.
 
 ### Changed
 
