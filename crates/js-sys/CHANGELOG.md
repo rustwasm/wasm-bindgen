@@ -9,6 +9,7 @@ Released YYYY-MM-DD.
 ### Added
 
 * Added a re-export of `wasm-bindgen`.
+  [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
 
 ### Changed
 
