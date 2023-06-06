@@ -556,7 +556,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             let tmp = js.tmp();
             if invoc.defer() {
                 if let Instruction::DeferFree { .. } = instr {
-                    // substract alignment
+                    // Ignore `free`'s final `align` argument, since that's manually inserted later.
                     params -= 1;
                 }
                 // If the call is deferred, the arguments to the function still need to be

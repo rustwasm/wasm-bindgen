@@ -93,8 +93,7 @@ pub enum AdapterType {
 pub enum Instruction {
     /// Calls a function by its id.
     CallCore(walrus::FunctionId),
-    /// Schedules a function to be called after the whole lift/lower cycle is
-    /// finished, e.g. to deallocate a string or something.
+    /// Call the deallocation function.
     DeferFree {
         free: walrus::FunctionId,
         align: usize,

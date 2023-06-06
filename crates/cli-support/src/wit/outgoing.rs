@@ -105,7 +105,7 @@ impl InstructionBuilder<'_, '_> {
                 // ... then defer a call to `free` to happen later
                 let free = self.cx.free()?;
                 self.instructions.push(InstructionData {
-                    instr: Instruction::DeferFree { free, align: 4 },
+                    instr: Instruction::DeferFree { free, align: 1 },
                     stack_change: StackChange::Modified {
                         popped: 2,
                         pushed: 2,
@@ -429,7 +429,7 @@ impl InstructionBuilder<'_, '_> {
                 // implementation.
                 let free = self.cx.free()?;
                 self.instructions.push(InstructionData {
-                    instr: Instruction::DeferFree { free, align: 4 },
+                    instr: Instruction::DeferFree { free, align: 1 },
                     stack_change: StackChange::Modified {
                         popped: 2,
                         pushed: 2,
