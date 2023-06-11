@@ -610,6 +610,64 @@ extern "C" {
     pub fn unshift(this: &Array, value: &JsValue) -> u32;
 }
 
+/// Iterator returned by `Array::into_iter`
+#[derive(Debug, Clone)]
+pub struct ArrayIntoIter {
+    range: std::ops::Range<u32>,
+    array: Array,
+}
+
+impl std::iter::Iterator for ArrayIntoIter {
+    type Item = JsValue;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let index = self.range.next()?;
+        Some(self.array.get(index))
+    }
+
+    #[inline]
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.range.size_hint()
+    }
+
+    #[inline]
+    fn count(self) -> usize
+    where
+        Self: Sized,
+    {
+        self.range.count()
+    }
+
+    #[inline]
+    fn last(self) -> Option<Self::Item>
+    where
+        Self: Sized,
+    {
+        let Self { range, array } = self;
+        range.last().map(|index| array.get(index))
+    }
+
+    #[inline]
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        self.range.nth(n).map(|index| self.array.get(index))
+    }
+}
+
+impl std::iter::DoubleEndedIterator for ArrayIntoIter {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let index = self.range.next_back()?;
+        Some(self.array.get(index))
+    }
+
+    fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
+        self.range.nth_back(n).map(|index| self.array.get(index))
+    }
+}
+
+impl std::iter::FusedIterator for ArrayIntoIter {}
+
+impl std::iter::ExactSizeIterator for ArrayIntoIter {}
+
 /// Iterator returned by `Array::iter`
 #[derive(Debug, Clone)]
 pub struct ArrayIter<'a> {
@@ -629,12 +687,38 @@ impl<'a> std::iter::Iterator for ArrayIter<'a> {
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.range.size_hint()
     }
+
+    #[inline]
+    fn count(self) -> usize
+    where
+        Self: Sized,
+    {
+        self.range.count()
+    }
+
+    #[inline]
+    fn last(self) -> Option<Self::Item>
+    where
+        Self: Sized,
+    {
+        let Self { range, array } = self;
+        range.last().map(|index| array.get(index))
+    }
+
+    #[inline]
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        self.range.nth(n).map(|index| self.array.get(index))
+    }
 }
 
 impl<'a> std::iter::DoubleEndedIterator for ArrayIter<'a> {
     fn next_back(&mut self) -> Option<Self::Item> {
         let index = self.range.next_back()?;
         Some(self.array.get(index))
+    }
+
+    fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
+        self.range.nth_back(n).map(|index| self.array.get(index))
     }
 }
 
@@ -662,6 +746,18 @@ impl Array {
         }
 
         output
+    }
+}
+
+impl std::iter::IntoIterator for Array {
+    type Item = JsValue;
+    type IntoIter = ArrayIntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        ArrayIntoIter {
+            range: 0..self.length(),
+            array: self,
+        }
     }
 }
 
