@@ -3,6 +3,11 @@
 
 ## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...main)
 
+### Added
+
+* Implemented `IntoIterator` for `Array`.
+  [#3477](https://github.com/rustwasm/wasm-bindgen/pull/3477)
+
 ### Changed
 
 * Deprecate `HtmlMenuItemElement` and parts of `HtmlMenuElement`.
