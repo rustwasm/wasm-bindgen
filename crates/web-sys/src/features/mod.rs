@@ -220,6 +220,12 @@ mod gen_AudioContext;
 #[cfg(feature = "AudioContext")]
 pub use gen_AudioContext::*;
 
+#[cfg(feature = "AudioContextLatencyCategory")]
+#[allow(non_snake_case)]
+mod gen_AudioContextLatencyCategory;
+#[cfg(feature = "AudioContextLatencyCategory")]
+pub use gen_AudioContextLatencyCategory::*;
+
 #[cfg(feature = "AudioContextOptions")]
 #[allow(non_snake_case)]
 mod gen_AudioContextOptions;
@@ -351,6 +357,24 @@ pub use gen_AudioSampleFormat::*;
 mod gen_AudioScheduledSourceNode;
 #[cfg(feature = "AudioScheduledSourceNode")]
 pub use gen_AudioScheduledSourceNode::*;
+
+#[cfg(feature = "AudioSinkInfo")]
+#[allow(non_snake_case)]
+mod gen_AudioSinkInfo;
+#[cfg(feature = "AudioSinkInfo")]
+pub use gen_AudioSinkInfo::*;
+
+#[cfg(feature = "AudioSinkOptions")]
+#[allow(non_snake_case)]
+mod gen_AudioSinkOptions;
+#[cfg(feature = "AudioSinkOptions")]
+pub use gen_AudioSinkOptions::*;
+
+#[cfg(feature = "AudioSinkType")]
+#[allow(non_snake_case)]
+mod gen_AudioSinkType;
+#[cfg(feature = "AudioSinkType")]
+pub use gen_AudioSinkType::*;
 
 #[cfg(feature = "AudioStreamTrack")]
 #[allow(non_snake_case)]
