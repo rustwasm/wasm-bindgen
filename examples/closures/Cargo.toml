@@ -9,8 +9,8 @@ rust-version = "1.56"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.86"
-js-sys = "0.3.63"
+wasm-bindgen = "0.2.87"
+js-sys = "0.3.64"
 
 [dependencies.web-sys]
 version = "0.3.4"
