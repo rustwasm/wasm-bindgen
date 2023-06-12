@@ -11,6 +11,7 @@ use rayon::prelude::*;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
+use walrus::ModuleConfig;
 use wast::parser::{Parse, Parser};
 
 fn main() {
@@ -19,7 +20,9 @@ fn main() {
 
 fn runtest(test: &Test) -> Result<String> {
     let wasm = wat::parse_file(&test.file)?;
-    let mut walrus = walrus::Module::from_buffer(&wasm)?;
+    let mut walrus = ModuleConfig::new()
+        .generate_producers_section(false)
+        .parse(&wasm)?;
     let mut exports = Vec::new();
     let mut xforms = Vec::new();
     for directive in test.directives.iter() {
