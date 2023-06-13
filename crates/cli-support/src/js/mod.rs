@@ -800,7 +800,7 @@ impl<'a> Context<'a> {
                                 return await WebAssembly.instantiateStreaming(module, imports);
 
                             }} catch (e) {{
-                                if (!module.headers || module.headers.get('Content-Type') !== 'application/wasm') {{
+                                if (typeof module.headers === 'undefined' || module.headers.get('Content-Type') !== 'application/wasm') {{
                                     console.warn(\"`WebAssembly.instantiateStreaming` failed \
                                                     because your server does not serve wasm with \
                                                     `application/wasm` MIME type. Falling back to \
