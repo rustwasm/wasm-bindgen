@@ -10,8 +10,15 @@
  * liability, trademark and document use rules apply.
  */
 
+enum AudioContextLatencyCategory {
+    "balanced",
+    "interactive",
+    "playback"
+};
+
 dictionary AudioContextOptions {
-             float        sampleRate = 0;
+    (AudioContextLatencyCategory or double) latencyHint = "interactive";
+    float        sampleRate = 0;
 };
 
 [Pref="dom.webaudio.enabled",

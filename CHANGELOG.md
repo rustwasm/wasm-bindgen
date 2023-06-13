@@ -1,6 +1,13 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...main)
+
+### Added
+
+* Extend `AudioContext` with unstable features supporting audio sink configuration.
+  [#3433](https://github.com/rustwasm/wasm-bindgen/pull/3433)
+
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
 Released 2023-06-12.
