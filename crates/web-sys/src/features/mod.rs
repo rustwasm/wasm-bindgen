@@ -2698,17 +2698,11 @@ mod gen_GpuComputePassEncoder;
 #[cfg(feature = "GpuComputePassEncoder")]
 pub use gen_GpuComputePassEncoder::*;
 
-#[cfg(feature = "GpuComputePassTimestampLocation")]
+#[cfg(feature = "GpuComputePassTimestampWrites")]
 #[allow(non_snake_case)]
-mod gen_GpuComputePassTimestampLocation;
-#[cfg(feature = "GpuComputePassTimestampLocation")]
-pub use gen_GpuComputePassTimestampLocation::*;
-
-#[cfg(feature = "GpuComputePassTimestampWrite")]
-#[allow(non_snake_case)]
-mod gen_GpuComputePassTimestampWrite;
-#[cfg(feature = "GpuComputePassTimestampWrite")]
-pub use gen_GpuComputePassTimestampWrite::*;
+mod gen_GpuComputePassTimestampWrites;
+#[cfg(feature = "GpuComputePassTimestampWrites")]
+pub use gen_GpuComputePassTimestampWrites::*;
 
 #[cfg(feature = "GpuComputePipeline")]
 #[allow(non_snake_case)]
@@ -2908,6 +2902,24 @@ mod gen_GpuPipelineDescriptorBase;
 #[cfg(feature = "GpuPipelineDescriptorBase")]
 pub use gen_GpuPipelineDescriptorBase::*;
 
+#[cfg(feature = "GpuPipelineError")]
+#[allow(non_snake_case)]
+mod gen_GpuPipelineError;
+#[cfg(feature = "GpuPipelineError")]
+pub use gen_GpuPipelineError::*;
+
+#[cfg(feature = "GpuPipelineErrorInit")]
+#[allow(non_snake_case)]
+mod gen_GpuPipelineErrorInit;
+#[cfg(feature = "GpuPipelineErrorInit")]
+pub use gen_GpuPipelineErrorInit::*;
+
+#[cfg(feature = "GpuPipelineErrorReason")]
+#[allow(non_snake_case)]
+mod gen_GpuPipelineErrorReason;
+#[cfg(feature = "GpuPipelineErrorReason")]
+pub use gen_GpuPipelineErrorReason::*;
+
 #[cfg(feature = "GpuPipelineLayout")]
 #[allow(non_snake_case)]
 mod gen_GpuPipelineLayout;
@@ -3028,17 +3040,11 @@ mod gen_GpuRenderPassLayout;
 #[cfg(feature = "GpuRenderPassLayout")]
 pub use gen_GpuRenderPassLayout::*;
 
-#[cfg(feature = "GpuRenderPassTimestampLocation")]
+#[cfg(feature = "GpuRenderPassTimestampWrites")]
 #[allow(non_snake_case)]
-mod gen_GpuRenderPassTimestampLocation;
-#[cfg(feature = "GpuRenderPassTimestampLocation")]
-pub use gen_GpuRenderPassTimestampLocation::*;
-
-#[cfg(feature = "GpuRenderPassTimestampWrite")]
-#[allow(non_snake_case)]
-mod gen_GpuRenderPassTimestampWrite;
-#[cfg(feature = "GpuRenderPassTimestampWrite")]
-pub use gen_GpuRenderPassTimestampWrite::*;
+mod gen_GpuRenderPassTimestampWrites;
+#[cfg(feature = "GpuRenderPassTimestampWrites")]
+pub use gen_GpuRenderPassTimestampWrites::*;
 
 #[cfg(feature = "GpuRenderPipeline")]
 #[allow(non_snake_case)]
@@ -8955,6 +8961,12 @@ pub use gen_WebglMultiDraw::*;
 mod gen_WebrtcGlobalStatisticsReport;
 #[cfg(feature = "WebrtcGlobalStatisticsReport")]
 pub use gen_WebrtcGlobalStatisticsReport::*;
+
+#[cfg(feature = "WgslLanguageFeatures")]
+#[allow(non_snake_case)]
+mod gen_WgslLanguageFeatures;
+#[cfg(feature = "WgslLanguageFeatures")]
+pub use gen_WgslLanguageFeatures::*;
 
 #[cfg(feature = "WheelEvent")]
 #[allow(non_snake_case)]

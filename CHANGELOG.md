@@ -8,6 +8,13 @@
 * Extend `AudioContext` with unstable features supporting audio sink configuration.
   [#3433](https://github.com/rustwasm/wasm-bindgen/pull/3433)
 
+### Changed
+
+* Updated the WebGPU WebIDL.
+  The optional `message` argument of [`GPUPipelineError`](https://www.w3.org/TR/webgpu/#gpupipelineerror)'s constructor has been manually specified as a required argument,
+  because required arguments occurring after optional arguments are currently not supported by the generator.
+  [#3480](https://github.com/rustwasm/wasm-bindgen/pull/3480)
+
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
 Released 2023-06-12.
