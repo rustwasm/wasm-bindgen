@@ -599,7 +599,7 @@ interface GPUCompilationInfo {
 
 [Exposed=(Window, DedicatedWorker), SecureContext, Serializable]
 interface GPUPipelineError : DOMException {
-    constructor(optional DOMString message = "", GPUPipelineErrorInit options);
+    constructor(DOMString message, GPUPipelineErrorInit options);
     readonly attribute GPUPipelineErrorReason reason;
 };
 
