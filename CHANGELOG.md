@@ -11,7 +11,7 @@
 ### Changed
 
 * Updated the WebGPU WebIDL.
-  The optional `message` argument of [GPUPipelineError](https://www.w3.org/TR/webgpu/#gpupipelineerror)'s constructor has been manually specified as a required argument,
+  The optional `message` argument of [`GPUPipelineError`](https://www.w3.org/TR/webgpu/#gpupipelineerror)'s constructor has been manually specified as a required argument,
   because required arguments occurring after optional arguments are currently not supported by the generator.
   [#3480](https://github.com/rustwasm/wasm-bindgen/pull/3480)
 
