@@ -8,6 +8,11 @@
 * Add additional constructor to `DataView` for `SharedArrayBuffer`.
   [#3695](https://github.com/rustwasm/wasm-bindgen/pull/3695)
 
+### Fixed
+
+* The DWARF section is now correctly modified instead of leaving it in a broken state.
+  [#3483](https://github.com/rustwasm/wasm-bindgen/pull/3483)
+
 ## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88)
 
 Released 2023-11-01

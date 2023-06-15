@@ -33,7 +33,7 @@ ureq = { version = "2.7", default-features = false, features = [
     "brotli",
     "gzip",
 ] }
-walrus = { version = "0.19.0", features = ['parallel'] }
+walrus = { version = "0.20.2", features = ['parallel'] }
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.88" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.88" }
 
