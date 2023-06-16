@@ -7,6 +7,8 @@
 
 * Extend `AudioContext` with unstable features supporting audio sink configuration.
   [#3433](https://github.com/rustwasm/wasm-bindgen/pull/3433)
+* Add bindings for `WebAssembly.Tag` and `WebAssembly.Exception`.
+  [#3484](https://github.com/rustwasm/wasm-bindgen/pull/3484)
 
 ### Changed
 
