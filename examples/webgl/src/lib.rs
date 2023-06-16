@@ -48,23 +48,14 @@ fn start() -> Result<(), JsValue> {
     let buffer = context.create_buffer().ok_or("Failed to create buffer")?;
     context.bind_buffer(WebGl2RenderingContext::ARRAY_BUFFER, Some(&buffer));
 
-    // Note that `Float32Array::view` is somewhat dangerous (hence the
-    // `unsafe`!). This is creating a raw view into our module's
-    // `WebAssembly.Memory` buffer, but if we allocate more pages for ourself
-    // (aka do a memory allocation in Rust) it'll cause the buffer to change,
-    // causing the `Float32Array` to be invalid.
-    //
-    // As a result, after `Float32Array::view` we have to be very careful not to
-    // do any memory allocations before it's dropped.
-    unsafe {
-        let positions_array_buf_view = js_sys::Float32Array::view(&vertices);
-
-        context.buffer_data_with_array_buffer_view(
-            WebGl2RenderingContext::ARRAY_BUFFER,
-            &positions_array_buf_view,
-            WebGl2RenderingContext::STATIC_DRAW,
-        );
-    }
+    let len = vertices.len();
+    let positions_array_buf_view = js_sys::Float32Array::new_with_length(len as u32);
+    positions_array_buf_view.copy_from(&vertices);
+    context.buffer_data_with_array_buffer_view(
+        WebGl2RenderingContext::ARRAY_BUFFER,
+        &positions_array_buf_view,
+        WebGl2RenderingContext::STATIC_DRAW,
+    );
 
     let vao = context
         .create_vertex_array()
