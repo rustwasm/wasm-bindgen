@@ -4504,7 +4504,11 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Exception)
         #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
-        pub fn new_with_options(tag: &Tag, payload: &Array, options: &Object) -> Result<Exception, JsValue>;
+        pub fn new_with_options(
+            tag: &Tag,
+            payload: &Array,
+            options: &Object,
+        ) -> Result<Exception, JsValue>;
 
         /// The `is()` prototype method of the `WebAssembly.Exception` can be used to
         /// test if the Exception matches a given tag.
