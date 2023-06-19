@@ -44,4 +44,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredential`*"]
     pub fn is_user_verifying_platform_authenticator_available() -> ::js_sys::Promise;
+    # [wasm_bindgen (static_method_of = PublicKeyCredential , js_class = "PublicKeyCredential" , js_name = isConditionalMediationAvailable)]
+    #[doc = "The `isConditionalMediationAvailable()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/isConditionalMediationAvailable)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredential`*"]
+    pub fn is_conditional_mediation_available() -> ::js_sys::Promise;
+    # [wasm_bindgen (static_method_of = PublicKeyCredential , js_class = "PublicKeyCredential" , js_name = isExternalCTAP2SecurityKeySupported, catch)]
+    #[doc = "The `isExternalCTAP2SecurityKeySupported()` method."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredential`*"]
+    pub fn is_external_ctap2_securitykey_supported() -> Result<::js_sys::Promise, JsValue>;
 }
