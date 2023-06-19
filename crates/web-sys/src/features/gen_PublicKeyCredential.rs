@@ -37,6 +37,17 @@ extern "C" {
     pub fn get_client_extension_results(
         this: &PublicKeyCredential,
     ) -> AuthenticationExtensionsClientOutputs;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (static_method_of = PublicKeyCredential , js_class = "PublicKeyCredential" , js_name = isConditionalMediationAvailable)]
+    #[doc = "The `isConditionalMediationAvailable()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/isConditionalMediationAvailable)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredential`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn is_conditional_mediation_available() -> ::js_sys::Promise;
     # [wasm_bindgen (static_method_of = PublicKeyCredential , js_class = "PublicKeyCredential" , js_name = isUserVerifyingPlatformAuthenticatorAvailable)]
     #[doc = "The `isUserVerifyingPlatformAuthenticatorAvailable()` method."]
     #[doc = ""]
