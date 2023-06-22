@@ -5,6 +5,9 @@
 
 ### Added
 
+* Add bindings for `PublicKeyCredential.isConditionalMediationAvailable`.
+  [#3489](https://github.com/rustwasm/wasm-bindgen/pull/3489)
+
 * Extend `AudioContext` with unstable features supporting audio sink configuration.
   [#3433](https://github.com/rustwasm/wasm-bindgen/pull/3433)
 
