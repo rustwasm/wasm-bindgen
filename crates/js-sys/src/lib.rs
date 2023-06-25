@@ -28,6 +28,7 @@ use std::mem;
 use std::str;
 use std::str::FromStr;
 
+pub use wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 // When adding new imports:

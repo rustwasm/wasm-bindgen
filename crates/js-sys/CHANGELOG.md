@@ -8,7 +8,11 @@ Released YYYY-MM-DD.
 
 ### Added
 
-* TODO (or remove section if none)
+* Re-export `wasm-bindgen` from `js-sys` and `web-sys`.
+  [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
+
+* Re-export `js-sys` from `web-sys`.
+  [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
 
 ### Changed
 
