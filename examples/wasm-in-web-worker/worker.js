@@ -1,6 +1,6 @@
 // The worker has its own scope and no direct access to functions/objects of the
 // global scope. We import the generated JS file to make `wasm_bindgen`
-// available which we need to initialize our WASM code.
+// available which we need to initialize our Wasm code.
 importScripts('./pkg/wasm_in_web_worker.js');
 
 console.log('Initializing worker')
