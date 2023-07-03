@@ -1,11 +1,11 @@
-# WASM in Web Worker
+# Wasm in Web Worker
 
 [View full source code][code]
 
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/wasm-in-web-worker
 
 A simple example of parallel execution by spawning a web worker with `web_sys`,
-loading WASM code in the web worker and interacting between the main thread and
+loading Wasm code in the web worker and interacting between the main thread and
 the worker.
 
 ## Building & compatibility
@@ -41,7 +41,7 @@ when the worker returns a message.
 
 Includes the input element `#inputNumber` to type a number into and a HTML
 element `#resultField` were the result of the evaluation even/odd is written to.
-Since we require to build with `--target no-modules` to be able to load WASM
+Since we require to build with `--target no-modules` to be able to load Wasm
 code in in the worker across browsers, the `index.html` also includes loading
 both `wasm_in_web_worker.js` and `index.js`.
 
@@ -51,7 +51,7 @@ both `wasm_in_web_worker.js` and `index.js`.
 
 ## `index.js`
 
-Loads our WASM file asynchronously and calls the entry point `startup` of the
+Loads our Wasm file asynchronously and calls the entry point `startup` of the
 main thread which will create a worker.
 
 ```js
@@ -60,7 +60,7 @@ main thread which will create a worker.
 
 ## `worker.js`
 
-Loads our WASM file by first importing `wasm_bindgen` via
+Loads our Wasm file by first importing `wasm_bindgen` via
 `importScripts('./pkg/wasm_in_web_worker.js')` and then awaiting the Promise
 returned by `wasm_bindgen(...)`. Creates a new object to do the background
 calculation and bind a method of the object to the `onmessage` callback of the

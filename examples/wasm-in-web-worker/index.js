@@ -10,8 +10,8 @@ async function run_wasm() {
 
     console.log('index.js loaded');
 
-    // Run main WASM entry point
-    // This will create a worker from within our Rust code compiled to WASM
+    // Run main Wasm entry point
+    // This will create a worker from within our Rust code compiled to Wasm
     startup();
 }
 
