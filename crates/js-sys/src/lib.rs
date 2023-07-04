@@ -1209,7 +1209,7 @@ pub mod Atomics {
         /// You should use `wait_async_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
-        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
         pub fn wait_async(typed_array: &Int32Array, index: u32, value: i32) -> Result<Object, JsValue>;
 
         /// The static `Atomics.waitAsync()` method verifies that a given position in an
@@ -1224,7 +1224,7 @@ pub mod Atomics {
         /// You should use `wait_async_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
-        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
         pub fn wait_async_bigint(
             typed_array: &Int32Array,
             index: u32,
@@ -1236,7 +1236,7 @@ pub mod Atomics {
         /// You should use `wait_with_timeout_bigint` to operate on a `BigInt64Array` or a `BigUint64Array`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
-        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
         pub fn wait_async_with_timeout(
             typed_array: &Int32Array,
             index: u32,
@@ -1249,7 +1249,7 @@ pub mod Atomics {
         /// This method is used to operate on a `BigInt64Array` or a `BigUint64Array`.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
-        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
         pub fn wait_async_with_timeout_bigint(
             typed_array: &Int32Array,
             index: u32,
