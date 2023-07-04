@@ -1213,7 +1213,7 @@ pub mod Atomics {
         pub fn wait_async(
             typed_array: &Int32Array,
             index: u32,
-            value: i32
+            value: i32,
         ) -> Result<Object, JsValue>;
 
         /// The static `Atomics.waitAsync()` method verifies that a given position in an
