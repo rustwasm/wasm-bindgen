@@ -195,9 +195,9 @@ partial interface Window {
   [Replaceable] readonly attribute double devicePixelRatio;
 };
 
-// https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming/Overview.html
-partial interface Window {
-  [Replaceable, Pure, StoreInSlot] readonly attribute Performance? performance;
+// https://w3c.github.io/hr-time/#the-performance-attribute
+partial interface mixin WindowOrWorkerGlobalScope {
+  [Replaceable] readonly attribute Performance? performance;
 };
 
 // https://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html
