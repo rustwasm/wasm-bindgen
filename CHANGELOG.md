@@ -30,6 +30,11 @@
   because required arguments occurring after optional arguments are currently not supported by the generator.
   [#3480](https://github.com/rustwasm/wasm-bindgen/pull/3480)
 
+### Fixed
+
+* Fixed bindings and comments for `Atomics.wait`.
+  [#3509](https://github.com/rustwasm/wasm-bindgen/pull/3509)
+
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
 Released 2023-06-12.
