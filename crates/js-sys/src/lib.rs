@@ -1197,6 +1197,70 @@ pub mod Atomics {
             timeout: f64,
         ) -> Result<JsString, JsValue>;
 
+        /// The static `Atomics.waitAsync()` method verifies that a given position in an
+        /// `Int32Array` still contains a given value and if so sleeps, awaiting a
+        /// wakeup or a timeout. It returns an object with two properties. The first
+        /// property `async` is a boolean which if true indicates that the second
+        /// property `value` is a promise. If `async` is false then value is a string
+        /// whether equal to either "not-equal" or "timed-out".
+        /// Note: This operation only works with a shared `Int32Array` and may be used
+        /// on the main thread.
+        ///
+        /// You should use `wait_async_bigint` to operate on a `BigInt64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
+        pub fn wait_async(
+            typed_array: &Int32Array,
+            index: u32,
+            value: i32,
+        ) -> Result<Object, JsValue>;
+
+        /// The static `Atomics.waitAsync()` method verifies that a given position in an
+        /// `Int32Array` still contains a given value and if so sleeps, awaiting a
+        /// wakeup or a timeout. It returns an object with two properties. The first
+        /// property `async` is a boolean which if true indicates that the second
+        /// property `value` is a promise. If `async` is false then value is a string
+        /// whether equal to either "not-equal" or "timed-out".
+        /// Note: This operation only works with a shared `BigInt64Array` and may be used
+        /// on the main thread.
+        ///
+        /// You should use `wait_async` to operate on a `Int32Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
+        pub fn wait_async_bigint(
+            typed_array: &BigInt64Array,
+            index: u32,
+            value: i64,
+        ) -> Result<Object, JsValue>;
+
+        /// Like `waitAsync()`, but with timeout
+        ///
+        /// You should use `wait_async_with_timeout_bigint` to operate on a `BigInt64Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
+        pub fn wait_async_with_timeout(
+            typed_array: &Int32Array,
+            index: u32,
+            value: i32,
+            timeout: f64,
+        ) -> Result<Object, JsValue>;
+
+        /// Like `waitAsync()`, but with timeout
+        ///
+        /// You should use `wait_async_with_timeout` to operate on a `Int32Array`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/waitAsync)
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = waitAsync)]
+        pub fn wait_async_with_timeout_bigint(
+            typed_array: &BigInt64Array,
+            index: u32,
+            value: i64,
+            timeout: f64,
+        ) -> Result<Object, JsValue>;
+
         /// The static `Atomics.xor()` method computes a bitwise XOR
         /// with a given value at a given position in the array,
         /// and returns the old value at that position.

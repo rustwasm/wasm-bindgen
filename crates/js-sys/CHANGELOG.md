@@ -8,6 +8,9 @@ Released YYYY-MM-DD.
 
 ### Added
 
+* Add bindings for async variants of `Atomics.wait`.
+  [#3504](https://github.com/rustwasm/wasm-bindgen/pull/3504)
+
 * Re-export `wasm-bindgen` from `js-sys` and `web-sys`.
   [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
 
