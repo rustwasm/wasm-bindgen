@@ -2,43 +2,6 @@
 
 --------------------------------------------------------------------------------
 
-## Unreleased
-
-Released YYYY-MM-DD.
-
-### Added
-
-* Add bindings for async variants of `Atomics.wait`.
-  [#3504](https://github.com/rustwasm/wasm-bindgen/pull/3504)
-
-* Re-export `wasm-bindgen` from `js-sys` and `web-sys`.
-  [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
-
-* Re-export `js-sys` from `web-sys`.
-  [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
-
-### Changed
-
-* TODO (or remove section if none)
-
-### Deprecated
-
-* TODO (or remove section if none)
-
-### Removed
-
-* TODO (or remove section if none)
-
-### Fixed
-
-* TODO (or remove section if none)
-
-### Security
-
-* TODO (or remove section if none)
-
---------------------------------------------------------------------------------
-
 ## 0.2.1
 
 Released 2018-08-13.
