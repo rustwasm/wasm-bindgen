@@ -11,6 +11,15 @@
 * Add bindings for `WebAssembly.Tag` and `WebAssembly.Exception`.
   [#3484](https://github.com/rustwasm/wasm-bindgen/pull/3484)
 
+* Re-export `wasm-bindgen` from `js-sys` and `web-sys`.
+  [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
+
+* Re-export `js-sys` from `web-sys`.
+  [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
+
+* Add bindings for async variants of `Atomics.wait`.
+  [#3504](https://github.com/rustwasm/wasm-bindgen/pull/3504)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
