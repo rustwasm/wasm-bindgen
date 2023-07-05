@@ -355,14 +355,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
     pub fn device_pixel_ratio(this: &Window) -> f64;
-    #[cfg(feature = "Performance")]
-    # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = performance)]
-    #[doc = "Getter for the `performance` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/performance)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Performance`, `Window`*"]
-    pub fn performance(this: &Window) -> Option<Performance>;
     # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = orientation)]
     #[doc = "Getter for the `orientation` field of this object."]
     #[doc = ""]
@@ -1908,6 +1900,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`, `Window`*"]
     pub fn local_storage(this: &Window) -> Result<Option<Storage>, JsValue>;
+    #[cfg(feature = "Performance")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = performance)]
+    #[doc = "Getter for the `performance` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/performance)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Performance`, `Window`*"]
+    pub fn performance(this: &Window) -> Option<Performance>;
     # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = origin)]
     #[doc = "Getter for the `origin` field of this object."]
     #[doc = ""]

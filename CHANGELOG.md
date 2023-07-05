@@ -20,6 +20,9 @@
 * Add bindings for async variants of `Atomics.wait`.
   [#3504](https://github.com/rustwasm/wasm-bindgen/pull/3504)
 
+* Add bindings for `WorkerGlobalScope.performance`.
+  [#3506](https://github.com/rustwasm/wasm-bindgen/pull/3506)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
