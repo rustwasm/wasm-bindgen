@@ -415,6 +415,76 @@ fn omit_default_module_path_target_no_modules() {
 }
 
 #[test]
+fn workerd_target_bundler() {
+    let (mut cmd, out_dir) = Project::new("workerd_target_bundler")
+        .file(
+            "src/lib.rs",
+            r#"
+            "#,
+        )
+        .wasm_bindgen("--target bundler --workerd");
+    cmd.assert().success();
+    let contents = fs::read_to_string(out_dir.join("workerd_target_bundler.js")).unwrap();
+
+    assert!(contents.contains(
+        r#"import * as imports from "./workerd_target_bundler_bg.js";
+import wkmod from "./workerd_target_bundler_bg.wasm";
+import * as nodemod from "./workerd_target_bundler_bg.wasm";
+
+if ((typeof process !== 'undefined') && (process.release.name === 'node')) {
+    imports.__wbg_set_wasm(nodemod);
+} else {
+    const instance = new WebAssembly.Instance(wkmod, { "./workerd_target_bundler_bg.js": imports });
+    imports.__wbg_set_wasm(instance.exports);
+}
+
+export * from "./workerd_target_bundler_bg.js";"#
+    ));
+}
+
+#[test]
+fn workerd_target_default() {
+    let (mut cmd, out_dir) = Project::new("workerd_target_default")
+        .file(
+            "src/lib.rs",
+            r#"
+            "#,
+        )
+        .wasm_bindgen("--workerd");
+    cmd.assert().success();
+    let contents = fs::read_to_string(out_dir.join("workerd_target_default.js")).unwrap();
+
+    assert!(contents.contains(
+        r#"import * as imports from "./workerd_target_default_bg.js";
+import wkmod from "./workerd_target_default_bg.wasm";
+import * as nodemod from "./workerd_target_default_bg.wasm";
+
+if ((typeof process !== 'undefined') && (process.release.name === 'node')) {
+    imports.__wbg_set_wasm(nodemod);
+} else {
+    const instance = new WebAssembly.Instance(wkmod, { "./workerd_target_default_bg.js": imports });
+    imports.__wbg_set_wasm(instance.exports);
+}
+
+export * from "./workerd_target_default_bg.js";"#
+    ));
+}
+
+#[test]
+fn workerd_target_nodejs_should_fail() {
+    let (mut cmd, _out_dir) = Project::new("workerd_target_nodejs_should_fail")
+        .file(
+            "src/lib.rs",
+            r#"
+            "#,
+        )
+        .wasm_bindgen("--target nodejs --workerd");
+    cmd.assert().failure().stderr(predicates::str::contains(
+        "cannot specify `--workerd` with another output mode already specified",
+    ));
+}
+
+#[test]
 fn function_table_preserved() {
     let (mut cmd, _out_dir) = Project::new("function_table_preserved")
         .file(

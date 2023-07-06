@@ -1477,6 +1477,7 @@ impl<'a> Context<'a> {
             }
             OutputMode::Bundler {
                 browser_only: false,
+                ..
             } => {
                 self.global(&format!(
                     "
@@ -1490,7 +1491,7 @@ impl<'a> Context<'a> {
             OutputMode::Deno
             | OutputMode::Web
             | OutputMode::NoModules { .. }
-            | OutputMode::Bundler { browser_only: true } => {
+            | OutputMode::Bundler { browser_only: true, .. } => {
                 self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ {2}: () => {{ throw Error('{0} not available') }} }} );", s, args, op))
             }
         };
@@ -1500,11 +1501,14 @@ impl<'a> Context<'a> {
                 OutputMode::Node { .. }
                 | OutputMode::Bundler {
                     browser_only: false,
+                    ..
                 } => self.global(init),
                 OutputMode::Deno
                 | OutputMode::Web
                 | OutputMode::NoModules { .. }
-                | OutputMode::Bundler { browser_only: true } => self.global(&format!(
+                | OutputMode::Bundler {
+                    browser_only: true, ..
+                } => self.global(&format!(
                     "if (typeof {} !== 'undefined') {{ {} }};",
                     s, init
                 )),

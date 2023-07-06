@@ -22,6 +22,7 @@ Options:
                                  and the default is [bundler]
     --no-modules-global VAR      Name of the global variable to initialize
     --browser                    Hint that JS should only be compatible with a browser
+    --workerd                    Hint that JS should only be compatible with a Cloudflare Worker
     --typescript                 Output a TypeScript definition file (on by default)
     --no-typescript              Don't emit a *.d.ts file
     --omit-imports               Don't emit imports in generated JavaScript
@@ -50,6 +51,7 @@ Additional documentation: https://rustwasm.github.io/wasm-bindgen/reference/cli.
 struct Args {
     flag_nodejs: bool,
     flag_browser: bool,
+    flag_workerd: bool,
     flag_web: bool,
     flag_no_modules: bool,
     flag_typescript: bool,
@@ -115,6 +117,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .nodejs(args.flag_nodejs)?
         .web(args.flag_web)?
         .browser(args.flag_browser)?
+        .workerd(args.flag_workerd)?
         .no_modules(args.flag_no_modules)?
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)

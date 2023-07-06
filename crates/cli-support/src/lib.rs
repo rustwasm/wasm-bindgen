@@ -64,9 +64,9 @@ struct Generated {
     typescript: bool,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum OutputMode {
-    Bundler { browser_only: bool },
+    Bundler { browser_only: bool, workerd: bool },
     Web,
     NoModules { global: String },
     Node { experimental_modules: bool },
@@ -96,6 +96,7 @@ impl Bindgen {
             out_name: None,
             mode: OutputMode::Bundler {
                 browser_only: false,
+                workerd: false,
             },
             debug: false,
             typescript: false,
@@ -190,6 +191,7 @@ impl Bindgen {
             self.switch_mode(
                 OutputMode::Bundler {
                     browser_only: false,
+                    workerd: false,
                 },
                 "--target bundler",
             )?;
@@ -219,8 +221,18 @@ impl Bindgen {
     pub fn browser(&mut self, browser: bool) -> Result<&mut Bindgen, Error> {
         if browser {
             match &mut self.mode {
-                OutputMode::Bundler { browser_only } => *browser_only = true,
+                OutputMode::Bundler { browser_only, .. } => *browser_only = true,
                 _ => bail!("cannot specify `--browser` with other output types"),
+            }
+        }
+        Ok(self)
+    }
+
+    pub fn workerd(&mut self, workerd: bool) -> Result<&mut Bindgen, Error> {
+        if workerd {
+            match &mut self.mode {
+                OutputMode::Bundler { workerd, .. } => *workerd = true,
+                _ => bail!("cannot specify `--workerd` with other output types"),
             }
         }
         Ok(self)
@@ -587,6 +599,10 @@ impl OutputMode {
                 }
         )
     }
+
+    fn uses_workerd(&self) -> bool {
+        matches!(self, OutputMode::Bundler { workerd: true, .. })
+    }
 }
 
 /// Remove a number of internal exports that are synthesized by Rust's linker,
@@ -706,7 +722,23 @@ impl Output {
 
         let js_path = out_dir.join(&self.stem).with_extension(extension);
 
-        if gen.mode.esm_integration() {
+        if gen.mode.uses_workerd() {
+            let js_name = format!("{}_bg.{}", self.stem, extension);
+
+            let start = gen.start.as_deref().unwrap_or("");
+
+            write(
+                &js_path,
+                format!(
+                    "import * as imports from \"./{js_name}\";
+import wkmod from \"./{wasm_name}.wasm\";
+const instance = new WebAssembly.Instance(wkmod, {{ \"./{js_name}\": imports }});
+imports.__wbg_set_wasm(instance.exports);
+export * from \"./{js_name}\";
+{start}"
+                ),
+            )?;
+        } else if gen.mode.esm_integration() {
             let js_name = format!("{}_bg.{}", self.stem, extension);
 
             let start = gen.start.as_deref().unwrap_or("");
