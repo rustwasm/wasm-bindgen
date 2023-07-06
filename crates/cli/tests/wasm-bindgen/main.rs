@@ -429,15 +429,8 @@ fn workerd_target_bundler() {
     assert!(contents.contains(
         r#"import * as imports from "./workerd_target_bundler_bg.js";
 import wkmod from "./workerd_target_bundler_bg.wasm";
-import * as nodemod from "./workerd_target_bundler_bg.wasm";
-
-if ((typeof process !== 'undefined') && (process.release.name === 'node')) {
-    imports.__wbg_set_wasm(nodemod);
-} else {
-    const instance = new WebAssembly.Instance(wkmod, { "./workerd_target_bundler_bg.js": imports });
-    imports.__wbg_set_wasm(instance.exports);
-}
-
+const instance = new WebAssembly.Instance(wkmod, { "./workerd_target_bundler_bg.js": imports });
+imports.__wbg_set_wasm(instance.exports);
 export * from "./workerd_target_bundler_bg.js";"#
     ));
 }
@@ -457,15 +450,8 @@ fn workerd_target_default() {
     assert!(contents.contains(
         r#"import * as imports from "./workerd_target_default_bg.js";
 import wkmod from "./workerd_target_default_bg.wasm";
-import * as nodemod from "./workerd_target_default_bg.wasm";
-
-if ((typeof process !== 'undefined') && (process.release.name === 'node')) {
-    imports.__wbg_set_wasm(nodemod);
-} else {
-    const instance = new WebAssembly.Instance(wkmod, { "./workerd_target_default_bg.js": imports });
-    imports.__wbg_set_wasm(instance.exports);
-}
-
+const instance = new WebAssembly.Instance(wkmod, { "./workerd_target_default_bg.js": imports });
+imports.__wbg_set_wasm(instance.exports);
 export * from "./workerd_target_default_bg.js";"#
     ));
 }
@@ -480,7 +466,7 @@ fn workerd_target_nodejs_should_fail() {
         )
         .wasm_bindgen("--target nodejs --workerd");
     cmd.assert().failure().stderr(predicates::str::contains(
-        "cannot specify `--workerd` with another output mode already specified",
+        "cannot specify `--workerd` with other output types",
     ));
 }
 
