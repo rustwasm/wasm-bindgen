@@ -722,37 +722,35 @@ impl Output {
 
         let js_path = out_dir.join(&self.stem).with_extension(extension);
 
-        if gen.mode.uses_workerd() {
+        if gen.mode.esm_integration() {
             let js_name = format!("{}_bg.{}", self.stem, extension);
 
             let start = gen.start.as_deref().unwrap_or("");
 
-            write(
-                &js_path,
-                format!(
-                    "import * as imports from \"./{js_name}\";
+            if gen.mode.uses_workerd() {
+                write(
+                    &js_path,
+                    format!(
+                        "import * as imports from \"./{js_name}\";
 import wkmod from \"./{wasm_name}.wasm\";
 const instance = new WebAssembly.Instance(wkmod, {{ \"./{js_name}\": imports }});
 imports.__wbg_set_wasm(instance.exports);
 export * from \"./{js_name}\";
 {start}"
-                ),
-            )?;
-        } else if gen.mode.esm_integration() {
-            let js_name = format!("{}_bg.{}", self.stem, extension);
-
-            let start = gen.start.as_deref().unwrap_or("");
-
-            write(
-                &js_path,
-                format!(
-                    "import * as wasm from \"./{wasm_name}.wasm\";
+                    ),
+                )?;
+            } else {
+                write(
+                    &js_path,
+                    format!(
+                        "import * as wasm from \"./{wasm_name}.wasm\";
 import {{ __wbg_set_wasm }} from \"./{js_name}\";
 __wbg_set_wasm(wasm);
 export * from \"./{js_name}\";
 {start}"
-                ),
-            )?;
+                    ),
+                )?;
+            }
 
             write(out_dir.join(&js_name), reset_indentation(&gen.js))?;
         } else {
