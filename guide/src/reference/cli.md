@@ -84,6 +84,12 @@ When generating bundler-compatible code (see the section on [deployment]) this
 indicates that the bundled code is always intended to go into a browser so a few
 checks for Node.js can be elided.
 
+### `--workerd`
+
+When generating bundler-compatible code (see the section on [deployment]) this
+indicates that the bundled code is always intended to go into a Cloudflare Worker so a few
+checks for Node.js can be elided.
+
 ### `--weak-refs`
 
 Enables usage of the [TC39 Weak References

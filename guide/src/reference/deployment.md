@@ -32,6 +32,10 @@ natively implemented in any JS implementation at this time. As a result, to
 consume the default output of `wasm-bindgen` you will need a bundler of some
 form.
 
+If the bundled code is intended to run in a browser, please specify the `--browser` option.
+If the bundled code is intended to run in a Cloudflare Worker, please specify the `--workerd` option.
+You can refer to the "Options" section on [cli](./cli.md#options).
+
 > **Note**: the choice of this default output was done to reflect the trends of
 > the JS ecosystem. While tools other than bundlers don't support wasm files as
 > native ES modules today they're all very much likely to in the future!
