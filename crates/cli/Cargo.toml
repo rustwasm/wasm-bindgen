@@ -16,7 +16,6 @@ default-run = 'wasm-bindgen'
 rust-version = "1.56"
 
 [dependencies]
-curl = "0.4.13"
 docopt = "1.0"
 env_logger = "0.8"
 anyhow = "1.0"
@@ -26,6 +25,7 @@ rouille = { version = "3.0.0", default-features = false }
 serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
+ureq = { version = "2.7", default-features = false, features = ["gzip"] }
 walrus = { version = "0.19.0", features = ['parallel'] }
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.87" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.87" }
@@ -44,4 +44,13 @@ name = "reference"
 harness = false
 
 [features]
-vendored-openssl = ['openssl/vendored']
+default = ["rustls-tls"]
+
+rustls-tls = ["ureq/tls"]
+
+# Enables native-tls specific functionality not available by default.
+native-tls = ["ureq/native-tls"]
+native-tls-vendored = ["native-tls", "openssl/vendored"]
+
+# Legacy support
+vendored-openssl = ['native-tls-vendored']
