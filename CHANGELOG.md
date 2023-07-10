@@ -31,8 +31,6 @@
   [#3480](https://github.com/rustwasm/wasm-bindgen/pull/3480)
 
 * Replaced `curl` with `ureq`. By default we now use Rustls instead of OpenSSL.
-  The `openssl` is now out of the dependencies in `wasm-bindgen-cli` crates, so that
-  the `vendored-openssl` feature is now out of supported features.
   [#3511](https://github.com/rustwasm/wasm-bindgen/pull/3511)
 
 ### Fixed

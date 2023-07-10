@@ -49,9 +49,9 @@ harness = false
 [features]
 default = ["rustls-tls"]
 
-native-tls = ["dep:native-tls", "ureq/native-tls"]
-rustls-tls = ["ureq/tls"]                          # ureq uses rustls by default.
+native-tls = ["ureq/native-tls"]
+rustls-tls = ["ureq/tls"]
 
 # Legacy support
-openssl = ["native-tls"]
+openssl = ["dep:native-tls"]
 vendored-openssl = ["openssl", "native-tls/vendored"]
