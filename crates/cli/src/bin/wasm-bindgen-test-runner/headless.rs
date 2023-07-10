@@ -1,6 +1,5 @@
 use crate::shell::Shell;
 use anyhow::{bail, format_err, Context, Error};
-use curl::easy::{Easy, List};
 use log::{debug, warn};
 use rouille::url::Url;
 use serde::{Deserialize, Serialize};
@@ -13,6 +12,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
+use ureq::Agent;
 
 /// Options that can use to customize and configure a WebDriver session.
 type Capabilities = Map<String, Json>;
@@ -98,7 +98,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
     );
 
     let mut client = Client {
-        handle: Easy::new(),
+        agent: Agent::new(),
         driver_url,
         session: None,
     };
@@ -318,7 +318,7 @@ an issue against rustwasm/wasm-bindgen!
 }
 
 struct Client {
-    handle: Easy,
+    agent: Agent,
     driver_url: Url,
     session: Option<String>,
 }
@@ -548,37 +548,24 @@ impl Client {
 
     fn doit(&mut self, path: &str, method: Method) -> Result<String, Error> {
         let url = self.driver_url.join(path)?;
-        self.handle.reset();
-        self.handle.url(url.as_str())?;
-        match method {
-            Method::Post(data) => {
-                self.handle.post(true)?;
-                self.handle
-                    .http_headers(build_headers(&["Content-Type: application/json"]))?;
-                self.handle.post_fields_copy(data.as_bytes())?;
-            }
-            Method::Delete => self.handle.custom_request("DELETE")?,
-            Method::Get => self.handle.get(true)?,
-        }
-        let mut result = Vec::new();
-        {
-            let mut t = self.handle.transfer();
-            t.write_function(|buf| {
-                result.extend_from_slice(buf);
-                Ok(buf.len())
-            })?;
-            t.perform()?
-        }
-        let result = String::from_utf8_lossy(&result);
-        if self.handle.response_code()? != 200 {
-            bail!(
-                "non-200 response code: {}\n{}",
-                self.handle.response_code()?,
-                result
-            );
+        let response = match method {
+            Method::Post(data) => self
+                .agent
+                .post(url.as_str())
+                .set("Content-Type", "application/json")
+                .send_bytes(data.as_bytes())?,
+            Method::Delete => self.agent.delete(url.as_str()).call()?,
+            Method::Get => self.agent.get(url.as_str()).call()?,
+        };
+
+        let response_code = response.status();
+        let result = response.into_string()?;
+
+        if response_code != 200 {
+            bail!("non-200 response code: {}\n{}", response_code, result);
         }
         debug!("got: {}", result);
-        Ok(result.into_owned())
+        Ok(result)
     }
 }
 
@@ -592,14 +579,6 @@ impl Drop for Client {
             warn!("failed to close window {:?}", e);
         }
     }
-}
-
-fn build_headers(headers: &[&str]) -> List {
-    let mut list = List::new();
-    for header in headers {
-        list.append(header).unwrap();
-    }
-    list
 }
 
 fn read<R: Read>(r: &mut R) -> io::Result<Vec<u8>> {

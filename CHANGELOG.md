@@ -30,6 +30,9 @@
   because required arguments occurring after optional arguments are currently not supported by the generator.
   [#3480](https://github.com/rustwasm/wasm-bindgen/pull/3480)
 
+* Replaced `curl` with `ureq`. By default we now use Rustls instead of OpenSSL.
+  [#3511](https://github.com/rustwasm/wasm-bindgen/pull/3511)
+
 ### Fixed
 
 * Fixed bindings and comments for `Atomics.wait`.
