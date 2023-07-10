@@ -25,7 +25,7 @@ rouille = { version = "3.0.0", default-features = false }
 serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
-ureq = { version = "2.7", default-features = false, features = ["gzip"] }
+ureq = { version = "2.7", default-features = false, features = ["brotli", "gzip"] }
 walrus = { version = "0.19.0", features = ['parallel'] }
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.87" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.87" }
@@ -50,7 +50,7 @@ rustls-tls = ["ureq/tls"]
 
 # Enables native-tls specific functionality not available by default.
 native-tls = ["ureq/native-tls"]
-native-tls-vendored = ["native-tls", "openssl/vendored"]
+native-tls-vendored = ["native-tls", "native-tls/vendored"]
 
 # Legacy support
 vendored-openssl = ['native-tls-vendored']
