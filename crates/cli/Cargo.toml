@@ -20,12 +20,15 @@ docopt = "1.0"
 env_logger = "0.8"
 anyhow = "1.0"
 log = "0.4"
-openssl = { version = '0.10.11', optional = true }
+native-tls = { version = "0.2", default-features = false, optional = true }
 rouille = { version = "3.0.0", default-features = false }
 serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
-ureq = { version = "2.7", default-features = false, features = ["brotli", "gzip"] }
+ureq = { version = "2.7", default-features = false, features = [
+    "brotli",
+    "gzip",
+] }
 walrus = { version = "0.19.0", features = ['parallel'] }
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.87" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.87" }
@@ -46,11 +49,9 @@ harness = false
 [features]
 default = ["rustls-tls"]
 
-rustls-tls = ["ureq/tls"]
-
-# Enables native-tls specific functionality not available by default.
-native-tls = ["ureq/native-tls"]
-native-tls-vendored = ["native-tls", "native-tls/vendored"]
+native-tls = ["dep:native-tls", "ureq/native-tls"]
+rustls-tls = ["ureq/tls"]                          # ureq uses rustls by default.
 
 # Legacy support
-vendored-openssl = ['native-tls-vendored']
+openssl = ["native-tls"]
+vendored-openssl = ["openssl", "native-tls/vendored"]
