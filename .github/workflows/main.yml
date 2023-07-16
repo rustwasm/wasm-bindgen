@@ -277,7 +277,7 @@ jobs:
         for dir in `ls examples | grep -v README | grep -v raytrace | grep -v deno | grep -v wasm-audio-worklet`; do
           (cd examples/$dir &&
             (npm run build -- --output-path ../../exbuild/$dir ||
-              (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir))
+              (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir && rm ../../exbuild/$dir/**/.gitignore))
           ) || exit 1;
         done
       env:
