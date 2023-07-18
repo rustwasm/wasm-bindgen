@@ -2,7 +2,7 @@
 name = "wasm-bindgen"
 version = "0.2.87"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 categories = ["wasm"]
 repository = "https://github.com/rustwasm/wasm-bindgen"
