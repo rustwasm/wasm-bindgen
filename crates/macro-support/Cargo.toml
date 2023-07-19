@@ -2,7 +2,7 @@
 name = "wasm-bindgen-macro-support"
 version = "0.2.87"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro-support"
 homepage = "https://rustwasm.github.io/wasm-bindgen/"
 documentation = "https://docs.rs/wasm-bindgen"

@@ -2,7 +2,7 @@
 name = "wasm-bindgen-webidl"
 version = "0.2.76"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 categories = ["wasm"]
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/webidl"
 homepage = "https://rustwasm.github.io/wasm-bindgen/"
