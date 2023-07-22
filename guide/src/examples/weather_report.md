@@ -1,6 +1,6 @@
 # web-sys: Weather report
 
-[View full source code][code] or [view the compiled example online][online]
+[View full source code][code]
 
 [online]: https://rustwasm.github.io/wasm-bindgen/exbuild/weather_report/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/weather_report
