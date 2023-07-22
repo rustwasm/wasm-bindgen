@@ -421,15 +421,15 @@ impl InterfaceMethod {
             }
             InterfaceMethodKind::IndexingGetter => {
                 extra_args.push(quote!(indexing_getter));
-                "Indexing getter.\n\n".to_string()
+                "Indexing getter. As in the literal Javascript `this[key]`.\n\n".to_string()
             }
             InterfaceMethodKind::IndexingSetter => {
                 extra_args.push(quote!(indexing_setter));
-                "Indexing setter.\n\n".to_string()
+                "Indexing setter. As in the literal Javascript `this[key] = value`.\n\n".to_string()
             }
             InterfaceMethodKind::IndexingDeleter => {
                 extra_args.push(quote!(indexing_deleter));
-                "Indexing deleter.\n\n".to_string()
+                "Indexing deleter. As in the literal Javascript `delete this[key]`.\n\n".to_string()
             }
         };
 
