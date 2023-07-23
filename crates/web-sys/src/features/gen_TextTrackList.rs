@@ -71,7 +71,7 @@ extern "C" {
     pub fn get_track_by_id(this: &TextTrackList, id: &str) -> Option<TextTrack>;
     #[cfg(feature = "TextTrack")]
     #[wasm_bindgen(method, structural, js_class = "TextTrackList", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

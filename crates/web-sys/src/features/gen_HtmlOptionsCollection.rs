@@ -125,7 +125,7 @@ extern "C" {
         js_class = "HTMLOptionsCollection",
         indexing_setter
     )]
-    #[doc = "Indexing setter."]
+    #[doc = "Indexing setter. As in the literal Javascript `this[key] = value`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
