@@ -163,7 +163,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_with_u8_array(
         this: &FileSystemSyncAccessHandle,
-        buffer: &mut [u8],
+        buffer: &[u8],
     ) -> Result<f64, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemReadWriteOptions")]
@@ -194,7 +194,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_with_u8_array_and_options(
         this: &FileSystemSyncAccessHandle,
-        buffer: &mut [u8],
+        buffer: &[u8],
         options: &FileSystemReadWriteOptions,
     ) -> Result<f64, JsValue>;
 }
