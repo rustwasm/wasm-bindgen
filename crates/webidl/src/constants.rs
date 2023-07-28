@@ -92,6 +92,8 @@ pub(crate) static IMMUTABLE_SLICE_WHITELIST: Lazy<BTreeSet<&'static str>> = Lazy
         "copyToChannel",
         // FontFace
         "FontFace", // TODO: Add another type's functions here. Leave a comment header with the type name
+        // FileSystemWritableFileStream and FileSystemWritableFileStream
+        "write",
     ])
 });
 

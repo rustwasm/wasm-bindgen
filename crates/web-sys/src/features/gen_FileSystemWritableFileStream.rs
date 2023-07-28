@@ -98,7 +98,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_with_u8_array(
         this: &FileSystemWritableFileStream,
-        data: &mut [u8],
+        data: &[u8],
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Blob")]
