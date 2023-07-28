@@ -12,7 +12,7 @@
 
 use wasm_bindgen::{JsCast, JsValue};
 #[cfg(web_sys_unstable_apis)]
-use web_sys::{FileSystemSyncAccessHandle, FileSystemWritableFileStream};
+use web_sys::{FileSystemSyncAccessHandle, FileSystemWritableFileStream, FileSystemReadWriteOptions};
 use web_sys::{WebGl2RenderingContext, WebGlRenderingContext, WebSocket};
 
 // Ensure that our whitelisted WebGlRenderingContext methods compile with immutable slices.
