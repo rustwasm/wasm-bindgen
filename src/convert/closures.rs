@@ -4,7 +4,7 @@ use core::mem;
 
 use crate::convert::slices::WasmSlice;
 use crate::convert::RefFromWasmAbi;
-use crate::convert::{FromWasmAbi, IntoWasmAbi, ReturnWasmAbi};
+use crate::convert::{FromWasmAbi, IntoWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
 use crate::describe::{inform, WasmDescribe, FUNCTION};
 use crate::throw_str;
 
@@ -137,6 +137,16 @@ where
                 len: b as u32,
             }
         }
+    }
+}
+
+impl<'a, 'b, A, R> OptionIntoWasmAbi for &'a (dyn Fn(&A) -> R + 'b)
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi,
+{
+    fn none() -> Self::Abi {
+        WasmSlice { ptr: 0, len: 0 }
     }
 }
 
