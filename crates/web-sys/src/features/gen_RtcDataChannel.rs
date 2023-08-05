@@ -19,6 +19,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
     pub fn label(this: &RtcDataChannel) -> String;
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCDataChannel" , js_name = id)]
+    #[doc = "Getter for the `id` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/id)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`*"]
+    pub fn id(this: &RtcDataChannel) -> Option<u16>;
     # [wasm_bindgen (structural , method , getter , js_class = "RTCDataChannel" , js_name = reliable)]
     #[doc = "Getter for the `reliable` field of this object."]
     #[doc = ""]
