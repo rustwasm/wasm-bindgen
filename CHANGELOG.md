@@ -42,6 +42,9 @@
 * Fixed bindings and comments for `Atomics.wait`.
   [#3509](https://github.com/rustwasm/wasm-bindgen/pull/3509)
 
+* Fixed `wasm_bindgen_test` macro to handle raw identifiers in test names.
+  [#3541](https://github.com/rustwasm/wasm-bindgen/pull/3541)
+
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
 Released 2023-06-12.
