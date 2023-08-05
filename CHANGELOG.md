@@ -23,6 +23,9 @@
 * Add bindings for `WorkerGlobalScope.performance`.
   [#3506](https://github.com/rustwasm/wasm-bindgen/pull/3506)
 
+* Add support for installing pre-built artifacts of `wasm-bindgen-cli`
+  via `cargo binstall wasm-bindgen-cli`.
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
