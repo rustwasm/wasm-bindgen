@@ -28,16 +28,16 @@
 
 ## Install `wasm-bindgen-cli`
 
-You can install it using `cargo-install`:
+You can install it using `cargo install`:
 
 ```
 cargo install wasm-bindgen-cli
 ```
 
-Or, you can either download it from the
-[release](https://github.com/rustwasm/wasm-bindgen/releases) page or run:
+Or, you can download it from the
+[release page](https://github.com/rustwasm/wasm-bindgen/releases).
 
-If you have [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall) installed,
+If you have [`cargo-binstall`](https://crates.io/crates/cargo-binstall) installed,
 then you can install the pre-built artifacts by running:
 
 ```
