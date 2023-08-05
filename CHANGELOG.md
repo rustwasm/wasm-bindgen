@@ -33,6 +33,10 @@
 * Replaced `curl` with `ureq`. By default we now use Rustls instead of OpenSSL.
   [#3511](https://github.com/rustwasm/wasm-bindgen/pull/3511)
 
+* Changed mutability of the argument `buffer` in `write` functions to immutable for `FileSystemSyncAccessHandle` and `FileSystemWritableFileStream`.
+  It was also automatically changed for `IdbFileHandle`, which is deprecated.
+  [#3537](https://github.com/rustwasm/wasm-bindgen/pull/3537)
+
 ### Fixed
 
 * Fixed bindings and comments for `Atomics.wait`.
