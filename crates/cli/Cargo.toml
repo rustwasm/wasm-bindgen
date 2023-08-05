@@ -15,6 +15,10 @@ edition = '2018'
 default-run = 'wasm-bindgen'
 rust-version = "1.56"
 
+[package.metadata.binstall]
+pkg-url = "https://github.com/rustwasm/wasm-bindgen/releases/download/{ version }/wasm-bindgen-{ version }-{ target }{ archive-suffix }"
+bin-dir = "wasm-bindgen-{ version }-{ target }/{ bin }{ binary-ext }"
+
 [dependencies]
 docopt = "1.0"
 env_logger = "0.8"

@@ -26,6 +26,24 @@
   <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
 </div>
 
+## Install `wasm-bindgen-cli`
+
+You can install it using `cargo install`:
+
+```
+cargo install wasm-bindgen-cli
+```
+
+Or, you can download it from the
+[release page](https://github.com/rustwasm/wasm-bindgen/releases).
+
+If you have [`cargo-binstall`](https://crates.io/crates/cargo-binstall) installed,
+then you can install the pre-built artifacts by running:
+
+```
+cargo binstall wasm-bindgen-cli
+```
+
 ## Example
 
 Import JavaScript things into Rust and export Rust things to JavaScript.
