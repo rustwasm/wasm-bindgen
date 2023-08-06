@@ -76,9 +76,11 @@ pub fn wasm_bindgen_test(
     let mut tokens = Vec::<TokenTree>::new();
 
     let should_panic = match should_panic {
-        Some(Some(lit)) => quote! { Some(Some(#lit)) },
-        Some(None) => quote! { Some(None) },
-        None => quote! { None },
+        Some(Some(lit)) => {
+            quote! { ::core::option::Option::Some(::core::option::Option::Some(#lit)) }
+        }
+        Some(None) => quote! { ::core::option::Option::Some(::core::option::Option::None) },
+        None => quote! { ::core::option::Option::None },
     };
 
     let test_body = if r#async {
