@@ -1,59 +1,59 @@
 error: malformed `#[should_panic = "..."]` attribute
-  --> ui-tests/should_panic.rs:28:15
+  --> ui-tests/should_panic.rs:32:15
    |
-28 | #[should_panic::error]
+32 | #[should_panic::error]
    |               ^
 
 error: malformed `#[should_panic]` attribute
-  --> ui-tests/should_panic.rs:32:18
+  --> ui-tests/should_panic.rs:36:18
    |
-32 | #[should_panic = 42]
+36 | #[should_panic = 42]
    |                  ^^
 
 error: malformed `#[should_panic = "..."]` attribute
-  --> ui-tests/should_panic.rs:36:15
-   |
-36 | #[should_panic[]]
-   |               ^^
-
-error: malformed `#[should_panic(...)]` attribute
   --> ui-tests/should_panic.rs:40:15
    |
-40 | #[should_panic(42)]
-   |               ^^^^
+40 | #[should_panic[]]
+   |               ^^
 
 error: malformed `#[should_panic(...)]` attribute
   --> ui-tests/should_panic.rs:44:15
    |
-44 | #[should_panic(test)]
-   |               ^^^^^^
+44 | #[should_panic(42)]
+   |               ^^^^
 
 error: malformed `#[should_panic(...)]` attribute
   --> ui-tests/should_panic.rs:48:15
    |
-48 | #[should_panic(expected)]
-   |               ^^^^^^^^^^
+48 | #[should_panic(test)]
+   |               ^^^^^^
 
 error: malformed `#[should_panic(...)]` attribute
   --> ui-tests/should_panic.rs:52:15
    |
-52 | #[should_panic(expected::error)]
+52 | #[should_panic(expected)]
+   |               ^^^^^^^^^^
+
+error: malformed `#[should_panic(...)]` attribute
+  --> ui-tests/should_panic.rs:56:15
+   |
+56 | #[should_panic(expected::error)]
    |               ^^^^^^^^^^^^^^^^^
 
 error: malformed `#[should_panic]` attribute
-  --> ui-tests/should_panic.rs:56:3
+  --> ui-tests/should_panic.rs:60:3
    |
-56 | #[should_panic(expected =)]
+60 | #[should_panic(expected =)]
    |   ^^^^^^^^^^^^
 
 error: malformed `#[should_panic]` attribute
-  --> ui-tests/should_panic.rs:60:27
+  --> ui-tests/should_panic.rs:64:27
    |
-60 | #[should_panic(expected = 5)]
+64 | #[should_panic(expected = 5)]
    |                           ^
 
 error: duplicate `should_panic` attribute
-  --> ui-tests/should_panic.rs:65:3
+  --> ui-tests/should_panic.rs:69:3
    |
-65 | #[should_panic = "test"]
+69 | #[should_panic = "test"]
    |   ^^^^^^^^^^^^
