@@ -40,6 +40,10 @@
   It was also automatically changed for `IdbFileHandle`, which is deprecated.
   [#3537](https://github.com/rustwasm/wasm-bindgen/pull/3537)
 
+* Changed behavior when compiling to `wasm32-wasi` to match `wasm32-emscripten` and 
+  non-WASM targets, generating a stub that panics when called rather than a wasm-
+  bindgen placeholder. [#3233](https://github.com/rustwasm/wasm-bindgen/pull/3233)
+
 ### Fixed
 
 * Fixed bindings and comments for `Atomics.wait`.
