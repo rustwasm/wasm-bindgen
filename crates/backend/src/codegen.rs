@@ -542,7 +542,7 @@ impl TryToTokens for ast::Export {
                 quote! { () },
                 quote! { <#syn_ret as #wasm_bindgen::__rt::Start>::start(#ret) },
             )
-        } else {fle
+        } else {
             (quote! { #syn_ret }, quote! { #syn_ret }, quote! { #ret })
         };
 
