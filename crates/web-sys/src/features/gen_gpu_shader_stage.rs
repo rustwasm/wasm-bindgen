@@ -4,6 +4,7 @@
 #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
 pub mod gpu_shader_stage {
     #![allow(unused_imports)]
+    #![allow(clippy::all)]
     use super::super::*;
     use wasm_bindgen::prelude::*;
     #[cfg(web_sys_unstable_apis)]

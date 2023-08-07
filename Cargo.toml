@@ -1,8 +1,8 @@
 [package]
 name = "wasm-bindgen"
-version = "0.2.83"
+version = "0.2.87"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 categories = ["wasm"]
 repository = "https://github.com/rustwasm/wasm-bindgen"
@@ -12,6 +12,7 @@ description = """
 Easy support for interacting between JS and Rust.
 """
 edition = "2018"
+rust-version = "1.56"
 
 [package.metadata.docs.rs]
 features = ["serde-serialize"]
@@ -30,20 +31,26 @@ enable-interning = ["std"]
 # all unused attributes
 strict-macro = ["wasm-bindgen-macro/strict-macro"]
 
+# Enables gg-alloc as system allocator when using wasm-bindgen-test to check that large pointers
+# are handled correctly
+gg-alloc = ["wasm-bindgen-test/gg-alloc"]
+
 # This is only for debugging wasm-bindgen! No stability guarantees, so enable
 # this at your own peril!
-xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_generated_code"]
+xxx_debug_only_print_generated_code = [
+  "wasm-bindgen-macro/xxx_debug_only_print_generated_code",
+]
 
 [dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.83" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.87" }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 cfg-if = "1.0.0"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-js-sys = { path = 'crates/js-sys', version = '0.3.60' }
-wasm-bindgen-test = { path = 'crates/test', version = '=0.3.33' }
-wasm-bindgen-futures = { path = 'crates/futures', version = '=0.4.33' }
+js-sys = { path = 'crates/js-sys', version = '0.3.64' }
+wasm-bindgen-test = { path = 'crates/test', version = '=0.3.37' }
+wasm-bindgen-futures = { path = 'crates/futures', version = '=0.4.37' }
 serde_derive = "1.0"
 wasm-bindgen-test-crate-a = { path = 'tests/crates/a', version = '0.1' }
 wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
@@ -94,6 +101,7 @@ members = [
   "examples/synchronous-instantiation",
   "tests/no-std",
 ]
+resolver = "2"
 
 [patch.crates-io]
 wasm-bindgen = { path = '.' }

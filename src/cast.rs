@@ -3,7 +3,7 @@ use crate::{describe::WasmDescribe, JsValue};
 /// A trait for checked and unchecked casting between JS types.
 ///
 /// Specified [in an RFC][rfc] this trait is intended to provide support for
-/// casting JS values between differnet types of one another. In JS there aren't
+/// casting JS values between different types of one another. In JS there aren't
 /// many static types but we've ascribed JS values with static types in Rust,
 /// yet they often need to be switched to other types temporarily! This trait
 /// provides both checked and unchecked casting into various kinds of values.

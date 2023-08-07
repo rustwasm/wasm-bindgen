@@ -73,7 +73,7 @@ impl Imports {
 }
 
 #[wasm_bindgen(start)]
-pub fn run() {
+fn run() {
     spawn_local(async {
         match run_async().await {
             Ok(_) => console_log!("Finished"),

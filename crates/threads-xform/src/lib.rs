@@ -23,6 +23,9 @@ pub struct Config {
     enabled: bool,
 }
 
+#[derive(Clone, Copy)]
+pub struct ThreadCount(walrus::LocalId);
+
 impl Config {
     /// Create a new configuration with default settings.
     pub fn new() -> Config {
@@ -44,7 +47,7 @@ impl Config {
         // that we have work to do. If shared memory isn't enabled, though then
         // this isn't an atomic module so there's nothing to do. We still allow,
         // though, an environment variable to force us to go down this path to
-        // remain compatibile with older LLVM outputs.
+        // remain compatible with older LLVM outputs.
         match wasm_conventions::get_memory(module) {
             Ok(memory) => module.memories.get(memory).shared,
             Err(_) => false,
@@ -103,9 +106,9 @@ impl Config {
     /// * Some stack space is prepared for each thread after the first one.
     ///
     /// More and/or less may happen here over time, stay tuned!
-    pub fn run(&self, module: &mut Module) -> Result<(), Error> {
+    pub fn run(&self, module: &mut Module) -> Result<Option<ThreadCount>, Error> {
         if !self.is_enabled(module) {
-            return Ok(());
+            return Ok(None);
         }
 
         let memory = wasm_conventions::get_memory(module)?;
@@ -157,7 +160,7 @@ impl Config {
 
         let _ = module.exports.add("__stack_alloc", stack.alloc);
 
-        inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
+        let thread_count = inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
 
         // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
         //
@@ -172,12 +175,26 @@ impl Config {
         //   from the follower thread, after initialization.
         // - The leader does _not_ need to block.
         // - Similar restrictions apply: the follower thread should be considered unusable afterwards,
-        //   the leader should not call this function with the same set of parameteres twice.
+        //   the leader should not call this function with the same set of parameters twice.
         // - Moreover, concurrent calls can lead to UB: the follower could be in the middle of a
         //   call while the leader is destroying its stack! You should make sure that this cannot happen.
         inject_destroy(module, &tls, &stack, memory)?;
 
-        Ok(())
+        Ok(Some(thread_count))
+    }
+}
+
+impl ThreadCount {
+    pub fn wrap_start(self, builder: &mut walrus::FunctionBuilder, start: FunctionId) {
+        // We only want to call the start function if we are in the first thread.
+        // The thread counter should be 0 for the first thread.
+        builder.func_body().local_get(self.0).if_else(
+            None,
+            |_| {},
+            |body| {
+                body.call(start);
+            },
+        );
     }
 }
 
@@ -262,7 +279,7 @@ fn allocate_static_data(
         let address = (*offset as u32 + (align - 1)) & !(align - 1); // align up
         let base = *offset;
 
-        *offset = *offset + (pages * PAGE_SIZE) as i32;
+        *offset += (pages * PAGE_SIZE) as i32;
 
         (base, address)
     };
@@ -300,23 +317,19 @@ fn inject_start(
     stack: &Stack,
     thread_counter_addr: i32,
     memory: MemoryId,
-) -> Result<(), Error> {
+) -> Result<ThreadCount, Error> {
     use walrus::ir::*;
 
     assert!(stack.size % PAGE_SIZE == 0);
-    let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
+
     let local = module.locals.add(ValType::I32);
-
-    let mut body = builder.func_body();
-
-    // Call previous start function if one is available. Currently this is
-    // always true because LLVM injects a call to `__wasm_init_memory` as the
-    // start function which, well, initializes memory.
-    if let Some(prev) = module.start.take() {
-        body.call(prev);
-    }
+    let thread_count = module.locals.add(ValType::I32);
 
     let malloc = find_function(module, "__wbindgen_malloc")?;
+
+    let builder = wasm_bindgen_wasm_conventions::get_or_insert_start_builder(module);
+
+    let mut body = builder.func_body();
 
     // Perform an if/else based on whether we're the first thread or not. Our
     // thread ID will be zero if we're the first thread, otherwise it'll be
@@ -324,15 +337,17 @@ fn inject_start(
     body.i32_const(thread_counter_addr)
         .i32_const(1)
         .atomic_rmw(memory, AtomicOp::Add, AtomicWidth::I32, ATOMIC_MEM_ARG)
+        .local_tee(thread_count)
         .if_else(
             None,
             // If our thread id is nonzero then we're the second or greater thread, so
             // we give ourselves a stack and we update our stack
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
-                // local = malloc(stack.size) [aka base]
-                with_temp_stack(body, memory, &stack, |body| {
+                // local = malloc(stack.size, align) [aka base]
+                with_temp_stack(body, memory, stack, |body| {
                     body.i32_const(stack.size as i32)
+                        .i32_const(16)
                         .call(malloc)
                         .local_tee(local);
                 });
@@ -354,19 +369,12 @@ fn inject_start(
     // Afterwards we need to initialize our thread-local state.
     body.i32_const(tls.size as i32)
         .i32_const(tls.align as i32)
-        .drop() // TODO: need to actually respect alignment
         .call(malloc)
         .global_set(tls.base)
         .global_get(tls.base)
         .call(tls.init);
 
-    // Finish off our newly generated function.
-    let start_id = builder.finish(Vec::new(), &mut module.funcs);
-
-    // ... and finally flag it as the new start function
-    module.start = Some(start_id);
-
-    Ok(())
+    Ok(ThreadCount(thread_count))
 }
 
 fn inject_destroy(
@@ -398,11 +406,13 @@ fn inject_destroy(
         |body| {
             body.local_get(tls_base)
                 .i32_const(tls.size as i32)
+                .i32_const(tls.align as i32)
                 .call(free);
         },
         |body| {
             body.global_get(tls.base)
                 .i32_const(tls.size as i32)
+                .i32_const(tls.align as i32)
                 .call(free);
 
             // set tls.base = i32::MIN to trigger invalid memory
@@ -417,12 +427,14 @@ fn inject_destroy(
             // we're destroying somebody else's stack, so we can use our own
             body.local_get(stack_alloc)
                 .i32_const(stack.size as i32)
+                .i32_const(16)
                 .call(free);
         },
-        |mut body| {
-            with_temp_stack(&mut body, memory, stack, |body| {
+        |body| {
+            with_temp_stack(body, memory, stack, |body| {
                 body.global_get(stack.alloc)
                     .i32_const(stack.size as i32)
+                    .i32_const(16)
                     .call(free);
             });
 
@@ -446,7 +458,7 @@ fn find_function(module: &Module, name: &str) -> Result<FunctionId, Error> {
         .ok_or_else(|| anyhow!("failed to find `{}`", name))?;
     match e.item {
         walrus::ExportItem::Function(f) => Ok(f),
-        _ => bail!("`{}` wasn't a funtion", name),
+        _ => bail!("`{}` wasn't a function", name),
     }
 }
 

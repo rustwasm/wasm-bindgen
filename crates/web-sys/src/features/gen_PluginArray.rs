@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -50,7 +51,7 @@ extern "C" {
     pub fn refresh_with_reload_documents(this: &PluginArray, reload_documents: bool);
     #[cfg(feature = "Plugin")]
     #[wasm_bindgen(method, structural, js_class = "PluginArray", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
@@ -58,7 +59,7 @@ extern "C" {
     pub fn get_with_index(this: &PluginArray, index: u32) -> Option<Plugin>;
     #[cfg(feature = "Plugin")]
     #[wasm_bindgen(method, structural, js_class = "PluginArray", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

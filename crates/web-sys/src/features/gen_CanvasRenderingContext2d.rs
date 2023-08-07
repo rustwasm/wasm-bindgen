@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -1031,23 +1032,6 @@ extern "C" {
         dirty_width: f64,
         dirty_height: f64,
     ) -> Result<(), JsValue>;
-    # [wasm_bindgen (method , structural , js_class = "CanvasRenderingContext2D" , js_name = getLineDash)]
-    #[doc = "The `getLineDash()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getLineDash)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn get_line_dash(this: &CanvasRenderingContext2d) -> ::js_sys::Array;
-    # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = setLineDash)]
-    #[doc = "The `setLineDash()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn set_line_dash(
-        this: &CanvasRenderingContext2d,
-        segments: &::wasm_bindgen::JsValue,
-    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = arc)]
     #[doc = "The `arc()` method."]
     #[doc = ""]
@@ -1174,6 +1158,93 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
     pub fn rect(this: &CanvasRenderingContext2d, x: f64, y: f64, w: f64, h: f64);
+    # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn round_rect(
+        this: &CanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn round_rect_with_f64(
+        this: &CanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: f64,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "DomPointInit")]
+    # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`, `DomPointInit`*"]
+    pub fn round_rect_with_dom_point_init(
+        this: &CanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: &DomPointInit,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn round_rect_with_f64_sequence(
+        this: &CanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: &::wasm_bindgen::JsValue,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn round_rect_with_dom_point_init_sequence(
+        this: &CanvasRenderingContext2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: &::wasm_bindgen::JsValue,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (method , structural , js_class = "CanvasRenderingContext2D" , js_name = getLineDash)]
+    #[doc = "The `getLineDash()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getLineDash)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn get_line_dash(this: &CanvasRenderingContext2d) -> ::js_sys::Array;
+    # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = setLineDash)]
+    #[doc = "The `setLineDash()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn set_line_dash(
+        this: &CanvasRenderingContext2d,
+        segments: &::wasm_bindgen::JsValue,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "CanvasRenderingContext2D" , js_name = clearRect)]
     #[doc = "The `clearRect()` method."]
     #[doc = ""]

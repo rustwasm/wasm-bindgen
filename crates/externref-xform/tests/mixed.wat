@@ -20,8 +20,8 @@
   (type (;1;) (func (param i32)))
   (type (;2;) (func (param f32 i32 i64 i32 i32)))
   (type (;3;) (func (param f32 externref i64 externref i32)))
-  (import "" "a" (func $a (type 3)))
-  (func $#func1<a_externref_shim> (@name "a externref shim") (type 2) (param f32 i32 i64 i32 i32)
+  (import "" "a" (func $a (;0;) (type 3)))
+  (func $#func1<a_externref_shim> (@name "a externref shim") (;1;) (type 2) (param f32 i32 i64 i32 i32)
     local.get 0
     local.get 1
     table.get 0
@@ -31,15 +31,18 @@
     local.get 3
     call $dealloc
     local.get 4
-    call $a)
+    call $a
+  )
   (func (;2;) (type 0)
     f32.const 0x1p+0 (;=1;)
     i32.const 2
     i64.const 3
     i32.const 4
     i32.const 5
-    call $#func1<a_externref_shim>)
-  (func $dealloc (type 1) (param i32))
+    call $#func1<a_externref_shim>
+  )
+  (func $dealloc (;3;) (type 1) (param i32))
   (table (;0;) 128 externref)
-  (export "foo" (func 2)))
+  (export "foo" (func 2))
+)
 ;)

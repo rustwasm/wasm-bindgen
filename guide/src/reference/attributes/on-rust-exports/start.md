@@ -6,7 +6,7 @@ soon as the wasm module is instantiated.
 
 ```rust
 #[wasm_bindgen(start)]
-pub fn main() {
+fn main() {
     // executed automatically ...
 }
 ```
@@ -25,7 +25,5 @@ There's a few caveats to be aware of when using the `start` attribute:
   dependencies. If more than one is specified then `wasm-bindgen` will fail when
   the CLI is run. It's recommended that only applications use this attribute.
 * The `start` function will not be executed when testing.
-* If you're experimenting with WebAssembly threads, the `start` function is
-  executed *once per thread*, not once globally!
 * Note that the `start` function is relatively new, so if you find any bugs with
   it, please feel free to report an issue!

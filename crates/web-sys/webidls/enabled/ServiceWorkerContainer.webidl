@@ -42,5 +42,6 @@ partial interface ServiceWorkerContainer {
 
 dictionary RegistrationOptions {
   USVString scope;
+  USVString type;
   ServiceWorkerUpdateViaCache updateViaCache = "imports";
 };

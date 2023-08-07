@@ -510,7 +510,7 @@ fn test_closure_returner() {
         Reflect::set(
             &o,
             &JsValue::from("someKey"),
-            &some_fn.as_ref().unchecked_ref(),
+            some_fn.as_ref().unchecked_ref(),
         )
         .unwrap();
         Reflect::set(

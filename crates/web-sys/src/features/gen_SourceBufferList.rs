@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -48,7 +49,7 @@ extern "C" {
     pub fn set_onremovesourcebuffer(this: &SourceBufferList, value: Option<&::js_sys::Function>);
     #[cfg(feature = "SourceBuffer")]
     #[wasm_bindgen(method, structural, js_class = "SourceBufferList", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

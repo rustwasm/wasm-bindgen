@@ -24,7 +24,7 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup component add rustfmt
     - run: cargo fmt --all -- --check
@@ -34,25 +34,59 @@ jobs:
     name: Check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo check --all
+
+  # Run `cargo clippy` over everything
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: rustup target add wasm32-unknown-unknown
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-backend -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli-support -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p example-tests -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-externref-xform -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p js-sys -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro-support -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-multi-value-xform -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-shared -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-test -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-test-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-threads-xform -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p typescript-tests -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-conventions -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-interpreter -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-webidl -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p webidl-tests -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p web-sys -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown --tests -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-benchmark -- -D warnings
+    - run: for i in examples/*/; do cd "$i"; cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -- -D warnings || exit 1; cd ../..; done
 
   test_wasm_bindgen:
     name: "Run wasm-bindgen crate tests (unix)"
     runs-on: ubuntu-latest
+    env:
+      WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test --target wasm32-unknown-unknown
     - run: cargo test --target wasm32-unknown-unknown --features serde-serialize
     - run: cargo test --target wasm32-unknown-unknown --features enable-interning
-    - run: cargo test --target wasm32-unknown-unknown -p no-std
     - run: cargo test --target wasm32-unknown-unknown -p wasm-bindgen-futures
     - run: cargo test --target wasm32-unknown-unknown --test wasm
       env:
@@ -68,13 +102,16 @@ jobs:
       env:
         WASM_BINDGEN_EXTERNREF: 1
         NODE_ARGS: --experimental-wasm-reftypes
+    - run: cargo test --target wasm32-unknown-unknown
+      env:
+        WASM_BINDGEN_MULTI_VALUE: 1
 
   test_threads:
     name: "Run wasm-bindgen crate tests with multithreading enabled"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: rustup default nightly-2022-05-19
+    - uses: actions/checkout@v3
+    - run: rustup default nightly-2023-05-08
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
     # Note: we only run the browser tests here, because wasm-bindgen doesn't support threading in Node yet.
@@ -88,10 +125,10 @@ jobs:
   #   name: "Run wasm-bindgen crate tests (Windows)"
   #   runs-on: windows-latest
   #   steps:
-  #   - uses: actions/checkout@v2
+  #   - uses: actions/checkout@v3
   #   - run: rustup update --no-self-update stable && rustup default stable
   #   - run: rustup target add wasm32-unknown-unknown
-  #   - uses: actions/setup-node@v2
+  #   - uses: actions/setup-node@v3
   #     with:
   #       node-version: '16'
   #   - uses: ./.github/actions/setup-geckodriver
@@ -109,16 +146,17 @@ jobs:
     name: Run native tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16'
     - run: cargo test
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
     - run: cargo test -p wasm-bindgen-externref-xform
+    - run: cargo test -p wasm-bindgen-macro-support
     - run: cargo test -p wasm-bindgen-multi-value-xform
     - run: cargo test -p wasm-bindgen-wasm-interpreter
     - run: cargo test -p wasm-bindgen-futures
@@ -128,10 +166,10 @@ jobs:
     name: "Run web-sys crate tests"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
@@ -148,19 +186,19 @@ jobs:
     name: "Verify that web-sys is compiled correctly"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
-    - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features
+    - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features ./Cargo.toml
     - run: git diff --exit-code
 
   test_js_sys:
     name: "Run js-sys crate tests"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16'
     - uses: ./.github/actions/setup-geckodriver
@@ -173,10 +211,10 @@ jobs:
     name: "Run wasm-bindgen-webidl crate tests"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16'
     - run: cargo test -p wasm-bindgen-webidl
@@ -191,10 +229,10 @@ jobs:
     name: "Test TypeScript output of wasm-bindgen"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16'
     - run: cd crates/typescript-tests && ./run.sh
@@ -203,7 +241,7 @@ jobs:
     name: "Build and test the deno example"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - uses: denoland/setup-deno@v1
@@ -215,21 +253,22 @@ jobs:
     name: Run UI compile-fail tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: rustup update --no-self-update 1.56.0 && rustup default 1.56.0
+    - uses: actions/checkout@v3
+    - run: rustup update --no-self-update 1.69.0 && rustup default 1.69.0
     - run: cargo test -p wasm-bindgen-macro
+    - run: cargo test -p wasm-bindgen-test-macro
 
   build_examples:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
     - run: |
-        curl -L https://github.com/WebAssembly/binaryen/releases/download/version_109/binaryen-version_109-x86_64-linux.tar.gz -sSf > binaryen-version_109-x86_64-linux.tar.gz
-        tar -xz -f binaryen-version_109-x86_64-linux.tar.gz
-        echo "$PWD/binaryen-version_109/bin" >> $GITHUB_PATH
+        curl -L https://github.com/WebAssembly/binaryen/releases/download/version_112/binaryen-version_112-x86_64-linux.tar.gz -sSf > binaryen-version_112-x86_64-linux.tar.gz
+        tar -xz -f binaryen-version_112-x86_64-linux.tar.gz binaryen-version_112/bin/wasm2js
+        echo "$PWD/binaryen-version_112/bin" >> $GITHUB_PATH
     - run: |
         cargo build -p wasm-bindgen-cli
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
@@ -238,12 +277,12 @@ jobs:
         for dir in `ls examples | grep -v README | grep -v raytrace | grep -v deno | grep -v wasm-audio-worklet`; do
           (cd examples/$dir &&
             (npm run build -- --output-path ../../exbuild/$dir ||
-              (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir))
+              (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir && rm ../../exbuild/$dir/**/.gitignore))
           ) || exit 1;
         done
       env:
         RUSTFLAGS: --cfg=web_sys_unstable_apis
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: examples1
         path: exbuild
@@ -251,8 +290,8 @@ jobs:
   build_nightly:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: rustup default nightly-2022-05-19
+    - uses: actions/checkout@v3
+    - run: rustup default nightly-2023-05-08
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
     - run: |
@@ -261,7 +300,7 @@ jobs:
             ./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir
           ) || exit 1;
         done
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: examples2
         path: exbuild
@@ -272,7 +311,7 @@ jobs:
     - build_nightly
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
         name: examples1
@@ -289,12 +328,12 @@ jobs:
   build_benchmarks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - run: cargo build --manifest-path benchmarks/Cargo.toml --release --target wasm32-unknown-unknown
     - run: cargo run -p wasm-bindgen-cli -- target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm --out-dir benchmarks/pkg --target web
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: benchmarks
         path: benchmarks
@@ -302,7 +341,7 @@ jobs:
   dist_linux_x86_64_musl:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add x86_64-unknown-linux-musl
     - run: sudo apt update -y && sudo apt install musl-tools -y
@@ -311,7 +350,7 @@ jobs:
         strip -g target/x86_64-unknown-linux-musl/release/wasm-bindgen
         strip -g target/x86_64-unknown-linux-musl/release/wasm-bindgen-test-runner
         strip -g target/x86_64-unknown-linux-musl/release/wasm2es6js
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_linux_x86_64_musl
         path: "target/x86_64-unknown-linux-musl/release/wasm*"
@@ -327,7 +366,7 @@ jobs:
         cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-unknown-linux-gnu --features vendored-openssl --release
       env:
         CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_linux_aarch64_gnu
         path: "target/aarch64-unknown-linux-gnu/release/wasm*"
@@ -335,12 +374,12 @@ jobs:
   dist_macos_x86_64:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo build --manifest-path crates/cli/Cargo.toml --release
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.7
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_macos_x86_64
         path: "target/release/wasm*"
@@ -348,14 +387,14 @@ jobs:
   dist_macos_aarch64:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add aarch64-apple-darwin
     - run: |
         cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-apple-darwin --release
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.7
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_macos_aarch64
         path: "target/aarch64-apple-darwin/release/wasm*"
@@ -363,12 +402,12 @@ jobs:
   dist_windows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo build --manifest-path crates/cli/Cargo.toml --release
       env:
         RUSTFLAGS: -Ctarget-feature=+crt-static
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist_windows
         path: "target/release/wasm*"
@@ -376,12 +415,12 @@ jobs:
   doc_book:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: |
-        curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.3.0/mdbook-v0.3.0-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
+        curl -L https://github.com/rust-lang/mdBook/releases/download/v0.4.28/mdbook-v0.4.28-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
         echo $PWD >> $GITHUB_PATH
     - run: (cd guide && mdbook build)
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: doc_book
         path: guide/book/html
@@ -389,7 +428,7 @@ jobs:
   doc_api:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: rustup update --no-self-update nightly && rustup default nightly
     - run: cargo doc --no-deps --features 'serde-serialize'
     - run: cargo doc --no-deps --manifest-path crates/js-sys/Cargo.toml
@@ -398,7 +437,7 @@ jobs:
         RUSTDOCFLAGS: --cfg=web_sys_unstable_apis
     - run: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
     - run: tar czvf docs.tar.gz target/doc
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: doc_api
         path: docs.tar.gz
@@ -421,11 +460,11 @@ jobs:
       - build_benchmarks
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - run: rustup update --no-self-update nightly && rustup default nightly
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         path: artifacts
     - run: find artifacts
@@ -453,7 +492,7 @@ jobs:
         mk x86_64-apple-darwin dist_macos_x86_64
         mk aarch64-apple-darwin dist_macos_aarch64
         mk x86_64-pc-windows-msvc dist_windows
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: gh-release
         path: gh-release
@@ -465,11 +504,11 @@ jobs:
         mv artifacts/examples2/* gh-pages/exbuild
         mv artifacts/benchmarks gh-pages/benchmarks
         tar czf gh-pages.tar.gz gh-pages
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: gh-pages
         path: gh-pages.tar.gz
-    - uses: JamesIves/github-pages-deploy-action@4.1.4
+    - uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
         branch: gh-pages
         folder: gh-pages

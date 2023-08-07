@@ -17,6 +17,9 @@
 mod features;
 pub use features::*;
 
+pub use js_sys;
+pub use wasm_bindgen;
+
 /// Getter for the `Window` object
 ///
 /// [MDN Documentation]

@@ -370,21 +370,21 @@ fn first_pass_operation<'src, A: Into<Arg<'src>> + 'src>(
             let x = record
                 .interfaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} interface", self_name));
+                .unwrap_or_else(|| panic!("not found {} interface", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Mixin => {
             let x = record
                 .mixins
                 .get_mut(self_name)
-                .expect(&format!("not found {} mixin", self_name));
+                .unwrap_or_else(|| panic!("not found {} mixin", self_name));
             &mut x.operations
         }
         FirstPassOperationType::Namespace => {
             let x = record
                 .namespaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} namespace", self_name));
+                .unwrap_or_else(|| panic!("not found {} namespace", self_name));
             &mut x.operations
         }
     };
@@ -544,21 +544,18 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
                 Ok(())
             }
             InterfaceMember::Constructor(constr) => constr.first_pass(record, ctx),
+            InterfaceMember::Maplike(ml) => ml.first_pass(record, ctx),
+            InterfaceMember::Setlike(sl) => sl.first_pass(record, ctx),
+            // TODO
             InterfaceMember::Iterable(_iterable) => {
                 log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
                 Ok(())
             }
-            InterfaceMember::Maplike(ml) => ml.first_pass(record, ctx),
-            // TODO
             InterfaceMember::Stringifier(_) => {
                 log::warn!(
                     "Unsupported WebIDL Stringifier interface member: {:?}",
                     self
                 );
-                Ok(())
-            }
-            InterfaceMember::Setlike(_) => {
-                log::warn!("Unsupported WebIDL Setlike interface member: {:?}", self);
                 Ok(())
             }
             InterfaceMember::AsyncIterable(_iterable) => {
@@ -851,18 +848,229 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
                 stability,
             );
 
-            // TODO: `set` actually returns `this` but we don't have a way to express that just yet
-            // undefined set(K key, V value);
+            // <interface name> set(K key, V value);
             first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
                 &[OperationId::Operation(Some("set"))],
                 [key_arg(), value_arg()],
-                &undefined_ret(),
+                &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                    MayBeNull {
+                        type_: Identifier(self_name),
+                        q_mark: None,
+                    },
+                )))),
                 &None,
                 false,
                 stability,
+            );
+        }
+
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::SetlikeInterfaceMember<'src>
+{
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        ctx: (&'src str, ApiStability),
+    ) -> Result<()> {
+        let value_ty = &self.generics.body;
+        let value_arg = || Arg {
+            name: "value",
+            ty: &value_ty.type_,
+            optional: false,
+            variadic: false,
+        };
+
+        let undefined_ret = || ReturnType::Undefined(term!(undefined));
+
+        // readonly attribute unsigned long size;
+        record
+            .interfaces
+            .get_mut(ctx.0)
+            .unwrap()
+            .attributes
+            .push(AttributeInterfaceData {
+                definition: &AttributeInterfaceMember {
+                    attributes: None,
+                    modifier: None,
+                    readonly: Some(term!(readonly)),
+                    attribute: term!(attribute),
+                    type_: AttributedType {
+                        attributes: None,
+                        type_: Type::Single(SingleType::NonAny(NonAnyType::Integer(MayBeNull {
+                            type_: IntegerType::Long(LongType {
+                                unsigned: Some(term!(unsigned)),
+                                long: term!(long),
+                            }),
+                            q_mark: None,
+                        }))),
+                    },
+                    identifier: Identifier("size"),
+                    semi_colon: term!(;),
+                },
+                stability: ctx.1,
+            });
+
+        // boolean has(V value);
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("has"))],
+            [value_arg()],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Boolean(
+                MayBeNull {
+                    type_: term!(boolean),
+                    q_mark: None,
+                },
+            )))),
+            &None,
+            false,
+            ctx.1,
+        );
+
+        // callback SetlikeForEachCallback = undefined (V value);
+        // TODO: the signature of the callback is erased, could we keep it?
+        let foreach_callback_arg = Arg {
+            name: "callback",
+            ty: &Type::Single(SingleType::NonAny(NonAnyType::Identifier(MayBeNull {
+                type_: Identifier("SetlikeForEachCallback"),
+                q_mark: None,
+            }))),
+            optional: false,
+            variadic: false,
+        };
+
+        record.callbacks.insert("SetlikeForEachCallback");
+
+        // [Throws] undefined forEach(SetlikeForEachCallback cb);
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("forEach"))],
+            [foreach_callback_arg],
+            &undefined_ret(),
+            &THROWS_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // TODO: iterators could have stronger types by generating specialised interfaces for each
+        //       maplike/setlike. Right now, `value` is always `any`.
+
+        // declare the iterator interface
+        record.iterators.insert("SetlikeIterator");
+
+        // [NewObject] SetlikeIterator entries();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("entries"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("SetlikeIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // [NewObject] SetlikeIterator keys();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("keys"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("SetlikeIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // [NewObject] SetlikeIterator values();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("values"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("SetlikeIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // add writeable interface if *not* readonly
+        if self.readonly.is_none() {
+            // undefined clear();
+            first_pass_operation(
+                record,
+                FirstPassOperationType::Interface,
+                ctx.0,
+                &[OperationId::Operation(Some("clear"))],
+                &[],
+                &undefined_ret(),
+                &None,
+                false,
+                ctx.1,
+            );
+
+            // boolean delete(V value);
+            first_pass_operation(
+                record,
+                FirstPassOperationType::Interface,
+                ctx.0,
+                &[OperationId::Operation(Some("delete"))],
+                [value_arg()],
+                &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Boolean(
+                    MayBeNull {
+                        type_: term!(boolean),
+                        q_mark: None,
+                    },
+                )))),
+                &None,
+                false,
+                ctx.1,
+            );
+
+            // <interface name> add(V value);
+            first_pass_operation(
+                record,
+                FirstPassOperationType::Interface,
+                ctx.0,
+                &[OperationId::Operation(Some("add"))],
+                [value_arg()],
+                &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                    MayBeNull {
+                        type_: Identifier(ctx.0),
+                        q_mark: None,
+                    },
+                )))),
+                &None,
+                false,
+                ctx.1,
             );
         }
 
@@ -988,7 +1196,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             record,
             FirstPassOperationType::Mixin,
             ctx.0,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -1120,7 +1328,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
             record,
             FirstPassOperationType::Namespace,
             self_name,
-            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
+            &[OperationId::Operation(self.identifier.map(|s| s.0))],
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
@@ -1181,11 +1389,9 @@ impl<'a> FirstPassRecord<'a> {
             Some(class) => class,
             None => return,
         };
-        if self.interfaces.contains_key(superclass) {
-            if set.insert(superclass) {
-                list.push(camel_case_ident(superclass));
-                self.fill_superclasses(superclass, set, list);
-            }
+        if self.interfaces.contains_key(superclass) && set.insert(superclass) {
+            list.push(camel_case_ident(superclass));
+            self.fill_superclasses(superclass, set, list);
         }
     }
 
@@ -1194,22 +1400,17 @@ impl<'a> FirstPassRecord<'a> {
         interface: &str,
     ) -> impl Iterator<Item = &'me MixinData<'a>> + 'me {
         let mut set = Vec::new();
-        self.fill_mixins(interface, interface, &mut set);
+        self.fill_mixins(interface, &mut set);
         set.into_iter()
     }
 
-    fn fill_mixins<'me>(
-        &'me self,
-        self_name: &str,
-        mixin_name: &str,
-        list: &mut Vec<&'me MixinData<'a>>,
-    ) {
+    fn fill_mixins<'me>(&'me self, mixin_name: &str, list: &mut Vec<&'me MixinData<'a>>) {
         if let Some(mixin_data) = self.mixins.get(mixin_name) {
             list.push(mixin_data);
         }
         if let Some(mixin_names) = self.includes.get(mixin_name) {
             for mixin_name in mixin_names {
-                self.fill_mixins(self_name, mixin_name, list);
+                self.fill_mixins(mixin_name, list);
             }
         }
     }

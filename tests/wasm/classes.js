@@ -228,7 +228,7 @@ exports.js_test_inspectable_classes = () => {
     assert.strictEqual(not_inspectable.toJSON, undefined);
     assert.strictEqual(not_inspectable.toString(), '[object Object]');
     // Non-inspectable classes in Node.js have no special console.log formatting
-    assert.strictEqual(console_log_to_string(not_inspectable), `NotInspectable { ptr: ${not_inspectable.ptr} }`);
+    assert.strictEqual(console_log_to_string(not_inspectable), `NotInspectable { __wbg_ptr: ${not_inspectable.__wbg_ptr} }`);
     inspectable.free();
     not_inspectable.free();
 };

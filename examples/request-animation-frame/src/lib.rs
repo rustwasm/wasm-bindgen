@@ -24,7 +24,7 @@ fn body() -> web_sys::HtmlElement {
 
 // This function is automatically invoked after the wasm module is instantiated.
 #[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
+fn run() -> Result<(), JsValue> {
     // Here we want to call `requestAnimationFrame` in a loop, but only a fixed
     // number of times. After it's done we want all our resources cleaned up. To
     // achieve this we're using an `Rc`. The `Rc` will eventually store the

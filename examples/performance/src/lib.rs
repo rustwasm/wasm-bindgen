@@ -14,7 +14,7 @@ macro_rules! console_log {
 }
 
 #[wasm_bindgen(start)]
-pub fn run() {
+fn run() {
     let window = web_sys::window().expect("should have a window in this context");
     let performance = window
         .performance()

@@ -1,8 +1,12 @@
+use walrus::ModuleConfig;
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
 fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
     let wasm = wat::parse_str(wat).unwrap();
-    let module = walrus::Module::from_buffer(&wasm).unwrap();
+    let mut module = ModuleConfig::new()
+        .generate_producers_section(false)
+        .parse(&wasm)
+        .unwrap();
     let mut i = Interpreter::new(&module).unwrap();
     let id = module
         .exports

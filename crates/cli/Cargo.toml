@@ -1,8 +1,8 @@
 [package]
 name = "wasm-bindgen-cli"
-version = "0.2.83"
+version = "0.2.87"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cli"
 homepage = "https://rustwasm.github.io/wasm-bindgen/"
 documentation = "https://rustwasm.github.io/wasm-bindgen/"
@@ -13,21 +13,29 @@ information see https://github.com/rustwasm/wasm-bindgen.
 """
 edition = '2018'
 default-run = 'wasm-bindgen'
+rust-version = "1.56"
+
+[package.metadata.binstall]
+pkg-url = "https://github.com/rustwasm/wasm-bindgen/releases/download/{ version }/wasm-bindgen-{ version }-{ target }{ archive-suffix }"
+bin-dir = "wasm-bindgen-{ version }-{ target }/{ bin }{ binary-ext }"
 
 [dependencies]
-curl = "0.4.13"
 docopt = "1.0"
 env_logger = "0.8"
 anyhow = "1.0"
 log = "0.4"
-openssl = { version = '0.10.11', optional = true }
+native-tls = { version = "0.2", default-features = false, optional = true }
 rouille = { version = "3.0.0", default-features = false }
 serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
+ureq = { version = "2.7", default-features = false, features = [
+    "brotli",
+    "gzip",
+] }
 walrus = { version = "0.19.0", features = ['parallel'] }
-wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.83" }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.83" }
+wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.87" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.87" }
 
 [dev-dependencies]
 assert_cmd = "1.0"
@@ -35,19 +43,19 @@ diff = "0.1"
 predicates = "1.0.0"
 rayon = "1.0"
 tempfile = "3.0"
-wasmprinter = "0.2, <=0.2.33" # pinned for wit-printer
-wit-printer = "0.2"
-wit-text = "0.8"
-wit-validator = "0.2"
-wit-walrus = "0.6"
+wasmparser = "0.102.0"
+wasmprinter = "0.2.54"
 
 [[test]]
 name = "reference"
 harness = false
 
-[[test]]
-name = "interface-types"
-harness = false
-
 [features]
-vendored-openssl = ['openssl/vendored']
+default = ["rustls-tls"]
+
+native-tls = ["ureq/native-tls"]
+rustls-tls = ["ureq/tls"]
+
+# Legacy support
+openssl = ["dep:native-tls"]
+vendored-openssl = ["openssl", "native-tls/vendored"]

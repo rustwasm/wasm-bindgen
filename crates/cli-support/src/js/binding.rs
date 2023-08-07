@@ -8,6 +8,7 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
+use std::fmt::Write;
 use walrus::{Module, ValType};
 
 /// A one-size-fits-all builder for processing WebIDL bindings and generating
@@ -38,6 +39,9 @@ pub struct JsBuilder<'a, 'b> {
     /// The "prelude" of the function, or largely just the JS function we've
     /// built so far.
     prelude: String,
+
+    /// Code which should go before the `try {` in a try-finally block.
+    pre_try: String,
 
     /// JS code to execute in a `finally` block in case any exceptions happen.
     finally: String,
@@ -106,6 +110,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         explicit_arg_names: &Option<Vec<String>>,
         asyncness: bool,
         variadic: bool,
+        generate_jsdoc: bool,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -124,22 +129,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         // method, so the leading parameter is the this pointer stored on
         // the JS object, so synthesize that here.
         let mut js = JsBuilder::new(self.cx);
-        match self.method {
-            Some(consumes_self) => {
-                drop(params.next());
-                if js.cx.config.debug {
-                    js.prelude(
-                        "if (this.ptr == 0) throw new Error('Attempt to use a moved value');",
-                    );
-                }
-                if consumes_self {
-                    js.prelude("const ptr = this.__destroy_into_raw();");
-                    js.args.push("ptr".into());
-                } else {
-                    js.args.push("this.ptr".into());
-                }
+        if let Some(consumes_self) = self.method {
+            let _ = params.next();
+            if js.cx.config.debug {
+                js.prelude(
+                    "if (this.__wbg_ptr == 0) throw new Error('Attempt to use a moved value');",
+                );
             }
-            None => {}
+            if consumes_self {
+                js.prelude("const ptr = this.__destroy_into_raw();");
+                js.args.push("ptr".into());
+            } else {
+                js.args.push("this.__wbg_ptr".into());
+            }
         }
         for (i, param) in params.enumerate() {
             let arg = match explicit_arg_names {
@@ -196,11 +198,11 @@ impl<'a, 'b> Builder<'a, 'b> {
         // }
 
         let mut code = String::new();
-        code.push_str("(");
+        code.push('(');
         if variadic {
             if let Some((last, non_variadic_args)) = function_args.split_last() {
                 code.push_str(&non_variadic_args.join(", "));
-                if non_variadic_args.len() > 0 {
+                if !non_variadic_args.is_empty() {
                     code.push_str(", ");
                 }
                 code.push_str((String::from("...") + last).as_str())
@@ -210,10 +212,14 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         code.push_str(") {\n");
 
-        let mut call = js.prelude;
-        if js.finally.len() != 0 {
-            call = format!("try {{\n{}}} finally {{\n{}}}\n", call, js.finally);
-        }
+        let call = if !js.finally.is_empty() {
+            format!(
+                "{}try {{\n{}}} finally {{\n{}}}\n",
+                js.pre_try, js.prelude, js.finally
+            )
+        } else {
+            js.pre_try + &js.prelude
+        };
 
         if self.catch {
             js.cx.expose_handle_error()?;
@@ -228,7 +234,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
 
         code.push_str(&call);
-        code.push_str("}");
+        code.push('}');
 
         // Rust Structs' fields converted into Getter and Setter functions before
         // we decode them from webassembly, finding if a function is a field
@@ -243,7 +249,11 @@ impl<'a, 'b> Builder<'a, 'b> {
             asyncness,
             variadic,
         );
-        let js_doc = self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic);
+        let js_doc = if generate_jsdoc {
+            self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic)
+        } else {
+            String::new()
+        };
 
         Ok(JsFunction {
             code,
@@ -304,15 +314,15 @@ impl<'a, 'b> Builder<'a, 'b> {
         if variadic {
             if let Some((last, non_variadic_args)) = ts_args.split_last() {
                 ts.push_str(&non_variadic_args.join(", "));
-                if non_variadic_args.len() > 0 {
+                if !non_variadic_args.is_empty() {
                     ts.push_str(", ");
                 }
                 ts.push_str((String::from("...") + last).as_str())
             }
         } else {
-            ts.push_str(&format!("{}", ts_args.join(", ")));
+            ts.push_str(&ts_args.join(", "));
         };
-        ts.push_str(")");
+        ts.push(')');
 
         // If this function is an optional field's setter, it should have only
         // one arg, and omittable should be `true`.
@@ -336,7 +346,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             ts.push_str(&ret);
             ts_ret = Some(ret);
         }
-        return (ts, ts_arg_tys, ts_ret);
+        (ts, ts_arg_tys, ts_ret)
     }
 
     /// Returns a helpful JS doc comment which lists types for all parameters
@@ -358,14 +368,14 @@ impl<'a, 'b> Builder<'a, 'b> {
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
-            ret.push_str("\n");
+            ret.push('\n');
         }
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             ret.push_str("@param {...");
             adapter2ts(ty, &mut ret);
             ret.push_str("} ");
             ret.push_str(name);
-            ret.push_str("\n");
+            ret.push('\n');
         }
         if let Some(ts) = ts_ret {
             if ts != "void" {
@@ -382,6 +392,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             cx,
             args: Vec::new(),
             tmp: 0,
+            pre_try: String::new(),
             finally: String::new(),
             prelude: String::new(),
             stack: Vec::new(),
@@ -396,7 +407,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         for line in prelude.trim().lines().map(|l| l.trim()) {
             if !line.is_empty() {
                 self.prelude.push_str(line);
-                self.prelude.push_str("\n");
+                self.prelude.push('\n');
             }
         }
     }
@@ -405,7 +416,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         for line in finally.trim().lines().map(|l| l.trim()) {
             if !line.is_empty() {
                 self.finally.push_str(line);
-                self.finally.push_str("\n");
+                self.finally.push('\n');
             }
         }
     }
@@ -413,7 +424,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     pub fn tmp(&mut self) -> usize {
         let ret = self.tmp;
         self.tmp += 1;
-        return ret;
+        ret
     }
 
     fn pop(&mut self) -> String {
@@ -489,7 +500,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         }
         self.prelude(&format!(
             "\
-                if ({0}.ptr === 0) {{
+                if ({0}.__wbg_ptr === 0) {{
                     throw new Error('Attempt to use a moved value');
                 }}
             ",
@@ -528,29 +539,46 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
 
 fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) -> Result<(), Error> {
     match instr {
-        Instruction::Standard(wit_walrus::Instruction::ArgGet(n)) => {
+        Instruction::ArgGet(n) => {
             let arg = js.arg(*n).to_string();
             js.push(arg);
         }
 
-        Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => {
-            panic!("standard call adapter functions should be mapped to our adapters");
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::CallCore(_))
+        Instruction::CallCore(_)
         | Instruction::CallExport(_)
         | Instruction::CallAdapter(_)
         | Instruction::CallTableElement(_)
-        | Instruction::Standard(wit_walrus::Instruction::DeferCallCore(_)) => {
+        | Instruction::DeferFree { .. } => {
             let invoc = Invocation::from(instr, js.cx.module)?;
-            let (params, results) = invoc.params_results(js.cx);
+            let (mut params, results) = invoc.params_results(js.cx);
 
-            // Pop off the number of parameters for the function we're calling
             let mut args = Vec::new();
-            for _ in 0..params {
-                args.push(js.pop());
+            let tmp = js.tmp();
+            if invoc.defer() {
+                if let Instruction::DeferFree { .. } = instr {
+                    // Ignore `free`'s final `align` argument, since that's manually inserted later.
+                    params -= 1;
+                }
+                // If the call is deferred, the arguments to the function still need to be
+                // accessible in the `finally` block, so we declare variables to hold the args
+                // outside of the try-finally block and then set those to the args.
+                for (i, arg) in js.stack[js.stack.len() - params..].iter().enumerate() {
+                    let name = format!("deferred{tmp}_{i}");
+                    writeln!(js.pre_try, "let {name};").unwrap();
+                    writeln!(js.prelude, "{name} = {arg};").unwrap();
+                    args.push(name);
+                }
+                if let Instruction::DeferFree { align, .. } = instr {
+                    // add alignment
+                    args.push(align.to_string());
+                }
+            } else {
+                // Otherwise, pop off the number of parameters for the function we're calling.
+                for _ in 0..params {
+                    args.push(js.pop());
+                }
+                args.reverse();
             }
-            args.reverse();
 
             // Call the function through an export of the underlying module.
             let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error)?;
@@ -561,7 +589,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             match (invoc.defer(), results) {
                 (true, 0) => {
                     js.finally(&format!("{};", call));
-                    js.stack.extend(args);
                 }
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),
@@ -578,13 +605,11 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             }
         }
 
-        Instruction::Standard(wit_walrus::Instruction::IntToWasm {
-            trap: false, input, ..
-        }) => {
+        Instruction::IntToWasm { input, .. } => {
             let val = js.pop();
             if matches!(
                 input,
-                wit_walrus::ValType::I64 | wit_walrus::ValType::S64 | wit_walrus::ValType::U64
+                AdapterType::I64 | AdapterType::S64 | AdapterType::U64
             ) {
                 js.assert_bigint(&val);
             } else {
@@ -596,33 +621,20 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         // When converting to a JS number we need to specially handle the `u32`
         // case because if the high bit is set then it comes out as a negative
         // number, but we want to switch that to an unsigned representation.
-        Instruction::Standard(wit_walrus::Instruction::WasmToInt {
-            trap: false,
-            output,
-            ..
-        }) => {
+        Instruction::WasmToInt { output, .. } => {
             let val = js.pop();
             match output {
-                wit_walrus::ValType::U32 => js.push(format!("{} >>> 0", val)),
-                wit_walrus::ValType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
+                AdapterType::U32 => js.push(format!("{} >>> 0", val)),
+                AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
                 _ => js.push(val),
             }
         }
 
-        Instruction::Standard(wit_walrus::Instruction::WasmToInt { trap: true, .. })
-        | Instruction::Standard(wit_walrus::Instruction::IntToWasm { trap: true, .. }) => {
-            bail!("trapping wasm-to-int and int-to-wasm instructions not supported")
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::MemoryToString(mem)) => {
+        Instruction::MemoryToString(mem) => {
             let len = js.pop();
             let ptr = js.pop();
             let get = js.cx.expose_get_string_from_wasm(*mem)?;
             js.push(format!("{}({}, {})", get, ptr, len));
-        }
-
-        Instruction::Standard(wit_walrus::Instruction::StringToMemory { mem, malloc }) => {
-            js.string_to_memory(*mem, *malloc, None)?;
         }
 
         Instruction::StringToMemory {
@@ -713,7 +725,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::I32FromExternrefRustOwned { class } => {
             let val = js.pop();
-            js.assert_class(&val, &class);
+            js.assert_class(&val, class);
             js.assert_not_moved(&val);
             let i = js.tmp();
             js.prelude(&format!("var ptr{} = {}.__destroy_into_raw();", i, val));
@@ -722,9 +734,9 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
 
         Instruction::I32FromExternrefRustBorrow { class } => {
             let val = js.pop();
-            js.assert_class(&val, &class);
+            js.assert_class(&val, class);
             js.assert_not_moved(&val);
-            js.push(format!("{}.ptr", val));
+            js.push(format!("{}.__wbg_ptr", val));
         }
 
         Instruction::I32FromOptionRust { class } => {
@@ -1181,13 +1193,13 @@ impl Invocation {
     fn from(instr: &Instruction, module: &Module) -> Result<Invocation, Error> {
         use Instruction::*;
         Ok(match instr {
-            Standard(wit_walrus::Instruction::CallCore(f)) => Invocation::Core {
+            CallCore(f) => Invocation::Core {
                 id: *f,
                 defer: false,
             },
 
-            Standard(wit_walrus::Instruction::DeferCallCore(f)) => Invocation::Core {
-                id: *f,
+            DeferFree { free, .. } => Invocation::Core {
+                id: *free,
                 defer: true,
             },
 

@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
@@ -70,6 +71,17 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn max_bind_groups(this: &GpuSupportedLimits) -> u32;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (structural , method , getter , js_class = "GPUSupportedLimits" , js_name = maxBindGroupsPlusVertexBuffers)]
+    #[doc = "Getter for the `maxBindGroupsPlusVertexBuffers` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUSupportedLimits/maxBindGroupsPlusVertexBuffers)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuSupportedLimits`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn max_bind_groups_plus_vertex_buffers(this: &GpuSupportedLimits) -> u32;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "GPUSupportedLimits" , js_name = maxBindingsPerBindGroup)]
     #[doc = "Getter for the `maxBindingsPerBindGroup` field of this object."]
@@ -280,16 +292,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn max_color_attachments(this: &GpuSupportedLimits) -> u32;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (structural , method , getter , js_class = "GPUSupportedLimits" , js_name = maxColorAttachmentBytesPerPixel)]
-    #[doc = "Getter for the `maxColorAttachmentBytesPerPixel` field of this object."]
+    # [wasm_bindgen (structural , method , getter , js_class = "GPUSupportedLimits" , js_name = maxColorAttachmentBytesPerSample)]
+    #[doc = "Getter for the `maxColorAttachmentBytesPerSample` field of this object."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUSupportedLimits/maxColorAttachmentBytesPerPixel)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUSupportedLimits/maxColorAttachmentBytesPerSample)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuSupportedLimits`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn max_color_attachment_bytes_per_pixel(this: &GpuSupportedLimits) -> u32;
+    pub fn max_color_attachment_bytes_per_sample(this: &GpuSupportedLimits) -> u32;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "GPUSupportedLimits" , js_name = maxComputeWorkgroupStorageSize)]
     #[doc = "Getter for the `maxComputeWorkgroupStorageSize` field of this object."]

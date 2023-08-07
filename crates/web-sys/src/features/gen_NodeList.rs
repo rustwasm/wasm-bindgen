@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -28,7 +29,7 @@ extern "C" {
     pub fn item(this: &NodeList, index: u32) -> Option<Node>;
     #[cfg(feature = "Node")]
     #[wasm_bindgen(method, structural, js_class = "NodeList", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

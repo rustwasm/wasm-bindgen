@@ -51,15 +51,6 @@ macro_rules! intrinsics {
                     )*
                 }
             }
-
-            /// Returns the symbol name of this intrinsic
-            pub fn name(&self) -> &'static str {
-                match self {
-                    $(
-                        Intrinsic::$name => $sym,
-                    )*
-                }
-            }
         }
     };
 }
@@ -252,6 +243,9 @@ intrinsics! {
         #[symbol = "__wbindgen_memory"]
         #[signature = fn() -> Externref]
         Memory,
+        #[symbol = "__wbindgen_exports"]
+        #[signature = fn() -> Externref]
+        Exports,
         #[symbol = "__wbindgen_module"]
         #[signature = fn() -> Externref]
         Module,

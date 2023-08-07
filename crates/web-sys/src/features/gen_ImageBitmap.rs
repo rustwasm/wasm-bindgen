@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -32,60 +33,4 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`*"]
     pub fn close(this: &ImageBitmap);
-    #[cfg(feature = "ImageBitmapFormat")]
-    # [wasm_bindgen (catch , method , structural , js_class = "ImageBitmap" , js_name = findOptimalFormat)]
-    #[doc = "The `findOptimalFormat()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap/findOptimalFormat)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
-    pub fn find_optimal_format(this: &ImageBitmap) -> Result<ImageBitmapFormat, JsValue>;
-    #[cfg(feature = "ImageBitmapFormat")]
-    # [wasm_bindgen (catch , method , structural , js_class = "ImageBitmap" , js_name = findOptimalFormat)]
-    #[doc = "The `findOptimalFormat()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap/findOptimalFormat)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
-    pub fn find_optimal_format_with_a_possible_formats(
-        this: &ImageBitmap,
-        a_possible_formats: &::wasm_bindgen::JsValue,
-    ) -> Result<ImageBitmapFormat, JsValue>;
-    #[cfg(feature = "ImageBitmapFormat")]
-    # [wasm_bindgen (catch , method , structural , js_class = "ImageBitmap" , js_name = mapDataInto)]
-    #[doc = "The `mapDataInto()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap/mapDataInto)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
-    pub fn map_data_into_with_buffer_source(
-        this: &ImageBitmap,
-        a_format: ImageBitmapFormat,
-        a_buffer: &::js_sys::Object,
-        a_offset: i32,
-    ) -> Result<::js_sys::Promise, JsValue>;
-    #[cfg(feature = "ImageBitmapFormat")]
-    # [wasm_bindgen (catch , method , structural , js_class = "ImageBitmap" , js_name = mapDataInto)]
-    #[doc = "The `mapDataInto()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap/mapDataInto)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
-    pub fn map_data_into_with_u8_array(
-        this: &ImageBitmap,
-        a_format: ImageBitmapFormat,
-        a_buffer: &mut [u8],
-        a_offset: i32,
-    ) -> Result<::js_sys::Promise, JsValue>;
-    #[cfg(feature = "ImageBitmapFormat")]
-    # [wasm_bindgen (catch , method , structural , js_class = "ImageBitmap" , js_name = mappedDataLength)]
-    #[doc = "The `mappedDataLength()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap/mappedDataLength)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmap`, `ImageBitmapFormat`*"]
-    pub fn mapped_data_length(
-        this: &ImageBitmap,
-        a_format: ImageBitmapFormat,
-    ) -> Result<i32, JsValue>;
 }

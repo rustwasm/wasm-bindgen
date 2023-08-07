@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -46,6 +47,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
     pub fn new(width: u32, height: u32) -> Result<OffscreenCanvas, JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = convertToBlob)]
+    #[doc = "The `convertToBlob()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/convertToBlob)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
+    pub fn convert_to_blob(this: &OffscreenCanvas) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(feature = "ImageEncodeOptions")]
+    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = convertToBlob)]
+    #[doc = "The `convertToBlob()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/convertToBlob)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`, `OffscreenCanvas`*"]
+    pub fn convert_to_blob_with_options(
+        this: &OffscreenCanvas,
+        options: &ImageEncodeOptions,
+    ) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = getContext)]
     #[doc = "The `getContext()` method."]
     #[doc = ""]
@@ -67,34 +86,6 @@ extern "C" {
         context_id: &str,
         context_options: &::wasm_bindgen::JsValue,
     ) -> Result<Option<::js_sys::Object>, JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = toBlob)]
-    #[doc = "The `toBlob()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/toBlob)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
-    pub fn to_blob(this: &OffscreenCanvas) -> Result<::js_sys::Promise, JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = toBlob)]
-    #[doc = "The `toBlob()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/toBlob)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
-    pub fn to_blob_with_type(
-        this: &OffscreenCanvas,
-        type_: &str,
-    ) -> Result<::js_sys::Promise, JsValue>;
-    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = toBlob)]
-    #[doc = "The `toBlob()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/toBlob)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvas`*"]
-    pub fn to_blob_with_type_and_encoder_options(
-        this: &OffscreenCanvas,
-        type_: &str,
-        encoder_options: &::wasm_bindgen::JsValue,
-    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "ImageBitmap")]
     # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvas" , js_name = transferToImageBitmap)]
     #[doc = "The `transferToImageBitmap()` method."]

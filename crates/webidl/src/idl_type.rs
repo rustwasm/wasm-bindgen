@@ -615,7 +615,7 @@ impl<'a> IdlType<'a> {
                 // Note that most union types have already been expanded to
                 // their components via `flatten`. Unions in a return position
                 // or dictionary fields, however, haven't been flattened, which
-                // means we may need to conver them to a `syn` type.
+                // means we may need to convert them to a `syn` type.
                 //
                 // Currently this does a bit of a "poor man's" tree traversal by
                 // saying that if all union members are interfaces we can assume
@@ -635,10 +635,10 @@ impl<'a> IdlType<'a> {
                 //    Such an enum, however, might have a relatively high
                 //    overhead in creating it from a JS value, but would be
                 //    cheap to convert from a variant back to a JS value.
-                if idl_types.iter().all(|idl_type| match idl_type {
-                    IdlType::Interface(..) => true,
-                    _ => false,
-                }) {
+                if idl_types
+                    .iter()
+                    .all(|idl_type| matches!(idl_type, IdlType::Interface(..)))
+                {
                     IdlType::Object.to_syn_type(pos)
                 } else {
                     IdlType::Any.to_syn_type(pos)
@@ -736,7 +736,7 @@ impl<'a> IdlType<'a> {
                     },
                 ]
             }
-            idl_type @ _ => vec![idl_type.clone()],
+            idl_type => vec![idl_type.clone()],
         }
     }
 }

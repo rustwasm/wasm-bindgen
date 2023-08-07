@@ -33,6 +33,7 @@ extern "C" {
     #[wasm_bindgen(js_name = pub)]
     fn js_function_named_rust_keyword() -> u32;
 
+    #[allow(non_camel_case_types)]
     type bar;
     #[wasm_bindgen(js_namespace = bar, js_name = foo)]
     static FOO: JsValue;

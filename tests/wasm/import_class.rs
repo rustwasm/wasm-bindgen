@@ -1,6 +1,7 @@
 //! dox
 
 #![deny(missing_docs)] // test that documenting public bindings is enough
+#![allow(clippy::redundant_clone)] // test specifically with cloned objects
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
@@ -124,11 +125,11 @@ extern "C" {
     fn assert_internal_int(this: &InnerClass, i: u32);
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(js_namespace = Math)]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Math)]
+    #[wasm_bindgen]
     fn random() -> f64;
-    #[wasm_bindgen(js_namespace = Math)]
+    #[wasm_bindgen]
     fn log(a: f64) -> f64;
 }
 
@@ -173,7 +174,6 @@ fn rename_type() {
 }
 
 #[wasm_bindgen_test]
-#[cfg(ignored)] // TODO: fix this before landing
 fn switch_methods() {
     assert!(!switch_methods_called());
     SwitchMethods::a();

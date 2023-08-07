@@ -13,7 +13,7 @@ use weedle::common::Identifier;
 use weedle::literal::{ConstValue as ConstValueLit, FloatLit, IntegerLit};
 use weedle::types::{MayBeNull, NonAnyType, SingleType};
 
-use crate::constants::IMMUTABLE_SLICE_WHITELIST;
+use crate::constants::{FIXED_INTERFACES, IMMUTABLE_SLICE_WHITELIST};
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use crate::generator::{ConstValue, InterfaceMethod, InterfaceMethodKind};
 use crate::idl_type::{IdlType, ToIdlType};
@@ -85,7 +85,7 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     if let Some(method) = method {
         link.push_str(&format!("/{}", method));
     }
-    format!("[MDN Documentation]({})", link).into()
+    format!("[MDN Documentation]({})", link)
 }
 
 // Array type is borrowed for arguments (`&mut [T]` or `&[T]`) and owned for return value (`Vec<T>`).
@@ -106,20 +106,20 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
     use std::f64::{INFINITY, NAN, NEG_INFINITY};
 
     match *v {
-        ConstValueLit::Boolean(b) => ConstValue::BooleanLiteral(b.0),
-        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::FloatLiteral(NEG_INFINITY),
-        ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::FloatLiteral(INFINITY),
-        ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::FloatLiteral(NAN),
-        ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::FloatLiteral(s.0.parse().unwrap()),
+        ConstValueLit::Boolean(b) => ConstValue::Boolean(b.0),
+        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::Float(NEG_INFINITY),
+        ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::Float(INFINITY),
+        ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::Float(NAN),
+        ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::Float(s.0.parse().unwrap()),
         ConstValueLit::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
-                let (negative, text) = if orig_text.starts_with("-") {
-                    (true, &orig_text[1..])
+                let (negative, text) = if let Some(text) = orig_text.strip_prefix('-') {
+                    (true, text)
                 } else {
                     (false, orig_text)
                 };
                 if text == "0" {
-                    return ConstValue::SignedIntegerLiteral(0);
+                    return ConstValue::SignedInteger(0);
                 }
                 let text = &text[offset..];
                 let n = u64::from_str_radix(text, base)
@@ -130,9 +130,9 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
                     } else {
                         n.wrapping_neg() as i64
                     };
-                    ConstValue::SignedIntegerLiteral(n)
+                    ConstValue::SignedInteger(n)
                 } else {
-                    ConstValue::UnsignedIntegerLiteral(n)
+                    ConstValue::UnsignedInteger(n)
                 }
             };
             match lit {
@@ -338,10 +338,10 @@ impl<'src> FirstPassRecord<'src> {
                 let mut any_different = false;
                 let arg_name = signature.orig.args[i].name;
                 for other in actual_signatures.iter() {
-                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) {
-                        if !ptr::eq(signature, other) {
-                            any_same_name = true;
-                        }
+                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name)
+                        && !ptr::eq(signature, other)
+                    {
+                        any_same_name = true;
                     }
                     if let Some(other) = other.args.get(i) {
                         if other != arg {
@@ -382,13 +382,13 @@ impl<'src> FirstPassRecord<'src> {
             }
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
-            let catch = force_throws || throws(&signature.orig.attrs);
+            let catch = force_throws || throws(signature.orig.attrs);
             let ret_ty = if id == &OperationId::IndexingGetter {
                 // All indexing getters should return optional values (or
                 // otherwise be marked with catch).
                 match ret_ty {
                     IdlType::Nullable(_) => ret_ty,
-                    ref ty @ _ => {
+                    ref ty => {
                         if catch {
                             ret_ty
                         } else {
@@ -498,7 +498,14 @@ impl<'src> FirstPassRecord<'src> {
                 }
             }
         }
-        return ret;
+
+        for interface in &mut ret {
+            if let Some(fixed) = FIXED_INTERFACES.get(&interface.name.to_string().as_ref()) {
+                interface.name = rust_ident(fixed);
+            }
+        }
+
+        ret
     }
 
     /// When generating our web_sys APIs we default to setting slice references that
@@ -646,7 +653,7 @@ fn flag_slices_immutable(ty: &mut IdlType) {
 }
 
 pub fn required_doc_string(options: &Options, features: &BTreeSet<String>) -> Option<String> {
-    if !options.features || features.len() == 0 {
+    if !options.features || features.is_empty() {
         return None;
     }
     let list = features
@@ -668,7 +675,7 @@ pub fn get_cfg_features(options: &Options, features: &BTreeSet<String>) -> Optio
         None
     } else {
         let features = features
-            .into_iter()
+            .iter()
             .map(|feature| quote!( feature = #feature, ))
             .collect::<TokenStream>();
 

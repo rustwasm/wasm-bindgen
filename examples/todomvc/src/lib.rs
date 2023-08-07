@@ -32,10 +32,10 @@ pub enum Message {
 }
 
 /// Used for debugging to the console
-pub fn exit(message: &str) {
-    let v = wasm_bindgen::JsValue::from_str(&message.to_string());
+pub fn exit(message: &str) -> ! {
+    let v = wasm_bindgen::JsValue::from_str(message);
     web_sys::console::exception_1(&v);
-    std::process::abort();
+    std::process::abort()
 }
 
 fn app(name: &str) {
@@ -58,7 +58,7 @@ fn app(name: &str) {
 
 /// Entry point into the program from JavaScript
 #[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
+fn run() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
     app("todos-wasmbindgen");
 

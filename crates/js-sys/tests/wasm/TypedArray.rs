@@ -16,7 +16,7 @@ macro_rules! each {
     };
 }
 
-macro_rules! test_inheritence {
+macro_rules! test_inheritance {
     ($arr:ident) => {{
         let arr = $arr::new(&JsValue::undefined());
         assert!(arr.is_instance_of::<$arr>());
@@ -25,8 +25,8 @@ macro_rules! test_inheritence {
     }};
 }
 #[wasm_bindgen_test]
-fn inheritence() {
-    each!(test_inheritence);
+fn inheritance() {
+    each!(test_inheritance);
 }
 
 macro_rules! test_undefined {

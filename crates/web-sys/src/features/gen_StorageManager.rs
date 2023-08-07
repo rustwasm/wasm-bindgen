@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -18,6 +19,17 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageManager`*"]
     pub fn estimate(this: &StorageManager) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "StorageManager" , js_name = getDirectory)]
+    #[doc = "The `getDirectory()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageManager/getDirectory)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageManager`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_directory(this: &StorageManager) -> ::js_sys::Promise;
     # [wasm_bindgen (catch , method , structural , js_class = "StorageManager" , js_name = persist)]
     #[doc = "The `persist()` method."]
     #[doc = ""]

@@ -13,6 +13,10 @@ pub struct Scheduler {
     running: RefCell<bool>,
 }
 
+fn deadlock() -> ! {
+    exit("This might be a deadlock");
+}
+
 impl Scheduler {
     /// Construct a new `Scheduler`
     pub fn new() -> Scheduler {
@@ -28,7 +32,7 @@ impl Scheduler {
         if let Ok(mut controller_data) = self.controller.try_borrow_mut() {
             *controller_data = Some(controller);
         } else {
-            exit("This might be a deadlock");
+            deadlock()
         }
     }
 
@@ -36,7 +40,7 @@ impl Scheduler {
         if let Ok(mut view_data) = self.view.try_borrow_mut() {
             *view_data = Some(view);
         } else {
-            exit("This might be a deadlock");
+            deadlock()
         }
     }
 
@@ -44,20 +48,15 @@ impl Scheduler {
     ///
     /// Triggers running the event loop if it's not already running
     pub fn add_message(&self, message: Message) {
-        let running = {
-            if let Ok(running) = self.running.try_borrow() {
-                running.clone()
-            } else {
-                exit("This might be a deadlock");
-                false
-            }
+        let running = if let Ok(running) = self.running.try_borrow() {
+            *running
+        } else {
+            deadlock()
         };
-        {
-            if let Ok(mut events) = self.events.try_borrow_mut() {
-                events.push(message);
-            } else {
-                exit("This might be a deadlock");
-            }
+        if let Ok(mut events) = self.events.try_borrow_mut() {
+            events.push(message);
+        } else {
+            deadlock()
         }
         if !running {
             self.run();
@@ -66,42 +65,34 @@ impl Scheduler {
 
     /// Start the event loop, taking messages from the stack to run
     fn run(&self) {
-        let mut events_len = 0;
-        {
-            if let Ok(events) = self.events.try_borrow() {
-                events_len = events.len().clone();
-            } else {
-                exit("This might be a deadlock");
-            }
-        }
+        let events_len = if let Ok(events) = self.events.try_borrow() {
+            events.len()
+        } else {
+            deadlock()
+        };
         if events_len == 0 {
             if let Ok(mut running) = self.running.try_borrow_mut() {
                 *running = false;
             } else {
-                exit("This might be a deadlock");
+                deadlock()
             }
         } else {
-            {
-                if let Ok(mut running) = self.running.try_borrow_mut() {
-                    *running = true;
-                } else {
-                    exit("This might be a deadlock");
-                }
+            if let Ok(mut running) = self.running.try_borrow_mut() {
+                *running = true;
+            } else {
+                deadlock()
             }
             self.next_message();
         }
     }
 
     fn next_message(&self) {
-        let event = {
-            if let Ok(mut events) = self.events.try_borrow_mut() {
-                Some(events.pop())
-            } else {
-                exit("This might be a deadlock");
-                None
-            }
+        let event = if let Ok(mut events) = self.events.try_borrow_mut() {
+            events.pop()
+        } else {
+            deadlock()
         };
-        if let Some(Some(event)) = event {
+        if let Some(event) = event {
             match event {
                 Message::Controller(e) => {
                     if let Ok(mut controller) = self.controller.try_borrow_mut() {
@@ -109,7 +100,7 @@ impl Scheduler {
                             ag.call(e);
                         }
                     } else {
-                        exit("This might be a deadlock");
+                        deadlock()
                     }
                 }
                 Message::View(e) => {
@@ -118,7 +109,7 @@ impl Scheduler {
                             ag.call(e);
                         }
                     } else {
-                        exit("This might be a deadlock");
+                        deadlock()
                     }
                 }
             }
@@ -126,7 +117,7 @@ impl Scheduler {
         } else if let Ok(mut running) = self.running.try_borrow_mut() {
             *running = false;
         } else {
-            exit("This might be a deadlock");
+            deadlock()
         }
     }
 }

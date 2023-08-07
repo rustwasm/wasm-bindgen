@@ -12,13 +12,21 @@
  * and create derivative works of this document.
  */
 
-/* TODO
-interface MenuBuilder;
-*/
-
-// http://www.whatwg.org/specs/web-apps/current-work/#the-menu-element
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu
+// > The <menu> and <ul> elements both represent an unordered list of items.
+// > The key difference is that <ul> primarily contains items for display,
+// > while <menu> was intended for interactive items.
 [HTMLConstructor]
 interface HTMLMenuElement : HTMLElement {
+};
+
+// > In early versions of the HTML specification, the <menu> element had
+// > an additional use case as a context menu. This functionality is considered
+// > obsolete and is not in the specification.
+// Define this as deprecated partial interface to prevent breaking changes
+// in wasm-bindgen.
+[RustDeprecated="Absent in all major browsers"]
+partial interface HTMLMenuElement {
            [CEReactions, SetterThrows]
            attribute DOMString type;
            [CEReactions, SetterThrows]

@@ -25,7 +25,7 @@ extern "C" {
 }
 
 #[wasm_bindgen(start)]
-pub fn run() {
+fn run() {
     log(&format!("Hello from {}!", name())); // should output "Hello from Rust!"
 
     let x = MyClass::new();

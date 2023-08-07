@@ -3,6 +3,7 @@ name = "without-a-bundler-no-modules"
 version = "0.1.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2018"
+rust-version = "1.56"
 
 [lib]
 crate-type = ["cdylib"]

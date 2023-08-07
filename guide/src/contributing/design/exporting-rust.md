@@ -33,7 +33,7 @@ import * as wasm from './foo_bg';
 function passStringToWasm(arg) {
   const buf = new TextEncoder('utf-8').encode(arg);
   const len = buf.length;
-  const ptr = wasm.__wbindgen_malloc(len);
+  const ptr = wasm.__wbindgen_malloc(len, 1);
   let array = new Uint8Array(wasm.memory.buffer);
   array.set(buf, ptr);
   return [ptr, len];
@@ -56,7 +56,7 @@ export function greet(arg0) {
     wasm.__wbindgen_boxed_str_free(ret);
     return realRet;
   } finally {
-    wasm.__wbindgen_free(ptr0, len0);
+    wasm.__wbindgen_free(ptr0, len0, 1);
   }
 }
 ```

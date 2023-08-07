@@ -14,7 +14,7 @@ impl A {
     }
 
     pub fn foo(&self) {
-        drop(self.x);
+        assert_eq!(self.x, 3);
     }
 }
 

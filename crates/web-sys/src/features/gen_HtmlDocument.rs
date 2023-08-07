@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -473,7 +474,7 @@ extern "C" {
         text_7: &str,
     ) -> Result<(), JsValue>;
     #[wasm_bindgen(catch, method, structural, js_class = "HTMLDocument", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

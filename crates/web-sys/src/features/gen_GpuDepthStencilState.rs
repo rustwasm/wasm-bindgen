@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
@@ -16,16 +17,22 @@ extern "C" {
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuDepthStencilState {
-    #[cfg(feature = "GpuTextureFormat")]
+    #[cfg(all(feature = "GpuCompareFunction", feature = "GpuTextureFormat",))]
     #[doc = "Construct a new `GpuDepthStencilState`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuDepthStencilState`, `GpuTextureFormat`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCompareFunction`, `GpuDepthStencilState`, `GpuTextureFormat`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new(format: GpuTextureFormat) -> Self {
+    pub fn new(
+        depth_compare: GpuCompareFunction,
+        depth_write_enabled: bool,
+        format: GpuTextureFormat,
+    ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
+        ret.depth_compare(depth_compare);
+        ret.depth_write_enabled(depth_write_enabled);
         ret.format(format);
         ret
     }

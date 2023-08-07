@@ -30,12 +30,10 @@ fn item_id(mut element: Element) -> Option<String> {
     element.parent_element().map(|mut parent| {
         let mut res = None;
         let parent_id = parent.dataset_get("id");
-        if parent_id != "" {
+        if !parent_id.is_empty() {
             res = Some(parent_id);
-        } else {
-            if let Some(mut ep) = parent.parent_element() {
-                res = Some(ep.dataset_get("id"));
-            }
+        } else if let Some(mut ep) = parent.parent_element() {
+            res = Some(ep.dataset_get("id"));
         }
         res.unwrap()
     })
@@ -260,7 +258,7 @@ impl View {
                 {
                     let v = input_el.value(); // TODO remove with nll
                     let title = v.trim();
-                    if title != "" {
+                    if !title.is_empty() {
                         if let Ok(sched) = &(sched.try_borrow_mut()) {
                             sched.add_message(Message::Controller(ControllerMessage::AddItem(
                                 String::from(title),
@@ -419,17 +417,15 @@ impl View {
 
 impl Drop for View {
     fn drop(&mut self) {
-        exit("calling drop on view");
-        let callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)> =
-            self.callbacks.drain(..).collect();
-        for callback in callbacks {
+        for callback in self.callbacks.drain(..) {
             callback
                 .0
                 .remove_event_listener_with_callback(
                     callback.1.as_str(),
-                    &callback.2.as_ref().unchecked_ref(),
+                    callback.2.as_ref().unchecked_ref(),
                 )
                 .unwrap();
         }
+        exit("calling drop on view");
     }
 }

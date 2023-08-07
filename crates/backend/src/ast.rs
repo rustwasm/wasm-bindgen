@@ -2,20 +2,23 @@
 //! with all the added metadata necessary to generate WASM bindings
 //! for it.
 
-use crate::Diagnostic;
+use crate::{util::ShortHash, Diagnostic};
 use proc_macro2::{Ident, Span};
 use std::hash::{Hash, Hasher};
+use syn::Path;
 use wasm_bindgen_shared as shared;
 
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
-#[derive(Default, Clone)]
+#[derive(Clone)]
 pub struct Program {
     /// rust -> js interfaces
     pub exports: Vec<Export>,
     /// js -> rust interfaces
     pub imports: Vec<Import>,
+    /// linked-to modules
+    pub linked_modules: Vec<ImportModule>,
     /// rust enums
     pub enums: Vec<Enum>,
     /// rust structs
@@ -24,6 +27,26 @@ pub struct Program {
     pub typescript_custom_sections: Vec<String>,
     /// Inline JS snippets
     pub inline_js: Vec<String>,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
+    /// Path to wasm_bindgen_futures
+    pub wasm_bindgen_futures: Path,
+}
+
+impl Default for Program {
+    fn default() -> Self {
+        Self {
+            exports: Default::default(),
+            imports: Default::default(),
+            linked_modules: Default::default(),
+            enums: Default::default(),
+            structs: Default::default(),
+            typescript_custom_sections: Default::default(),
+            inline_js: Default::default(),
+            wasm_bindgen: syn::parse_quote! { wasm_bindgen },
+            wasm_bindgen_futures: syn::parse_quote! { wasm_bindgen_futures },
+        }
+    }
 }
 
 impl Program {
@@ -36,7 +59,24 @@ impl Program {
             && self.typescript_custom_sections.is_empty()
             && self.inline_js.is_empty()
     }
+
+    /// Name of the link function for a specific linked module
+    pub fn link_function_name(&self, idx: usize) -> String {
+        let hash = match &self.linked_modules[idx] {
+            ImportModule::Inline(idx, _) => ShortHash((1, &self.inline_js[*idx])).to_string(),
+            other => ShortHash((0, other)).to_string(),
+        };
+        format!("__wbindgen_link_{}", hash)
+    }
 }
+
+/// An abstract syntax tree representing a link to a module in Rust.
+/// In contrast to Program, LinkToModule must expand to an expression.
+/// linked_modules of the inner Program must contain exactly one element
+/// whose link is produced by the expression.
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone)]
+pub struct LinkToModule(pub Program);
 
 /// A rust to js interface. Allows interaction with rust objects/functions
 /// from javascript.
@@ -60,6 +100,10 @@ pub struct Export {
     /// Whether or not this function should be flagged as the wasm start
     /// function.
     pub start: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
+    /// Path to wasm_bindgen_futures
+    pub wasm_bindgen_futures: Path,
 }
 
 /// The 3 types variations of `self`.
@@ -149,6 +193,10 @@ pub struct ImportFunction {
     pub shim: Ident,
     /// The doc comment on this import, if one is provided
     pub doc_comment: String,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
+    /// Path to wasm_bindgen_futures
+    pub wasm_bindgen_futures: Path,
 }
 
 /// The type of a function being imported
@@ -220,6 +268,8 @@ pub struct ImportStatic {
     pub rust_name: Ident,
     /// The name of this static on the JS side
     pub js_name: String,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The metadata for a type being imported
@@ -248,6 +298,8 @@ pub struct ImportType {
     pub vendor_prefixes: Vec<Ident>,
     /// If present, don't generate a `Deref` impl
     pub no_deref: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The metadata for an Enum being imported
@@ -264,6 +316,8 @@ pub struct ImportEnum {
     pub variant_values: Vec<String>,
     /// Attributes to apply to the Rust enum
     pub rust_attrs: Vec<syn::Attribute>,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// Information about a function being imported or exported
@@ -284,16 +338,20 @@ pub struct Function {
     pub rust_attrs: Vec<syn::Attribute>,
     /// The visibility of this function in Rust
     pub rust_vis: syn::Visibility,
+    /// Whether this is an `unsafe` function
+    pub r#unsafe: bool,
     /// Whether this is an `async` function
     pub r#async: bool,
     /// Whether to generate a typescript definition for this function
     pub generate_typescript: bool,
+    /// Whether to generate jsdoc documentation for this function
+    pub generate_jsdoc: bool,
     /// Whether this is a function with a variadict parameter
     pub variadic: bool,
 }
 
 /// Information about a Struct being exported
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Struct {
     /// The name of the struct in Rust code
@@ -308,10 +366,12 @@ pub struct Struct {
     pub is_inspectable: bool,
     /// Whether to generate a typescript definition for this struct
     pub generate_typescript: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The field of a struct
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct StructField {
     /// The name of the field in Rust code
@@ -332,8 +392,16 @@ pub struct StructField {
     pub comments: Vec<String>,
     /// Whether to generate a typescript definition for this field
     pub generate_typescript: bool,
-    /// Whether to use .clone() in the auto-generated getter for this field
-    pub getter_with_clone: bool,
+    /// Whether to generate jsdoc documentation for this field
+    pub generate_jsdoc: bool,
+    /// The span of the `#[wasm_bindgen(getter_with_clone)]` attribute applied
+    /// to this field, if any.
+    ///
+    /// If this is `Some`, the auto-generated getter for this field must clone
+    /// the field instead of copying it.
+    pub getter_with_clone: Option<Span>,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// Information about an Enum being exported
@@ -352,6 +420,8 @@ pub struct Enum {
     pub hole: u32,
     /// Whether to generate a typescript definition for this enum
     pub generate_typescript: bool,
+    /// Path to wasm_bindgen
+    pub wasm_bindgen: Path,
 }
 
 /// The variant of an enum
@@ -396,10 +466,10 @@ impl Export {
     pub(crate) fn rust_symbol(&self) -> Ident {
         let mut generated_name = String::from("__wasm_bindgen_generated");
         if let Some(class) = &self.js_class {
-            generated_name.push_str("_");
+            generated_name.push('_');
             generated_name.push_str(class);
         }
-        generated_name.push_str("_");
+        generated_name.push('_');
         generated_name.push_str(&self.function.name.to_string());
         Ident::new(&generated_name, Span::call_site())
     }

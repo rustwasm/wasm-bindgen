@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -84,7 +85,7 @@ extern "C" {
     pub fn set_named_item_ns(this: &NamedNodeMap, arg: &Attr) -> Result<Option<Attr>, JsValue>;
     #[cfg(feature = "Attr")]
     #[wasm_bindgen(method, structural, js_class = "NamedNodeMap", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
@@ -92,7 +93,7 @@ extern "C" {
     pub fn get_with_name(this: &NamedNodeMap, name: &str) -> Option<Attr>;
     #[cfg(feature = "Attr")]
     #[wasm_bindgen(method, structural, js_class = "NamedNodeMap", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

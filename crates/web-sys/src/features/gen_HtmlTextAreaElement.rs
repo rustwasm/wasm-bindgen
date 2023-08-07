@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -354,6 +355,19 @@ extern "C" {
         replacement: &str,
         start: u32,
         end: u32,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLTextAreaElement" , js_name = setRangeText)]
+    #[doc = "The `setRangeText()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/setRangeText)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
+    pub fn set_range_text_with_start_and_end_and_mode(
+        this: &HtmlTextAreaElement,
+        replacement: &str,
+        start: u32,
+        end: u32,
+        mode: &str,
     ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLTextAreaElement" , js_name = setSelectionRange)]
     #[doc = "The `setSelectionRange()` method."]

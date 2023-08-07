@@ -3,18 +3,19 @@ name = "webxr"
 version = "0.1.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2018"
+rust-version = "1.56"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
 futures = "0.3.4"
-js-sys = "0.3.60"
-wasm-bindgen = "0.2.83"
-wasm-bindgen-futures = "0.4.33"
+js-sys = "0.3.64"
+wasm-bindgen = "0.2.87"
+wasm-bindgen-futures = "0.4.37"
 
 [dependencies.web-sys]
-version = "0.3.36"
+version = "0.3.37"
 features = [
   'Document',
   'Element',

@@ -18,7 +18,6 @@ mod externref;
 mod intrinsic;
 mod js;
 mod multivalue;
-mod throw2unreachable;
 pub mod wasm2es6js;
 mod wit;
 
@@ -44,8 +43,8 @@ pub struct Bindgen {
     threads: wasm_bindgen_threads_xform::Config,
     externref: bool,
     multi_value: bool,
-    wasm_interface_types: bool,
     encode_into: EncodeInto,
+    split_linked_modules: bool,
 }
 
 pub struct Output {
@@ -54,12 +53,7 @@ pub struct Output {
     generated: Generated,
 }
 
-enum Generated {
-    InterfaceTypes,
-    Js(JsGenerated),
-}
-
-struct JsGenerated {
+struct Generated {
     mode: OutputMode,
     js: String,
     ts: String,
@@ -96,7 +90,6 @@ impl Bindgen {
     pub fn new() -> Bindgen {
         let externref =
             env::var("WASM_BINDGEN_ANYREF").is_ok() || env::var("WASM_BINDGEN_EXTERNREF").is_ok();
-        let wasm_interface_types = env::var("WASM_INTERFACE_TYPES").is_ok();
         let multi_value = env::var("WASM_BINDGEN_MULTI_VALUE").is_ok();
         Bindgen {
             input: Input::None,
@@ -115,11 +108,11 @@ impl Bindgen {
             emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
-            externref: externref || wasm_interface_types,
-            multi_value: multi_value || wasm_interface_types,
-            wasm_interface_types,
+            externref,
+            multi_value,
             encode_into: EncodeInto::Test,
             omit_default_module_path: true,
+            split_linked_modules: false,
         }
     }
 
@@ -147,14 +140,14 @@ impl Bindgen {
     pub fn input_module(&mut self, name: &str, module: Module) -> &mut Bindgen {
         let name = name.to_string();
         self.input = Input::Module(module, name);
-        return self;
+        self
     }
 
     /// Specify the input as the provided Wasm bytes.
     pub fn input_bytes(&mut self, name: &str, bytes: Vec<u8>) -> &mut Bindgen {
         let name = name.to_string();
         self.input = Input::Bytes(bytes, name);
-        return self;
+        self
     }
 
     fn switch_mode(&mut self, mode: OutputMode, flag: &str) -> Result<(), Error> {
@@ -304,6 +297,11 @@ impl Bindgen {
         self
     }
 
+    pub fn split_linked_modules(&mut self, split_linked_modules: bool) -> &mut Bindgen {
+        self.split_linked_modules = split_linked_modules;
+        self
+    }
+
     pub fn generate<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
         self.generate_output()?.emit(path.as_ref())
     }
@@ -334,11 +332,12 @@ impl Bindgen {
                 })?
             }
             Input::Bytes(ref bytes, _) => self
-                .module_from_bytes(&bytes)
+                .module_from_bytes(bytes)
                 .context("failed getting Wasm module")?,
         };
 
-        self.threads
+        let thread_count = self
+            .threads
             .run(&mut module)
             .with_context(|| "failed to prepare module for threading")?;
 
@@ -382,7 +381,7 @@ impl Bindgen {
             &mut module,
             programs,
             self.externref,
-            self.wasm_interface_types,
+            thread_count,
             self.emit_start,
         )?;
 
@@ -414,23 +413,9 @@ impl Bindgen {
             externref::force_contiguous_elements(&mut module)?;
         }
 
-        // If wasm interface types are enabled then the `__wbindgen_throw`
-        // intrinsic isn't available but it may be used by our runtime, so
-        // change all calls to this function to calls to `unreachable` instead.
-        // See more documentation in the pass documentation itself.
-        if self.wasm_interface_types {
-            throw2unreachable::run(&mut module);
-        }
-
         // Using all of our metadata convert our module to a multi-value using
         // module if applicable.
         if self.multi_value {
-            if !self.wasm_interface_types {
-                anyhow::bail!(
-                    "Wasm multi-value is currently only available when \
-                     Wasm interface types is also enabled"
-                );
-            }
             multivalue::run(&mut module)
                 .context("failed to transform return pointers into multi-value Wasm")?;
         }
@@ -442,38 +427,27 @@ impl Bindgen {
 
         let stem = self.stem()?;
 
-        // We're ready for the final emission passes now. If we're in wasm
-        // interface types mode then we execute the various passes there and
-        // generate a valid interface types section into the wasm module.
-        //
-        // Otherwise we execute the JS generation passes to actually emit
-        // JS/TypeScript/etc. The output here is unused in wasm interfac
-        let generated = if self.wasm_interface_types {
-            wit::section::add(&mut module)
-                .context("failed to generate a standard interface types section")?;
-            Generated::InterfaceTypes
-        } else {
-            let aux = module
-                .customs
-                .delete_typed::<wit::WasmBindgenAux>()
-                .expect("aux section should be present");
-            let adapters = module
-                .customs
-                .delete_typed::<wit::NonstandardWitSection>()
-                .unwrap();
-            let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
-            cx.generate()?;
-            let (js, ts, start) = cx.finalize(stem)?;
-            Generated::Js(JsGenerated {
-                snippets: aux.snippets.clone(),
-                local_modules: aux.local_modules.clone(),
-                mode: self.mode.clone(),
-                typescript: self.typescript,
-                npm_dependencies: cx.npm_dependencies.clone(),
-                js,
-                ts,
-                start,
-            })
+        // Now we execute the JS generation passes to actually emit JS/TypeScript/etc.
+        let aux = module
+            .customs
+            .delete_typed::<wit::WasmBindgenAux>()
+            .expect("aux section should be present");
+        let adapters = module
+            .customs
+            .delete_typed::<wit::NonstandardWitSection>()
+            .unwrap();
+        let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
+        cx.generate()?;
+        let (js, ts, start) = cx.finalize(stem)?;
+        let generated = Generated {
+            snippets: aux.snippets.clone(),
+            local_modules: aux.local_modules.clone(),
+            mode: self.mode.clone(),
+            typescript: self.typescript,
+            npm_dependencies: cx.npm_dependencies.clone(),
+            js,
+            ts,
+            start,
         };
 
         Ok(Output {
@@ -484,8 +458,6 @@ impl Bindgen {
     }
 
     fn module_from_bytes(&self, bytes: &[u8]) -> Result<Module, Error> {
-        let wasm = wit_text::parse_bytes(bytes).context("failed to parse bytes")?;
-        wit_validator::validate(&wasm).context("failed to validate")?;
         walrus::ModuleConfig::new()
             // Skip validation of the module as LLVM's output is
             // generally already well-formed and so we won't gain much
@@ -497,8 +469,7 @@ impl Bindgen {
             .generate_dwarf(self.keep_debug)
             .generate_name_section(!self.remove_name_section)
             .generate_producers_section(!self.remove_producers_section)
-            .on_parse(wit_walrus::on_parse)
-            .parse(&wasm)
+            .parse(bytes)
             .context("failed to parse input as wasm")
     }
 
@@ -538,13 +509,13 @@ fn reset_indentation(s: &str) -> String {
             }
             dst.push_str(line);
         }
-        dst.push_str("\n");
+        dst.push('\n');
         // Ignore { inside of comments and if it's an exported enum
         if line.ends_with('{') && !line.starts_with('*') && !line.ends_with("Object.freeze({") {
             indent += 1;
         }
     }
-    return dst;
+    dst
 }
 
 // Eventually these will all be CLI options, but while they're unstable features
@@ -575,15 +546,15 @@ fn demangle(module: &mut Module) {
 
 impl OutputMode {
     fn uses_es_modules(&self) -> bool {
-        match self {
+        matches!(
+            self,
             OutputMode::Bundler { .. }
-            | OutputMode::Web
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
-            | OutputMode::Deno => true,
-            _ => false,
-        }
+                | OutputMode::Web
+                | OutputMode::Node {
+                    experimental_modules: true,
+                }
+                | OutputMode::Deno
+        )
     }
 
     fn nodejs_experimental_modules(&self) -> bool {
@@ -596,34 +567,25 @@ impl OutputMode {
     }
 
     fn nodejs(&self) -> bool {
-        match self {
-            OutputMode::Node { .. } => true,
-            _ => false,
-        }
+        matches!(self, OutputMode::Node { .. })
     }
 
     fn no_modules(&self) -> bool {
-        match self {
-            OutputMode::NoModules { .. } => true,
-            _ => false,
-        }
+        matches!(self, OutputMode::NoModules { .. })
     }
 
     fn web(&self) -> bool {
-        match self {
-            OutputMode::Web => true,
-            _ => false,
-        }
+        matches!(self, OutputMode::Web)
     }
 
     fn esm_integration(&self) -> bool {
-        match self {
+        matches!(
+            self,
             OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            } => true,
-            _ => false,
-        }
+                | OutputMode::Node {
+                    experimental_modules: true,
+                }
+        )
     }
 }
 
@@ -647,39 +609,31 @@ fn unexported_unused_lld_things(module: &mut Module) {
 
 impl Output {
     pub fn js(&self) -> &str {
-        &self.gen().js
+        &self.generated.js
     }
 
     pub fn ts(&self) -> Option<&str> {
-        let gen = self.gen();
-        if gen.typescript {
-            Some(&gen.ts)
+        if self.generated.typescript {
+            Some(&self.generated.ts)
         } else {
             None
         }
     }
 
     pub fn start(&self) -> Option<&String> {
-        self.gen().start.as_ref()
+        self.generated.start.as_ref()
     }
 
     pub fn snippets(&self) -> &HashMap<String, Vec<String>> {
-        &self.gen().snippets
+        &self.generated.snippets
     }
 
     pub fn local_modules(&self) -> &HashMap<String, String> {
-        &self.gen().local_modules
+        &self.generated.local_modules
     }
 
     pub fn npm_dependencies(&self) -> &HashMap<String, (PathBuf, String)> {
-        &self.gen().npm_dependencies
-    }
-
-    fn gen(&self) -> &JsGenerated {
-        match &self.generated {
-            Generated::InterfaceTypes => panic!("no js with interface types output"),
-            Generated::Js(gen) => &gen,
-        }
+        &self.generated.npm_dependencies
     }
 
     pub fn wasm(&self) -> &walrus::Module {
@@ -695,20 +649,14 @@ impl Output {
     }
 
     fn _emit(&mut self, out_dir: &Path) -> Result<(), Error> {
-        let wasm_name = match &self.generated {
-            Generated::InterfaceTypes => self.stem.clone(),
-            Generated::Js(_) => format!("{}_bg", self.stem),
-        };
+        let wasm_name = format!("{}_bg", self.stem);
         let wasm_path = out_dir.join(&wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
         let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|| format!("failed to write `{}`", wasm_path.display()))?;
 
-        let gen = match &self.generated {
-            Generated::InterfaceTypes => return Ok(()),
-            Generated::Js(gen) => gen,
-        };
+        let gen = &self.generated;
 
         // Write out all local JS snippets to the final destination now that
         // we've collected them from all the programs.
@@ -729,7 +677,7 @@ impl Output {
                 .with_context(|| format!("failed to write `{}`", path.display()))?;
         }
 
-        if gen.npm_dependencies.len() > 0 {
+        if !gen.npm_dependencies.is_empty() {
             let map = gen
                 .npm_dependencies
                 .iter()
@@ -774,7 +722,7 @@ export * from \"./{js_name}\";
                 ),
             )?;
 
-            write(&out_dir.join(&js_name), reset_indentation(&gen.js))?;
+            write(out_dir.join(&js_name), reset_indentation(&gen.js))?;
         } else {
             write(&js_path, reset_indentation(&gen.js))?;
         }

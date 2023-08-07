@@ -5,11 +5,7 @@ use std::path::PathBuf;
 use std::process;
 use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 
-// no need for jemalloc bloat in this binary (and we don't need speed)
-#[global_allocator]
-static ALLOC: std::alloc::System = std::alloc::System;
-
-const USAGE: &'static str = "
+const USAGE: &str = "
 Generating JS bindings for a wasm file
 
 Usage:
@@ -36,6 +32,8 @@ Options:
     --remove-name-section        Remove the debugging `name` section of the file
     --remove-producers-section   Remove the telemetry `producers` section
     --omit-default-module-path   Don't add WebAssembly fallback imports in generated JavaScript
+    --split-linked-modules       Split linked modules out into their own files. Recommended if possible.
+                                 If a bundler is used, it needs to be set up accordingly.
     --encode-into MODE           Whether or not to use TextEncoder#encodeInto,
                                  valid values are [test, always, never]
     --nodejs                     Deprecated, use `--target nodejs`
@@ -44,6 +42,8 @@ Options:
     --weak-refs                  Enable usage of the JS weak references proposal
     --reference-types            Enable usage of WebAssembly reference types
     -V --version                 Print the version number of wasm-bindgen
+
+Additional documentation: https://rustwasm.github.io/wasm-bindgen/reference/cli.html
 ";
 
 #[derive(Debug, Deserialize)]
@@ -70,6 +70,7 @@ struct Args {
     flag_encode_into: Option<String>,
     flag_target: Option<String>,
     flag_omit_default_module_path: bool,
+    flag_split_linked_modules: bool,
     arg_input: Option<PathBuf>,
 }
 
@@ -123,7 +124,8 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .remove_producers_section(args.flag_remove_producers_section)
         .typescript(typescript)
         .omit_imports(args.flag_omit_imports)
-        .omit_default_module_path(args.flag_omit_default_module_path);
+        .omit_default_module_path(args.flag_omit_default_module_path)
+        .split_linked_modules(args.flag_split_linked_modules);
     if let Some(true) = args.flag_weak_refs {
         b.weak_refs(true);
     }

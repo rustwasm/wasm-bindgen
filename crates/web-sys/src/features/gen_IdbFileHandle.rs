@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -319,7 +320,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`, `IdbFileRequest`*"]
     pub fn write_with_u8_array(
         this: &IdbFileHandle,
-        value: &mut [u8],
+        value: &[u8],
     ) -> Result<Option<IdbFileRequest>, JsValue>;
     #[cfg(all(feature = "Blob", feature = "IdbFileRequest",))]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBFileHandle" , js_name = write)]

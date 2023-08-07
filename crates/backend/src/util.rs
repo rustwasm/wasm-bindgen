@@ -14,22 +14,22 @@ use crate::ast;
 use proc_macro2::{self, Ident};
 
 /// Check whether a given `&str` is a Rust keyword
+#[rustfmt::skip]
 fn is_rust_keyword(name: &str) -> bool {
-    match name {
+    matches!(name,
         "abstract" | "alignof" | "as" | "become" | "box" | "break" | "const" | "continue"
         | "crate" | "do" | "else" | "enum" | "extern" | "false" | "final" | "fn" | "for" | "if"
         | "impl" | "in" | "let" | "loop" | "macro" | "match" | "mod" | "move" | "mut"
         | "offsetof" | "override" | "priv" | "proc" | "pub" | "pure" | "ref" | "return"
         | "Self" | "self" | "sizeof" | "static" | "struct" | "super" | "trait" | "true"
         | "type" | "typeof" | "unsafe" | "unsized" | "use" | "virtual" | "where" | "while"
-        | "yield" | "bool" | "_" => true,
-        _ => false,
-    }
+        | "yield" | "bool" | "_"
+    )
 }
 
 /// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
 pub fn rust_ident(name: &str) -> Ident {
-    if name == "" {
+    if name.is_empty() {
         panic!("tried to create empty Ident (from \"\")");
     } else if is_rust_keyword(name) {
         Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())

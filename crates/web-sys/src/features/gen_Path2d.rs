@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -173,4 +174,68 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
     pub fn rect(this: &Path2d, x: f64, y: f64, w: f64, h: f64);
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
+    pub fn round_rect(this: &Path2d, x: f64, y: f64, w: f64, h: f64) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
+    pub fn round_rect_with_f64(
+        this: &Path2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: f64,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "DomPointInit")]
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `Path2d`*"]
+    pub fn round_rect_with_dom_point_init(
+        this: &Path2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: &DomPointInit,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
+    pub fn round_rect_with_f64_sequence(
+        this: &Path2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: &::wasm_bindgen::JsValue,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "Path2D" , js_name = roundRect)]
+    #[doc = "The `roundRect()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/roundRect)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Path2d`*"]
+    pub fn round_rect_with_dom_point_init_sequence(
+        this: &Path2d,
+        x: f64,
+        y: f64,
+        w: f64,
+        h: f64,
+        radii: &::wasm_bindgen::JsValue,
+    ) -> Result<(), JsValue>;
 }

@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -77,4 +78,24 @@ extern "C" {
         message: &::wasm_bindgen::JsValue,
         transfer: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "DedicatedWorkerGlobalScope" , js_name = cancelAnimationFrame)]
+    #[doc = "The `cancelAnimationFrame()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/cancelAnimationFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
+    pub fn cancel_animation_frame(
+        this: &DedicatedWorkerGlobalScope,
+        handle: i32,
+    ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "DedicatedWorkerGlobalScope" , js_name = requestAnimationFrame)]
+    #[doc = "The `requestAnimationFrame()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/requestAnimationFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
+    pub fn request_animation_frame(
+        this: &DedicatedWorkerGlobalScope,
+        callback: &::js_sys::Function,
+    ) -> Result<i32, JsValue>;
 }

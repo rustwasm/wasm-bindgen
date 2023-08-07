@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -662,6 +663,76 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
     pub fn webkit_matches_selector(this: &Element, selector: &str) -> Result<bool, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Animation")]
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
+    #[doc = "The `animate()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Animation`, `Element`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn animate(this: &Element, keyframes: Option<&::js_sys::Object>) -> Animation;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Animation")]
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
+    #[doc = "The `animate()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Animation`, `Element`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn animate_with_f64(
+        this: &Element,
+        keyframes: Option<&::js_sys::Object>,
+        options: f64,
+    ) -> Animation;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "Animation", feature = "KeyframeAnimationOptions",))]
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = animate)]
+    #[doc = "The `animate()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Animation`, `Element`, `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn animate_with_keyframe_animation_options(
+        this: &Element,
+        keyframes: Option<&::js_sys::Object>,
+        options: &KeyframeAnimationOptions,
+    ) -> Animation;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = getAnimations)]
+    #[doc = "The `getAnimations()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_animations(this: &Element) -> ::js_sys::Array;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GetAnimationsOptions")]
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = getAnimations)]
+    #[doc = "The `getAnimations()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`, `GetAnimationsOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_animations_with_options(
+        this: &Element,
+        options: &GetAnimationsOptions,
+    ) -> ::js_sys::Array;
     # [wasm_bindgen (catch , method , structural , variadic , js_class = "Element" , js_name = after)]
     #[doc = "The `after()` method."]
     #[doc = ""]
@@ -1949,4 +2020,195 @@ extern "C" {
         nodes_6: &str,
         nodes_7: &str,
     ) -> Result<(), JsValue>;
+    # [wasm_bindgen (method , structural , variadic , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node(this: &Element, nodes: &::js_sys::Array);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_0(this: &Element);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_1(this: &Element, nodes_1: &Node);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_2(this: &Element, nodes_1: &Node, nodes_2: &Node);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_3(
+        this: &Element,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_4(
+        this: &Element,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_5(
+        this: &Element,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+        nodes_5: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_6(
+        this: &Element,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+        nodes_5: &Node,
+        nodes_6: &Node,
+    );
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_node_7(
+        this: &Element,
+        nodes_1: &Node,
+        nodes_2: &Node,
+        nodes_3: &Node,
+        nodes_4: &Node,
+        nodes_5: &Node,
+        nodes_6: &Node,
+        nodes_7: &Node,
+    );
+    # [wasm_bindgen (method , structural , variadic , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str(this: &Element, nodes: &::js_sys::Array);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_0(this: &Element);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_1(this: &Element, nodes_1: &str);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_2(this: &Element, nodes_1: &str, nodes_2: &str);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_3(this: &Element, nodes_1: &str, nodes_2: &str, nodes_3: &str);
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_4(
+        this: &Element,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+    );
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_5(
+        this: &Element,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+        nodes_5: &str,
+    );
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_6(
+        this: &Element,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+        nodes_5: &str,
+        nodes_6: &str,
+    );
+    # [wasm_bindgen (method , structural , js_class = "Element" , js_name = replaceChildren)]
+    #[doc = "The `replaceChildren()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceChildren)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`*"]
+    pub fn replace_children_with_str_7(
+        this: &Element,
+        nodes_1: &str,
+        nodes_2: &str,
+        nodes_3: &str,
+        nodes_4: &str,
+        nodes_5: &str,
+        nodes_6: &str,
+        nodes_7: &str,
+    );
 }

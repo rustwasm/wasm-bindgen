@@ -7,6 +7,11 @@
  * https://wiki.whatwg.org/wiki/OffscreenCanvas
  */
 
+dictionary ImageEncodeOptions {
+  DOMString type = "image/png";
+  unrestricted double quality;
+};
+
 [Constructor(unsigned long width, unsigned long height),
  Exposed=(Window,Worker),
  Func="mozilla::dom::DOMPrefs::OffscreenCanvasEnabled"]
@@ -23,8 +28,7 @@ interface OffscreenCanvas : EventTarget {
   [Throws]
   ImageBitmap transferToImageBitmap();
   [Throws]
-  Promise<Blob> toBlob(optional DOMString type = "",
-                       optional any encoderOptions);
+  Promise<Blob> convertToBlob(optional ImageEncodeOptions options = {});
 };
 
 // OffscreenCanvas includes Transferable;

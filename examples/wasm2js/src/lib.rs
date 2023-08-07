@@ -8,6 +8,6 @@ extern "C" {
 }
 
 #[wasm_bindgen(start)]
-pub fn run() {
+fn run() {
     log("Hello, World!");
 }

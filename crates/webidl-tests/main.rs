@@ -30,6 +30,7 @@ pub mod maplike;
 pub mod namespace;
 pub mod no_interface;
 pub mod promise;
+pub mod setlike;
 pub mod simple;
 pub mod throws;
 pub mod unstable;

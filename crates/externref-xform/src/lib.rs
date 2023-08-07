@@ -19,6 +19,7 @@ use anyhow::{anyhow, bail, Error};
 use std::cmp;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::mem;
+
 use walrus::ir::*;
 use walrus::{ElementId, ExportId, ImportId, InstrLocId, TypeId};
 use walrus::{FunctionId, GlobalId, InitExpr, Module, TableId, ValType};
@@ -176,7 +177,7 @@ impl Context {
     }
 
     fn function(&self, externref: &[(usize, bool)], ret_externref: bool) -> Option<Function> {
-        if !ret_externref && externref.len() == 0 {
+        if !ret_externref && externref.is_empty() {
             return None;
         }
         Some(Function {
@@ -418,7 +419,7 @@ impl Transform<'_> {
         // Create shims for all our functions and append them all to the segment
         // which places elements at the end.
         let mut new_segment = Vec::new();
-        for (idx, function) in mem::replace(&mut self.cx.new_elements, Vec::new()) {
+        for (idx, function) in mem::take(&mut self.cx.new_elements) {
             let (&offset, &orig_element) = self
                 .cx
                 .elements
@@ -489,10 +490,8 @@ impl Transform<'_> {
 
         for (i, old_ty) in target_ty.params().iter().enumerate() {
             let is_owned = func.args.remove(&i);
-            let new_ty = is_owned
-                .map(|_which| ValType::Externref)
-                .unwrap_or(old_ty.clone());
-            param_tys.push(new_ty.clone());
+            let new_ty = is_owned.map(|_which| ValType::Externref).unwrap_or(*old_ty);
+            param_tys.push(new_ty);
             if new_ty == *old_ty {
                 param_convert.push(Convert::None);
             } else if is_export {

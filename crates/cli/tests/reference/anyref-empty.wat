@@ -5,4 +5,5 @@
   (memory (;0;) 16)
   (export "memory" (memory 0))
   (export "__wbindgen_export_0" (table 0))
-  (export "__wbindgen_start" (func 0)))
+  (export "__wbindgen_start" (func 0))
+)

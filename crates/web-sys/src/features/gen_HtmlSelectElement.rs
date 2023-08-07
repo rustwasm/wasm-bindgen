@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -333,7 +334,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HtmlSelectElement`*"]
     pub fn set_custom_validity(this: &HtmlSelectElement, error: &str);
     #[wasm_bindgen(method, structural, js_class = "HTMLSelectElement", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
@@ -347,7 +348,7 @@ extern "C" {
         js_class = "HTMLSelectElement",
         indexing_setter
     )]
-    #[doc = "Indexing setter."]
+    #[doc = "Indexing setter. As in the literal Javascript `this[key] = value`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

@@ -4,11 +4,7 @@ use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 
-// no need for jemalloc bloat in this binary (and we don't need speed)
-#[global_allocator]
-static ALLOC: std::alloc::System = std::alloc::System;
-
-const USAGE: &'static str = "
+const USAGE: &str = "
 Converts a wasm file to an ES6 JS module
 
 Usage:
@@ -18,7 +14,7 @@ Usage:
 Options:
     -h --help               Show this screen.
     -o --output FILE        File to place output in
-    --out-dir DIR           Directory to place ouptut in
+    --out-dir DIR           Directory to place output in
     --typescript            Output a `*.d.ts` file next to the JS output
     --base64                Inline the wasm module using base64 encoding
     --fetch PATH            Load module by passing the PATH argument to `fetch()`

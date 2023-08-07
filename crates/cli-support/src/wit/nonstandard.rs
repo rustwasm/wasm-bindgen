@@ -79,6 +79,8 @@ pub struct AuxExport {
     pub kind: AuxExportKind,
     /// Whether typescript bindings should be generated for this export.
     pub generate_typescript: bool,
+    /// Whether jsdoc comments should be generated for this export.
+    pub generate_jsdoc: bool,
     /// Whether typescript bindings should be generated for this export.
     pub variadic: bool,
 }
@@ -97,14 +99,14 @@ pub struct AuxExport {
 /// currently take integer parameters and require a JS wrapper, but ideally
 /// we'd change them one day to taking/receiving `externref` which then use some
 /// sort of webidl import to customize behavior or something like that. In any
-/// case this doesn't feel quite right in terms of priviledge separation, so
+/// case this doesn't feel quite right in terms of privilege separation, so
 /// we'll want to work on this. For now though it works.
 #[derive(Debug)]
 pub enum AuxExportKind {
     /// A free function that's just listed on the exported module
     Function(String),
 
-    /// A function that's used to create an instane of a class. The function
+    /// A function that's used to create an instance of a class. The function
     /// actually return just an integer which is put on an JS object currently.
     Constructor(String),
 
@@ -328,6 +330,12 @@ pub enum AuxImport {
     /// This is an intrinsic function expected to be implemented with a JS glue
     /// shim. Each intrinsic has its own expected signature and implementation.
     Intrinsic(Intrinsic),
+
+    /// This is a function which returns a URL pointing to a specific file,
+    /// usually a JS snippet. The supplied path is relative to the JS glue shim.
+    /// The Option may contain the contents of the linked file, so it can be
+    /// embedded.
+    LinkTo(String, Option<String>),
 }
 
 /// Values that can be imported verbatim to hook up to an import.

@@ -12,7 +12,7 @@ extern "C" {
 }
 
 #[wasm_bindgen(start)]
-pub fn start_websocket() -> Result<(), JsValue> {
+fn start_websocket() -> Result<(), JsValue> {
     // Connect to an echo server
     let ws = WebSocket::new("wss://echo.websocket.events")?;
     // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
@@ -29,7 +29,7 @@ pub fn start_websocket() -> Result<(), JsValue> {
             // here you can for example use Serde Deserialize decode the message
             // for demo purposes we switch back to Blob-type and send off another binary message
             cloned_ws.set_binary_type(web_sys::BinaryType::Blob);
-            match cloned_ws.send_with_u8_array(&vec![5, 6, 7, 8]) {
+            match cloned_ws.send_with_u8_array(&[5, 6, 7, 8]) {
                 Ok(_) => console_log!("binary message successfully sent"),
                 Err(err) => console_log!("error sending message: {:?}", err),
             }
@@ -73,7 +73,7 @@ pub fn start_websocket() -> Result<(), JsValue> {
             Err(err) => console_log!("error sending message: {:?}", err),
         }
         // send off binary message
-        match cloned_ws.send_with_u8_array(&vec![0, 1, 2, 3]) {
+        match cloned_ws.send_with_u8_array(&[0, 1, 2, 3]) {
             Ok(_) => console_log!("binary message successfully sent"),
             Err(err) => console_log!("error sending message: {:?}", err),
         }

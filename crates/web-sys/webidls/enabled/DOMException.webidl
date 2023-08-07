@@ -42,7 +42,7 @@ interface mixin ExceptionMembers
   [ChromeOnly, Exposed=Window]
   readonly attribute StackFrame?             location;
 
-  // Arbitary data for the implementation.
+  // Arbitrary data for the implementation.
   [Exposed=Window]
   readonly attribute nsISupports?            data;
 

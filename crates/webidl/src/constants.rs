@@ -1,4 +1,5 @@
 use once_cell::sync::Lazy;
+use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 use std::iter::FromIterator;
 
@@ -91,5 +92,30 @@ pub(crate) static IMMUTABLE_SLICE_WHITELIST: Lazy<BTreeSet<&'static str>> = Lazy
         "copyToChannel",
         // FontFace
         "FontFace", // TODO: Add another type's functions here. Leave a comment header with the type name
+        // FileSystemSyncAccessHandle and FileSystemWritableFileStream
+        "write",
+    ])
+});
+
+pub(crate) static FIXED_INTERFACES: Lazy<BTreeMap<&'static str, &'static str>> = Lazy::new(|| {
+    BTreeMap::from_iter(vec![
+        ("create_image_bitmap_with_html_image_element_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_html_image_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_svg_image_element_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_svg_image_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_html_canvas_element_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_html_canvas_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_html_video_element_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_html_video_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_image_bitmap_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_image_bitmap_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_offscreen_canvas_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_offscreen_canvas_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_video_frame_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_video_frame_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_blob_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_blob_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_image_data_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_image_data_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
+        ("create_image_bitmap_with_html_image_element_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_html_image_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_svg_image_element_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_svg_image_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_html_canvas_element_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_html_canvas_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_html_video_element_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_html_video_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_image_bitmap_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_image_bitmap_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_offscreen_canvas_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_offscreen_canvas_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_video_frame_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_video_frame_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_blob_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_blob_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("create_image_bitmap_with_image_data_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_image_data_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
     ])
 });

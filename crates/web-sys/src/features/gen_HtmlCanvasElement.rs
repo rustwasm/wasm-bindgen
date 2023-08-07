@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -39,6 +40,25 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
     pub fn set_height(this: &HtmlCanvasElement, value: u32);
+    #[cfg(feature = "MediaStream")]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = captureStream)]
+    #[doc = "The `captureStream()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/captureStream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `MediaStream`*"]
+    pub fn capture_stream(this: &HtmlCanvasElement) -> Result<MediaStream, JsValue>;
+    #[cfg(feature = "MediaStream")]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = captureStream)]
+    #[doc = "The `captureStream()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/captureStream)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `MediaStream`*"]
+    pub fn capture_stream_with_frame_request_rate(
+        this: &HtmlCanvasElement,
+        frame_request_rate: f64,
+    ) -> Result<MediaStream, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = getContext)]
     #[doc = "The `getContext()` method."]
     #[doc = ""]

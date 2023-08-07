@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -54,21 +55,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Storage`*"]
     pub fn set_item(this: &Storage, key: &str, value: &str) -> Result<(), JsValue>;
     #[wasm_bindgen(catch, method, structural, js_class = "Storage", indexing_getter)]
-    #[doc = "Indexing getter."]
+    #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`*"]
     pub fn get(this: &Storage, key: &str) -> Result<Option<String>, JsValue>;
     #[wasm_bindgen(catch, method, structural, js_class = "Storage", indexing_setter)]
-    #[doc = "Indexing setter."]
+    #[doc = "Indexing setter. As in the literal Javascript `this[key] = value`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`*"]
     pub fn set(this: &Storage, key: &str, value: &str) -> Result<(), JsValue>;
     #[wasm_bindgen(catch, method, structural, js_class = "Storage", indexing_deleter)]
-    #[doc = "Indexing deleter."]
+    #[doc = "Indexing deleter. As in the literal Javascript `delete this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]

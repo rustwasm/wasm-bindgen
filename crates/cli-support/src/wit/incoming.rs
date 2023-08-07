@@ -44,7 +44,6 @@ impl InstructionBuilder<'_, '_> {
 
     fn _incoming(&mut self, arg: &Descriptor) -> Result<(), Error> {
         use walrus::ValType as WasmVT;
-        use wit_walrus::ValType as WitVT;
         match arg {
             Descriptor::Boolean => {
                 self.instruction(
@@ -83,14 +82,14 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             }
-            Descriptor::I8 => self.number(WitVT::S8, WasmVT::I32),
-            Descriptor::U8 => self.number(WitVT::U8, WasmVT::I32),
-            Descriptor::I16 => self.number(WitVT::S16, WasmVT::I32),
-            Descriptor::U16 => self.number(WitVT::U16, WasmVT::I32),
-            Descriptor::I32 => self.number(WitVT::S32, WasmVT::I32),
-            Descriptor::U32 => self.number(WitVT::U32, WasmVT::I32),
-            Descriptor::I64 => self.number(WitVT::S64, WasmVT::I64),
-            Descriptor::U64 => self.number(WitVT::U64, WasmVT::I64),
+            Descriptor::I8 => self.number(AdapterType::S8, WasmVT::I32),
+            Descriptor::U8 => self.number(AdapterType::U8, WasmVT::I32),
+            Descriptor::I16 => self.number(AdapterType::S16, WasmVT::I32),
+            Descriptor::U16 => self.number(AdapterType::U16, WasmVT::I32),
+            Descriptor::I32 => self.number(AdapterType::S32, WasmVT::I32),
+            Descriptor::U32 => self.number(AdapterType::U32, WasmVT::I32),
+            Descriptor::I64 => self.number(AdapterType::S64, WasmVT::I64),
+            Descriptor::U64 => self.number(AdapterType::U64, WasmVT::I64),
             Descriptor::F32 => {
                 self.get(AdapterType::F32);
                 self.output.push(AdapterType::F32);
@@ -99,7 +98,7 @@ impl InstructionBuilder<'_, '_> {
                 self.get(AdapterType::F64);
                 self.output.push(AdapterType::F64);
             }
-            Descriptor::Enum { .. } => self.number(WitVT::U32, WasmVT::I32),
+            Descriptor::Enum { .. } => self.number(AdapterType::U32, WasmVT::I32),
             Descriptor::Ref(d) => self.incoming_ref(false, d)?,
             Descriptor::RefMut(d) => self.incoming_ref(true, d)?,
             Descriptor::Option(d) => self.incoming_option(d)?,
@@ -339,9 +338,8 @@ impl InstructionBuilder<'_, '_> {
         // fetch them from the parameters.
         if !self.return_position {
             let idx = self.input.len() as u32 - 1;
-            let std = wit_walrus::Instruction::ArgGet(idx);
             self.instructions.push(InstructionData {
-                instr: Instruction::Standard(std),
+                instr: Instruction::ArgGet(idx),
                 stack_change: StackChange::Modified {
                     pushed: 1,
                     popped: 0,
@@ -398,17 +396,12 @@ impl InstructionBuilder<'_, '_> {
         self.output.extend_from_slice(outputs);
     }
 
-    fn number(&mut self, input: wit_walrus::ValType, output: walrus::ValType) {
-        let std = wit_walrus::Instruction::IntToWasm {
-            input,
+    fn number(&mut self, input: AdapterType, output: walrus::ValType) {
+        let instr = Instruction::IntToWasm {
+            input: input.clone(),
             output,
-            trap: false,
         };
-        self.instruction(
-            &[AdapterType::from_wit(input)],
-            Instruction::Standard(std),
-            &[AdapterType::from_wasm(output).unwrap()],
-        );
+        self.instruction(&[input], instr, &[AdapterType::from_wasm(output).unwrap()]);
     }
 
     fn in_option_native(&mut self, wasm: ValType) {

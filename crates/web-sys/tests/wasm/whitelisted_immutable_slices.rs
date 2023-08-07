@@ -11,6 +11,10 @@
 //! @see https://github.com/rustwasm/wasm-bindgen/issues/1005
 
 use wasm_bindgen::{JsCast, JsValue};
+#[cfg(web_sys_unstable_apis)]
+use web_sys::{
+    FileSystemReadWriteOptions, FileSystemSyncAccessHandle, FileSystemWritableFileStream,
+};
 use web_sys::{WebGl2RenderingContext, WebGlRenderingContext, WebSocket};
 
 // Ensure that our whitelisted WebGlRenderingContext methods compile with immutable slices.
@@ -69,6 +73,23 @@ fn test_webgl2_rendering_context_immutable_slices() {
 fn test_websocket_immutable_slices() {
     let ws = JsValue::null().unchecked_into::<WebSocket>();
     ws.send_with_u8_array(&[0]);
+}
+
+// Ensure that our whitelisted FileSystemSyncAccessHandle methods compile with immutable slices.
+#[cfg(web_sys_unstable_apis)]
+fn test_file_system_sync_access_handle_immutable_slices() {
+    let sa = JsValue::null().unchecked_into::<FileSystemSyncAccessHandle>();
+    let opt = JsValue::null().unchecked_into::<FileSystemReadWriteOptions>();
+
+    sa.write_with_u8_array(&[0]);
+    sa.write_with_u8_array_and_options(&[0], &opt);
+}
+
+// Ensure that our whitelisted FileSystemWritableFileStream methods compile with immutable slices.
+#[cfg(web_sys_unstable_apis)]
+fn test_file_system_writable_file_stream_immutable_slices() {
+    let wf = JsValue::null().unchecked_into::<FileSystemWritableFileStream>();
+    wf.write_with_u8_array(&[0]);
 }
 
 // TODO:

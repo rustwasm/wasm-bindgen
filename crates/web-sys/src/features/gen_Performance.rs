@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -152,6 +153,17 @@ extern "C" {
         start_mark: &str,
         end_mark: &str,
     ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "Performance" , js_name = measureUserAgentSpecificMemory)]
+    #[doc = "The `measureUserAgentSpecificMemory()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Performance/measureUserAgentSpecificMemory)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Performance`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn measure_user_agent_specific_memory(this: &Performance) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "Performance" , js_name = now)]
     #[doc = "The `now()` method."]
     #[doc = ""]

@@ -11,11 +11,11 @@
 
 use anyhow::{bail, Result};
 use assert_cmd::prelude::*;
-use rayon::prelude::*;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use walrus::ModuleConfig;
 
 fn main() -> Result<()> {
     let filter = env::args().nth(1);
@@ -37,11 +37,11 @@ fn main() -> Result<()> {
     tests.sort();
 
     let errs = tests
-        .par_iter()
+        .iter()
         .filter_map(|t| runtest(t).err().map(|e| (t, e)))
         .collect::<Vec<_>>();
 
-    if errs.len() == 0 {
+    if errs.is_empty() {
         println!("{} tests passed", tests.len());
         return Ok(());
     }
@@ -76,7 +76,6 @@ fn runtest(test: &Path) -> Result<()> {
         repo_root().display(),
         test.display(),
     );
-    let interface_types = contents.contains("// interface-types");
 
     fs::write(td.path().join("Cargo.toml"), manifest)?;
     let target_dir = target_dir();
@@ -95,30 +94,24 @@ fn runtest(test: &Path) -> Result<()> {
         .join("reference_test.wasm");
 
     let mut bindgen = Command::cargo_bin("wasm-bindgen")?;
-    bindgen.arg("--out-dir").arg(td.path()).arg(&wasm);
+    bindgen
+        .arg("--out-dir")
+        .arg(td.path())
+        .arg(&wasm)
+        .arg("--remove-producers-section");
     if contents.contains("// enable-externref") {
         bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
     }
-    if interface_types {
-        bindgen.env("WASM_INTERFACE_TYPES", "1");
-    }
     exec(&mut bindgen)?;
 
-    if interface_types {
-        let wasm = td.path().join("reference_test.wasm");
-        wit_validator::validate(&fs::read(&wasm)?)?;
-        let wat = sanitize_wasm(&wasm)?;
+    if !contents.contains("async") {
+        let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
+        assert_same(&js, &test.with_extension("js"))?;
+        let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
         assert_same(&wat, &test.with_extension("wat"))?;
-    } else {
-        if !contents.contains("async") {
-            let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
-            assert_same(&js, &test.with_extension("js"))?;
-            let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
-            assert_same(&wat, &test.with_extension("wat"))?;
-        }
-        let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
-        assert_same(&d_ts, &test.with_extension("d.ts"))?;
     }
+    let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
+    assert_same(&d_ts, &test.with_extension("d.ts"))?;
 
     Ok(())
 }
@@ -127,7 +120,7 @@ fn assert_same(output: &str, expected: &Path) -> Result<()> {
     if env::var("BLESS").is_ok() {
         fs::write(expected, output)?;
     } else {
-        let expected = fs::read_to_string(&expected)?;
+        let expected = fs::read_to_string(expected)?;
         diff(&expected, output)?;
     }
     Ok(())
@@ -137,8 +130,8 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     // Clean up the wasm module by removing all function
     // implementations/instructions, data sections, etc. This'll help us largely
     // only deal with exports/imports which is all we're really interested in.
-    let mut module = walrus::ModuleConfig::new()
-        .on_parse(wit_walrus::on_parse)
+    let mut module = ModuleConfig::new()
+        .generate_producers_section(false)
         .parse_file(wasm)?;
     for func in module.funcs.iter_mut() {
         let local = match &mut func.kind {
@@ -164,18 +157,15 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     let ids = module
         .exports
         .iter()
-        .filter(|e| match e.item {
-            walrus::ExportItem::Global(_) => true,
-            _ => false,
-        })
+        .filter(|e| matches!(e.item, walrus::ExportItem::Global(_)))
         .map(|d| d.id())
         .collect::<Vec<_>>();
     for id in ids {
         module.exports.delete(id);
     }
     walrus::passes::gc::run(&mut module);
-    let mut wat = wit_printer::print_bytes(&module.emit_wasm())?;
-    wat.push_str("\n");
+    let mut wat = wasmprinter::print_bytes(module.emit_wasm())?;
+    wat.push('\n');
     Ok(wat)
 }
 
@@ -187,31 +177,31 @@ fn diff(a: &str, b: &str) -> Result<()> {
     for result in diff::lines(a, b) {
         match result {
             diff::Result::Both(l, _) => {
-                s.push_str(" ");
+                s.push(' ');
                 s.push_str(l);
             }
             diff::Result::Left(l) => {
-                s.push_str("-");
+                s.push('-');
                 s.push_str(l);
             }
             diff::Result::Right(l) => {
-                s.push_str("+");
+                s.push('+');
                 s.push_str(l);
             }
         }
-        s.push_str("\n");
+        s.push('\n');
     }
     bail!("found a difference:\n\n{}", s);
 }
 
 fn target_dir() -> PathBuf {
-    let mut dir = PathBuf::from(env::current_exe().unwrap());
+    let mut dir = env::current_exe().unwrap();
     dir.pop(); // current exe
     if dir.ends_with("deps") {
         dir.pop();
     }
     dir.pop(); // debug and/or release
-    return dir;
+    dir
 }
 
 fn repo_root() -> PathBuf {
@@ -240,5 +230,5 @@ fn exec(cmd: &mut Command) -> Result<()> {
 }
 
 fn tab(s: &str) -> String {
-    format!("    {}", s.replace("\n", "\n    "))
+    format!("    {}", s.replace('\n', "\n    "))
 }

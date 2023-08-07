@@ -19,7 +19,7 @@ extern "C" {
 }
 
 #[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
+fn run() -> Result<(), JsValue> {
     let window = web_sys::window().expect("no global `window` exists");
     let document = window.document().expect("should have a document on window");
     let body = document.body().expect("document should have a body");
@@ -152,11 +152,11 @@ pub fn run() -> Result<(), JsValue> {
         let sunset = suns_s_td_div.clone();
         let geo = geo_shtd_div.clone();
         let input_value: &'static _ = Box::leak(Box::new(input_value));
-        let response = get_response(&input_value);
+        let response = get_response(input_value);
         spawn_local(async move {
             let parsed = response.await;
-            let lon = (&parsed["coord"]["lon"]).to_owned().as_f64().unwrap();
-            let lat = (&parsed["coord"]["lat"]).to_owned().as_f64().unwrap();
+            let lon = parsed["coord"]["lon"].to_owned().as_f64().unwrap();
+            let lat = parsed["coord"]["lat"].to_owned().as_f64().unwrap();
             initialize(lat, lon);
             let city_name: &str = &parsed["name"].to_owned().to_string();
             let country_name: &str = &parsed["sys"]["country"].to_owned().to_string();
@@ -169,13 +169,13 @@ pub fn run() -> Result<(), JsValue> {
                 "  ",
             ]
             .concat();
-            let temp = ((&parsed["main"]["temp"]).to_owned().as_f64().unwrap() - 273.15) as i64;
+            let temp = (parsed["main"]["temp"].to_owned().as_f64().unwrap() - 273.15) as i64;
 
             let content = [src, temp.to_string()].concat();
             let p: &str = &parsed["main"]["pressure"].to_owned().to_string();
             let h: &str = &parsed["main"]["humidity"].to_owned().to_string();
-            let sun_r = ((&parsed["sys"]["sunrise"]).to_owned().as_f64().unwrap()) as u64;
-            let sun_s = ((&parsed["sys"]["sunset"]).to_owned().as_f64().unwrap()) as u64;
+            let sun_r = (parsed["sys"]["sunrise"].to_owned().as_f64().unwrap()) as u64;
+            let sun_s = (parsed["sys"]["sunset"].to_owned().as_f64().unwrap()) as u64;
 
             temp_d
                 .set_attribute("style", "display: block")

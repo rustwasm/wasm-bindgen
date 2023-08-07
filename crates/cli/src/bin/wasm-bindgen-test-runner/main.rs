@@ -12,15 +12,12 @@
 //! and source code.
 
 use anyhow::{anyhow, bail, Context};
+use log::error;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
-
-// no need for jemalloc bloat in this binary (and we don't need speed)
-#[global_allocator]
-static ALLOC: std::alloc::System = std::alloc::System;
 
 mod deno;
 mod headless;
@@ -32,7 +29,18 @@ mod shell;
 enum TestMode {
     Node,
     Deno,
-    Browser,
+    Browser { no_modules: bool },
+    Worker { no_modules: bool },
+}
+
+struct TmpDirDeleteGuard(PathBuf);
+
+impl Drop for TmpDirDeleteGuard {
+    fn drop(&mut self) {
+        if let Err(e) = fs::remove_dir_all(&self.0) {
+            error!("failed to remove temporary directory: {}", e);
+        }
+    }
 }
 
 fn main() -> anyhow::Result<()> {
@@ -46,6 +54,11 @@ fn main() -> anyhow::Result<()> {
         Some(file) => PathBuf::from(file),
         None => bail!("must have a file to test as first argument"),
     };
+
+    let file_name = wasm_file_to_test
+        .file_name()
+        .and_then(|s| s.to_str())
+        .context("file to test is not a valid file, can't extract file name")?;
 
     // wasm_file_to_test may be
     // - a cargo-like directory layout and generate output at
@@ -64,12 +77,13 @@ fn main() -> anyhow::Result<()> {
             .and_then(|p| p.parent()) // chop off `deps`
             .and_then(|p| p.parent()) // chop off `debug`
     }
-    .map(|p| p.join("wbg-tmp"))
+    .map(|p| p.join(format!("wbg-tmp-{}", file_name)))
     .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
 
     // Make sure there's no stale state from before
     drop(fs::remove_dir_all(&tmpdir));
     fs::create_dir(&tmpdir).context("creating temporary directory")?;
+    let _guard = TmpDirDeleteGuard(tmpdir.clone());
 
     let module = "wasm-bindgen-test";
 
@@ -91,7 +105,7 @@ fn main() -> anyhow::Result<()> {
     // Right now there's a bug where if no tests are present then the
     // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
     // early saying everything is ok.
-    if tests.len() == 0 {
+    if tests.is_empty() {
         println!("no tests to run!");
         return Ok(());
     }
@@ -103,7 +117,12 @@ fn main() -> anyhow::Result<()> {
 
     let custom_section = wasm.customs.remove_raw("__wasm_bindgen_test_unstable");
     let test_mode = match custom_section {
-        Some(section) if section.data.contains(&0x01) => TestMode::Browser,
+        Some(section) if section.data.contains(&0x01) => TestMode::Browser {
+            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+        },
+        Some(section) if section.data.contains(&0x10) => TestMode::Worker {
+            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+        },
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
         None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
         None => TestMode::Node,
@@ -115,31 +134,27 @@ fn main() -> anyhow::Result<()> {
     // Gracefully handle requests to execute only node or only web tests.
     let node = test_mode == TestMode::Node;
 
-    if env::var_os("WASM_BINDGEN_TEST_ONLY_NODE").is_some() {
-        if !node {
-            println!(
-                "this test suite is only configured to run in a browser, \
-                 but we're only testing node.js tests so skipping"
-            );
-            return Ok(());
-        }
+    if env::var_os("WASM_BINDGEN_TEST_ONLY_NODE").is_some() && !node {
+        println!(
+            "this test suite is only configured to run in a browser, \
+             but we're only testing node.js tests so skipping"
+        );
+        return Ok(());
     }
-    if env::var_os("WASM_BINDGEN_TEST_ONLY_WEB").is_some() {
-        if node {
-            println!(
-                "\
-This test suite is only configured to run in node.js, but we're only running
-browser tests so skipping. If you'd like to run the tests in a browser
-include this in your crate when testing:
+    if env::var_os("WASM_BINDGEN_TEST_ONLY_WEB").is_some() && node {
+        println!(
+            "\
+    This test suite is only configured to run in node.js, but we're only running
+    browser tests so skipping. If you'd like to run the tests in a browser
+    include this in your crate when testing:
 
-    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+        wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-You'll likely want to put that in a `#[cfg(test)]` module or at the top of an
-integration test.\
-"
-            );
-            return Ok(());
-        }
+    You'll likely want to put that in a `#[cfg(test)]` module or at the top of an
+    integration test.\
+    "
+        );
+        return Ok(());
     }
 
     let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
@@ -160,8 +175,17 @@ integration test.\
     match test_mode {
         TestMode::Node => b.nodejs(true)?,
         TestMode::Deno => b.deno(true)?,
-        TestMode::Browser => b.web(true)?,
+        TestMode::Browser { no_modules: false } | TestMode::Worker { no_modules: false } => {
+            b.web(true)?
+        }
+        TestMode::Browser { no_modules: true } | TestMode::Worker { no_modules: true } => {
+            b.no_modules(true)?
+        }
     };
+
+    if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
+        b.split_linked_modules(true);
+    }
 
     b.debug(debug)
         .input_module(module, wasm)
@@ -174,20 +198,24 @@ integration test.\
     let args: Vec<_> = args.collect();
 
     match test_mode {
-        TestMode::Node => node::execute(&module, &tmpdir, &args, &tests)?,
-        TestMode::Deno => deno::execute(&module, &tmpdir, &args, &tests)?,
-        TestMode::Browser => {
+        TestMode::Node => node::execute(module, &tmpdir, &args, &tests)?,
+        TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests)?,
+        TestMode::Browser { no_modules } | TestMode::Worker { no_modules } => {
             let srv = server::spawn(
                 &if headless {
                     "127.0.0.1:0".parse().unwrap()
+                } else if let Ok(address) = std::env::var("WASM_BINDGEN_TEST_ADDRESS") {
+                    address.parse().unwrap()
                 } else {
                     "127.0.0.1:8000".parse().unwrap()
                 },
                 headless,
-                &module,
+                module,
                 &tmpdir,
                 &args,
                 &tests,
+                no_modules,
+                matches!(test_mode, TestMode::Worker { no_modules: _ }),
             )
             .context("failed to spawn server")?;
             let addr = srv.server_addr();
@@ -199,12 +227,13 @@ integration test.\
                     "Interactive browsers tests are now available at http://{}",
                     addr
                 );
-                println!("");
+                println!();
                 println!("Note that interactive mode is enabled because `NO_HEADLESS`");
                 println!("is specified in the environment of this process. Once you're");
                 println!("done with testing you'll need to kill this server with");
                 println!("Ctrl-C.");
-                return Ok(srv.run());
+                srv.run();
+                return Ok(());
             }
 
             thread::spawn(|| srv.run());

@@ -2,5 +2,5 @@ name: 'Setup Geckodriver'
 description: 'Setup Geckodriver'
 
 runs:
-  using: node12
+  using: node16
   main: 'main.js'

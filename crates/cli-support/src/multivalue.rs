@@ -1,7 +1,8 @@
 use crate::wit::{Adapter, NonstandardWitSection};
 use crate::wit::{AdapterKind, Instruction, WasmBindgenAux};
 use anyhow::{anyhow, Error};
-use walrus::Module;
+use walrus::ir::Value;
+use walrus::{FunctionId, InitExpr, Module};
 use wasm_bindgen_multi_value_xform as multi_value_xform;
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
@@ -37,6 +38,7 @@ pub fn run(module: &mut Module) -> Result<(), Error> {
         match slot {
             Slot::Id(s) => *s = id,
             Slot::Export(e) => module.exports.get_mut(e).item = id.into(),
+            Slot::TableElement(index) => set_table_entry(module, index, id),
         }
     }
 
@@ -48,6 +50,7 @@ pub fn run(module: &mut Module) -> Result<(), Error> {
 enum Slot<'a> {
     Id(&'a mut walrus::FunctionId),
     Export(walrus::ExportId),
+    TableElement(u32),
 }
 
 fn extract_xform<'a>(
@@ -76,13 +79,13 @@ fn extract_xform<'a>(
         });
         let slot = instructions
             .iter_mut()
-            .filter_map(|i| match &mut i.instr {
-                Instruction::Standard(wit_walrus::Instruction::CallCore(f)) => Some(Slot::Id(f)),
+            .find_map(|i| match &mut i.instr {
+                Instruction::CallCore(f) => Some(Slot::Id(f)),
                 Instruction::CallExport(e) => Some(Slot::Export(*e)),
+                Instruction::CallTableElement(index) => Some(Slot::TableElement(*index)),
                 _ => None,
             })
-            .next()
-            .expect("should have found call-core");
+            .expect("adapter never calls the underlying function");
 
         // LLVM currently always uses the first parameter for the return
         // pointer. We hard code that here, since we have no better option.
@@ -92,10 +95,10 @@ fn extract_xform<'a>(
                 walrus::ExportItem::Function(f) => f,
                 _ => panic!("found call to non-function export"),
             },
+            Slot::TableElement(func_index) => resolve_table_entry(module, *func_index),
         };
         to_xform.push((id, 0, types));
         slots.push(slot);
-        return;
     }
 
     // If the last instruction is a `StoreRetptr`, then this must be an adapter
@@ -103,4 +106,64 @@ fn extract_xform<'a>(
     //
     // FIXME(#1872) handle this
     // if let Some(Instruction::StoreRetptr { .. }) = instructions.last() {}
+}
+
+/// Resolves an index in the function table to a function ID.
+fn resolve_table_entry(module: &Module, func_index: u32) -> FunctionId {
+    let table_id = module
+        .tables
+        .main_function_table()
+        .ok()
+        .flatten()
+        .expect("there should only be one function table");
+    module
+        .tables
+        .get(table_id)
+        .elem_segments
+        .iter()
+        .find_map(|&id| {
+            let elem = module.elements.get(id);
+            let offset = match elem.kind {
+                walrus::ElementKind::Active { offset, .. } => match offset {
+                    InitExpr::Value(Value::I32(value)) => value as u32,
+                    _ => panic!("table offset was not an i32 value"),
+                },
+                _ => panic!("found non-active element section for function table"),
+            };
+            elem.members.iter().enumerate().find_map(|(i, &func_id)| {
+                let table_index = i as u32 + offset;
+                if table_index == func_index {
+                    func_id
+                } else {
+                    None
+                }
+            })
+        })
+        .expect("function in function table is not initialized")
+}
+
+/// Changes the function ID at an index in the function table.
+fn set_table_entry(module: &mut Module, func_index: u32, new_id: FunctionId) {
+    let table_id = module
+        .tables
+        .main_function_table()
+        .ok()
+        .flatten()
+        .expect("there should only be one function table");
+    for &id in module.tables.get(table_id).elem_segments.iter() {
+        let elem = module.elements.get_mut(id);
+        let offset = match elem.kind {
+            walrus::ElementKind::Active { offset, .. } => match offset {
+                InitExpr::Value(Value::I32(value)) => value as u32,
+                _ => panic!("table offset was not an i32 value"),
+            },
+            _ => panic!("found non-active element section for function table"),
+        };
+        for (i, func_id) in elem.members.iter_mut().enumerate() {
+            let table_index = i as u32 + offset;
+            if table_index == func_index {
+                *func_id = Some(new_id);
+            }
+        }
+    }
 }

@@ -1,15 +1,20 @@
 [package]
 name = "wasm-bindgen-test-macro"
-version = "0.3.33"
+version = "0.3.37"
 authors = ["The wasm-bindgen Developers"]
 description = "Internal testing macro for wasm-bindgen"
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 edition = "2018"
+rust-version = "1.56"
+
+[lib]
+proc-macro = true
 
 [dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
 
-[lib]
-proc-macro = true
+[dev-dependencies]
+wasm-bindgen-test = { path = "../test" }
+trybuild = "1.0"

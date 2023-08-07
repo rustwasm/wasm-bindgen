@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(clippy::all)]
 use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
@@ -90,6 +91,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceConnectionState`, `RtcPeerConnection`*"]
     pub fn ice_connection_state(this: &RtcPeerConnection) -> RtcIceConnectionState;
+    #[cfg(feature = "RtcPeerConnectionState")]
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = connectionState)]
+    #[doc = "Getter for the `connectionState` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/connectionState)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcPeerConnectionState`*"]
+    pub fn connection_state(this: &RtcPeerConnection) -> RtcPeerConnectionState;
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = peerIdentity)]
     #[doc = "Getter for the `peerIdentity` field of this object."]
     #[doc = ""]
@@ -233,6 +242,23 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn set_onicegatheringstatechange(
+        this: &RtcPeerConnection,
+        value: Option<&::js_sys::Function>,
+    );
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onconnectionstatechange)]
+    #[doc = "Getter for the `onconnectionstatechange` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onconnectionstatechange)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn onconnectionstatechange(this: &RtcPeerConnection) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "RTCPeerConnection" , js_name = onconnectionstatechange)]
+    #[doc = "Setter for the `onconnectionstatechange` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/onconnectionstatechange)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_onconnectionstatechange(
         this: &RtcPeerConnection,
         value: Option<&::js_sys::Function>,
     );

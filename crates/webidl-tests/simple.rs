@@ -1,5 +1,6 @@
 use crate::generated::*;
 use js_sys::Object;
+use std::f64::consts::{E, PI};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
@@ -12,8 +13,8 @@ fn interfaces_inherit_from_object() {
 
 #[wasm_bindgen_test]
 fn method() {
-    let pi = Method::new(3.14159).unwrap();
-    let e = Method::new(2.71828).unwrap();
+    let pi = Method::new(PI).unwrap();
+    let e = Method::new(E).unwrap();
     assert!(pi.my_cmp(&pi));
     assert!(!pi.my_cmp(&e));
     assert!(!e.my_cmp(&pi));
@@ -22,39 +23,39 @@ fn method() {
 
 #[wasm_bindgen_test]
 fn property() {
-    let x = Property::new(3.14159).unwrap();
-    assert_eq!(x.value(), 3.14159);
-    assert_ne!(x.value(), 2.71828);
-    x.set_value(2.71828);
-    assert_ne!(x.value(), 3.14159);
-    assert_eq!(x.value(), 2.71828);
+    let x = Property::new(PI).unwrap();
+    assert_eq!(x.value(), PI);
+    assert_ne!(x.value(), E);
+    x.set_value(E);
+    assert_ne!(x.value(), PI);
+    assert_eq!(x.value(), E);
 }
 
 #[wasm_bindgen_test]
 fn named_constructor() {
-    let x = NamedConstructor::new(3.14159).unwrap();
-    assert_eq!(x.value(), 3.14159);
+    let x = NamedConstructor::new(PI).unwrap();
+    assert_eq!(x.value(), PI);
     assert_ne!(x.value(), 0.);
 }
 
 #[wasm_bindgen_test]
 fn static_method() {
-    assert_eq!(StaticMethod::swap(3.14159), 0.);
-    assert_eq!(StaticMethod::swap(2.71828), 3.14159);
-    assert_ne!(StaticMethod::swap(2.71828), 3.14159);
-    assert_eq!(StaticMethod::swap(3.14159), 2.71828);
-    assert_ne!(StaticMethod::swap(3.14159), 2.71828);
+    assert_eq!(StaticMethod::swap(PI), 0.);
+    assert_eq!(StaticMethod::swap(E), PI);
+    assert_ne!(StaticMethod::swap(E), PI);
+    assert_eq!(StaticMethod::swap(PI), E);
+    assert_ne!(StaticMethod::swap(PI), E);
 }
 
 #[wasm_bindgen_test]
 fn static_property() {
     assert_eq!(StaticProperty::value(), 0.);
-    StaticProperty::set_value(3.14159);
-    assert_eq!(StaticProperty::value(), 3.14159);
-    assert_ne!(StaticProperty::value(), 2.71828);
-    StaticProperty::set_value(2.71828);
-    assert_eq!(StaticProperty::value(), 2.71828);
-    assert_ne!(StaticProperty::value(), 3.14159);
+    StaticProperty::set_value(PI);
+    assert_eq!(StaticProperty::value(), PI);
+    assert_ne!(StaticProperty::value(), E);
+    StaticProperty::set_value(E);
+    assert_eq!(StaticProperty::value(), E);
+    assert_ne!(StaticProperty::value(), PI);
 }
 
 #[wasm_bindgen_test]
@@ -67,7 +68,7 @@ fn one_method_with_an_undefined_import_doesnt_break_all_other_methods() {
 fn nullable_method() {
     let f = NullableMethod::new().unwrap();
     assert!(f.opt(Some(15)) == Some(16));
-    assert!(f.opt(None) == None);
+    assert!(f.opt(None).is_none());
 }
 
 #[wasm_bindgen]

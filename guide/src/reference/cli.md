@@ -104,3 +104,25 @@ about reference types](./reference-types.md).
 ### `--omit-default-module-path`
 
 Don't add WebAssembly fallback imports in generated JavaScript.
+
+### `--split-linked-modules`
+
+Controls whether wasm-bindgen will split linked modules out into their own
+files. Enabling this is recommended, because it allows lazy-loading the linked
+modules and setting a stricter Content Security Policy.
+
+wasm-bindgen uses the `new URL('…', import.meta.url)` syntax to resolve the
+links to such split out files. This breaks with most bundlers, since the bundler
+doesn't know to include the linked module in its output. That's why this option
+is disabled by default. Webpack 5 is an exception, which has special treatment
+for that syntax.
+
+For other bundlers, you'll need to take extra steps to get it to work, likely by
+using a plugin. Alternatively, you can leave the syntax as is and instead
+manually configure the bundler to copy all files in `snippets/` to the output
+directory, preserving their paths relative to whichever bundled file ends up
+containing the JS shim.
+
+On the no-modules target, `link_to!` won't work if used outside of a document,
+e.g. inside a worker. This is because it's impossible to figure out what the
+URL of the linked module is without a reference point like `import.meta.url`.

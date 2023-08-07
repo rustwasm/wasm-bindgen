@@ -7,8 +7,7 @@ use wasm_bindgen_test::*;
 fn test() {
     let bytes = Int8Array::new(&JsValue::from(10));
 
-    // TODO: figure out how to do `bytes[2] = 2`
-    bytes.subarray(2, 3).fill(2, 0, 1);
+    bytes.set_index(2, 2);
 
     let v = DataView::new(&bytes.buffer(), 2, 8);
     assert_eq!(v.byte_offset(), 2);
@@ -63,18 +62,14 @@ fn test() {
 
     v.set_int8(0, 42);
 
-    // TODO: figure out how to do `bytes[2]`
-    bytes
-        .subarray(2, 3)
-        .for_each(&mut |x, _, _| assert_eq!(x, 42));
+    assert_eq!(bytes.get_index(2), 42);
 }
 
 #[wasm_bindgen_test]
 fn dataview_inheritance() {
     let bytes = Int8Array::new(&JsValue::from(10));
 
-    // TODO: figure out how to do `bytes[2] = 2`
-    bytes.subarray(2, 3).fill(2, 0, 1);
+    bytes.set_index(2, 2);
 
     let v = DataView::new(&bytes.buffer(), 2, 8);
 

@@ -1,8 +1,8 @@
 [package]
 name = "wasm-bindgen-backend"
-version = "0.2.83"
+version = "0.2.87"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/backend"
 homepage = "https://rustwasm.github.io/wasm-bindgen/"
 documentation = "https://docs.rs/wasm-bindgen-backend"
@@ -10,6 +10,7 @@ description = """
 Backend code generation of the wasm-bindgen tool
 """
 edition = "2018"
+rust-version = "1.56"
 
 [features]
 spans = []
@@ -21,5 +22,5 @@ log = "0.4"
 once_cell = "1.12"
 proc-macro2 = "1.0"
 quote = '1.0'
-syn = { version = '1.0', features = ['full'] }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.83" }
+syn = { version = '2.0', features = ['full'] }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.87" }

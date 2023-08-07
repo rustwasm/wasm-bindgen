@@ -25,7 +25,7 @@ pub fn arg_is_keyword(class: u8) -> u8 {
 }
 
 #[wasm_bindgen]
-struct Class {
+pub struct Class {
     name: String,
 }
 #[wasm_bindgen]
@@ -50,6 +50,6 @@ impl Class {
 fn compile() {
     js_keywords_compile();
     assert_eq!(test_keyword_1_as_fn_name(1), 1);
-    assert_eq!(test_keyword_2_as_fn_name(1, 2), false);
+    assert!(!test_keyword_2_as_fn_name(1, 2));
     assert_eq!(test_keyword_as_fn_arg(1), 1);
 }

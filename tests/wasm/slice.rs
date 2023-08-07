@@ -211,6 +211,7 @@ pub struct ReturnVecApplication {
 
 #[wasm_bindgen]
 impl ReturnVecApplication {
+    #[allow(clippy::vec_init_then_push)]
     pub fn new() -> ReturnVecApplication {
         let mut thing = vec![];
         thing.push(0);
