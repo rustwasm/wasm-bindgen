@@ -1,3 +1,7 @@
+#![no_implicit_prelude]
+
+extern crate wasm_bindgen_test_macro;
+
 use wasm_bindgen_test_macro::wasm_bindgen_test;
 
 #[wasm_bindgen_test]
