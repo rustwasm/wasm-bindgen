@@ -42,7 +42,8 @@
 
 * Changed behavior when compiling to `wasm32-wasi` to match `wasm32-emscripten` and 
   non-WASM targets, generating a stub that panics when called rather than a wasm-
-  bindgen placeholder. [#3233](https://github.com/rustwasm/wasm-bindgen/pull/3233)
+  bindgen placeholder.
+  [#3233](https://github.com/rustwasm/wasm-bindgen/pull/3233)
 
 ### Fixed
 
