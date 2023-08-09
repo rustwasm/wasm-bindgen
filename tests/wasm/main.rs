@@ -46,6 +46,7 @@ pub mod result_jserror;
 pub mod rethrow;
 pub mod simple;
 pub mod slice;
+pub mod struct_vecs;
 pub mod structural;
 pub mod truthy_falsy;
 pub mod usize;

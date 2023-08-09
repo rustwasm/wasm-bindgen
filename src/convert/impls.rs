@@ -5,7 +5,7 @@ use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
 use crate::describe::{self, WasmDescribe};
-use crate::{Clamped, JsError, JsValue};
+use crate::{Clamped, JsError, JsValue, UnwrapThrowExt};
 
 if_std! {
     use std::boxed::Box;
@@ -424,10 +424,21 @@ if_std! {
         unsafe fn from_abi(js: Self::FromAbi) -> Self {
             let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
 
-            js_vals
-                .into_iter()
-                .filter_map(|x| x.try_into().ok())
-                .collect()
+            let mut result = Vec::with_capacity(js_vals.len());
+            for value in js_vals {
+                // We push elements one-by-one instead of using `collect` in order to improve
+                // error messages. When using `collect`, this `expect_throw` is buried in a
+                // giant chain of internal iterator functions, which results in the actual
+                // function that takes this `Vec` falling off the end of the call stack.
+                // So instead, make sure to call it directly within this function.
+                //
+                // This is only a problem in debug mode. Since this is the browser's error stack
+                // we're talking about, it can only see functions that actually make it to the
+                // final wasm binary (i.e., not inlined functions). All of those internal
+                // iterator functions get inlined in release mode, and so they don't show up.
+                result.push(value.try_into().expect_throw("array contains a value of the wrong type"));
+            }
+            result.into_boxed_slice()
         }
     }
 }
