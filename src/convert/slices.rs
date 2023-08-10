@@ -11,7 +11,7 @@ use crate::convert::{
     FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi,
 };
 use crate::convert::{VectorFromWasmAbi, VectorIntoWasmAbi};
-use crate::describe::{self, WasmDescribe, WasmDescribeVector};
+use crate::describe::*;
 use cfg_if::cfg_if;
 
 if_std! {
@@ -82,7 +82,7 @@ macro_rules! vectors {
         if_std! {
             impl WasmDescribeVector for $t {
                 fn describe_vector() {
-                    describe::inform(describe::VECTOR);
+                    inform(VECTOR);
                     $t::describe();
                 }
             }
@@ -186,7 +186,16 @@ vectors! {
 if_std! {
     impl WasmDescribeVector for String {
         fn describe_vector() {
-            <Box<[JsValue]>>::describe();
+            inform(VECTOR);
+            inform(NAMED_EXTERNREF);
+            // Trying to use an actual loop for this breaks the wasm interpreter.
+            inform(6);
+            inform('s' as u32);
+            inform('t' as u32);
+            inform('r' as u32);
+            inform('i' as u32);
+            inform('n' as u32);
+            inform('g' as u32);
         }
     }
 

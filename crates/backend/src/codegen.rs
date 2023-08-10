@@ -164,7 +164,7 @@ impl ToTokens for ast::Struct {
         let name = &self.rust_name;
         let name_str = self.js_name.to_string();
         let name_len = name_str.len() as u32;
-        let name_chars = name_str.chars().map(|c| c as u32);
+        let name_chars: Vec<u32> = name_str.chars().map(|c| c as u32).collect();
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         let unwrap_fn = Ident::new(&shared::unwrap_function(&name_str), Span::call_site());
@@ -331,8 +331,11 @@ impl ToTokens for ast::Struct {
 
             impl #wasm_bindgen::describe::WasmDescribeVector for #name {
                 fn describe_vector() {
-                    use #wasm_bindgen::__rt::std::boxed::Box;
-                    <Box<[#wasm_bindgen::JsValue]> as #wasm_bindgen::describe::WasmDescribe>::describe();
+                    use #wasm_bindgen::describe::*;
+                    inform(VECTOR);
+                    inform(NAMED_EXTERNREF);
+                    inform(#name_len);
+                    #(inform(#name_chars);)*
                 }
             }
 
