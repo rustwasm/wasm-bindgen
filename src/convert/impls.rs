@@ -4,14 +4,13 @@ use core::mem::{self, ManuallyDrop};
 use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
-use crate::describe::{self, WasmDescribe};
 use crate::{Clamped, JsError, JsValue, UnwrapThrowExt};
 
 if_std! {
     use std::boxed::Box;
     use std::convert::{TryFrom, TryInto};
     use std::vec::Vec;
-    use crate::convert::JsValueVector;
+    use std::fmt::Debug;
 }
 
 unsafe impl WasmAbi for () {}
@@ -396,49 +395,33 @@ impl IntoWasmAbi for JsError {
 }
 
 if_std! {
-    impl<T> JsValueVector for Box<[T]> where
-        T: Into<JsValue> + TryFrom<JsValue>,
-        <T as TryFrom<JsValue>>::Error: core::fmt::Debug {
-        type ToAbi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
-        type FromAbi = <Box<[JsValue]> as FromWasmAbi>::Abi;
+    pub fn js_value_vector_into_abi<T: Into<JsValue>>(vector: Box<[T]>) -> <Box<[JsValue]> as IntoWasmAbi>::Abi {
+        let js_vals: Box::<[JsValue]> = vector
+            .into_vec()
+            .into_iter()
+            .map(|x| x.into())
+            .collect();
 
-        fn describe() {
-            describe::inform(describe::VECTOR);
-            JsValue::describe();
+        js_vals.into_abi()
+    }
+
+    pub unsafe fn js_value_vector_from_abi<T: TryFrom<JsValue>>(js: <Box<[JsValue]> as FromWasmAbi>::Abi) -> Box<[T]> where T::Error: Debug {
+        let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
+
+        let mut result = Vec::with_capacity(js_vals.len());
+        for value in js_vals {
+            // We push elements one-by-one instead of using `collect` in order to improve
+            // error messages. When using `collect`, this `expect_throw` is buried in a
+            // giant chain of internal iterator functions, which results in the actual
+            // function that takes this `Vec` falling off the end of the call stack.
+            // So instead, make sure to call it directly within this function.
+            //
+            // This is only a problem in debug mode. Since this is the browser's error stack
+            // we're talking about, it can only see functions that actually make it to the
+            // final wasm binary (i.e., not inlined functions). All of those internal
+            // iterator functions get inlined in release mode, and so they don't show up.
+            result.push(value.try_into().expect_throw("array contains a value of the wrong type"));
         }
-
-        fn into_abi(self) -> Self::ToAbi {
-            let js_vals: Box::<[JsValue]> = self
-                .into_vec()
-                .into_iter()
-                .map(|x| x.into())
-                .collect();
-
-            IntoWasmAbi::into_abi(js_vals)
-        }
-
-        fn none() -> Self::ToAbi {
-            <Box<[JsValue]> as OptionIntoWasmAbi>::none()
-        }
-
-        unsafe fn from_abi(js: Self::FromAbi) -> Self {
-            let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
-
-            let mut result = Vec::with_capacity(js_vals.len());
-            for value in js_vals {
-                // We push elements one-by-one instead of using `collect` in order to improve
-                // error messages. When using `collect`, this `expect_throw` is buried in a
-                // giant chain of internal iterator functions, which results in the actual
-                // function that takes this `Vec` falling off the end of the call stack.
-                // So instead, make sure to call it directly within this function.
-                //
-                // This is only a problem in debug mode. Since this is the browser's error stack
-                // we're talking about, it can only see functions that actually make it to the
-                // final wasm binary (i.e., not inlined functions). All of those internal
-                // iterator functions get inlined in release mode, and so they don't show up.
-                result.push(value.try_into().expect_throw("array contains a value of the wrong type"));
-            }
-            result.into_boxed_slice()
-        }
+        result.into_boxed_slice()
     }
 }

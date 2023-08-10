@@ -159,24 +159,6 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for T {
     }
 }
 
-/// Enables blanket implementations of `WasmDescribe`, `IntoWasmAbi`,
-/// `FromWasmAbi` and `OptionIntoWasmAbi` functionality on boxed slices of
-/// types which can be converted to and from `JsValue` without conflicting
-/// implementations of those traits.
-///
-/// Implementing these traits directly with blanket implementations would
-/// be much more elegant, but unfortunately that's impossible because it
-/// conflicts with the implementations for `Box<[T]> where T: JsObject`.
-pub trait JsValueVector {
-    type ToAbi;
-    type FromAbi;
-
-    fn describe();
-    fn into_abi(self) -> Self::ToAbi;
-    fn none() -> Self::ToAbi;
-    unsafe fn from_abi(js: Self::FromAbi) -> Self;
-}
-
 if_std! {
     use std::boxed::Box;
     use core::marker::Sized;

@@ -18,7 +18,8 @@ use cfg_if::cfg_if;
 if_std! {
     use core::mem;
     use std::convert::TryFrom;
-    use crate::convert::{OptionFromWasmAbi, JsValueVector};
+    use crate::convert::OptionFromWasmAbi;
+    use crate::convert::{js_value_vector_from_abi, js_value_vector_into_abi};
 }
 
 #[repr(C)]
@@ -204,30 +205,30 @@ macro_rules! js_value_vectors {
         if_std! {
             impl WasmDescribeVector for $t {
                 fn describe_vector() {
-                    <Box<[$t]> as JsValueVector>::describe();
+                    <Box<[JsValue]>>::describe();
                 }
             }
 
             // Can't use VectorIntoWasmAbi etc. because $t isn't necessarily Sized
             impl IntoWasmAbi for Box<[$t]> {
-                type Abi = <Self as JsValueVector>::ToAbi;
+                type Abi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
 
                 fn into_abi(self) -> Self::Abi {
-                    <Self as JsValueVector>::into_abi(self)
+                    js_value_vector_into_abi(self)
                 }
             }
 
             impl OptionIntoWasmAbi for Box<[$t]> {
-                fn none() -> <Self as JsValueVector>::ToAbi {
-                    <Self as JsValueVector>::none()
+                fn none() -> <Box<[JsValue]> as IntoWasmAbi>::Abi {
+                    <Box<[JsValue]> as OptionIntoWasmAbi>::none()
                 }
             }
 
             impl FromWasmAbi for Box<[$t]> {
-                type Abi = <Self as JsValueVector>::FromAbi;
+                type Abi = <Box<[JsValue]> as FromWasmAbi>::Abi;
 
                 unsafe fn from_abi(js: Self::Abi) -> Self {
-                    <Self as JsValueVector>::from_abi(js)
+                    js_value_vector_from_abi(js)
                 }
             }
         }
