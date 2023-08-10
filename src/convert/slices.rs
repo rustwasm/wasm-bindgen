@@ -237,12 +237,12 @@ macro_rules! js_value_vectors {
 
 if_std! {
     impl TryFrom<JsValue> for String {
-        type Error = ();
+        type Error = JsValue;
 
         fn try_from(value: JsValue) -> Result<Self, Self::Error> {
             match value.as_string() {
                 Some(s) => Ok(s),
-                None => Err(()),
+                None => Err(value),
             }
         }
     }

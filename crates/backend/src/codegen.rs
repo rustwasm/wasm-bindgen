@@ -297,11 +297,11 @@ impl ToTokens for ast::Struct {
 
             #[allow(clippy::all)]
             impl #wasm_bindgen::__rt::core::convert::TryFrom<#wasm_bindgen::JsValue> for #name {
-                type Error = ();
+                type Error = #wasm_bindgen::JsValue;
 
                 fn try_from(value: #wasm_bindgen::JsValue)
                     -> #wasm_bindgen::__rt::std::result::Result<Self, Self::Error> {
-                    let js_ptr = #wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
+                    let idx = #wasm_bindgen::convert::IntoWasmAbi::into_abi(&value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
                     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
@@ -314,14 +314,12 @@ impl ToTokens for ast::Struct {
                         panic!("cannot convert from JsValue outside of the wasm target")
                     }
 
-                    let ptr;
-                    unsafe {
-                        ptr = #unwrap_fn(js_ptr);
-                    }
-
-                    if(ptr == 0) {
-                        #wasm_bindgen::__rt::std::result::Result::Err(())
+                    let ptr = unsafe { #unwrap_fn(idx) };
+                    if ptr == 0 {
+                        #wasm_bindgen::__rt::std::result::Result::Err(value)
                     } else {
+                        // Don't run `JsValue`'s destructor, `unwrap_fn` already did that for us.
+                        #wasm_bindgen::__rt::std::mem::forget(value);
                         unsafe {
                             #wasm_bindgen::__rt::std::result::Result::Ok(
                                 <Self as #wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr)
