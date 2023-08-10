@@ -166,10 +166,10 @@ pub fn free_function(struct_name: &str) -> String {
 }
 
 pub fn unwrap_function(struct_name: &str) -> String {
-    let mut name = format!("__wbg_");
+    let mut name = "__wbg_".to_string();
     name.extend(struct_name.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_unwrap");
-    return name;
+    name
 }
 
 pub fn free_function_export_name(function_name: &str) -> String {
