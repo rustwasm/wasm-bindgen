@@ -349,16 +349,6 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            impl #wasm_bindgen::convert::OptionVectorIntoWasmAbi for #name {
-                fn vector_none() -> <
-                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
-                    as #wasm_bindgen::convert::IntoWasmAbi
-                >::Abi {
-                    use #wasm_bindgen::__rt::std::boxed::Box;
-                    <Box<[#wasm_bindgen::JsValue]> as #wasm_bindgen::convert::OptionIntoWasmAbi>::none()
-                }
-            }
-
             impl #wasm_bindgen::convert::VectorFromWasmAbi for #name {
                 type Abi = <
                     #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>

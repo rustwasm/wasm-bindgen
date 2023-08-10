@@ -19,7 +19,15 @@ impl ArrayElement {
 }
 
 #[wasm_bindgen]
-pub fn consume_struct_vec(_: Vec<ArrayElement>) {}
+pub fn consume_struct_vec(mut vec: Vec<ArrayElement>) -> Vec<ArrayElement> {
+    vec.push(ArrayElement);
+    vec
+}
+
+#[wasm_bindgen]
+pub fn consume_optional_struct_vec(vec: Option<Vec<ArrayElement>>) -> Option<Vec<ArrayElement>> {
+    vec.map(consume_struct_vec)
+}
 
 #[wasm_bindgen_test]
 fn test_valid() {

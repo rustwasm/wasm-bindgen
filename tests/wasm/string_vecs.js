@@ -2,7 +2,15 @@ const wasm = require('wasm-bindgen-test.js');
 const assert = require('assert');
 
 exports.pass_string_vec = () => {
-    wasm.consume_string_vec(["hello", "world"]);
+    assert.deepStrictEqual(
+        wasm.consume_string_vec(["hello", "world"]),
+        ["hello", "world", "Hello from Rust!"],
+    );
+    assert.deepStrictEqual(
+        wasm.consume_optional_string_vec(["hello", "world"]),
+        ["hello", "world", "Hello from Rust!"],
+    );
+    assert.strictEqual(wasm.consume_optional_string_vec(undefined), undefined);
 };
 
 exports.pass_invalid_string_vec = () => {

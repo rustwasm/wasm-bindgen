@@ -8,7 +8,15 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn consume_string_vec(_: Vec<String>) {}
+pub fn consume_string_vec(mut vec: Vec<String>) -> Vec<String> {
+    vec.push("Hello from Rust!".to_owned());
+    vec
+}
+
+#[wasm_bindgen]
+pub fn consume_optional_string_vec(vec: Option<Vec<String>>) -> Option<Vec<String>> {
+    vec.map(consume_string_vec)
+}
 
 #[wasm_bindgen_test]
 fn test_valid() {
