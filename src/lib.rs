@@ -805,6 +805,17 @@ if_std! {
             JsValue::from_str(&s)
         }
     }
+
+    impl TryFrom<JsValue> for String {
+        type Error = JsValue;
+
+        fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+            match value.as_string() {
+                Some(s) => Ok(s),
+                None => Err(value),
+            }
+        }
+    }
 }
 
 impl From<bool> for JsValue {

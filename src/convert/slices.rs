@@ -195,61 +195,34 @@ vectors! {
     u8 i8 u16 i16 u32 i32 u64 i64 usize isize f32 f64
 }
 
-/*
- * Generates implementations for traits necessary for passing types to and from
- * JavaScript on boxed slices of values which can be converted to and from
- * `JsValue`.
- */
-macro_rules! js_value_vectors {
-    ($($t:ident)*) => ($(
-        if_std! {
-            impl WasmDescribeVector for $t {
-                fn describe_vector() {
-                    <Box<[JsValue]>>::describe();
-                }
-            }
-
-            // Can't use VectorIntoWasmAbi etc. because $t isn't necessarily Sized
-            impl IntoWasmAbi for Box<[$t]> {
-                type Abi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
-
-                fn into_abi(self) -> Self::Abi {
-                    js_value_vector_into_abi(self)
-                }
-            }
-
-            impl OptionIntoWasmAbi for Box<[$t]> {
-                fn none() -> <Box<[JsValue]> as IntoWasmAbi>::Abi {
-                    <Box<[JsValue]> as OptionIntoWasmAbi>::none()
-                }
-            }
-
-            impl FromWasmAbi for Box<[$t]> {
-                type Abi = <Box<[JsValue]> as FromWasmAbi>::Abi;
-
-                unsafe fn from_abi(js: Self::Abi) -> Self {
-                    js_value_vector_from_abi(js)
-                }
-            }
-        }
-    )*)
-}
-
 if_std! {
-    impl TryFrom<JsValue> for String {
-        type Error = JsValue;
-
-        fn try_from(value: JsValue) -> Result<Self, Self::Error> {
-            match value.as_string() {
-                Some(s) => Ok(s),
-                None => Err(value),
-            }
+    impl WasmDescribeVector for String {
+        fn describe_vector() {
+            <Box<[JsValue]>>::describe();
         }
     }
-}
 
-js_value_vectors! {
-    String
+    impl VectorIntoWasmAbi for String {
+        type Abi = <Box<[JsValue]> as IntoWasmAbi>::Abi;
+
+        fn vector_into_abi(vector: Box<[Self]>) -> Self::Abi {
+            js_value_vector_into_abi(vector)
+        }
+    }
+
+    impl OptionVectorIntoWasmAbi for String {
+        fn vector_none() -> <Box<[JsValue]> as IntoWasmAbi>::Abi {
+            <Box<[JsValue]> as OptionIntoWasmAbi>::none()
+        }
+    }
+
+    impl VectorFromWasmAbi for String {
+        type Abi = <Box<[JsValue]> as FromWasmAbi>::Abi;
+
+        unsafe fn vector_from_abi(js: Self::Abi) -> Box<[Self]> {
+            js_value_vector_from_abi(js)
+        }
+    }
 }
 
 cfg_if! {
