@@ -151,7 +151,7 @@ macro_rules! vectors {
 
             #[inline]
             unsafe fn ref_from_abi(js: WasmSlice) -> Box<[$t]> {
-                <Box<[$t]> as FromWasmAbi>::from_abi(js)
+                <Box<[$t]>>::from_abi(js)
             }
         }
 
@@ -161,7 +161,7 @@ macro_rules! vectors {
 
             #[inline]
             unsafe fn ref_mut_from_abi(js: WasmMutSlice) -> MutSlice<$t> {
-                let contents = <Box<[$t]> as FromWasmAbi>::from_abi(js.slice);
+                let contents = <Box<[$t]>>::from_abi(js.slice);
                 let js = JsValue::from_abi(js.idx);
                 MutSlice { contents, js }
             }
