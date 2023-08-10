@@ -158,16 +158,16 @@ if_std! {
         }
     }
 
-    impl<T: WasmDescribeVector> WasmDescribe for Box<[T]> {
-        fn describe() {
-            T::describe_vector();
-        }
-    }
-
     impl<T: JsObject> WasmDescribeVector for T {
         fn describe_vector() {
             inform(VECTOR);
             T::describe();
+        }
+    }
+
+    impl<T: WasmDescribeVector> WasmDescribe for Box<[T]> {
+        fn describe() {
+            T::describe_vector();
         }
     }
 
