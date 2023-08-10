@@ -1,10 +1,19 @@
-# `Box<[JsValue]>`
+# `Box<[T]>` and `Vec<T>`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Yes | No | No | Yes | Yes | Yes | A JavaScript `Array` object |
 
-Boxed slices of imported JS types and exported Rust types are also supported. `Vec<T>` is supported wherever `Box<[T]>` is.
+You can pass boxed slices and `Vec`s of several different types to and from JS:
+
+- `JsValue`s.
+- Imported JavaScript types.
+- Exported Rust types.
+- `String`s.
+
+[You can also pass boxed slices of numbers to JS](boxed-number-slices.html),
+except that they're converted to typed arrays (`Uint8Array`, `Int32Array`, etc.)
+instead of regular arrays.
 
 ## Example Rust Usage
 
