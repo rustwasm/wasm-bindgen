@@ -35,6 +35,8 @@ interface HTMLElement : Element {
   // user interaction
   [CEReactions, SetterThrows, Pure]
            attribute boolean hidden;
+  [CEReactions]
+           attribute boolean inert;
   [NeedsCallerType]
   undefined click();
   [CEReactions, SetterThrows, Pure]
