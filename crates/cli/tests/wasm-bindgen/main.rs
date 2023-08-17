@@ -431,3 +431,27 @@ fn function_table_preserved() {
         .wasm_bindgen("");
     cmd.assert().success();
 }
+
+#[test]
+fn constructor_without_self_does_not_work() {
+    let (mut cmd, _out_dir) = Project::new("constructor_without_self_does_not_work")
+        .file(
+            "src/lib.rs",
+            r#"
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen]
+                pub struct Foo(());
+
+                #[wasm_bindgen]
+                impl Foo {
+                    #[wasm_bindgen(constructor)]
+                    pub fn new() -> i32 {
+                        0
+                    }
+                }
+            "#,
+        )
+        .wasm_bindgen("--target web");
+    cmd.assert().failure();
+}

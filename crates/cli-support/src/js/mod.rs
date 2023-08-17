@@ -2749,7 +2749,7 @@ impl<'a> Context<'a> {
                         call = Some(id);
                     }
                 }
-                Instruction::CallExport(_)
+                Instruction::CallExport(_, _)
                 | Instruction::CallTableElement(_)
                 | Instruction::CallCore(_) => return Ok(false),
                 _ => {}

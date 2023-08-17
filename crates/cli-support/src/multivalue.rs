@@ -81,7 +81,7 @@ fn extract_xform<'a>(
             .iter_mut()
             .find_map(|i| match &mut i.instr {
                 Instruction::CallCore(f) => Some(Slot::Id(f)),
-                Instruction::CallExport(e) => Some(Slot::Export(*e)),
+                Instruction::CallExport(e, _) => Some(Slot::Export(*e)),
                 Instruction::CallTableElement(index) => Some(Slot::TableElement(*index)),
                 _ => None,
             })

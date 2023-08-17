@@ -1,5 +1,5 @@
 use crate::descriptor::VectorKind;
-use crate::wit::{AuxImport, WasmBindgenAux};
+use crate::wit::{AuxImport, WasmBindgenAux, AuxExportKind};
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use walrus::{FunctionId, ImportId, TypedCustomSectionId};
@@ -102,7 +102,7 @@ pub enum Instruction {
     /// call-adapter instruction
     CallAdapter(AdapterId),
     /// Call an exported function in the core module
-    CallExport(walrus::ExportId),
+    CallExport(walrus::ExportId, AuxExportKind),
     /// Call an element in the function table of the core module
     CallTableElement(u32),
 
@@ -249,6 +249,8 @@ pub enum Instruction {
     },
     /// pops `i32`, pushes string from that `char`
     StringFromChar,
+    /// pops `i32`, pushed an externref for rust class without wrapping
+    SelfFromI32,
     /// pops `i32`, pushes an externref for the wrapped rust class
     RustFromI32 {
         class: String,

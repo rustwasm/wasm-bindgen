@@ -515,7 +515,7 @@ impl<'a> Context<'a> {
             None => AuxExportKind::Function(export.function.name.to_string()),
         };
 
-        let id = self.export_adapter(export_id, descriptor)?;
+        let id = self.export_adapter(export_id, descriptor, &kind)?;
         self.aux.export_map.insert(
             id,
             AuxExport {
@@ -870,7 +870,13 @@ impl<'a> Context<'a> {
                 ret: descriptor.clone(),
                 inner_ret: Some(descriptor.clone()),
             };
-            let getter_id = self.export_adapter(getter_id, getter_descriptor)?;
+            let kind = AuxExportKind::Method {
+                class: struct_.name.to_string(),
+                name: field.name.to_string(),
+                receiver: AuxReceiverKind::Borrowed,
+                kind: AuxExportedMethodKind::Getter,
+            };
+            let getter_id = self.export_adapter(getter_id, getter_descriptor, &kind)?;
             self.aux.export_map.insert(
                 getter_id,
                 AuxExport {
@@ -878,12 +884,7 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
-                    kind: AuxExportKind::Method {
-                        class: struct_.name.to_string(),
-                        name: field.name.to_string(),
-                        receiver: AuxReceiverKind::Borrowed,
-                        kind: AuxExportedMethodKind::Getter,
-                    },
+                    kind,
                     generate_typescript: field.generate_typescript,
                     generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
@@ -902,7 +903,13 @@ impl<'a> Context<'a> {
                 ret: Descriptor::Unit,
                 inner_ret: None,
             };
-            let setter_id = self.export_adapter(setter_id, setter_descriptor)?;
+            let kind = AuxExportKind::Method {
+                class: struct_.name.to_string(),
+                name: field.name.to_string(),
+                receiver: AuxReceiverKind::Borrowed,
+                kind: AuxExportedMethodKind::Setter,
+            };
+            let setter_id = self.export_adapter(setter_id, setter_descriptor, &kind)?;
             self.aux.export_map.insert(
                 setter_id,
                 AuxExport {
@@ -910,12 +917,7 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
-                    kind: AuxExportKind::Method {
-                        class: struct_.name.to_string(),
-                        name: field.name.to_string(),
-                        receiver: AuxReceiverKind::Borrowed,
-                        kind: AuxExportedMethodKind::Setter,
-                    },
+                    kind,
                     generate_typescript: field.generate_typescript,
                     generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
@@ -1196,11 +1198,12 @@ impl<'a> Context<'a> {
         &mut self,
         export: ExportId,
         signature: Function,
+        kind: &AuxExportKind,
     ) -> Result<AdapterId, Error> {
         let export = self.module.exports.get(export);
         let name = export.name.clone();
         // Do the actual heavy lifting elsewhere to generate the `binding`.
-        let call = Instruction::CallExport(export.id());
+        let call = Instruction::CallExport(export.id(), kind.clone());
         let id = self.register_export_adapter(call, signature)?;
         self.adapters.exports.push((name, id));
         Ok(id)
@@ -1275,7 +1278,22 @@ impl<'a> Context<'a> {
         };
 
         let mut ret = args.cx.instruction_builder(true);
-        ret.outgoing(&signature.ret)?;
+        if let Instruction::CallExport(_, AuxExportKind::Constructor(ref class)) = call {
+            if let Descriptor::RustStruct(ref name) = signature.ret {
+                if class != name {
+                    bail!("constructor for `{}` cannot return `{}`", class, name);
+                }
+                ret.instruction(
+                    &[AdapterType::I32],
+                    Instruction::SelfFromI32,
+                    &[AdapterType::Struct(class.clone())],
+                );
+            } else {
+                bail!("constructor for `{}` does not return `Self`", class);
+            }
+        } else {
+            ret.outgoing(&signature.ret)?;
+        }
         let uses_retptr = ret.input.len() > 1;
 
         // Our instruction stream starts out with the return pointer as the first

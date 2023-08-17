@@ -101,7 +101,7 @@ pub struct AuxExport {
 /// sort of webidl import to customize behavior or something like that. In any
 /// case this doesn't feel quite right in terms of privilege separation, so
 /// we'll want to work on this. For now though it works.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum AuxExportKind {
     /// A free function that's just listed on the exported module
     Function(String),

@@ -137,7 +137,7 @@ fn find_call_export(instrs: &[InstructionData]) -> Option<Export> {
         .iter()
         .enumerate()
         .filter_map(|(i, instr)| match instr.instr {
-            Instruction::CallExport(e) => Some(Export::Export(e)),
+            Instruction::CallExport(e, _) => Some(Export::Export(e)),
             Instruction::CallTableElement(e) => Some(Export::TableElement {
                 idx: e,
                 call_idx: i,
@@ -267,7 +267,7 @@ fn export_xform(cx: &mut Context, export: Export, instrs: &mut Vec<InstructionDa
     // also maintain indices of the instructions to delete.
     for (i, instr) in iter.by_ref() {
         match instr.instr {
-            Instruction::CallExport(_) | Instruction::CallTableElement(_) => break,
+            Instruction::CallExport(_, _) | Instruction::CallTableElement(_) => break,
             Instruction::I32FromExternrefOwned => {
                 args.pop();
                 args.push(Some(true));

@@ -545,7 +545,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::CallCore(_)
-        | Instruction::CallExport(_)
+        | Instruction::CallExport(_, _)
         | Instruction::CallAdapter(_)
         | Instruction::CallTableElement(_)
         | Instruction::DeferFree { .. } => {
@@ -986,6 +986,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("String.fromCodePoint({})", val));
         }
 
+        Instruction::SelfFromI32 => {
+            let val = js.pop();
+            js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
+            js.push(format!("this"));
+        }
+
         Instruction::RustFromI32 { class } => {
             js.cx.require_class_wrap(class);
             let val = js.pop();
@@ -1203,7 +1209,7 @@ impl Invocation {
                 defer: true,
             },
 
-            CallExport(e) => match module.exports.get(*e).item {
+            CallExport(e, _) => match module.exports.get(*e).item {
                 walrus::ExportItem::Function(id) => Invocation::Core { id, defer: false },
                 _ => panic!("can only call exported function"),
             },
