@@ -1289,7 +1289,7 @@ impl<'a> Context<'a> {
                     &[AdapterType::Struct(class.clone())],
                 );
             } else {
-                bail!("constructor for `{}` does not return `Self`", class);
+                ret.outgoing(&signature.ret)?;
             }
         } else {
             ret.outgoing(&signature.ret)?;

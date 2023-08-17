@@ -433,8 +433,8 @@ fn function_table_preserved() {
 }
 
 #[test]
-fn constructor_without_self_does_not_work() {
-    let (mut cmd, _out_dir) = Project::new("constructor_without_self_does_not_work")
+fn constructor_cannot_return_foreign_struct() {
+    let (mut cmd, _out_dir) = Project::new("constructor_cannot_return_foreign_struct")
         .file(
             "src/lib.rs",
             r#"
@@ -444,10 +444,13 @@ fn constructor_without_self_does_not_work() {
                 pub struct Foo(());
 
                 #[wasm_bindgen]
+                pub struct Bar(());
+
+                #[wasm_bindgen]
                 impl Foo {
                     #[wasm_bindgen(constructor)]
-                    pub fn new() -> i32 {
-                        0
+                    pub fn new() -> Bar {
+                        Bar(())
                     }
                 }
             "#,
