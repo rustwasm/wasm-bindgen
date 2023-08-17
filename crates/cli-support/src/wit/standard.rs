@@ -1,5 +1,5 @@
 use crate::descriptor::VectorKind;
-use crate::wit::{AuxImport, WasmBindgenAux, AuxExportKind};
+use crate::wit::{AuxExportKind, AuxImport, WasmBindgenAux};
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use walrus::{FunctionId, ImportId, TypedCustomSectionId};
