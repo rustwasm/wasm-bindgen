@@ -989,7 +989,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         Instruction::SelfFromI32 => {
             let val = js.pop();
             js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
-            js.push(format!("this"));
+            js.push("this".to_string());
         }
 
         Instruction::RustFromI32 { class } => {

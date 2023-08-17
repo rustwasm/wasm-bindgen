@@ -45,6 +45,10 @@
   bindgen placeholder.
   [#3233](https://github.com/rustwasm/wasm-bindgen/pull/3233)
 
+* Changed inheritance behavior in generated JS bindings, it is now possible to
+  override methods from generated JS classes using inheritance.
+  [#3561](https://github.com/rustwasm/wasm-bindgen/pull/3561)
+
 ### Fixed
 
 * Fixed bindings and comments for `Atomics.wait`.
@@ -52,6 +56,10 @@
 
 * Fixed `wasm_bindgen_test` macro to handle raw identifiers in test names.
   [#3541](https://github.com/rustwasm/wasm-bindgen/pull/3541)
+
+* Fixed bug where constructors of exported Rust structs are allowed to return
+  other exported Rust structs (i.e. not `Self`).
+  [#3561](https://github.com/rustwasm/wasm-bindgen/pull/3561)
 
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
