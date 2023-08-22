@@ -25,6 +25,13 @@
 
 * Add support for installing pre-built artifacts of `wasm-bindgen-cli`
   via `cargo binstall wasm-bindgen-cli`.
+  [#3544](https://github.com/rustwasm/wasm-bindgen/pull/3544)
+
+* Add bindings for `RTCDataChannel.id`.
+  [#3547](https://github.com/rustwasm/wasm-bindgen/pull/3547)
+
+* Add bindings for `HTMLElement.inert`.
+  [#3557](https://github.com/rustwasm/wasm-bindgen/pull/3557)
 
 ### Changed
 
@@ -52,6 +59,12 @@
 
 * Fixed `wasm_bindgen_test` macro to handle raw identifiers in test names.
   [#3541](https://github.com/rustwasm/wasm-bindgen/pull/3541)
+
+* Fixed Cargo license field to follow the SPDX 2.1 license expression standard.
+  [#3529](https://github.com/rustwasm/wasm-bindgen/pull/3529)
+
+* Use fully qualified paths in the `wasm_bindgen_test` macro.
+  [#3549](https://github.com/rustwasm/wasm-bindgen/pull/3549)
 
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
