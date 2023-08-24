@@ -4210,6 +4210,12 @@ mod gen_IntlUtils;
 #[cfg(feature = "IntlUtils")]
 pub use gen_IntlUtils::*;
 
+#[cfg(feature = "IsInputPendingOptions")]
+#[allow(non_snake_case)]
+mod gen_IsInputPendingOptions;
+#[cfg(feature = "IsInputPendingOptions")]
+pub use gen_IsInputPendingOptions::*;
+
 #[cfg(feature = "IterableKeyAndValueResult")]
 #[allow(non_snake_case)]
 mod gen_IterableKeyAndValueResult;
@@ -6592,6 +6598,24 @@ mod gen_RtcrtpStreamStats;
 #[cfg(feature = "RtcrtpStreamStats")]
 pub use gen_RtcrtpStreamStats::*;
 
+#[cfg(feature = "Scheduler")]
+#[allow(non_snake_case)]
+mod gen_Scheduler;
+#[cfg(feature = "Scheduler")]
+pub use gen_Scheduler::*;
+
+#[cfg(feature = "SchedulerPostTaskOptions")]
+#[allow(non_snake_case)]
+mod gen_SchedulerPostTaskOptions;
+#[cfg(feature = "SchedulerPostTaskOptions")]
+pub use gen_SchedulerPostTaskOptions::*;
+
+#[cfg(feature = "Scheduling")]
+#[allow(non_snake_case)]
+mod gen_Scheduling;
+#[cfg(feature = "Scheduling")]
+pub use gen_Scheduling::*;
+
 #[cfg(feature = "Screen")]
 #[allow(non_snake_case)]
 mod gen_Screen;
@@ -7839,6 +7863,48 @@ pub use gen_SvgsvgElement::*;
 mod gen_SvgtSpanElement;
 #[cfg(feature = "SvgtSpanElement")]
 pub use gen_SvgtSpanElement::*;
+
+#[cfg(feature = "TaskController")]
+#[allow(non_snake_case)]
+mod gen_TaskController;
+#[cfg(feature = "TaskController")]
+pub use gen_TaskController::*;
+
+#[cfg(feature = "TaskControllerInit")]
+#[allow(non_snake_case)]
+mod gen_TaskControllerInit;
+#[cfg(feature = "TaskControllerInit")]
+pub use gen_TaskControllerInit::*;
+
+#[cfg(feature = "TaskPriority")]
+#[allow(non_snake_case)]
+mod gen_TaskPriority;
+#[cfg(feature = "TaskPriority")]
+pub use gen_TaskPriority::*;
+
+#[cfg(feature = "TaskPriorityChangeEvent")]
+#[allow(non_snake_case)]
+mod gen_TaskPriorityChangeEvent;
+#[cfg(feature = "TaskPriorityChangeEvent")]
+pub use gen_TaskPriorityChangeEvent::*;
+
+#[cfg(feature = "TaskPriorityChangeEventInit")]
+#[allow(non_snake_case)]
+mod gen_TaskPriorityChangeEventInit;
+#[cfg(feature = "TaskPriorityChangeEventInit")]
+pub use gen_TaskPriorityChangeEventInit::*;
+
+#[cfg(feature = "TaskSignal")]
+#[allow(non_snake_case)]
+mod gen_TaskSignal;
+#[cfg(feature = "TaskSignal")]
+pub use gen_TaskSignal::*;
+
+#[cfg(feature = "TaskSignalAnyInit")]
+#[allow(non_snake_case)]
+mod gen_TaskSignalAnyInit;
+#[cfg(feature = "TaskSignalAnyInit")]
+pub use gen_TaskSignalAnyInit::*;
 
 #[cfg(feature = "TcpReadyState")]
 #[allow(non_snake_case)]

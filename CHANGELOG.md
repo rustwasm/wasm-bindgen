@@ -33,6 +33,9 @@
 * Add bindings for `HTMLElement.inert`.
   [#3557](https://github.com/rustwasm/wasm-bindgen/pull/3557)
 
+* Add unstable bindings for the Prioritized Task Scheduling API.
+  [#3566](https://github.com/rustwasm/wasm-bindgen/pull/3566)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
