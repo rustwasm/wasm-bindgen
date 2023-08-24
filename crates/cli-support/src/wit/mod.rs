@@ -501,6 +501,7 @@ impl<'a> Context<'a> {
                             | Descriptor::Boolean
                             | Descriptor::Char
                             | Descriptor::CachedString
+                            | Descriptor::String
                             | Descriptor::Option(_)
                             | Descriptor::Unit => bail!(msg),
                             _ => {}
