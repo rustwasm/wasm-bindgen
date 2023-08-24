@@ -28,6 +28,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssRuleList`, `CssStyleSheet`*"]
     pub fn css_rules(this: &CssStyleSheet) -> Result<CssRuleList, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "CSSStyleSheet")]
+    #[doc = "The `new CssStyleSheet(..)` constructor, creating a new instance of `CssStyleSheet`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/CSSStyleSheet)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`*"]
+    pub fn new() -> Result<CssStyleSheet, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "CSSStyleSheet" , js_name = deleteRule)]
     #[doc = "The `deleteRule()` method."]
     #[doc = ""]
@@ -53,4 +60,18 @@ extern "C" {
         rule: &str,
         index: u32,
     ) -> Result<u32, JsValue>;
+    # [wasm_bindgen (method , structural , js_class = "CSSStyleSheet" , js_name = replace)]
+    #[doc = "The `replace()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/replace)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`*"]
+    pub fn replace(this: &CssStyleSheet, text: &str) -> ::js_sys::Promise;
+    # [wasm_bindgen (catch , method , structural , js_class = "CSSStyleSheet" , js_name = replaceSync)]
+    #[doc = "The `replaceSync()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/replaceSync)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`*"]
+    pub fn replace_sync(this: &CssStyleSheet, text: &str) -> Result<(), JsValue>;
 }
