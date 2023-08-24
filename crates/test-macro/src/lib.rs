@@ -94,14 +94,13 @@ pub fn wasm_bindgen_test(
     // main test harness. This is the entry point for all tests.
     let name = format_ident!("__wbgt_{}_{}", ident, CNT.fetch_add(1, Ordering::SeqCst));
     tokens.extend(
-        (quote! {
+        quote! {
             #[no_mangle]
             pub extern "C" fn #name(cx: &::wasm_bindgen_test::__rt::Context) {
                 let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
                 #test_body
             }
-        })
-        .into_iter(),
+        },
     );
 
     tokens.extend(leading_tokens);

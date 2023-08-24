@@ -774,7 +774,7 @@ impl Dictionary {
                 }
             };
 
-            base_stream.extend(default_impl.into_iter());
+            base_stream.extend(default_impl);
         }
 
         base_stream
