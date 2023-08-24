@@ -52,6 +52,11 @@
   bindgen placeholder.
   [#3233](https://github.com/rustwasm/wasm-bindgen/pull/3233)
 
+* Changed constructor implementation in generated JS bindings, it is now
+  possible to override methods from generated JS classes using inheritance.
+  When exported constructors return `Self`.
+  [#3562](https://github.com/rustwasm/wasm-bindgen/pull/3562)
+
 ### Fixed
 
 * Fixed bindings and comments for `Atomics.wait`.
@@ -65,6 +70,9 @@
 
 * Use fully qualified paths in the `wasm_bindgen_test` macro.
   [#3549](https://github.com/rustwasm/wasm-bindgen/pull/3549)
+
+* Fixed bug allowing JS primitives to be returned from exported constructors.
+  [#3562](https://github.com/rustwasm/wasm-bindgen/pull/3562)
 
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 

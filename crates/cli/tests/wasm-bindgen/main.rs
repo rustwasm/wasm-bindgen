@@ -433,8 +433,8 @@ fn function_table_preserved() {
 }
 
 #[test]
-fn constructor_cannot_return_foreign_struct() {
-    let (mut cmd, _out_dir) = Project::new("constructor_cannot_return_foreign_struct")
+fn constructor_cannot_return_option_struct() {
+    let (mut cmd, _out_dir) = Project::new("constructor_cannot_return_option_struct")
         .file(
             "src/lib.rs",
             r#"
@@ -444,13 +444,10 @@ fn constructor_cannot_return_foreign_struct() {
                 pub struct Foo(());
                 
                 #[wasm_bindgen]
-                pub struct Bar(());
-
-                #[wasm_bindgen]
                 impl Foo {
                     #[wasm_bindgen(constructor)]
-                    pub fn new() -> Bar {
-                        Bar(())
+                    pub fn new() -> Option<Foo> {
+                        Some(Foo(()))
                     }
                 }
             "#,

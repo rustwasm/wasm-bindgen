@@ -484,7 +484,29 @@ impl<'a> Context<'a> {
             Some(class) => {
                 let class = class.to_string();
                 match export.method_kind {
-                    decode::MethodKind::Constructor => AuxExportKind::Constructor(class),
+                    decode::MethodKind::Constructor => {
+                        let msg = "Trying to return JS primitive from constructor, return value will be ignored. Use a builder instead (remove `constructor` attribute).";
+                        match descriptor.ret {
+                            Descriptor::I8
+                            | Descriptor::U8
+                            | Descriptor::ClampedU8
+                            | Descriptor::I16
+                            | Descriptor::U16
+                            | Descriptor::I32
+                            | Descriptor::U32
+                            | Descriptor::F32
+                            | Descriptor::F64
+                            | Descriptor::I64
+                            | Descriptor::U64
+                            | Descriptor::Boolean
+                            | Descriptor::Char
+                            | Descriptor::CachedString
+                            | Descriptor::Option(_)
+                            | Descriptor::Unit => bail!(msg),
+                            _ => {}
+                        }
+                        AuxExportKind::Constructor(class)
+                    }
                     decode::MethodKind::Operation(op) => {
                         if !op.is_static {
                             // Make the first argument be the index of the receiver.

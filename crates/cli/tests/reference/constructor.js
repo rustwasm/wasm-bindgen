@@ -43,6 +43,7 @@ export class ClassConstructor {
     constructor() {
         const ret = wasm.classconstructor_new();
         this.__wbg_ptr = ret >>> 0;
+        return this;
     }
 }
 

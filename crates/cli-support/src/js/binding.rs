@@ -179,11 +179,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             0 => {}
             1 => {
                 let val = js.pop();
-                if self.constructor.is_some() {
-                    js.prelude(&format!("this.__wbg_ptr = {}", val));
-                } else {
-                    js.prelude(&format!("return {};", val));
-                }
+                js.prelude(&format!("return {};", val));
             }
 
             // TODO: this should be pretty trivial to support (commented out
@@ -1002,31 +998,26 @@ fn instruction(
 
         Instruction::RustFromI32 { class } => {
             let val = js.pop();
-            if let Some(name) = constructor {
-                if name != class {
-                    bail!("constructor for `{}` cannot return `{}`", name, class);
+            match constructor {
+                Some(name) if name == class => {
+                    js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
+                    js.push(String::from("this"));
                 }
-                js.push(format!("{} >>> 0;", val));
-            } else {
-                js.cx.require_class_wrap(class);
-                js.push(format!("{}.__wrap({})", class, val));
+                Some(_) | None => {
+                    js.cx.require_class_wrap(class);
+                    js.push(format!("{}.__wrap({})", class, val));
+                }
             }
         }
 
         Instruction::OptionRustFromI32 { class } => {
+            assert!(constructor.is_none());
             let val = js.pop();
-            if let Some(name) = constructor {
-                if name != class {
-                    bail!("constructor for `{}` cannot return `{}`", name, class);
-                }
-                js.push(format!("{val} === 0 ? 0 : ({val} >>> 0);"));
-            } else {
-                js.cx.require_class_wrap(class);
-                js.push(format!(
-                    "{0} === 0 ? undefined : {1}.__wrap({0})",
-                    val, class,
-                ))
-            }
+            js.cx.require_class_wrap(class);
+            js.push(format!(
+                "{0} === 0 ? undefined : {1}.__wrap({0})",
+                val, class,
+            ));
         }
 
         Instruction::CachedStringLoad {
