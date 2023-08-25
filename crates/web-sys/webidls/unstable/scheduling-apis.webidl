@@ -37,6 +37,7 @@ dictionary TaskControllerInit {
 interface TaskController : AbortController {
   constructor(optional TaskControllerInit init = {});
 
+  [Throws]
   undefined setPriority(TaskPriority priority);
 };
 
