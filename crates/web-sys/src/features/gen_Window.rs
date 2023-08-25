@@ -1938,6 +1938,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`, `Window`*"]
     pub fn caches(this: &Window) -> Result<CacheStorage, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Scheduler")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = scheduler)]
+    #[doc = "Getter for the `scheduler` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/scheduler)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Scheduler`, `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn scheduler(this: &Window) -> Scheduler;
     #[cfg(feature = "Storage")]
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Window" , js_name = sessionStorage)]
     #[doc = "Getter for the `sessionStorage` field of this object."]

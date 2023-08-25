@@ -201,6 +201,18 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn xr(this: &Navigator) -> XrSystem;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Scheduling")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = scheduling)]
+    #[doc = "Getter for the `scheduling` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/scheduling)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `Scheduling`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn scheduling(this: &Navigator) -> Scheduling;
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = hardwareConcurrency)]
     #[doc = "Getter for the `hardwareConcurrency` field of this object."]
     #[doc = ""]
