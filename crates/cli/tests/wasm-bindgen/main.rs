@@ -431,3 +431,27 @@ fn function_table_preserved() {
         .wasm_bindgen("");
     cmd.assert().success();
 }
+
+#[test]
+fn constructor_cannot_return_option_struct() {
+    let (mut cmd, _out_dir) = Project::new("constructor_cannot_return_option_struct")
+        .file(
+            "src/lib.rs",
+            r#"
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen]
+                pub struct Foo(());
+                
+                #[wasm_bindgen]
+                impl Foo {
+                    #[wasm_bindgen(constructor)]
+                    pub fn new() -> Option<Foo> {
+                        Some(Foo(()))
+                    }
+                }
+            "#,
+        )
+        .wasm_bindgen("--target web");
+    cmd.assert().failure();
+}
