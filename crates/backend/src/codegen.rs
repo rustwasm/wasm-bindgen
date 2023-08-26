@@ -304,12 +304,12 @@ impl ToTokens for ast::Struct {
                     let idx = #wasm_bindgen::convert::IntoWasmAbi::into_abi(&value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
                     extern "C" {
                         fn #unwrap_fn(ptr: u32) -> u32;
                     }
 
-                    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
                     unsafe fn #unwrap_fn(_: u32) -> u32 {
                         panic!("cannot convert from JsValue outside of the wasm target")
                     }
