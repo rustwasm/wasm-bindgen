@@ -166,7 +166,12 @@ impl<'a, 'b> Builder<'a, 'b> {
         // more JIT-friendly. The generated code should be equivalent to the
         // wasm interface types stack machine, however.
         for instr in instructions {
-            instruction(&mut js, &instr.instr, &mut self.log_error)?;
+            instruction(
+                &mut js,
+                &instr.instr,
+                &mut self.log_error,
+                &self.constructor,
+            )?;
         }
 
         assert_eq!(js.stack.len(), adapter.results.len());
@@ -537,7 +542,12 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 }
 
-fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) -> Result<(), Error> {
+fn instruction(
+    js: &mut JsBuilder,
+    instr: &Instruction,
+    log_error: &mut bool,
+    constructor: &Option<String>,
+) -> Result<(), Error> {
     match instr {
         Instruction::ArgGet(n) => {
             let arg = js.arg(*n).to_string();
@@ -987,18 +997,27 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::RustFromI32 { class } => {
-            js.cx.require_class_wrap(class);
             let val = js.pop();
-            js.push(format!("{}.__wrap({})", class, val));
+            match constructor {
+                Some(name) if name == class => {
+                    js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
+                    js.push(String::from("this"));
+                }
+                Some(_) | None => {
+                    js.cx.require_class_wrap(class);
+                    js.push(format!("{}.__wrap({})", class, val));
+                }
+            }
         }
 
         Instruction::OptionRustFromI32 { class } => {
-            js.cx.require_class_wrap(class);
+            assert!(constructor.is_none());
             let val = js.pop();
+            js.cx.require_class_wrap(class);
             js.push(format!(
                 "{0} === 0 ? undefined : {1}.__wrap({0})",
                 val, class,
-            ))
+            ));
         }
 
         Instruction::CachedStringLoad {

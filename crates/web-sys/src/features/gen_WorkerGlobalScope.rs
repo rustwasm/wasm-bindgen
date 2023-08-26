@@ -123,6 +123,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheStorage`, `WorkerGlobalScope`*"]
     pub fn caches(this: &WorkerGlobalScope) -> Result<CacheStorage, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Scheduler")]
+    # [wasm_bindgen (structural , method , getter , js_class = "WorkerGlobalScope" , js_name = scheduler)]
+    #[doc = "Getter for the `scheduler` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/scheduler)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Scheduler`, `WorkerGlobalScope`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn scheduler(this: &WorkerGlobalScope) -> Scheduler;
     # [wasm_bindgen (catch , method , structural , variadic , js_class = "WorkerGlobalScope" , js_name = importScripts)]
     #[doc = "The `importScripts()` method."]
     #[doc = ""]
