@@ -27,7 +27,7 @@ interface CSSStyleSheet : StyleSheet {
   [Throws, NeedsSubjectPrincipal]
   undefined deleteRule(unsigned long index);
   [NewObject]
-  Promise<CSSStyleSheet> replace(DOMString text);
+  Promise<CSSStyleSheet> replace(USVString text);
   [Throws]
-  undefined replaceSync(DOMString text);
+  undefined replaceSync(USVString text);
 };
