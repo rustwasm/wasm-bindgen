@@ -386,3 +386,34 @@ impl IntoWasmAbi for JsError {
         self.value.into_abi()
     }
 }
+
+macro_rules! wasm_abi_array {
+    ($($t:ty)*) => ($(
+        unsafe impl<const LEN: usize> WasmAbi for [$t; LEN] {}
+    )*)
+}
+
+macro_rules! from_into_wasm_abi_array {
+    ($($t:ty)*) => ($(
+        wasm_abi_array!($t);
+
+        impl<const LEN: usize> IntoWasmAbi for [$t; LEN] {
+            type Abi = [$t; LEN];
+
+            #[inline]
+            fn into_abi(self) -> Self::Abi {
+                self as [$t; LEN]
+            }
+        }
+        impl<const LEN: usize> FromWasmAbi for [$t; LEN] {
+            type Abi = [$t; LEN];
+
+            #[inline]
+            unsafe fn from_abi(js: Self::Abi) -> [$t; LEN] {
+                js as [$t; LEN]
+            }
+        }
+    )*)
+}
+
+from_into_wasm_abi_array!(u8 u16 u32 u64 i8 i16 i32 i64 f32 f64);

@@ -1120,6 +1120,42 @@ fn instruction(
             js.push(format!("v{}", i))
         }
 
+        Instruction::WasmToFixedArray { kind, length } => {
+            // Need to convert to JS num here
+            let convert_to_js_num = |val: &str| -> String {
+                match kind {
+                    AdapterType::U32 => format!("{} >>> 0", val),
+                    AdapterType::U64 => format!("BigInt.asUintN(64, {val})"),
+                    _ => val.to_string(),
+                }
+            };
+            let mut to_ret = (0..*length)
+                .map(|_| {
+                    let val = js.pop();
+                    convert_to_js_num(&val)
+                })
+                .collect::<Vec<_>>();
+            to_ret.reverse();
+            js.push(format!("[{}]", to_ret.join(", ")));
+        }
+
+        Instruction::FixedArrayToWasm { kind, length } => {
+            let input = js.pop();
+            js.prelude(&format!("if ({input}.length !== {length}) {{\n throw new Error(`Expected an Array of length {length}, received array of length ${{{input}.length}}`);\n}}"));
+            // if matches!(kind, AdapterType::I64 | AdapterType::S64 | AdapterType::U64) {
+            //     js.assert_bigint(&element);
+            // } else {
+            //     js.assert_number(&element);
+            // }
+            // let elements = (0..*length)
+            //     .map(|i| format!("{}[{}]", input, i))
+            //     .collect::<Vec<_>>();
+            for i in 0..*length {
+                let element = format!("{}[{}]", input, i);
+                js.push(element);
+            }
+        }
+
         Instruction::OptionVectorLoad { kind, mem, free } => {
             let len = js.pop();
             let ptr = js.pop();
@@ -1319,5 +1355,10 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
+        AdapterType::Array(ty, _) => {
+            let mut inner = String::new();
+            adapter2ts(ty, &mut inner);
+            dst.push_str(&format!("Array<{}>", inner));
+        }
     }
 }

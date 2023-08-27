@@ -439,6 +439,8 @@ impl Bindgen {
         let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
         cx.generate()?;
         let (js, ts, start) = cx.finalize(stem)?;
+        // let (js, ts, start) = (String::default(), String::default(), None);
+
         let generated = Generated {
             snippets: aux.snippets.clone(),
             local_modules: aux.local_modules.clone(),

@@ -46,6 +46,7 @@ tys! {
     RESULT
     UNIT
     CLAMPED
+    FIXED_ARRAY
 }
 
 #[inline(always)] // see the wasm-interpreter crate
@@ -189,5 +190,13 @@ impl<T: WasmDescribe> WasmDescribe for Clamped<T> {
 impl WasmDescribe for JsError {
     fn describe() {
         JsValue::describe();
+    }
+}
+
+impl<const LEN: usize, T: WasmDescribe> WasmDescribe for [T; LEN] {
+    fn describe() {
+        inform(FIXED_ARRAY);
+        T::describe();
+        inform(LEN as u32);
     }
 }

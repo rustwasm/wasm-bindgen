@@ -12,6 +12,11 @@ use walrus::{
     InitExpr, MemoryId, Module, ValType,
 };
 
+/// Utility method to get a function name inside a module with a function ID
+pub fn get_func_name_from_id(module: &Module, function_id: FunctionId) -> String {
+    module.funcs.get(function_id).name.clone().unwrap()
+}
+
 /// Get a Wasm module's canonical linear memory.
 pub fn get_memory(module: &Module) -> Result<MemoryId> {
     let mut memories = module.memories.iter().map(|m| m.id());

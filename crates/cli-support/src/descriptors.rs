@@ -47,6 +47,12 @@ impl WasmBindgenDescriptorsSection {
         interpreter: &mut Interpreter,
     ) -> Result<(), Error> {
         let mut to_remove = Vec::new();
+        let to_print = module
+            .exports
+            .iter()
+            .map(|m| m.name.clone())
+            .collect::<Vec<_>>();
+        println!("All module exports:\n{to_print:#?}");
         for export in module.exports.iter() {
             let prefix = "__wbindgen_describe_";
             if !export.name.starts_with(prefix) {
@@ -59,7 +65,10 @@ impl WasmBindgenDescriptorsSection {
             if let Some(d) = interpreter.interpret_descriptor(id, module) {
                 let name = &export.name[prefix.len()..];
                 let descriptor = Descriptor::decode(d);
+                println!("Adding descriptor: {name:?} - {descriptor:#?}");
                 self.descriptors.insert(name.to_string(), descriptor);
+            } else {
+                eprintln!("Somehow this returned none...?, id: {:?}", id);
             }
             to_remove.push(export.id());
         }

@@ -92,6 +92,62 @@
 
 #![deny(missing_docs, missing_debug_implementations)]
 
+use walrus::ir::{ExtendedLoad, LoadKind};
+
+/// The possible inner values of a fixed-size array which have one or two byte
+/// alignments.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum ArrayLoad {
+    /// I8
+    I8,
+    /// U8
+    U8,
+    /// I16
+    I16,
+    /// U16
+    U16,
+}
+
+impl ArrayLoad {
+    fn offset(&self) -> u32 {
+        match self {
+            ArrayLoad::I8 | ArrayLoad::U8 => 1,
+            ArrayLoad::I16 | ArrayLoad::U16 => 2,
+        }
+    }
+
+    fn load_kind(&self) -> LoadKind {
+        match self {
+            Self::I8 => LoadKind::I32_8 {
+                kind: ExtendedLoad::SignExtend,
+            },
+            Self::U8 => LoadKind::I32_8 {
+                kind: ExtendedLoad::ZeroExtend,
+            },
+            Self::I16 => LoadKind::I32_16 {
+                kind: ExtendedLoad::SignExtend,
+            },
+            Self::U16 => LoadKind::I32_16 {
+                kind: ExtendedLoad::ZeroExtend,
+            },
+        }
+    }
+}
+
+///   A single instance of an exported function that we want to transform and
+///   information required to transform it. The `usize` is the index of the
+///   return pointer parameter that will be removed. The `Vec<walrus::ValType>`
+///   is the new result type that will be returned directly instead of via the
+///   return pointer. The `Option<ArrayLoad>` is used to indicate how to load
+///   when dealing with fixed-size arrays with types that have one or two byte
+///   alignments.
+pub type ToTransform = (
+    walrus::FunctionId,
+    usize,
+    Vec<walrus::ValType>,
+    Option<ArrayLoad>,
+);
+
 /// Run the transformation.
 ///
 /// See the module-level docs for details on the transformation.
@@ -115,10 +171,10 @@ pub fn run(
     module: &mut walrus::Module,
     memory: walrus::MemoryId,
     shadow_stack_pointer: walrus::GlobalId,
-    to_xform: &[(walrus::FunctionId, usize, Vec<walrus::ValType>)],
+    to_xform: &[ToTransform],
 ) -> Result<Vec<walrus::FunctionId>, anyhow::Error> {
     let mut wrappers = Vec::new();
-    for (func, return_pointer_index, results) in to_xform {
+    for (func, return_pointer_index, results, array_config) in to_xform {
         wrappers.push(xform_one(
             module,
             memory,
@@ -126,6 +182,7 @@ pub fn run(
             *func,
             *return_pointer_index,
             results,
+            array_config,
         )?);
     }
     Ok(wrappers)
@@ -144,6 +201,7 @@ fn xform_one(
     func: walrus::FunctionId,
     return_pointer_index: usize,
     results: &[walrus::ValType],
+    array_config: &Option<ArrayLoad>,
 ) -> Result<walrus::FunctionId, anyhow::Error> {
     if module.globals.get(shadow_stack_pointer).ty != walrus::ValType::I32 {
         anyhow::bail!("shadow stack pointer global does not have type `i32`");
@@ -240,13 +298,31 @@ fn xform_one(
         body.local_get(return_pointer);
         match ty {
             walrus::ValType::I32 => {
-                debug_assert_eq!(offset % 4, 0);
-                body.load(
-                    memory,
-                    walrus::ir::LoadKind::I32 { atomic: false },
-                    walrus::ir::MemArg { align: 4, offset },
-                );
-                offset += 4;
+                if let Some(array_config) = array_config {
+                    let align = array_config.offset();
+                    body.load(
+                        memory,
+                        array_config.load_kind(),
+                        walrus::ir::MemArg { align, offset },
+                    );
+                    offset += align;
+                } else {
+                    debug_assert_eq!(offset % 4, 0);
+                    body.load(
+                        memory,
+                        walrus::ir::LoadKind::I32 { atomic: false },
+                        walrus::ir::MemArg { align: 4, offset },
+                    );
+                    offset += 4;
+                }
+                // body.load(
+                //     memory,
+                //     walrus::ir::LoadKind::I32_16 {
+                //         kind: ExtendedLoad::ZeroExtend,
+                //     },
+                //     walrus::ir::MemArg { align: 2, offset },
+                // );
+                // offset += 2;
             }
             walrus::ValType::I64 => {
                 offset = round_up_to_alignment(offset, 8);

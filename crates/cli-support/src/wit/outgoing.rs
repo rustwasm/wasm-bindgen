@@ -2,6 +2,7 @@ use crate::descriptor::Descriptor;
 use crate::wit::{AdapterType, Instruction, InstructionBuilder};
 use crate::wit::{InstructionData, StackChange};
 use anyhow::{bail, format_err, Error};
+use std::ops::Deref;
 use walrus::ValType;
 
 impl InstructionBuilder<'_, '_> {
@@ -153,6 +154,32 @@ impl InstructionBuilder<'_, '_> {
 
             // nothing to do
             Descriptor::Unit => {}
+
+            Descriptor::FixedArray(d, length) => {
+                let (output_ty, input_ty) = match d.deref() {
+                    Descriptor::U8 => (AdapterType::U8, AdapterType::I32),
+                    Descriptor::I8 => (AdapterType::S8, AdapterType::I32),
+                    Descriptor::U16 => (AdapterType::U16, AdapterType::I32),
+                    Descriptor::I16 => (AdapterType::S16, AdapterType::I32),
+                    Descriptor::U32 => (AdapterType::U32, AdapterType::I32),
+                    Descriptor::I32 => (AdapterType::S32, AdapterType::I32),
+                    Descriptor::U64 => (AdapterType::U64, AdapterType::I64),
+                    Descriptor::I64 => (AdapterType::S64, AdapterType::I64),
+                    Descriptor::F32 => (AdapterType::F32, AdapterType::F32),
+                    Descriptor::F64 => (AdapterType::F64, AdapterType::F64),
+                    d => unimplemented!("unsupported type for fixed size arrays: {d:?}",),
+                };
+                let inputs = (0..*length).map(|_| input_ty.clone()).collect::<Vec<_>>();
+                let instr = Instruction::WasmToFixedArray {
+                    kind: output_ty.clone(),
+                    length: *length as usize,
+                };
+                self.instruction(
+                    &inputs,
+                    instr,
+                    &[AdapterType::Array(Box::new(output_ty), *length as usize)],
+                );
+            }
 
             // Largely synthetic and can't show up
             Descriptor::ClampedU8 => unreachable!(),
@@ -401,6 +428,11 @@ impl InstructionBuilder<'_, '_> {
                 self.get(AdapterType::I32);
                 self.get(AdapterType::I32);
             }
+
+            Descriptor::FixedArray(_, _) => {
+                bail!("SoonTM")
+            }
+
             Descriptor::String => {
                 // fetch the ptr/length ...
                 self.get(AdapterType::I32);

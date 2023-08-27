@@ -87,6 +87,7 @@ pub enum AdapterType {
     Struct(String),
     NamedExternref(String),
     Function,
+    Array(Box<AdapterType>, usize),
 }
 
 #[derive(Debug, Clone)]
@@ -276,6 +277,14 @@ pub enum Instruction {
         kind: VectorKind,
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
+    },
+    FixedArrayToWasm {
+        kind: AdapterType,
+        length: usize,
+    },
+    WasmToFixedArray {
+        kind: AdapterType,
+        length: usize,
     },
     /// pops i32, loads externref from externref table
     TableGet,
