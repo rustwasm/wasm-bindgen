@@ -1648,6 +1648,18 @@ mod gen_DomMatrix;
 #[cfg(feature = "DomMatrix")]
 pub use gen_DomMatrix::*;
 
+#[cfg(feature = "DomMatrix2dInit")]
+#[allow(non_snake_case)]
+mod gen_DomMatrix2dInit;
+#[cfg(feature = "DomMatrix2dInit")]
+pub use gen_DomMatrix2dInit::*;
+
+#[cfg(feature = "DomMatrixInit")]
+#[allow(non_snake_case)]
+mod gen_DomMatrixInit;
+#[cfg(feature = "DomMatrixInit")]
+pub use gen_DomMatrixInit::*;
+
 #[cfg(feature = "DomMatrixReadOnly")]
 #[allow(non_snake_case)]
 mod gen_DomMatrixReadOnly;

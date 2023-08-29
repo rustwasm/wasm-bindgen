@@ -36,6 +36,9 @@
 * Add unstable bindings for the Prioritized Task Scheduling API.
   [#3566](https://github.com/rustwasm/wasm-bindgen/pull/3566)
 
+* Add bindings for `CanvasTransform.setTransform(DOMMatrix2DInit)`.
+  [#3580](https://github.com/rustwasm/wasm-bindgen/pull/3580)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.

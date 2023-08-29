@@ -147,6 +147,8 @@ interface mixin CanvasTransform {
   [Throws, LenientFloat]
   undefined setTransform(double a, double b, double c, double d, double e, double f);
   [Throws]
+  undefined setTransform(optional DOMMatrix2DInit transform = {});
+  [Throws]
   undefined resetTransform();
   [NewObject, Throws]
   DOMMatrix getTransform();
