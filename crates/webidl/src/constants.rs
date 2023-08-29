@@ -117,5 +117,7 @@ pub(crate) static FIXED_INTERFACES: Lazy<BTreeMap<&'static str, &'static str>> =
         ("create_image_bitmap_with_video_frame_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_video_frame_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
         ("create_image_bitmap_with_blob_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_blob_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
         ("create_image_bitmap_with_image_data_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_image_data_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
+        ("set_transform", "set_transform_with_default_dom_matrix_2d_init"),
+        ("set_transform_with_a_and_b_and_c_and_d_and_e_and_f", "set_transform"),
     ])
 });

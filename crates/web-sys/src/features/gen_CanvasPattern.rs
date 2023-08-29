@@ -19,5 +19,5 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasPattern`, `SvgMatrix`*"]
-    pub fn set_transform(this: &CanvasPattern, matrix: &SvgMatrix);
+    pub fn set_transform_with_default_dom_matrix_2d_init(this: &CanvasPattern, matrix: &SvgMatrix);
 }
