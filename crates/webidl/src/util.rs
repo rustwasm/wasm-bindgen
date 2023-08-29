@@ -196,6 +196,7 @@ pub enum TypePosition {
 impl<'src> FirstPassRecord<'src> {
     pub fn create_imports(
         &self,
+        type_name: Option<&str>,
         container_attrs: Option<&ExtendedAttributeList<'src>>,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
@@ -500,8 +501,10 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         for interface in &mut ret {
-            if let Some(fixed) = FIXED_INTERFACES.get(&interface.name.to_string().as_ref()) {
-                interface.name = rust_ident(fixed);
+            if let Some(map) = type_name.and_then(|type_name| FIXED_INTERFACES.get(type_name)) {
+                if let Some(fixed) = map.get(&interface.name.to_string().as_ref()) {
+                    interface.name = rust_ident(fixed);
+                }
             }
         }
 

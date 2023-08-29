@@ -97,8 +97,10 @@ pub(crate) static IMMUTABLE_SLICE_WHITELIST: Lazy<BTreeSet<&'static str>> = Lazy
     ])
 });
 
-pub(crate) static FIXED_INTERFACES: Lazy<BTreeMap<&'static str, &'static str>> = Lazy::new(|| {
-    BTreeMap::from_iter(vec![
+pub(crate) static FIXED_INTERFACES: Lazy<
+    BTreeMap<&'static str, BTreeMap<&'static str, &'static str>>,
+> = Lazy::new(|| {
+    let image_bitmap = BTreeMap::from_iter([
         ("create_image_bitmap_with_html_image_element_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_html_image_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
         ("create_image_bitmap_with_svg_image_element_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_svg_image_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
         ("create_image_bitmap_with_html_canvas_element_and_i32_and_a_sy_and_a_sw_and_a_sh", "create_image_bitmap_with_html_canvas_element_and_a_sx_and_a_sy_and_a_sw_and_a_sh"),
@@ -117,7 +119,26 @@ pub(crate) static FIXED_INTERFACES: Lazy<BTreeMap<&'static str, &'static str>> =
         ("create_image_bitmap_with_video_frame_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_video_frame_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
         ("create_image_bitmap_with_blob_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_blob_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
         ("create_image_bitmap_with_image_data_and_i32_and_a_sy_and_a_sw_and_a_sh_and_a_options", "create_image_bitmap_with_image_data_and_a_sx_and_a_sy_and_a_sw_and_a_sh_and_a_options"),
-        ("set_transform", "set_transform_with_default_dom_matrix_2d_init"),
-        ("set_transform_with_a_and_b_and_c_and_d_and_e_and_f", "set_transform"),
+    ]);
+
+    let canvas_rendering_context = BTreeMap::from_iter([
+        (
+            "set_transform",
+            "set_transform_with_default_dom_matrix_2d_init",
+        ),
+        (
+            "set_transform_with_a_and_b_and_c_and_d_and_e_and_f",
+            "set_transform",
+        ),
+    ]);
+
+    BTreeMap::from_iter([
+        ("Window", image_bitmap.clone()),
+        ("WorkerGlobalScope", image_bitmap),
+        ("CanvasRenderingContext2d", canvas_rendering_context.clone()),
+        (
+            "OffscreenCanvasRenderingContext2d",
+            canvas_rendering_context,
+        ),
     ])
 });
