@@ -140,5 +140,9 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             "OffscreenCanvasRenderingContext2d",
             canvas_rendering_context,
         ),
+        (
+            "ReadableStreamByobReader",
+            BTreeMap::from_iter([("read", "read_with_array_buffer_view")]),
+        ),
     ])
 });

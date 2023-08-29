@@ -91,6 +91,7 @@ dictionary ReadableStreamReadResult {
 interface ReadableStreamBYOBReader {
   [Throws] constructor(ReadableStream stream);
 
+  [RustNotWasmMemory]
   Promise<ReadableStreamReadResult> read(ArrayBufferView view);
   undefined releaseLock();
 };

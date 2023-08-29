@@ -266,7 +266,11 @@ impl<'src> FirstPassRecord<'src> {
                 // in-place, but all other flattened types will cause new
                 // signatures to be created.
                 let cur = actual_signatures.len();
-                for (j, idl_type) in idl_type.flatten().into_iter().enumerate() {
+                for (j, idl_type) in idl_type
+                    .flatten(signature.attrs.as_ref())
+                    .into_iter()
+                    .enumerate()
+                {
                     for k in start..cur {
                         if j == 0 {
                             actual_signatures[k].args.push(idl_type.clone());
