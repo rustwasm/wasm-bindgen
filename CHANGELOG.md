@@ -77,7 +77,7 @@
 * Fixed bug allowing JS primitives to be returned from exported constructors.
   [#3562](https://github.com/rustwasm/wasm-bindgen/pull/3562)
 
-* Fixed Optional parameters in JSDoc
+* Fixed optional parameters in JSDoc.
   [#3577](https://github.com/rustwasm/wasm-bindgen/pull/3577)
 
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
