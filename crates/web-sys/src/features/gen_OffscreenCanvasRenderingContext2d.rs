@@ -1341,6 +1341,26 @@ extern "C" {
         e: f64,
         f: f64,
     ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = setTransform)]
+    #[doc = "The `setTransform()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/setTransform)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_transform_with_default_dom_matrix_2d_init(
+        this: &OffscreenCanvasRenderingContext2d,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "DomMatrix2dInit")]
+    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = setTransform)]
+    #[doc = "The `setTransform()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/setTransform)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomMatrix2dInit`, `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_transform_with_dom_matrix_2d_init(
+        this: &OffscreenCanvasRenderingContext2d,
+        transform: &DomMatrix2dInit,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = transform)]
     #[doc = "The `transform()` method."]
     #[doc = ""]

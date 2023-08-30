@@ -504,7 +504,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        for x in self.create_imports(None, id, data, false, &HashSet::new()) {
+        for x in self.create_imports(None, None, id, data, false, &HashSet::new()) {
             functions.push(Function {
                 name: x.name,
                 js_name: x.js_name,
@@ -588,7 +588,14 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         for (id, op_data) in data.operations.iter() {
-            self.member_operation(&mut methods, data, id, op_data, unstable_types);
+            self.member_operation(
+                &name.to_string(),
+                &mut methods,
+                data,
+                id,
+                op_data,
+                unstable_types,
+            );
         }
 
         for mixin_data in self.all_mixins(&js_name) {
@@ -614,7 +621,14 @@ impl<'src> FirstPassRecord<'src> {
             }
 
             for (id, op_data) in mixin_data.operations.iter() {
-                self.member_operation(&mut methods, data, id, op_data, unstable_types);
+                self.member_operation(
+                    &name.to_string(),
+                    &mut methods,
+                    data,
+                    id,
+                    op_data,
+                    unstable_types,
+                );
             }
         }
 
@@ -702,6 +716,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn member_operation(
         &self,
+        type_name: &str,
         methods: &mut Vec<InterfaceMethod>,
         data: &InterfaceData<'src>,
         id: &OperationId<'src>,
@@ -711,7 +726,14 @@ impl<'src> FirstPassRecord<'src> {
         let attrs = data.definition_attributes;
         let unstable = data.stability.is_unstable();
 
-        for method in self.create_imports(attrs, id, op_data, unstable, unstable_types) {
+        for method in self.create_imports(
+            Some(type_name),
+            attrs,
+            id,
+            op_data,
+            unstable,
+            unstable_types,
+        ) {
             methods.push(method);
         }
     }

@@ -363,18 +363,36 @@ impl<'a, 'b> Builder<'a, 'b> {
         ts_ret: &Option<String>,
         variadic: bool,
     ) -> String {
-        let mut ret = String::new();
         let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
             Some((last, args)) if variadic => (Some(last), args),
             _ => (None, arg_names),
         };
-        for (name, ty) in fn_arg_names.iter().zip(arg_tys) {
-            ret.push_str("@param {");
-            adapter2ts(ty, &mut ret);
-            ret.push_str("} ");
-            ret.push_str(name);
-            ret.push('\n');
+
+        let mut omittable = true;
+        let mut js_doc_args = Vec::new();
+
+        for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
+            let mut arg = "@param {".to_string();
+
+            adapter2ts(ty, &mut arg);
+            arg.push_str("} ");
+            match ty {
+                AdapterType::Option(..) if omittable => {
+                    arg.push('[');
+                    arg.push_str(name);
+                    arg.push(']');
+                }
+                _ => {
+                    omittable = false;
+                    arg.push_str(name);
+                }
+            }
+            arg.push('\n');
+            js_doc_args.push(arg);
         }
+
+        let mut ret: String = js_doc_args.into_iter().rev().collect();
+
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             ret.push_str("@param {...");
             adapter2ts(ty, &mut ret);

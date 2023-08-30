@@ -148,3 +148,31 @@ interface DOMMatrix : DOMMatrixReadOnly {
     [Throws] DOMMatrix setMatrixValue(DOMString transformList);
 };
 
+dictionary DOMMatrix2DInit {
+    unrestricted double a;
+    unrestricted double b;
+    unrestricted double c;
+    unrestricted double d;
+    unrestricted double e;
+    unrestricted double f;
+    unrestricted double m11;
+    unrestricted double m12;
+    unrestricted double m21;
+    unrestricted double m22;
+    unrestricted double m41;
+    unrestricted double m42;
+};
+
+dictionary DOMMatrixInit : DOMMatrix2DInit {
+    unrestricted double m13 = 0;
+    unrestricted double m14 = 0;
+    unrestricted double m23 = 0;
+    unrestricted double m24 = 0;
+    unrestricted double m31 = 0;
+    unrestricted double m32 = 0;
+    unrestricted double m33 = 1;
+    unrestricted double m34 = 0;
+    unrestricted double m43 = 0;
+    unrestricted double m44 = 1;
+    boolean is2D;
+};

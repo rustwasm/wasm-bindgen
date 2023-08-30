@@ -196,6 +196,7 @@ pub enum TypePosition {
 impl<'src> FirstPassRecord<'src> {
     pub fn create_imports(
         &self,
+        type_name: Option<&str>,
         container_attrs: Option<&ExtendedAttributeList<'src>>,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
@@ -265,7 +266,11 @@ impl<'src> FirstPassRecord<'src> {
                 // in-place, but all other flattened types will cause new
                 // signatures to be created.
                 let cur = actual_signatures.len();
-                for (j, idl_type) in idl_type.flatten().into_iter().enumerate() {
+                for (j, idl_type) in idl_type
+                    .flatten(signature.attrs.as_ref())
+                    .into_iter()
+                    .enumerate()
+                {
                     for k in start..cur {
                         if j == 0 {
                             actual_signatures[k].args.push(idl_type.clone());
@@ -500,8 +505,10 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         for interface in &mut ret {
-            if let Some(fixed) = FIXED_INTERFACES.get(&interface.name.to_string().as_ref()) {
-                interface.name = rust_ident(fixed);
+            if let Some(map) = type_name.and_then(|type_name| FIXED_INTERFACES.get(type_name)) {
+                if let Some(fixed) = map.get(&interface.name.to_string().as_ref()) {
+                    interface.name = rust_ident(fixed);
+                }
             }
         }
 

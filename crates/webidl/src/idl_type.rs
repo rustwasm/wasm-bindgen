@@ -1,5 +1,6 @@
 use proc_macro2::{Ident, Span};
 use wasm_bindgen_backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
+use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
 use weedle::common::Identifier;
 use weedle::term;
 use weedle::types::*;
@@ -659,36 +660,36 @@ impl<'a> IdlType<'a> {
     /// but also flattens unions inside generics of other types.
     ///
     /// [flattened union member types]: https://heycam.github.io/webidl/#dfn-flattened-union-member-types
-    pub(crate) fn flatten(&self) -> Vec<Self> {
+    pub(crate) fn flatten(&self, attrs: Option<&ExtendedAttributeList<'_>>) -> Vec<Self> {
         match self {
             IdlType::Nullable(idl_type) => idl_type
-                .flatten()
+                .flatten(attrs)
                 .into_iter()
                 .map(Box::new)
                 .map(IdlType::Nullable)
                 .collect(),
             IdlType::FrozenArray(idl_type) => idl_type
-                .flatten()
+                .flatten(attrs)
                 .into_iter()
                 .map(Box::new)
                 .map(IdlType::FrozenArray)
                 .collect(),
             IdlType::Sequence(idl_type) => idl_type
-                .flatten()
+                .flatten(attrs)
                 .into_iter()
                 .map(Box::new)
                 .map(IdlType::Sequence)
                 .collect(),
             IdlType::Promise(idl_type) => idl_type
-                .flatten()
+                .flatten(attrs)
                 .into_iter()
                 .map(Box::new)
                 .map(IdlType::Promise)
                 .collect(),
             IdlType::Record(idl_type_from, idl_type_to) => {
                 let mut idl_types = Vec::new();
-                for idl_type_from in idl_type_from.flatten() {
-                    for idl_type_to in idl_type_to.flatten() {
+                for idl_type_from in idl_type_from.flatten(attrs) {
+                    for idl_type_to in idl_type_to.flatten(attrs) {
                         idl_types.push(IdlType::Record(
                             Box::new(idl_type_from.clone()),
                             Box::new(idl_type_to.clone()),
@@ -699,16 +700,30 @@ impl<'a> IdlType<'a> {
             }
             IdlType::Union(idl_types) => idl_types
                 .iter()
-                .flat_map(|idl_type| idl_type.flatten())
+                .flat_map(|idl_type| idl_type.flatten(attrs))
                 .collect(),
-            IdlType::ArrayBufferView { immutable } => vec![
-                IdlType::ArrayBufferView {
+            IdlType::ArrayBufferView { immutable } => {
+                let view = IdlType::ArrayBufferView {
                     immutable: *immutable,
-                },
-                IdlType::Uint8Array {
-                    immutable: *immutable,
-                },
-            ],
+                };
+
+                if let Some(attrs) = attrs {
+                    for attr in &attrs.body.list {
+                        if let ExtendedAttribute::NoArgs(attr) = attr {
+                            if attr.0 .0 == "RustNotWasmMemory" {
+                                return vec![view];
+                            }
+                        }
+                    }
+                }
+
+                vec![
+                    view,
+                    IdlType::Uint8Array {
+                        immutable: *immutable,
+                    },
+                ]
+            }
             IdlType::BufferSource { immutable } => vec![
                 IdlType::BufferSource {
                     immutable: *immutable,
@@ -758,7 +773,7 @@ fn idl_type_flatten_test() {
                 Interface("NodeList"),
             ])),),
         ])
-        .flatten(),
+        .flatten(None),
         vec![
             Interface("Node"),
             Sequence(Box::new(Long)),
