@@ -36,6 +36,9 @@
 * Add unstable bindings for the Prioritized Task Scheduling API.
   [#3566](https://github.com/rustwasm/wasm-bindgen/pull/3566)
 
+* Add constructor and `replace`* methods for `CssStyleSheet`.
+  [#3573](https://github.com/rustwasm/wasm-bindgen/pull/3573)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
