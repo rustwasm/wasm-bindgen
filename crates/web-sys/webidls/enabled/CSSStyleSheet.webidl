@@ -14,6 +14,8 @@ enum CSSStyleSheetParsingMode {
 };
 
 interface CSSStyleSheet : StyleSheet {
+  [Throws]
+  constructor();
   [Pure]
   readonly attribute CSSRule? ownerRule;
   [Throws, NeedsSubjectPrincipal]
@@ -24,4 +26,8 @@ interface CSSStyleSheet : StyleSheet {
   unsigned long insertRule(DOMString rule, optional unsigned long index = 0);
   [Throws, NeedsSubjectPrincipal]
   undefined deleteRule(unsigned long index);
+  [NewObject]
+  Promise<CSSStyleSheet> replace(USVString text);
+  [Throws]
+  undefined replaceSync(USVString text);
 };
