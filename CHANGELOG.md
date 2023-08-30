@@ -36,7 +36,7 @@
 * Add unstable bindings for the Prioritized Task Scheduling API.
   [#3566](https://github.com/rustwasm/wasm-bindgen/pull/3566)
 
-* Add bindings for `CssStyleSheet` constructor and `replace`* methods.
+* Add bindings for `CssStyleSheet` constructor and `replace(_sync)` methods.
   [#3573](https://github.com/rustwasm/wasm-bindgen/pull/3573)
 
 * Add bindings for `CanvasTransform.setTransform(DOMMatrix2DInit)`.
