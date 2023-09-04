@@ -16,30 +16,11 @@ pub fn wasm_bindgen_test(
     attr: proc_macro::TokenStream,
     body: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    let mut attr = attr.into_iter();
-    let mut r#async = false;
+    let mut attributes = Attributes::default();
+    let attribute_parser = syn::meta::parser(|meta| attributes.parse(meta));
+
+    syn::parse_macro_input!(attr with attribute_parser);
     let mut should_panic = None;
-    while let Some(token) = attr.next() {
-        match &token {
-            proc_macro::TokenTree::Ident(i) if i.to_string() == "async" => r#async = true,
-            _ => {
-                return compile_error(
-                    token.span().into(),
-                    "malformed `#[wasm_bindgen_test]` attribute",
-                )
-            }
-        }
-        match &attr.next() {
-            Some(proc_macro::TokenTree::Punct(op)) if op.as_char() == ',' => {}
-            Some(_) => {
-                return compile_error(
-                    token.span().into(),
-                    "malformed `#[wasm_bindgen_test]` attribute",
-                )
-            }
-            None => break,
-        }
-    }
 
     let mut body = TokenStream::from(body).into_iter().peekable();
 
@@ -64,7 +45,7 @@ pub fn wasm_bindgen_test(
         leading_tokens.push(token.clone());
         if let TokenTree::Ident(token) = token {
             if token == "async" {
-                r#async = true;
+                attributes.r#async = true;
             }
             if token == "fn" {
                 break;
@@ -83,7 +64,7 @@ pub fn wasm_bindgen_test(
         None => quote! { ::core::option::Option::None },
     };
 
-    let test_body = if r#async {
+    let test_body = if attributes.r#async {
         quote! { cx.execute_async(test_name, #ident, #should_panic); }
     } else {
         quote! { cx.execute_sync(test_name, #ident, #should_panic); }
@@ -204,4 +185,20 @@ fn find_ident(iter: &mut impl Iterator<Item = TokenTree>) -> Option<Ident> {
 
 fn compile_error(span: Span, msg: &str) -> proc_macro::TokenStream {
     quote_spanned! { span => compile_error!(#msg); }.into()
+}
+
+#[derive(Default)]
+struct Attributes {
+    r#async: bool,
+}
+
+impl Attributes {
+    fn parse(&mut self, meta: syn::meta::ParseNestedMeta) -> syn::parse::Result<()> {
+        if meta.path.is_ident("async") {
+            self.r#async = true;
+        } else {
+            return Err(meta.error("unknown attribute"));
+        }
+        Ok(())
+    }
 }
