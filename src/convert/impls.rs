@@ -9,8 +9,8 @@ use crate::{Clamped, JsError, JsValue, UnwrapThrowExt};
 if_std! {
     use std::boxed::Box;
     use std::convert::{TryFrom, TryInto};
-    use std::vec::Vec;
     use std::fmt::Debug;
+    use std::vec::Vec;
 }
 
 unsafe impl WasmAbi for () {}
@@ -395,8 +395,10 @@ impl IntoWasmAbi for JsError {
 }
 
 if_std! {
+    // Note: this can't take `&[T]` because the `Into<JsValue>` impl needs
+    // ownership of `T`.
     pub fn js_value_vector_into_abi<T: Into<JsValue>>(vector: Box<[T]>) -> <Box<[JsValue]> as IntoWasmAbi>::Abi {
-        let js_vals: Box::<[JsValue]> = vector
+        let js_vals: Box<[JsValue]> = vector
             .into_vec()
             .into_iter()
             .map(|x| x.into())

@@ -160,8 +160,8 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for T {
 }
 
 if_std! {
-    use std::boxed::Box;
     use core::marker::Sized;
+    use std::boxed::Box;
 
     /// Trait for element types to implement IntoWasmAbi for vectors of
     /// themselves.
