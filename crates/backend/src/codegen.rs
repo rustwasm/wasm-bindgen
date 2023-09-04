@@ -164,9 +164,10 @@ impl ToTokens for ast::Struct {
         let name = &self.rust_name;
         let name_str = self.js_name.to_string();
         let name_len = name_str.len() as u32;
-        let name_chars = name_str.chars().map(|c| c as u32);
+        let name_chars: Vec<u32> = name_str.chars().map(|c| c as u32).collect();
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
+        let unwrap_fn = Ident::new(&shared::unwrap_function(&name_str), Span::call_site());
         let wasm_bindgen = &self.wasm_bindgen;
         (quote! {
             #[automatically_derived]
@@ -292,6 +293,76 @@ impl ToTokens for ast::Struct {
             impl #wasm_bindgen::convert::OptionFromWasmAbi for #name {
                 #[inline]
                 fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
+            }
+
+            #[allow(clippy::all)]
+            impl #wasm_bindgen::__rt::core::convert::TryFrom<#wasm_bindgen::JsValue> for #name {
+                type Error = #wasm_bindgen::JsValue;
+
+                fn try_from(value: #wasm_bindgen::JsValue)
+                    -> #wasm_bindgen::__rt::std::result::Result<Self, Self::Error> {
+                    let idx = #wasm_bindgen::convert::IntoWasmAbi::into_abi(&value);
+
+                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+                    extern "C" {
+                        fn #unwrap_fn(ptr: u32) -> u32;
+                    }
+
+                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+                    unsafe fn #unwrap_fn(_: u32) -> u32 {
+                        panic!("cannot convert from JsValue outside of the wasm target")
+                    }
+
+                    let ptr = unsafe { #unwrap_fn(idx) };
+                    if ptr == 0 {
+                        #wasm_bindgen::__rt::std::result::Result::Err(value)
+                    } else {
+                        // Don't run `JsValue`'s destructor, `unwrap_fn` already did that for us.
+                        #wasm_bindgen::__rt::std::mem::forget(value);
+                        unsafe {
+                            #wasm_bindgen::__rt::std::result::Result::Ok(
+                                <Self as #wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr)
+                            )
+                        }
+                    }
+                }
+            }
+
+            impl #wasm_bindgen::describe::WasmDescribeVector for #name {
+                fn describe_vector() {
+                    use #wasm_bindgen::describe::*;
+                    inform(VECTOR);
+                    inform(NAMED_EXTERNREF);
+                    inform(#name_len);
+                    #(inform(#name_chars);)*
+                }
+            }
+
+            impl #wasm_bindgen::convert::VectorIntoWasmAbi for #name {
+                type Abi = <
+                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    as #wasm_bindgen::convert::IntoWasmAbi
+                >::Abi;
+
+                fn vector_into_abi(
+                    vector: #wasm_bindgen::__rt::std::boxed::Box<[#name]>
+                ) -> Self::Abi {
+                    #wasm_bindgen::convert::js_value_vector_into_abi(vector)
+                }
+            }
+
+            impl #wasm_bindgen::convert::VectorFromWasmAbi for #name {
+                type Abi = <
+                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    as #wasm_bindgen::convert::FromWasmAbi
+                >::Abi;
+
+                unsafe fn vector_from_abi(
+                    js: Self::Abi
+                ) -> #wasm_bindgen::__rt::std::boxed::Box<[#name]> {
+                    #wasm_bindgen::convert::js_value_vector_from_abi(js)
+                }
             }
         })
         .to_tokens(tokens);

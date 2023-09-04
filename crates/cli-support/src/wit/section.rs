@@ -273,6 +273,9 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
             format!("wasm-bindgen specific link function for `{}`", path)
         }
         AuxImport::Closure { .. } => format!("creating a `Closure` wrapper"),
+        AuxImport::UnwrapExportedClass(name) => {
+            format!("unwrapping a pointer from a `{}` js class wrapper", name)
+        }
     };
     bail!("import of {} requires JS glue", item);
 }

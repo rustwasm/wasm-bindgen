@@ -22,7 +22,7 @@ extern "C" {
 }
 
 macro_rules! export_macro {
-    ($(($i:ident, $n:ident))*) => ($(
+    ($(($i:ident, $n:ident, $optional_n:ident))*) => ($(
         #[wasm_bindgen]
         pub fn $n(a: &[$i]) -> Vec<$i> {
             assert_eq!(a.len(), 2);
@@ -30,20 +30,30 @@ macro_rules! export_macro {
             assert_eq!(a[1], 2 as $i);
             a.to_vec()
         }
+
+        #[wasm_bindgen]
+        pub fn $optional_n(a: Option<Vec<$i>>) -> Option<Vec<$i>> {
+            a.map(|a| {
+                assert_eq!(a.len(), 2);
+                assert_eq!(a[0], 1 as $i);
+                assert_eq!(a[1], 2 as $i);
+                a.to_vec()
+            })
+        }
     )*)
 }
 
 export_macro! {
-    (i8, export_i8)
-    (u8, export_u8)
-    (i16, export_i16)
-    (u16, export_u16)
-    (i32, export_i32)
-    (u32, export_u32)
-    (isize, export_isize)
-    (usize, export_usize)
-    (f32, export_f32)
-    (f64, export_f64)
+    (i8, export_i8, export_optional_i8)
+    (u8, export_u8, export_optional_u8)
+    (i16, export_i16, export_optional_i16)
+    (u16, export_u16, export_optional_u16)
+    (i32, export_i32, export_optional_i32)
+    (u32, export_u32, export_optional_u32)
+    (isize, export_isize, export_optional_isize)
+    (usize, export_usize, export_optional_usize)
+    (f32, export_f32, export_optional_f32)
+    (f64, export_f64, export_optional_f64)
 }
 
 #[wasm_bindgen_test]

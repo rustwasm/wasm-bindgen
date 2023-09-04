@@ -8,9 +8,9 @@ error[E0277]: the trait bound `Result<wasm_bindgen::JsValue, wasm_bindgen::JsVal
             *const T
             *mut T
             Box<[T]>
-            Box<[f32]>
-            Box<[f64]>
-            Box<[i16]>
-            Box<[i32]>
-            Box<[i64]>
-          and 35 others
+            Clamped<T>
+            Option<T>
+            Option<f32>
+            Option<f64>
+            Option<i32>
+          and $N others

@@ -13,5 +13,5 @@ error[E0277]: the trait bound `A: IntoWasmAbi` is not satisfied
             &'a (dyn Fn(A, B, C, D, E) -> R + 'b)
             &'a (dyn Fn(A, B, C, D, E, F) -> R + 'b)
             &'a (dyn Fn(A, B, C, D, E, F, G) -> R + 'b)
-          and 84 others
+          and $N others
   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)

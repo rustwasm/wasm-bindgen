@@ -158,3 +158,24 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for T {
         self.into_abi()
     }
 }
+
+if_std! {
+    use core::marker::Sized;
+    use std::boxed::Box;
+
+    /// Trait for element types to implement IntoWasmAbi for vectors of
+    /// themselves.
+    pub trait VectorIntoWasmAbi: WasmDescribeVector + Sized {
+        type Abi: WasmAbi;
+
+        fn vector_into_abi(vector: Box<[Self]>) -> Self::Abi;
+    }
+
+    /// Trait for element types to implement FromWasmAbi for vectors of
+    /// themselves.
+    pub trait VectorFromWasmAbi: WasmDescribeVector + Sized {
+        type Abi: WasmAbi;
+
+        unsafe fn vector_from_abi(js: Self::Abi) -> Box<[Self]>;
+    }
+}

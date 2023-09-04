@@ -52,7 +52,7 @@
     - [Imported JavaScript Types](./reference/types/imported-js-types.md)
     - [Exported Rust Types](./reference/types/exported-rust-types.md)
     - [`JsValue`](./reference/types/jsvalue.md)
-    - [`Box<[JsValue]>`](./reference/types/boxed-jsvalue-slice.md)
+    - [`Box<[T]>` and `Vec<T>`](./reference/types/boxed-slices.md)
     - [`*const T` and `*mut T`](./reference/types/pointers.md)
     - [Numbers](./reference/types/numbers.md)
     - [`bool`](./reference/types/bool.md)

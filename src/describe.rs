@@ -3,7 +3,7 @@
 
 #![doc(hidden)]
 
-use crate::{Clamped, JsError, JsValue};
+use crate::{Clamped, JsError, JsObject, JsValue};
 use cfg_if::cfg_if;
 
 macro_rules! tys {
@@ -55,6 +55,12 @@ pub fn inform(a: u32) {
 
 pub trait WasmDescribe {
     fn describe();
+}
+
+/// Trait for element types to implement WasmDescribe for vectors of
+/// themselves.
+pub trait WasmDescribeVector {
+    fn describe_vector();
 }
 
 macro_rules! simple {
@@ -145,10 +151,23 @@ if_std! {
         }
     }
 
-    impl<T: WasmDescribe> WasmDescribe for Box<[T]> {
-        fn describe() {
+    impl WasmDescribeVector for JsValue {
+        fn describe_vector() {
+            inform(VECTOR);
+            JsValue::describe();
+        }
+    }
+
+    impl<T: JsObject> WasmDescribeVector for T {
+        fn describe_vector() {
             inform(VECTOR);
             T::describe();
+        }
+    }
+
+    impl<T: WasmDescribeVector> WasmDescribe for Box<[T]> {
+        fn describe() {
+            T::describe_vector();
         }
     }
 

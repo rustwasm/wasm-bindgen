@@ -4,7 +4,14 @@ use core::mem::{self, ManuallyDrop};
 use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
-use crate::{Clamped, JsError, JsValue};
+use crate::{Clamped, JsError, JsValue, UnwrapThrowExt};
+
+if_std! {
+    use std::boxed::Box;
+    use std::convert::{TryFrom, TryInto};
+    use std::fmt::Debug;
+    use std::vec::Vec;
+}
 
 unsafe impl WasmAbi for () {}
 
@@ -321,7 +328,7 @@ impl IntoWasmAbi for () {
 /// - u32/i32/f32/f64 fields at the "leaf fields" of the "field tree"
 /// - layout equivalent to a completely flattened repr(C) struct, constructed by an in order
 ///   traversal of all the leaf fields in it.
-///  
+///
 /// This means that you can't embed struct A(u32, f64) as struct B(u32, A); because the "completely
 /// flattened" struct AB(u32, u32, f64) would miss the 4 byte padding that is actually present
 /// within B and then as a consequence also miss the 4 byte padding within A that repr(C) inserts.
@@ -384,5 +391,39 @@ impl IntoWasmAbi for JsError {
 
     fn into_abi(self) -> Self::Abi {
         self.value.into_abi()
+    }
+}
+
+if_std! {
+    // Note: this can't take `&[T]` because the `Into<JsValue>` impl needs
+    // ownership of `T`.
+    pub fn js_value_vector_into_abi<T: Into<JsValue>>(vector: Box<[T]>) -> <Box<[JsValue]> as IntoWasmAbi>::Abi {
+        let js_vals: Box<[JsValue]> = vector
+            .into_vec()
+            .into_iter()
+            .map(|x| x.into())
+            .collect();
+
+        js_vals.into_abi()
+    }
+
+    pub unsafe fn js_value_vector_from_abi<T: TryFrom<JsValue>>(js: <Box<[JsValue]> as FromWasmAbi>::Abi) -> Box<[T]> where T::Error: Debug {
+        let js_vals = <Vec<JsValue> as FromWasmAbi>::from_abi(js);
+
+        let mut result = Vec::with_capacity(js_vals.len());
+        for value in js_vals {
+            // We push elements one-by-one instead of using `collect` in order to improve
+            // error messages. When using `collect`, this `expect_throw` is buried in a
+            // giant chain of internal iterator functions, which results in the actual
+            // function that takes this `Vec` falling off the end of the call stack.
+            // So instead, make sure to call it directly within this function.
+            //
+            // This is only a problem in debug mode. Since this is the browser's error stack
+            // we're talking about, it can only see functions that actually make it to the
+            // final wasm binary (i.e., not inlined functions). All of those internal
+            // iterator functions get inlined in release mode, and so they don't show up.
+            result.push(value.try_into().expect_throw("array contains a value of the wrong type"));
+        }
+        result.into_boxed_slice()
     }
 }

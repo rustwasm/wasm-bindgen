@@ -6,39 +6,60 @@ exports.js_export = () => {
     i8[0] = 1;
     i8[1] = 2;
     assert.deepStrictEqual(wasm.export_i8(i8), i8);
+    assert.deepStrictEqual(wasm.export_optional_i8(i8), i8);
     const u8 = new Uint8Array(2);
     u8[0] = 1;
     u8[1] = 2;
     assert.deepStrictEqual(wasm.export_u8(u8), u8);
+    assert.deepStrictEqual(wasm.export_optional_u8(u8), u8);
 
     const i16 = new Int16Array(2);
     i16[0] = 1;
     i16[1] = 2;
     assert.deepStrictEqual(wasm.export_i16(i16), i16);
+    assert.deepStrictEqual(wasm.export_optional_i16(i16), i16);
     const u16 = new Uint16Array(2);
     u16[0] = 1;
     u16[1] = 2;
     assert.deepStrictEqual(wasm.export_u16(u16), u16);
+    assert.deepStrictEqual(wasm.export_optional_u16(u16), u16);
 
     const i32 = new Int32Array(2);
     i32[0] = 1;
     i32[1] = 2;
     assert.deepStrictEqual(wasm.export_i32(i32), i32);
+    assert.deepStrictEqual(wasm.export_optional_i32(i32), i32);
     assert.deepStrictEqual(wasm.export_isize(i32), i32);
+    assert.deepStrictEqual(wasm.export_optional_isize(i32), i32);
     const u32 = new Uint32Array(2);
     u32[0] = 1;
     u32[1] = 2;
     assert.deepStrictEqual(wasm.export_u32(u32), u32);
+    assert.deepStrictEqual(wasm.export_optional_u32(u32), u32);
     assert.deepStrictEqual(wasm.export_usize(u32), u32);
+    assert.deepStrictEqual(wasm.export_optional_usize(u32), u32);
 
     const f32 = new Float32Array(2);
     f32[0] = 1;
     f32[1] = 2;
     assert.deepStrictEqual(wasm.export_f32(f32), f32);
+    assert.deepStrictEqual(wasm.export_optional_f32(f32), f32);
     const f64 = new Float64Array(2);
     f64[0] = 1;
     f64[1] = 2;
     assert.deepStrictEqual(wasm.export_f64(f64), f64);
+    assert.deepStrictEqual(wasm.export_optional_f64(f64), f64);
+
+    assert.strictEqual(wasm.export_optional_i8(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_u8(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_i16(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_u16(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_i32(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_isize(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_u32(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_usize(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_f32(undefined), undefined);
+    assert.strictEqual(wasm.export_optional_f64(undefined), undefined);
 };
 
 const test_import = (a, b, c) => {
