@@ -1,0 +1,5 @@
+error[E0433]: failed to resolve: use of undeclared crate or module `foo`
+  --> ui-tests/crate.rs:17:29
+   |
+17 | #[wasm_bindgen_test(crate = foo)]
+   |                             ^^^ use of undeclared crate or module `foo`

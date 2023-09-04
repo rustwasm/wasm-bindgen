@@ -42,6 +42,9 @@
 * Add bindings for `CanvasTransform.setTransform(DOMMatrix2DInit)`.
   [#3580](https://github.com/rustwasm/wasm-bindgen/pull/3580)
 
+* Add attribute `crate` in the proc-macro `wasm_bindgen_test`.
+  [#3593](https://github.com/rustwasm/wasm-bindgen/pull/3593)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
