@@ -18,7 +18,7 @@ use core::ops::{
 };
 use core::u32;
 
-use crate::convert::{FromWasmAbi, WasmSlice};
+use crate::convert::{FromWasmAbi, WasmRet, WasmSlice};
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -71,7 +71,6 @@ pub mod describe;
 
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
-use convert::WasmOption;
 
 if_std! {
     extern crate std;
@@ -265,7 +264,7 @@ impl JsValue {
     /// `None`.
     #[inline]
     pub fn as_f64(&self) -> Option<f64> {
-        unsafe { FromWasmAbi::from_abi(__wbindgen_number_get(self.idx)) }
+        unsafe { __wbindgen_number_get(self.idx).join() }
     }
 
     /// Tests whether this JS value is a JS string.
@@ -910,7 +909,7 @@ macro_rules! big_numbers {
 }
 
 fn bigint_get_as_i64(v: &JsValue) -> Option<i64> {
-    unsafe { Option::from_abi(__wbindgen_bigint_get_as_i64(v.idx)) }
+    unsafe { __wbindgen_bigint_get_as_i64(v.idx).join() }
 }
 
 macro_rules! try_from_for_num64 {
@@ -1057,10 +1056,10 @@ externs! {
         fn __wbindgen_ge(a: u32, b: u32) -> u32;
         fn __wbindgen_gt(a: u32, b: u32) -> u32;
 
-        fn __wbindgen_number_get(idx: u32) -> WasmOption<f64>;
+        fn __wbindgen_number_get(idx: u32) -> WasmRet<Option<f64>>;
         fn __wbindgen_boolean_get(idx: u32) -> u32;
         fn __wbindgen_string_get(idx: u32) -> WasmSlice;
-        fn __wbindgen_bigint_get_as_i64(idx: u32) -> WasmOption<i64>;
+        fn __wbindgen_bigint_get_as_i64(idx: u32) -> WasmRet<Option<i64>>;
 
         fn __wbindgen_debug_string(ret: *mut [usize; 2], idx: u32) -> ();
 

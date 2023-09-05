@@ -117,22 +117,54 @@ pub trait OptionFromWasmAbi: FromWasmAbi {
     fn is_none(abi: &Self::Abi) -> bool;
 }
 
-/// An unsafe trait which represents types that are ABI-safe to pass via wasm
-/// arguments.
+/// A trait for any type which maps to a Wasm primitive type when used in FFI
+/// (`i32`, `i64`, `f32`, or `f64`).
+///
+/// This is with the exception of `()` (and other zero-sized types), which are
+/// also allowed because they're ignored: no arguments actually get added.
 ///
 /// # Safety
 ///
-/// This is an unsafe trait to implement as there's no guarantee the type is
-/// actually safe to transfer across the was boundary, it's up to you to
-/// guarantee this, so codegen works correctly.
-pub unsafe trait WasmAbi {}
+/// This is an unsafe trait to implement as there's no guarantee the type
+/// actually maps to a primitive type.
+pub unsafe trait WasmPrimitive: Default {}
 
-unsafe impl WasmAbi for u32 {}
-unsafe impl WasmAbi for i32 {}
-unsafe impl WasmAbi for u64 {}
-unsafe impl WasmAbi for i64 {}
-unsafe impl WasmAbi for f32 {}
-unsafe impl WasmAbi for f64 {}
+unsafe impl WasmPrimitive for u32 {}
+unsafe impl WasmPrimitive for i32 {}
+unsafe impl WasmPrimitive for u64 {}
+unsafe impl WasmPrimitive for i64 {}
+unsafe impl WasmPrimitive for f32 {}
+unsafe impl WasmPrimitive for f64 {}
+unsafe impl WasmPrimitive for () {}
+
+/// A trait which represents types that can be passed across the Wasm ABI
+/// boundary, by being split into multiple Wasm primitive types.
+///
+/// Up to 4 primitives are supported; if you don't want to use all of them, you
+/// can set the rest to `()`, which will cause them to be ignored.
+///
+/// You need to be careful how many primitives you use, however:
+/// `Result<T, JsValue>` uses up 2 primitives to store the error, and so it
+/// doesn't work if `T` uses more than 2 primitives.
+///
+/// So, if you're adding support for a type that needs 3 or more primitives and
+/// is able to be returned, you have to add another primitive here.
+///
+/// There's already one type that uses 3 primitives: `&mut [T]`. However, it
+/// can't be returned anyway, so it doesn't matter that
+/// `Result<&mut [T], JsValue>` wouldn't work.
+pub trait WasmAbi {
+    type Prim1: WasmPrimitive;
+    type Prim2: WasmPrimitive;
+    type Prim3: WasmPrimitive;
+    type Prim4: WasmPrimitive;
+
+    /// Splits this type up into primitives to be sent over the ABI.
+    fn split(self) -> (Self::Prim1, Self::Prim2, Self::Prim3, Self::Prim4);
+    /// Reconstructs this type from primitives received over the ABI.
+    fn join(prim1: Self::Prim1, prim2: Self::Prim2, prim3: Self::Prim3, prim4: Self::Prim4)
+        -> Self;
+}
 
 /// A trait representing how to interpret the return value of a function for
 /// the wasm ABI.
@@ -177,5 +209,43 @@ if_std! {
         type Abi: WasmAbi;
 
         unsafe fn vector_from_abi(js: Self::Abi) -> Box<[Self]>;
+    }
+}
+
+/// A repr(C) struct containing all of the primitives of a `WasmAbi` type, in
+/// order.
+///
+/// This is used as the return type of imported/exported functions. `WasmAbi`
+/// types aren't guaranteed to be FFI-safe, so we can't return them directly:
+/// instead we return this.
+///
+/// If all but one of the primitives is `()`, this corresponds to returning the
+/// remaining primitive directly, otherwise a return pointer is used.
+#[repr(C)]
+pub struct WasmRet<T: WasmAbi> {
+    prim1: T::Prim1,
+    prim2: T::Prim2,
+    prim3: T::Prim3,
+    prim4: T::Prim4,
+}
+
+impl<T: WasmAbi> From<T> for WasmRet<T> {
+    fn from(value: T) -> Self {
+        let (prim1, prim2, prim3, prim4) = value.split();
+        Self {
+            prim1,
+            prim2,
+            prim3,
+            prim4,
+        }
+    }
+}
+
+// Ideally this'd just be an `Into<T>` implementation, but unfortunately that
+// doesn't work because of the orphan rule.
+impl<T: WasmAbi> WasmRet<T> {
+    /// Joins the components of this `WasmRet` back into the type they represent.
+    pub fn join(self) -> T {
+        T::join(self.prim1, self.prim2, self.prim3, self.prim4)
     }
 }

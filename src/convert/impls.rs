@@ -1,7 +1,7 @@
 use core::char;
 use core::mem::{self, ManuallyDrop};
 
-use crate::convert::traits::WasmAbi;
+use crate::convert::traits::{WasmAbi, WasmPrimitive};
 use crate::convert::{FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
 use crate::{Clamped, JsError, JsValue, UnwrapThrowExt};
@@ -13,28 +13,53 @@ if_std! {
     use std::vec::Vec;
 }
 
-unsafe impl WasmAbi for () {}
+// Primitive types can always be passed over the ABI.
+impl<T: WasmPrimitive> WasmAbi for T {
+    type Prim1 = Self;
+    type Prim2 = ();
+    type Prim3 = ();
+    type Prim4 = ();
 
-#[repr(C, u32)]
-pub enum WasmOption<T: WasmAbi> {
-    None,
-    Some(T),
+    #[inline]
+    fn split(self) -> (Self, (), (), ()) {
+        (self, (), (), ())
+    }
+
+    #[inline]
+    fn join(prim: Self, _: (), _: (), _: ()) -> Self {
+        prim
+    }
 }
 
-unsafe impl<T: WasmAbi> WasmAbi for WasmOption<T> {}
+impl<T: WasmAbi<Prim4 = ()>> WasmAbi for Option<T> {
+    /// Whether this `Option` is a `Some` value.
+    type Prim1 = u32;
+    type Prim2 = T::Prim1;
+    type Prim3 = T::Prim2;
+    type Prim4 = T::Prim3;
 
-impl<Abi: WasmAbi> WasmOption<Abi> {
-    pub fn from_option<T: IntoWasmAbi<Abi = Abi>>(option: Option<T>) -> Self {
-        match option {
-            Some(v) => WasmOption::Some(v.into_abi()),
-            None => WasmOption::None,
+    #[inline]
+    fn split(self) -> (u32, T::Prim1, T::Prim2, T::Prim3) {
+        match self {
+            None => (
+                0,
+                Default::default(),
+                Default::default(),
+                Default::default(),
+            ),
+            Some(value) => {
+                let (prim1, prim2, prim3, ()) = value.split();
+                (1, prim1, prim2, prim3)
+            }
         }
     }
 
-    pub unsafe fn into_option<T: FromWasmAbi<Abi = Abi>>(v: Self) -> Option<T> {
-        match v {
-            WasmOption::Some(v) => Some(T::from_abi(v)),
-            WasmOption::None => None,
+    #[inline]
+    fn join(is_some: u32, prim1: T::Prim1, prim2: T::Prim2, prim3: T::Prim3) -> Self {
+        if is_some == 0 {
+            None
+        } else {
+            Some(T::join(prim1, prim2, prim3, ()))
         }
     }
 }
@@ -56,20 +81,20 @@ macro_rules! type_wasm_native {
         }
 
         impl IntoWasmAbi for Option<$t> {
-            type Abi = WasmOption<$c>;
+            type Abi = Option<$c>;
 
             #[inline]
             fn into_abi(self) -> Self::Abi {
-                WasmOption::from_option(self.map(|v| v as $c))
+                self.map(|v| v as $c)
             }
         }
 
         impl FromWasmAbi for Option<$t> {
-            type Abi = WasmOption<$c>;
+            type Abi = Option<$c>;
 
             #[inline]
             unsafe fn from_abi(js: Self::Abi) -> Self {
-                WasmOption::into_option(js).map(|v: $c| v as $t)
+                js.map(|v: $c| v as $t)
             }
         }
     )*)
@@ -317,70 +342,52 @@ impl IntoWasmAbi for () {
     }
 }
 
-/// This is an encoding of a Result. It can only store things that can be decoded by the JS
-/// bindings.
-///
-/// At the moment, we do not write the exact struct packing layout of everything into the
-/// glue/descriptions of datatypes, so T cannot be arbitrary. The current requirements of the
-/// struct unpacker (StructUnpacker), which apply to ResultAbi<T> as a whole, are as follows:
-///
-/// - repr(C), of course
-/// - u32/i32/f32/f64 fields at the "leaf fields" of the "field tree"
-/// - layout equivalent to a completely flattened repr(C) struct, constructed by an in order
-///   traversal of all the leaf fields in it.
-///
-/// This means that you can't embed struct A(u32, f64) as struct B(u32, A); because the "completely
-/// flattened" struct AB(u32, u32, f64) would miss the 4 byte padding that is actually present
-/// within B and then as a consequence also miss the 4 byte padding within A that repr(C) inserts.
-///
-/// The enemy is padding. Padding is only required when there is an `f64` field. So the enemy is
-/// `f64` after anything else, particularly anything arbitrary. There is no smaller sized type, so
-/// we don't need to worry about 1-byte integers, etc. It's best, therefore, to place your f64s
-/// first in your structs, that's why we have `abi` first, although here it doesn't matter as the
-/// other two fields total 8 bytes anyway.
-///
-#[repr(C)]
-pub struct ResultAbi<T> {
-    /// This field is the same size/align as `T`.
-    abi: ResultAbiUnion<T>,
-    /// Order of args here is such that we can pop() the possible error first, deal with it and
-    /// move on. Later fields are popped off the stack first.
-    err: u32,
-    is_err: u32,
+impl<T: WasmAbi<Prim3 = (), Prim4 = ()>> WasmAbi for Result<T, u32> {
+    type Prim1 = T::Prim1;
+    type Prim2 = T::Prim2;
+    // The order of primitives here is such that we can pop() the possible error
+    // first, deal with it and move on. Later primitives are popped off the
+    // stack first.
+    /// If this `Result` is an `Err`, the error value.
+    type Prim3 = u32;
+    /// Whether this `Result` is an `Err`.
+    type Prim4 = u32;
+
+    #[inline]
+    fn split(self) -> (T::Prim1, T::Prim2, u32, u32) {
+        match self {
+            Ok(value) => {
+                let (prim1, prim2, (), ()) = value.split();
+                (prim1, prim2, 0, 0)
+            }
+            Err(err) => (Default::default(), Default::default(), err, 1),
+        }
+    }
+
+    #[inline]
+    fn join(prim1: T::Prim1, prim2: T::Prim2, err: u32, is_err: u32) -> Self {
+        if is_err == 0 {
+            Ok(T::join(prim1, prim2, (), ()))
+        } else {
+            Err(err)
+        }
+    }
 }
 
-#[repr(C)]
-pub union ResultAbiUnion<T> {
-    // ManuallyDrop is #[repr(transparent)]
-    ok: std::mem::ManuallyDrop<T>,
-    err: (),
-}
-
-unsafe impl<T: WasmAbi> WasmAbi for ResultAbi<T> {}
-unsafe impl<T: WasmAbi> WasmAbi for ResultAbiUnion<T> {}
-
-impl<T: IntoWasmAbi, E: Into<JsValue>> ReturnWasmAbi for Result<T, E> {
-    type Abi = ResultAbi<T::Abi>;
+impl<T, E> ReturnWasmAbi for Result<T, E>
+where
+    T: IntoWasmAbi,
+    E: Into<JsValue>,
+    T::Abi: WasmAbi<Prim3 = (), Prim4 = ()>,
+{
+    type Abi = Result<T::Abi, u32>;
     #[inline]
     fn return_abi(self) -> Self::Abi {
         match self {
-            Ok(v) => {
-                let abi = ResultAbiUnion {
-                    ok: std::mem::ManuallyDrop::new(v.into_abi()),
-                };
-                ResultAbi {
-                    abi,
-                    is_err: 0,
-                    err: 0,
-                }
-            }
+            Ok(v) => Ok(v.into_abi()),
             Err(e) => {
                 let jsval = e.into();
-                ResultAbi {
-                    abi: ResultAbiUnion { err: () },
-                    is_err: 1,
-                    err: jsval.into_abi(),
-                }
+                Err(jsval.into_abi())
             }
         }
     }
