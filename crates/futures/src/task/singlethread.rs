@@ -35,6 +35,23 @@ impl Task {
         crate::queue::QUEUE.with(|queue| queue.schedule_task(this));
     }
 
+    fn force_wake(this: Rc<Self>) {
+        crate::queue::QUEUE.with(|queue| {
+            queue.push_task(this);
+        });
+    }
+
+    fn wake(this: Rc<Self>) {
+        // If we've already been placed on the run queue then there's no need to
+        // requeue ourselves since we're going to run at some point in the
+        // future anyway.
+        if this.is_queued.replace(true) {
+            return;
+        }
+
+        Self::force_wake(this);
+    }
+
     fn wake_by_ref(this: &Rc<Self>) {
         // If we've already been placed on the run queue then there's no need to
         // requeue ourselves since we're going to run at some point in the
@@ -43,9 +60,7 @@ impl Task {
             return;
         }
 
-        crate::queue::QUEUE.with(|queue| {
-            queue.push_task(Rc::clone(this));
-        });
+        Self::force_wake(Rc::clone(this));
     }
 
     /// Creates a standard library `RawWaker` from an `Rc` of ourselves.
@@ -55,15 +70,17 @@ impl Task {
     /// however, everything is guaranteed to be singlethreaded (since we're
     /// compiled without the `atomics` feature) so we "safely lie" and say our
     /// `Rc` pointer is good enough.
+    ///
+    /// The implementation is based off of futures::task::ArcWake
     unsafe fn into_raw_waker(this: Rc<Self>) -> RawWaker {
         unsafe fn raw_clone(ptr: *const ()) -> RawWaker {
             let ptr = ManuallyDrop::new(Rc::from_raw(ptr as *const Task));
-            Task::into_raw_waker((*ptr).clone())
+            Task::into_raw_waker(Rc::clone(&ptr))
         }
 
         unsafe fn raw_wake(ptr: *const ()) {
             let ptr = Rc::from_raw(ptr as *const Task);
-            Task::wake_by_ref(&ptr);
+            Task::wake(ptr);
         }
 
         unsafe fn raw_wake_by_ref(ptr: *const ()) {
@@ -75,7 +92,7 @@ impl Task {
             drop(Rc::from_raw(ptr as *const Task));
         }
 
-        const VTABLE: RawWakerVTable =
+        static VTABLE: RawWakerVTable =
             RawWakerVTable::new(raw_clone, raw_wake, raw_wake_by_ref, raw_drop);
 
         RawWaker::new(Rc::into_raw(this) as *const (), &VTABLE)
