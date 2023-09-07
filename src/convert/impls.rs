@@ -381,6 +381,7 @@ where
     T::Abi: WasmAbi<Prim3 = (), Prim4 = ()>,
 {
     type Abi = Result<T::Abi, u32>;
+
     #[inline]
     fn return_abi(self) -> Self::Abi {
         match self {
