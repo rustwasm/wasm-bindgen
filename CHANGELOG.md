@@ -70,6 +70,9 @@
   When exported constructors return `Self`.
   [#3562](https://github.com/rustwasm/wasm-bindgen/pull/3562)
 
+* Made `wasm-bindgen` forwards-compatible with the standard C ABI.
+  [#3595](https://github.com/rustwasm/wasm-bindgen/pull/3595)
+
 ### Fixed
 
 * Fixed bindings and comments for `Atomics.wait`.
