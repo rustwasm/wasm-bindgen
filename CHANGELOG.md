@@ -46,6 +46,12 @@
   non-default path to the `wasm-bindgen-test` crate.
   [#3593](https://github.com/rustwasm/wasm-bindgen/pull/3593)
 
+* Add support for passing `Vec`s of exported Rust types and strings to/from JS.
+  [#3554](https://github.com/rustwasm/wasm-bindgen/pull/3554)
+
+* Implement `TryFrom<JsValue>` for exported Rust types and strings.
+  [#3554](https://github.com/rustwasm/wasm-bindgen/pull/3554)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
