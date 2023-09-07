@@ -46,6 +46,9 @@ mod queue;
 #[cfg(feature = "futures-core-03-stream")]
 pub mod stream;
 
+pub use js_sys;
+pub use wasm_bindgen;
+
 mod task {
     use cfg_if::cfg_if;
 

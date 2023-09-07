@@ -32,10 +32,10 @@ error[E0277]: the trait bound `wasm_bindgen::JsValue: From<BadType>` is not sati
              <wasm_bindgen::JsValue as From<&'a str>>
              <wasm_bindgen::JsValue as From<*const T>>
              <wasm_bindgen::JsValue as From<*mut T>>
-             <wasm_bindgen::JsValue as From<JsError>>
-             <wasm_bindgen::JsValue as From<MyType>>
-             <wasm_bindgen::JsValue as From<Option<T>>>
-           and 74 others
+             <wasm_bindgen::JsValue as From<Array>>
+             <wasm_bindgen::JsValue as From<ArrayBuffer>>
+             <wasm_bindgen::JsValue as From<BigInt64Array>>
+           and $N others
    = note: required for `BadType` to implement `Into<wasm_bindgen::JsValue>`
    = note: required for `BadType` to implement `IntoJsResult`
    = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
