@@ -8560,6 +8560,12 @@ mod gen_VideoTransferCharacteristics;
 #[cfg(feature = "VideoTransferCharacteristics")]
 pub use gen_VideoTransferCharacteristics::*;
 
+#[cfg(feature = "ViewTransition")]
+#[allow(non_snake_case)]
+mod gen_ViewTransition;
+#[cfg(feature = "ViewTransition")]
+pub use gen_ViewTransition::*;
+
 #[cfg(feature = "VisibilityState")]
 #[allow(non_snake_case)]
 mod gen_VisibilityState;

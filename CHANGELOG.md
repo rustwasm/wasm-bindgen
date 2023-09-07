@@ -5,6 +5,9 @@
 
 ### Added
 
+* Add bindings for `ViewTransition` to `web-sys`.
+  [#3598](https://github.com/rustwasm/wasm-bindgen/pull/3598)
+
 * Extend `AudioContext` with unstable features supporting audio sink configuration.
   [#3433](https://github.com/rustwasm/wasm-bindgen/pull/3433)
 
