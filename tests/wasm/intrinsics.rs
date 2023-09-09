@@ -4,7 +4,7 @@ use std::convert::TryFrom;
 use std::fmt::Debug;
 
 use js_sys::{Array, Object, RangeError, Reflect};
-use wasm_bindgen::{JsCast, JsValue};
+use wasm_bindgen::{prelude::*, JsCast, JsValue};
 use wasm_bindgen_test::wasm_bindgen_test;
 
 // Shorter `JsValue::from(i32)`.
@@ -111,4 +111,32 @@ fn debug_string() {
     assert_eq!(debug(JsValue::TRUE), "JsValue(true)");
     assert_eq!(debug(JsValue::symbol(None)), "JsValue(Symbol)");
     assert_eq!(debug(JsValue::from_str("hi")), "JsValue(\"hi\")");
+}
+
+#[wasm_bindgen_test]
+fn as_ptr_and_downcast() {
+    assert_eq!(JsValue::from(42).as_ptr(), None);
+
+    #[wasm_bindgen]
+    #[derive(Debug, PartialEq)]
+    pub struct JsvalPtr {
+        foo: u8,
+    }
+
+    let js_val = JsValue::from(JsvalPtr { foo: 42 });
+
+    let expected_ptr = {
+        let ptr = Reflect::get(&js_val, &JsValue::from_str("__wbg_ptr"))
+            .expect("failed to read the `JsValue` pointer");
+
+        ptr.as_f64()
+            .expect("failed to read the `JsValue` pointer as a `f64`") as u32
+    };
+
+    assert_eq!(js_val.as_ptr(), Some(expected_ptr));
+
+    let downcast = unsafe { js_val.downcast_unchecked::<JsvalPtr>() };
+    let downcast = downcast.as_deref();
+
+    assert_eq!(downcast, Some(&JsvalPtr { foo: 42 }));
 }

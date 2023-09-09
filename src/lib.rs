@@ -18,7 +18,7 @@ use core::ops::{
 };
 use core::u32;
 
-use crate::convert::{FromWasmAbi, WasmSlice};
+use crate::convert::{FromWasmAbi, RefFromWasmAbi, WasmSlice};
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -256,6 +256,31 @@ impl JsValue {
             let s = String::from_abi(ret);
             serde_json::from_str(&s)
         }
+    }
+
+    /// Returns the raw pointer of a JS value representing a Rust type
+    /// (i.e. a Rust struct) on the Wasm/JS heap.
+    ///
+    /// It returns `None` if the `JsValue` doesn't represent a Rust
+    /// type.
+    #[inline]
+    pub fn as_ptr(&self) -> Option<u32> {
+        unsafe { FromWasmAbi::from_abi(__wbindgen_jsval_ptr(self.idx)) }
+    }
+
+    /// Attempt to downcast the `JsValue` to a croncrete type `T` that
+    /// implements `RefFromWasmAbi`.
+    ///
+    /// # Safety
+    ///
+    /// This method is unsafe because the type of `JsValue` is never
+    /// checked.
+    #[inline]
+    pub unsafe fn downcast_unchecked<T>(&self) -> Option<T::Anchor>
+    where
+        T: RefFromWasmAbi<Abi = u32>,
+    {
+        self.as_ptr().map(|ptr| unsafe { T::ref_from_abi(ptr) })
     }
 
     /// Returns the `f64` value of this JS value if it's an instance of a
@@ -1075,6 +1100,8 @@ externs! {
 
         fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_json_serialize(idx: u32) -> WasmSlice;
+
+        fn __wbindgen_jsval_ptr(idx: u32) -> WasmOption<u32>;
         fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
         fn __wbindgen_jsval_loose_eq(a: u32, b: u32) -> u32;
 

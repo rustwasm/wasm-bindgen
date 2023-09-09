@@ -67,6 +67,10 @@ fn opt_string() -> Descriptor {
     Descriptor::Option(Box::new(Descriptor::String))
 }
 
+fn opt_u32() -> Descriptor {
+    Descriptor::Option(Box::new(Descriptor::U32))
+}
+
 fn opt_f64() -> Descriptor {
     Descriptor::Option(Box::new(Descriptor::F64))
 }
@@ -81,6 +85,9 @@ fn slice(contents: Descriptor) -> Descriptor {
 
 intrinsics! {
     pub enum Intrinsic {
+        #[symbol = "__wbindgen_jsval_ptr"]
+        #[signature = fn(ref_externref()) -> opt_u32()]
+        JsvalPtr,
         #[symbol = "__wbindgen_jsval_eq"]
         #[signature = fn(ref_externref(), ref_externref()) -> Boolean]
         JsvalEq,
