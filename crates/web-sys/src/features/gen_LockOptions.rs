@@ -9,6 +9,8 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `LockOptions` dictionary."]
     #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockOption`*"]
+    #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type LockOptions;
@@ -16,6 +18,8 @@ extern "C" {
 #[cfg(web_sys_unstable_apis)]
 impl LockOptions {
     #[doc = "Construct a new `LockOptions`."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockOption`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -27,6 +31,8 @@ impl LockOptions {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "LockMode")]
     #[doc = "Change the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockOption`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
