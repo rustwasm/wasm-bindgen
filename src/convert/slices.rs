@@ -64,7 +64,7 @@ if_std! {
         type Prim1 = u32;
         /// `self.slice.len`
         type Prim2 = u32;
-        /// `self.slice.idx`
+        /// `self.idx`
         type Prim3 = u32;
         type Prim4 = ();
 
