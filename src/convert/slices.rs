@@ -20,13 +20,33 @@ if_std! {
     use crate::convert::{js_value_vector_from_abi, js_value_vector_into_abi};
 }
 
+// note: `WasmAbi` types do not need to be FFI-safe themselves, it's just more
+// convenient to directly write `WasmSlice` in some of the manually-written FFI
+// functions in `lib.rs` rather than `WasmRet<WasmSlice>`.
 #[repr(C)]
 pub struct WasmSlice {
     pub ptr: u32,
     pub len: u32,
 }
 
-unsafe impl WasmAbi for WasmSlice {}
+impl WasmAbi for WasmSlice {
+    /// `self.ptr`
+    type Prim1 = u32;
+    /// `self.len`
+    type Prim2 = u32;
+    type Prim3 = ();
+    type Prim4 = ();
+
+    #[inline]
+    fn split(self) -> (u32, u32, (), ()) {
+        (self.ptr, self.len, (), ())
+    }
+
+    #[inline]
+    fn join(ptr: u32, len: u32, _: (), _: ()) -> Self {
+        Self { ptr, len }
+    }
+}
 
 #[inline]
 fn null_slice() -> WasmSlice {
@@ -34,13 +54,33 @@ fn null_slice() -> WasmSlice {
 }
 
 if_std! {
-    #[repr(C)]
     pub struct WasmMutSlice {
         pub slice: WasmSlice,
         pub idx: u32,
     }
 
-    unsafe impl WasmAbi for WasmMutSlice {}
+    impl WasmAbi for WasmMutSlice {
+        /// `self.slice.ptr`
+        type Prim1 = u32;
+        /// `self.slice.len`
+        type Prim2 = u32;
+        /// `self.idx`
+        type Prim3 = u32;
+        type Prim4 = ();
+
+        #[inline]
+        fn split(self) -> (u32, u32, u32, ()) {
+            (self.slice.ptr, self.slice.len, self.idx, ())
+        }
+
+        #[inline]
+        fn join(ptr: u32, len: u32, idx: u32, _: ()) -> Self {
+            Self {
+                slice: WasmSlice { ptr, len },
+                idx,
+            }
+        }
+    }
 
     /// The representation of a mutable slice passed from JS to Rust.
     pub struct MutSlice<T> {

@@ -21,14 +21,12 @@ a Rust value to a JS one. There's a few points here:
 
 * We'll get to `WasmDescribe` later in this section.
 
-* The associated type `Abi` is what will actually be generated as an argument /
-  return type for the `extern "C"` functions used to declare wasm imports/exports.
+* The associated type `Abi` is the type of the raw data that we actually want to pass to JS.
   The bound `WasmAbi` is implemented for primitive types like `u32` and `f64`,
   which can be represented directly as WebAssembly values, as well of a couple
-  of `#[repr(C)]` types like `WasmSlice`:
+  of other types like `WasmSlice`:
 
   ```rust
-  #[repr(C)]
   pub struct WasmSlice {
       pub ptr: u32,
       pub len: u32,
@@ -36,9 +34,28 @@ a Rust value to a JS one. There's a few points here:
   ```
 
   This struct, which is how things like strings are represented in FFI, isn't
-  a WebAssembly primitive type and so isn't mapped directly to a WebAssembly
-  parameter / return value; instead, the C ABI flattens it out into two arguments
-  or stores it on the stack.
+  a WebAssembly primitive type, and so it can't be mapped directly to a
+  WebAssembly parameter / return value. This is why `WasmAbi` lets types specify
+  how they can be split up into multiple WebAssembly parameters:
+
+  ```rust
+  impl WasmAbi for WasmSlice {
+      fn split(self) -> (u32, u32, (), ()) {
+          (self.ptr, self.len, (), ())
+      }
+
+      // some other details to specify return type of `split`, go in the other direction
+  }
+  ```
+
+  This means that a `WasmSlice` gets split up into two `u32` parameters.
+  The extra unit types on the end are there because Rust doesn't let us make
+  `WasmAbi` generic over variable-length tuples, so we just take tuples of 4
+  elements. The unit types still end up getting passed to/from JS, but the C ABI
+  just completely ignores them and doesn't generate any arguments.
+
+  Since we can't return multiple values, when returning a `WasmSlice` we instead
+  put the two `u32`s into a `#[repr(C)]` struct and return that.
 
 * And finally we have the `into_abi` function, returning the `Abi` associated
   type which will be actually passed to JS.
@@ -94,4 +111,3 @@ and remain anonymous.
 The `From*` family of traits are used for converting the Rust arguments in Rust
 exported functions to JS. They are also used for the return value in JS
 functions imported into Rust.
-
