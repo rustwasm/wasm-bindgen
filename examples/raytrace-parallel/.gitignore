@@ -1,2 +1,5 @@
 raytrace_parallel.js
+raytrace_parallel.d.ts
 raytrace_parallel_bg.wasm
+raytrace_parallel_bg.wasm.d.ts
+snippets
