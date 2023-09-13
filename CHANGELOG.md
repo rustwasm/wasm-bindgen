@@ -14,11 +14,13 @@
 * Add bindings for `WebAssembly.Tag` and `WebAssembly.Exception`.
   [#3484](https://github.com/rustwasm/wasm-bindgen/pull/3484)
 
-* Re-export `wasm-bindgen` from `js-sys` and `web-sys`.
+* Re-export `wasm-bindgen` from `js-sys`, `web-sys` and `wasm-bindgen-futures`.
   [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
+  [#3601](https://github.com/rustwasm/wasm-bindgen/pull/3601)
 
-* Re-export `js-sys` from `web-sys`.
+* Re-export `js-sys` from `web-sys` and `wasm-bindgen-futures`.
   [#3466](https://github.com/rustwasm/wasm-bindgen/pull/3466)
+  [#3601](https://github.com/rustwasm/wasm-bindgen/pull/3601)
 
 * Add bindings for async variants of `Atomics.wait`.
   [#3504](https://github.com/rustwasm/wasm-bindgen/pull/3504)
@@ -109,6 +111,11 @@
 
 * Fixed optional parameters in JSDoc.
   [#3577](https://github.com/rustwasm/wasm-bindgen/pull/3577)
+
+* Use re-exported `js-sys` from `wasm-bindgen-futures` to account for
+  non-default path specified by the `crate` attribute in `wasm_bindgen_futures`
+  proc-macro.
+  [#3601](https://github.com/rustwasm/wasm-bindgen/pull/3601)
 
 ### Removed
 

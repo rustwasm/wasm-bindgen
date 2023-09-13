@@ -1190,11 +1190,11 @@ impl TryToTokens for ast::ImportFunction {
             Some(ref ty) => {
                 if self.function.r#async {
                     abi_ret = quote! {
-                        #wasm_bindgen::convert::WasmRet<<js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>::Abi>
+                        #wasm_bindgen::convert::WasmRet<<#wasm_bindgen_futures::js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>::Abi>
                     };
                     let future = quote! {
                         #wasm_bindgen_futures::JsFuture::from(
-                            <js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>
+                            <#wasm_bindgen_futures::js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>
                                 ::from_abi(#ret_ident.join())
                         ).await
                     };
@@ -1216,11 +1216,11 @@ impl TryToTokens for ast::ImportFunction {
             None => {
                 if self.function.r#async {
                     abi_ret = quote! {
-                        #wasm_bindgen::convert::WasmRet<<js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>::Abi>
+                        #wasm_bindgen::convert::WasmRet<<#wasm_bindgen_futures::js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>::Abi>
                     };
                     let future = quote! {
                         #wasm_bindgen_futures::JsFuture::from(
-                            <js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>
+                            <#wasm_bindgen_futures::js_sys::Promise as #wasm_bindgen::convert::FromWasmAbi>
                                 ::from_abi(#ret_ident.join())
                         ).await
                     };
