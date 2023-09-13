@@ -12,5 +12,5 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LockMode {
     Shared = "shared",
-    Exclusive = "exclusive"
+    Exclusive = "exclusive",
 }

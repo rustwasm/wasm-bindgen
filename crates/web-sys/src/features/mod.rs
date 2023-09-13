@@ -4354,6 +4354,42 @@ mod gen_Location;
 #[cfg(feature = "Location")]
 pub use gen_Location::*;
 
+#[cfg(feature = "Lock")]
+#[allow(non_snake_case)]
+mod gen_Lock;
+#[cfg(feature = "Lock")]
+pub use gen_Lock::*;
+
+#[cfg(feature = "LockInfo")]
+#[allow(non_snake_case)]
+mod gen_LockInfo;
+#[cfg(feature = "LockInfo")]
+pub use gen_LockInfo::*;
+
+#[cfg(feature = "LockManager")]
+#[allow(non_snake_case)]
+mod gen_LockManager;
+#[cfg(feature = "LockManager")]
+pub use gen_LockManager::*;
+
+#[cfg(feature = "LockManagerSnapshot")]
+#[allow(non_snake_case)]
+mod gen_LockManagerSnapshot;
+#[cfg(feature = "LockManagerSnapshot")]
+pub use gen_LockManagerSnapshot::*;
+
+#[cfg(feature = "LockMode")]
+#[allow(non_snake_case)]
+mod gen_LockMode;
+#[cfg(feature = "LockMode")]
+pub use gen_LockMode::*;
+
+#[cfg(feature = "LockOptions")]
+#[allow(non_snake_case)]
+mod gen_LockOptions;
+#[cfg(feature = "LockOptions")]
+pub use gen_LockOptions::*;
+
 #[cfg(feature = "MediaCapabilities")]
 #[allow(non_snake_case)]
 mod gen_MediaCapabilities;

@@ -1,3 +1,10 @@
+[SecureContext]
+interface mixin NavigatorLocks {
+  readonly attribute LockManager locks;
+};
+Navigator includes NavigatorLocks;
+WorkerNavigator includes NavigatorLocks;
+
 [SecureContext, Exposed=(Window,Worker)]
 interface LockManager {
   Promise<any> request(DOMString name,
@@ -29,4 +36,10 @@ dictionary LockInfo {
   DOMString name;
   LockMode mode;
   DOMString clientId;
+};
+
+[SecureContext, Exposed=(Window,Worker)]
+interface Lock {
+  readonly attribute DOMString name;
+  readonly attribute LockMode mode;
 };

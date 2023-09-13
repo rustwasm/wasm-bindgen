@@ -9,24 +9,14 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     #[doc = "The `Lock` class."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Lock`*"]
-    #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Lock)"]
     #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type LockManager;
-    # [wasm_bindgen (structural , method , getter , js_class = "Lock" , js_name = mode)]
-    #[feature = "LockMode"]
-    #[doc = "Getter for the `mode` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Lock/mode)"]
-    #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Lock`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn mode(this: &Lock) -> LockMode;
+    pub type Lock;
+    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "Lock" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
@@ -37,4 +27,16 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn name(this: &Lock) -> String;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "LockMode")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Lock" , js_name = mode)]
+    #[doc = "Getter for the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Lock/mode)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Lock`, `LockMode`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn mode(this: &Lock) -> LockMode;
 }
