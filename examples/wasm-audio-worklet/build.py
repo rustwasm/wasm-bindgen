@@ -49,7 +49,7 @@ subprocess.run(
             "wasm_audio_worklet.wasm",
         ),
         "--out-dir",
-        root_dir,
+        os.path.join(root_dir, "pkg"),
         "--target",
         "web",
         "--split-linked-modules",

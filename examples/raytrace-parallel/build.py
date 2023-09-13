@@ -49,7 +49,7 @@ subprocess.run(
             "raytrace_parallel.wasm",
         ),
         "--out-dir",
-        root_dir,
+        os.path.join(root_dir, "pkg"),
         "--target",
         "no-modules",
     ],
