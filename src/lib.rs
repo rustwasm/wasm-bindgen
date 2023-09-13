@@ -1399,9 +1399,10 @@ pub fn function_table() -> JsValue {
 pub mod __rt {
     use crate::JsValue;
     use core::borrow::{Borrow, BorrowMut};
-    use core::cell::{Cell, UnsafeCell};
+    use core::cell::UnsafeCell;
     use core::convert::Infallible;
     use core::ops::{Deref, DerefMut};
+    use core::sync::atomic::{AtomicUsize, Ordering};
 
     pub extern crate core;
     #[cfg(feature = "std")]
@@ -1452,7 +1453,7 @@ pub mod __rt {
     /// to not panic in libstd. Instead when it "panics" it calls our `throw`
     /// function in this crate which raises an error in JS.
     pub struct WasmRefCell<T: ?Sized> {
-        borrow: Cell<usize>,
+        borrow: AtomicUsize,
         value: UnsafeCell<T>,
     }
 
@@ -1463,7 +1464,7 @@ pub mod __rt {
         {
             WasmRefCell {
                 value: UnsafeCell::new(value),
-                borrow: Cell::new(0),
+                borrow: AtomicUsize::new(0),
             }
         }
 
@@ -1472,28 +1473,35 @@ pub mod __rt {
         }
 
         pub fn borrow(&self) -> Ref<T> {
-            unsafe {
-                if self.borrow.get() == usize::max_value() {
-                    borrow_fail();
-                }
-                self.borrow.set(self.borrow.get() + 1);
-                Ref {
-                    value: &*self.value.get(),
-                    borrow: &self.borrow,
-                }
+            match self
+                .borrow
+                .fetch_update(Ordering::Acquire, Ordering::Relaxed, |borrow| {
+                    (borrow != usize::max_value()).then(|| borrow + 1)
+                }) {
+                Ok(_) => unsafe {
+                    Ref {
+                        value: &*self.value.get(),
+                        borrow: &self.borrow,
+                    }
+                },
+                Err(_) => borrow_fail(),
             }
         }
 
         pub fn borrow_mut(&self) -> RefMut<T> {
-            unsafe {
-                if self.borrow.get() != 0 {
-                    borrow_fail();
-                }
-                self.borrow.set(usize::max_value());
-                RefMut {
-                    value: &mut *self.value.get(),
-                    borrow: &self.borrow,
-                }
+            match self.borrow.compare_exchange(
+                0,
+                usize::max_value(),
+                Ordering::Acquire,
+                Ordering::Relaxed,
+            ) {
+                Ok(_) => unsafe {
+                    RefMut {
+                        value: &mut *self.value.get(),
+                        borrow: &self.borrow,
+                    }
+                },
+                Err(_) => borrow_fail(),
             }
         }
 
@@ -1507,7 +1515,7 @@ pub mod __rt {
 
     pub struct Ref<'b, T: ?Sized + 'b> {
         value: &'b T,
-        borrow: &'b Cell<usize>,
+        borrow: &'b AtomicUsize,
     }
 
     impl<'b, T: ?Sized> Deref for Ref<'b, T> {
@@ -1528,13 +1536,14 @@ pub mod __rt {
 
     impl<'b, T: ?Sized> Drop for Ref<'b, T> {
         fn drop(&mut self) {
-            self.borrow.set(self.borrow.get() - 1);
+            let old_borrow = self.borrow.fetch_sub(1, Ordering::Release);
+            debug_assert!(old_borrow != 0);
         }
     }
 
     pub struct RefMut<'b, T: ?Sized + 'b> {
         value: &'b mut T,
-        borrow: &'b Cell<usize>,
+        borrow: &'b AtomicUsize,
     }
 
     impl<'b, T: ?Sized> Deref for RefMut<'b, T> {
@@ -1569,7 +1578,8 @@ pub mod __rt {
 
     impl<'b, T: ?Sized> Drop for RefMut<'b, T> {
         fn drop(&mut self) {
-            self.borrow.set(0);
+            debug_assert!(self.borrow.load(Ordering::Acquire) == usize::max_value());
+            self.borrow.store(0, Ordering::Release);
         }
     }
 
