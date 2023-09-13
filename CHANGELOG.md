@@ -92,6 +92,13 @@
   `#[repr(C)]` types.
   [#3595](https://github.com/rustwasm/wasm-bindgen/pull/3595)
 
+* Use `queueMicrotask` in `wasm-bindgen-futures` for scheduling tasks on the next tick.
+  If that is not available, use the previous `Promise.then` mechanism as a fallback.
+  This should avoid quirks, like exceptions thrown get now properly reported
+  as normal exceptions rather than as rejected promises.
+  [#3611](https://github.com/rustwasm/wasm-bindgen/pull/3611)
+  [#2392](https://github.com/rustwasm/wasm-bindgen/issues/2392)
+
 ### Fixed
 
 * Fixed bindings and comments for `Atomics.wait`.
