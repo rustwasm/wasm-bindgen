@@ -387,7 +387,7 @@ pub async fn test_example(
 
             // Wait for the page to be fetched, so that we can check whether it succeeds.
             // Note: I'm pretty sure that `browsingContext.navigate` is supposed to report
-            // an error anyway if that happens, but Firefox seems to be behind the spec here.
+            // an error anyway if this fails, but Firefox seems to be behind the spec here.
             loop {
                 let event = driver
                     .next_event()
