@@ -36,7 +36,6 @@ macro_rules! shell_tests {
 shell_tests! {
     #["RUSTUP_TOOLCHAIN" = "nightly"]
     raytrace_parallel = "raytrace-parallel",
-    #[ignore = "This requires module workers, which Firefox doesn't support yet."]
     synchronous_instantiation = "synchronous-instantiation",
     wasm2js = "wasm2js",
     #["RUSTUP_TOOLCHAIN" = "nightly"]
