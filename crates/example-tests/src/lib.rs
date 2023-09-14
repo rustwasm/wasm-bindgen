@@ -326,14 +326,14 @@ pub async fn test_example(
 
     // Serve the path.
     let service = ServiceBuilder::new()
-        // .override_response_header(
-        //     HeaderName::from_static("cross-origin-opener-policy"),
-        //     HeaderValue::from_static("same-origin"),
-        // )
-        // .override_response_header(
-        //     HeaderName::from_static("cross-origin-embedder-policy"),
-        //     HeaderValue::from_static("require-corp"),
-        // )
+        .override_response_header(
+            HeaderName::from_static("cross-origin-opener-policy"),
+            HeaderValue::from_static("same-origin"),
+        )
+        .override_response_header(
+            HeaderName::from_static("cross-origin-embedder-policy"),
+            HeaderValue::from_static("require-corp"),
+        )
         .service(ServeDir::new(path));
     let server =
         hyper::Server::try_bind(&"127.0.0.1:0".parse().unwrap())?.serve(Shared::new(service));
