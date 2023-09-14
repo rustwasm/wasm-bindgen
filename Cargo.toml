@@ -84,6 +84,7 @@ members = [
   "examples/performance",
   "examples/raytrace-parallel",
   "examples/request-animation-frame",
+  "examples/thread-object-sharing",
   "examples/todomvc",
   "examples/wasm-audio-worklet",
   "examples/wasm-in-wasm",

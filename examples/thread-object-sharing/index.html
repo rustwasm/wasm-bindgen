@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Sharing a wasm object across workers</title>
+    <link rel="icon" href="data:image/x-icon;base64,AA">
+    <script type="module" src="index.js"></script>
+</head>
+
+<body>
+    <button id="toggle-button" disabled>Loading...</button>
+    <div id="value-display">
+        <meter id="value-meter" min="-1000" max="1000">Some atomic value</meter>
+        <span id="value-display-text">0</span>
+    </div>
+    <input id="increment-input" type="range" min="-10" max="10" value="0" />
+    <label for="increment-input">Amount to increment per tick</label>
+</body>
+
+</html>
