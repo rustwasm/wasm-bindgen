@@ -323,7 +323,7 @@ jobs:
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo test -p example-tests
       env:
-        EXBUILD: ${{ env.GITHUB_WORKSPACE }}/exbuild
+        EXBUILD: ${{ github.workspace }}/exbuild
 
   build_benchmarks:
     runs-on: ubuntu-latest
