@@ -486,7 +486,7 @@ jobs:
             tmp/$name/
           chmod +x tmp/$name/wasm*
           tar czvf gh-release/$name.tar.gz -C tmp $name
-          sha256sum gh-release/$name.tar.gz > gh-release/$name.tar.gz.sha256
+          sha256sum gh-release/$name.tar.gz > gh-release/$name.tar.gz.sha256sum
         }
         mk x86_64-unknown-linux-musl dist_linux_x86_64_musl
         mk aarch64-unknown-linux-gnu dist_linux_aarch64_gnu
