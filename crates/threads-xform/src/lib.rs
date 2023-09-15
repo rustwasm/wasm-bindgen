@@ -249,11 +249,10 @@ fn allocate_static_data(
         .exports
         .iter()
         .filter(|e| e.name == "__heap_base")
-        .filter_map(|e| match e.item {
+        .find_map(|e| match e.item {
             ExportItem::Global(id) => Some(id),
             _ => None,
-        })
-        .next();
+        });
     let heap_base = match heap_base {
         Some(idx) => idx,
         None => bail!("failed to find `__heap_base` for injecting thread id"),
