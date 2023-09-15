@@ -97,7 +97,6 @@
   This should avoid quirks, like exceptions thrown get now properly reported
   as normal exceptions rather than as rejected promises.
   [#3611](https://github.com/rustwasm/wasm-bindgen/pull/3611)
-  [#2392](https://github.com/rustwasm/wasm-bindgen/issues/2392)
 
 ### Fixed
 
