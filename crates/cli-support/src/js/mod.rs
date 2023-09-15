@@ -3023,7 +3023,7 @@ impl<'a> Context<'a> {
                     let result;
                     try {{
                         result = {} instanceof {};
-                    }} catch {{
+                    }} catch (_) {{
                         result = false;
                     }}
                     ",
