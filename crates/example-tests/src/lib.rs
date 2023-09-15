@@ -244,7 +244,8 @@ impl WebDriver {
     }
 }
 
-/// Handles a `log.entryAdded` event with the given parameters, and returns an error if the log entry is an error.
+/// Handles a `log.entryAdded` event with the given parameters, and returns an
+/// error if the log entry is an error (or something else goes wrong).
 fn handle_log_event(params: Value) -> anyhow::Result<()> {
     #[derive(Deserialize)]
     #[serde(rename_all = "camelCase")]
