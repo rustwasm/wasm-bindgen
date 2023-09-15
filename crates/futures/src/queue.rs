@@ -8,11 +8,9 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     #[wasm_bindgen]
     fn queueMicrotask(closure: &Closure<dyn FnMut(JsValue)>);
-}
 
-#[wasm_bindgen]
-extern "C" {
     type Global;
+
     #[wasm_bindgen(method, getter, js_name = queueMicrotask)]
     fn hasQueueMicrotask(this: &Global) -> JsValue;
 }
