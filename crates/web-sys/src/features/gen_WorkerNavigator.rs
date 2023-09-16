@@ -127,6 +127,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerNavigator`*"]
     pub fn languages(this: &WorkerNavigator) -> ::js_sys::Array;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "LockManager")]
+    # [wasm_bindgen (structural , method , getter , js_class = "WorkerNavigator" , js_name = locks)]
+    #[doc = "Getter for the `locks` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerNavigator/locks)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockManager`, `WorkerNavigator`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn locks(this: &WorkerNavigator) -> LockManager;
     # [wasm_bindgen (structural , method , getter , js_class = "WorkerNavigator" , js_name = onLine)]
     #[doc = "Getter for the `onLine` field of this object."]
     #[doc = ""]
