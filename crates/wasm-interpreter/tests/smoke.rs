@@ -12,11 +12,10 @@ fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
         .exports
         .iter()
         .filter(|e| e.name == name)
-        .filter_map(|e| match e.item {
+        .find_map(|e| match e.item {
             walrus::ExportItem::Function(f) => Some(f),
             _ => None,
         })
-        .next()
         .unwrap();
     assert_eq!(i.interpret_descriptor(id, &module), result);
 }

@@ -602,11 +602,10 @@ pub fn get_rust_deprecated<'a>(ext_attrs: &Option<ExtendedAttributeList<'a>>) ->
             _ => None,
         })
         .filter(|attr| attr.lhs_identifier.0 == "RustDeprecated")
-        .filter_map(|ident| match ident.rhs {
+        .find_map(|ident| match ident.rhs {
             IdentifierOrString::String(s) => Some(s),
             IdentifierOrString::Identifier(_) => None,
         })
-        .next()
         .map(|s| s.0)
 }
 

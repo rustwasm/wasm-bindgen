@@ -136,7 +136,7 @@ fn find_call_export(instrs: &[InstructionData]) -> Option<Export> {
     instrs
         .iter()
         .enumerate()
-        .filter_map(|(i, instr)| match instr.instr {
+        .find_map(|(i, instr)| match instr.instr {
             Instruction::CallExport(e) => Some(Export::Export(e)),
             Instruction::CallTableElement(e) => Some(Export::TableElement {
                 idx: e,
@@ -144,7 +144,6 @@ fn find_call_export(instrs: &[InstructionData]) -> Option<Export> {
             }),
             _ => None,
         })
-        .next()
 }
 
 enum Export {
