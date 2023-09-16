@@ -5,7 +5,7 @@
 
 ### Added
 
-* Add bindings for `WebLock` related api to `web-sys`.
+* Add bindings for the Web Locks API to `web-sys`.
   [#3604](https://github.com/rustwasm/wasm-bindgen/pull/3604)
 
 * Add bindings for `ViewTransition` to `web-sys`.
