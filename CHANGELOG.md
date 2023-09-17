@@ -103,6 +103,8 @@
 
 ### Fixed
 
+* Fixed `wasm_bindgen_macro_support` macro to handle raw identifiers in field names.
+
 * Fixed bindings and comments for `Atomics.wait`.
   [#3509](https://github.com/rustwasm/wasm-bindgen/pull/3509)
 
