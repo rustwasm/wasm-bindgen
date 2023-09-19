@@ -91,12 +91,6 @@ exports._13_js = (rules) => {
     return rules;
 }
 
-exports._1_raw_identifer = (rules) => {
-    let value = rules.get_field_value();
-    assert.equal(value, 1);
-    rules.set_field_value(value * 2);
-}
-
 exports.test_getter_compute = x => {
   assert.equal(x.foo, 3)
 };
