@@ -523,8 +523,12 @@ impl TryToTokens for ast::Export {
             argtys.push(&*arg.ty);
             let i = i + offset;
             let ident = Ident::new(&format!("arg{}", i), Span::call_site());
-            let ty = &arg.ty;
-            match &*arg.ty {
+            let ty = match &*arg.ty { 
+                syn::Type::Group(syn::TypeGroup { ref elem, .. }) => elem,
+                _ => &arg.ty,
+            };
+
+            match &**ty {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: Some(_),
                     elem,
