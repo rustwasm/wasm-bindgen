@@ -38,7 +38,8 @@ pub struct Rules {
 pub struct RulesWithRawField {
     pub r#mod: i32,
 }
-
+#[wasm_bindgen]
+#[allow(non_snake_case)]
 impl RulesWithRawField {
     #[wasm_bindgen]
     pub fn get_field_value(&self) -> i32 {
