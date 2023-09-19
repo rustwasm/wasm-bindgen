@@ -1427,6 +1427,65 @@ impl ToTokens for ast::Enum {
                     inform(#hole);
                 }
             }
+
+            #[automatically_derived]
+            impl #wasm_bindgen::__rt::core::convert::From<#enum_name> for
+                #wasm_bindgen::JsValue
+            {
+                fn from(value: #enum_name) -> Self {
+                    #wasm_bindgen::JsValue::from_f64((value as u32).into())
+                }
+            }
+
+            #[allow(clippy::all)]
+            impl #wasm_bindgen::__rt::core::convert::TryFrom<#wasm_bindgen::JsValue> for #enum_name {
+                type Error = #wasm_bindgen::JsValue;
+
+                fn try_from(value: #wasm_bindgen::JsValue)
+                    -> #wasm_bindgen::__rt::std::result::Result<Self, Self::Error> {
+                    let val = f64::try_from(value)? as u32;
+
+                    unsafe {
+                        #wasm_bindgen::__rt::std::result::Result::Ok(
+                            <Self as #wasm_bindgen::convert::FromWasmAbi>::from_abi(val)
+                        )
+                    }
+                }
+            }
+
+            impl #wasm_bindgen::describe::WasmDescribeVector for #enum_name {
+                fn describe_vector() {
+                    use #wasm_bindgen::describe::*;
+                    inform(VECTOR);
+                    <#wasm_bindgen::JsValue as #wasm_bindgen::describe::WasmDescribe>::describe();
+                }
+            }
+
+            impl #wasm_bindgen::convert::VectorIntoWasmAbi for #enum_name {
+                type Abi = <
+                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    as #wasm_bindgen::convert::IntoWasmAbi
+                >::Abi;
+
+                fn vector_into_abi(
+                    vector: #wasm_bindgen::__rt::std::boxed::Box<[#enum_name]>
+                ) -> Self::Abi {
+                    #wasm_bindgen::convert::js_value_vector_into_abi(vector)
+                }
+            }
+
+            impl #wasm_bindgen::convert::VectorFromWasmAbi for #enum_name {
+                type Abi = <
+                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    as #wasm_bindgen::convert::FromWasmAbi
+                >::Abi;
+
+                unsafe fn vector_from_abi(
+                    js: Self::Abi
+                ) -> #wasm_bindgen::__rt::std::boxed::Box<[#enum_name]> {
+                    #wasm_bindgen::convert::js_value_vector_from_abi(js)
+                }
+            }
         })
         .to_tokens(into);
     }
