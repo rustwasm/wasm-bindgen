@@ -23,6 +23,7 @@ pub mod closures;
 pub mod comments;
 pub mod duplicate_deps;
 pub mod duplicates;
+pub mod enum_vecs;
 pub mod enums;
 #[path = "final.rs"]
 pub mod final_;
