@@ -455,29 +455,3 @@ fn constructor_cannot_return_option_struct() {
         .wasm_bindgen("--target web");
     cmd.assert().failure();
 }
-
-#[test]
-fn unwrap_types_of_macro_rules_exports() {
-    let (mut cmd, _out_dir) = Project::new("unwrap_types_of_macro_rules_exports")
-        .file(
-            "src/lib.rs",
-            r#"
-                use wasm_bindgen::prelude::*;
-
-                #[wasm_bindgen]
-                pub struct Test;
-
-                macro_rules! my_export {
-                    ($i: ident, $s: ty) => {
-                        #[wasm_bindgen]
-                        pub fn $i(s: $s) {
-                        }
-                    }
-                }
-
-                my_export!(foo, &Test);
-            "#,
-        )
-        .wasm_bindgen("--target web");
-    cmd.assert().success();
-}
