@@ -43,7 +43,7 @@ pub struct RulesWithRawField {
 impl RulesWithRawField {
     #[wasm_bindgen]
     pub fn get_field_value(&self) -> i32 {
-        self.r#mod 
+        self.r#mod
     }
     #[wasm_bindgen]
     pub fn set_field_value(&mut self, value: i32) {
