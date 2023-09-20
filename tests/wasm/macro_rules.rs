@@ -6,9 +6,8 @@ use wasm_bindgen_test::*;
 macro_rules! my_export {
     ($i: ident, $s: ty) => {
         #[wasm_bindgen]
-        pub fn $i(s: $s) {
-        }
-    }
+        pub fn $i(s: $s) {}
+    };
 }
 
 my_export!(should_compile, &[i32]);
