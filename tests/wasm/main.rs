@@ -35,6 +35,7 @@ pub mod js_keywords;
 pub mod js_objects;
 pub mod jscast;
 pub mod link_to;
+pub mod macro_rules;
 pub mod math;
 pub mod no_shims;
 pub mod node;
