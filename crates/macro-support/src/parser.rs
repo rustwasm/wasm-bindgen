@@ -8,6 +8,7 @@ use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
+use syn::ext::IdentExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
 use syn::{ItemFn, Lit, MacroDelimiter, ReturnType};
@@ -420,7 +421,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
                 _ => continue,
             }
             let (js_field_name, member) = match &field.ident {
-                Some(ident) => (ident.to_string(), syn::Member::Named(ident.clone())),
+                Some(ident) => (ident.unraw().to_string(), syn::Member::Named(ident.clone())),
                 None => (i.to_string(), syn::Member::Unnamed(i.into())),
             };
 

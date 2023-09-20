@@ -20,6 +20,8 @@ extern "C" {
     fn _12_js(rules: Rules) -> Rules;
     fn _13_js(rules: Rules) -> Rules;
 
+    fn raw_identifer(rules: RulesWithRawField) -> RulesWithRawField;
+
     fn test_getter_compute(x: GetterCompute);
     fn test_setter_compute(x: SetterCompute);
     fn test_statics(x: Statics);
@@ -30,6 +32,23 @@ extern "C" {
 #[wasm_bindgen]
 pub struct Rules {
     pub field: i32,
+}
+
+#[wasm_bindgen]
+pub struct RulesWithRawField {
+    pub r#mod: i32,
+}
+
+#[wasm_bindgen]
+impl RulesWithRawField {
+    #[wasm_bindgen]
+    pub fn get_field_value(&self) -> i32 {
+        self.r#mod
+    }
+    #[wasm_bindgen]
+    pub fn set_field_value(&mut self, value: i32) {
+        self.r#mod = value;
+    }
 }
 
 #[wasm_bindgen]
