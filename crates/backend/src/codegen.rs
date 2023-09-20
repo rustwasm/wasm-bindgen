@@ -1383,6 +1383,7 @@ impl ToTokens for ast::Enum {
                 }
             }
         });
+        let try_from_cast_clauses = cast_clauses.clone();
         let wasm_bindgen = &self.wasm_bindgen;
         (quote! {
             #[automatically_derived]
@@ -1443,13 +1444,13 @@ impl ToTokens for ast::Enum {
 
                 fn try_from(value: #wasm_bindgen::JsValue)
                     -> #wasm_bindgen::__rt::std::result::Result<Self, Self::Error> {
-                    let val = f64::try_from(value)? as u32;
+                    let js = f64::try_from(&value)? as u32;
 
-                    unsafe {
-                        #wasm_bindgen::__rt::std::result::Result::Ok(
-                            <Self as #wasm_bindgen::convert::FromWasmAbi>::from_abi(val)
-                        )
-                    }
+                    #wasm_bindgen::__rt::std::result::Result::Ok(
+                        #(#try_from_cast_clauses else)* {
+                            return #wasm_bindgen::__rt::std::result::Result::Err(value)
+                        }
+                    )
                 }
             }
 
