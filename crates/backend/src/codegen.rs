@@ -523,10 +523,14 @@ impl TryToTokens for ast::Export {
             argtys.push(&*arg.ty);
             let i = i + offset;
             let ident = Ident::new(&format!("arg{}", i), Span::call_site());
-            let ty = match &*arg.ty {
-                syn::Type::Group(syn::TypeGroup { ref elem, .. }) => elem,
-                _ => &arg.ty,
-            };
+            fn unwrap_nested_types(ty: &Box<syn::Type>) -> &Box<syn::Type> {
+                match &**ty {
+                    syn::Type::Group(syn::TypeGroup { ref elem, .. }) => unwrap_nested_types(elem),
+                    syn::Type::Paren(syn::TypeParen { ref elem, .. }) => unwrap_nested_types(elem),
+                    _ => ty,
+                }
+            }
+            let ty = unwrap_nested_types(&arg.ty);
 
             match &**ty {
                 syn::Type::Reference(syn::TypeReference {
