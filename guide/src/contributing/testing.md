@@ -7,7 +7,7 @@ These are the largest test suites, and most common to run in day to day
 Node.js or a headless browser via the WebDriver protocol.
 
 ```bash
-cargo test --target wasm32-unknown-unknown
+WASM_BINDGEN_SPLIT_LINKED_MODULES=1 cargo test --target wasm32-unknown-unknown
 ```
 
 See [the `wasm-bindgen-test` crate's
@@ -34,8 +34,11 @@ cargo test -p webidl-tests --target wasm32-unknown-unknown
 These tests assert that we have reasonable error messages that point to the
 right source spans when the `#[wasm_bindgen]` proc-macro is misused.
 
+You can run these tests by running `cargo test` for the `wasm-bindgen-macro`
+crate:
+
 ```
-cargo test -p ui-tests
+cargo test -p wasm-bindgen-macro
 ```
 
 ## The `js-sys` Tests
