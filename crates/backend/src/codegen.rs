@@ -365,6 +365,12 @@ impl ToTokens for ast::Struct {
                     #wasm_bindgen::convert::js_value_vector_from_abi(js)
                 }
             }
+
+            impl #wasm_bindgen::__rt::VectorIntoJsValue for #name {
+                fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::std::boxed::Box<[#name]>) -> #wasm_bindgen::JsValue {
+                    #wasm_bindgen::__rt::js_value_vector_into_jsvalue(vector)
+                }
+            }
         })
         .to_tokens(tokens);
 
@@ -1507,6 +1513,12 @@ impl ToTokens for ast::Enum {
                     js: Self::Abi
                 ) -> #wasm_bindgen::__rt::std::boxed::Box<[#enum_name]> {
                     #wasm_bindgen::convert::js_value_vector_from_abi(js)
+                }
+            }
+
+            impl #wasm_bindgen::__rt::VectorIntoJsValue for #enum_name {
+                fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::std::boxed::Box<[#enum_name]>) -> #wasm_bindgen::JsValue {
+                    #wasm_bindgen::__rt::js_value_vector_into_jsvalue(vector)
                 }
             }
         })

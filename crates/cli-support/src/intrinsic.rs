@@ -264,6 +264,45 @@ intrinsics! {
         #[symbol = "__wbindgen_copy_to_typed_array"]
         #[signature = fn(slice(U8), ref_externref()) -> Unit]
         CopyToTypedArray,
+        #[symbol = "__wbindgen_uint8_array_new"]
+        #[signature = fn(slice(U8)) -> Externref]
+        Uint8ArrayNew,
+        #[symbol = "__wbindgen_uint8_clamped_array_new"]
+        #[signature = fn(slice(ClampedU8)) -> Externref]
+        Uint8ClampedArrayNew,
+        #[symbol = "__wbindgen_uint16_array_new"]
+        #[signature = fn(slice(U16)) -> Externref]
+        Uint16ArrayNew,
+        #[symbol = "__wbindgen_uint32_array_new"]
+        #[signature = fn(slice(U32)) -> Externref]
+        Uint32ArrayNew,
+        #[symbol = "__wbindgen_biguint64_array_new"]
+        #[signature = fn(slice(U64)) -> Externref]
+        BigUint64ArrayNew,
+        #[symbol = "__wbindgen_int8_array_new"]
+        #[signature = fn(slice(I8)) -> Externref]
+        Int8ArrayNew,
+        #[symbol = "__wbindgen_int16_array_new"]
+        #[signature = fn(slice(I16)) -> Externref]
+        Int16ArrayNew,
+        #[symbol = "__wbindgen_int32_array_new"]
+        #[signature = fn(slice(I32)) -> Externref]
+        Int32ArrayNew,
+        #[symbol = "__wbindgen_bigint64_array_new"]
+        #[signature = fn(slice(I64)) -> Externref]
+        BigInt64ArrayNew,
+        #[symbol = "__wbindgen_float32_array_new"]
+        #[signature = fn(slice(F32)) -> Externref]
+        Float32ArrayNew,
+        #[symbol = "__wbindgen_float64_array_new"]
+        #[signature = fn(slice(F64)) -> Externref]
+        Float64ArrayNew,
+        #[symbol = "__wbindgen_array_new"]
+        #[signature = fn() -> Externref]
+        ArrayNew,
+        #[symbol = "__wbindgen_array_push"]
+        #[signature = fn(ref_externref(), Externref) -> Unit]
+        ArrayPush,
         #[symbol = "__wbindgen_externref_heap_live_count"]
         #[signature = fn() -> I32]
         ExternrefHeapLiveCount,
