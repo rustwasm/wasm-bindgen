@@ -1970,18 +1970,18 @@ impl From<JsError> for JsValue {
 macro_rules! typed_arrays {
     ($($ty:ident $ctor:ident $clamped_ctor:ident,)*) => {
         $(
-            impl From<Vec<$ty>> for JsValue {
-                fn from(mut vec: Vec<$ty>) -> Self {
-                    let result = unsafe { JsValue::_new($ctor(vec.as_mut_ptr(), vec.len())) };
-                    mem::forget(vec);
+            impl From<Box<[$ty]>> for JsValue {
+                fn from(mut vector: Box<[$ty]>) -> Self {
+                    let result = unsafe { JsValue::_new($ctor(vector.as_mut_ptr(), vector.len())) };
+                    mem::forget(vector);
                     result
                 }
             }
 
-            impl From<Clamped<Vec<$ty>>> for JsValue {
-                fn from(mut vec: Clamped<Vec<$ty>>) -> Self {
-                    let result = unsafe { JsValue::_new($clamped_ctor(vec.as_mut_ptr(), vec.len())) };
-                    mem::forget(vec);
+            impl From<Clamped<Box<[$ty]>>> for JsValue {
+                fn from(mut vector: Clamped<Box<[$ty]>>) -> Self {
+                    let result = unsafe { JsValue::_new($clamped_ctor(vector.as_mut_ptr(), vector.len())) };
+                    mem::forget(vector);
                     result
                 }
             }
@@ -2026,5 +2026,14 @@ where
 {
     fn from(vector: Vec<T>) -> Self {
         JsValue::from(vector.into_boxed_slice())
+    }
+}
+
+impl<T> From<Clamped<Vec<T>>> for JsValue
+where
+    JsValue: From<Clamped<Box<[T]>>>,
+{
+    fn from(vector: Clamped<Vec<T>>) -> Self {
+        JsValue::from(Clamped(vector.0.into_boxed_slice()))
     }
 }
