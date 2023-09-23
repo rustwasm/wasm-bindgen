@@ -803,6 +803,57 @@ pub(crate) fn is_js_keyword(keyword: &str) -> bool {
     JS_KEYWORDS.contains(&keyword)
 }
 
+/// Replace instances of `Self` with the actual type `T`
+fn replace_self(ty: syn::Type, self_ty: Option<&Ident>) -> syn::Type {
+    let self_ty = match self_ty {
+        Some(i) => i,
+        None => return ty,
+    };
+
+    let mut path = match get_ty(&ty) {
+        syn::Type::Path(syn::TypePath { qself: None, path }) => path.clone(),
+        other => return other.clone(),
+    };
+
+    if path.segments.len() == 1 && path.segments[0].ident == "Self" {
+        let new_path = self_ty.clone().into();
+        return syn::Type::Path(syn::TypePath {
+            qself: None,
+            path: new_path,
+        });
+    }
+
+    fn walk_path_change_self(path: &mut syn::Path, self_ty: &Ident) {
+        for seg in path.segments.iter_mut() {
+            if let syn::PathArguments::AngleBracketed(ref mut brackets) = seg.arguments {
+                let types = brackets.args.iter_mut().filter_map(|arg| match arg {
+                    syn::GenericArgument::Type(ref mut ty) => Some(ty),
+                    _ => None,
+                });
+                for ty in types {
+                    match ty {
+                        syn::Type::Path(syn::TypePath { ref mut path, .. }) => {
+                            if path.segments.len() == 1 && path.segments[0].ident == "Self" {
+                                path.segments[0].ident = self_ty.clone();
+                            } else {
+                                walk_path_change_self(path, self_ty)
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+    }
+
+    let path_str = quote::quote! { #path }.to_string();
+    if path_str.contains("Self") {
+        walk_path_change_self(&mut path, self_ty);
+    }
+
+    syn::Type::Path(syn::TypePath { qself: None, path })
+}
+
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
 fn function_from_decl(
@@ -829,26 +880,6 @@ fn function_from_decl(
 
     let syn::Signature { inputs, output, .. } = sig;
 
-    let replace_self = |t: syn::Type| {
-        let self_ty = match self_ty {
-            Some(i) => i,
-            None => return t,
-        };
-        let path = match get_ty(&t) {
-            syn::Type::Path(syn::TypePath { qself: None, path }) => path.clone(),
-            other => return other.clone(),
-        };
-        let new_path = if path.segments.len() == 1 && path.segments[0].ident == "Self" {
-            self_ty.clone().into()
-        } else {
-            path
-        };
-        syn::Type::Path(syn::TypePath {
-            qself: None,
-            path: new_path,
-        })
-    };
-
     let replace_colliding_arg = |i: &mut syn::PatType| {
         if let syn::Pat::Ident(ref mut i) = *i.pat {
             let ident = i.ident.to_string();
@@ -864,7 +895,7 @@ fn function_from_decl(
         .filter_map(|arg| match arg {
             syn::FnArg::Typed(mut c) => {
                 replace_colliding_arg(&mut c);
-                c.ty = Box::new(replace_self(*c.ty));
+                c.ty = Box::new(replace_self(*c.ty, self_ty));
                 Some(c)
             }
             syn::FnArg::Receiver(r) => {
@@ -886,7 +917,7 @@ fn function_from_decl(
 
     let ret = match output {
         syn::ReturnType::Default => None,
-        syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
+        syn::ReturnType::Type(_, ty) => Some(replace_self(*ty, self_ty)),
     };
 
     let (name, name_span, renamed_via_js_name) = if let Some((js_name, js_name_span)) =
