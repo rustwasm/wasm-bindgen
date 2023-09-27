@@ -7,13 +7,8 @@ use std::slice;
 use std::vec::Vec;
 use std::cmp::max;
 
-externs! {
-    #[link(wasm_import_module = "__wbindgen_externref_xform__")]
-    extern "C" {
-        fn __wbindgen_externref_table_grow(delta: usize) -> i32;
-        fn __wbindgen_externref_table_set_null(idx: usize) -> ();
-    }
-}
+pub unsafe fn __wbindgen_externref_table_grow(_delta: usize) -> i32 { unimplemented!("__wbindgen_externref_table_grow") }
+pub unsafe fn __wbindgen_externref_table_set_null(_idx: usize) -> () { unimplemented!("__wbindgen_externref_table_set_null") }
 
 pub struct Slab {
     data: Vec<usize>,
