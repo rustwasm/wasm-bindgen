@@ -9,7 +9,7 @@ online][compiled]
 You can build the example locally with:
 
 ```
-$ ./run.sh
+$ python3 run.py
 ```
 
 (or running the commands on Windows manually)
