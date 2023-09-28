@@ -2,6 +2,6 @@
 
 set -ex
 
-python3 build.py
+./build.sh
 
 python3 server.py
