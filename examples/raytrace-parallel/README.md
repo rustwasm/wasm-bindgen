@@ -12,4 +12,4 @@ You can build the example locally with:
 $ python3 run.py
 ```
 
-and then visiting http://localhost:8080 in a browser should run the example!
+and then visiting http://localhost:8000 in a browser should run the example!
