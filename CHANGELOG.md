@@ -132,6 +132,9 @@
 * Fix bug with function arguments coming from `macro_rules!`.
   [#3625](https://github.com/rustwasm/wasm-bindgen/pull/3625)
 
+* Fix some calls to `free()` missing alignment.
+  [#3639](https://github.com/rustwasm/wasm-bindgen/pull/3639)
+
 ### Removed
 
 * Removed `ReadableStreamByobReader::read_with_u8_array()` because it doesn't work with Wasm.

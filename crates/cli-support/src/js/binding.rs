@@ -1056,7 +1056,7 @@ fn instruction(
             if *owned {
                 let free = js.cx.export_name_of(*free);
                 js.prelude(&format!(
-                    "if ({ptr} !== 0) {{ wasm.{}({ptr}, {len}); }}",
+                    "if ({ptr} !== 0) {{ wasm.{}({ptr}, {len}, 1); }}",
                     free,
                     ptr = ptr,
                     len = len,
@@ -1129,11 +1129,11 @@ fn instruction(
             let free = js.cx.export_name_of(*free);
             js.prelude(&format!("var v{} = {}({}, {}).slice();", i, f, ptr, len));
             js.prelude(&format!(
-                "wasm.{}({}, {} * {});",
+                "wasm.{}({}, {} * {size}, {size});",
                 free,
                 ptr,
                 len,
-                kind.size()
+                size = kind.size()
             ));
             js.push(format!("v{}", i))
         }
@@ -1148,11 +1148,11 @@ fn instruction(
             js.prelude(&format!("if ({} !== 0) {{", ptr));
             js.prelude(&format!("v{} = {}({}, {}).slice();", i, f, ptr, len));
             js.prelude(&format!(
-                "wasm.{}({}, {} * {});",
+                "wasm.{}({}, {} * {size}, {size});",
                 free,
                 ptr,
                 len,
-                kind.size()
+                size = kind.size()
             ));
             js.prelude("}");
             js.push(format!("v{}", i));
