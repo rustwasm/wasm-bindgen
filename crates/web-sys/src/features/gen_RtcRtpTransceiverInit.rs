@@ -38,6 +38,23 @@ impl RtcRtpTransceiverInit {
         let _ = r;
         self
     }
+    #[doc = "Change the `sendEncodings` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiverInit`*"]
+    pub fn send_encodings(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("sendEncodings"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
+    }
     #[doc = "Change the `streams` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiverInit`*"]
