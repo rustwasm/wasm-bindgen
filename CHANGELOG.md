@@ -5,6 +5,9 @@
 
 ### Added
 
+* Add bindings for `RTCRtpTransceiverInit.sendEncodings`.
+  [#3642](https://github.com/rustwasm/wasm-bindgen/pull/3642)
+
 * Add bindings for the Web Locks API to `web-sys`.
   [#3604](https://github.com/rustwasm/wasm-bindgen/pull/3604)
 
