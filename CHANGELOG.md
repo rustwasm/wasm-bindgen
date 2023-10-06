@@ -63,6 +63,10 @@
 * Implement `TryFrom<JsValue>` for exported Rust types and strings.
   [#3554](https://github.com/rustwasm/wasm-bindgen/pull/3554)
 
+* Handle the `#[ignore = "reason"]` attribute with the `wasm_bindgen_test`
+  proc-macro and accept the `--include-ignored` flag with `wasm-bindgen-test-runner`.
+  [#3644](https://github.com/rustwasm/wasm-bindgen/pull/3644)
+
 ### Changed
 
 * Updated the WebGPU WebIDL.
