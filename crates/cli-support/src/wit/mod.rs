@@ -440,7 +440,7 @@ impl<'a> Context<'a> {
                 }
                 self.vendor_prefixes
                     .entry(ty.name.to_string())
-                    .or_insert(Vec::new())
+                    .or_default()
                     .extend(ty.vendor_prefixes.iter().map(|s| s.to_string()));
             }
         }
@@ -461,7 +461,7 @@ impl<'a> Context<'a> {
         self.aux
             .snippets
             .entry(unique_crate_identifier.to_string())
-            .or_insert(Vec::new())
+            .or_default()
             .extend(inline_js.iter().map(|s| s.to_string()));
         Ok(())
     }

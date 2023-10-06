@@ -1429,7 +1429,7 @@ impl<T> Eq for IgnoreTraits<T> {}
 
 impl<T> PartialOrd for IgnoreTraits<T> {
     fn partial_cmp(&self, _other: &IgnoreTraits<T>) -> Option<Ordering> {
-        Some(Ordering::Equal)
+        Some(self.cmp(_other))
     }
 }
 

@@ -2274,7 +2274,7 @@ impl<'a> Context<'a> {
         };
         self.js_imports
             .entry(module)
-            .or_insert(Vec::new())
+            .or_default()
             .push((name.to_string(), rename));
     }
 
@@ -4032,9 +4032,15 @@ fn check_duplicated_getter_and_setter_names(
 }
 
 fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> String {
-    let body: String = comments.lines().map(|c| format!("*{}\n", c)).collect();
+    let body: String = comments.lines().fold(String::new(), |mut output, c| {
+        let _ = writeln!(output, "*{}", c);
+        output
+    });
     let doc = if let Some(docs) = js_doc_comments {
-        docs.lines().map(|l| format!("* {}\n", l)).collect()
+        docs.lines().fold(String::new(), |mut output: String, l| {
+            let _ = writeln!(output, "* {}", l);
+            output
+        })
     } else {
         String::new()
     };
@@ -4049,7 +4055,7 @@ fn require_class<'a>(
         .as_mut()
         .expect("classes already written")
         .entry(name.to_string())
-        .or_insert_with(ExportedClass::default)
+        .or_default()
 }
 
 /// Returns whether a character has the Unicode `ID_Start` properly.
@@ -4140,10 +4146,8 @@ impl ExportedClass {
         is_setter: bool,
         is_static: bool,
     ) -> &mut bool {
-        let (ty_dst, accessor_docs, has_setter, is_optional, is_static_dst) = self
-            .typescript_fields
-            .entry(field.to_string())
-            .or_insert_with(Default::default);
+        let (ty_dst, accessor_docs, has_setter, is_optional, is_static_dst) =
+            self.typescript_fields.entry(field.to_string()).or_default();
 
         *ty_dst = ty.to_string();
         // Deterministic output: always use the getter's docs if available
