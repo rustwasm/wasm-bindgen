@@ -85,6 +85,7 @@ pub enum AdapterType {
     Vector(VectorKind),
     Option(Box<AdapterType>),
     Struct(String),
+    Enum(String),
     NamedExternref(String),
     Function,
 }
@@ -327,6 +328,7 @@ impl AdapterType {
             AdapterType::I64 => walrus::ValType::I64,
             AdapterType::F32 => walrus::ValType::F32,
             AdapterType::F64 => walrus::ValType::F64,
+            AdapterType::Enum(_) => walrus::ValType::I32,
             AdapterType::Externref | AdapterType::NamedExternref(_) => walrus::ValType::Externref,
             _ => return None,
         })

@@ -1382,6 +1382,9 @@ impl<'a> ToTokens for DescribeImport<'a> {
 impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut TokenStream) {
         let enum_name = &self.rust_name;
+        let name_str = self.js_name.to_string();
+        let name_len = name_str.len() as u32;
+        let name_chars = name_str.chars().map(|c| c as u32);
         let hole = &self.hole;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
@@ -1433,6 +1436,8 @@ impl ToTokens for ast::Enum {
                 fn describe() {
                     use #wasm_bindgen::describe::*;
                     inform(ENUM);
+                    inform(#name_len);
+                    #(inform(#name_chars);)*
                     inform(#hole);
                 }
             }
