@@ -1384,7 +1384,7 @@ impl ToTokens for ast::Enum {
         let enum_name = &self.rust_name;
         let name_str = self.js_name.to_string();
         let name_len = name_str.len() as u32;
-        let name_chars = name_str.chars().map(|c| c as u32).collect::<Vec<_>>();
+        let name_chars = name_str.chars().map(|c| c as u32);
         let hole = &self.hole;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;

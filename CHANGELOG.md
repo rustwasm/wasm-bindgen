@@ -104,6 +104,10 @@
   as normal exceptions rather than as rejected promises.
   [#3611](https://github.com/rustwasm/wasm-bindgen/pull/3611)
 
+* Improved TypeScript bindings to accurately reference Rust enum types in function signatures,
+  enhancing type safety and compatibility.
+  [#3647](https://github.com/rustwasm/wasm-bindgen/pull/3647)
+
 ### Fixed
 
 * Fixed `wasm_bindgen` macro to handle raw identifiers in field names.
