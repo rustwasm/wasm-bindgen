@@ -1336,6 +1336,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         }
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
+        AdapterType::Enum(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
     }
 }
