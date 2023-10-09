@@ -6,7 +6,7 @@ soon as the wasm module is instantiated.
 
 ```rust
 #[wasm_bindgen(start)]
-fn main() {
+fn start() {
     // executed automatically ...
 }
 ```
