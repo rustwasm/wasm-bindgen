@@ -6,6 +6,8 @@
 use js_sys::Error;
 use wasm_bindgen::prelude::*;
 
+use super::TestResult;
+
 /// Implementation of `Formatter` for browsers.
 ///
 /// Routes all output to a `pre` on the page currently. Eventually this probably
@@ -49,9 +51,8 @@ impl super::Formatter for Browser {
         self.pre.set_text_content(&html);
     }
 
-    fn log_test(&self, name: &str, result: &Result<(), JsValue>) {
-        let s = if result.is_ok() { "ok" } else { "FAIL" };
-        self.writeln(&format!("test {} ... {}", name, s));
+    fn log_test(&self, name: &str, result: &TestResult) {
+        self.writeln(&format!("test {} ... {}", name, result));
     }
 
     fn stringify_error(&self, err: &JsValue) -> String {
