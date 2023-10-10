@@ -5,6 +5,8 @@
 
 use wasm_bindgen::prelude::*;
 
+use super::TestResult;
+
 /// Implementation of the `Formatter` trait for node.js
 pub struct Node {}
 
@@ -29,9 +31,8 @@ impl super::Formatter for Node {
         super::js_console_log(line);
     }
 
-    fn log_test(&self, name: &str, result: &Result<(), JsValue>) {
-        let s = if result.is_ok() { "ok" } else { "FAIL" };
-        self.writeln(&format!("test {} ... {}", name, s));
+    fn log_test(&self, name: &str, result: &TestResult) {
+        self.writeln(&format!("test {} ... {}", name, result));
     }
 
     fn stringify_error(&self, err: &JsValue) -> String {

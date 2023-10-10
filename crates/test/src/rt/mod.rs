@@ -89,7 +89,7 @@
 
 use js_sys::{Array, Function, Promise};
 use std::cell::{Cell, RefCell};
-use std::fmt;
+use std::fmt::{self, Display};
 use std::future::Future;
 use std::pin::Pin;
 use std::rc::Rc;
@@ -126,6 +126,9 @@ struct State {
     /// comes from the command line of `wasm-bindgen-test-runner`. Currently
     /// this is the only "CLI option"
     filter: RefCell<Option<String>>,
+
+    /// Include ignored tests.
+    include_ignored: Cell<bool>,
 
     /// Counter of the number of tests that have succeeded.
     succeeded: Cell<usize>,
@@ -186,12 +189,38 @@ struct Output {
     should_panic: bool,
 }
 
+enum TestResult {
+    Ok,
+    Err(JsValue),
+    Ignored(Option<String>),
+}
+
+impl From<Result<(), JsValue>> for TestResult {
+    fn from(value: Result<(), JsValue>) -> Self {
+        match value {
+            Ok(()) => Self::Ok,
+            Err(err) => Self::Err(err),
+        }
+    }
+}
+
+impl Display for TestResult {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            TestResult::Ok => write!(f, "ok"),
+            TestResult::Err(_) => write!(f, "FAIL"),
+            TestResult::Ignored(None) => write!(f, "ignored"),
+            TestResult::Ignored(Some(reason)) => write!(f, "ignored, {reason}"),
+        }
+    }
+}
+
 trait Formatter {
     /// Writes a line of output, typically status information.
     fn writeln(&self, line: &str);
 
     /// Log the result of a test, either passing or failing.
-    fn log_test(&self, name: &str, result: &Result<(), JsValue>);
+    fn log_test(&self, name: &str, result: &TestResult);
 
     /// Convert a thrown value into a string, using platform-specific apis
     /// perhaps to turn the error into a string.
@@ -247,6 +276,7 @@ impl Context {
         Context {
             state: Rc::new(State {
                 filter: Default::default(),
+                include_ignored: Default::default(),
                 failures: Default::default(),
                 ignored: Default::default(),
                 remaining: Default::default(),
@@ -271,12 +301,15 @@ impl Context {
         let mut filter = self.state.filter.borrow_mut();
         for arg in args {
             let arg = arg.as_string().unwrap();
-            if arg.starts_with('-') {
+            if arg == "--include-ignored" {
+                self.state.include_ignored.set(true);
+            } else if arg.starts_with('-') {
                 panic!("flag {} not supported", arg);
             } else if filter.is_some() {
                 panic!("more than one filter argument cannot be passed");
+            } else {
+                *filter = Some(arg);
             }
-            *filter = Some(arg);
         }
     }
 
@@ -411,8 +444,9 @@ impl Context {
         name: &str,
         f: impl 'static + FnOnce() -> T,
         should_panic: Option<Option<&'static str>>,
+        ignore: Option<Option<&'static str>>,
     ) {
-        self.execute(name, async { f().into_js_result() }, should_panic);
+        self.execute(name, async { f().into_js_result() }, should_panic, ignore);
     }
 
     /// Entry point for an asynchronous in wasm. The
@@ -423,11 +457,17 @@ impl Context {
         name: &str,
         f: impl FnOnce() -> F + 'static,
         should_panic: Option<Option<&'static str>>,
+        ignore: Option<Option<&'static str>>,
     ) where
         F: Future + 'static,
         F::Output: Termination,
     {
-        self.execute(name, async { f().await.into_js_result() }, should_panic)
+        self.execute(
+            name,
+            async { f().await.into_js_result() },
+            should_panic,
+            ignore,
+        )
     }
 
     fn execute(
@@ -435,12 +475,24 @@ impl Context {
         name: &str,
         test: impl Future<Output = Result<(), JsValue>> + 'static,
         should_panic: Option<Option<&'static str>>,
+        ignore: Option<Option<&'static str>>,
     ) {
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
         if let Some(filter) = &*filter {
             if !name.contains(filter) {
+                let ignored = self.state.ignored.get();
+                self.state.ignored.set(ignored + 1);
+                return;
+            }
+        }
+
+        if !self.state.include_ignored.get() {
+            if let Some(ignore) = ignore {
+                self.state
+                    .formatter
+                    .log_test(name, &TestResult::Ignored(ignore.map(str::to_owned)));
                 let ignored = self.state.ignored.get();
                 self.state.ignored.set(ignored + 1);
                 return;
@@ -484,7 +536,7 @@ impl Future for ExecuteTests {
                 Poll::Pending => continue,
             };
             let test = running.remove(i);
-            self.0.log_test_result(test, result);
+            self.0.log_test_result(test, result.into());
         }
 
         // Next up, try to schedule as many tests as we can. Once we get a test
@@ -503,7 +555,7 @@ impl Future for ExecuteTests {
                     continue;
                 }
             };
-            self.0.log_test_result(test, result);
+            self.0.log_test_result(test, result.into());
         }
 
         // Tests are still executing, we're registered to get a notification,
@@ -523,14 +575,15 @@ impl Future for ExecuteTests {
 }
 
 impl State {
-    fn log_test_result(&self, test: Test, result: Result<(), JsValue>) {
+    fn log_test_result(&self, test: Test, result: TestResult) {
         // Save off the test for later processing when we print the final
         // results.
         if let Some(should_panic) = test.should_panic {
-            if let Err(_e) = result {
+            if let TestResult::Err(_e) = result {
                 if let Some(expected) = should_panic {
                     if !test.output.borrow().panic.contains(expected) {
-                        self.formatter.log_test(&test.name, &Err(JsValue::NULL));
+                        self.formatter
+                            .log_test(&test.name, &TestResult::Err(JsValue::NULL));
                         self.failures
                             .borrow_mut()
                             .push((test, Failure::ShouldPanicExpected));
@@ -538,10 +591,11 @@ impl State {
                     }
                 }
 
-                self.formatter.log_test(&test.name, &Ok(()));
+                self.formatter.log_test(&test.name, &TestResult::Ok);
                 self.succeeded.set(self.succeeded.get() + 1);
             } else {
-                self.formatter.log_test(&test.name, &Err(JsValue::NULL));
+                self.formatter
+                    .log_test(&test.name, &TestResult::Err(JsValue::NULL));
                 self.failures
                     .borrow_mut()
                     .push((test, Failure::ShouldPanic));
@@ -550,8 +604,9 @@ impl State {
             self.formatter.log_test(&test.name, &result);
 
             match result {
-                Ok(()) => self.succeeded.set(self.succeeded.get() + 1),
-                Err(e) => self.failures.borrow_mut().push((test, Failure::Error(e))),
+                TestResult::Ok => self.succeeded.set(self.succeeded.get() + 1),
+                TestResult::Err(e) => self.failures.borrow_mut().push((test, Failure::Error(e))),
+                _ => (),
             }
         }
     }

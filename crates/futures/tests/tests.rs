@@ -173,3 +173,15 @@ async fn should_panic_string() {
 async fn should_panic_expected() {
     panic!("error message")
 }
+
+#[wasm_bindgen_test]
+#[ignore]
+async fn ignore() {
+    panic!("this test should have been ignored")
+}
+
+#[wasm_bindgen_test]
+#[ignore = "reason"]
+async fn ignore_reason() {
+    panic!("this test should have been ignored")
+}

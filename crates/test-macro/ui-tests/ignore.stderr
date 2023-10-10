@@ -1,0 +1,41 @@
+error: malformed `#[ignore = "..."]` attribute
+  --> ui-tests/ignore.rs:24:9
+   |
+24 | #[ignore::error]
+   |         ^
+
+error: malformed `#[ignore]` attribute
+  --> ui-tests/ignore.rs:28:12
+   |
+28 | #[ignore = 42]
+   |            ^^
+
+error: malformed `#[ignore = "..."]` attribute
+  --> ui-tests/ignore.rs:32:9
+   |
+32 | #[ignore[]]
+   |         ^^
+
+error: malformed `#[ignore = "..."]` attribute
+  --> ui-tests/ignore.rs:36:9
+   |
+36 | #[ignore(42)]
+   |         ^^^^
+
+error: malformed `#[ignore = "..."]` attribute
+  --> ui-tests/ignore.rs:40:9
+   |
+40 | #[ignore(test)]
+   |         ^^^^^^
+
+error: malformed `#[ignore = "..."]` attribute
+  --> ui-tests/ignore.rs:44:9
+   |
+44 | #[ignore("test")]
+   |         ^^^^^^^^
+
+error: duplicate `ignore` attribute
+  --> ui-tests/ignore.rs:49:3
+   |
+49 | #[ignore = "test"]
+   |   ^^^^^^
