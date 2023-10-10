@@ -1,6 +1,6 @@
 # `start`
 
-When attached to a `pub` function this attribute will configure the `start`
+When attached to a function this attribute will configure the `start`
 section of the wasm executable to be emitted, executing the tagged function as
 soon as the wasm module is instantiated.
 
