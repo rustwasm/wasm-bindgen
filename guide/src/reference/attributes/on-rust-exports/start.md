@@ -1,20 +1,20 @@
 # `start`
 
-When attached to a `pub` function this attribute will configure the `start`
+When attached to a function this attribute will configure the `start`
 section of the wasm executable to be emitted, executing the tagged function as
 soon as the wasm module is instantiated.
 
 ```rust
 #[wasm_bindgen(start)]
-fn main() {
+fn start() {
     // executed automatically ...
 }
 ```
 
 The `start` section of the wasm executable will be configured to execute the
-`main` function here as soon as it can. Note that due to various practical
+`start` function here as soon as it can. Note that due to various practical
 limitations today the start section of the executable may not literally point to
-`main`, but the `main` function here should be started up automatically when the
+`start`, but the `start` function here should be started up automatically when the
 wasm module is loaded.
 
 There's a few caveats to be aware of when using the `start` attribute:
