@@ -104,13 +104,13 @@ cfg_if! {
 
 impl<T> WasmDescribe for *const T {
     fn describe() {
-        inform(I32)
+        inform(U32)
     }
 }
 
 impl<T> WasmDescribe for *mut T {
     fn describe() {
-        inform(I32)
+        inform(U32)
     }
 }
 
