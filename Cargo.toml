@@ -12,7 +12,7 @@ description = """
 Easy support for interacting between JS and Rust.
 """
 edition = "2018"
-rust-version = "1.56"
+rust-version = "1.57"
 
 [package.metadata.docs.rs]
 features = ["serde-serialize"]
