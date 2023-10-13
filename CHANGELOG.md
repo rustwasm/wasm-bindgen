@@ -146,6 +146,9 @@
 * Fix some calls to `free()` missing alignment.
   [#3639](https://github.com/rustwasm/wasm-bindgen/pull/3639)
 
+* Fix wrong ABI for raw pointers.
+  [#3655](https://github.com/rustwasm/wasm-bindgen/pull/3655)
+
 ### Removed
 
 * Removed `ReadableStreamByobReader::read_with_u8_array()` because it doesn't work with Wasm.
