@@ -9,7 +9,7 @@ repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/future
 readme = "./README.md"
 version = "0.4.37"
 edition = "2018"
-rust-version = "1.56"
+rust-version = "1.57"
 
 [dependencies]
 cfg-if = "1.0.0"

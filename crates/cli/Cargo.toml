@@ -13,7 +13,7 @@ information see https://github.com/rustwasm/wasm-bindgen.
 """
 edition = '2018'
 default-run = 'wasm-bindgen'
-rust-version = "1.56"
+rust-version = "1.57"
 
 [package.metadata.binstall]
 pkg-url = "https://github.com/rustwasm/wasm-bindgen/releases/download/{ version }/wasm-bindgen-{ version }-{ target }{ archive-suffix }"

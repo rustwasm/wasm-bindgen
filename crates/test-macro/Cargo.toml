@@ -6,7 +6,7 @@ description = "Internal testing macro for wasm-bindgen"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 edition = "2018"
-rust-version = "1.56"
+rust-version = "1.57"
 
 [lib]
 proc-macro = true

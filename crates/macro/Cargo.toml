@@ -10,7 +10,7 @@ description = """
 Definition of the `#[wasm_bindgen]` attribute, an internal dependency
 """
 edition = "2018"
-rust-version = "1.56"
+rust-version = "1.57"
 
 [lib]
 proc-macro = true
