@@ -11,7 +11,7 @@ Shared support between wasm-bindgen and wasm-bindgen cli, an internal
 dependency.
 """
 edition = "2018"
-rust-version = "1.56"
+rust-version = "1.57"
 
 # Because only a single `wasm_bindgen` version can be used in a dependency
 # graph, pretend we link a native library so that `cargo` will provide better

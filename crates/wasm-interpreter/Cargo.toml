@@ -10,7 +10,7 @@ description = """
 Micro-interpreter optimized for wasm-bindgen's use case
 """
 edition = '2018'
-rust-version = "1.56"
+rust-version = "1.57"
 
 [dependencies]
 anyhow = "1.0"
