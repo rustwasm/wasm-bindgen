@@ -82,7 +82,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '19'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test --target wasm32-unknown-unknown
     - run: cargo test --target wasm32-unknown-unknown --features serde-serialize
@@ -130,7 +130,7 @@ jobs:
   #   - run: rustup target add wasm32-unknown-unknown
   #   - uses: actions/setup-node@v3
   #     with:
-  #       node-version: '16'
+  #       node-version: '19'
   #   - uses: ./.github/actions/setup-geckodriver
   #   - run: cargo test --target wasm32-unknown-unknown
   #     env:
@@ -151,7 +151,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '19'
     - run: cargo test
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
@@ -171,7 +171,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '19'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
     - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Node
@@ -200,7 +200,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '19'
     - uses: ./.github/actions/setup-geckodriver
     - run: cargo test -p js-sys --target wasm32-unknown-unknown
     - run: cargo test -p js-sys --target wasm32-unknown-unknown
@@ -216,7 +216,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '19'
     - run: cargo test -p wasm-bindgen-webidl
     - run: cargo test -p webidl-tests --target wasm32-unknown-unknown
       env:
@@ -234,7 +234,7 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '19'
     - run: cd crates/typescript-tests && ./run.sh
 
   test_deno:
