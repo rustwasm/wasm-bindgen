@@ -5092,6 +5092,12 @@ mod gen_Notification;
 #[cfg(feature = "Notification")]
 pub use gen_Notification::*;
 
+#[cfg(feature = "NotificationAction")]
+#[allow(non_snake_case)]
+mod gen_NotificationAction;
+#[cfg(feature = "NotificationAction")]
+pub use gen_NotificationAction::*;
+
 #[cfg(feature = "NotificationBehavior")]
 #[allow(non_snake_case)]
 mod gen_NotificationBehavior;

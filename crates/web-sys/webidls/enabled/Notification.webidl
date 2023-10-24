@@ -64,9 +64,14 @@ dictionary NotificationOptions {
   DOMString lang = "";
   DOMString body = "";
   DOMString tag = "";
-  DOMString icon = "";
+  USVString image;
+  USVString icon;
+  USVString badge;
+  boolean renotify = false;
+  boolean? silent = null;
   boolean requireInteraction = false;
   any data = null;
+  sequence<NotificationAction> actions = [];
 };
 
 dictionary GetNotificationOptions {
@@ -85,6 +90,12 @@ enum NotificationPermission {
   "default",
   "denied",
   "granted"
+};
+
+dictionary NotificationAction {
+  required DOMString action;
+  required DOMString title;
+  USVString icon;
 };
 
 callback NotificationPermissionCallback = undefined (NotificationPermission permission);
