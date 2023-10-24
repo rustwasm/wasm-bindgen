@@ -34,18 +34,19 @@ impl Foo {
     }
 }
 
+// Use a different name to avoid a collision with the `Color` enum in enums.rs when --no-modules is used.
 #[wasm_bindgen]
-pub enum Color {
+pub enum NodeColor {
     Green,
     Yellow,
     Red,
 }
 #[wasm_bindgen]
-pub fn cycle(color: Color) -> Color {
+pub fn cycle(color: NodeColor) -> NodeColor {
     match color {
-        Color::Green => Color::Yellow,
-        Color::Yellow => Color::Red,
-        Color::Red => Color::Green,
+        NodeColor::Green => NodeColor::Yellow,
+        NodeColor::Yellow => NodeColor::Red,
+        NodeColor::Red => NodeColor::Green,
     }
 }
 

@@ -112,6 +112,9 @@
   enhancing type safety and compatibility.
   [#3647](https://github.com/rustwasm/wasm-bindgen/pull/3647)
 
+* Stop tolerating name collisions on enums, this would previously just emit one of them.
+  [#3669](https://github.com/rustwasm/wasm-bindgen/pull/3669)
+
 ### Fixed
 
 * Fixed `wasm_bindgen` macro to handle raw identifiers in field names.

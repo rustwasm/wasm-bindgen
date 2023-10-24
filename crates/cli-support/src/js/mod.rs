@@ -2455,7 +2455,7 @@ impl<'a> Context<'a> {
         pairs.sort_by_key(|(k, _)| *k);
         check_duplicated_getter_and_setter_names(&pairs)?;
 
-        for e in self.aux.enums.iter() {
+        for (_, e) in self.aux.enums.iter() {
             self.generate_enum(e)?;
         }
 
