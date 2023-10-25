@@ -3,7 +3,9 @@ interface Notification : EventTarget {
   constructor(DOMString title, optional NotificationOptions options = {});
 
   static readonly attribute NotificationPermission permission;
-  [Exposed=Window] static Promise<NotificationPermission> requestPermission(optional NotificationPermissionCallback deprecatedCallback);
+
+  [Throws, Func="mozilla::dom::Notification::RequestPermissionEnabledForScope"]
+  static Promise<NotificationPermission> requestPermission(optional NotificationPermissionCallback permissionCallback);
 
   static readonly attribute unsigned long maxActions;
 

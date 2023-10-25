@@ -154,6 +154,9 @@
 * Removed `ReadableStreamByobReader::read_with_u8_array()` because it doesn't work with Wasm.
   [#3582](https://github.com/rustwasm/wasm-bindgen/pull/3582)
 
+* Removed `GetNotificationOptions`, `NotificationBehavior` and `Notification.get()` because
+  they don't exist anymore.
+
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
 Released 2023-06-12.
