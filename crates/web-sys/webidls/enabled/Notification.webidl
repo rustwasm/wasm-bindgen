@@ -14,11 +14,11 @@ interface Notification : EventTarget {
 
   readonly attribute DOMString title;
   readonly attribute NotificationDirection dir;
-  readonly attribute DOMString lang;
-  readonly attribute DOMString body;
-  readonly attribute DOMString tag;
+  readonly attribute DOMString? lang;
+  readonly attribute DOMString? body;
+  readonly attribute DOMString? tag;
   readonly attribute USVString image;
-  readonly attribute USVString icon;
+  readonly attribute USVString? icon;
   readonly attribute USVString badge;
   [SameObject] readonly attribute FrozenArray<unsigned long> vibrate;
   readonly attribute unsigned long long timestamp;
