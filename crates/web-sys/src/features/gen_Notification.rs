@@ -104,21 +104,21 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/lang)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn lang(this: &Notification) -> String;
+    pub fn lang(this: &Notification) -> Option<String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = body)]
     #[doc = "Getter for the `body` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/body)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn body(this: &Notification) -> String;
+    pub fn body(this: &Notification) -> Option<String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = tag)]
     #[doc = "Getter for the `tag` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/tag)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn tag(this: &Notification) -> String;
+    pub fn tag(this: &Notification) -> Option<String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = image)]
     #[doc = "Getter for the `image` field of this object."]
     #[doc = ""]
@@ -132,7 +132,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/icon)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn icon(this: &Notification) -> String;
+    pub fn icon(this: &Notification) -> Option<String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = badge)]
     #[doc = "Getter for the `badge` field of this object."]
     #[doc = ""]
@@ -214,20 +214,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     pub fn close(this: &Notification);
-    # [wasm_bindgen (static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
+    # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn request_permission() -> ::js_sys::Promise;
-    # [wasm_bindgen (static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
+    pub fn request_permission() -> Result<::js_sys::Promise, JsValue>;
+    # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn request_permission_with_deprecated_callback(
-        deprecated_callback: &::js_sys::Function,
-    ) -> ::js_sys::Promise;
+    pub fn request_permission_with_permission_callback(
+        permission_callback: &::js_sys::Function,
+    ) -> Result<::js_sys::Promise, JsValue>;
 }
