@@ -67,27 +67,7 @@
   proc-macro and accept the `--include-ignored` flag with `wasm-bindgen-test-runner`.
   [#3644](https://github.com/rustwasm/wasm-bindgen/pull/3644)
 
-* Added `Notification` fields
-  [#3667](https://github.com/rustwasm/wasm-bindgen/pull/3667)
-  * `max_actions`
-  * `image`
-  * `badge`
-  * `vibrate`
-  * `timestamp`
-  * `renotify`
-  * `silent`
-  * `actions`
-  
-* Added `NotificationOptions` fields
-  [#3667](https://github.com/rustwasm/wasm-bindgen/pull/3667)
-  * `image`
-  * `badge`
-  * `timestamp`
-  * `renotify`
-  * `silent`
-  * `actions`
-
-* Added `NotificationAction`
+* Added missing additions to the Notification API.
   [#3667](https://github.com/rustwasm/wasm-bindgen/pull/3667)
 
 ### Changed
