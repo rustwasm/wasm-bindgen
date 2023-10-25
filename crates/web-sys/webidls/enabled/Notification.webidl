@@ -54,8 +54,8 @@ enum NotificationPermission {
 };
 
 enum NotificationDirection {
-  "auto" ,
-  "ltr" ,
+  "auto",
+  "ltr",
   "rtl"
 };
 
