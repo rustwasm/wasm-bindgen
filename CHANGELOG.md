@@ -112,7 +112,7 @@
   enhancing type safety and compatibility.
   [#3647](https://github.com/rustwasm/wasm-bindgen/pull/3647)
 
-* Stop tolerating name collisions on enums, this would previously just emit one of them.
+* Throw an error on enum name collisions, previously only one enum would be emitted.
   [#3669](https://github.com/rustwasm/wasm-bindgen/pull/3669)
 
 ### Fixed
