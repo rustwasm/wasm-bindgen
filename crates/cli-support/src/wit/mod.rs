@@ -852,8 +852,15 @@ impl<'a> Context<'a> {
                 .collect(),
             generate_typescript: enum_.generate_typescript,
         };
-        self.aux.enums.push(aux);
-        Ok(())
+        let mut result = Ok(());
+        self.aux
+            .enums
+            .entry(aux.name.clone())
+            .and_modify(|existing| {
+                result = Err(anyhow!("duplicate enums:\n{:?}\n{:?}", existing, aux));
+            })
+            .or_insert(aux);
+        result
     }
 
     fn struct_(&mut self, struct_: decode::Struct<'_>) -> Result<(), Error> {
