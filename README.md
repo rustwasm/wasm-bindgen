@@ -11,6 +11,7 @@
     <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/v/wasm-bindgen.svg?style=flat-square" alt="Crates.io version" /></a>
     <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/d/wasm-bindgen.svg?style=flat-square" alt="Download" /></a>
     <a href="https://docs.rs/wasm-bindgen"><img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square" alt="docs.rs docs" /></a>
+    <a href="https://securityscorecards.dev/viewer/?uri=github.com/rustwasm/wasm-bindgen"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.securityscorecards.dev%2Fprojects%2Fgithub.com%2Frustwasm%2Fwasm-bindgen&query=%24.score&style=flat-square&label=OpenSSF%20Scorecard" alt="OpenSSF Scorecard" /></a>
   </p>
 
   <h3>
