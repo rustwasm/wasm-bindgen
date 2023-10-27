@@ -1,60 +1,34 @@
-/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this file,
- * You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * The origin of this IDL file is
- * https://notifications.spec.whatwg.org/
- *
- * Copyright:
- * To the extent possible under law, the editors have waived all copyright and
- * related or neighboring rights to this work.
- */
-
-[Constructor(DOMString title, optional NotificationOptions options),
- Exposed=(Window,Worker),
- Func="mozilla::dom::Notification::PrefEnabled"]
+[Exposed=(Window,Worker)]
 interface Notification : EventTarget {
-  [GetterThrows]
+  constructor(DOMString title, optional NotificationOptions options = {});
+
   static readonly attribute NotificationPermission permission;
 
   [Throws, Func="mozilla::dom::Notification::RequestPermissionEnabledForScope"]
   static Promise<NotificationPermission> requestPermission(optional NotificationPermissionCallback permissionCallback);
 
-  [Throws, Func="mozilla::dom::Notification::IsGetEnabled"]
-  static Promise<sequence<Notification>> get(optional GetNotificationOptions filter);
+  static readonly attribute unsigned long maxActions;
 
   attribute EventHandler onclick;
-
   attribute EventHandler onshow;
-
   attribute EventHandler onerror;
-
   attribute EventHandler onclose;
 
-  [Pure]
   readonly attribute DOMString title;
-
-  [Pure]
   readonly attribute NotificationDirection dir;
-
-  [Pure]
   readonly attribute DOMString? lang;
-
-  [Pure]
   readonly attribute DOMString? body;
-
-  [Constant]
   readonly attribute DOMString? tag;
-
-  [Pure]
-  readonly attribute DOMString? icon;
-
-  [Constant, Func="mozilla::dom::DOMPrefs::NotificationRIEnabled"]
+  readonly attribute USVString image;
+  readonly attribute USVString? icon;
+  readonly attribute USVString badge;
+  [SameObject] readonly attribute FrozenArray<unsigned long> vibrate;
+  readonly attribute unsigned long long timestamp;
+  readonly attribute boolean renotify;
+  readonly attribute boolean? silent;
   readonly attribute boolean requireInteraction;
-
-  [Constant]
-  readonly attribute any data;
+  [SameObject] readonly attribute any data;
+  [SameObject] readonly attribute FrozenArray<NotificationAction> actions;
 
   undefined close();
 };
@@ -64,21 +38,15 @@ dictionary NotificationOptions {
   DOMString lang = "";
   DOMString body = "";
   DOMString tag = "";
-  DOMString icon = "";
+  USVString image;
+  USVString icon;
+  USVString badge;
+  unsigned long long timestamp;
+  boolean renotify = false;
+  boolean? silent = null;
   boolean requireInteraction = false;
   any data = null;
-};
-
-dictionary GetNotificationOptions {
-  DOMString tag = "";
-};
-
-dictionary NotificationBehavior {
-  boolean noscreen = false;
-  boolean noclear = false;
-  boolean showOnlyOnce = false;
-  DOMString soundFile = "";
-  sequence<unsigned long> vibrationPattern;
+  sequence<NotificationAction> actions = [];
 };
 
 enum NotificationPermission {
@@ -87,10 +55,16 @@ enum NotificationPermission {
   "granted"
 };
 
-callback NotificationPermissionCallback = undefined (NotificationPermission permission);
-
 enum NotificationDirection {
   "auto",
   "ltr",
   "rtl"
 };
+
+dictionary NotificationAction {
+  required DOMString action;
+  required DOMString title;
+  USVString icon;
+};
+
+callback NotificationPermissionCallback = undefined (NotificationPermission permission);

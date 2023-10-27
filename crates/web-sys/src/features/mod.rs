@@ -2476,12 +2476,6 @@ mod gen_GetAnimationsOptions;
 #[cfg(feature = "GetAnimationsOptions")]
 pub use gen_GetAnimationsOptions::*;
 
-#[cfg(feature = "GetNotificationOptions")]
-#[allow(non_snake_case)]
-mod gen_GetNotificationOptions;
-#[cfg(feature = "GetNotificationOptions")]
-pub use gen_GetNotificationOptions::*;
-
 #[cfg(feature = "GetRootNodeOptions")]
 #[allow(non_snake_case)]
 mod gen_GetRootNodeOptions;
@@ -5092,11 +5086,11 @@ mod gen_Notification;
 #[cfg(feature = "Notification")]
 pub use gen_Notification::*;
 
-#[cfg(feature = "NotificationBehavior")]
+#[cfg(feature = "NotificationAction")]
 #[allow(non_snake_case)]
-mod gen_NotificationBehavior;
-#[cfg(feature = "NotificationBehavior")]
-pub use gen_NotificationBehavior::*;
+mod gen_NotificationAction;
+#[cfg(feature = "NotificationAction")]
+pub use gen_NotificationAction::*;
 
 #[cfg(feature = "NotificationDirection")]
 #[allow(non_snake_case)]
