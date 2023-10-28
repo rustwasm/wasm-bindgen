@@ -1,8 +1,12 @@
 {
   "scripts": {
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs"
   },
   "devDependencies": {
-    "typescript": "^3.3.3333"
-  }
+    "@types/jest": "^29.5.8",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "type": "module"
 }
