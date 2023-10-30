@@ -28,14 +28,14 @@ macro_rules! if_std {
 
 macro_rules! externs {
     ($(#[$attr:meta])* extern "C" { $(fn $name:ident($($args:tt)*) -> $ret:ty;)* }) => (
-        #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+        #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", all(target_os = "wasi", enable_wasi))))]
         $(#[$attr])*
         extern "C" {
             $(fn $name($($args)*) -> $ret;)*
         }
 
         $(
-            #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+            #[cfg(not(all(target_arch = "wasm32", any(target_os = "unknown", all(target_os = "wasi", enable_wasi)))))]
             #[allow(unused_variables)]
             unsafe extern fn $name($($args)*) -> $ret {
                 panic!("function not implemented on non-wasm32 targets")
@@ -1336,7 +1336,7 @@ impl<T> UnwrapThrowExt<T> for Option<T> {
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(
             target_arch = "wasm32",
-            not(any(target_os = "emscripten", target_os = "wasi"))
+            any(target_os = "unknown", all(target_os = "wasi", enable_wasi))
         )) {
             match self {
                 Some(val) => val,
@@ -1356,7 +1356,7 @@ where
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(
             target_arch = "wasm32",
-            not(any(target_os = "emscripten", target_os = "wasi"))
+            any(target_os = "unknown", all(target_os = "wasi", enable_wasi))
         )) {
             match self {
                 Ok(val) => val,

@@ -1,6 +1,7 @@
 use anyhow::{bail, Error};
 use docopt::Docopt;
 use serde::Deserialize;
+use std::env;
 use std::path::PathBuf;
 use std::process;
 use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
@@ -154,6 +155,12 @@ fn rmain(args: &Args) -> Result<(), Error> {
         Some(ref p) => p,
         None => bail!("the `--out-dir` argument is now required"),
     };
+
+    if args.flag_wasi {
+        env::set_var("WASM_BINDGEN_ENABLE_WASI", "1");
+    } else {
+        env::set_var("WASM_BINDGEN_ENABLE_WASI", "0");
+    }
 
     b.generate(out_dir)
 }
