@@ -45,6 +45,7 @@ pub struct Bindgen {
     multi_value: bool,
     encode_into: EncodeInto,
     split_linked_modules: bool,
+    wasi: bool,
 }
 
 pub struct Output {
@@ -113,6 +114,7 @@ impl Bindgen {
             encode_into: EncodeInto::Test,
             omit_default_module_path: true,
             split_linked_modules: false,
+            wasi: false,
         }
     }
 
@@ -244,6 +246,11 @@ impl Bindgen {
 
     pub fn debug(&mut self, debug: bool) -> &mut Bindgen {
         self.debug = debug;
+        self
+    }
+
+    pub fn wasi(&mut self, wasi: bool) -> &mut Bindgen {
+        self.wasi = wasi;
         self
     }
 

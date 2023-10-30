@@ -41,6 +41,7 @@ Options:
     --no-modules                 Deprecated, use `--target no-modules`
     --weak-refs                  Enable usage of the JS weak references proposal
     --reference-types            Enable usage of WebAssembly reference types
+    --wasi                       Enable binding on `wasm32-wasi` target
     -V --version                 Print the version number of wasm-bindgen
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/reference/cli.html
@@ -71,6 +72,7 @@ struct Args {
     flag_target: Option<String>,
     flag_omit_default_module_path: bool,
     flag_split_linked_modules: bool,
+    flag_wasi: bool,
     arg_input: Option<PathBuf>,
 }
 
@@ -117,6 +119,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .browser(args.flag_browser)?
         .no_modules(args.flag_no_modules)?
         .debug(args.flag_debug)
+        .wasi(args.flag_wasi)
         .demangle(!args.flag_no_demangle)
         .keep_lld_exports(args.flag_keep_lld_exports)
         .keep_debug(args.flag_keep_debug)
