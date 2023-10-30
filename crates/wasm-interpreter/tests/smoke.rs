@@ -3,7 +3,7 @@ use wasm_bindgen_wasm_interpreter::Interpreter;
 
 fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
     let wasm = wat::parse_str(wat).unwrap();
-    let mut module = ModuleConfig::new()
+    let module = ModuleConfig::new()
         .generate_producers_section(false)
         .parse(&wasm)
         .unwrap();
