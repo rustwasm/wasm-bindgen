@@ -1380,7 +1380,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
 }
 
 impl ToTokens for ast::Enum {
-    fn to_tokens(&self, into: &mut TokenStream) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         let enum_name = &self.rust_name;
         let name_str = self.js_name.to_string();
         let name_len = name_str.len() as u32;
@@ -1501,12 +1501,12 @@ impl ToTokens for ast::Enum {
                 }
             }
         })
-        .to_tokens(into);
+        .to_tokens(tokens);
     }
 }
 
 impl ToTokens for ast::ImportStatic {
-    fn to_tokens(&self, into: &mut TokenStream) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         let name = &self.rust_name;
         let ty = &self.ty;
         let shim_name = &self.shim;
@@ -1541,7 +1541,7 @@ impl ToTokens for ast::ImportStatic {
                 }
             };
         })
-        .to_tokens(into);
+        .to_tokens(tokens);
 
         Descriptor {
             ident: shim_name,
@@ -1551,7 +1551,7 @@ impl ToTokens for ast::ImportStatic {
             attrs: vec![],
             wasm_bindgen: &self.wasm_bindgen,
         }
-        .to_tokens(into);
+        .to_tokens(tokens);
     }
 }
 

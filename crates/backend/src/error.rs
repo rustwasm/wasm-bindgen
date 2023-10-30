@@ -108,26 +108,26 @@ fn extract_spans(node: &dyn ToTokens) -> Option<(Span, Span)> {
 }
 
 impl ToTokens for Diagnostic {
-    fn to_tokens(&self, dst: &mut TokenStream) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         match &self.inner {
             Repr::Single { text, span } => {
                 let cs2 = (Span::call_site(), Span::call_site());
                 let (start, end) = span.unwrap_or(cs2);
-                dst.append(Ident::new("compile_error", start));
-                dst.append(Punct::new('!', Spacing::Alone));
+                tokens.append(Ident::new("compile_error", start));
+                tokens.append(Punct::new('!', Spacing::Alone));
                 let mut message = TokenStream::new();
                 message.append(Literal::string(text));
                 let mut group = Group::new(Delimiter::Brace, message);
                 group.set_span(end);
-                dst.append(group);
+                tokens.append(group);
             }
             Repr::Multi { diagnostics } => {
                 for diagnostic in diagnostics {
-                    diagnostic.to_tokens(dst);
+                    diagnostic.to_tokens(tokens);
                 }
             }
             Repr::SynError(err) => {
-                err.to_compile_error().to_tokens(dst);
+                err.to_compile_error().to_tokens(tokens);
             }
         }
     }
