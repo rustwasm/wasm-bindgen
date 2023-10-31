@@ -1,0 +1,34 @@
+name: Bump packages
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+          description: 'bump or publish'
+          required: true
+          default: 'bump'
+          type: choice
+          options:
+            - bump
+            - publish
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.action == 'bump'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: rustc publish.rs
+      - run: git checkout -b bump
+      - run: printf "bump versions for release\n\n" > /tmp/bump
+      - run: ./publish bump >> /tmp/bump
+      - run: git add .
+      - run: git commit -m "bump"
+      - run: git push origin bump
+      - run: gh pr create --fill --body-file /tmp/bump
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
