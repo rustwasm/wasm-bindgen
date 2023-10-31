@@ -32,3 +32,16 @@ jobs:
       - run: gh pr create --fill --body-file /tmp/bump
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.action == 'publish'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: rustc publish.rs
+      - name: assert we're on bump branch
+        run: test "$(git git branch --show-current)" = "bump"
+      - run: ./publish publish
+        env:
+          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
