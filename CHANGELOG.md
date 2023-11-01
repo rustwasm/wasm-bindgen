@@ -3,7 +3,7 @@
 
 ## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88)
 
-Released 2022-1-11
+Released 2023-11-01
 
 ### Added
 
