@@ -1456,7 +1456,7 @@ impl ToTokens for ast::Enum {
                 type Error = #wasm_bindgen::JsValue;
 
                 fn try_from(value: #wasm_bindgen::JsValue)
-                    -> #wasm_bindgen::__rt::std::result::Result<Self, Self::Error> {
+                    -> #wasm_bindgen::__rt::std::result::Result<Self, <#enum_name as #wasm_bindgen::__rt::core::convert::TryFrom<JsValue>>::Error> {
                     let js = f64::try_from(&value)? as u32;
 
                     #wasm_bindgen::__rt::std::result::Result::Ok(
