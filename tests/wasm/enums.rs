@@ -71,6 +71,14 @@ pub fn handle_optional_enums(x: Option<Color>) -> Option<Color> {
     x
 }
 
+#[wasm_bindgen]
+#[derive(Copy, Clone)]
+pub enum EnumWithErrorVariant {
+    OK,
+    Warning,
+    Error,
+}
+
 #[wasm_bindgen_test]
 fn test_optional_enums() {
     use self::Color::*;
