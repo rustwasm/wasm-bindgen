@@ -5,20 +5,10 @@ permissions:
 
 on:
   workflow_dispatch:
-    inputs:
-      action:
-          description: 'bump or publish'
-          required: true
-          default: 'bump'
-          type: choice
-          options:
-            - bump
-            - publish
 
 jobs:
   bump:
     runs-on: ubuntu-latest
-    if: github.event.inputs.action == 'bump'
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -28,24 +18,13 @@ jobs:
             git config --global user.name "GitHub Actions"
       - run: rustc publish.rs
       - run: git checkout -b bump
-      - run: printf "bump versions for release\n\n" > /tmp/bump
-      - run: ./publish bump >> /tmp/bump
+      - run: echo "Bump versions for release v" > /tmp/msg
+      - run: cat Cargo.toml | grep -m1 -F "version = \"" | awk -F'"' '{print $2}' >> /tmp/msg
+      - run: printf '\n' >> /tmp/msg
+      - run: ./publish bump >> /tmp/msg
       - run: git add .
-      - run: git commit -m "bump"
-      - run: git push origin bump
-      - run: gh pr create --fill --body-file /tmp/bump
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish:
-    runs-on: ubuntu-latest
-    if: github.event.inputs.action == 'publish'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - run: rustc publish.rs
-      - name: assert we're on bump branch
-        run: test "$(git git branch --show-current)" = "bump"
+      - run: git commit -S -F /tmp/msg
       - run: ./publish publish
         env:
           CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+      - run: git push origin master
