@@ -10,6 +10,7 @@ extern "C" {
     fn js_expect_enum(x: Color, y: Option<Color>);
     fn js_expect_enum_none(x: Option<Color>);
     fn js_renamed_enum(b: RenamedEnum);
+    fn js_enum_with_error_variant();
 }
 
 #[wasm_bindgen]
@@ -71,6 +72,14 @@ pub fn handle_optional_enums(x: Option<Color>) -> Option<Color> {
     x
 }
 
+#[wasm_bindgen]
+#[derive(Copy, Clone)]
+pub enum EnumWithErrorVariant {
+    OK,
+    Warning,
+    Error,
+}
+
 #[wasm_bindgen_test]
 fn test_optional_enums() {
     use self::Color::*;
@@ -94,4 +103,9 @@ fn test_optional_enum_values() {
 #[wasm_bindgen_test]
 fn test_renamed_enum() {
     js_renamed_enum(RenamedEnum::B);
+}
+
+#[wasm_bindgen_test]
+fn test_enum_with_error_variant() {
+    js_enum_with_error_variant();
 }
