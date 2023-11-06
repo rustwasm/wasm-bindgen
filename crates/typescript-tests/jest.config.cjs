@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   extensionsToTreatAsEsm: [".ts"],
   verbose: true,
-  testMatch: ['**/src/simple_struct.ts'],
+  testMatch: ['**/src/simple_struct.ts', '**/src/typescript_type.ts'],
   globals: {
     'ts-jest':
     {
