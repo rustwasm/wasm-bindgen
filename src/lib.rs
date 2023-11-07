@@ -1371,9 +1371,9 @@ where
 /// Returns a handle to this wasm instance's `WebAssembly.Module`
 ///
 /// Note that this is only available when the final wasm app is built with
-/// `--target no-modules`, it's not recommended to rely on this API yet! This is
-/// largely just an experimental addition to enable threading demos. Using this
-/// may prevent your wasm module from building down the road.
+/// `--target no-modules` or `--target web`, it's not recommended to rely on this
+/// API yet! This is largely just an experimental addition to enable threading demos.
+/// Using this may prevent your wasm module from building down the road.
 #[doc(hidden)]
 pub fn module() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_module()) }
