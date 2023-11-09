@@ -1604,7 +1604,11 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView)
     #[wasm_bindgen(constructor)]
-    pub fn new_with_shared_array_buffer(buffer: &SharedArrayBuffer, byteOffset: usize, byteLength: usize) -> DataView;
+    pub fn new_with_shared_array_buffer(
+        buffer: &SharedArrayBuffer,
+        byteOffset: usize,
+        byteLength: usize,
+    ) -> DataView;
 
     /// The ArrayBuffer referenced by this view. Fixed at construction time and thus read only.
     ///
