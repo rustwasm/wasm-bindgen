@@ -55,6 +55,10 @@ fn push_index_identifier(i: usize, s: &mut String) {
     }
 }
 
+fn args_are_optional(name: &str) -> bool {
+    name == "__wbindgen_thread_destroy"
+}
+
 pub fn interface(module: &Module) -> Result<String, Error> {
     let mut exports = String::new();
 
@@ -81,6 +85,9 @@ pub fn interface(module: &Module) -> Result<String, Error> {
             }
 
             push_index_identifier(i, &mut args);
+            if args_are_optional(&entry.name) {
+                args.push('?');
+            }
             args.push_str(": number");
         }
 
