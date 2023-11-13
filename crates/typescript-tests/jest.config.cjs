@@ -4,6 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   extensionsToTreatAsEsm: [".ts"],
   verbose: true,
+  // TODO: match all test files
   testMatch: ['**/src/simple_struct.ts', '**/src/typescript_type.ts'],
   injectGlobals: false,
   globals: {
