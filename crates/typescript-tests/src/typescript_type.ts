@@ -1,4 +1,5 @@
 import * as wbg from "../pkg/typescript_tests";
+import { expect, jest, test } from "@jest/globals";
 
 test("constructor", () => {
   const style: wbg.TextStyle = new wbg.TextStyle({
@@ -21,7 +22,7 @@ test("optional parameter constructor", () => {
   const optional_style: wbg.TextStyle = wbg.TextStyle.optional_new({
     italic: true,
     bold: false,
-    size: 0
+    size: 0,
   });
   expect(optional_style.bold).toStrictEqual(false);
   expect(optional_style.italic).toStrictEqual(true);

@@ -5,6 +5,7 @@ module.exports = {
   extensionsToTreatAsEsm: [".ts"],
   verbose: true,
   testMatch: ['**/src/simple_struct.ts', '**/src/typescript_type.ts'],
+  injectGlobals: false,
   globals: {
     'ts-jest':
     {

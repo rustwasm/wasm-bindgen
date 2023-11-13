@@ -1,4 +1,5 @@
 import * as wbg from "../pkg/typescript_tests";
+import { expect, jest, test } from "@jest/globals";
 
 test("member function (void) -> void", () => {
   const a = new wbg.A();
