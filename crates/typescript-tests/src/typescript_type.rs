@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(typescript_custom_section)]
@@ -16,7 +17,7 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-#[derive(Default)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct TextStyle {
     pub bold: bool,
     pub italic: bool,
@@ -26,13 +27,12 @@ pub struct TextStyle {
 #[wasm_bindgen]
 impl TextStyle {
     #[wasm_bindgen(constructor)]
-    pub fn new(_i: ITextStyle) -> TextStyle {
-        // parse JsValue
-        TextStyle::default()
+    pub fn new(i: ITextStyle) -> TextStyle {
+        let js_value: JsValue = i.into();
+        serde_wasm_bindgen::from_value(js_value).unwrap()
     }
 
-    pub fn optional_new(_i: Option<ITextStyle>) -> TextStyle {
-        // parse JsValue
-        TextStyle::default()
+    pub fn optional_new(i: Option<ITextStyle>) -> TextStyle {
+        i.map(Self::new).unwrap_or_default()
     }
 }
