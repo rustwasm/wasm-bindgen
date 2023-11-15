@@ -7,14 +7,16 @@
 
 * Add additional constructor to `DataView` for `SharedArrayBuffer`.
   [#3695](https://github.com/rustwasm/wasm-bindgen/pull/3695)
-* Remove experimental status from `wasm_bindgen::module()` and update docs to say it works with `--target web`.
+
+* Stabilize `wasm_bindgen::module()`.
   [#3690](https://github.com/rustwasm/wasm-bindgen/pull/3690)
 
 ### Fixed
 
 * The DWARF section is now correctly modified instead of leaving it in a broken state.
   [#3483](https://github.com/rustwasm/wasm-bindgen/pull/3483)
-* Update the TypeScript signature of `__wbindgen_thread_destroy` to indicate that it has optional parameters.
+
+* Update the TypeScript signature of `__wbindgen_thread_destroy` to indicate that it's parameters are optional.
   [#3703](https://github.com/rustwasm/wasm-bindgen/pull/3703)
 
 ## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88)
