@@ -815,6 +815,17 @@ if_std! {
             }
         }
     }
+
+    impl crate::convert::TryFromJsValue for String {
+        type Error = JsValue;
+
+        fn try_from_js_value(value: JsValue) -> Result<Self, Self::Error> {
+            match value.as_string() {
+                Some(s) => Ok(s),
+                None => Err(value),
+            }
+        }
+    }
 }
 
 impl From<bool> for JsValue {
