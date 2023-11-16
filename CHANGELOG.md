@@ -15,8 +15,9 @@
 
 * The DWARF section is now correctly modified instead of leaving it in a broken state.
   [#3483](https://github.com/rustwasm/wasm-bindgen/pull/3483)
-* Custom TryFromJsValue Trait: Fixed an issue where #[wasm_bindgen] automatically derived the TryFrom trait for any struct, preventing custom TryFrom<JsValue> implementations. The wasm-bindgen derive macro has been updated to utilize the new TryFromJsValue trait.    [#3709](https://github.com/rustwasm/wasm-bindgen/pull/3709)
 
+* Fixed an issue where `#[wasm_bindgen]` automatically derived the `TryFrom` trait for any struct, preventing custom `TryFrom<JsValue>` implementations. It has been updated to utilize a new `TryFromJsValue` trait instead.
+  [#3709](https://github.com/rustwasm/wasm-bindgen/pull/3709)
 
 * Update the TypeScript signature of `__wbindgen_thread_destroy` to indicate that it's parameters are optional.
   [#3703](https://github.com/rustwasm/wasm-bindgen/pull/3703)
