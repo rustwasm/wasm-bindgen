@@ -2,9 +2,9 @@ use core::char;
 use core::mem::{self, ManuallyDrop};
 
 use crate::convert::traits::{WasmAbi, WasmPrimitive};
-use crate::convert::TryFromJsValue;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, LongRefFromWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
+use crate::TryFromJsValue;
 use crate::{Clamped, JsError, JsValue, UnwrapThrowExt};
 
 if_std! {

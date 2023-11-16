@@ -250,11 +250,3 @@ impl<T: WasmAbi> WasmRet<T> {
         T::join(self.prim1, self.prim2, self.prim3, self.prim4)
     }
 }
-
-pub trait TryFromJsValue: Sized {
-    /// The type returned in the event of a conversion error.
-    type Error;
-
-    /// Performs the conversion.
-    fn try_from_js_value(value: JsValue) -> Result<Self, Self::Error>;
-}
