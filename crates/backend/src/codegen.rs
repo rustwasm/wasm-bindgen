@@ -297,7 +297,7 @@ impl ToTokens for ast::Struct {
             }
 
             #[allow(clippy::all)]
-            impl #wasm_bindgen::TryFromJsValue for #name {
+            impl #wasm_bindgen::convert::TryFromJsValue for #name {
                 type Error = #wasm_bindgen::JsValue;
 
                 fn try_from_js_value(value: #wasm_bindgen::JsValue)
@@ -819,11 +819,12 @@ impl ToTokens for ast::ImportType {
 
             #[automatically_derived]
             const _: () = {
+                use #wasm_bindgen::convert::TryFromJsValue;
                 use #wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi};
                 use #wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
                 use #wasm_bindgen::convert::{RefFromWasmAbi, LongRefFromWasmAbi};
                 use #wasm_bindgen::describe::WasmDescribe;
-                use #wasm_bindgen::{JsValue, JsCast, JsObject, TryFromJsValue};
+                use #wasm_bindgen::{JsValue, JsCast, JsObject};
                 use #wasm_bindgen::__rt::core;
 
                 impl WasmDescribe for #rust_name {
@@ -1452,11 +1453,11 @@ impl ToTokens for ast::Enum {
             }
 
             #[allow(clippy::all)]
-            impl #wasm_bindgen::TryFromJsValue for #enum_name {
+            impl #wasm_bindgen::convert::TryFromJsValue for #enum_name {
                 type Error = #wasm_bindgen::JsValue;
 
                 fn try_from_js_value(value: #wasm_bindgen::JsValue)
-                    -> #wasm_bindgen::__rt::std::result::Result<Self, <#enum_name as #wasm_bindgen::TryFromJsValue>::Error> {
+                    -> #wasm_bindgen::__rt::std::result::Result<Self, <#enum_name as #wasm_bindgen::convert::TryFromJsValue>::Error> {
                     use #wasm_bindgen::__rt::core::convert::TryFrom;
                     let js = f64::try_from(&value)? as u32;
 
