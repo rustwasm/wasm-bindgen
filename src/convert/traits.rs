@@ -251,6 +251,19 @@ impl<T: WasmAbi> WasmRet<T> {
     }
 }
 
+/// `TryFromJsValue` is a trait for converting a JavaScript value (`JsValue`)
+/// into a Rust type. It is particularly useful when dealing with JavaScript
+/// objects in WebAssembly, allowing for custom conversion logic that might
+/// be needed when interacting with JavaScript APIs or passing data between
+/// Rust and JavaScript.
+///
+/// This trait is intended as a solution to the limitations imposed by the
+/// automatic derivation of `TryFrom<JsValue>` in `wasm-bindgen`, which
+/// restricts the ability to implement custom conversions for ABI-bound structs.
+///
+/// Types implementing this trait must specify their conversion logic from
+/// `JsValue` to the Rust type, handling any potential errors that may occur
+/// during the conversion process.
 pub trait TryFromJsValue: Sized {
     /// The type returned in the event of a conversion error.
     type Error;
