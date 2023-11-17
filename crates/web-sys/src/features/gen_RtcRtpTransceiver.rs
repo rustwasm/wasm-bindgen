@@ -73,6 +73,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`*"]
     pub fn get_remote_track_id(this: &RtcRtpTransceiver) -> String;
+    # [wasm_bindgen (method , structural , js_class = "RTCRtpTransceiver" , js_name = setCodecPreferences)]
+    #[doc = "The `setCodecPreferences()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpTransceiver/setCodecPreferences)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`*"]
+    pub fn set_codec_preferences(this: &RtcRtpTransceiver, codecs: &::wasm_bindgen::JsValue);
     # [wasm_bindgen (method , structural , js_class = "RTCRtpTransceiver" , js_name = stop)]
     #[doc = "The `stop()` method."]
     #[doc = ""]
