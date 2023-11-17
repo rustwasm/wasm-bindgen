@@ -20,6 +20,13 @@ dictionary RTCRtpTransceiverInit {
     sequence<RTCRtpEncodingParameters> sendEncodings = [];
 };
 
+dictionary RTCRtpCodecCapability {
+    required DOMString      mimeType;
+    required unsigned long  clockRate;
+    unsigned short          channels;
+    DOMString               sdpFmtpLine;
+};
+
 [Pref="media.peerconnection.enabled",
  JSImplementation="@mozilla.org/dom/rtptransceiver;1"]
 interface RTCRtpTransceiver {
