@@ -20,13 +20,6 @@ dictionary RTCRtpTransceiverInit {
     sequence<RTCRtpEncodingParameters> sendEncodings = [];
 };
 
-dictionary RTCRtpCodecCapability {
-    required DOMString      mimeType;
-    required unsigned long  clockRate;
-    unsigned short          channels;
-    DOMString               sdpFmtpLine;
-};
-
 [Pref="media.peerconnection.enabled",
  JSImplementation="@mozilla.org/dom/rtptransceiver;1"]
 interface RTCRtpTransceiver {
@@ -40,7 +33,7 @@ interface RTCRtpTransceiver {
     readonly attribute RTCRtpTransceiverDirection? currentDirection;
 
     undefined stop();
-    undefined setCodecPreferences(sequence<RTCRtpCodecCapability> codecs);
+    undefined setCodecPreferences(sequence<RTCRtpCodecParameters> codecs);
 
     [ChromeOnly]
     undefined setRemoteTrackId(DOMString trackId);
