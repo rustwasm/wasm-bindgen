@@ -23,4 +23,4 @@ development. You may want to browse the [unpublished guide documentation] for
 
 ## Code Formatting
 
-Although formatting rules are not mandatory, it is encouraged to run `cargo run` (`rustfmt`) with its default rules within a PR to maintain a more organized code base. If necessary, a PR with a single commit that formats the entire project is also welcome.
+Although formatting rules are not mandatory, it is encouraged to run `cargo fmt` (`rustfmt`) with its default rules within a PR to maintain a more organized code base. If necessary, a PR with a single commit that formats the entire project is also welcome.
