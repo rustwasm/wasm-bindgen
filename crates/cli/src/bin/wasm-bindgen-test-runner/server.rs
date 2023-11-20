@@ -106,7 +106,7 @@ pub fn spawn(
         ));
 
         let worker_js_path = tmpdir.join("worker.js");
-        fs::write(&worker_js_path, worker_script).context("failed to write JS file")?;
+        fs::write(worker_js_path, worker_script).context("failed to write JS file")?;
 
         js_to_execute.push_str(&format!(
             r#"
