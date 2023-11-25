@@ -3,6 +3,11 @@
 
 ## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...main)
 
+### Added
+
+* Add bindings for `UserActivation`.
+  [#3719](https://github.com/rustwasm/wasm-bindgen/pull/3719)
+
 ### Removed
 
 * Removed Gecko-only `InstallTriggerData` and Gecko-internal `FlexLineGrowthState`, `GridDeclaration`, `GridTrackState`,
