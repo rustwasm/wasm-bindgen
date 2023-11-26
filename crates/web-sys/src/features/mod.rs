@@ -6328,12 +6328,6 @@ mod gen_RtcInboundRtpStreamStats;
 #[cfg(feature = "RtcInboundRtpStreamStats")]
 pub use gen_RtcInboundRtpStreamStats::*;
 
-#[cfg(feature = "RtcLifecycleEvent")]
-#[allow(non_snake_case)]
-mod gen_RtcLifecycleEvent;
-#[cfg(feature = "RtcLifecycleEvent")]
-pub use gen_RtcLifecycleEvent::*;
-
 #[cfg(feature = "RtcMediaStreamStats")]
 #[allow(non_snake_case)]
 mod gen_RtcMediaStreamStats;
@@ -9021,12 +9015,6 @@ pub use gen_WebglLoseContext::*;
 mod gen_WebglMultiDraw;
 #[cfg(feature = "WebglMultiDraw")]
 pub use gen_WebglMultiDraw::*;
-
-#[cfg(feature = "WebrtcGlobalStatisticsReport")]
-#[allow(non_snake_case)]
-mod gen_WebrtcGlobalStatisticsReport;
-#[cfg(feature = "WebrtcGlobalStatisticsReport")]
-pub use gen_WebrtcGlobalStatisticsReport::*;
 
 #[cfg(feature = "WgslLanguageFeatures")]
 #[allow(non_snake_case)]
