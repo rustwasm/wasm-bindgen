@@ -19,6 +19,11 @@
 * Update the TypeScript signature of `__wbindgen_thread_destroy` to indicate that it's parameters are optional.
   [#3703](https://github.com/rustwasm/wasm-bindgen/pull/3703)
 
+### Removed
+
+* Removed Gecko-internal dictionary bindings `Csp`, `CspPolicies`, `CspReport` and `CspReportProperties`.
+  [#3721](https://github.com/rustwasm/wasm-bindgen/pull/3721)
+
 ## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88)
 
 Released 2023-11-01
