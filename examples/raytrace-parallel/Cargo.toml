@@ -10,14 +10,14 @@ crate-type = ["cdylib"]
 
 [dependencies]
 console_error_panic_hook = "0.1"
-js-sys = "0.3.65"
+js-sys = "0.3.66"
 rayon = "1.1.0"
 rayon-core = "1.5.0"
 raytracer = { git = 'https://github.com/alexcrichton/raytracer', branch = 'update-deps' }
 serde-wasm-bindgen = "0.4.3"
 futures-channel-preview = "0.3.0-alpha.18"
-wasm-bindgen = "0.2.88"
-wasm-bindgen-futures = "0.4.38"
+wasm-bindgen = "0.2.89"
+wasm-bindgen-futures = "0.4.39"
 
 [dependencies.web-sys]
 version = "0.3.23"

@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-test"
-version = "0.3.38"
+version = "0.3.39"
 authors = ["The wasm-bindgen Developers"]
 description = "Internal testing crate for wasm-bindgen"
 license = "MIT OR Apache-2.0"
@@ -10,11 +10,11 @@ rust-version = "1.57"
 
 [dependencies]
 console_error_panic_hook = '0.1'
-js-sys = { path = '../js-sys', version = '0.3.65' }
+js-sys = { path = '../js-sys', version = '0.3.66' }
 scoped-tls = "1.0"
-wasm-bindgen = { path = '../..', version = '0.2.88' }
-wasm-bindgen-futures = { path = '../futures', version = '0.4.38' }
-wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.38' }
+wasm-bindgen = { path = '../..', version = '0.2.89' }
+wasm-bindgen-futures = { path = '../futures', version = '0.4.39' }
+wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.39' }
 gg-alloc = { version = "1.0", optional = true }
 
 [lib]

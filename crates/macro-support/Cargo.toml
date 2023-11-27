@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-macro-support"
-version = "0.2.88"
+version = "0.2.89"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro-support"
@@ -21,5 +21,5 @@ strict-macro = []
 syn = { version = '2.0', features = ['visit', 'full'] }
 quote = '1.0'
 proc-macro2 = "1.0"
-wasm-bindgen-backend = { path = "../backend", version = "=0.2.88" }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.88" }
+wasm-bindgen-backend = { path = "../backend", version = "=0.2.89" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.89" }

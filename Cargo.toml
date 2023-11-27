@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen"
-version = "0.2.88"
+version = "0.2.89"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
@@ -42,15 +42,15 @@ xxx_debug_only_print_generated_code = [
 ]
 
 [dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.88" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.89" }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 cfg-if = "1.0.0"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-js-sys = { path = 'crates/js-sys', version = '0.3.65' }
-wasm-bindgen-test = { path = 'crates/test', version = '=0.3.38' }
-wasm-bindgen-futures = { path = 'crates/futures', version = '=0.4.38' }
+js-sys = { path = 'crates/js-sys', version = '0.3.66' }
+wasm-bindgen-test = { path = 'crates/test', version = '=0.3.39' }
+wasm-bindgen-futures = { path = 'crates/futures', version = '=0.4.39' }
 serde_derive = "1.0"
 wasm-bindgen-test-crate-a = { path = 'tests/crates/a', version = '0.1' }
 wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }

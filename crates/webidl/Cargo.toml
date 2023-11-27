@@ -21,7 +21,7 @@ log = "0.4.1"
 proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '2.0', features = ['full'] }
-wasm-bindgen-backend = { version = "=0.2.88", path = "../backend" }
+wasm-bindgen-backend = { version = "=0.2.89", path = "../backend" }
 weedle = { git = "https://github.com/rustwasm/weedle.git" }
 once_cell = "1.12"
 sourcefile = "0.1"
