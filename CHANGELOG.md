@@ -1,7 +1,17 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
-## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.88...main)
+## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...main)
+
+### Removed
+
+* Removed Gecko-only `InstallTriggerData` and Gecko-internal `FlexLineGrowthState`, `GridDeclaration`, `GridTrackState`,
+  `RtcLifecycleEvent` and `WebrtcGlobalStatisticsReport` features.
+  [#3723](https://github.com/rustwasm/wasm-bindgen/pull/3723)
+
+## [0.2.89](https://github.com/rustwasm/wasm-bindgen/compare/0.2.88...0.2.89)
+
+Released 2023-11-27.
 
 ### Added
 
@@ -26,10 +36,6 @@
 
 * Removed Gecko-internal dictionary bindings `Csp`, `CspPolicies`, `CspReport` and `CspReportProperties`.
   [#3721](https://github.com/rustwasm/wasm-bindgen/pull/3721)
-
-* Removed Gecko-only `InstallTriggerData` and Gecko-internal `FlexLineGrowthState`, `GridDeclaration`, `GridTrackState`,
-  `RtcLifecycleEvent` and `WebrtcGlobalStatisticsReport` features.
-  [#3723](https://github.com/rustwasm/wasm-bindgen/pull/3723)
 
 ## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88)
 
