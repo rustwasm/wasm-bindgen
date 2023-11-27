@@ -18,7 +18,7 @@ use core::ops::{
 };
 use core::u32;
 
-use crate::convert::{FromWasmAbi, WasmRet, WasmSlice};
+use crate::convert::{FromWasmAbi, TryFromJsValue, WasmRet, WasmSlice};
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -809,6 +809,17 @@ if_std! {
         type Error = JsValue;
 
         fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+            match value.as_string() {
+                Some(s) => Ok(s),
+                None => Err(value),
+            }
+        }
+    }
+
+    impl TryFromJsValue for String {
+        type Error = JsValue;
+
+        fn try_from_js_value(value: JsValue) -> Result<Self, Self::Error> {
             match value.as_string() {
                 Some(s) => Ok(s),
                 None => Err(value),
