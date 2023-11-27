@@ -389,7 +389,7 @@ impl ToTokens for ast::StructField {
         };
         let maybe_assert_copy = respan(maybe_assert_copy, ty);
 
-        let mut val = quote_spanned!(self.rust_name.span()=> (*js).borrow().#rust_name);
+        let mut val = quote! { (*js).borrow().#rust_name };
         if let Some(span) = self.getter_with_clone {
             val = quote_spanned!(span=> <#ty as Clone>::clone(&#val) );
         }
