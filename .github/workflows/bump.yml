@@ -17,6 +17,9 @@ on:
 
 jobs:
   bump:
+    permissions:
+      pull-requests: write
+
     runs-on: ubuntu-latest
     if: github.event.inputs.action == 'bump'
     steps:
