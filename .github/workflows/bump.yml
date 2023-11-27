@@ -49,7 +49,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - run: rustc publish.rs
       - name: assert we're on bump branch
-        run: test "$(git git branch --show-current)" = "bump"
+        run: test "$(git branch --show-current)" = "bump"
       - run: ./publish publish
         env:
           CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
