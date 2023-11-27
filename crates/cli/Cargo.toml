@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-cli"
-version = "0.2.88"
+version = "0.2.89"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cli"
@@ -34,8 +34,8 @@ ureq = { version = "2.7", default-features = false, features = [
     "gzip",
 ] }
 walrus = { version = "0.20.2", features = ['parallel'] }
-wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.88" }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.88" }
+wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.89" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.89" }
 
 [dev-dependencies]
 assert_cmd = "1.0"

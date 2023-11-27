@@ -9,9 +9,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 console_log = "0.2.0"
-js-sys = "0.3.65"
-wasm-bindgen = "0.2.88"
-wasm-bindgen-futures = "0.4.38"
+js-sys = "0.3.66"
+wasm-bindgen = "0.2.89"
+wasm-bindgen-futures = "0.4.39"
 
 [dependencies.web-sys]
 version = "0.3.59"
