@@ -18,6 +18,7 @@ on:
 jobs:
   bump:
     permissions:
+      contents: write
       pull-requests: write
 
     runs-on: ubuntu-latest
