@@ -8350,6 +8350,12 @@ mod gen_UsbTransferStatus;
 #[cfg(feature = "UsbTransferStatus")]
 pub use gen_UsbTransferStatus::*;
 
+#[cfg(feature = "UserActivation")]
+#[allow(non_snake_case)]
+mod gen_UserActivation;
+#[cfg(feature = "UserActivation")]
+pub use gen_UserActivation::*;
+
 #[cfg(feature = "UserProximityEvent")]
 #[allow(non_snake_case)]
 mod gen_UserProximityEvent;
