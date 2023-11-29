@@ -8,6 +8,11 @@
 * Add bindings for `UserActivation`.
   [#3719](https://github.com/rustwasm/wasm-bindgen/pull/3719)
 
+### Fixed
+
+* Fixed a compiler error when using `#[wasm_bindgen]` inside `macro_rules!`.
+  [#3725](https://github.com/rustwasm/wasm-bindgen/pull/3725)
+
 ### Removed
 
 * Removed Gecko-only `InstallTriggerData` and Gecko-internal `FlexLineGrowthState`, `GridDeclaration`, `GridTrackState`,

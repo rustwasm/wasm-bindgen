@@ -241,3 +241,10 @@ exports.js_test_inspectable_classes_can_override_generated_methods = () => {
     assert.strictEqual(overridden_inspectable.toString(), 'string was overwritten');
     overridden_inspectable.free();
 };
+
+exports.js_test_class_defined_in_macro = () => {
+    const macroClass = new wasm.InsideMacro();
+    assert.strictEqual(macroClass.a, 3);
+    macroClass.a = 5;
+    assert.strictEqual(macroClass.a, 5);
+};

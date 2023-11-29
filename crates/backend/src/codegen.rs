@@ -389,7 +389,14 @@ impl ToTokens for ast::StructField {
         };
         let maybe_assert_copy = respan(maybe_assert_copy, ty);
 
-        let mut val = quote_spanned!(self.rust_name.span()=> (*js).borrow().#rust_name);
+        // Split this out so that it isn't affected by `quote_spanned!`.
+        //
+        // If we don't do this, it might end up being unable to reference `js`
+        // properly because it doesn't have the same span.
+        //
+        // See https://github.com/rustwasm/wasm-bindgen/pull/3725.
+        let js_token = quote! { js };
+        let mut val = quote_spanned!(self.rust_name.span()=> (*#js_token).borrow().#rust_name);
         if let Some(span) = self.getter_with_clone {
             val = quote_spanned!(span=> <#ty as Clone>::clone(&#val) );
         }
