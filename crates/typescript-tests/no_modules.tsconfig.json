@@ -4,6 +4,7 @@
         "noImplicitAny": true,
         "sourceMap": true,
         "outDir": "dist_no_modules",
+        "moduleResolution":"node"
     },
     "include": [
         "pkg/no_modules/*.d.ts",
