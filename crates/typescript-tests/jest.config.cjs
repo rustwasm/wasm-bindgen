@@ -8,7 +8,6 @@ module.exports = {
   // TODO: migrate all test files and remove this
   testPathIgnorePatterns: [
     ".*/src/custom_section.ts$",
-    ".*/src/enums.ts$",
     ".*/src/getters_setters.ts$",
     ".*/src/inspectable.ts$",
     ".*/src/memory.ts$",
