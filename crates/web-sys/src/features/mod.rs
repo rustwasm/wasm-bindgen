@@ -5380,11 +5380,23 @@ mod gen_PerformanceMark;
 #[cfg(feature = "PerformanceMark")]
 pub use gen_PerformanceMark::*;
 
+#[cfg(feature = "PerformanceMarkOptions")]
+#[allow(non_snake_case)]
+mod gen_PerformanceMarkOptions;
+#[cfg(feature = "PerformanceMarkOptions")]
+pub use gen_PerformanceMarkOptions::*;
+
 #[cfg(feature = "PerformanceMeasure")]
 #[allow(non_snake_case)]
 mod gen_PerformanceMeasure;
 #[cfg(feature = "PerformanceMeasure")]
 pub use gen_PerformanceMeasure::*;
+
+#[cfg(feature = "PerformanceMeasureOptions")]
+#[allow(non_snake_case)]
+mod gen_PerformanceMeasureOptions;
+#[cfg(feature = "PerformanceMeasureOptions")]
+pub use gen_PerformanceMeasureOptions::*;
 
 #[cfg(feature = "PerformanceNavigation")]
 #[allow(non_snake_case)]
