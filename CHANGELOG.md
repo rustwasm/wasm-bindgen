@@ -5,6 +5,9 @@
 
 ### Added
 
+* Add bindings for `RTCRtpSender.getCapabilities(DOMString)` method, `RTCRtpCapabilities` dictionary, `RTCRtpEncodingParameters.codec` and `RTCRtpEncodingParameters.scalabilityMode` fields.
+  [#3737](https://github.com/rustwasm/wasm-bindgen/pull/3737)
+
 * Add bindings for `UserActivation`.
   [#3719](https://github.com/rustwasm/wasm-bindgen/pull/3719)
 
