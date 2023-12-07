@@ -6394,6 +6394,12 @@ mod gen_RtcRtcpParameters;
 #[cfg(feature = "RtcRtcpParameters")]
 pub use gen_RtcRtcpParameters::*;
 
+#[cfg(feature = "RtcRtpCapabilities")]
+#[allow(non_snake_case)]
+mod gen_RtcRtpCapabilities;
+#[cfg(feature = "RtcRtpCapabilities")]
+pub use gen_RtcRtpCapabilities::*;
+
 #[cfg(feature = "RtcRtpCodecParameters")]
 #[allow(non_snake_case)]
 mod gen_RtcRtpCodecParameters;

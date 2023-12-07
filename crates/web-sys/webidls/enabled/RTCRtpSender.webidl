@@ -38,6 +38,7 @@ dictionary RTCRtpEncodingParameters {
   RTCDegradationPreference degradationPreference = "balanced";
   DOMString                rid;
   float                    scaleResolutionDownBy = 1.0;
+  codec                    RTCRtpCodecParameters;
 };
 
 dictionary RTCRtpHeaderExtensionParameters {
@@ -66,6 +67,11 @@ dictionary RTCRtpParameters {
   sequence<RTCRtpCodecParameters>           codecs;
 };
 
+dictionary RTCRtpCapabilities {
+  sequence<RTCRtpCodecParameters>           codecs;
+  sequence<RTCRtpHeaderExtensionParameters> headerExtensions;
+};
+
 [Pref="media.peerconnection.enabled",
  JSImplementation="@mozilla.org/dom/rtpsender;1"]
 interface RTCRtpSender {
@@ -74,6 +80,7 @@ interface RTCRtpSender {
   RTCRtpParameters getParameters();
   Promise<undefined> replaceTrack(MediaStreamTrack? withTrack);
   Promise<RTCStatsReport> getStats();
+  RTCRtpCapabilities getCapabilities(DOMString kind);
   [Pref="media.peerconnection.dtmf.enabled"]
   readonly attribute RTCDTMFSender? dtmf;
   // Ugh, can't use a ChromeOnly attribute sequence<MediaStream>...
