@@ -38,7 +38,8 @@ dictionary RTCRtpEncodingParameters {
   RTCDegradationPreference degradationPreference = "balanced";
   DOMString                rid;
   float                    scaleResolutionDownBy = 1.0;
-  codec                    RTCRtpCodecParameters;
+  DOMString                scalabilityMode;
+  RTCRtpCodecParameters    codec;
 };
 
 dictionary RTCRtpHeaderExtensionParameters {
