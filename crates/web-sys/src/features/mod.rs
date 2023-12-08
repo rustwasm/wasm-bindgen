@@ -6400,6 +6400,12 @@ mod gen_RtcRtpCapabilities;
 #[cfg(feature = "RtcRtpCapabilities")]
 pub use gen_RtcRtpCapabilities::*;
 
+#[cfg(feature = "RtcRtpCodecCapability")]
+#[allow(non_snake_case)]
+mod gen_RtcRtpCodecCapability;
+#[cfg(feature = "RtcRtpCodecCapability")]
+pub use gen_RtcRtpCodecCapability::*;
+
 #[cfg(feature = "RtcRtpCodecParameters")]
 #[allow(non_snake_case)]
 mod gen_RtcRtpCodecParameters;
@@ -6417,6 +6423,12 @@ pub use gen_RtcRtpContributingSource::*;
 mod gen_RtcRtpEncodingParameters;
 #[cfg(feature = "RtcRtpEncodingParameters")]
 pub use gen_RtcRtpEncodingParameters::*;
+
+#[cfg(feature = "RtcRtpHeaderExtensionCapability")]
+#[allow(non_snake_case)]
+mod gen_RtcRtpHeaderExtensionCapability;
+#[cfg(feature = "RtcRtpHeaderExtensionCapability")]
+pub use gen_RtcRtpHeaderExtensionCapability::*;
 
 #[cfg(feature = "RtcRtpHeaderExtensionParameters")]
 #[allow(non_snake_case)]

@@ -35,7 +35,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/getCapabilities)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`, `RtcRtpSender`*"]
-    pub fn get_capabilities(kind: &str) -> RtcRtpCapabilities;
+    pub fn get_capabilities(kind: &str) -> Option<RtcRtpCapabilities>;
     #[cfg(feature = "RtcRtpParameters")]
     # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = getParameters)]
     #[doc = "The `getParameters()` method."]

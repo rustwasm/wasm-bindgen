@@ -34,20 +34,6 @@ impl RtcRtpEncodingParameters {
         let _ = r;
         self
     }
-    #[cfg(feature = "RtcRtpCodecParameters")]
-    #[doc = "Change the `codec` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`, `RtcRtpEncodingParameters`*"]
-    pub fn codec(&mut self, val: &RtcRtpCodecParameters) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("codec"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
     #[cfg(feature = "RtcDegradationPreference")]
     #[doc = "Change the `degradationPreference` field of this object."]
     #[doc = ""]
@@ -135,23 +121,6 @@ impl RtcRtpEncodingParameters {
     pub fn rtx(&mut self, val: &RtcRtxParameters) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rtx"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[doc = "Change the `scalabilityMode` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpEncodingParameters`*"]
-    pub fn scalability_mode(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("scalabilityMode"),
-            &JsValue::from(val),
-        );
         debug_assert!(
             r.is_ok(),
             "setting properties should never fail on our dictionary objects"

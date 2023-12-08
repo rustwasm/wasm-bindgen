@@ -15,9 +15,14 @@ impl RtcRtpCapabilities {
     #[doc = "Construct a new `RtcRtpCapabilities`."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
-    pub fn new() -> Self {
+    pub fn new(
+        codecs: &::wasm_bindgen::JsValue,
+        header_extensions: &::wasm_bindgen::JsValue,
+    ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
+        ret.codecs(codecs);
+        ret.header_extensions(header_extensions);
         ret
     }
     #[doc = "Change the `codecs` field of this object."]
@@ -50,10 +55,5 @@ impl RtcRtpCapabilities {
         );
         let _ = r;
         self
-    }
-}
-impl Default for RtcRtpCapabilities {
-    fn default() -> Self {
-        Self::new()
     }
 }
