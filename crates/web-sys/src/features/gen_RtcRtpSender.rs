@@ -28,6 +28,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`, `RtcdtmfSender`*"]
     pub fn dtmf(this: &RtcRtpSender) -> Option<RtcdtmfSender>;
+    #[cfg(feature = "RtcRtpCapabilities")]
+    # [wasm_bindgen (static_method_of = RtcRtpSender , js_class = "RTCRtpSender" , js_name = getCapabilities)]
+    #[doc = "The `getCapabilities()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/getCapabilities)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`, `RtcRtpSender`*"]
+    pub fn get_capabilities(kind: &str) -> Option<RtcRtpCapabilities>;
     #[cfg(feature = "RtcRtpParameters")]
     # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = getParameters)]
     #[doc = "The `getParameters()` method."]
