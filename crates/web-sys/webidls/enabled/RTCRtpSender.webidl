@@ -51,26 +51,24 @@ dictionary RTCRtcpParameters {
   boolean   reducedSize;
 };
 
-dictionary RTCRtpCodecParameters {
-  unsigned short payloadType;
-  DOMString      mimeType;
-  unsigned long  clockRate;
-  unsigned short channels = 1;
-  DOMString      sdpFmtpLine;
+dictionary RTCRtpCodec {
+  required DOMString     mimeType;
+  required unsigned long clockRate;
+  unsigned short         channels;
+  DOMString              sdpFmtpLine;
 };
+
+dictionary RTCRtpCodecParameters : RTCRtpCodec {
+  required octet payloadType;
+};
+
+dictionary RTCRtpCodecCapability : RTCRtpCodec {};
 
 dictionary RTCRtpParameters {
   sequence<RTCRtpEncodingParameters>        encodings;
   sequence<RTCRtpHeaderExtensionParameters> headerExtensions;
   RTCRtcpParameters                         rtcp;
   sequence<RTCRtpCodecParameters>           codecs;
-};
-
-dictionary RTCRtpCodecCapability {
-  required DOMString     mimeType;
-  required unsigned long clockRate;
-  unsigned short         channels;
-  DOMString              sdpFmtpLine;
 };
 
 dictionary RTCRtpHeaderExtensionCapability {

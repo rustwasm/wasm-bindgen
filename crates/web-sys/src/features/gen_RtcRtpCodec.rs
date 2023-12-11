@@ -4,28 +4,27 @@ use super::*;
 use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = RTCRtpCodecParameters)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = RTCRtpCodec)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `RtcRtpCodecParameters` dictionary."]
+    #[doc = "The `RtcRtpCodec` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    pub type RtcRtpCodecParameters;
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodec`*"]
+    pub type RtcRtpCodec;
 }
-impl RtcRtpCodecParameters {
-    #[doc = "Construct a new `RtcRtpCodecParameters`."]
+impl RtcRtpCodec {
+    #[doc = "Construct a new `RtcRtpCodec`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    pub fn new(clock_rate: u32, mime_type: &str, payload_type: u8) -> Self {
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodec`*"]
+    pub fn new(clock_rate: u32, mime_type: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.clock_rate(clock_rate);
         ret.mime_type(mime_type);
-        ret.payload_type(payload_type);
         ret
     }
     #[doc = "Change the `channels` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodec`*"]
     pub fn channels(&mut self, val: u16) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -42,7 +41,7 @@ impl RtcRtpCodecParameters {
     }
     #[doc = "Change the `clockRate` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodec`*"]
     pub fn clock_rate(&mut self, val: u32) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -59,7 +58,7 @@ impl RtcRtpCodecParameters {
     }
     #[doc = "Change the `mimeType` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodec`*"]
     pub fn mime_type(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
@@ -76,29 +75,12 @@ impl RtcRtpCodecParameters {
     }
     #[doc = "Change the `sdpFmtpLine` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodec`*"]
     pub fn sdp_fmtp_line(&mut self, val: &str) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
             &JsValue::from("sdpFmtpLine"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
-    #[doc = "Change the `payloadType` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    pub fn payload_type(&mut self, val: u8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("payloadType"),
             &JsValue::from(val),
         );
         debug_assert!(

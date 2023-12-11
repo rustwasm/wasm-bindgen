@@ -6400,6 +6400,12 @@ mod gen_RtcRtpCapabilities;
 #[cfg(feature = "RtcRtpCapabilities")]
 pub use gen_RtcRtpCapabilities::*;
 
+#[cfg(feature = "RtcRtpCodec")]
+#[allow(non_snake_case)]
+mod gen_RtcRtpCodec;
+#[cfg(feature = "RtcRtpCodec")]
+pub use gen_RtcRtpCodec::*;
+
 #[cfg(feature = "RtcRtpCodecCapability")]
 #[allow(non_snake_case)]
 mod gen_RtcRtpCodecCapability;
