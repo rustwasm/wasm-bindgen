@@ -1295,7 +1295,7 @@ impl Invocation {
         match self {
             Invocation::Core { id, .. } => {
                 let name = cx.export_name_of(*id);
-                if asyncness && args.len() > 0 && cx.config.weak_refs {
+                if asyncness && !args.is_empty() && cx.config.weak_refs {
                     let mut argscopy = args.to_vec();
                     argscopy[0] = String::from("that.__wbg_ptr");
                     let root_objects: Vec<&str> = argscopy
