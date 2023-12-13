@@ -171,6 +171,7 @@ impl<'a, 'b> Builder<'a, 'b> {
                 &instr.instr,
                 &mut self.log_error,
                 &self.constructor,
+                asyncness
             )?;
         }
 
@@ -565,6 +566,7 @@ fn instruction(
     instr: &Instruction,
     log_error: &mut bool,
     constructor: &Option<String>,
+    asyncness: bool
 ) -> Result<(), Error> {
     match instr {
         Instruction::ArgGet(n) => {
@@ -609,7 +611,7 @@ fn instruction(
             }
 
             // Call the function through an export of the underlying module.
-            let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error)?;
+            let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error, asyncness)?;
 
             // And then figure out how to actually handle where the call
             // happens. This is pretty conditional depending on the number of
@@ -1019,7 +1021,8 @@ fn instruction(
             match constructor {
                 Some(name) if name == class => {
                     js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
-                    js.push(String::from("this"));
+                    js.prelude(&format!("{}Finalization.register(this, this.__wbg_ptr, this);", class));
+                    js.push( "this".into());
                 }
                 Some(_) | None => {
                     js.cx.require_class_wrap(class);
@@ -1282,11 +1285,31 @@ impl Invocation {
         args: &[String],
         prelude: &mut String,
         log_error: &mut bool,
+        asyncness: bool
     ) -> Result<String, Error> {
         match self {
             Invocation::Core { id, .. } => {
+
                 let name = cx.export_name_of(*id);
-                Ok(format!("wasm.{}({})", name, args.join(", ")))
+                if asyncness {
+                    let mut argscopy = args.to_vec();
+                    argscopy[0] = String::from("that.__wbg_ptr");
+                    let root_objects: Vec<&str> = argscopy.iter().map(|arg: &String | {
+                        arg.strip_suffix(".__wbg_ptr").unwrap_or(arg)
+                    }).collect();
+                    prelude.push_str("let that = this;\n");
+                    Ok(format!(r#"
+                        (function () {{
+                            return new Promise((resolve, reject) => {{
+                                that.__paramRefs = that._paramRefs || {{}};
+                                that.__paramRefs[that.__wbg_ptr>>>0] = [{}];
+                                wasm.{}({}).then(resolve).catch(reject).finally(() => {{
+                                    delete that.__paramRefs[that.__wbg_ptr>>>0];
+                                }});
+                            }})}})()"#, root_objects.join(","), name, argscopy.join(", ")))
+                } else {
+                    Ok(format!("wasm.{}({})", name, args.join(", ")))
+                }
             }
             Invocation::Adapter(id) => {
                 let adapter = &cx.wit.adapters[id];
