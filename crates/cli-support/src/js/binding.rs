@@ -1021,10 +1021,12 @@ fn instruction(
             match constructor {
                 Some(name) if name == class => {
                     js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
-                    js.prelude(&format!(
-                        "{}Finalization.register(this, this.__wbg_ptr, this);",
-                        class
-                    ));
+                    if js.cx.config.weak_refs {
+                        js.prelude(&format!(
+                            "{}Finalization.register(this, this.__wbg_ptr, this);",
+                            class
+                        ));
+                    }
                     js.push("this".into());
                 }
                 Some(_) | None => {
@@ -1293,7 +1295,7 @@ impl Invocation {
         match self {
             Invocation::Core { id, .. } => {
                 let name = cx.export_name_of(*id);
-                if asyncness && args.len() > 0 {
+                if asyncness && args.len() > 0 && cx.config.weak_refs {
                     let mut argscopy = args.to_vec();
                     argscopy[0] = String::from("that.__wbg_ptr");
                     let root_objects: Vec<&str> = argscopy
