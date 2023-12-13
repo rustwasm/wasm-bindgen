@@ -52,14 +52,14 @@ dictionary RTCRtcpParameters {
 };
 
 dictionary RTCRtpCodec {
-  required DOMString     mimeType;
-  required unsigned long clockRate;
-  unsigned short         channels;
-  DOMString              sdpFmtpLine;
+  DOMString      mimeType;
+  unsigned long  clockRate;
+  unsigned short channels = 1;
+  DOMString      sdpFmtpLine;
 };
 
 dictionary RTCRtpCodecParameters : RTCRtpCodec {
-  required octet payloadType;
+  unsigned short payloadType;
 };
 
 dictionary RTCRtpCodecCapability : RTCRtpCodec {};

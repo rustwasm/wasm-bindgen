@@ -15,12 +15,9 @@ impl RtcRtpCodecParameters {
     #[doc = "Construct a new `RtcRtpCodecParameters`."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    pub fn new(clock_rate: u32, mime_type: &str, payload_type: u8) -> Self {
+    pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.clock_rate(clock_rate);
-        ret.mime_type(mime_type);
-        ret.payload_type(payload_type);
         ret
     }
     #[doc = "Change the `channels` field of this object."]
@@ -94,7 +91,7 @@ impl RtcRtpCodecParameters {
     #[doc = "Change the `payloadType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    pub fn payload_type(&mut self, val: u8) -> &mut Self {
+    pub fn payload_type(&mut self, val: u16) -> &mut Self {
         use wasm_bindgen::JsValue;
         let r = ::js_sys::Reflect::set(
             self.as_ref(),
@@ -107,5 +104,10 @@ impl RtcRtpCodecParameters {
         );
         let _ = r;
         self
+    }
+}
+impl Default for RtcRtpCodecParameters {
+    fn default() -> Self {
+        Self::new()
     }
 }
