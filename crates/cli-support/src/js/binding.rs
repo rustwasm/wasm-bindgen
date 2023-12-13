@@ -171,7 +171,7 @@ impl<'a, 'b> Builder<'a, 'b> {
                 &instr.instr,
                 &mut self.log_error,
                 &self.constructor,
-                asyncness
+                asyncness,
             )?;
         }
 
@@ -566,7 +566,7 @@ fn instruction(
     instr: &Instruction,
     log_error: &mut bool,
     constructor: &Option<String>,
-    asyncness: bool
+    asyncness: bool,
 ) -> Result<(), Error> {
     match instr {
         Instruction::ArgGet(n) => {
@@ -1021,8 +1021,11 @@ fn instruction(
             match constructor {
                 Some(name) if name == class => {
                     js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
-                    js.prelude(&format!("{}Finalization.register(this, this.__wbg_ptr, this);", class));
-                    js.push( "this".into());
+                    js.prelude(&format!(
+                        "{}Finalization.register(this, this.__wbg_ptr, this);",
+                        class
+                    ));
+                    js.push("this".into());
                 }
                 Some(_) | None => {
                     js.cx.require_class_wrap(class);
@@ -1285,20 +1288,21 @@ impl Invocation {
         args: &[String],
         prelude: &mut String,
         log_error: &mut bool,
-        asyncness: bool
+        asyncness: bool,
     ) -> Result<String, Error> {
         match self {
             Invocation::Core { id, .. } => {
-
                 let name = cx.export_name_of(*id);
                 if asyncness {
                     let mut argscopy = args.to_vec();
                     argscopy[0] = String::from("that.__wbg_ptr");
-                    let root_objects: Vec<&str> = argscopy.iter().map(|arg: &String | {
-                        arg.strip_suffix(".__wbg_ptr").unwrap_or(arg)
-                    }).collect();
+                    let root_objects: Vec<&str> = argscopy
+                        .iter()
+                        .map(|arg: &String| arg.strip_suffix(".__wbg_ptr").unwrap_or(arg))
+                        .collect();
                     prelude.push_str("let that = this;\n");
-                    Ok(format!(r#"
+                    Ok(format!(
+                        r#"
                         (function () {{
                             return new Promise((resolve, reject) => {{
                                 that.__paramRefs = that._paramRefs || {{}};
@@ -1306,7 +1310,11 @@ impl Invocation {
                                 wasm.{}({}).then(resolve).catch(reject).finally(() => {{
                                     delete that.__paramRefs[that.__wbg_ptr>>>0];
                                 }});
-                            }})}})()"#, root_objects.join(","), name, argscopy.join(", ")))
+                            }})}})()"#,
+                        root_objects.join(","),
+                        name,
+                        argscopy.join(", ")
+                    ))
                 } else {
                     Ok(format!("wasm.{}({})", name, args.join(", ")))
                 }
