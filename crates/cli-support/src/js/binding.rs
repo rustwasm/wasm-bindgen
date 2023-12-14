@@ -1307,10 +1307,10 @@ impl Invocation {
                         r#"
                         (function () {{
                             return new Promise((resolve, reject) => {{
-                                that.__paramRefs = that._paramRefs || {{}};
-                                that.__paramRefs[that.__wbg_ptr>>>0] = [{}];
+                                that.__paramRefs = that.__paramRefs || {{}};
+                                that.__paramRefs[that.__wbg_ptr] = [{}];
                                 wasm.{}({}).then(resolve).catch(reject).finally(() => {{
-                                    delete that.__paramRefs[that.__wbg_ptr>>>0];
+                                    delete that.__paramRefs[that.__wbg_ptr];
                                 }});
                             }})}})()"#,
                         root_objects.join(","),
