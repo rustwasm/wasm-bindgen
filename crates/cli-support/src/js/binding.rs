@@ -8,6 +8,7 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
+use std::collections::HashSet;
 use std::fmt::Write;
 use walrus::{Module, ValType};
 
@@ -1284,6 +1285,20 @@ impl Invocation {
         }
     }
 
+    fn transform_this_to_that_args(&self, args: &[String]) -> Vec<String> {
+        args.iter()
+            .map(|arg| arg.replace("this.", "that."))
+            .collect()
+    }
+    fn is_non_function_call(&self, obj: &str) -> bool {
+        !obj.contains('(')
+    }
+    fn find_root_objects(&self, args: &[String]) -> Vec<String> {
+        args.into_iter()
+            .map(|arg| arg.split('.').next().unwrap().to_string())
+            .filter(|val| self.is_non_function_call(val))
+            .collect()
+    }
     fn invoke(
         &self,
         cx: &mut Context,
@@ -1296,27 +1311,33 @@ impl Invocation {
             Invocation::Core { id, .. } => {
                 let name = cx.export_name_of(*id);
                 if asyncness && !args.is_empty() && cx.config.weak_refs {
-                    let mut argscopy = args.to_vec();
-                    argscopy[0] = String::from("that.__wbg_ptr");
-                    let root_objects: Vec<&str> = argscopy
-                        .iter()
-                        .map(|arg: &String| arg.strip_suffix(".__wbg_ptr").unwrap_or(arg))
+                    let transformed_args = self.transform_this_to_that_args(args);
+                    let roots_objects = self.find_root_objects(&transformed_args);
+
+                    let unique_roots: Vec<String> = roots_objects
+                        .into_iter()
+                        .collect::<HashSet<String>>()
+                        .into_iter()
                         .collect();
                     prelude.push_str("let that = this;\n");
-                    Ok(format!(
+                    let wrapper = format!(
                         r#"
                         (function () {{
                             return new Promise((resolve, reject) => {{
-                                that.__paramRefs = that.__paramRefs || {{}};
-                                that.__paramRefs[that.__wbg_ptr] = [{}];
+                                let uniqueRoots = [{}];
+                                if(uniqueRoots.length) {{
+                                    that.__paramRefs = that.__paramRefs || {{}};
+                                    that.__paramRefs[that.__wbg_ptr] = unique_roots;
+                                }}
                                 wasm.{}({}).then(resolve).catch(reject).finally(() => {{
                                     delete that.__paramRefs[that.__wbg_ptr];
                                 }});
                             }})}})()"#,
-                        root_objects.join(","),
+                        unique_roots.join(","),
                         name,
-                        argscopy.join(", ")
-                    ))
+                        transformed_args.join(", ")
+                    );
+                    Ok(wrapper)
                 } else {
                     Ok(format!("wasm.{}({})", name, args.join(", ")))
                 }
