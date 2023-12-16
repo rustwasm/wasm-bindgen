@@ -7,8 +7,8 @@ ecosystem][rustwasm]. If you're not familiar already with `wasm-bindgen` it's
 recommended to start by reading the [Game of Life tutorial][gol]. If you're
 curious about `wasm-pack`, you can find that [documentation here][wasm-pack].
 
-The `wasm-bindgen` tool is sort of half polyfill for features like the [host
-bindings proposal][host] and half features for empowering high-level
+The `wasm-bindgen` tool is sort of half polyfill for features like the
+[component model proposal][component-model] and half features for empowering high-level
 interactions between JS and wasm-compiled code (currently mostly from Rust).
 More specifically this project allows JS/wasm to communicate with strings, JS
 objects, classes, etc, as opposed to purely integers and floats. Using
@@ -33,7 +33,7 @@ With the addition of [`wasm-pack`][wasm-pack] you can run the gamut from running
 the web locally, publishing it as part of a larger application, or even
 publishing Rust-compiled-to-WebAssembly on NPM!
 
-[host]: https://github.com/WebAssembly/host-bindings
+[component-model]: https://github.com/WebAssembly/component-model
 [dom-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/dom
 [console-log]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/console_log
 [perf-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/performance

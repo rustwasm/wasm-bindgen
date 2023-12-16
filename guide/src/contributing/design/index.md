@@ -28,7 +28,7 @@ desired interface expressed in JS (classes, types, strings, etc) and the
 `foo_bg.wasm` module is simply used as an implementation detail (it was
 lightly modified from the original `foo.wasm` file).
 
-As more features are stabilized in WebAssembly over time (like host bindings)
+As more features are stabilized in WebAssembly over time (like component model)
 the JS file is expected to get smaller and smaller. It's unlikely to ever
 disappear, but `wasm-bindgen` is designed to follow the WebAssembly spec and
 proposals closely to optimize JS/Rust as much as possible.
@@ -59,9 +59,9 @@ pub fn greet(name: &str) -> String {
 ```
 
 Additionally the design here with minimal intervention in Rust should allow us
-to easily take advantage of the upcoming [host bindings][host] proposal. Ideally
+to easily take advantage of the upcoming [component model][component-model] proposal. Ideally
 you'd simply upgrade `wasm-bindgen`-the-crate as well as your toolchain and
-you're immediately getting raw access to host bindings! (this is still a bit of
+you're immediately getting raw access to component model! (this is still a bit of
 a ways off though...)
 
-[host]: https://github.com/WebAssembly/host-bindings
+[component-model]: https://github.com/WebAssembly/component-model
