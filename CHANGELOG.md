@@ -11,6 +11,11 @@
 * Add bindings for `UserActivation`.
   [#3719](https://github.com/rustwasm/wasm-bindgen/pull/3719)
 
+### Changed
+
+* Stabilize File System API.
+  [#3745](https://github.com/rustwasm/wasm-bindgen/pull/3745)
+
 ### Fixed
 
 * Fixed a compiler error when using `#[wasm_bindgen]` inside `macro_rules!`.
