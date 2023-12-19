@@ -364,7 +364,7 @@ fn default_module_path_target_no_modules() {
     async function __wbg_init(input) {
         if (wasm !== undefined) return wasm;
 
-        if (typeof input === 'undefined' && script_src !== 'undefined') {
+        if (typeof input === 'undefined' && typeof script_src !== 'undefined') {
             input = script_src.replace(/\\.js$/, '_bg.wasm');
         }",
     ));
