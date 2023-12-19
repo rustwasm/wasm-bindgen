@@ -43,6 +43,8 @@ interface HTMLFormElement : HTMLElement {
 
   [Throws]
   undefined submit();
+  [Throws]
+  undefined requestSubmit(optional HTMLElement? submitter = null);
   [CEReactions]
   undefined reset();
   boolean checkValidity();
