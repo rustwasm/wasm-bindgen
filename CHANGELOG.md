@@ -10,6 +10,9 @@
 
 ### Added
 
+* Add bindings for `HtmlFormElement::request_submit` and `HtmlFormElement::request_submit_with_submitter` methods
+  [#3747](https://github.com/rustwasm/wasm-bindgen/pull/3747)
+
 * Add bindings for `RTCRtpSender.getCapabilities(DOMString)` method, `RTCRtpCapabilities`, `RTCRtpCodecCapability` and `RTCRtpHeaderExtensionCapability`.
   [#3737](https://github.com/rustwasm/wasm-bindgen/pull/3737)
 
