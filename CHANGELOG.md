@@ -5,7 +5,7 @@
 
 ### Fixed
 
-* Fix a missing typeof operator in the __wbg_init() template in no-modules mode
+* Fix JS shim default path detection for the no-modules target.
   [#3748](https://github.com/rustwasm/wasm-bindgen/pull/3748)
 
 ### Added
