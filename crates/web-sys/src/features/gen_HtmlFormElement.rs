@@ -167,6 +167,23 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFormElement`*"]
     pub fn report_validity(this: &HtmlFormElement) -> bool;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLFormElement" , js_name = requestSubmit)]
+    #[doc = "The `requestSubmit()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/requestSubmit)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlFormElement`*"]
+    pub fn request_submit(this: &HtmlFormElement) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLFormElement" , js_name = requestSubmit)]
+    #[doc = "The `requestSubmit()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/requestSubmit)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlFormElement`*"]
+    pub fn request_submit_with_submitter(
+        this: &HtmlFormElement,
+        submitter: Option<&HtmlElement>,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "HTMLFormElement" , js_name = reset)]
     #[doc = "The `reset()` method."]
     #[doc = ""]
