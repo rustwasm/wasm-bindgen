@@ -3,6 +3,11 @@
 
 ## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...main)
 
+### Fixed
+
+* Fix JS shim default path detection for the no-modules target.
+  [#3748](https://github.com/rustwasm/wasm-bindgen/pull/3748)
+
 ### Added
 
 * Add bindings for `RTCRtpSender.getCapabilities(DOMString)` method, `RTCRtpCapabilities`, `RTCRtpCodecCapability` and `RTCRtpHeaderExtensionCapability`.

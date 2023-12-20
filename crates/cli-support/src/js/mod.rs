@@ -717,7 +717,7 @@ impl<'a> Context<'a> {
                     stem = self.config.stem()?
                 ),
                 OutputMode::NoModules { .. } => "\
-                    if (typeof input === 'undefined' && script_src !== 'undefined') {
+                    if (typeof input === 'undefined' && typeof script_src !== 'undefined') {
                         input = script_src.replace(/\\.js$/, '_bg.wasm');
                     }"
                 .to_string(),
