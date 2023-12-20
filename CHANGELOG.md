@@ -3,6 +3,11 @@
 
 ## [Unreleased](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...main)
 
+### Fixed
+
+* Fix a missing typeof operator in the __wbg_init() template in no-modules mode
+  [#3748](https://github.com/rustwasm/wasm-bindgen/pull/3748)
+
 ### Added
 
 * Add bindings for `RTCRtpSender.getCapabilities(DOMString)` method, `RTCRtpCapabilities`, `RTCRtpCodecCapability` and `RTCRtpHeaderExtensionCapability`.
