@@ -19,6 +19,9 @@
 * Add bindings for `UserActivation`.
   [#3719](https://github.com/rustwasm/wasm-bindgen/pull/3719)
 
+* Add unstable bindings for the Compression Streams API.
+  [#3752](https://github.com/rustwasm/wasm-bindgen/pull/3752)
+
 ### Changed
 
 * Stabilize File System API.

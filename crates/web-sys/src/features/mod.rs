@@ -1030,6 +1030,18 @@ mod gen_CompositionEventInit;
 #[cfg(feature = "CompositionEventInit")]
 pub use gen_CompositionEventInit::*;
 
+#[cfg(feature = "CompressionFormat")]
+#[allow(non_snake_case)]
+mod gen_CompressionFormat;
+#[cfg(feature = "CompressionFormat")]
+pub use gen_CompressionFormat::*;
+
+#[cfg(feature = "CompressionStream")]
+#[allow(non_snake_case)]
+mod gen_CompressionStream;
+#[cfg(feature = "CompressionStream")]
+pub use gen_CompressionStream::*;
+
 #[cfg(feature = "ComputedEffectTiming")]
 #[allow(non_snake_case)]
 mod gen_ComputedEffectTiming;
@@ -1419,6 +1431,12 @@ pub use gen_DecoderDoctorNotification::*;
 mod gen_DecoderDoctorNotificationType;
 #[cfg(feature = "DecoderDoctorNotificationType")]
 pub use gen_DecoderDoctorNotificationType::*;
+
+#[cfg(feature = "DecompressionStream")]
+#[allow(non_snake_case)]
+mod gen_DecompressionStream;
+#[cfg(feature = "DecompressionStream")]
+pub use gen_DecompressionStream::*;
 
 #[cfg(feature = "DedicatedWorkerGlobalScope")]
 #[allow(non_snake_case)]
