@@ -27,6 +27,9 @@
 * Stabilize File System API.
   [#3745](https://github.com/rustwasm/wasm-bindgen/pull/3745)
 
+* Stabilize `QueuingStrategy`.
+  [#3753](https://github.com/rustwasm/wasm-bindgen/pull/3753)
+
 ### Fixed
 
 * Fixed a compiler error when using `#[wasm_bindgen]` inside `macro_rules!`.

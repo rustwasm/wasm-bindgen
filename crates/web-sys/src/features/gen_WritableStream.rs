@@ -19,31 +19,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStream`*"]
     pub fn locked(this: &WritableStream) -> bool;
-    #[cfg(web_sys_unstable_apis)]
     #[wasm_bindgen(catch, constructor, js_class = "WritableStream")]
     #[doc = "The `new WritableStream(..)` constructor, creating a new instance of `WritableStream`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/WritableStream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStream`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new() -> Result<WritableStream, JsValue>;
-    #[cfg(web_sys_unstable_apis)]
     #[wasm_bindgen(catch, constructor, js_class = "WritableStream")]
     #[doc = "The `new WritableStream(..)` constructor, creating a new instance of `WritableStream`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/WritableStream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WritableStream`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new_with_underlying_sink(
         underlying_sink: &::js_sys::Object,
     ) -> Result<WritableStream, JsValue>;
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "QueuingStrategy")]
     #[wasm_bindgen(catch, constructor, js_class = "WritableStream")]
     #[doc = "The `new WritableStream(..)` constructor, creating a new instance of `WritableStream`."]
@@ -51,9 +42,6 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream/WritableStream)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `QueuingStrategy`, `WritableStream`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new_with_underlying_sink_and_strategy(
         underlying_sink: &::js_sys::Object,
         strategy: &QueuingStrategy,
