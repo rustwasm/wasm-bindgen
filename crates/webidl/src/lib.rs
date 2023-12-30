@@ -821,9 +821,9 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
 
     let binding_file = features.keys().map(|name| {
         if generate_features {
-            format!("#[cfg(feature = \"{name}\")] #[allow(non_snake_case)] mod gen_{name};\n#[cfg(feature = \"{name}\")] pub use gen_{name}::*;", name = name)
+            format!("#[cfg(feature = \"{name}\")] #[allow(non_snake_case)] mod gen_{name};\n#[cfg(feature = \"{name}\")] #[allow(unused_imports)] pub use gen_{name}::*;", name = name)
         } else {
-            format!("#[allow(non_snake_case)] mod gen_{name};\npub use gen_{name}::*;", name = name)
+            format!("#[allow(non_snake_case)] mod gen_{name};\n#[allow(unused_imports)] pub use gen_{name}::*;", name = name)
         }
     }).collect::<Vec<_>>().join("\n\n");
 
