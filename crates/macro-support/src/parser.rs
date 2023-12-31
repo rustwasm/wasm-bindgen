@@ -525,7 +525,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
         let operation_kind = operation_kind(&opts);
 
         let kind = if opts.method().is_some() {
-            let class = wasm.arguments.get(0).ok_or_else(|| {
+            let class = wasm.arguments.first().ok_or_else(|| {
                 err_span!(self, "imported methods must have at least one argument")
             })?;
             let class = match get_ty(&class.ty) {
