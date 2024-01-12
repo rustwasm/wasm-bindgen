@@ -12,8 +12,8 @@ crate-type = ["cdylib"]
 askama = "0.10.0"
 
 [dependencies]
-js-sys = "0.3.66"
-wasm-bindgen = "0.2.89"
+js-sys = "0.3.67"
+wasm-bindgen = "0.2.90"
 askama = "0.10.0"
 console_error_panic_hook = "0.1.5"
 
