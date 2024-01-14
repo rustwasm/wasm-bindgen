@@ -1,8 +1,9 @@
 use std::borrow::Cow;
-use std::ffi::OsString;
 use std::fs;
+use std::io::{Read, Write};
 use std::net::SocketAddr;
 use std::path::Path;
+use std::{ffi::OsString, path::PathBuf};
 
 use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
@@ -16,8 +17,29 @@ pub fn spawn(
     tests: &[String],
     no_module: bool,
     worker: bool,
+    coverage: Option<PathBuf>,
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = String::new();
+
+    let (cov_import, cov_dump) = if coverage.is_some() {
+        (
+            if no_module {
+                "let __wbgtest_cov_dump = wasm_bindgen.__wbgtest_cov_dump;"
+            } else {
+                "__wbgtest_cov_dump,"
+            },
+            r#"
+            // Dump the coverage data collected during the tests
+            const coverage = __wbgtest_cov_dump();
+            await fetch("/__coverage/dump", {
+                method: "POST",
+                body: coverage
+            });
+            "#,
+        )
+    } else {
+        ("", "")
+    };
 
     let wbg_import_script = if no_module {
         String::from(
@@ -28,6 +50,7 @@ pub fn spawn(
             let __wbgtest_console_info = wasm_bindgen.__wbgtest_console_info;
             let __wbgtest_console_warn = wasm_bindgen.__wbgtest_console_warn;
             let __wbgtest_console_error = wasm_bindgen.__wbgtest_console_error;
+            {cov_import}
             let init = wasm_bindgen;
             "#,
         )
@@ -41,6 +64,7 @@ pub fn spawn(
                 __wbgtest_console_info,
                 __wbgtest_console_warn,
                 __wbgtest_console_error,
+                {cov_import}
                 default as init,
             }} from './{}';
             "#,
@@ -95,6 +119,7 @@ pub fn spawn(
 
                 cx.args({1:?});
                 await cx.run(tests.map(s => wasm[s]));
+                {cov_dump}
             }}
 
             onmessage = function(e) {{
@@ -175,6 +200,7 @@ pub fn spawn(
                 cx.args({1:?});
 
                 await cx.run(test.map(s => wasm[s]));
+                {cov_dump}
             }}
 
             const tests = [];
@@ -218,6 +244,25 @@ pub fn spawn(
                 )
             };
             return set_isolate_origin_headers(Response::from_data("text/html", s));
+        } else if request.url() == "/__coverage/dump" {
+            let profraw_path = coverage.as_ref().expect(
+                "Received coverage dump request but server wasn't set up to accept coverage",
+            );
+            // This is run after all tests are done and dumps the data received in the request
+            // into a single profraw file
+            let mut profraw =
+                std::fs::File::create(profraw_path).expect("Couldn't create .profraw for coverage");
+            let mut data = Vec::new();
+            request
+                .data()
+                .expect("Expected coverage data in body")
+                .read_to_end(&mut data)
+                .expect("Failed to read message body");
+
+            profraw
+                .write_all(&data)
+                .expect("Couldn't dump coverage data to profraw");
+            return Response::text("Coverage dumped");
         }
 
         // Otherwise we need to find the asset here. It may either be in our

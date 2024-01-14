@@ -1,7 +1,7 @@
-use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
+use std::{ffi::OsString, path::PathBuf};
 
 use anyhow::{Context, Error};
 
@@ -12,11 +12,36 @@ pub fn execute(
     tmpdir: &Path,
     args: &[OsString],
     tests: &[String],
+    coverage: Option<PathBuf>,
 ) -> Result<(), Error> {
+    let (cov_fn, cov_dump) = if let Some(profraw_path) = coverage {
+        (
+            format!(
+                r#"
+            async function dumpCoverage() {{
+                const fs = require('node:fs');
+                const data = wasm.__wbgtest_cov_dump();
+                fs.writeFile("{}", data, err => {{
+                    if (err) {{
+                        console.error(err);
+                    }}
+                }})
+            }}
+            "#,
+                profraw_path.display()
+            ),
+            "await dumpCoverage();",
+        )
+    } else {
+        (String::new(), "")
+    };
+
     let mut js_to_execute = format!(
         r#"import * as wasm from "./{0}.js";
 
         {console_override}
+
+        {cov_fn}
 
         // global.__wbg_test_invoke = f => f();
 
@@ -27,6 +52,7 @@ pub fn execute(
         cx.args(Deno.args.slice(1));
 
         const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
+        {cov_dump}
         if (!ok) Deno.exit(1);
 
         const tests = [];

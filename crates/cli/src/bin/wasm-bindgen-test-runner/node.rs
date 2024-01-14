@@ -1,8 +1,8 @@
-use std::env;
 use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
+use std::{env, path::PathBuf};
 
 use anyhow::{Context, Error};
 
@@ -43,7 +43,30 @@ pub fn execute(
     tmpdir: &Path,
     args: &[OsString],
     tests: &[String],
+    coverage: Option<PathBuf>,
 ) -> Result<(), Error> {
+    let (cov_fn, cov_dump) = if let Some(profraw_path) = coverage {
+        (
+            format!(
+                r#"
+            async function dumpCoverage() {{
+                const fs = require('node:fs');
+                const data = wasm.__wbgtest_cov_dump();
+                fs.writeFile("{}", data, err => {{
+                    if (err) {{
+                        console.error(err);
+                    }}
+                }})
+            }}
+            "#,
+                profraw_path.display()
+            ),
+            "await dumpCoverage();",
+        )
+    } else {
+        (String::new(), "")
+    };
+
     let mut js_to_execute = format!(
         r#"
         const {{ exit }} = require('process');
@@ -53,6 +76,8 @@ pub fn execute(
 
         global.__wbg_test_invoke = f => f();
 
+        {cov_fn}
+
         async function main(tests) {{
             // Forward runtime arguments. These arguments are also arguments to the
             // `wasm-bindgen-test-runner` which forwards them to node which we
@@ -61,6 +86,7 @@ pub fn execute(
             cx.args(process.argv.slice(2));
 
             const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
+            {cov_dump}
             if (!ok)
                 exit(1);
         }}

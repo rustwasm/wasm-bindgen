@@ -15,6 +15,7 @@ use anyhow::{anyhow, bail, Context};
 use log::error;
 use std::env;
 use std::fs;
+use std::path::Path;
 use std::path::PathBuf;
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
@@ -187,6 +188,8 @@ fn main() -> anyhow::Result<()> {
         b.split_linked_modules(true);
     }
 
+    let coverage = coverage_args(&tmpdir);
+
     b.debug(debug)
         .input_module(module, wasm)
         .keep_debug(false)
@@ -198,8 +201,8 @@ fn main() -> anyhow::Result<()> {
     let args: Vec<_> = args.collect();
 
     match test_mode {
-        TestMode::Node => node::execute(module, &tmpdir, &args, &tests)?,
-        TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests)?,
+        TestMode::Node => node::execute(module, &tmpdir, &args, &tests, coverage)?,
+        TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests, coverage)?,
         TestMode::Browser { no_modules } | TestMode::Worker { no_modules } => {
             let srv = server::spawn(
                 &if headless {
@@ -216,6 +219,7 @@ fn main() -> anyhow::Result<()> {
                 &tests,
                 no_modules,
                 matches!(test_mode, TestMode::Worker { no_modules: _ }),
+                coverage,
             )
             .context("failed to spawn server")?;
             let addr = srv.server_addr();
@@ -241,4 +245,30 @@ fn main() -> anyhow::Result<()> {
         }
     }
     Ok(())
+}
+
+fn coverage_args(tmpdir: &Path) -> Option<PathBuf> {
+    fn generated(tmpdir: &Path) -> String {
+        format!(
+            "{}.profraw",
+            tmpdir.file_name().and_then(|s| s.to_str()).unwrap()
+        )
+    }
+
+    // Profraw path is ignored if coverage isn't enabled
+    env::var_os("WASM_BINDGEN_TEST_COVERAGE")?;
+    log::warn!("Coverage support is still considered highly experimental!");
+    // TODO coverage link to wasm-bindgen book documenting correct usage
+
+    match env::var_os("WASM_BINDGEN_TEST_PROFRAW_OUT") {
+        Some(s) => {
+            let mut buf = PathBuf::from(s);
+            if buf.is_dir() {
+                buf.push(generated(tmpdir));
+            }
+            buf
+        }
+        None => PathBuf::from(generated(tmpdir)),
+    }
+    .into()
 }
