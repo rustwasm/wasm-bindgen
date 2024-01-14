@@ -1,4 +1,5 @@
 use anyhow::{bail, Error};
+use base64::{prelude::BASE64_STANDARD, Engine as _};
 use std::collections::HashSet;
 use std::fmt::Write;
 use walrus::Module;
@@ -241,7 +242,7 @@ impl Output {
                         bytes = Buffer.from(base64, 'base64');
                     }}
                     ",
-                    base64 = base64::encode(&wasm)
+                    base64 = BASE64_STANDARD.encode(&wasm)
                 ),
                 inst,
             )
