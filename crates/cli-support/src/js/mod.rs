@@ -1147,7 +1147,7 @@ impl<'a> Context<'a> {
         self.global(
             "
             function _assertNum(n) {
-                if (typeof(n) !== 'number') throw new Error('expected a number argument');
+                if (typeof(n) !== 'number') throw new Error(`expected a number argument, found ${typeof(n)}`);
             }
             ",
         );
@@ -1160,7 +1160,7 @@ impl<'a> Context<'a> {
         self.global(
             "
             function _assertBigInt(n) {
-                if (typeof(n) !== 'bigint') throw new Error('expected a bigint argument');
+                if (typeof(n) !== 'bigint') throw new Error(`expected a bigint argument, found ${typeof(n)}`);
             }
             ",
         );
@@ -1174,7 +1174,7 @@ impl<'a> Context<'a> {
             "
             function _assertBoolean(n) {
                 if (typeof(n) !== 'boolean') {
-                    throw new Error('expected a boolean argument');
+                    throw new Error(`expected a boolean argument, found ${typeof(n)}`);
                 }
             }
             ",
@@ -1193,7 +1193,7 @@ impl<'a> Context<'a> {
 
         let debug = if self.config.debug {
             "
-                if (typeof(arg) !== 'string') throw new Error('expected a string argument');
+                if (typeof(arg) !== 'string') throw new Error(`expected a string argument, found ${typeof(arg)}`);
             "
         } else {
             ""
