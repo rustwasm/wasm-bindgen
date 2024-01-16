@@ -21,15 +21,6 @@ macro_rules! console_log {
     )
 }
 
-/// Helper macro which acts like `println!` only routes to `console.warn`
-/// instead.
-#[macro_export]
-macro_rules! console_warn {
-    ($($arg:tt)*) => (
-        $crate::__rt::log_warn(&format_args!($($arg)*))
-    )
-}
-
 /// Helper macro which acts like `println!` only routes to `console.error`
 /// instead.
 #[macro_export]

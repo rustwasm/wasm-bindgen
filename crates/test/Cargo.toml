@@ -10,9 +10,7 @@ rust-version = "1.57"
 
 [features]
 default = []
-experimental = ["coverage"]
-
-coverage = ["minicov"]
+unstable-coverage = ["minicov"]
 
 [dependencies]
 console_error_panic_hook = '0.1'

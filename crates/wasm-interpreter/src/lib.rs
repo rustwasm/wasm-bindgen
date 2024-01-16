@@ -74,7 +74,7 @@ impl Interpreter {
     /// the `module` passed to `interpret` below.
     pub fn new(module: &Module) -> Result<Interpreter, anyhow::Error> {
         let mut ret = Interpreter::default();
-        ret.coverage = std::env::var_os("WASM_BINDGEN_TEST_COVERAGE").is_some();
+        ret.coverage = std::env::var_os("WASM_BINDGEN_UNSTABLE_TEST_COVERAGE").is_some();
 
         // The descriptor functions shouldn't really use all that much memory
         // (the LLVM call stack, now the wasm stack). To handle that let's give
@@ -227,7 +227,7 @@ impl Interpreter {
         log::debug!("arguments {:?}", args);
         let local = match &func.kind {
             walrus::FunctionKind::Local(l) => l,
-            _ => panic!("can only call locally defined functions. If you're compiling with profiling information you might want to set WASM_BINDGEN_TEST_COVERAGE (--coverage flag in wasm-pack)"),
+            _ => panic!("can only call locally defined functions. If you're compiling with profiling information you might want to set WASM_BINDGEN_UNSTABLE_TEST_COVERAGE (--coverage flag in wasm-pack)"),
         };
 
         let entry = local.entry_block();
@@ -273,7 +273,7 @@ impl Frame<'_> {
             Instr::Const(c) => match c.value {
                 Value::I32(n) => stack.push(n),
                 Value::I64(_) if coverage => stack.push(0),
-                _ => panic!("non-i32 constant. If you're compiling with profiling information you might want to set WASM_BINDGEN_TEST_COVERAGE (--coverage flag in wasm-pack)"),
+                _ => panic!("non-i32 constant. If you're compiling with profiling information you might want to set WASM_BINDGEN_UNSTABLE_TEST_COVERAGE (--coverage flag in wasm-pack)"),
             },
             Instr::LocalGet(e) => stack.push(self.locals.get(&e.local).cloned().unwrap_or(0)),
             Instr::LocalSet(e) => {

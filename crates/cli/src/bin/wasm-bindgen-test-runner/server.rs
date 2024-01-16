@@ -245,24 +245,21 @@ pub fn spawn(
             };
             return set_isolate_origin_headers(Response::from_data("text/html", s));
         } else if request.url() == "/__coverage/dump" {
-            let profraw_path = coverage.as_ref().expect(
-                "Received coverage dump request but server wasn't set up to accept coverage",
-            );
-            // This is run after all tests are done and dumps the data received in the request
-            // into a single profraw file
-            let mut profraw =
-                std::fs::File::create(profraw_path).expect("Couldn't create .profraw for coverage");
-            let mut data = Vec::new();
-            request
-                .data()
-                .expect("Expected coverage data in body")
-                .read_to_end(&mut data)
-                .expect("Failed to read message body");
-
-            profraw
-                .write_all(&data)
-                .expect("Couldn't dump coverage data to profraw");
-            return Response::text("Coverage dumped");
+            fn internal_err(s: &str) -> Response {
+                log::error!("{s}");
+                let mut ret = Response::text(s);
+                ret.status_code = 500;
+                ret
+            }
+            let Some(profraw_path) = &coverage else {
+                return internal_err(
+                    "Received coverage dump request but server wasn't set up to accept coverage",
+                );
+            };
+            return match handle_coverage_dump(profraw_path, request) {
+                Ok(()) => Response::empty_204(),
+                Err(e) => internal_err(&format!("Failed to dump coverage: {e}")),
+            };
         }
 
         // Otherwise we need to find the asset here. It may either be in our
@@ -309,6 +306,21 @@ pub fn spawn(
         }
         response
     }
+}
+
+fn handle_coverage_dump(profraw_path: &Path, request: &Request) -> anyhow::Result<()> {
+    // This is run after all tests are done and dumps the data received in the request
+    // into a single profraw file
+    let mut profraw = std::fs::File::create(profraw_path)?;
+    let mut data = Vec::new();
+    if let Some(mut r_data) = request.data() {
+        r_data.read_to_end(&mut data)?;
+    }
+    // Warnings about empty data should have already been handled by
+    // the client
+
+    profraw.write_all(&data)?;
+    Ok(())
 }
 
 /*

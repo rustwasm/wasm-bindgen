@@ -256,11 +256,10 @@ fn coverage_args(tmpdir: &Path) -> Option<PathBuf> {
     }
 
     // Profraw path is ignored if coverage isn't enabled
-    env::var_os("WASM_BINDGEN_TEST_COVERAGE")?;
-    log::warn!("Coverage support is still considered highly experimental!");
+    env::var_os("WASM_BINDGEN_UNSTABLE_TEST_COVERAGE")?;
     // TODO coverage link to wasm-bindgen book documenting correct usage
 
-    match env::var_os("WASM_BINDGEN_TEST_PROFRAW_OUT") {
+    match env::var_os("WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_OUT") {
         Some(s) => {
             let mut buf = PathBuf::from(s);
             if buf.is_dir() {
