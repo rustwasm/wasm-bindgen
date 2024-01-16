@@ -102,6 +102,9 @@ fn wrong_types() {
 pub fn simple_int(_a: u32) {}
 
 #[wasm_bindgen]
+pub fn simple_bool(_a: bool) {}
+
+#[wasm_bindgen]
 pub fn simple_str(_a: &str) {}
 
 #[wasm_bindgen_test]

@@ -28,6 +28,11 @@ exports.test_wrong_types = function() {
     return;
   assert.throws(() => wasm.simple_int('a'), /expected a number argument/);
   assert.throws(() => wasm.simple_str(3), /expected a string argument/);
+  assert.throws(() => wasm.simple_bool('a'), /expected a boolean argument/);
+
+  assert.doesNotThrow(() => wasm.simple_int(1));
+  assert.doesNotThrow(() => wasm.simple_str('a'));
+  assert.doesNotThrow(() => wasm.simple_bool(true));
 };
 
 exports.test_other_exports_still_available = function() {
