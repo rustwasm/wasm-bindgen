@@ -69,4 +69,8 @@ macro_rules! wasm_bindgen_test_configure {
 #[path = "rt/mod.rs"]
 pub mod __rt;
 
+// Make this only available to wasm32 so that we don't
+// import minicov on other archs.
+// That way you can use normal cargo test without minicov
+#[cfg(target_arch = "wasm32")]
 mod coverage;
