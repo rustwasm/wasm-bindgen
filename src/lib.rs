@@ -779,7 +779,7 @@ impl<'a> From<&'a str> for JsValue {
 impl<'a, 'b> From<&'a &'b str> for JsValue {
     #[inline]
     fn from(s: &'a &'b str) -> JsValue {
-        JsValue::from_str(*s)
+        JsValue::from_str(s)
     }
 }
 
