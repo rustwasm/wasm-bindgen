@@ -99,6 +99,14 @@ fn to_vec() {
 }
 
 #[wasm_bindgen_test]
+fn from_slice() {
+    assert_eq!(
+        Array::from_slice(&["a", "b", "c"]).to_vec(),
+        vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")],
+    );
+}
+
+#[wasm_bindgen_test]
 fn iter() {
     let array = vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]
         .into_iter()

@@ -776,6 +776,13 @@ impl<'a> From<&'a str> for JsValue {
     }
 }
 
+impl<'a, 'b> From<&'a &'b str> for JsValue {
+    #[inline]
+    fn from(s: &'a &'b str) -> JsValue {
+        JsValue::from_str(*s)
+    }
+}
+
 impl<T> From<*mut T> for JsValue {
     #[inline]
     fn from(s: *mut T) -> JsValue {

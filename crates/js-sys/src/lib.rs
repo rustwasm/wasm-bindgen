@@ -748,6 +748,18 @@ impl Array {
 
         output
     }
+
+    /// Converts a slice to a JS array
+    pub fn from_slice<'a, T>(slice: &'a [T]) -> Array
+    where
+        JsValue: From<&'a T>,
+    {
+        let res = Array::new_with_length(u32::try_from(slice.len()).unwrap());
+        for (i, v) in slice.iter().enumerate() {
+            res.set(i as u32, JsValue::from(v));
+        }
+        res
+    }
 }
 
 impl std::iter::IntoIterator for Array {
