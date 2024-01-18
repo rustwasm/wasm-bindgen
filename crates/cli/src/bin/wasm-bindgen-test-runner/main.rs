@@ -248,26 +248,32 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn coverage_args(tmpdir: &Path) -> Option<PathBuf> {
-    fn generated(tmpdir: &Path) -> String {
-        format!(
-            "{}.profraw",
+    fn generated(tmpdir: &Path, prefix: &str) -> String {
+        let res = format!(
+            "{prefix}{}.profraw",
             tmpdir.file_name().and_then(|s| s.to_str()).unwrap()
-        )
+        );
+        res
     }
 
     // Profraw path is ignored if coverage isn't enabled
     env::var_os("WASM_BINDGEN_UNSTABLE_TEST_COVERAGE")?;
     // TODO coverage link to wasm-bindgen book documenting correct usage
 
+    let prefix = env::var_os("WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_PREFIX")
+        .map(|s| s.to_str().unwrap().to_string())
+        .unwrap_or_default();
+
+
     match env::var_os("WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_OUT") {
         Some(s) => {
             let mut buf = PathBuf::from(s);
             if buf.is_dir() {
-                buf.push(generated(tmpdir));
+                buf.push(generated(tmpdir, &prefix));
             }
             buf
         }
-        None => PathBuf::from(generated(tmpdir)),
+        None => PathBuf::from(generated(tmpdir, &prefix)),
     }
     .into()
 }
