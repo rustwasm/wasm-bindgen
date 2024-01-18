@@ -264,7 +264,6 @@ fn coverage_args(tmpdir: &Path) -> Option<PathBuf> {
         .map(|s| s.to_str().unwrap().to_string())
         .unwrap_or_default();
 
-
     match env::var_os("WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_OUT") {
         Some(s) => {
             let mut buf = PathBuf::from(s);
