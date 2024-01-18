@@ -110,6 +110,7 @@
   - [Writing Asynchronous Tests](./wasm-bindgen-test/asynchronous-tests.md)
   - [Testing in Headless Browsers](./wasm-bindgen-test/browsers.md)
   - [Continuous Integration](./wasm-bindgen-test/continuous-integration.md)
+  - [Coverage (Experimental)](./wasm-bindgen-test/coverage.md)
 
 - [Contributing to `wasm-bindgen`](./contributing/index.md)
   - [Testing](./contributing/testing.md)
