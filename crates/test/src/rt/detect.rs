@@ -24,7 +24,9 @@ pub fn detect() -> Runtime {
     // only be true in browsers.
     match js_sys::global().unchecked_into::<This>().self_() {
         Some(scope) => match scope.constructor().name().as_str() {
-            "DedicatedWorkerGlobalScope" | "SharedWorkerGlobalScope" => Runtime::Worker,
+            "DedicatedWorkerGlobalScope"
+            | "SharedWorkerGlobalScope"
+            | "ServiceWorkerGlobalScope" => Runtime::Worker,
             _ => Runtime::Browser,
         },
         None => Runtime::Node,

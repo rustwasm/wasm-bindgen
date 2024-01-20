@@ -21,6 +21,8 @@ use wasm_bindgen_test::wasm_bindgen_test_configure;
 wasm_bindgen_test_configure!(run_in_dedicated_worker);
 // Or run in shared worker.
 wasm_bindgen_test_configure!(run_in_shared_worker);
+// Or run in service worker.
+wasm_bindgen_test_configure!(run_in_service_worker);
 ```
 
 Note that although a particular test crate must target either headless browsers
@@ -33,6 +35,7 @@ $MY_CRATE/
     |-- node.rs              # The tests in this suite use the default Node.js.
     |-- dedicated_worker.rs  # The tests in this suite are configured for dedicated workers.
     |-- shared_worker.rs     # The tests in this suite are configured for shared workers.
+    |-- service_worker.rs    # The tests in this suite are configured for service workers.
     `-- web.rs               # The tests in this suite are configured for browsers.
 ```
 

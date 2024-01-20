@@ -32,13 +32,14 @@ enum TestMode {
     Browser { no_modules: bool },
     DedicatedWorker { no_modules: bool },
     SharedWorker { no_modules: bool },
+    ServiceWorker { no_modules: bool },
 }
 
 impl TestMode {
     fn is_worker(self) -> bool {
         matches!(
             self,
-            Self::DedicatedWorker { .. } | Self::SharedWorker { .. }
+            Self::DedicatedWorker { .. } | Self::SharedWorker { .. } | Self::ServiceWorker { .. }
         )
     }
 
@@ -48,7 +49,8 @@ impl TestMode {
             Self::Deno => true,
             Self::Browser { no_modules }
             | Self::DedicatedWorker { no_modules }
-            | Self::SharedWorker { no_modules } => no_modules,
+            | Self::SharedWorker { no_modules }
+            | Self::ServiceWorker { no_modules } => no_modules,
         }
     }
 }
@@ -146,6 +148,9 @@ fn main() -> anyhow::Result<()> {
         Some(section) if section.data.contains(&0x03) => TestMode::SharedWorker {
             no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
         },
+        Some(section) if section.data.contains(&0x04) => TestMode::ServiceWorker {
+            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+        },
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
         None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
         None => TestMode::Node,
@@ -200,7 +205,8 @@ fn main() -> anyhow::Result<()> {
         TestMode::Deno => b.deno(true)?,
         TestMode::Browser { .. }
         | TestMode::DedicatedWorker { .. }
-        | TestMode::SharedWorker { .. } => {
+        | TestMode::SharedWorker { .. }
+        | TestMode::ServiceWorker { .. } => {
             if test_mode.no_modules() {
                 b.no_modules(true)?
             } else {
@@ -228,7 +234,8 @@ fn main() -> anyhow::Result<()> {
         TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests)?,
         TestMode::Browser { .. }
         | TestMode::DedicatedWorker { .. }
-        | TestMode::SharedWorker { .. } => {
+        | TestMode::SharedWorker { .. }
+        | TestMode::ServiceWorker { .. } => {
             let srv = server::spawn(
                 &if headless {
                     "127.0.0.1:0".parse().unwrap()

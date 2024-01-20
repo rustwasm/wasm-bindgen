@@ -62,7 +62,15 @@ pub(crate) fn spawn(
             TestMode::DedicatedWorker { .. } => worker_script.push_str("const port = self\n"),
             TestMode::SharedWorker { .. } => worker_script.push_str(
                 r#"
-                onconnect = (e) => {
+                addEventListener('connect', (e) => {
+                    const port = e.ports[0]
+                "#,
+            ),
+            TestMode::ServiceWorker { .. } => worker_script.push_str(
+                r#"
+                addEventListener('install', (e) => skipWaiting());
+                addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+                addEventListener('message', (e) => {
                     const port = e.ports[0]
                 "#,
             ),
@@ -117,11 +125,19 @@ pub(crate) fn spawn(
             module, args,
         ));
 
-        if matches!(test_mode, TestMode::SharedWorker { .. }) {
-            worker_script.push('}');
+        if matches!(
+            test_mode,
+            TestMode::SharedWorker { .. } | TestMode::ServiceWorker { .. }
+        ) {
+            worker_script.push_str("})");
         }
 
-        let worker_js_path = tmpdir.join("worker.js");
+        let name = if matches!(test_mode, TestMode::ServiceWorker { .. }) {
+            "service.js"
+        } else {
+            "worker.js"
+        };
+        let worker_js_path = tmpdir.join(name);
         fs::write(worker_js_path, worker_script).context("failed to write JS file")?;
 
         js_to_execute.push_str(&format!(
@@ -130,11 +146,9 @@ pub(crate) fn spawn(
             // status text as at this point we should be asynchronously fetching the
             // wasm module.
             document.getElementById('output').textContent = "Loading wasm module...";
-            const worker = new {type}({file}, {{type: "{module}"}});
-            const port = {port};
-            {port_start}
+            {}
 
-            port.addEventListener("message", function(e) {{
+            port_receive.addEventListener("message", function(e) {{
                 // Checking the whether the message is from wasm_bindgen_test
                 if(
                     e.data &&
@@ -159,35 +173,61 @@ pub(crate) fn spawn(
             }});
 
             async function main(test) {{
-                port.postMessage(test)
+                port_send.postMessage(test)
             }}
 
             const tests = [];
             "#,
-            type = match test_mode {
-                TestMode::DedicatedWorker { .. } => "Worker",
-                TestMode::SharedWorker { .. } => "SharedWorker",
-                _ => unreachable!(),
-            },
-            file = match test_mode {
-                TestMode::DedicatedWorker { .. } => "\"worker.js\"",
-                TestMode::SharedWorker { .. } => "\"worker.js?random=\" + crypto.randomUUID()",
-                _ => unreachable!(),
-            },
-            module = if test_mode.no_modules() {
-                "classic"
-            } else {
-                "module"
-            },
-            port = match test_mode {
-                TestMode::DedicatedWorker { .. } => "worker",
-                TestMode::SharedWorker { .. } => "worker.port",
-                _ => unreachable!(),
-            },
-            port_start = if matches!(test_mode, TestMode::SharedWorker { .. }) {
-                "port.start()"
-            } else {
-                ""
+            {
+                let module = if test_mode.no_modules() {
+                    "classic"
+                } else {
+                    "module"
+                };
+
+                match test_mode {
+                    TestMode::DedicatedWorker { .. } => {
+                        format!(
+                            r#"
+                            const worker = new Worker("worker.js", {{type: "{module}"}});
+                            const port_send = worker;
+                            const port_receive = worker;
+                            "#
+                        )
+                    }
+                    TestMode::SharedWorker { .. } => {
+                        format!(
+                            r#"
+                            const worker = new SharedWorker("worker.js?random=" + crypto.randomUUID(), {{type: "{module}"}});
+                            const port_send = worker.port;
+                            const port_receive = worker.port;
+                            worker.port.start();
+                            "#
+                        )
+                    }
+                    TestMode::ServiceWorker { .. } => {
+                        format!(
+                            r#"
+                            const url = "service.js?random=" + crypto.randomUUID();
+                            await navigator.serviceWorker.register(url, {{type: "{module}"}});
+                            await new Promise((resolve) => {{
+                                navigator.serviceWorker.addEventListener('controllerchange', () => {{
+                                    if (navigator.serviceWorker.controller.scriptURL != location.href + url) {{
+                                        throw "`wasm-bindgen-test-runner` does not support running multiple service worker tests at the same time"
+                                    }}
+                                    resolve();
+                                }});
+                            }});
+                            const channel = new MessageChannel();
+                            navigator.serviceWorker.controller.postMessage(undefined, [channel.port2]);
+                            const port_send = channel.port1;
+                            const port_receive = channel.port1;
+                            channel.port1.start();
+                            "#
+                        )
+                    }
+                    _ => unreachable!(),
+                }
             }
         ));
     } else {
@@ -245,7 +285,7 @@ pub(crate) fn spawn(
             } else {
                 include_str!("index.html")
             };
-            let s = if test_mode.no_modules() {
+            let s = if !test_mode.is_worker() && test_mode.no_modules() {
                 s.replace(
                     "<!-- {IMPORT_SCRIPTS} -->",
                     &format!(
