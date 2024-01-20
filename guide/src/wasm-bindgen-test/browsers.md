@@ -86,12 +86,6 @@ Full list supported capabilities can be found:
 
 Note that the `headless` argument is always enabled for both browsers.
 
-You have to enable the special preference `dom.workers.modules.enabled` for
-firefox when running the tests in Web Workers without using
-`WASM_BINDGEN_USE_NO_MODULE` variable. Because firefox supported
-ECMAScript modules in last release (2023-03-14) behind a special
-preference. 
-
 ### Debugging Headless Browser Tests
 
 Omitting the `--headless` flag will disable headless mode, and allow you to
