@@ -145,10 +145,15 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
     shell.status("Waiting for test to finish...");
     let start = Instant::now();
     let max = Duration::new(timeout, 0);
+    let mut last_logs = String::new();
     while start.elapsed() < max {
         if client.text(&id, &output)?.contains("test result: ") {
             break;
         }
+        let all_logs = client.text(&id, &logs)?;
+        let new_logs = all_logs.strip_prefix(&last_logs).expect("console.log div reduced in size");
+        print!("{new_logs}");
+        last_logs = all_logs;
         thread::sleep(Duration::from_millis(100));
     }
     shell.clear();
