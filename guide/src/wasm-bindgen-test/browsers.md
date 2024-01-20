@@ -17,7 +17,10 @@ snippet.
 ```rust
 use wasm_bindgen_test::wasm_bindgen_test_configure;
 
-wasm_bindgen_test_configure!(run_in_worker);
+// Run in dedicated worker.
+wasm_bindgen_test_configure!(run_in_dedicated_worker);
+// Or run in shared worker.
+wasm_bindgen_test_configure!(run_in_shared_worker);
 ```
 
 Note that although a particular test crate must target either headless browsers
@@ -27,9 +30,10 @@ project by using multiple test crates. For example:
 ```
 $MY_CRATE/
 `-- tests
-    |-- node.rs    # The tests in this suite use the default Node.js.
-    |-- worker.rs  # The tests in this suite are configured for workers.
-    `-- web.rs     # The tests in this suite are configured for browsers.
+    |-- node.rs              # The tests in this suite use the default Node.js.
+    |-- dedicated_worker.rs  # The tests in this suite are configured for dedicated workers.
+    |-- shared_worker.rs     # The tests in this suite are configured for shared workers.
+    `-- web.rs               # The tests in this suite are configured for browsers.
 ```
 
 ## Configuring Which Browser is Used

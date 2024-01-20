@@ -30,7 +30,27 @@ enum TestMode {
     Node,
     Deno,
     Browser { no_modules: bool },
-    Worker { no_modules: bool },
+    DedicatedWorker { no_modules: bool },
+    SharedWorker { no_modules: bool },
+}
+
+impl TestMode {
+    fn is_worker(self) -> bool {
+        matches!(
+            self,
+            Self::DedicatedWorker { .. } | Self::SharedWorker { .. }
+        )
+    }
+
+    fn no_modules(self) -> bool {
+        match self {
+            Self::Node => true,
+            Self::Deno => true,
+            Self::Browser { no_modules }
+            | Self::DedicatedWorker { no_modules }
+            | Self::SharedWorker { no_modules } => no_modules,
+        }
+    }
 }
 
 struct TmpDirDeleteGuard(PathBuf);
@@ -120,7 +140,10 @@ fn main() -> anyhow::Result<()> {
         Some(section) if section.data.contains(&0x01) => TestMode::Browser {
             no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
         },
-        Some(section) if section.data.contains(&0x10) => TestMode::Worker {
+        Some(section) if section.data.contains(&0x02) => TestMode::DedicatedWorker {
+            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+        },
+        Some(section) if section.data.contains(&0x03) => TestMode::SharedWorker {
             no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
         },
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
@@ -175,11 +198,14 @@ fn main() -> anyhow::Result<()> {
     match test_mode {
         TestMode::Node => b.nodejs(true)?,
         TestMode::Deno => b.deno(true)?,
-        TestMode::Browser { no_modules: false } | TestMode::Worker { no_modules: false } => {
-            b.web(true)?
-        }
-        TestMode::Browser { no_modules: true } | TestMode::Worker { no_modules: true } => {
-            b.no_modules(true)?
+        TestMode::Browser { .. }
+        | TestMode::DedicatedWorker { .. }
+        | TestMode::SharedWorker { .. } => {
+            if test_mode.no_modules() {
+                b.no_modules(true)?
+            } else {
+                b.web(true)?
+            }
         }
     };
 
@@ -200,7 +226,9 @@ fn main() -> anyhow::Result<()> {
     match test_mode {
         TestMode::Node => node::execute(module, &tmpdir, &args, &tests)?,
         TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests)?,
-        TestMode::Browser { no_modules } | TestMode::Worker { no_modules } => {
+        TestMode::Browser { .. }
+        | TestMode::DedicatedWorker { .. }
+        | TestMode::SharedWorker { .. } => {
             let srv = server::spawn(
                 &if headless {
                     "127.0.0.1:0".parse().unwrap()
@@ -214,8 +242,7 @@ fn main() -> anyhow::Result<()> {
                 &tmpdir,
                 &args,
                 &tests,
-                no_modules,
-                matches!(test_mode, TestMode::Worker { no_modules: _ }),
+                test_mode,
             )
             .context("failed to spawn server")?;
             let addr = srv.server_addr();

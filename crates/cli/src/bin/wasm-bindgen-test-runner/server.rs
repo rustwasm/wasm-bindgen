@@ -7,19 +7,20 @@ use std::path::Path;
 use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
 
-pub fn spawn(
+use crate::TestMode;
+
+pub(crate) fn spawn(
     addr: &SocketAddr,
     headless: bool,
     module: &'static str,
     tmpdir: &Path,
     args: &[OsString],
     tests: &[String],
-    no_module: bool,
-    worker: bool,
+    test_mode: TestMode,
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = String::new();
 
-    let wbg_import_script = if no_module {
+    let wbg_import_script = if test_mode.no_modules() {
         String::from(
             r#"
             let Context = wasm_bindgen.WasmBindgenTestContext;
@@ -48,14 +49,25 @@ pub fn spawn(
         )
     };
 
-    if worker {
-        let mut worker_script = if no_module {
+    if test_mode.is_worker() {
+        let mut worker_script = if test_mode.no_modules() {
             format!(r#"importScripts("{0}.js");"#, module)
         } else {
             String::new()
         };
 
         worker_script.push_str(&wbg_import_script);
+
+        match test_mode {
+            TestMode::DedicatedWorker { .. } => worker_script.push_str("const port = self\n"),
+            TestMode::SharedWorker { .. } => worker_script.push_str(
+                r#"
+                onconnect = (e) => {
+                    const port = e.ports[0]
+                "#,
+            ),
+            _ => unreachable!(),
+        }
 
         worker_script.push_str(&format!(
             r#"
@@ -65,7 +77,7 @@ pub fn spawn(
                     if (self[on_method]) {{
                         self[on_method](args);
                     }}
-                    postMessage(["__wbgtest_" + method, args]);
+                    port.postMessage(["__wbgtest_" + method, args]);
                 }};
             }};
 
@@ -73,7 +85,7 @@ pub fn spawn(
             self.__wbg_test_output = "";
             self.__wbg_test_output_writeln = function (line) {{
                 self.__wbg_test_output += line + "\n";
-                postMessage(["__wbgtest_output", self.__wbg_test_output]);
+                port.postMessage(["__wbgtest_output", self.__wbg_test_output]);
             }}
 
             wrap("debug");
@@ -97,13 +109,17 @@ pub fn spawn(
                 await cx.run(tests.map(s => wasm[s]));
             }}
 
-            onmessage = function(e) {{
+            port.onmessage = function(e) {{
                 let tests = e.data;
                 run_in_worker(tests);
             }}
             "#,
             module, args,
         ));
+
+        if matches!(test_mode, TestMode::SharedWorker { .. }) {
+            worker_script.push('}');
+        }
 
         let worker_js_path = tmpdir.join("worker.js");
         fs::write(worker_js_path, worker_script).context("failed to write JS file")?;
@@ -114,9 +130,11 @@ pub fn spawn(
             // status text as at this point we should be asynchronously fetching the
             // wasm module.
             document.getElementById('output').textContent = "Loading wasm module...";
-            const worker = new Worker("worker.js", {{type: "{}"}});
+            const worker = new {type}({file}, {{type: "{module}"}});
+            const port = {port};
+            {port_start}
 
-            worker.addEventListener("message", function(e) {{
+            port.addEventListener("message", function(e) {{
                 // Checking the whether the message is from wasm_bindgen_test
                 if(
                     e.data &&
@@ -141,12 +159,36 @@ pub fn spawn(
             }});
 
             async function main(test) {{
-                worker.postMessage(test)
+                port.postMessage(test)
             }}
 
             const tests = [];
             "#,
-            if no_module { "classic" } else { "module" }
+            type = match test_mode {
+                TestMode::DedicatedWorker { .. } => "Worker",
+                TestMode::SharedWorker { .. } => "SharedWorker",
+                _ => unreachable!(),
+            },
+            file = match test_mode {
+                TestMode::DedicatedWorker { .. } => "\"worker.js\"",
+                TestMode::SharedWorker { .. } => "\"worker.js?random=\" + crypto.randomUUID()",
+                _ => unreachable!(),
+            },
+            module = if test_mode.no_modules() {
+                "classic"
+            } else {
+                "module"
+            },
+            port = match test_mode {
+                TestMode::DedicatedWorker { .. } => "worker",
+                TestMode::SharedWorker { .. } => "worker.port",
+                _ => unreachable!(),
+            },
+            port_start = if matches!(test_mode, TestMode::SharedWorker { .. }) {
+                "port.start()"
+            } else {
+                ""
+            }
         ));
     } else {
         js_to_execute.push_str(&wbg_import_script);
@@ -203,7 +245,7 @@ pub fn spawn(
             } else {
                 include_str!("index.html")
             };
-            let s = if no_module {
+            let s = if test_mode.no_modules() {
                 s.replace(
                     "<!-- {IMPORT_SCRIPTS} -->",
                     &format!(
