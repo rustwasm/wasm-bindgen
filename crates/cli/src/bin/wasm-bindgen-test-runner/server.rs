@@ -17,6 +17,7 @@ pub(crate) fn spawn(
     args: &[OsString],
     tests: &[String],
     test_mode: TestMode,
+    isolate_origin: bool,
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = String::new();
 
@@ -291,7 +292,14 @@ pub(crate) fn spawn(
                     "<script src='run.js' type=module></script>",
                 )
             };
-            return set_isolate_origin_headers(Response::from_data("text/html", s));
+
+            let mut response = Response::from_data("text/html", s);
+
+            if isolate_origin {
+                set_isolate_origin_headers(&mut response)
+            }
+
+            return response;
         }
 
         // Otherwise we need to find the asset here. It may either be in our
@@ -304,7 +312,10 @@ pub(crate) fn spawn(
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
-        set_isolate_origin_headers(response)
+        if isolate_origin {
+            set_isolate_origin_headers(&mut response)
+        }
+        response
     })
     .map_err(|e| anyhow!("{}", e))?;
     return Ok(srv);
@@ -346,7 +357,7 @@ pub(crate) fn spawn(
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy#certain_features_depend_on_cross-origin_isolation
  * https://security.googleblog.com/2018/07/mitigating-spectre-with-site-isolation.html
  */
-fn set_isolate_origin_headers(mut response: Response) -> Response {
+fn set_isolate_origin_headers(response: &mut Response) {
     response.headers.push((
         Cow::Borrowed("Cross-Origin-Opener-Policy"),
         Cow::Borrowed("same-origin"),
@@ -355,6 +366,4 @@ fn set_isolate_origin_headers(mut response: Response) -> Response {
         Cow::Borrowed("Cross-Origin-Embedder-Policy"),
         Cow::Borrowed("require-corp"),
     ));
-
-    response
 }

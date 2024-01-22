@@ -11,6 +11,9 @@
 * Accept the `--skip` flag with `wasm-bindgen-test-runner`.
   [#3803](https://github.com/rustwasm/wasm-bindgen/pull/3803)
 
+* Introduce environment variable `WASM_BINDGEN_TEST_NO_ORIGIN_ISOLATION` to disable origin isolation for `wasm-bindgen-test-runner`.
+  [#3807](https://github.com/rustwasm/wasm-bindgen/pull/3807)
+
 ### Changed
 
 * Stabilize `ClipboardEvent`.
