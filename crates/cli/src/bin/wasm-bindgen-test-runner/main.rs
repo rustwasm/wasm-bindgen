@@ -250,6 +250,7 @@ fn main() -> anyhow::Result<()> {
                 &args,
                 &tests,
                 test_mode,
+                std::env::var("WASM_BINDGEN_TEST_NO_ORIGIN_ISOLATION").is_err(),
             )
             .context("failed to spawn server")?;
             let addr = srv.server_addr();
