@@ -2301,6 +2301,84 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`, `Window`*"]
     pub fn scroll_to_with_scroll_to_options(this: &Window, options: &ScrollToOptions);
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = showDirectoryPicker)]
+    #[doc = "The `showDirectoryPicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn show_directory_picker(this: &Window) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "DirectoryPickerOptions")]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = showDirectoryPicker)]
+    #[doc = "The `showDirectoryPicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DirectoryPickerOptions`, `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn show_directory_picker_with_options(
+        this: &Window,
+        options: &DirectoryPickerOptions,
+    ) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = showOpenFilePicker)]
+    #[doc = "The `showOpenFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn show_open_file_picker(this: &Window) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "OpenFilePickerOptions")]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = showOpenFilePicker)]
+    #[doc = "The `showOpenFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OpenFilePickerOptions`, `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn show_open_file_picker_with_options(
+        this: &Window,
+        options: &OpenFilePickerOptions,
+    ) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = showSaveFilePicker)]
+    #[doc = "The `showSaveFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn show_save_file_picker(this: &Window) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "SaveFilePickerOptions")]
+    # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = showSaveFilePicker)]
+    #[doc = "The `showSaveFilePicker()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SaveFilePickerOptions`, `Window`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn show_save_file_picker_with_options(
+        this: &Window,
+        options: &SaveFilePickerOptions,
+    ) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = stop)]
     #[doc = "The `stop()` method."]
     #[doc = ""]
