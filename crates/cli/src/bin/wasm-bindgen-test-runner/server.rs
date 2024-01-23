@@ -148,7 +148,7 @@ pub(crate) fn spawn(
             document.getElementById('output').textContent = "Loading wasm module...";
             {}
 
-            port_receive.addEventListener("message", function(e) {{
+            port.addEventListener("message", function(e) {{
                 // Checking the whether the message is from wasm_bindgen_test
                 if(
                     e.data &&
@@ -173,7 +173,7 @@ pub(crate) fn spawn(
             }});
 
             async function main(test) {{
-                port_send.postMessage(test)
+                port.postMessage(test)
             }}
 
             const tests = [];
@@ -187,21 +187,14 @@ pub(crate) fn spawn(
 
                 match test_mode {
                     TestMode::DedicatedWorker { .. } => {
-                        format!(
-                            r#"
-                            const worker = new Worker("worker.js", {{type: "{module}"}});
-                            const port_send = worker;
-                            const port_receive = worker;
-                            "#
-                        )
+                        format!("const port = new Worker('worker.js', {{type: '{module}'}});\n")
                     }
                     TestMode::SharedWorker { .. } => {
                         format!(
                             r#"
                             const worker = new SharedWorker("worker.js?random=" + crypto.randomUUID(), {{type: "{module}"}});
-                            const port_send = worker.port;
-                            const port_receive = worker.port;
-                            worker.port.start();
+                            const port = worker.port;
+                            port.start();
                             "#
                         )
                     }
@@ -220,9 +213,8 @@ pub(crate) fn spawn(
                             }});
                             const channel = new MessageChannel();
                             navigator.serviceWorker.controller.postMessage(undefined, [channel.port2]);
-                            const port_send = channel.port1;
-                            const port_receive = channel.port1;
-                            channel.port1.start();
+                            const port = channel.port1;
+                            port.start();
                             "#
                         )
                     }

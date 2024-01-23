@@ -35,7 +35,7 @@ macro_rules! console_log {
 ///
 /// * `run_in_browser` - requires that this test is run in a browser rather than
 ///   node.js, which is the default for executing tests.
-/// * `run_in_worker` - requires that this test is run in a web worker rather than
+/// * `run_in_dedicated_worker` - requires that this test is run in a web worker rather than
 ///   node.js, which is the default for executing tests.
 /// * `run_in_shared_worker` - requires that this test is run in a shared worker rather than
 ///   node.js, which is the default for executing tests.
