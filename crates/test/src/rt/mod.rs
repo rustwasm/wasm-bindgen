@@ -130,8 +130,14 @@ struct State {
     /// Include ignored tests.
     include_ignored: Cell<bool>,
 
+    /// Tests to skip.
+    skip: RefCell<Vec<String>>,
+
     /// Counter of the number of tests that have succeeded.
     succeeded: Cell<usize>,
+
+    /// Counter of the number of tests that have been filtered
+    filtered: Cell<usize>,
 
     /// Counter of the number of tests that have been ignored
     ignored: Cell<usize>,
@@ -277,7 +283,9 @@ impl Context {
             state: Rc::new(State {
                 filter: Default::default(),
                 include_ignored: Default::default(),
+                skip: Default::default(),
                 failures: Default::default(),
+                filtered: Default::default(),
                 ignored: Default::default(),
                 remaining: Default::default(),
                 running: Default::default(),
@@ -289,20 +297,25 @@ impl Context {
 
     /// Inform this context about runtime arguments passed to the test
     /// harness.
-    ///
-    /// Eventually this will be used to support flags, but for now it's just
-    /// used to support test filters.
     pub fn args(&mut self, args: Vec<JsValue>) {
-        // Here we want to reject all flags like `--foo` or `-f` as we don't
-        // support anything, and also we only support at most one non-flag
-        // argument as a test filter.
-        //
-        // Everything else is rejected.
         let mut filter = self.state.filter.borrow_mut();
-        for arg in args {
+        let mut skip = self.state.skip.borrow_mut();
+
+        let mut args = args.into_iter();
+
+        while let Some(arg) = args.next() {
             let arg = arg.as_string().unwrap();
             if arg == "--include-ignored" {
                 self.state.include_ignored.set(true);
+            } else if arg == "--skip" {
+                skip.push(
+                    args.next()
+                        .expect("Argument to option 'skip' missing")
+                        .as_string()
+                        .unwrap(),
+                );
+            } else if let Some(arg) = arg.strip_prefix("--skip=") {
+                skip.push(arg.to_owned())
             } else if arg.starts_with('-') {
                 panic!("flag {} not supported", arg);
             } else if filter.is_some() {
@@ -482,8 +495,16 @@ impl Context {
         let filter = self.state.filter.borrow();
         if let Some(filter) = &*filter {
             if !name.contains(filter) {
-                let ignored = self.state.ignored.get();
-                self.state.ignored.set(ignored + 1);
+                let filtered = self.state.filtered.get();
+                self.state.filtered.set(filtered + 1);
+                return;
+            }
+        }
+
+        for skip in &*self.state.skip.borrow() {
+            if name.contains(skip) {
+                let filtered = self.state.filtered.get();
+                self.state.filtered.set(filtered + 1);
                 return;
             }
         }
@@ -628,11 +649,13 @@ impl State {
             "test result: {}. \
              {} passed; \
              {} failed; \
-             {} ignored\n",
+             {} ignored; \
+             {} filtered out\n",
             if failures.len() == 0 { "ok" } else { "FAILED" },
             self.succeeded.get(),
             failures.len(),
             self.ignored.get(),
+            self.filtered.get(),
         ));
     }
 
