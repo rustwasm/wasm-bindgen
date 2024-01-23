@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Added
+
+* Added support for running tests in shared and service workers with ``wasm_bindgen_test_configure!` `run_in_shared_worker` and `run_in_service_worker`.
+  [#3804](https://github.com/rustwasm/wasm-bindgen/pull/3804)
+
 ### Changed
 
 * Stabilize `ClipboardEvent`.
@@ -10,6 +15,9 @@
 
 * Use immutable buffers in `SubtleCrypto` methods.
   [#3797](https://github.com/rustwasm/wasm-bindgen/pull/3797)
+
+* Deprecate `wasm_bindgen_test_configure!`s `run_in_worker` in favor of `run_in_dedicated_worker`.
+  [#3804](https://github.com/rustwasm/wasm-bindgen/pull/3804)
 
 ## [0.2.90](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...0.2.90)
 

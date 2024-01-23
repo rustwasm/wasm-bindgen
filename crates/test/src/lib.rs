@@ -35,7 +35,11 @@ macro_rules! console_log {
 ///
 /// * `run_in_browser` - requires that this test is run in a browser rather than
 ///   node.js, which is the default for executing tests.
-/// * `run_in_worker` - requires that this test is run in a web worker rather than
+/// * `run_in_dedicated_worker` - requires that this test is run in a web worker rather than
+///   node.js, which is the default for executing tests.
+/// * `run_in_shared_worker` - requires that this test is run in a shared worker rather than
+///   node.js, which is the default for executing tests.
+/// * `run_in_service_worker` - requires that this test is run in a service worker rather than
 ///   node.js, which is the default for executing tests.
 ///
 /// This macro may be invoked at most one time per test suite (an entire binary
@@ -51,7 +55,25 @@ macro_rules! wasm_bindgen_test_configure {
     (run_in_worker $($others:tt)*) => (
         #[link_section = "__wasm_bindgen_test_unstable"]
         #[cfg(target_arch = "wasm32")]
-        pub static __WBG_TEST_RUN_IN_WORKER: [u8; 1] = [0x10];
+        pub static __WBG_TEST_RUN_IN_DEDICATED_WORKER: [u8; 1] = [0x02];
+        $crate::wasm_bindgen_test_configure!($($others)*);
+    );
+    (run_in_dedicated_worker $($others:tt)*) => (
+        #[link_section = "__wasm_bindgen_test_unstable"]
+        #[cfg(target_arch = "wasm32")]
+        pub static __WBG_TEST_RUN_IN_DEDICATED_WORKER: [u8; 1] = [0x02];
+        $crate::wasm_bindgen_test_configure!($($others)*);
+    );
+    (run_in_shared_worker $($others:tt)*) => (
+        #[link_section = "__wasm_bindgen_test_unstable"]
+        #[cfg(target_arch = "wasm32")]
+        pub static __WBG_TEST_RUN_IN_SHARED_WORKER: [u8; 1] = [0x03];
+        $crate::wasm_bindgen_test_configure!($($others)*);
+    );
+    (run_in_service_worker $($others:tt)*) => (
+        #[link_section = "__wasm_bindgen_test_unstable"]
+        #[cfg(target_arch = "wasm32")]
+        pub static __WBG_TEST_RUN_IN_SERVICE_WORKER: [u8; 1] = [0x04];
         $crate::wasm_bindgen_test_configure!($($others)*);
     );
     () => ()
