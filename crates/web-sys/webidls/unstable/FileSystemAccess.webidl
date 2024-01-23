@@ -57,8 +57,11 @@ dictionary DirectoryPickerOptions {
 
 [SecureContext]
 partial interface Window {
+    [Throws]
     Promise<sequence<FileSystemFileHandle>> showOpenFilePicker(optional OpenFilePickerOptions options = {});
+    [Throws]
     Promise<FileSystemFileHandle> showSaveFilePicker(optional SaveFilePickerOptions options = {});
+    [Throws]
     Promise<FileSystemDirectoryHandle> showDirectoryPicker(optional DirectoryPickerOptions options = {});
 };
 
