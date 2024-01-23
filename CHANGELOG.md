@@ -8,6 +8,9 @@
 * Stabilize `ClipboardEvent`.
   [#3791](https://github.com/rustwasm/wasm-bindgen/pull/3791)
 
+* Use immutable buffers in `SubtleCrypto` methods.
+  [#3797](https://github.com/rustwasm/wasm-bindgen/pull/3797)
+
 ## [0.2.90](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...0.2.90)
 
 Released 2024-01-06
