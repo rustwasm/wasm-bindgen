@@ -1296,11 +1296,6 @@ impl<'a> Context<'a> {
             mem = mem,
         );
 
-        // TODO:
-        // When converting a JS string to UTF-8, the maximum size is `arg.length * 3`,
-        // so we just allocate that. This wastes memory, so we should investigate
-        // looping over the string to calculate the precise size, or perhaps using
-        // `shrink_to_fit` on the Rust side.
         self.global(&format!(
             "function {name}(arg, malloc, realloc) {{
                 {debug}
@@ -1314,6 +1309,7 @@ impl<'a> Context<'a> {
                     const ret = encodeString(arg, view);
                     {debug_end}
                     offset += ret.written;
+                    ptr = realloc(ptr, len, offset, 1) >>> 0;
                 }}
 
                 WASM_VECTOR_LEN = offset;
