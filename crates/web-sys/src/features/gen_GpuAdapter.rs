@@ -63,20 +63,6 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn request_adapter_info(this: &GpuAdapter) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "GPUAdapter" , js_name = requestAdapterInfo)]
-    #[doc = "The `requestAdapterInfo()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/requestAdapterInfo)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuAdapter`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn request_adapter_info_with_unmask_hints(
-        this: &GpuAdapter,
-        unmask_hints: &::wasm_bindgen::JsValue,
-    ) -> ::js_sys::Promise;
-    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "GPUAdapter" , js_name = requestDevice)]
     #[doc = "The `requestDevice()` method."]
     #[doc = ""]
