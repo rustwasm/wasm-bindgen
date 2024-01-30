@@ -28,6 +28,9 @@
 * Deprecate `wasm_bindgen_test_configure!`s `run_in_worker` in favor of `run_in_dedicated_worker`.
   [#3804](https://github.com/rustwasm/wasm-bindgen/pull/3804)
 
+* Updated the WebGPU WebIDL to the current draft as of 2024-01-30. Note that this retains the previous update's workaround for `GPUPipelineError`, and holds back an update to the `buffer` argument of the `GPUQueue.{writeBuffer,writeTexture}` methods.
+  [#3816](https://github.com/rustwasm/wasm-bindgen/pull/3816)
+
 ### Fixed
 
 * Fixed UB when freeing strings received from JS if not using the default allocator.
