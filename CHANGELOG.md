@@ -33,6 +33,9 @@
 * Fixed UB when freeing strings received from JS if not using the default allocator.
   [#3808](https://github.com/rustwasm/wasm-bindgen/pull/3808)
 
+* Fixed temporary folder detection by `wasm-bindgen-test-runner` on MacOS.
+  [#3817](https://github.com/rustwasm/wasm-bindgen/pull/3817)
+
 ## [0.2.90](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...0.2.90)
 
 Released 2024-01-06
