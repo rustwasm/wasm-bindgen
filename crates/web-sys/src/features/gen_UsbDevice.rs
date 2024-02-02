@@ -243,6 +243,17 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn close(this: &UsbDevice) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = forget)]
+    #[doc = "The `forget()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/forget)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn forget(this: &UsbDevice) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbControlTransferParameters")]
     # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = controlTransferIn)]
     #[doc = "The `controlTransferIn()` method."]
