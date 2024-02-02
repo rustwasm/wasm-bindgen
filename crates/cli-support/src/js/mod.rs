@@ -923,9 +923,7 @@ impl<'a> Context<'a> {
                     ptr = ptr >>> 0;
                     const obj = Object.create({name}.prototype);
                     obj.__wbg_ptr = ptr;
-                    if (typeof {name}Finalization !== 'undefined') {{
-                        {name}Finalization.register(obj, obj.__wbg_ptr, obj);
-                    }}
+                    {name}Finalization.register(obj, obj.__wbg_ptr, obj);
                     return obj;
                 }}
                 "
@@ -948,11 +946,9 @@ impl<'a> Context<'a> {
 
         self.global(&format!(
             "
-            if (typeof FinalizationRegistry !== 'undefined') {{
-                const {}Finalization = new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));
-            }}
-            ",
-            name,
+            const {name}Finalization = (typeof FinalizationRegistry === 'undefined')
+                ? {{ register: () => {{}}, unregister: () => {{}} }}
+                : new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));",
             wasm_bindgen_shared::free_function(name),
         ));
 
@@ -1019,9 +1015,7 @@ impl<'a> Context<'a> {
             __destroy_into_raw() {{
                 const ptr = this.__wbg_ptr;
                 this.__wbg_ptr = 0;
-                if (typeof {name}Finalization !== 'undefined') {{
-                    {name}Finalization.unregister(this);
-                }}
+                {name}Finalization.unregister(this);
                 return ptr;
             }}
 
@@ -2116,17 +2110,7 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
-        let register = "
-            if (typeof CLOSURE_DTORS !== 'undefined') {
-                CLOSURE_DTORS.register(real, state, state);
-            }
-        ";
-
-        let unregister = "
-            if (typeof CLOSURE_DTORS !== 'undefined') {
-                CLOSURE_DTORS.unregister(state)
-            }
-        ";
+        self.expose_closure_finalization()?;
 
         // For mutable closures they can't be invoked recursively.
         // To handle that we swap out the `this.a` pointer with zero
@@ -2149,20 +2133,17 @@ impl<'a> Context<'a> {
                     }} finally {{
                         if (--state.cnt === 0) {{
                             wasm.{table}.get(state.dtor)(a, state.b);
-                            {unregister}
+                            CLOSURE_DTORS.unregister(state);
                         }} else {{
                             state.a = a;
                         }}
                     }}
                 }};
                 real.original = state;
-                {register}
+                CLOSURE_DTORS.register(real, state, state);
                 return real;
             }}
             ",
-            table = table,
-            register = register,
-            unregister = unregister,
         ));
 
         Ok(())
@@ -2175,17 +2156,7 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
-        let register = "
-            if (typeof CLOSURE_DTORS !== 'undefined') {
-                CLOSURE_DTORS.register(real, state, state);
-            }
-        ";
-
-        let unregister = "
-            if (typeof CLOSURE_DTORS !== 'undefined') {
-                CLOSURE_DTORS.unregister(state)
-            }
-        ";
+        self.expose_closure_finalization()?;
 
         // For shared closures they can be invoked recursively so we
         // just immediately pass through `this.a`. If we end up
@@ -2207,18 +2178,15 @@ impl<'a> Context<'a> {
                         if (--state.cnt === 0) {{
                             wasm.{table}.get(state.dtor)(state.a, state.b);
                             state.a = 0;
-                            {unregister}
+                            CLOSURE_DTORS.unregister(state);
                         }}
                     }}
                 }};
                 real.original = state;
-                {register}
+                CLOSURE_DTORS.register(real, state, state);
                 return real;
             }}
             ",
-            table = table,
-            register = register,
-            unregister = unregister,
         ));
 
         Ok(())
@@ -2231,11 +2199,11 @@ impl<'a> Context<'a> {
         let table = self.export_function_table()?;
         self.global(&format!(
             "
-            if (typeof FinalizationRegistry !== 'undefined') {{
-                const CLOSURE_DTORS = new FinalizationRegistry(state => {{
+            const CLOSURE_DTORS = (typeof FinalizationRegistry === 'undefined')
+                ? {{ register: () => {{}}, unregister: () => {{}} }}
+                : new FinalizationRegistry(state => {{
                     wasm.{table}.get(state.dtor)(state.a, state.b)
                 }});
-            }}
             "
         ));
 
