@@ -17,6 +17,9 @@
 * Introduce environment variable `WASM_BINDGEN_TEST_NO_ORIGIN_ISOLATION` to disable origin isolation for `wasm-bindgen-test-runner`.
   [#3807](https://github.com/rustwasm/wasm-bindgen/pull/3807)
 
+* Add `forget()` method for `UsbDevice`
+  [#3821](https://github.com/rustwasm/wasm-bindgen/pull/3821)
+
 ### Changed
 
 * Stabilize `ClipboardEvent`.
