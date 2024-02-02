@@ -35,9 +35,6 @@ pub struct Bindgen {
     remove_producers_section: bool,
     omit_default_module_path: bool,
     emit_start: bool,
-    // Experimental support for weakrefs, an upcoming ECMAScript feature.
-    // Currently only enable-able through an env var.
-    weak_refs: bool,
     // Support for the wasm threads proposal, transforms the wasm module to be
     // "ready to be instantiated on any thread"
     threads: wasm_bindgen_threads_xform::Config,
@@ -106,7 +103,6 @@ impl Bindgen {
             remove_name_section: false,
             remove_producers_section: false,
             emit_start: true,
-            weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
             externref,
             multi_value,
@@ -123,11 +119,6 @@ impl Bindgen {
 
     pub fn out_name(&mut self, name: &str) -> &mut Bindgen {
         self.out_name = Some(name.to_string());
-        self
-    }
-
-    pub fn weak_refs(&mut self, enable: bool) -> &mut Bindgen {
-        self.weak_refs = enable;
         self
     }
 

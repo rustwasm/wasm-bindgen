@@ -363,9 +363,7 @@ where
     ///
     /// If the browser, however, supports weak references, then this function
     /// will not leak memory. Instead the Rust memory will be reclaimed when the
-    /// JS closure is GC'd. Weak references are not enabled by default since
-    /// they're still a proposal for the JS standard. They can be enabled with
-    /// `WASM_BINDGEN_WEAKREF=1` when running `wasm-bindgen`, however.
+    /// JS closure is GC'd.
     pub fn into_js_value(self) -> JsValue {
         let idx = self.js.idx;
         mem::forget(self);

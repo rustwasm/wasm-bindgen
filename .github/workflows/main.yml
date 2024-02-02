@@ -90,14 +90,7 @@ jobs:
     - run: cargo test --target wasm32-unknown-unknown -p wasm-bindgen-futures
     - run: cargo test --target wasm32-unknown-unknown --test wasm
       env:
-        WASM_BINDGEN_WEAKREF: 1
-    - run: cargo test --target wasm32-unknown-unknown --test wasm
-      env:
-        WASM_BINDGEN_WEAKREF: 1
         WASM_BINDGEN_NO_DEBUG: 1
-    - run: cargo test --target wasm32-unknown-unknown --test wasm --features serde-serialize
-      env:
-        WASM_BINDGEN_WEAKREF: 1
     - run: cargo test --target wasm32-unknown-unknown
       env:
         WASM_BINDGEN_EXTERNREF: 1
