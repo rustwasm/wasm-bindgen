@@ -34,6 +34,9 @@
 * Updated the WebGPU WebIDL to the current draft as of 2024-01-30. Note that this retains the previous update's workaround for `GPUPipelineError`, and holds back an update to the `buffer` argument of the `GPUQueue.{writeBuffer,writeTexture}` methods.
   [#3816](https://github.com/rustwasm/wasm-bindgen/pull/3816)
 
+* Depreate `--weak-refs` and `WASM_BINDGEN_WEAKREF` in favor of automatic run-time detection.
+  [#3822](https://github.com/rustwasm/wasm-bindgen/pull/3822)
+
 ### Fixed
 
 * Fixed UB when freeing strings received from JS if not using the default allocator.

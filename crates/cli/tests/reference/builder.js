@@ -23,6 +23,10 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
+
+const ClassBuilderFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_classbuilder_free(ptr >>> 0));
 /**
 */
 export class ClassBuilder {
@@ -31,14 +35,14 @@ export class ClassBuilder {
         ptr = ptr >>> 0;
         const obj = Object.create(ClassBuilder.prototype);
         obj.__wbg_ptr = ptr;
-
+        ClassBuilderFinalization.register(obj, obj.__wbg_ptr, obj);
         return obj;
     }
 
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
         this.__wbg_ptr = 0;
-
+        ClassBuilderFinalization.unregister(this);
         return ptr;
     }
 

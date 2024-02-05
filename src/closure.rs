@@ -356,16 +356,12 @@ where
     /// lifetime dynamically managed by the JS GC. This function can be used
     /// to drop this `Closure` while keeping the associated JS function still
     /// valid.
-    ///
-    /// By default this function will leak memory. This can be dangerous if this
-    /// function is called many times in an application because the memory leak
-    /// will overwhelm the page quickly and crash the wasm.
-    ///
-    /// If the browser, however, supports weak references, then this function
-    /// will not leak memory. Instead the Rust memory will be reclaimed when the
-    /// JS closure is GC'd. Weak references are not enabled by default since
-    /// they're still a proposal for the JS standard. They can be enabled with
-    /// `WASM_BINDGEN_WEAKREF=1` when running `wasm-bindgen`, however.
+    /// 
+    /// If the platform supports weak references, the Rust memory will be
+    /// reclaimed when the JS closure is GC'd. If weak references is not
+    /// supported, this can be dangerous if this function is called many times
+    /// in an application because the memory leak will overwhelm the page
+    /// quickly and crash the wasm.
     pub fn into_js_value(self) -> JsValue {
         let idx = self.js.idx;
         mem::forget(self);

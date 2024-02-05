@@ -921,18 +921,12 @@ impl<'a> Context<'a> {
                 "
                 static __wrap(ptr) {{
                     ptr = ptr >>> 0;
-                    const obj = Object.create({}.prototype);
+                    const obj = Object.create({name}.prototype);
                     obj.__wbg_ptr = ptr;
-                    {}
+                    {name}Finalization.register(obj, obj.__wbg_ptr, obj);
                     return obj;
                 }}
-                ",
-                name,
-                if self.config.weak_refs {
-                    format!("{}Finalization.register(obj, obj.__wbg_ptr, obj);", name)
-                } else {
-                    String::new()
-                },
+                "
             ));
         }
 
@@ -950,13 +944,13 @@ impl<'a> Context<'a> {
             ));
         }
 
-        if self.config.weak_refs {
-            self.global(&format!(
-                "const {}Finalization = new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));",
-                name,
-                wasm_bindgen_shared::free_function(name),
-            ));
-        }
+        self.global(&format!(
+            "
+            const {name}Finalization = (typeof FinalizationRegistry === 'undefined')
+                ? {{ register: () => {{}}, unregister: () => {{}} }}
+                : new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));",
+            wasm_bindgen_shared::free_function(name),
+        ));
 
         // If the class is inspectable, generate `toJSON` and `toString`
         // to expose all readable properties of the class. Otherwise,
@@ -1021,7 +1015,7 @@ impl<'a> Context<'a> {
             __destroy_into_raw() {{
                 const ptr = this.__wbg_ptr;
                 this.__wbg_ptr = 0;
-                {}
+                {name}Finalization.unregister(this);
                 return ptr;
             }}
 
@@ -1030,11 +1024,6 @@ impl<'a> Context<'a> {
                 wasm.{}(ptr);
             }}
             ",
-            if self.config.weak_refs {
-                format!("{}Finalization.unregister(this);", name)
-            } else {
-                String::new()
-            },
             wasm_bindgen_shared::free_function(name),
         ));
         ts_dst.push_str("  free(): void;\n");
@@ -2121,15 +2110,7 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
-        let (register, unregister) = if self.config.weak_refs {
-            self.expose_closure_finalization()?;
-            (
-                "CLOSURE_DTORS.register(real, state, state);",
-                "CLOSURE_DTORS.unregister(state)",
-            )
-        } else {
-            ("", "")
-        };
+        self.expose_closure_finalization()?;
 
         // For mutable closures they can't be invoked recursively.
         // To handle that we swap out the `this.a` pointer with zero
@@ -2152,20 +2133,17 @@ impl<'a> Context<'a> {
                     }} finally {{
                         if (--state.cnt === 0) {{
                             wasm.{table}.get(state.dtor)(a, state.b);
-                            {unregister}
+                            CLOSURE_DTORS.unregister(state);
                         }} else {{
                             state.a = a;
                         }}
                     }}
                 }};
                 real.original = state;
-                {register}
+                CLOSURE_DTORS.register(real, state, state);
                 return real;
             }}
             ",
-            table = table,
-            register = register,
-            unregister = unregister,
         ));
 
         Ok(())
@@ -2178,15 +2156,7 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
-        let (register, unregister) = if self.config.weak_refs {
-            self.expose_closure_finalization()?;
-            (
-                "CLOSURE_DTORS.register(real, state, state);",
-                "CLOSURE_DTORS.unregister(state)",
-            )
-        } else {
-            ("", "")
-        };
+        self.expose_closure_finalization()?;
 
         // For shared closures they can be invoked recursively so we
         // just immediately pass through `this.a`. If we end up
@@ -2208,18 +2178,15 @@ impl<'a> Context<'a> {
                         if (--state.cnt === 0) {{
                             wasm.{table}.get(state.dtor)(state.a, state.b);
                             state.a = 0;
-                            {unregister}
+                            CLOSURE_DTORS.unregister(state);
                         }}
                     }}
                 }};
                 real.original = state;
-                {register}
+                CLOSURE_DTORS.register(real, state, state);
                 return real;
             }}
             ",
-            table = table,
-            register = register,
-            unregister = unregister,
         ));
 
         Ok(())
@@ -2229,15 +2196,15 @@ impl<'a> Context<'a> {
         if !self.should_write_global("closure_finalization") {
             return Ok(());
         }
-        assert!(self.config.weak_refs);
         let table = self.export_function_table()?;
         self.global(&format!(
             "
-            const CLOSURE_DTORS = new FinalizationRegistry(state => {{
-                wasm.{}.get(state.dtor)(state.a, state.b)
-            }});
-            ",
-            table
+            const CLOSURE_DTORS = (typeof FinalizationRegistry === 'undefined')
+                ? {{ register: () => {{}}, unregister: () => {{}} }}
+                : new FinalizationRegistry(state => {{
+                    wasm.{table}.get(state.dtor)(state.a, state.b)
+                }});
+            "
         ));
 
         Ok(())
