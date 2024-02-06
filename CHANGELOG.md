@@ -5,10 +5,13 @@
 
 ### Added
 
+* Added bindings for the `RTCRtpTransceiver.setCodecPreferences()` and unstable bindings for the `RTCRtpEncodingParameters.scalabilityMode`.
+  [#3828](https://github.com/rustwasm/wasm-bindgen/pull/3828)
+
 * Add unstable bindings for the FileSystemAccess API
   [#3810](https://github.com/rustwasm/wasm-bindgen/pull/3810)
 
-* Added support for running tests in shared and service workers with ``wasm_bindgen_test_configure!` `run_in_shared_worker` and `run_in_service_worker`.
+* Added support for running tests in shared and service workers with `wasm_bindgen_test_configure!` `run_in_shared_worker` and `run_in_service_worker`.
   [#3804](https://github.com/rustwasm/wasm-bindgen/pull/3804)
 
 * Accept the `--skip` flag with `wasm-bindgen-test-runner`.
