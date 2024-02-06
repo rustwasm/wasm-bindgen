@@ -48,6 +48,9 @@
 * Fixed using `#[wasm_bindgen(js_name = default)]` with `#[wasm_bindgen(module = ...)]`.
   [#3823](https://github.com/rustwasm/wasm-bindgen/pull/3823)
 
+* Fixed nighly build of `wasm-bindgen-futures`.
+  [#3827](https://github.com/rustwasm/wasm-bindgen/pull/3827)
+
 ## [0.2.90](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...0.2.90)
 
 Released 2024-01-06
