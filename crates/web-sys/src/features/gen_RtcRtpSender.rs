@@ -28,14 +28,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`, `RtcdtmfSender`*"]
     pub fn dtmf(this: &RtcRtpSender) -> Option<RtcdtmfSender>;
-    #[cfg(feature = "RtcRtpParameters")]
-    # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = getParameters)]
-    #[doc = "The `getParameters()` method."]
+    #[cfg(feature = "RtcRtpCapabilities")]
+    # [wasm_bindgen (static_method_of = RtcRtpSender , js_class = "RTCRtpSender" , js_name = getCapabilities)]
+    #[doc = "The `getCapabilities()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/getParameters)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/getCapabilities)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`, `RtcRtpSender`*"]
-    pub fn get_parameters(this: &RtcRtpSender) -> RtcRtpParameters;
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`, `RtcRtpSender`*"]
+    pub fn get_capabilities(kind: &str) -> Option<RtcRtpCapabilities>;
     # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = getStats)]
     #[doc = "The `getStats()` method."]
     #[doc = ""]
@@ -61,15 +61,4 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`*"]
     pub fn set_parameters(this: &RtcRtpSender) -> ::js_sys::Promise;
-    #[cfg(feature = "RtcRtpParameters")]
-    # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = setParameters)]
-    #[doc = "The `setParameters()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/setParameters)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`, `RtcRtpSender`*"]
-    pub fn set_parameters_with_parameters(
-        this: &RtcRtpSender,
-        parameters: &RtcRtpParameters,
-    ) -> ::js_sys::Promise;
 }

@@ -57,3 +57,5 @@ cd ..
 
 # Then try to build the typescript in the src_no_modules folder against the pkg/no_modules build.
 npm run tsc -- -p no_modules.tsconfig.json
+
+npm test

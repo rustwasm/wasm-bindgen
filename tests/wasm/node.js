@@ -24,14 +24,14 @@ exports.test_works = function() {
   assert.strictEqual(r2.add(2), 13);
   r2.free();
 
-  assert.strictEqual(wasm.Color.Green, 0);
-  assert.strictEqual(wasm.Color.Yellow, 1);
-  assert.strictEqual(wasm.Color.Red, 2);
-  assert.strictEqual(wasm.Color[0], 'Green');
-  assert.strictEqual(wasm.Color[1], 'Yellow');
-  assert.strictEqual(wasm.Color[2], 'Red');
-  assert.strictEqual(Object.keys(wasm.Color).length, 6);
-  assert.strictEqual(wasm.cycle(wasm.Color.Green), wasm.Color.Yellow);
+  assert.strictEqual(wasm.NodeColor.Green, 0);
+  assert.strictEqual(wasm.NodeColor.Yellow, 1);
+  assert.strictEqual(wasm.NodeColor.Red, 2);
+  assert.strictEqual(wasm.NodeColor[0], 'Green');
+  assert.strictEqual(wasm.NodeColor[1], 'Yellow');
+  assert.strictEqual(wasm.NodeColor[2], 'Red');
+  assert.strictEqual(Object.keys(wasm.NodeColor).length, 6);
+  assert.strictEqual(wasm.cycle(wasm.NodeColor.Green), wasm.NodeColor.Yellow);
 
   wasm.node_math(1.0, 2.0);
 };

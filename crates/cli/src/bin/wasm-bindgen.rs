@@ -39,7 +39,7 @@ Options:
     --nodejs                     Deprecated, use `--target nodejs`
     --web                        Deprecated, use `--target web`
     --no-modules                 Deprecated, use `--target no-modules`
-    --weak-refs                  Enable usage of the JS weak references proposal
+    --weak-refs                  Deprecated, is runtime-detected
     --reference-types            Enable usage of WebAssembly reference types
     -V --version                 Print the version number of wasm-bindgen
 
@@ -126,9 +126,6 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .omit_imports(args.flag_omit_imports)
         .omit_default_module_path(args.flag_omit_default_module_path)
         .split_linked_modules(args.flag_split_linked_modules);
-    if let Some(true) = args.flag_weak_refs {
-        b.weak_refs(true);
-    }
     if let Some(true) = args.flag_reference_types {
         b.reference_types(true);
     }

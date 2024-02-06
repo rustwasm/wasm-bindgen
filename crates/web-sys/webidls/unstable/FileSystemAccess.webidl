@@ -1,101 +1,70 @@
-enum FileSystemHandleKind {
-  "file",
-  "directory",
+enum FileSystemPermissionMode {
+  "read",
+  "readwrite"
+};
+
+dictionary FileSystemPermissionDescriptor : PermissionDescriptor {
+  required FileSystemHandle handle;
+  FileSystemPermissionMode mode = "read";
+};
+
+dictionary FileSystemHandlePermissionDescriptor {
+  FileSystemPermissionMode mode = "read";
 };
 
 [Exposed=(Window,Worker), SecureContext, Serializable]
-interface FileSystemHandle {
-  readonly attribute FileSystemHandleKind kind;
-  readonly attribute USVString name;
-
-  Promise<boolean> isSameEntry(FileSystemHandle other);
+partial interface FileSystemHandle {
+  Promise<PermissionState> queryPermission(optional FileSystemHandlePermissionDescriptor descriptor = {});
+  Promise<PermissionState> requestPermission(optional FileSystemHandlePermissionDescriptor descriptor = {});
 };
 
-dictionary FileSystemCreateWritableOptions {
-  boolean keepExistingData = false;
+enum WellKnownDirectory {
+  "desktop",
+  "documents",
+  "downloads",
+  "music",
+  "pictures",
+  "videos",
 };
 
-[Exposed=(Window,Worker), SecureContext, Serializable]
-interface FileSystemFileHandle : FileSystemHandle {
-  Promise<File> getFile();
-  Promise<FileSystemWritableFileStream> createWritable(optional FileSystemCreateWritableOptions options = {});
-  [Exposed=DedicatedWorker]
-  Promise<FileSystemSyncAccessHandle> createSyncAccessHandle();
+typedef (WellKnownDirectory or FileSystemHandle) StartInDirectory;
+
+dictionary FilePickerAcceptType {
+    USVString description = "";
+    record<USVString, (USVString or sequence<USVString>)> accept;
 };
 
-dictionary FileSystemGetFileOptions {
-  boolean create = false;
+dictionary FilePickerOptions {
+    sequence<FilePickerAcceptType> types;
+    boolean excludeAcceptAllOption = false;
+    DOMString id;
+    StartInDirectory startIn;
 };
 
-dictionary FileSystemGetDirectoryOptions {
-  boolean create = false;
+dictionary OpenFilePickerOptions : FilePickerOptions {
+    boolean multiple = false;
 };
 
-dictionary FileSystemRemoveOptions {
-  boolean recursive = false;
+dictionary SaveFilePickerOptions : FilePickerOptions {
+    USVString? suggestedName;
 };
 
-[Exposed=(Window,Worker), SecureContext, Serializable]
-interface FileSystemDirectoryHandle : FileSystemHandle {
-  async iterable<USVString, FileSystemHandle>;
-
-  Promise<FileSystemFileHandle> getFileHandle(USVString name, optional FileSystemGetFileOptions options = {});
-  Promise<FileSystemDirectoryHandle> getDirectoryHandle(USVString name, optional FileSystemGetDirectoryOptions options = {});
-
-  Promise<undefined> removeEntry(USVString name, optional FileSystemRemoveOptions options = {});
-
-  Promise<sequence<USVString>?> resolve(FileSystemHandle possibleDescendant);
+dictionary DirectoryPickerOptions {
+    DOMString id;
+    StartInDirectory startIn;
+    FileSystemPermissionMode mode = "read";
 };
-
-enum WriteCommandType {
-  "write",
-  "seek",
-  "truncate",
-};
-
-dictionary WriteParams {
-  required WriteCommandType type;
-  unsigned long long? size;
-  unsigned long long? position;
-  (BufferSource or Blob or USVString)? data;
-};
-
-typedef (BufferSource or Blob or USVString or WriteParams) FileSystemWriteChunkType;
-
-[Exposed=(Window,Worker), SecureContext]
-interface FileSystemWritableFileStream : WritableStream {
-  [Throws]
-  Promise<undefined> write(FileSystemWriteChunkType data);
-  [Throws]
-  Promise<undefined> seek(unsigned long long position);
-  [Throws]
-  Promise<undefined> truncate(unsigned long long size);
-};
-
-dictionary FileSystemReadWriteOptions {
-  [EnforceRange] unsigned long long at;
-};
-
-[Exposed=DedicatedWorker, SecureContext]
-interface FileSystemSyncAccessHandle {
-  [Throws]
-  unsigned long long read([AllowShared] BufferSource buffer,
-                          optional FileSystemReadWriteOptions options = {});
-  [Throws]
-  unsigned long long write([AllowShared] BufferSource buffer,
-                           optional FileSystemReadWriteOptions options = {});
-
-  [Throws]
-  undefined truncate([EnforceRange] unsigned long long newSize);
-  [Throws]
-  unsigned long long getSize();
-  [Throws]
-  undefined flush();
-  undefined close();
-};
-
 
 [SecureContext]
-partial interface StorageManager {
-  Promise<FileSystemDirectoryHandle> getDirectory();
+partial interface Window {
+    [Throws]
+    Promise<sequence<FileSystemFileHandle>> showOpenFilePicker(optional OpenFilePickerOptions options = {});
+    [Throws]
+    Promise<FileSystemFileHandle> showSaveFilePicker(optional SaveFilePickerOptions options = {});
+    [Throws]
+    Promise<FileSystemDirectoryHandle> showDirectoryPicker(optional DirectoryPickerOptions options = {});
+};
+
+partial interface DataTransferItem {
+    Promise<FileSystemHandle?> getAsFileSystemHandle();
 };

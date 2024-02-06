@@ -33,7 +33,7 @@ interface RTCRtpTransceiver {
     readonly attribute RTCRtpTransceiverDirection? currentDirection;
 
     undefined stop();
-    undefined setCodecPreferences(sequence<RTCRtpCodecParameters> codecs);
+    undefined setCodecPreferences(sequence<RTCRtpCodecCapability> codecs);
 
     [ChromeOnly]
     undefined setRemoteTrackId(DOMString trackId);

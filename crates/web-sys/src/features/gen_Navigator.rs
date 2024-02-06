@@ -105,6 +105,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialsContainer`, `Navigator`*"]
     pub fn credentials(this: &Navigator) -> CredentialsContainer;
+    #[cfg(feature = "UserActivation")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = userActivation)]
+    #[doc = "Getter for the `userActivation` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/userActivation)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `UserActivation`*"]
+    pub fn user_activation(this: &Navigator) -> UserActivation;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Bluetooth")]
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = bluetooth)]

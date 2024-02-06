@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-cli"
-version = "0.2.87"
+version = "0.2.90"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cli"
@@ -13,7 +13,7 @@ information see https://github.com/rustwasm/wasm-bindgen.
 """
 edition = '2018'
 default-run = 'wasm-bindgen'
-rust-version = "1.56"
+rust-version = "1.57"
 
 [package.metadata.binstall]
 pkg-url = "https://github.com/rustwasm/wasm-bindgen/releases/download/{ version }/wasm-bindgen-{ version }-{ target }{ archive-suffix }"
@@ -33,9 +33,9 @@ ureq = { version = "2.7", default-features = false, features = [
     "brotli",
     "gzip",
 ] }
-walrus = { version = "0.19.0", features = ['parallel'] }
-wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.87" }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.87" }
+walrus = { version = "0.20.2", features = ['parallel'] }
+wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.90" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.90" }
 
 [dev-dependencies]
 assert_cmd = "1.0"

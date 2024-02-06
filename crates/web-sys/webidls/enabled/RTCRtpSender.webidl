@@ -38,7 +38,6 @@ dictionary RTCRtpEncodingParameters {
   RTCDegradationPreference degradationPreference = "balanced";
   DOMString                rid;
   float                    scaleResolutionDownBy = 1.0;
-  DOMString                scalabilityMode;
 };
 
 dictionary RTCRtpHeaderExtensionParameters {
@@ -52,19 +51,27 @@ dictionary RTCRtcpParameters {
   boolean   reducedSize;
 };
 
-dictionary RTCRtpCodecParameters {
-  unsigned short payloadType;
-  DOMString      mimeType;
-  unsigned long  clockRate;
-  unsigned short channels = 1;
-  DOMString      sdpFmtpLine;
+dictionary RTCRtpCodec {
+  required  DOMString mimeType;
+  required  unsigned long clockRate;
+  unsigned  short channels;
+  DOMString sdpFmtpLine;
 };
 
-dictionary RTCRtpParameters {
-  sequence<RTCRtpEncodingParameters>        encodings;
-  sequence<RTCRtpHeaderExtensionParameters> headerExtensions;
-  RTCRtcpParameters                         rtcp;
-  sequence<RTCRtpCodecParameters>           codecs;
+dictionary RTCRtpCodecParameters : RTCRtpCodec {
+  required octet payloadType;
+};
+
+dictionary RTCRtpCodecCapability : RTCRtpCodec {
+};
+
+dictionary RTCRtpHeaderExtensionCapability {
+  required DOMString uri;
+};
+
+dictionary RTCRtpCapabilities {
+  required sequence<RTCRtpCodecCapability>           codecs;
+  required sequence<RTCRtpHeaderExtensionCapability> headerExtensions;
 };
 
 [Pref="media.peerconnection.enabled",
@@ -75,6 +82,7 @@ interface RTCRtpSender {
   RTCRtpParameters getParameters();
   Promise<undefined> replaceTrack(MediaStreamTrack? withTrack);
   Promise<RTCStatsReport> getStats();
+  static RTCRtpCapabilities? getCapabilities(DOMString kind);
   [Pref="media.peerconnection.dtmf.enabled"]
   readonly attribute RTCDTMFSender? dtmf;
   // Ugh, can't use a ChromeOnly attribute sequence<MediaStream>...

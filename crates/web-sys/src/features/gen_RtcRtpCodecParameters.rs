@@ -15,9 +15,12 @@ impl RtcRtpCodecParameters {
     #[doc = "Construct a new `RtcRtpCodecParameters`."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    pub fn new() -> Self {
+    pub fn new(clock_rate: u32, mime_type: &str, payload_type: u8) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
+        ret.clock_rate(clock_rate);
+        ret.mime_type(mime_type);
+        ret.payload_type(payload_type);
         ret
     }
     #[doc = "Change the `channels` field of this object."]
@@ -71,23 +74,6 @@ impl RtcRtpCodecParameters {
         let _ = r;
         self
     }
-    #[doc = "Change the `payloadType` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    pub fn payload_type(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("payloadType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
-        self
-    }
     #[doc = "Change the `sdpFmtpLine` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
@@ -105,9 +91,21 @@ impl RtcRtpCodecParameters {
         let _ = r;
         self
     }
-}
-impl Default for RtcRtpCodecParameters {
-    fn default() -> Self {
-        Self::new()
+    #[doc = "Change the `payloadType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
+    pub fn payload_type(&mut self, val: u8) -> &mut Self {
+        use wasm_bindgen::JsValue;
+        let r = ::js_sys::Reflect::set(
+            self.as_ref(),
+            &JsValue::from("payloadType"),
+            &JsValue::from(val),
+        );
+        debug_assert!(
+            r.is_ok(),
+            "setting properties should never fail on our dictionary objects"
+        );
+        let _ = r;
+        self
     }
 }

@@ -2,6 +2,7 @@ use core::borrow::Borrow;
 use core::ops::{Deref, DerefMut};
 
 use crate::describe::*;
+use crate::JsValue;
 
 /// A trait for anything that can be converted into a type that can cross the
 /// wasm ABI directly, eg `u32` or `f64`.
@@ -248,4 +249,19 @@ impl<T: WasmAbi> WasmRet<T> {
     pub fn join(self) -> T {
         T::join(self.prim1, self.prim2, self.prim3, self.prim4)
     }
+}
+
+/// [`TryFromJsValue`] is a trait for converting a JavaScript value ([`JsValue`])
+/// into a Rust type. It is used by the [`wasm_bindgen`](wasm_bindgen_macro::wasm_bindgen)
+/// proc-macro to allow conversion to user types.
+///
+/// Types implementing this trait must specify their conversion logic from
+/// [`JsValue`] to the Rust type, handling any potential errors that may occur
+/// during the conversion process.
+pub trait TryFromJsValue: Sized {
+    /// The type returned in the event of a conversion error.
+    type Error;
+
+    /// Performs the conversion.
+    fn try_from_js_value(value: JsValue) -> Result<Self, Self::Error>;
 }

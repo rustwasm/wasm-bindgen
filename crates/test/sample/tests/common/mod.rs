@@ -69,3 +69,15 @@ fn should_panic_string() {
 fn should_panic_expected() {
     panic!("error message")
 }
+
+#[wasm_bindgen_test]
+#[ignore]
+async fn ignore() {
+    console_log!("IGNORED");
+}
+
+#[wasm_bindgen_test]
+#[should_panic = "reason"]
+async fn ignore_reason() {
+    panic!("IGNORED WITH A REASON")
+}

@@ -82,7 +82,7 @@ as arguments and returns.
 #[wasm_bindgen]
 extern "C" {
     fn setInterval(closure: &Closure<dyn FnMut()>, millis: u32) -> f64;
-    fn cancelInterval(token: f64);
+    fn clearInterval(token: f64);
 
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
@@ -109,10 +109,10 @@ impl Interval {
     }
 }
 
-// When the Interval is destroyed, cancel its `setInterval` timer.
+// When the Interval is destroyed, clear its `setInterval` timer.
 impl Drop for Interval {
     fn drop(&mut self) {
-        cancelInterval(self.token);
+        clearInterval(self.token);
     }
 }
 

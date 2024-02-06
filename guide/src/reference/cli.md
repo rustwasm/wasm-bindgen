@@ -84,15 +84,6 @@ When generating bundler-compatible code (see the section on [deployment]) this
 indicates that the bundled code is always intended to go into a browser so a few
 checks for Node.js can be elided.
 
-### `--weak-refs`
-
-Enables usage of the [TC39 Weak References
-proposal](https://github.com/tc39/proposal-weakrefs), ensuring that all Rust
-memory is eventually deallocated regardless of whether you're calling `free` or
-not. This is off-by-default while we're waiting for support to percolate into
-all major browsers. For more information see the [documentation about weak
-references](./weak-references.md).
-
 ### `--reference-types`
 
 Enables usage of the [WebAssembly References Types

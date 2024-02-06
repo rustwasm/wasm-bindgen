@@ -21,6 +21,7 @@ pub fn wasm_bindgen_test(
 
     syn::parse_macro_input!(attr with attribute_parser);
     let mut should_panic = None;
+    let mut ignore = None;
 
     let mut body = TokenStream::from(body).into_iter().peekable();
 
@@ -34,6 +35,21 @@ pub fn wasm_bindgen_test(
                 }
 
                 // If we found a `should_panic`, we should skip the `#` and `[...]`.
+                // The `[...]` is skipped here, the current `#` is skipped by using `continue`.
+                body.next();
+                continue;
+            }
+            Ok(None) => (),
+            Err(error) => return error,
+        }
+
+        match parse_ignore(&mut body, &token) {
+            Ok(Some((new_ignore, span))) => {
+                if ignore.replace(new_ignore).is_some() {
+                    return compile_error(span, "duplicate `ignore` attribute");
+                }
+
+                // If we found a `new_ignore`, we should skip the `#` and `[...]`.
                 // The `[...]` is skipped here, the current `#` is skipped by using `continue`.
                 body.next();
                 continue;
@@ -64,10 +80,18 @@ pub fn wasm_bindgen_test(
         None => quote! { ::core::option::Option::None },
     };
 
+    let ignore = match ignore {
+        Some(Some(lit)) => {
+            quote! { ::core::option::Option::Some(::core::option::Option::Some(#lit)) }
+        }
+        Some(None) => quote! { ::core::option::Option::Some(::core::option::Option::None) },
+        None => quote! { ::core::option::Option::None },
+    };
+
     let test_body = if attributes.r#async {
-        quote! { cx.execute_async(test_name, #ident, #should_panic); }
+        quote! { cx.execute_async(test_name, #ident, #should_panic, #ignore); }
     } else {
-        quote! { cx.execute_sync(test_name, #ident, #should_panic); }
+        quote! { cx.execute_sync(test_name, #ident, #should_panic, #ignore); }
     };
 
     // We generate a `#[no_mangle]` with a known prefix so the test harness can
@@ -172,6 +196,61 @@ fn parse_should_panic(
     }
 
     Err(compile_error(span, "malformed `#[should_panic]` attribute"))
+}
+
+fn parse_ignore(
+    body: &mut std::iter::Peekable<token_stream::IntoIter>,
+    token: &TokenTree,
+) -> Result<Option<(Option<Literal>, Span)>, proc_macro::TokenStream> {
+    // Start by parsing the `#`
+    match token {
+        TokenTree::Punct(op) if op.as_char() == '#' => (),
+        _ => return Ok(None),
+    }
+
+    // Parse `[...]`
+    let group = match body.peek() {
+        Some(TokenTree::Group(group)) if group.delimiter() == Delimiter::Bracket => group,
+        _ => return Ok(None),
+    };
+
+    let mut stream = group.stream().into_iter();
+
+    // Parse `ignore`
+    let mut span = match stream.next() {
+        Some(TokenTree::Ident(token)) if token == "ignore" => token.span(),
+        _ => return Ok(None),
+    };
+
+    let ignore = span;
+
+    // We are interested in the reason string if there is any
+    match stream.next() {
+        // Parse `=`
+        Some(TokenTree::Punct(op)) if op.as_char() == '=' => (),
+        Some(token) => {
+            return Err(compile_error(
+                token.span(),
+                "malformed `#[ignore = \"...\"]` attribute",
+            ))
+        }
+        None => {
+            return Ok(Some((None, ignore)));
+        }
+    }
+
+    // Parse string in `#[ignore = "string"]`
+    if let Some(TokenTree::Literal(lit)) = stream.next() {
+        span = lit.span();
+        let string = lit.to_string();
+
+        // Verify it's a string.
+        if string.starts_with('"') && string.ends_with('"') {
+            return Ok(Some((Some(lit), ignore)));
+        }
+    }
+
+    Err(compile_error(span, "malformed `#[ignore]` attribute"))
 }
 
 fn find_ident(iter: &mut impl Iterator<Item = TokenTree>) -> Option<Ident> {

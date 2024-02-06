@@ -41,7 +41,7 @@ pub struct WasmBindgenAux {
 
     /// Auxiliary information to go into JS/TypeScript bindings describing the
     /// exported enums from Rust.
-    pub enums: Vec<AuxEnum>,
+    pub enums: HashMap<String, AuxEnum>,
 
     /// Auxiliary information to go into JS/TypeScript bindings describing the
     /// exported structs from Rust and their fields they've got exported.

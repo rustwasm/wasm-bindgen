@@ -440,7 +440,7 @@ impl<'a> Context<'a> {
                 }
                 self.vendor_prefixes
                     .entry(ty.name.to_string())
-                    .or_insert(Vec::new())
+                    .or_default()
                     .extend(ty.vendor_prefixes.iter().map(|s| s.to_string()));
             }
         }
@@ -461,7 +461,7 @@ impl<'a> Context<'a> {
         self.aux
             .snippets
             .entry(unique_crate_identifier.to_string())
-            .or_insert(Vec::new())
+            .or_default()
             .extend(inline_js.iter().map(|s| s.to_string()));
         Ok(())
     }
@@ -852,8 +852,15 @@ impl<'a> Context<'a> {
                 .collect(),
             generate_typescript: enum_.generate_typescript,
         };
-        self.aux.enums.push(aux);
-        Ok(())
+        let mut result = Ok(());
+        self.aux
+            .enums
+            .entry(aux.name.clone())
+            .and_modify(|existing| {
+                result = Err(anyhow!("duplicate enums:\n{:?}\n{:?}", existing, aux));
+            })
+            .or_insert(aux);
+        result
     }
 
     fn struct_(&mut self, struct_: decode::Struct<'_>) -> Result<(), Error> {

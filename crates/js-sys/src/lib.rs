@@ -1598,6 +1598,18 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(buffer: &ArrayBuffer, byteOffset: usize, byteLength: usize) -> DataView;
 
+    /// The `DataView` view provides a low-level interface for reading and
+    /// writing multiple number types in an `ArrayBuffer` irrespective of the
+    /// platform's endianness.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_shared_array_buffer(
+        buffer: &SharedArrayBuffer,
+        byteOffset: usize,
+        byteLength: usize,
+    ) -> DataView;
+
     /// The ArrayBuffer referenced by this view. Fixed at construction time and thus read only.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer)
