@@ -7586,6 +7586,13 @@ mod gen_RtcRtpHeaderExtensionParameters;
 #[allow(unused_imports)]
 pub use gen_RtcRtpHeaderExtensionParameters::*;
 
+#[cfg(feature = "RtcRtpParameters")]
+#[allow(non_snake_case)]
+mod gen_RtcRtpParameters;
+#[cfg(feature = "RtcRtpParameters")]
+#[allow(unused_imports)]
+pub use gen_RtcRtpParameters::*;
+
 #[cfg(feature = "RtcRtpReceiver")]
 #[allow(non_snake_case)]
 mod gen_RtcRtpReceiver;

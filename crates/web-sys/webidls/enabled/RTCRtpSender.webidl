@@ -65,6 +65,13 @@ dictionary RTCRtpCodecParameters : RTCRtpCodec {
 dictionary RTCRtpCodecCapability : RTCRtpCodec {
 };
 
+dictionary RTCRtpParameters {
+  sequence<RTCRtpEncodingParameters>        encodings;
+  sequence<RTCRtpHeaderExtensionParameters> headerExtensions;
+  RTCRtcpParameters                         rtcp;
+  sequence<RTCRtpCodecParameters>           codecs;
+};
+
 dictionary RTCRtpHeaderExtensionCapability {
   required DOMString uri;
 };
