@@ -82,6 +82,9 @@ Released 2024-02-06
 * Add bindings for `USBDevice.forget()`.
   [#3821](https://github.com/rustwasm/wasm-bindgen/pull/3821)
 
+* Added support for returning `Vec`s from async functions.
+  [#3630](https://github.com/rustwasm/wasm-bindgen/pull/3630)
+
 ### Changed
 
 * Stabilize `ClipboardEvent`.
