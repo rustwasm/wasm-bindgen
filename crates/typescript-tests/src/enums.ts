@@ -13,7 +13,7 @@ test("construction", () => {
   expect(b1).toStrictEqual(b2);
   const b3: wbg.Foo.B = 3;
   expect(b1).toStrictEqual(b3);
-  expect(() => { return a1 as wbg.Foo != b1 }).toBeTruthy();
+  expect(a1).not.toStrictEqual(b1);
 });
 
 test("function calls", () => {
