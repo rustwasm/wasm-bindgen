@@ -655,6 +655,14 @@ impl<'a> Context<'a> {
             "\n\
             {declare_or_export} type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;\n\
             \n\
+            {declare_or_export} interface InitOptions {{\n\
+                /**\n\
+                 * Initialize a new instance of the wasm module.\n\
+                 * Default to `false` to reuse the existing instance. Set to `true` will always create a new instance.\n\
+                */\n\
+                init?: boolean;\n\
+            }}\n\
+            \n\
             {declare_or_export} interface InitOutput {{\n\
             {output}}}\n\
             \n\
@@ -669,7 +677,7 @@ impl<'a> Context<'a> {
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
             {setup_function_declaration} \
-                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
+                (module_or_path{}: InitInput | Promise<InitInput>{}, options?: InitOptions): Promise<InitOutput>;\n",
             memory_doc, arg_optional, memory_param,
             output = output,
             sync_init_function = sync_init_function,
@@ -847,8 +855,8 @@ impl<'a> Context<'a> {
                     return wasm;
                 }}
 
-                function initSync(module{init_memory_arg}) {{
-                    if (wasm !== undefined) return wasm;
+                function initSync(module{init_memory_arg}, options) {{
+                    if (!(options?.init) && wasm !== undefined) return wasm;
 
                     const imports = __wbg_get_imports();
 
@@ -863,8 +871,8 @@ impl<'a> Context<'a> {
                     return __wbg_finalize_init(instance, module);
                 }}
 
-                async function __wbg_init(input{init_memory_arg}) {{
-                    if (wasm !== undefined) return wasm;
+                async function __wbg_init(input{init_memory_arg}, options) {{
+                    if (!(options?.init) && wasm !== undefined) return wasm;
 
                     {default_module_path}
                     const imports = __wbg_get_imports();
