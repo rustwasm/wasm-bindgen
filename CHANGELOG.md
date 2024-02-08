@@ -1,6 +1,15 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Added
+
+* Add bindings for `RTCPeerConnectionIceErrorEvent`.
+  [#3835](https://github.com/rustwasm/wasm-bindgen/pull/3835)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.91](https://github.com/rustwasm/wasm-bindgen/compare/0.2.90...0.2.91)
 
 Released 2024-02-06
@@ -56,6 +65,8 @@ Released 2024-02-06
 * Fixed nighly build of `wasm-bindgen-futures`.
   [#3827](https://github.com/rustwasm/wasm-bindgen/pull/3827)
 
+--------------------------------------------------------------------------------
+
 ## [0.2.90](https://github.com/rustwasm/wasm-bindgen/compare/0.2.89...0.2.90)
 
 Released 2024-01-06
@@ -98,6 +109,8 @@ Released 2024-01-06
   `RtcLifecycleEvent` and `WebrtcGlobalStatisticsReport` features.
   [#3723](https://github.com/rustwasm/wasm-bindgen/pull/3723)
 
+--------------------------------------------------------------------------------
+
 ## [0.2.89](https://github.com/rustwasm/wasm-bindgen/compare/0.2.88...0.2.89)
 
 Released 2023-11-27.
@@ -125,6 +138,8 @@ Released 2023-11-27.
 
 * Removed Gecko-internal dictionary bindings `Csp`, `CspPolicies`, `CspReport` and `CspReportProperties`.
   [#3721](https://github.com/rustwasm/wasm-bindgen/pull/3721)
+
+--------------------------------------------------------------------------------
 
 ## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88)
 
@@ -289,6 +304,8 @@ Released 2023-11-01
 
 * Removed `GetNotificationOptions`, `NotificationBehavior` and `Notification.get()` because
   they don't exist anymore.
+
+--------------------------------------------------------------------------------
 
 ## [0.2.87](https://github.com/rustwasm/wasm-bindgen/compare/0.2.86...0.2.87)
 
