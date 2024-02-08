@@ -25,6 +25,9 @@ Released 2024-02-06
 * Add bindings for `USBDevice.forget()`.
   [#3821](https://github.com/rustwasm/wasm-bindgen/pull/3821)
 
+* Add bindings for `RTCPeerConnectionIceErrorEvent`.
+  [#3835](https://github.com/rustwasm/wasm-bindgen/pull/3835)
+
 ### Changed
 
 * Stabilize `ClipboardEvent`.
