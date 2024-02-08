@@ -80,7 +80,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
     - uses: ./.github/actions/setup-geckodriver
@@ -120,7 +120,7 @@ jobs:
   #   - uses: actions/checkout@v4
   #   - run: rustup update --no-self-update stable && rustup default stable
   #   - run: rustup target add wasm32-unknown-unknown
-  #   - uses: actions/setup-node@v3
+  #   - uses: actions/setup-node@v4
   #     with:
   #       node-version: '20'
   #   - uses: ./.github/actions/setup-geckodriver
@@ -141,7 +141,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
     - run: cargo test
@@ -161,7 +161,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
     - uses: ./.github/actions/setup-geckodriver
@@ -190,7 +190,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
     - uses: ./.github/actions/setup-geckodriver
@@ -206,7 +206,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
     - run: cargo test -p wasm-bindgen-webidl
@@ -224,7 +224,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
     - run: cd crates/typescript-tests && ./run.sh
