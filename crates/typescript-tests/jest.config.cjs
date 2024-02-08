@@ -4,8 +4,21 @@ module.exports = {
   testEnvironment: 'node',
   extensionsToTreatAsEsm: [".ts"],
   verbose: true,
-  // TODO: match all test files
-  testMatch: ['**/src/simple_struct.ts', '**/src/typescript_type.ts'],
+  testMatch: ['**/src/*.ts'],
+  // TODO: migrate all test files and remove this
+  testPathIgnorePatterns: [
+    ".*/src/custom_section.ts$",
+    ".*/src/getters_setters.ts$",
+    ".*/src/inspectable.ts$",
+    ".*/src/memory.ts$",
+    ".*/src/omit_definition.ts$",
+    ".*/src/optional_fields.ts$",
+    ".*/src/opt_args_and_ret.ts$",
+    ".*/src/simple_async_fn.ts$",
+    ".*/src/simple_fn.ts$",
+    ".*/src/web_sys.ts$",
+    ".*/src/usize.ts$"
+  ],
   injectGlobals: false,
   globals: {
     'ts-jest':
