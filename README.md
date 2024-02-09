@@ -14,8 +14,6 @@
   </p>
 
   <h3>
-    <a href="https://rustwasm.github.io/docs/wasm-bindgen/">Guide (release)</a>
-    <span> | </span>
     <a href="https://rustwasm.github.io/wasm-bindgen/">Guide (main branch)</a>
     <span> | </span>
     <a href="https://docs.rs/wasm-bindgen">API Docs</a>
