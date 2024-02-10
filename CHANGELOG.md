@@ -8,9 +8,7 @@
 * Add bindings for `RTCPeerConnectionIceErrorEvent`.
   [#3835](https://github.com/rustwasm/wasm-bindgen/pull/3835)
 
-* Add bindings for `CanvasState.reset()`, affecting `CanvasRenderingContext2D` and `OffscreenCanvasRenderingContext2D`.
-
-[#3844](https://github.com/rustwasm/wasm-bindgen/pull/3844)
+* Add bindings for `CanvasState.reset()`, affecting `CanvasRenderingContext2D` and `OffscreenCanvasRenderingContext2D`. [#3844](https://github.com/rustwasm/wasm-bindgen/pull/3844)
 
 --------------------------------------------------------------------------------
 
