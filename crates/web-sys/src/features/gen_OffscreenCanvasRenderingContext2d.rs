@@ -1222,6 +1222,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
     pub fn stroke_rect(this: &OffscreenCanvasRenderingContext2d, x: f64, y: f64, w: f64, h: f64);
+    # [wasm_bindgen (method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = reset)]
+    #[doc = "The `reset()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/reset)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
+    pub fn reset(this: &OffscreenCanvasRenderingContext2d);
     # [wasm_bindgen (method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = restore)]
     #[doc = "The `restore()` method."]
     #[doc = ""]
@@ -1240,13 +1247,6 @@ extern "C" {
     #[doc = "The `reset()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/reset)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
-    pub fn reset(this: &OffscreenCanvasRenderingContext2d);
-    # [wasm_bindgen (catch , method , structural , js_class = "OffscreenCanvasRenderingContext2D" , js_name = fillText)]
-    #[doc = "The `fillText()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/fillText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
     pub fn fill_text(
