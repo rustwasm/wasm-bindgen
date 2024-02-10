@@ -1280,6 +1280,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
     pub fn save(this: &CanvasRenderingContext2d);
+    # [wasm_bindgen (method , structural , js_class = "CanvasRenderingContext2D" , js_name = reset)]
+    #[doc = "The `reset()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/reset)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn reset(this: &CanvasRenderingContext2d);
     # [wasm_bindgen (catch , method , structural , js_class = "CanvasRenderingContext2D" , js_name = fillText)]
     #[doc = "The `fillText()` method."]
     #[doc = ""]
