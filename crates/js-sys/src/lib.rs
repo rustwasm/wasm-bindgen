@@ -2800,8 +2800,9 @@ macro_rules! number_try_from {
 
             #[inline]
             fn try_from(x: $x) -> Result<Number, Self::Error> {
-                if x as f64 >= Number::MIN_SAFE_INTEGER && x as f64 <= Number::MAX_SAFE_INTEGER {
-                    Ok(Number::unchecked_from_js(JsValue::from(x as f64)))
+                let x_f64 = x as f64;
+                if x_f64 >= Number::MIN_SAFE_INTEGER && x_f64 <= Number::MAX_SAFE_INTEGER {
+                    Ok(Number::unchecked_from_js(JsValue::from(x_f64)))
                 } else {
                     Err(x)
                 }
