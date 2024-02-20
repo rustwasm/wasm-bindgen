@@ -2793,6 +2793,26 @@ macro_rules! number_from {
 }
 number_from!(i8 u8 i16 u16 i32 u32 f32 f64);
 
+/// The error type returned when a checked integral type conversion fails.
+///
+/// This type is copy-pasted from the standard library
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct TryFromIntError(pub(crate) ());
+
+impl fmt::Display for TryFromIntError {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[allow(deprecated)]
+        std::error::Error::description(&self).fmt(fmt)
+    }
+}
+
+impl std::error::Error for TryFromIntError {
+    #[allow(deprecated)]
+    fn description(&self) -> &str {
+        "out of range integral type conversion attempted"
+    }
+}
+
 macro_rules! number_try_from {
     ($($x:ident)*) => ($(
         impl TryFrom<$x> for Number {
