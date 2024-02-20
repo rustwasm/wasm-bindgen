@@ -2820,7 +2820,7 @@ macro_rules! number_try_from {
             fn try_from(x: $x) -> Result<Number, Self::Error> {
                 let x_f64 = x as f64;
                 if x_f64 >= Number::MIN_SAFE_INTEGER && x_f64 <= Number::MAX_SAFE_INTEGER {
-                    Ok(Number::unchecked_from_js(JsValue::from(x_f64)))
+                    Ok(Number::from(x_f64))
                 } else {
                     Err(x)
                 }
