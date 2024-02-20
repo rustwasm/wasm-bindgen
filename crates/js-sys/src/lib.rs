@@ -2799,17 +2799,11 @@ pub struct TryFromIntError(pub(crate) ());
 
 impl fmt::Display for TryFromIntError {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        #[allow(deprecated)]
-        std::error::Error::description(&self).fmt(fmt)
+        fmt.write_str("out of range integral type conversion attempted")
     }
 }
 
-impl std::error::Error for TryFromIntError {
-    #[allow(deprecated)]
-    fn description(&self) -> &str {
-        "out of range integral type conversion attempted"
-    }
-}
+impl std::error::Error for TryFromIntError {}
 
 macro_rules! number_try_from {
     ($($x:ident)*) => ($(
