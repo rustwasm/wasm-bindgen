@@ -2793,6 +2793,24 @@ macro_rules! number_from {
 }
 number_from!(i8 u8 i16 u16 i32 u32 f32 f64);
 
+macro_rules! number_try_from {
+    ($($x:ident)*) => ($(
+        impl TryFrom<$x> for Number {
+            type Error = $x;
+
+            #[inline]
+            fn try_from(x: $x) -> Result<Number, Self::Error> {
+                if x as f64 >= Number::MIN_SAFE_INTEGER && x as f64 <= Number::MAX_SAFE_INTEGER {
+                    Ok(Number::unchecked_from_js(JsValue::from(x as f64)))
+                } else {
+                    Err(x)
+                }
+            }
+        }
+    )*)
+}
+number_try_from!(i64 u64 i128 u128);
+
 // TODO: add this on the next major version, when blanket impl is removed
 /*
 impl convert::TryFrom<JsValue> for Number {
