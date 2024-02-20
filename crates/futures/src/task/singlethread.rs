@@ -21,38 +21,6 @@ pub(crate) struct Task {
     is_queued: Cell<bool>,
 }
 
-impl super::Task for Task {
-    fn run(&self) {
-        let mut borrow = self.inner.borrow_mut();
-
-        // Wakeups can come in after a Future has finished and been destroyed,
-        // so handle this gracefully by just ignoring the request to run.
-        let inner = match borrow.as_mut() {
-            Some(inner) => inner,
-            None => return,
-        };
-
-        // Ensure that if poll calls `waker.wake()` we can get enqueued back on
-        // the run queue.
-        self.is_queued.set(false);
-
-        let poll = {
-            let mut cx = Context::from_waker(&inner.waker);
-            inner.future.as_mut().poll(&mut cx)
-        };
-
-        // If a future has finished (`Ready`) then clean up resources associated
-        // with the future ASAP. This ensures that we don't keep anything extra
-        // alive in-memory by accident. Our own struct, `Rc<Task>` won't
-        // actually go away until all wakers referencing us go away, which may
-        // take quite some time, so ensure that the heaviest of resources are
-        // released early.
-        if poll.is_ready() {
-            *borrow = None;
-        }
-    }
-}
-
 impl Task {
     pub(crate) fn spawn(future: Pin<Box<dyn Future<Output = ()> + 'static>>) {
         let this = Rc::new(Self {
@@ -128,5 +96,35 @@ impl Task {
             RawWakerVTable::new(raw_clone, raw_wake, raw_wake_by_ref, raw_drop);
 
         RawWaker::new(Rc::into_raw(this) as *const (), &VTABLE)
+    }
+
+    pub(crate) fn run(&self) {
+        let mut borrow = self.inner.borrow_mut();
+
+        // Wakeups can come in after a Future has finished and been destroyed,
+        // so handle this gracefully by just ignoring the request to run.
+        let inner = match borrow.as_mut() {
+            Some(inner) => inner,
+            None => return,
+        };
+
+        // Ensure that if poll calls `waker.wake()` we can get enqueued back on
+        // the run queue.
+        self.is_queued.set(false);
+
+        let poll = {
+            let mut cx = Context::from_waker(&inner.waker);
+            inner.future.as_mut().poll(&mut cx)
+        };
+
+        // If a future has finished (`Ready`) then clean up resources associated
+        // with the future ASAP. This ensures that we don't keep anything extra
+        // alive in-memory by accident. Our own struct, `Rc<Task>` won't
+        // actually go away until all wakers referencing us go away, which may
+        // take quite some time, so ensure that the heaviest of resources are
+        // released early.
+        if poll.is_ready() {
+            *borrow = None;
+        }
     }
 }

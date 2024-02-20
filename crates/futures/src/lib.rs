@@ -50,40 +50,18 @@ pub use js_sys;
 pub use wasm_bindgen;
 
 mod task {
-    use std::future::Future;
-    use std::pin::Pin;
-
     use cfg_if::cfg_if;
 
-    #[cfg(target_feature = "atomics")]
-    mod multithread;
-    mod singlethread;
-    #[cfg(target_feature = "atomics")]
-    mod wait_async_polyfill;
+    cfg_if! {
+        if #[cfg(target_feature = "atomics")] {
+            mod wait_async_polyfill;
+            mod multithread;
+            pub(crate) use multithread::*;
 
-    pub(crate) fn spawn(future: Pin<Box<dyn Future<Output = ()> + 'static>>) {
-        cfg_if! {
-            if #[cfg(target_feature = "atomics")] {
-                #[wasm_bindgen::prelude::wasm_bindgen]
-                extern "C" {
-                    /// Returns [`crossOriginIsolated`](https://developer.mozilla.org/en-US/docs/Web/API/crossOriginIsolated) global property.
-                    #[wasm_bindgen(js_name = crossOriginIsolated)]
-                    static CROSS_ORIGIN_ISOLATED: bool;
-                }
-
-                if *CROSS_ORIGIN_ISOLATED {
-                    multithread::Task::spawn(future)
-                } else {
-                    singlethread::Task::spawn(future)
-                }
-            } else {
-                singlethread::Task::spawn(future)
-            }
-        }
-    }
-
-    pub(crate) trait Task {
-        fn run(&self);
+        } else {
+            mod singlethread;
+            pub(crate) use singlethread::*;
+         }
     }
 }
 
@@ -103,7 +81,7 @@ pub fn spawn_local<F>(future: F)
 where
     F: Future<Output = ()> + 'static,
 {
-    task::spawn(Box::pin(future));
+    task::Task::spawn(Box::pin(future));
 }
 
 struct Inner {
