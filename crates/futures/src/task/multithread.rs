@@ -1,3 +1,4 @@
+use super::Task as _;
 use std::cell::RefCell;
 use std::future::Future;
 use std::mem::ManuallyDrop;
@@ -84,27 +85,8 @@ pub(crate) struct Task {
     inner: RefCell<Option<Inner>>,
 }
 
-impl Task {
-    pub(crate) fn spawn(future: Pin<Box<dyn Future<Output = ()> + 'static>>) {
-        let atomic = AtomicWaker::new();
-        let waker = unsafe { Waker::from_raw(AtomicWaker::into_raw_waker(atomic.clone())) };
-        let this = Rc::new(Task {
-            atomic,
-            waker,
-            inner: RefCell::new(None),
-        });
-
-        let closure = {
-            let this = Rc::clone(&this);
-            Closure::new(move |_| this.run())
-        };
-        *this.inner.borrow_mut() = Some(Inner { future, closure });
-
-        // Queue up the Future's work to happen on the next microtask tick.
-        crate::queue::QUEUE.with(move |queue| queue.schedule_task(this));
-    }
-
-    pub(crate) fn run(&self) {
+impl super::Task for Task {
+    fn run(&self) {
         let mut borrow = self.inner.borrow_mut();
 
         // Same as `singlethread.rs`, handle spurious wakeups happening after we
@@ -159,6 +141,27 @@ impl Task {
             }
             break;
         }
+    }
+}
+
+impl Task {
+    pub(crate) fn spawn(future: Pin<Box<dyn Future<Output = ()> + 'static>>) {
+        let atomic = AtomicWaker::new();
+        let waker = unsafe { Waker::from_raw(AtomicWaker::into_raw_waker(atomic.clone())) };
+        let this = Rc::new(Task {
+            atomic,
+            waker,
+            inner: RefCell::new(None),
+        });
+
+        let closure = {
+            let this = Rc::clone(&this);
+            Closure::new(move |_| this.run())
+        };
+        *this.inner.borrow_mut() = Some(Inner { future, closure });
+
+        // Queue up the Future's work to happen on the next microtask tick.
+        crate::queue::QUEUE.with(move |queue| queue.schedule_task(this));
     }
 }
 
