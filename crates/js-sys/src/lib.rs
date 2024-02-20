@@ -2794,8 +2794,6 @@ macro_rules! number_from {
 number_from!(i8 u8 i16 u16 i32 u32 f32 f64);
 
 /// The error type returned when a checked integral type conversion fails.
-///
-/// This type is copy-pasted from the standard library
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct TryFromIntError(pub(crate) ());
 
