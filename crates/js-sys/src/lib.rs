@@ -2795,7 +2795,7 @@ number_from!(i8 u8 i16 u16 i32 u32 f32 f64);
 
 /// The error type returned when a checked integral type conversion fails.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct TryFromIntError(pub(crate) ());
+pub struct TryFromIntError(());
 
 impl fmt::Display for TryFromIntError {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
