@@ -5,13 +5,13 @@ error[E0277]: the trait bound `A: IntoWasmAbi` is not satisfied
   | ^^^^^^^^^^^^^^^ the trait `IntoWasmAbi` is not implemented for `A`
   |
   = help: the following other types implement trait `IntoWasmAbi`:
-            &'a (dyn Fn() -> R + 'b)
-            &'a (dyn Fn(A) -> R + 'b)
-            &'a (dyn Fn(A, B) -> R + 'b)
-            &'a (dyn Fn(A, B, C) -> R + 'b)
-            &'a (dyn Fn(A, B, C, D) -> R + 'b)
-            &'a (dyn Fn(A, B, C, D, E) -> R + 'b)
-            &'a (dyn Fn(A, B, C, D, E, F) -> R + 'b)
-            &'a (dyn Fn(A, B, C, D, E, F, G) -> R + 'b)
+            bool
+            char
+            isize
+            i8
+            i16
+            i32
+            i64
+            usize
           and $N others
   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
