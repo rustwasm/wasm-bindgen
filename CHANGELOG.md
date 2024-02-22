@@ -11,6 +11,11 @@
 * Add bindings for `CanvasState.reset()`, affecting `CanvasRenderingContext2D` and `OffscreenCanvasRenderingContext2D`.
   [#3844](https://github.com/rustwasm/wasm-bindgen/pull/3844)
 
+### Fixed
+
+* Make .wasm output deterministic when using `--reference-types`.
+  [#3851](https://github.com/rustwasm/wasm-bindgen/pull/3851)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.91](https://github.com/rustwasm/wasm-bindgen/compare/0.2.90...0.2.91)

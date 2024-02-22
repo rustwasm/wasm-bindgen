@@ -25,7 +25,7 @@ pub fn process(module: &mut Module) -> Result<()> {
 
     // Transform all exported functions in the module, using the bindings listed
     // for each exported function.
-    for (id, adapter) in section.adapters.iter_mut() {
+    for (id, adapter) in crate::sorted_iter_mut(&mut section.adapters) {
         let instructions = match &mut adapter.kind {
             AdapterKind::Local { instructions } => instructions,
             AdapterKind::Import { .. } => continue,
@@ -77,7 +77,7 @@ pub fn process(module: &mut Module) -> Result<()> {
     // Additionally we may need to update some adapter instructions other than
     // those found for the externref pass. These are some general "fringe support"
     // things necessary to get absolutely everything working.
-    for (_, adapter) in section.adapters.iter_mut() {
+    for (_, adapter) in crate::sorted_iter_mut(&mut section.adapters) {
         let instrs = match &mut adapter.kind {
             AdapterKind::Local { instructions } => instructions,
             AdapterKind::Import { .. } => continue,
