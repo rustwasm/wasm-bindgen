@@ -2808,7 +2808,7 @@ impl std::error::Error for TryFromIntError {}
 macro_rules! number_try_from {
     ($($x:ident)*) => ($(
         impl TryFrom<$x> for Number {
-            type Error = $x;
+            type Error = TryFromIntError;
 
             #[inline]
             fn try_from(x: $x) -> Result<Number, Self::Error> {
@@ -2816,7 +2816,7 @@ macro_rules! number_try_from {
                 if x_f64 >= Number::MIN_SAFE_INTEGER && x_f64 <= Number::MAX_SAFE_INTEGER {
                     Ok(Number::from(x_f64))
                 } else {
-                    Err(x)
+                    Err(TryFromIntError(()))
                 }
             }
         }
