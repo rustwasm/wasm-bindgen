@@ -14,6 +14,11 @@
 * Add `TryFrom` implementations for `Number`, that allow losslessly converting from 64- and 128-bits numbers.
   [#3847](https://github.com/rustwasm/wasm-bindgen/pull/3847)
 
+### Fixed
+
+* Make .wasm output deterministic when using `--reference-types`.
+  [#3851](https://github.com/rustwasm/wasm-bindgen/pull/3851)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.91](https://github.com/rustwasm/wasm-bindgen/compare/0.2.90...0.2.91)

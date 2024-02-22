@@ -785,3 +785,13 @@ where
     pairs.sort_by_key(|(k, _)| *k);
     pairs.into_iter()
 }
+
+/// Like `sorted_iter`, but produces mutable references to the values
+fn sorted_iter_mut<K, V>(map: &mut HashMap<K, V>) -> impl Iterator<Item = (&K, &mut V)>
+where
+    K: Ord,
+{
+    let mut pairs = map.iter_mut().collect::<Vec<_>>();
+    pairs.sort_by_key(|(k, _)| *k);
+    pairs.into_iter()
+}
