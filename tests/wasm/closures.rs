@@ -432,7 +432,9 @@ fn drop_drops() {
         }
     }
     let a = A;
-    let x: Closure<dyn Fn()> = Closure::new(move || drop(&a));
+    let x: Closure<dyn Fn()> = Closure::new(move || {
+        let _ = a;
+    });
     drop(x);
     unsafe {
         assert!(HIT);
@@ -605,25 +607,33 @@ fn call_destroyed_doesnt_segfault() {
     }
 
     let a = A(1, 1);
-    let a = Closure::wrap(Box::new(move || drop(&a)) as Box<dyn Fn()>);
+    let a = Closure::wrap(Box::new(move || {
+        let _ = a;
+    }) as Box<dyn Fn()>);
     let b = a.as_ref().clone();
     drop(a);
     call_destroyed(&b);
 
     let a = A(2, 2);
-    let a = Closure::wrap(Box::new(move || drop(&a)) as Box<dyn FnMut()>);
+    let a = Closure::wrap(Box::new(move || {
+        let _ = a;
+    }) as Box<dyn FnMut()>);
     let b = a.as_ref().clone();
     drop(a);
     call_destroyed(&b);
 
     let a = A(1, 1);
-    let a = Closure::wrap(Box::new(move |_: &JsValue| drop(&a)) as Box<dyn Fn(&JsValue)>);
+    let a = Closure::wrap(Box::new(move |_: &JsValue| {
+        let _ = a;
+    }) as Box<dyn Fn(&JsValue)>);
     let b = a.as_ref().clone();
     drop(a);
     call_destroyed(&b);
 
     let a = A(2, 2);
-    let a = Closure::wrap(Box::new(move |_: &JsValue| drop(&a)) as Box<dyn FnMut(&JsValue)>);
+    let a = Closure::wrap(Box::new(move |_: &JsValue| {
+        let _ = a;
+    }) as Box<dyn FnMut(&JsValue)>);
     let b = a.as_ref().clone();
     drop(a);
     call_destroyed(&b);
