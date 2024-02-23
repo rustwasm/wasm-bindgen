@@ -11,6 +11,9 @@
 * Add bindings for `CanvasState.reset()`, affecting `CanvasRenderingContext2D` and `OffscreenCanvasRenderingContext2D`.
   [#3844](https://github.com/rustwasm/wasm-bindgen/pull/3844)
 
+* Add `TryFrom` implementations for `Number`, that allow losslessly converting from 64- and 128-bits numbers.
+  [#3847](https://github.com/rustwasm/wasm-bindgen/pull/3847)
+
 ### Fixed
 
 * Make .wasm output deterministic when using `--reference-types`.
