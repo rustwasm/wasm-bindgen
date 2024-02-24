@@ -224,17 +224,21 @@ impl<T> FromWasmAbi for *const T {
     }
 }
 
-impl<T> OptionIntoWasmAbi for *const T {
+impl<T> IntoWasmAbi for Option<*const T> {
+    type Abi = Option<u32>;
+
     #[inline]
-    fn none() -> u32 {
-        0
+    fn into_abi(self) -> Option<u32> {
+        self.map(|ptr| ptr as u32)
     }
 }
 
-impl<T> OptionFromWasmAbi for *const T {
+impl<T> FromWasmAbi for Option<*const T> {
+    type Abi = Option<u32>;
+
     #[inline]
-    fn is_none(js: &u32) -> bool {
-        *js == 0
+    unsafe fn from_abi(js: Option<u32>) -> Option<*const T> {
+        js.map(|ptr| ptr as *const T)
     }
 }
 
@@ -256,17 +260,21 @@ impl<T> FromWasmAbi for *mut T {
     }
 }
 
-impl<T> OptionIntoWasmAbi for *mut T {
+impl<T> IntoWasmAbi for Option<*mut T> {
+    type Abi = Option<u32>;
+
     #[inline]
-    fn none() -> u32 {
-        0
+    fn into_abi(self) -> Option<u32> {
+        self.map(|ptr| ptr as u32)
     }
 }
 
-impl<T> OptionFromWasmAbi for *mut T {
+impl<T> FromWasmAbi for Option<*mut T> {
+    type Abi = Option<u32>;
+
     #[inline]
-    fn is_none(js: &u32) -> bool {
-        *js == 0
+    unsafe fn from_abi(js: Option<u32>) -> Option<*mut T> {
+        js.map(|ptr| ptr as *mut T)
     }
 }
 

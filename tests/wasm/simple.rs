@@ -74,7 +74,7 @@ pub unsafe fn simple_option_raw_pointers_work(
 }
 
 #[wasm_bindgen]
-pub unsafe fn simple_option_nonnull_work(a: Option<NonNull<u32>>) -> Option<NonNull<u32>> {
+pub fn simple_option_nonnull_work(a: Option<NonNull<u32>>) -> Option<NonNull<u32>> {
     a
 }
 

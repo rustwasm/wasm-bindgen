@@ -9,5 +9,5 @@ pub unsafe fn take_pointer_by_value(x: Option<NonNull<u8>>) {
 
 #[wasm_bindgen]
 pub fn return_pointer() -> Option<NonNull<u8>> {
-    NonNull::from(Box::new(42).leak())
+    Some(NonNull::from(Box::leak(Box::new(42))))
 }

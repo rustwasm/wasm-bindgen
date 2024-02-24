@@ -1,4 +1,4 @@
-# `*const T` and `*mut T`
+# `NonNull<T>`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
