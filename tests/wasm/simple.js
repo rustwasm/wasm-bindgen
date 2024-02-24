@@ -110,3 +110,12 @@ exports.test_string_roundtrip = () => {
   test('a longer string');
   test('a longer 💖 string');
 };
+
+exports.test_non_null = function() {
+  assert.strictEqual(wasm.simple_option_nonnull_work(0), undefined);
+  assert.strictEqual(wasm.simple_option_nonnull_work(null), undefined);
+  assert.strictEqual(wasm.simple_option_nonnull_work(undefined), undefined);
+
+  assert.strictEqual(wasm.simple_option_nonnull_work(wasm.simple_return_non_null()), 42);
+  assert.strictEqual(wasm.simple_option_nonnull_work(wasm.simple_return_option_non_null(43)), 43);
+};

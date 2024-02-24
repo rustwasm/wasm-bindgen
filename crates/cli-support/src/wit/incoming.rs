@@ -155,6 +155,8 @@ impl InstructionBuilder<'_, '_> {
 
             // Largely synthetic and can't show up
             Descriptor::ClampedU8 => unreachable!(),
+
+            Descriptor::NonNull => self.number(AdapterType::NonNull, WasmVT::I32),
         }
         Ok(())
     }
@@ -330,6 +332,12 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32, AdapterType::I32],
                 );
             }
+
+            Descriptor::NonNull => self.instruction(
+                &[AdapterType::NonNull.option()],
+                Instruction::InNonNullSentinel,
+                &[AdapterType::I32],
+            ),
 
             _ => bail!(
                 "unsupported optional argument type for calling Rust function from JS: {:?}",

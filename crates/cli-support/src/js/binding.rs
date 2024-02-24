@@ -1217,6 +1217,18 @@ fn instruction(
             let val = js.pop();
             js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
         }
+
+        Instruction::InNonNullSentinel => {
+            let val = js.pop();
+            js.cx.expose_is_like_none();
+            js.assert_optional_number(&val);
+            js.push(format!("isLikeNone({0}) ? 0 : {0}", val));
+        }
+
+        Instruction::OutNonNullSentinel => {
+            let val = js.pop();
+            js.push(format!("{0} === 0 ? undefined : {0}", val));
+        }
     }
     Ok(())
 }
@@ -1324,7 +1336,8 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         | AdapterType::U16
         | AdapterType::U32
         | AdapterType::F32
-        | AdapterType::F64 => dst.push_str("number"),
+        | AdapterType::F64
+        | AdapterType::NonNull => dst.push_str("number"),
         AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("bigint"),
         AdapterType::String => dst.push_str("string"),
         AdapterType::Externref => dst.push_str("any"),

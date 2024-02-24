@@ -31,6 +31,8 @@ extern "C" {
     fn new_renamed() -> Renamed;
 
     fn test_string_roundtrip();
+
+    fn test_non_null();
 }
 
 #[wasm_bindgen_test]
@@ -74,8 +76,23 @@ pub unsafe fn simple_option_raw_pointers_work(
 }
 
 #[wasm_bindgen]
-pub fn simple_option_nonnull_work(a: Option<NonNull<u32>>) -> Option<NonNull<u32>> {
-    a
+pub fn simple_return_non_null() -> NonNull<u32> {
+    NonNull::from(Box::leak(Box::new(42)))
+}
+
+#[wasm_bindgen]
+pub fn simple_return_option_non_null(value: u32) -> Option<NonNull<u32>> {
+    Some(NonNull::from(Box::leak(Box::new(value))))
+}
+
+#[wasm_bindgen]
+pub unsafe fn simple_option_nonnull_work(a: Option<NonNull<u32>>) -> Option<u32> {
+    a.map(|ptr| *Box::from_raw(ptr.as_ptr()))
+}
+
+#[wasm_bindgen_test]
+fn non_null() {
+    test_non_null();
 }
 
 #[wasm_bindgen_test]

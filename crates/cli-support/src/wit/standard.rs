@@ -88,6 +88,7 @@ pub enum AdapterType {
     Enum(String),
     NamedExternref(String),
     Function,
+    NonNull,
 }
 
 #[derive(Debug, Clone)]
@@ -308,6 +309,8 @@ pub enum Instruction {
     OptionEnumFromI32 {
         hole: u32,
     },
+    InNonNullSentinel,
+    OutNonNullSentinel,
 }
 
 impl AdapterType {

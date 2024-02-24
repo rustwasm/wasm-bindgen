@@ -48,6 +48,7 @@ tys! {
     RESULT
     UNIT
     CLAMPED
+    NONNULL
 }
 
 #[inline(always)] // see the wasm-interpreter crate
@@ -118,7 +119,7 @@ impl<T> WasmDescribe for *mut T {
 
 impl<T> WasmDescribe for NonNull<T> {
     fn describe() {
-        inform(U32)
+        inform(NONNULL)
     }
 }
 
