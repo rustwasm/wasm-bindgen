@@ -9,8 +9,7 @@ use crate::JsValue;
 ///
 /// This is the opposite operation as `FromWasmAbi` and `Ref[Mut]FromWasmAbi`.
 pub trait IntoWasmAbi: WasmDescribe {
-    /// The wasm ABI type that this converts into when crossing the ABI
-    /// boundary.
+    /// The type which wasm ABI is provided when crossing the ABI boundary.
     type Abi: WasmAbi;
 
     /// Convert `self` into `Self::Abi` so that it can be sent across the wasm
@@ -23,8 +22,8 @@ pub trait IntoWasmAbi: WasmDescribe {
 ///
 /// This is the by-value variant of the opposite operation as `IntoWasmAbi`.
 pub trait FromWasmAbi: WasmDescribe {
-    /// The wasm ABI type that this converts from when coming back out from the
-    /// ABI boundary.
+    /// The type which wasm ABI provides when coming back from ABI boundary, 
+    /// to be converted to a rust type.
     type Abi: WasmAbi;
 
     /// Recover a `Self` from `Self::Abi`.
