@@ -36,6 +36,8 @@ extern "C" {
     fn f() -> Result<>;
     #[wasm_bindgen(catch)]
     fn f() -> Result<'a>;
+    #[wasm_bindgen(catch)]
+    fn f() -> Result<&'static u32>;
 }
 
 fn main() {}

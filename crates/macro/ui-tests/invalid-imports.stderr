@@ -1,9 +1,3 @@
-error: it is currently not sound to use lifetimes in function signatures
- --> ui-tests/invalid-imports.rs:7:16
-  |
-7 |     fn f() -> &'static u32;
-  |                ^^^^^^^
-
 error: imported methods must have at least one argument
   --> ui-tests/invalid-imports.rs:10:5
    |
