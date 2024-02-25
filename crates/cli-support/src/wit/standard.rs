@@ -309,8 +309,8 @@ pub enum Instruction {
     OptionEnumFromI32 {
         hole: u32,
     },
-    InNonNullSentinel,
-    OutNonNullSentinel,
+    OptionNonNullFromI32,
+    I32FromOptionNonNull,
 }
 
 impl AdapterType {

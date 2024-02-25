@@ -652,7 +652,7 @@ fn instruction(
         Instruction::WasmToInt { output, .. } => {
             let val = js.pop();
             match output {
-                AdapterType::U32 => js.push(format!("{} >>> 0", val)),
+                AdapterType::U32 | AdapterType::NonNull => js.push(format!("{} >>> 0", val)),
                 AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
                 _ => js.push(val),
             }
@@ -1218,14 +1218,14 @@ fn instruction(
             js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
         }
 
-        Instruction::InNonNullSentinel => {
+        Instruction::OptionNonNullFromI32 => {
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
             js.push(format!("isLikeNone({0}) ? 0 : {0}", val));
         }
 
-        Instruction::OutNonNullSentinel => {
+        Instruction::I32FromOptionNonNull => {
             let val = js.pop();
             js.push(format!("{0} === 0 ? undefined : {0}", val));
         }
