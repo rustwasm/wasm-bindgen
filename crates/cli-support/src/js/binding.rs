@@ -1218,16 +1218,16 @@ fn instruction(
             js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
         }
 
-        Instruction::OptionNonNullFromI32 => {
+        Instruction::I32FromOptionNonNull => {
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
             js.push(format!("isLikeNone({0}) ? 0 : {0}", val));
         }
 
-        Instruction::I32FromOptionNonNull => {
+        Instruction::OptionNonNullFromI32 => {
             let val = js.pop();
-            js.push(format!("{0} === 0 ? undefined : {0}", val));
+            js.push(format!("{0} === 0 ? undefined : {0} >>> 0", val));
         }
     }
     Ok(())

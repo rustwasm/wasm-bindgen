@@ -335,7 +335,7 @@ impl InstructionBuilder<'_, '_> {
 
             Descriptor::NonNull => self.instruction(
                 &[AdapterType::NonNull.option()],
-                Instruction::OptionNonNullFromI32,
+                Instruction::I32FromOptionNonNull,
                 &[AdapterType::I32],
             ),
 
