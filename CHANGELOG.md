@@ -14,6 +14,9 @@
 * Add `TryFrom` implementations for `Number`, that allow losslessly converting from 64- and 128-bits numbers.
   [#3847](https://github.com/rustwasm/wasm-bindgen/pull/3847)
 
+* Add support for `Option<*const T>`, `Option<*mut T>` and `NonNull<T>`.
+  [#3852](https://github.com/rustwasm/wasm-bindgen/pull/3852)
+
 ### Fixed
 
 * Make .wasm output deterministic when using `--reference-types`.

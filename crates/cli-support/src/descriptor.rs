@@ -40,6 +40,7 @@ tys! {
     RESULT
     UNIT
     CLAMPED
+    NONNULL
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -72,6 +73,7 @@ pub enum Descriptor {
     Option(Box<Descriptor>),
     Result(Box<Descriptor>),
     Unit,
+    NonNull,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -165,6 +167,7 @@ impl Descriptor {
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
             CLAMPED => Descriptor::_decode(data, true),
+            NONNULL => Descriptor::NonNull,
             other => panic!("unknown descriptor: {}", other),
         }
     }

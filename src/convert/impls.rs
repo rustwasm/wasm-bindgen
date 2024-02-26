@@ -1,5 +1,6 @@
 use core::char;
 use core::mem::{self, ManuallyDrop};
+use core::ptr::NonNull;
 
 use crate::convert::traits::{WasmAbi, WasmPrimitive};
 use crate::convert::TryFromJsValue;
@@ -223,6 +224,24 @@ impl<T> FromWasmAbi for *const T {
     }
 }
 
+impl<T> IntoWasmAbi for Option<*const T> {
+    type Abi = Option<u32>;
+
+    #[inline]
+    fn into_abi(self) -> Option<u32> {
+        self.map(|ptr| ptr as u32)
+    }
+}
+
+impl<T> FromWasmAbi for Option<*const T> {
+    type Abi = Option<u32>;
+
+    #[inline]
+    unsafe fn from_abi(js: Option<u32>) -> Option<*const T> {
+        js.map(|ptr| ptr as *const T)
+    }
+}
+
 impl<T> IntoWasmAbi for *mut T {
     type Abi = u32;
 
@@ -238,6 +257,49 @@ impl<T> FromWasmAbi for *mut T {
     #[inline]
     unsafe fn from_abi(js: u32) -> *mut T {
         js as *mut T
+    }
+}
+
+impl<T> IntoWasmAbi for Option<*mut T> {
+    type Abi = Option<u32>;
+
+    #[inline]
+    fn into_abi(self) -> Option<u32> {
+        self.map(|ptr| ptr as u32)
+    }
+}
+
+impl<T> FromWasmAbi for Option<*mut T> {
+    type Abi = Option<u32>;
+
+    #[inline]
+    unsafe fn from_abi(js: Option<u32>) -> Option<*mut T> {
+        js.map(|ptr| ptr as *mut T)
+    }
+}
+
+impl<T> IntoWasmAbi for NonNull<T> {
+    type Abi = u32;
+
+    #[inline]
+    fn into_abi(self) -> u32 {
+        self.as_ptr() as u32
+    }
+}
+
+impl<T> OptionIntoWasmAbi for NonNull<T> {
+    #[inline]
+    fn none() -> u32 {
+        0
+    }
+}
+
+impl<T> FromWasmAbi for Option<NonNull<T>> {
+    type Abi = u32;
+
+    #[inline]
+    unsafe fn from_abi(js: Self::Abi) -> Self {
+        NonNull::new(js as *mut T)
     }
 }
 
