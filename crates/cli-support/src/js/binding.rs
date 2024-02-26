@@ -497,6 +497,14 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         self.prelude("}");
     }
 
+    fn assert_non_null(&mut self, arg: &str) {
+        if !self.cx.config.debug {
+            return;
+        }
+        self.cx.expose_assert_non_null();
+        self.prelude(&format!("_assertNonNull({});", arg));
+    }
+
     fn assert_optional_bigint(&mut self, arg: &str) {
         if !self.cx.config.debug {
             return;
@@ -1216,6 +1224,12 @@ fn instruction(
         Instruction::OptionEnumFromI32 { hole } => {
             let val = js.pop();
             js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
+        }
+
+        Instruction::I32FromNonNull => {
+            let val = js.pop();
+            js.assert_non_null(&val);
+            js.push(val);
         }
 
         Instruction::I32FromOptionNonNull => {

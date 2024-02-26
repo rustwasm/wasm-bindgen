@@ -294,12 +294,20 @@ impl<T> OptionIntoWasmAbi for NonNull<T> {
     }
 }
 
-impl<T> FromWasmAbi for Option<NonNull<T>> {
+impl<T> FromWasmAbi for NonNull<T> {
     type Abi = u32;
 
     #[inline]
     unsafe fn from_abi(js: Self::Abi) -> Self {
-        NonNull::new(js as *mut T)
+        // SAFETY: Checked in bindings.
+        NonNull::new(js as *mut T).unwrap_unchecked()
+    }
+}
+
+impl<T> OptionFromWasmAbi for NonNull<T> {
+    #[inline]
+    fn is_none(js: &u32) -> bool {
+        *js == 0
     }
 }
 

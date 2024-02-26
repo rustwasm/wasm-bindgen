@@ -114,6 +114,11 @@ pub fn simple_return_option_non_null(value: u32) -> Option<NonNull<u32>> {
 }
 
 #[wasm_bindgen]
+pub unsafe fn simple_nonnull_work(a: NonNull<u32>) -> u32 {
+    *Box::from_raw(a.as_ptr())
+}
+
+#[wasm_bindgen]
 pub unsafe fn simple_option_nonnull_work(a: Option<NonNull<u32>>) -> Option<u32> {
     a.map(|ptr| *Box::from_raw(ptr.as_ptr()))
 }

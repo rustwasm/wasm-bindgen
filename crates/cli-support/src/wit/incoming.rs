@@ -156,7 +156,11 @@ impl InstructionBuilder<'_, '_> {
             // Largely synthetic and can't show up
             Descriptor::ClampedU8 => unreachable!(),
 
-            Descriptor::NonNull => unimplemented!("converting `NonNull<T>` from Wasm to Rust is not implemented"),
+            Descriptor::NonNull => self.instruction(
+                &[AdapterType::NonNull],
+                Instruction::I32FromNonNull,
+                &[AdapterType::I32],
+            ),
         }
         Ok(())
     }
