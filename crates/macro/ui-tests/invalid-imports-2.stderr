@@ -1,0 +1,5 @@
+error: cannot return references in #[wasm_bindgen] imports yet
+ --> ui-tests/invalid-imports-2.rs:5:15
+  |
+5 |     fn f() -> &'static u32;
+  |               ^^^^^^^^^^^^
