@@ -19,7 +19,7 @@
 
 ### Changed
 
-* Allow using `'static` lifetimes in functions marked with `#[wasm_bindgen]`.
+* Allow using `'static` lifetimes in functions marked with `#[wasm_bindgen]`. This does not allow references where they were not allowed before!
   [#3856](https://github.com/rustwasm/wasm-bindgen/pull/3856)
 
 ### Fixed
