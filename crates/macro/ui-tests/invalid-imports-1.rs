@@ -4,8 +4,6 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     type A;
 
-    fn f() -> &'static u32;
-
     #[wasm_bindgen(method)]
     fn f1();
     #[wasm_bindgen(method)]
