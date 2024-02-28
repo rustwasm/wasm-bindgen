@@ -63,12 +63,6 @@ return but the JavaScript closure still needs to be valid!
 For this scenario, you need the `Closure` type, which is defined in the
 `wasm_bindgen` crate, exported in `wasm_bindgen::prelude`, and represents a
 "long lived" closure.
-The `Closure` type is currently behind a feature which needs to be enabled:
-
-```toml
-[dependencies]
-wasm-bindgen = {version = "^0.2", features = ["nightly"]}
-```
 
 The validity of the JavaScript closure is tied to the lifetime of the `Closure`
 in Rust. **Once a `Closure` is dropped, it will deallocate its internal memory
