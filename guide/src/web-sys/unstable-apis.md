@@ -29,3 +29,21 @@ to do this. For example:
 ```bash
 RUSTFLAGS=--cfg=web_sys_unstable_apis cargo run
 ```
+
+## List of Current Unstable APIs
+- `Bluetooth`
+- `Clipboard`
+- `ImageCapture`
+- `QueuingStrategy`
+- `ReadableStreamBYOBReader`
+- `ReadableStreamDefaultReader`
+- `ReadableStreamGenericReader`
+- `ResizeObserver`
+- `ScreenWakeLock`
+- `TransformStream`
+- `WebGPU`
+- `WebHID`
+- `WebUSB`
+- `WebXRDevice`
+- `WritableStream`
+- `WritableStreamDefaultWriter`
