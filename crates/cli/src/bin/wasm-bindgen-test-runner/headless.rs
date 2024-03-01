@@ -121,8 +121,8 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
 
     // Visit our local server to open up the page that runs tests, and then get
     // some handles to objects on the page which we'll be scraping output from.
-    let url = std::env::var("WASM_BINDGEN_TEST_ADDRESS")
-        .unwrap_or_else(|_| format!("http://{}", server));
+    let url =
+        std::env::var("WASM_BINDGEN_TEST_ADDRESS").unwrap_or_else(|_| format!("http://{}", server));
     shell.status(&format!("Visiting {}...", url));
     client.goto(&id, &url)?;
     shell.status("Loading page elements...");
