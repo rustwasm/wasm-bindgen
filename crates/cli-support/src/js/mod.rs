@@ -1768,6 +1768,7 @@ impl<'a> Context<'a> {
         self.memview("Float64", memory)
     }
 
+    #[allow(dead_code)]
     fn memview_function(&mut self, t: VectorKind, memory: MemoryId) -> MemView {
         match t {
             VectorKind::String => self.expose_uint8_memory(memory),
