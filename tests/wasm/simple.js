@@ -139,6 +139,9 @@ exports.test_raw_pointers = function() {
 };
 
 exports.test_non_null = function() {
+  assert.strictEqual(wasm.simple_nonnull_work(wasm.simple_return_non_null()), 42);
+  assert.throws(() => wasm.simple_nonnull_work(0), /expected a number argument that is not 0/);
+
   assert.strictEqual(wasm.simple_option_nonnull_work(0), undefined);
   assert.strictEqual(wasm.simple_option_nonnull_work(null), undefined);
   assert.strictEqual(wasm.simple_option_nonnull_work(undefined), undefined);

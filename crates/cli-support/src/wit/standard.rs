@@ -311,6 +311,7 @@ pub enum Instruction {
     },
     I32FromOptionNonNull,
     OptionNonNullFromI32,
+    I32FromNonNull,
 }
 
 impl AdapterType {
