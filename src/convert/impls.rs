@@ -188,6 +188,7 @@ impl FromWasmAbi for char {
 
     #[inline]
     unsafe fn from_abi(js: u32) -> char {
+        // SAFETY: Checked in bindings.
         char::from_u32_unchecked(js)
     }
 }

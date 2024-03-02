@@ -502,6 +502,11 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         self.prelude(&format!("_assertNonNull({});", arg));
     }
 
+    fn assert_char(&mut self, arg: &str) {
+        self.cx.expose_assert_char();
+        self.prelude(&format!("_assertChar({});", arg));
+    }
+
     fn assert_optional_bigint(&mut self, arg: &str) {
         if !self.cx.config.debug {
             return;
@@ -739,7 +744,11 @@ fn instruction(
 
         Instruction::I32FromStringFirstChar => {
             let val = js.pop();
-            js.push(format!("{}.codePointAt(0)", val));
+            let i = js.tmp();
+            js.prelude(&format!("const char{i} = {val}.codePointAt(0);"));
+            let val = format!("char{i}");
+            js.assert_char(&val);
+            js.push(val);
         }
 
         Instruction::I32FromExternrefOwned => {
@@ -816,11 +825,18 @@ fn instruction(
 
         Instruction::I32FromOptionChar => {
             let val = js.pop();
+            let i = js.tmp();
             js.cx.expose_is_like_none();
-            js.push(format!(
-                "isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0)",
+            js.prelude(&format!(
+                "const char{i} = isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0);",
                 val
             ));
+            let val = format!("char{i}");
+            js.cx.expose_assert_char();
+            js.prelude(&format!(
+                "if ({val} !== 0xFFFFFF) {{ _assertChar({val}); }}"
+            ));
+            js.push(val);
         }
 
         Instruction::I32FromOptionEnum { hole } => {
