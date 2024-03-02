@@ -4,7 +4,6 @@ use wasm_bindgen_test::*;
 #[wasm_bindgen(module = "tests/wasm/char.js")]
 extern "C" {
     fn js_identity(c: char) -> char;
-    fn js_option_identity(c: Option<char>) -> Option<char>;
     fn js_works();
 }
 
@@ -14,13 +13,13 @@ pub fn rust_identity(c: char) -> char {
 }
 
 #[wasm_bindgen]
-pub fn rust_js_identity(c: char) -> char {
-    js_identity(c)
+pub fn rust_option_identity(c: Option<char>) -> Option<char> {
+    c
 }
 
 #[wasm_bindgen]
-pub fn rust_js_option_identity(c: Option<char>) -> Option<char> {
-    js_option_identity(c)
+pub fn rust_js_identity(c: char) -> char {
+    js_identity(c)
 }
 
 #[wasm_bindgen]

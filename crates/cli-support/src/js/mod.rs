@@ -2123,7 +2123,7 @@ impl<'a> Context<'a> {
         self.global(
             "
             function _assertChar(c) {
-                if (typeof(c) !== 'number' || c >= 0x110000 || (c >= 0xD800 && c < 0xE000)) throw new Error(`expected a number argument that is a valid Unicode scalar value, found ${c}`);
+                if (typeof(c) === 'number' && (c >= 0x110000 || (c >= 0xD800 && c < 0xE000))) throw new Error(`expected a valid Unicode scalar value, found ${c}`);
             }
             ",
         );
