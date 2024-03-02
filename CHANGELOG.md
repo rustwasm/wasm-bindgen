@@ -17,6 +17,9 @@
 * Add support for `Option<*const T>`, `Option<*mut T>` and `NonNull<T>`.
   [#3852](https://github.com/rustwasm/wasm-bindgen/pull/3852)
 
+* Allow overriding the URL used for headless tests by setting `WASM_BINDGEN_TEST_ADDRESS`.
+  [#3861](https://github.com/rustwasm/wasm-bindgen/pull/3861)
+
 ### Changed
 
 * Allow using `'static` lifetimes in functions marked with `#[wasm_bindgen]`. This does not allow references where they were not allowed before!
