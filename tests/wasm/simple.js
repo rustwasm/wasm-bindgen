@@ -140,11 +140,7 @@ exports.test_raw_pointers = function() {
 
 exports.test_non_null = function() {
   assert.strictEqual(wasm.simple_nonnull_work(wasm.simple_return_non_null()), 42);
-
-  // this test only works when `--debug` is passed to `wasm-bindgen` (or the
-  // equivalent thereof)
-  if (!require('process').env.WASM_BINDGEN_NO_DEBUG)
-    assert.throws(() => wasm.simple_nonnull_work(0), /expected a number argument that is not 0/);
+  assert.throws(() => wasm.simple_nonnull_work(0), /expected a number argument that is not 0/);
 
   assert.strictEqual(wasm.simple_option_nonnull_work(0), undefined);
   assert.strictEqual(wasm.simple_option_nonnull_work(null), undefined);

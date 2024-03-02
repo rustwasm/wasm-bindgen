@@ -299,8 +299,8 @@ impl<T> FromWasmAbi for NonNull<T> {
 
     #[inline]
     unsafe fn from_abi(js: Self::Abi) -> Self {
-        // SAFETY: Checked in bindings when in debug mode.
-        NonNull::new(js as *mut T).unwrap_unchecked()
+        // SAFETY: Checked in bindings.
+        NonNull::new_unchecked(js as *mut T)
     }
 }
 

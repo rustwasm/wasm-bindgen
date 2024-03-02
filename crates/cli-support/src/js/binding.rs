@@ -498,9 +498,6 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 
     fn assert_non_null(&mut self, arg: &str) {
-        if !self.cx.config.debug {
-            return;
-        }
         self.cx.expose_assert_non_null();
         self.prelude(&format!("_assertNonNull({});", arg));
     }
