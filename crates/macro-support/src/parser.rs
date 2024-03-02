@@ -1652,14 +1652,12 @@ fn assert_no_lifetimes(sig: &syn::Signature) -> Result<(), Diagnostic> {
     }
 
     impl<'ast> syn::visit::Visit<'ast> for Walk {
-        fn visit_lifetime(&mut self, lifetime: &'ast syn::Lifetime) {
-            if lifetime.ident != "static" {
-                self.diagnostics.push(err_span!(
-                    lifetime,
-                    "it is currently not sound to use lifetimes in function \
+        fn visit_lifetime(&mut self, i: &'ast syn::Lifetime) {
+            self.diagnostics.push(err_span!(
+                i,
+                "it is currently not sound to use lifetimes in function \
                  signatures"
-                ));
-            }
+            ));
         }
     }
     let mut walk = Walk {
