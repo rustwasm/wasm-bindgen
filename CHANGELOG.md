@@ -26,6 +26,9 @@
 * Make .wasm output deterministic when using `--reference-types`.
   [#3851](https://github.com/rustwasm/wasm-bindgen/pull/3851)
 
+* Don't allow invalid Unicode scalar values in `char`.
+  [#3866](https://github.com/rustwasm/wasm-bindgen/pull/3866)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.91](https://github.com/rustwasm/wasm-bindgen/compare/0.2.90...0.2.91)

@@ -13,6 +13,11 @@ pub fn rust_identity(c: char) -> char {
 }
 
 #[wasm_bindgen]
+pub fn rust_option_identity(c: Option<char>) -> Option<char> {
+    c
+}
+
+#[wasm_bindgen]
 pub fn rust_js_identity(c: char) -> char {
     js_identity(c)
 }
