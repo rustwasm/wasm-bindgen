@@ -124,7 +124,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
     let url = match std::env::var("WASM_BINDGEN_TEST_ADDRESS") {
         Some(u) if u.contains(":") => u,
         Some(u) => format!("{}:{}", u, server.port()),
-        None => format!("http://{}", server)),
+        None => format!("http://{}", server),
     };
     shell.status(&format!("Visiting {}...", url));
     client.goto(&id, &url)?;
