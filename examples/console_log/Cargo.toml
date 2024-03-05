@@ -9,5 +9,5 @@ rust-version = "1.57"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.91"
-web-sys = { version = "0.3.68", features = ['console'] }
+wasm-bindgen = "0.2.92"
+web-sys = { version = "0.3.69", features = ['console'] }

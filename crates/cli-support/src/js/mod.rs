@@ -2104,6 +2104,32 @@ impl<'a> Context<'a> {
         );
     }
 
+    fn expose_assert_non_null(&mut self) {
+        if !self.should_write_global("assert_non_null") {
+            return;
+        }
+        self.global(
+            "
+            function _assertNonNull(n) {
+                if (typeof(n) !== 'number' || n === 0) throw new Error(`expected a number argument that is not 0, found ${n}`);
+            }
+            ",
+        );
+    }
+
+    fn expose_assert_char(&mut self) {
+        if !self.should_write_global("assert_char") {
+            return;
+        }
+        self.global(
+            "
+            function _assertChar(c) {
+                if (typeof(c) === 'number' && (c >= 0x110000 || (c >= 0xD800 && c < 0xE000))) throw new Error(`expected a valid Unicode scalar value, found ${c}`);
+            }
+            ",
+        );
+    }
+
     fn expose_make_mut_closure(&mut self) -> Result<(), Error> {
         if !self.should_write_global("make_mut_closure") {
             return Ok(());

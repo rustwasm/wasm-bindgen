@@ -1,7 +1,9 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
-## Unreleased
+## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
+
+Released 2024-03-04
 
 ### Added
 
@@ -16,19 +18,18 @@
 
 * Add support for `Option<*const T>`, `Option<*mut T>` and `NonNull<T>`.
   [#3852](https://github.com/rustwasm/wasm-bindgen/pull/3852)
+  [#3857](https://github.com/rustwasm/wasm-bindgen/pull/3857)
 
 * Allow overriding the URL used for headless tests by setting `WASM_BINDGEN_TEST_ADDRESS`.
   [#3861](https://github.com/rustwasm/wasm-bindgen/pull/3861)
-
-### Changed
-
-* Allow using `'static` lifetimes in functions marked with `#[wasm_bindgen]`. This does not allow references where they were not allowed before!
-  [#3856](https://github.com/rustwasm/wasm-bindgen/pull/3856)
 
 ### Fixed
 
 * Make .wasm output deterministic when using `--reference-types`.
   [#3851](https://github.com/rustwasm/wasm-bindgen/pull/3851)
+
+* Don't allow invalid Unicode scalar values in `char`.
+  [#3866](https://github.com/rustwasm/wasm-bindgen/pull/3866)
 
 --------------------------------------------------------------------------------
 
