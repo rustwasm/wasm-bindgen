@@ -1,6 +1,13 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Fixed
+
+* Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
+  [#3872](https://github.com/rustwasm/wasm-bindgen/pull/3872)
+
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
 
 Released 2024-03-04
@@ -249,7 +256,7 @@ Released 2023-11-01
   It was also automatically changed for `IdbFileHandle`, which is deprecated.
   [#3537](https://github.com/rustwasm/wasm-bindgen/pull/3537)
 
-* Changed behavior when compiling to `wasm32-wasi` to match `wasm32-emscripten` and 
+* Changed behavior when compiling to `wasm32-wasi` to match `wasm32-emscripten` and
   non-WASM targets, generating a stub that panics when called rather than a wasm-
   bindgen placeholder.
   [#3233](https://github.com/rustwasm/wasm-bindgen/pull/3233)
