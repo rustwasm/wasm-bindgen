@@ -63,6 +63,7 @@ struct Args {
     flag_no_modules_global: Option<String>,
     flag_remove_name_section: bool,
     flag_remove_producers_section: bool,
+    #[allow(dead_code)]
     flag_weak_refs: Option<bool>,
     flag_reference_types: Option<bool>,
     flag_keep_lld_exports: bool,
