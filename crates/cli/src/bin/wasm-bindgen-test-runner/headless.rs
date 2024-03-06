@@ -121,14 +121,24 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
 
     // Visit our local server to open up the page that runs tests, and then get
     // some handles to objects on the page which we'll be scraping output from.
+    //
+    // If WASM_BINDGEN_TEST_ADDRESS is set, use it as the local server URL,
+    // trying to inherit the port from the server if it isn't specified.
     let url = match std::env::var("WASM_BINDGEN_TEST_ADDRESS") {
         Ok(u) => {
             let mut url = Url::parse(&u)?;
-            let _ = url.set_port(url.port().or(Some(server.port())));
+            if url.port().is_none() {
+                if url.set_port(Some(server.port())).is_err() {
+                    println!(
+                        "Failed to set port on {url}; continuing without inheriting server port."
+                    )
+                }
+            }
             url.to_string()
         }
         Err(_) => format!("http://{}", server),
     };
+
     shell.status(&format!("Visiting {}...", url));
     client.goto(&id, &url)?;
     shell.status("Loading page elements...");
