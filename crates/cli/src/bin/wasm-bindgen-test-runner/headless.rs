@@ -128,11 +128,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
         Ok(u) => {
             let mut url = Url::parse(&u)?;
             if url.port().is_none() {
-                if url.set_port(Some(server.port())).is_err() {
-                    println!(
-                        "Failed to set port on {url}; continuing without inheriting server port."
-                    )
-                }
+                url.set_port(Some(server.port())).unwrap();
             }
             url.to_string()
         }
