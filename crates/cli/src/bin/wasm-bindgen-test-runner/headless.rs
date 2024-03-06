@@ -125,7 +125,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
         Ok(u) => {
             let mut url = Url::parse(&u)?;
             let _ = url.set_port(url.port().or(Some(server.port())));
-            url.as_str().to_owned()
+            url.to_string()
         }
         Err(_) => format!("http://{}", server),
     };
