@@ -1768,26 +1768,6 @@ impl<'a> Context<'a> {
         self.memview("Float64", memory)
     }
 
-    #[allow(dead_code)]
-    fn memview_function(&mut self, t: VectorKind, memory: MemoryId) -> MemView {
-        match t {
-            VectorKind::String => self.expose_uint8_memory(memory),
-            VectorKind::I8 => self.expose_int8_memory(memory),
-            VectorKind::U8 => self.expose_uint8_memory(memory),
-            VectorKind::ClampedU8 => self.expose_clamped_uint8_memory(memory),
-            VectorKind::I16 => self.expose_int16_memory(memory),
-            VectorKind::U16 => self.expose_uint16_memory(memory),
-            VectorKind::I32 => self.expose_int32_memory(memory),
-            VectorKind::U32 => self.expose_uint32_memory(memory),
-            VectorKind::I64 => self.expose_int64_memory(memory),
-            VectorKind::U64 => self.expose_uint64_memory(memory),
-            VectorKind::F32 => self.expose_f32_memory(memory),
-            VectorKind::F64 => self.expose_f64_memory(memory),
-            VectorKind::Externref => self.expose_uint32_memory(memory),
-            VectorKind::NamedExternref(_) => self.expose_uint32_memory(memory),
-        }
-    }
-
     fn memview(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
         let view = self.memview_memory(kind, memory);
         if !self.should_write_global(view.name.clone()) {
