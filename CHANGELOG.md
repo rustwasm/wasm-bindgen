@@ -8,6 +8,11 @@
 * Implement `From<NonNull<T>>` for `JsValue`.
   [#3877](https://github.com/rustwasm/wasm-bindgen/pull/3877)
 
+### Changed
+
+* Stabilize Web Share API.
+  [#3882](https://github.com/rustwasm/wasm-bindgen/pull/3882)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
