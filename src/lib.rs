@@ -16,6 +16,7 @@ use core::mem;
 use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
 };
+use core::ptr::NonNull;
 use core::u32;
 
 use crate::convert::{FromWasmAbi, TryFromJsValue, WasmRet, WasmSlice};
@@ -787,6 +788,13 @@ impl<T> From<*const T> for JsValue {
     #[inline]
     fn from(s: *const T) -> JsValue {
         JsValue::from(s as usize)
+    }
+}
+
+impl<T> From<NonNull<T>> for JsValue {
+    #[inline]
+    fn from(s: NonNull<T>) -> JsValue {
+        JsValue::from(s.as_ptr() as usize)
     }
 }
 
