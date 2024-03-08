@@ -195,12 +195,12 @@ fn element() {
     */
 
     assert!(
-        element.query_selector(".none-existant").unwrap().is_none(),
+        element.query_selector(".none-existent").unwrap().is_none(),
         "Should return no results"
     );
     assert_eq!(
         element
-            .query_selector_all(".none-existant")
+            .query_selector_all(".none-existent")
             .unwrap()
             .length(),
         0,
