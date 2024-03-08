@@ -61,6 +61,9 @@
 * Improved error messages for `self` arguments in invalid positions.
   [#4276](https://github.com/rustwasm/wasm-bindgen/pull/4276)
 
+* Deprecate `--keep-debug`. Debug information is now retained by default.
+  [#3876](https://github.com/rustwasm/wasm-bindgen/pull/3876)
+
 ### Fixed
 
 * Fixed methods with `self: &Self` consuming the object.
