@@ -36,7 +36,7 @@ impl AtomicWaker {
         // from SLEEPING to AWAKE.
         unsafe {
             core::arch::wasm32::memory_atomic_notify(
-                &self.state as *const AtomicI32 as *mut i32,
+                self.state.as_ptr(),
                 1, // Number of threads to notify
             );
         }
@@ -173,7 +173,7 @@ fn wait_async(ptr: &AtomicI32, current_value: i32) -> Option<js_sys::Promise> {
     } else {
         let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
         let array = js_sys::Int32Array::new(&mem.buffer());
-        let result = Atomics::wait_async(&array, ptr as *const AtomicI32 as i32 / 4, current_value);
+        let result = Atomics::wait_async(&array, ptr.as_ptr() as u32 / 4, current_value);
         if result.async_() {
             Some(result.value())
         } else {
@@ -187,7 +187,7 @@ fn wait_async(ptr: &AtomicI32, current_value: i32) -> Option<js_sys::Promise> {
         type WaitAsyncResult;
 
         #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync)]
-        fn wait_async(buf: &js_sys::Int32Array, index: i32, value: i32) -> WaitAsyncResult;
+        fn wait_async(buf: &js_sys::Int32Array, index: u32, value: i32) -> WaitAsyncResult;
 
         #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync, getter)]
         fn get_wait_async() -> JsValue;

@@ -80,7 +80,7 @@ pub fn wait_async(ptr: &AtomicI32, value: i32) -> Promise {
 
         let data = Array::of3(
             &wasm_bindgen::memory(),
-            &JsValue::from(ptr as *const AtomicI32 as i32 / 4),
+            &JsValue::from(ptr.as_ptr() as u32 / 4),
             &JsValue::from(value),
         );
 
