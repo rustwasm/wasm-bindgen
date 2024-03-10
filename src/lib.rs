@@ -1687,26 +1687,28 @@ pub mod __rt {
         crate::externref::link_intrinsics();
     }
 
-    static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];
+    std::thread_local! {
+        static GLOBAL_EXNDATA: Cell<[u32; 2]> = Cell::new([0; 2]);
+    }
 
     #[no_mangle]
     pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
-        debug_assert_eq!(GLOBAL_EXNDATA[0], 0);
-        GLOBAL_EXNDATA[0] = 1;
-        GLOBAL_EXNDATA[1] = idx;
+        GLOBAL_EXNDATA.with(|data| {
+            debug_assert_eq!(data.get()[0], 0);
+            data.set([1, idx]);
+        });
     }
 
     pub fn take_last_exception() -> Result<(), super::JsValue> {
-        unsafe {
-            let ret = if GLOBAL_EXNDATA[0] == 1 {
-                Err(super::JsValue::_new(GLOBAL_EXNDATA[1]))
+        GLOBAL_EXNDATA.with(|data| {
+            let ret = if data.get()[0] == 1 {
+                Err(super::JsValue::_new(data.get()[1]))
             } else {
                 Ok(())
             };
-            GLOBAL_EXNDATA[0] = 0;
-            GLOBAL_EXNDATA[1] = 0;
+            data.set([0, 0]);
             ret
-        }
+        })
     }
 
     /// An internal helper trait for usage in `#[wasm_bindgen]` on `async`
