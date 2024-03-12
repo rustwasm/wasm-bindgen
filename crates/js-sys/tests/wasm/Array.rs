@@ -464,6 +464,25 @@ fn find() {
 }
 
 #[wasm_bindgen_test]
+fn find_last() {
+    let even = js_array![2, 4, 6, 8];
+    assert_eq!(
+        even.find_last(&mut |x, _, _| x.as_f64().unwrap() % 2.0 == 0.0),
+        8
+    );
+    let odd = js_array![1, 3, 5, 7];
+    assert_eq!(
+        odd.find_last(&mut |x, _, _| x.as_f64().unwrap() % 2.0 == 0.0),
+        JsValue::undefined(),
+    );
+    let mixed = js_array![3, 5, 7, 10];
+    assert_eq!(
+        mixed.find_last(&mut |x, _, _| x.as_f64().unwrap() % 2.0 != 0.0),
+        7
+    );
+}
+
+#[wasm_bindgen_test]
 fn map() {
     let numbers = js_array![1, 4, 9];
     let sqrt = numbers.map(&mut |x, _, _| x.as_f64().unwrap().sqrt().into());

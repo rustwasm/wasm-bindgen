@@ -381,6 +381,17 @@ extern "C" {
     #[wasm_bindgen(method, js_name = findIndex)]
     pub fn find_index(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> i32;
 
+    /// The `findLast()` method of Array instances iterates the array in reverse order
+    /// and returns the value of the first element that satisfies the provided testing function.
+    /// If no elements satisfy the testing function, undefined is returned.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+    #[wasm_bindgen(method, js_name = findLast)]
+    pub fn find_last(
+        this: &Array,
+        predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool,
+    ) -> JsValue;
+
     /// The `flat()` method creates a new array with all sub-array elements concatenated into it
     /// recursively up to the specified depth.
     ///
