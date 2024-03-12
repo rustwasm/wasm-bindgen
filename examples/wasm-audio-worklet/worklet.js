@@ -1,3 +1,5 @@
+import init, * as bindgen from "./pkg/wasm_audio_worklet.js"
+
 registerProcessor("WasmProcessor", class WasmProcessor extends AudioWorkletProcessor {
     constructor(options) {
         super();

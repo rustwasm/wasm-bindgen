@@ -1,4 +1,3 @@
-mod dependent_module;
 mod gui;
 mod oscillator;
 mod wasm_audio;
