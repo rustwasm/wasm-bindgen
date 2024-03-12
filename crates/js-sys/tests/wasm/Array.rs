@@ -531,6 +531,25 @@ fn find_index() {
 }
 
 #[wasm_bindgen_test]
+fn find_last_index() {
+    let even = js_array![2, 4, 6, 8];
+    assert_eq!(
+        even.find_last_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.),
+        3
+    );
+    let odd = js_array![1, 3, 5, 7];
+    assert_eq!(
+        odd.find_last_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.),
+        -1
+    );
+    let mixed = js_array![3, 5, 7, 10];
+    assert_eq!(
+        mixed.find_last_index(&mut |e, _, _| e.as_f64().unwrap() % 2. != 0.),
+        2
+    );
+}
+
+#[wasm_bindgen_test]
 fn to_locale_string() {
     let output = js_array![1, "a", Date::new(&"21 Dec 1997 14:12:00 UTC".into())]
         .to_locale_string(&"en".into(), &JsValue::undefined());

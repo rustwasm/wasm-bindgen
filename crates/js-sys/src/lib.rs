@@ -392,6 +392,17 @@ extern "C" {
         predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool,
     ) -> JsValue;
 
+    /// The `findLastIndex()` method of Array instances iterates the array in reverse order
+    /// and returns the index of the first element that satisfies the provided testing function.
+    /// If no elements satisfy the testing function, -1 is returned.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
+    #[wasm_bindgen(method, js_name = findLastIndex)]
+    pub fn find_last_index(
+        this: &Array,
+        predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool,
+    ) -> i32;
+
     /// The `flat()` method creates a new array with all sub-array elements concatenated into it
     /// recursively up to the specified depth.
     ///
