@@ -6174,6 +6174,13 @@ macro_rules! arrays {
             #[wasm_bindgen(method)]
             pub fn at(this: &$name, idx: i32) -> Option<$ty>;
 
+            /// The `copyWithin()` method shallow copies part of a typed array to another
+            /// location in the same typed array and returns it, without modifying its size.
+            ///
+            /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin)
+            #[wasm_bindgen(method, js_name = copyWithin)]
+            pub fn copy_within(this: &$name, target: i32, start: i32, end: i32) -> $name;
+
             /// Gets the value at `idx`, equivalent to the javascript `my_var = arr[idx]`.
             #[wasm_bindgen(method, structural, indexing_getter)]
             pub fn get_index(this: &$name, idx: u32) -> $ty;
