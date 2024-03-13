@@ -331,18 +331,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`, `StorageManager`*"]
     pub fn storage(this: &Navigator) -> StorageManager;
-    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = canShare)]
     #[doc = "The `canShare()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn can_share(this: &Navigator) -> bool;
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "ShareData")]
     # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = canShare)]
     #[doc = "The `canShare()` method."]
@@ -350,9 +345,6 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`, `ShareData`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn can_share_with_data(this: &Navigator, data: &ShareData) -> bool;
     # [wasm_bindgen (catch , method , structural , js_class = "Navigator" , js_name = getGamepads)]
     #[doc = "The `getGamepads()` method."]
@@ -501,18 +493,13 @@ extern "C" {
         url: &str,
         data: Option<&ReadableStream>,
     ) -> Result<bool, JsValue>;
-    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = share)]
     #[doc = "The `share()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn share(this: &Navigator) -> ::js_sys::Promise;
-    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "ShareData")]
     # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = share)]
     #[doc = "The `share()` method."]
@@ -520,9 +507,6 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`, `ShareData`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn share_with_data(this: &Navigator, data: &ShareData) -> ::js_sys::Promise;
     # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = vibrate)]
     #[doc = "The `vibrate()` method."]

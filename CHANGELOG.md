@@ -11,6 +11,11 @@
 * Add method `copy_within` for TypedArray, add methods `find_last`,`find_last_index` for Array.
   [#3888](https://github.com/rustwasm/wasm-bindgen/pull/3888)
 
+### Changed
+
+* Stabilize Web Share API.
+  [#3882](https://github.com/rustwasm/wasm-bindgen/pull/3882)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
