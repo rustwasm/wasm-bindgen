@@ -79,4 +79,25 @@ extern "C" {
         this: &FileSystemDirectoryHandle,
         possible_descendant: &FileSystemHandle,
     ) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = keys)]
+    #[doc = "The `keys()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/keys)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryHandle`*"]
+    pub fn keys(this: &FileSystemDirectoryHandle) -> ::js_sys::AsyncIterator;
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = values)]
+    #[doc = "The `values()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/values)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryHandle`*"]
+    pub fn values(this: &FileSystemDirectoryHandle) -> ::js_sys::AsyncIterator;
+    # [wasm_bindgen (method , structural , js_class = "FileSystemDirectoryHandle" , js_name = entries)]
+    #[doc = "The `entries()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle/entries)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemDirectoryHandle`*"]
+    pub fn entries(this: &FileSystemDirectoryHandle) -> ::js_sys::AsyncIterator;
 }
