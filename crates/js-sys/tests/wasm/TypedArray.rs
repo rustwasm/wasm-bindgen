@@ -100,6 +100,24 @@ fn new_at() {
     each!(test_at);
 }
 
+macro_rules! test_copy_within {
+    ($arr:ident) => {{
+        let x: Vec<_> = vec![8, 5, 4, 3, 1, 2];
+        let array = $arr::from(x.into_iter().map(|v| v as _).collect::<Vec<_>>().as_slice());
+        array.copy_within(1, 4, 5);
+
+        assert_eq!(array.get_index(1) as f64, 1f64);
+
+        // if negatives were used
+        array.copy_within(-1, -3, -2);
+        assert_eq!(array.get_index(5) as f64, 3f64);
+    }};
+}
+#[wasm_bindgen_test]
+fn new_copy_within() {
+    each!(test_copy_within);
+}
+
 macro_rules! test_get_set {
     ($arr:ident) => {{
         let arr = $arr::new(&1.into());

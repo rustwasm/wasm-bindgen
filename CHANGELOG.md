@@ -8,6 +8,9 @@
 * Implement `From<NonNull<T>>` for `JsValue`.
   [#3877](https://github.com/rustwasm/wasm-bindgen/pull/3877)
 
+* Add method `copy_within` for TypedArray, add methods `find_last`,`find_last_index` for Array.
+  [#3888](https://github.com/rustwasm/wasm-bindgen/pull/3888)
+
 ### Changed
 
 * Stabilize Web Share API.
