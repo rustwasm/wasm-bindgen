@@ -1,1 +1,2 @@
 mod outputs_test_file_missing_error_feature;
+mod returns_an_error_code_feature;
