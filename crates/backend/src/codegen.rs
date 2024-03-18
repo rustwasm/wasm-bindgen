@@ -678,6 +678,14 @@ impl TryToTokens for ast::Export {
         };
         let nargs = self.function.arguments.len() as u32;
         let attrs = &self.function.rust_attrs;
+        let safe_attrs = attrs
+            .iter()
+            .filter(|a| {
+                let path = a.path();
+                path.is_ident("cfg") || path.is_ident("cfg_attr")
+            })
+            .cloned()
+            .collect::<Vec<_>>();
 
         let start_check = if self.start {
             quote! { const _ASSERT: fn() = || -> #projection::Abi { loop {} }; }
@@ -688,7 +696,7 @@ impl TryToTokens for ast::Export {
         (quote! {
             #[automatically_derived]
             const _: () = {
-                #(#attrs)*
+                #(#safe_attrs)*
                 #[cfg_attr(
                     all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))),
                     export_name = #export_name,
@@ -745,7 +753,7 @@ impl TryToTokens for ast::Export {
                 #describe_args
                 #describe_ret
             },
-            attrs: attrs.clone(),
+            attrs: safe_attrs,
             wasm_bindgen: &self.wasm_bindgen,
         }
         .to_tokens(into);
