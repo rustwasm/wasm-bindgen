@@ -1,0 +1,3 @@
+mod when_wasm_bindgen_test_runner_is_invoked_without_arguments;
+
+pub use when_wasm_bindgen_test_runner_is_invoked_without_arguments::*;
