@@ -1,7 +1,9 @@
 use proc_macro2::Literal;
 use proc_macro2::TokenStream;
+use quote::format_ident;
 use quote::quote;
 use std::collections::BTreeSet;
+use std::str::FromStr;
 use syn::{Ident, Type};
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
@@ -630,7 +632,19 @@ pub struct DictionaryField {
 }
 
 impl DictionaryField {
-    fn generate_rust(&self, options: &Options, parent_name: String) -> TokenStream {
+    fn generate_rust_shim(&self, parent_ident: &Ident) -> TokenStream {
+        let ty = &self.ty;
+        let shim_name = self.shim_name();
+        let js_name_ts = TokenStream::from_str(&self.js_name)
+            .expect("The JS attribute name should be convertible to a tokenstream");
+
+        quote! {
+            #[wasm_bindgen(method, setter = #js_name_ts)]
+            fn #shim_name(this: &#parent_ident, val: #ty);
+        }
+    }
+
+    fn generate_rust_setter(&self, options: &Options, parent_name: String) -> TokenStream {
         let DictionaryField {
             name,
             js_name,
@@ -657,23 +671,22 @@ impl DictionaryField {
             &required_doc_string(options, &features),
         );
 
+        let shim_name = self.shim_name();
+
         quote! {
             #unstable_attr
             #cfg_features
             #doc_comment
             #unstable_docs
             pub fn #name(&mut self, val: #ty) -> &mut Self {
-                use wasm_bindgen::JsValue;
-                let r = ::js_sys::Reflect::set(
-                    self.as_ref(),
-                    &JsValue::from(#js_name),
-                    &JsValue::from(val),
-                );
-                debug_assert!(r.is_ok(), "setting properties should never fail on our dictionary objects");
-                let _ = r;
+                self.#shim_name(val);
                 self
             }
         }
+    }
+
+    fn shim_name(&self) -> Ident {
+        format_ident!("{}_shim", self.name)
     }
 }
 
@@ -727,9 +740,14 @@ impl Dictionary {
             &required_doc_string(options, &required_features),
         );
 
+        let field_shims = fields
+            .iter()
+            .map(|field| field.generate_rust_shim(&name))
+            .collect::<Vec<_>>();
+
         let fields = fields
             .iter()
-            .map(|field| field.generate_rust(options, name.to_string()))
+            .map(|field| field.generate_rust_setter(options, name.to_string()))
             .collect::<Vec<_>>();
 
         let mut base_stream = quote! {
@@ -746,6 +764,8 @@ impl Dictionary {
                 #doc_comment
                 #unstable_docs
                 pub type #name;
+
+                #(#field_shims)*
             }
 
             #unstable_attr
