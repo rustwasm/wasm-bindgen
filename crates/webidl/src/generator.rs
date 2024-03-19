@@ -742,7 +742,7 @@ impl Dictionary {
 
         let field_shims = fields
             .iter()
-            .map(|field| field.generate_rust_shim(&name))
+            .map(|field| field.generate_rust_shim(name))
             .collect::<Vec<_>>();
 
         let fields = fields
