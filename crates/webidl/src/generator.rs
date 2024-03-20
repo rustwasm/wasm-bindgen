@@ -5,10 +5,13 @@ use quote::quote;
 use std::collections::BTreeSet;
 use std::str::FromStr;
 use syn::{Ident, Type};
+use wasm_bindgen_backend::util::leading_colon_path_ty;
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
 use crate::traverse::TraverseType;
+use crate::util::option_ty;
+use crate::util::shared_ref;
 use crate::util::{get_cfg_features, mdn_doc, required_doc_string, snake_case_ident};
 use crate::Options;
 
@@ -642,6 +645,18 @@ impl DictionaryField {
         let js_name_ts = TokenStream::from_str(&self.js_name)
             .expect("The JS attribute name should be convertible to a tokenstream");
 
+        let js_value_ref_type = shared_ref(
+            leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]),
+            false,
+        );
+        let js_value_ref_option_type = option_ty(js_value_ref_type.clone());
+
+        let ty = if ty == &js_value_ref_option_type {
+            js_value_ref_type
+        } else {
+            ty.clone()
+        };
+
         quote! {
             #cfg_features
             #[wasm_bindgen(method, setter = #js_name_ts)]
@@ -673,13 +688,25 @@ impl DictionaryField {
 
         let shim_name = self.shim_name();
 
+        let js_value_ref_type = shared_ref(
+            leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]),
+            false,
+        );
+        let js_value_ref_option_type = option_ty(js_value_ref_type.clone());
+
+        let shim_args = if ty == &js_value_ref_option_type {
+            quote! { val.unwrap_or(#js_value_ref_type::NULL) }
+        } else {
+            quote! { val }
+        };
+
         quote! {
             #unstable_attr
             #cfg_features
             #doc_comment
             #unstable_docs
             pub fn #name(&mut self, val: #ty) -> &mut Self {
-                self.#shim_name(val);
+                self.#shim_name(#shim_args);
                 self
             }
         }
