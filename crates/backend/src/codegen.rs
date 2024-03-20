@@ -1,5 +1,6 @@
 use crate::ast;
 use crate::encode;
+use crate::encode::EncodeChunk;
 use crate::Diagnostic;
 use once_cell::sync::Lazy;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
@@ -95,16 +96,47 @@ impl TryToTokens for ast::Program {
             shared::version()
         );
         let encoded = encode::encode(self)?;
-        let len = prefix_json.len() as u32;
-        let bytes = [
-            &len.to_le_bytes()[..],
-            prefix_json.as_bytes(),
-            &encoded.custom_section,
-        ]
-        .concat();
 
-        let generated_static_length = bytes.len();
-        let generated_static_value = syn::LitByteStr::new(&bytes, Span::call_site());
+        let encoded_chunks: Vec<_> = encoded
+            .custom_section
+            .iter()
+            .map(|chunk| match chunk {
+                EncodeChunk::EncodedBuf(buf) => {
+                    let buf = syn::LitByteStr::new(buf.as_slice(), Span::call_site());
+                    quote!(#buf)
+                }
+                EncodeChunk::StrExpr(expr) => {
+                    // encode expr as str
+                    quote!({
+                        use wasm_bindgen::__rt::utils::consts::{encode_u32_to_fixed_len_bytes};
+                        const _STR_EXPR: &str = #expr;
+                        const _STR_EXPR_BYTES: &[u8] = _STR_EXPR.as_bytes();
+                        const _STR_EXPR_BYTES_LEN: usize = _STR_EXPR_BYTES.len() + 5;
+                        const _ENCODED_BYTES: [u8; _STR_EXPR_BYTES_LEN] = flat_slices([
+                            &encode_u32_to_fixed_len_bytes(_STR_EXPR_BYTES.len() as u32),
+                            _STR_EXPR_BYTES,
+                        ]);
+                        &_ENCODED_BYTES
+                    })
+                }
+            })
+            .collect();
+
+        let chunk_len = encoded_chunks.len();
+
+        // concatenate all encoded chunks and write the length in front of the chunk;
+        let encode_bytes = quote!({
+            const _CHUNK_SLICES: [&[u8]; #chunk_len] = [
+                #(#encoded_chunks,)*
+            ];
+            const _CHUNK_LEN: usize = flat_len(_CHUNK_SLICES);
+            const _CHUNKS: [u8; _CHUNK_LEN] = flat_slices(_CHUNK_SLICES);
+
+            const _LEN_BYTES: [u8; 4] = (_CHUNK_LEN as u32).to_le_bytes();
+            const _ENCODED_BYTES_LEN: usize = _CHUNK_LEN + 4;
+            const _ENCODED_BYTES: [u8; _ENCODED_BYTES_LEN] = flat_slices([&_LEN_BYTES, &_CHUNKS]);
+            &_ENCODED_BYTES
+        });
 
         // We already consumed the contents of included files when generating
         // the custom section, but we want to make sure that updates to the
@@ -119,15 +151,26 @@ impl TryToTokens for ast::Program {
             quote! { include_str!(#file) }
         });
 
+        let len = prefix_json.len() as u32;
+        let prefix_json_bytes = [&len.to_le_bytes()[..], prefix_json.as_bytes()].concat();
+        let prefix_json_bytes = syn::LitByteStr::new(&prefix_json_bytes, Span::call_site());
+
         (quote! {
             #[cfg(target_arch = "wasm32")]
             #[automatically_derived]
             const _: () = {
+                use wasm_bindgen::__rt::utils::consts::{flat_len,flat_slices};
+
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
+                const _ENCODED_BYTES: &[u8] = #encode_bytes;
+                const _PREFIX_JSON_BYTES: &[u8] = #prefix_json_bytes;
+                const _ENCODED_BYTES_LEN: usize  = _ENCODED_BYTES.len();
+                const _PREFIX_JSON_BYTES_LEN:usize =  _PREFIX_JSON_BYTES.len();
+                const _LEN: usize = _PREFIX_JSON_BYTES_LEN + _ENCODED_BYTES_LEN;
+
                 #[link_section = "__wasm_bindgen_unstable"]
-                pub static _GENERATED: [u8; #generated_static_length] =
-                    *#generated_static_value;
+                static _GENERATED: [u8; _LEN] = flat_slices([_PREFIX_JSON_BYTES,_ENCODED_BYTES]);
             };
         })
         .to_tokens(tokens);
