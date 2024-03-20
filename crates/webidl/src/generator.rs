@@ -632,19 +632,29 @@ pub struct DictionaryField {
 }
 
 impl DictionaryField {
-    fn generate_rust_shim(&self, parent_ident: &Ident) -> TokenStream {
+    fn generate_rust_shim(
+        &self,
+        parent_ident: &Ident,
+        cfg_features: &Option<syn::Attribute>,
+    ) -> TokenStream {
         let ty = &self.ty;
         let shim_name = self.shim_name();
         let js_name_ts = TokenStream::from_str(&self.js_name)
             .expect("The JS attribute name should be convertible to a tokenstream");
 
         quote! {
+            #cfg_features
             #[wasm_bindgen(method, setter = #js_name_ts)]
             fn #shim_name(this: &#parent_ident, val: #ty);
         }
     }
 
-    fn generate_rust_setter(&self, options: &Options, parent_name: String) -> TokenStream {
+    fn generate_rust_setter(
+        &self,
+        options: &Options,
+        features: &BTreeSet<String>,
+        cfg_features: &Option<syn::Attribute>,
+    ) -> TokenStream {
         let DictionaryField {
             name,
             js_name,
@@ -655,16 +665,6 @@ impl DictionaryField {
 
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
-
-        let mut features = BTreeSet::new();
-
-        add_features(&mut features, ty);
-
-        features.remove(&parent_name);
-
-        let cfg_features = get_cfg_features(options, &features);
-
-        features.insert(parent_name);
 
         let doc_comment = comment(
             format!("Change the `{}` field of this object.", js_name),
@@ -683,6 +683,24 @@ impl DictionaryField {
                 self
             }
         }
+    }
+
+    fn features(
+        &self,
+        options: &Options,
+        parent_name: String,
+    ) -> (BTreeSet<String>, Option<syn::Attribute>) {
+        let mut features = BTreeSet::new();
+
+        add_features(&mut features, &self.ty);
+
+        features.remove(&parent_name);
+
+        let cfg_features = get_cfg_features(options, &features);
+
+        features.insert(parent_name);
+
+        (features, cfg_features)
     }
 
     fn shim_name(&self) -> Ident {
@@ -740,14 +758,24 @@ impl Dictionary {
             &required_doc_string(options, &required_features),
         );
 
+        let (field_features, field_cfg_features): (Vec<_>, Vec<_>) = fields
+            .iter()
+            .map(|field| field.features(options, name.to_string()))
+            .unzip();
+
         let field_shims = fields
             .iter()
-            .map(|field| field.generate_rust_shim(name))
+            .zip(field_cfg_features.iter())
+            .map(|(field, cfg_features)| field.generate_rust_shim(name, cfg_features))
             .collect::<Vec<_>>();
 
         let fields = fields
             .iter()
-            .map(|field| field.generate_rust_setter(options, name.to_string()))
+            .zip(field_features.iter())
+            .zip(field_cfg_features.iter())
+            .map(|((field, features), cfg_features)| {
+                field.generate_rust_setter(options, features, cfg_features)
+            })
             .collect::<Vec<_>>();
 
         let mut base_stream = quote! {
