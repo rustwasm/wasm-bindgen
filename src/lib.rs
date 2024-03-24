@@ -1989,51 +1989,53 @@ macro_rules! typed_arrays {
     };
 }
 
-typed_arrays! {
-    u8 __wbindgen_uint8_array_new __wbindgen_uint8_clamped_array_new,
-    u16 __wbindgen_uint16_array_new __wbindgen_uint16_array_new,
-    u32 __wbindgen_uint32_array_new __wbindgen_uint32_array_new,
-    u64 __wbindgen_biguint64_array_new __wbindgen_biguint64_array_new,
-    i8 __wbindgen_int8_array_new __wbindgen_int8_array_new,
-    i16 __wbindgen_int16_array_new __wbindgen_int16_array_new,
-    i32 __wbindgen_int32_array_new __wbindgen_int32_array_new,
-    i64 __wbindgen_bigint64_array_new __wbindgen_bigint64_array_new,
-    f32 __wbindgen_float32_array_new __wbindgen_float32_array_new,
-    f64 __wbindgen_float64_array_new __wbindgen_float64_array_new,
-}
-
-impl __rt::VectorIntoJsValue for JsValue {
-    fn vector_into_jsvalue(vector: Box<[JsValue]>) -> JsValue {
-        __rt::js_value_vector_into_jsvalue::<JsValue>(vector)
+if_std! {
+    typed_arrays! {
+        u8 __wbindgen_uint8_array_new __wbindgen_uint8_clamped_array_new,
+        u16 __wbindgen_uint16_array_new __wbindgen_uint16_array_new,
+        u32 __wbindgen_uint32_array_new __wbindgen_uint32_array_new,
+        u64 __wbindgen_biguint64_array_new __wbindgen_biguint64_array_new,
+        i8 __wbindgen_int8_array_new __wbindgen_int8_array_new,
+        i16 __wbindgen_int16_array_new __wbindgen_int16_array_new,
+        i32 __wbindgen_int32_array_new __wbindgen_int32_array_new,
+        i64 __wbindgen_bigint64_array_new __wbindgen_bigint64_array_new,
+        f32 __wbindgen_float32_array_new __wbindgen_float32_array_new,
+        f64 __wbindgen_float64_array_new __wbindgen_float64_array_new,
     }
-}
 
-impl<T: JsObject> __rt::VectorIntoJsValue for T {
-    fn vector_into_jsvalue(vector: Box<[T]>) -> JsValue {
-        __rt::js_value_vector_into_jsvalue::<T>(vector)
+    impl __rt::VectorIntoJsValue for JsValue {
+        fn vector_into_jsvalue(vector: Box<[JsValue]>) -> JsValue {
+            __rt::js_value_vector_into_jsvalue::<JsValue>(vector)
+        }
     }
-}
 
-impl __rt::VectorIntoJsValue for String {
-    fn vector_into_jsvalue(vector: Box<[String]>) -> JsValue {
-        __rt::js_value_vector_into_jsvalue::<String>(vector)
+    impl<T: JsObject> __rt::VectorIntoJsValue for T {
+        fn vector_into_jsvalue(vector: Box<[T]>) -> JsValue {
+            __rt::js_value_vector_into_jsvalue::<T>(vector)
+        }
     }
-}
 
-impl<T> From<Vec<T>> for JsValue
-where
-    JsValue: From<Box<[T]>>,
-{
-    fn from(vector: Vec<T>) -> Self {
-        JsValue::from(vector.into_boxed_slice())
+    impl __rt::VectorIntoJsValue for String {
+        fn vector_into_jsvalue(vector: Box<[String]>) -> JsValue {
+            __rt::js_value_vector_into_jsvalue::<String>(vector)
+        }
     }
-}
 
-impl<T> From<Clamped<Vec<T>>> for JsValue
-where
-    JsValue: From<Clamped<Box<[T]>>>,
-{
-    fn from(vector: Clamped<Vec<T>>) -> Self {
-        JsValue::from(Clamped(vector.0.into_boxed_slice()))
+    impl<T> From<Vec<T>> for JsValue
+    where
+        JsValue: From<Box<[T]>>,
+    {
+        fn from(vector: Vec<T>) -> Self {
+            JsValue::from(vector.into_boxed_slice())
+        }
+    }
+
+    impl<T> From<Clamped<Vec<T>>> for JsValue
+    where
+        JsValue: From<Clamped<Box<[T]>>>,
+    {
+        fn from(vector: Clamped<Vec<T>>) -> Self {
+            JsValue::from(Clamped(vector.0.into_boxed_slice()))
+        }
     }
 }
