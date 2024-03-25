@@ -9,8 +9,15 @@ use std::path::PathBuf;
 use crate::ast;
 use crate::Diagnostic;
 
+#[derive(Clone)]
+pub enum EncodeChunk {
+    EncodedBuf(Vec<u8>),
+    StrExpr(syn::Expr),
+    // TODO: support more expr type;
+}
+
 pub struct EncodeResult {
-    pub custom_section: Vec<u8>,
+    pub custom_section: Vec<EncodeChunk>,
     pub included_files: Vec<PathBuf>,
 }
 
@@ -144,7 +151,7 @@ fn shared_program<'a>(
         typescript_custom_sections: prog
             .typescript_custom_sections
             .iter()
-            .map(|x| -> &'a str { x })
+            .map(|x| shared_typescript_custom_section(x, intern))
             .collect(),
         linked_modules: prog
             .linked_modules
@@ -253,6 +260,16 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
     })
 }
 
+fn shared_typescript_custom_section<'a>(
+    i: &'a ast::LitOrExpr,
+    _intern: &'a Interner,
+) -> CustomSection<'a> {
+    match i {
+        ast::LitOrExpr::Lit(lit) => CustomSection::Lit(lit),
+        ast::LitOrExpr::Expr(expr) => CustomSection::Expr(expr),
+    }
+}
+
 fn shared_linked_module<'a>(
     name: &str,
     i: &'a ast::ImportModule,
@@ -358,24 +375,48 @@ trait Encode {
 }
 
 struct Encoder {
-    dst: Vec<u8>,
+    dst: Vec<EncodeChunk>,
+}
+
+enum CustomSection<'a> {
+    Expr(&'a syn::Expr),
+    Lit(&'a str),
+}
+
+impl<'a> Encode for CustomSection<'a> {
+    fn encode(&self, dst: &mut Encoder) {
+        match self {
+            CustomSection::Expr(expr) => {
+                dst.dst.push(EncodeChunk::StrExpr((*expr).clone()));
+            }
+            CustomSection::Lit(s) => s.encode(dst),
+        }
+    }
 }
 
 impl Encoder {
     fn new() -> Encoder {
-        Encoder {
-            dst: vec![0, 0, 0, 0],
-        }
+        Encoder { dst: vec![] }
     }
 
-    fn finish(mut self) -> Vec<u8> {
-        let len = (self.dst.len() - 4) as u32;
-        self.dst[..4].copy_from_slice(&len.to_le_bytes()[..]);
+    fn finish(self) -> Vec<EncodeChunk> {
         self.dst
     }
 
     fn byte(&mut self, byte: u8) {
-        self.dst.push(byte);
+        if let Some(EncodeChunk::EncodedBuf(buf)) = self.dst.last_mut() {
+            buf.push(byte);
+        } else {
+            self.dst.push(EncodeChunk::EncodedBuf(vec![byte]));
+        }
+    }
+
+    fn extends_from_slice(&mut self, slice: &[u8]) {
+        if let Some(EncodeChunk::EncodedBuf(buf)) = self.dst.last_mut() {
+            buf.extend_from_slice(slice);
+        } else {
+            self.dst.push(EncodeChunk::EncodedBuf(slice.to_owned()));
+        }
     }
 }
 
@@ -407,7 +448,7 @@ impl Encode for usize {
 impl<'a> Encode for &'a [u8] {
     fn encode(&self, dst: &mut Encoder) {
         self.len().encode(dst);
-        dst.dst.extend_from_slice(self);
+        dst.extends_from_slice(self);
     }
 }
 

@@ -455,7 +455,7 @@ impl<'a> Context<'a> {
             self.struct_(struct_)?;
         }
         for section in typescript_custom_sections {
-            self.aux.extra_typescript.push_str(section);
+            self.aux.extra_typescript.push_str(&section);
             self.aux.extra_typescript.push_str("\n\n");
         }
         self.aux
@@ -1536,14 +1536,14 @@ version of wasm-bindgen that uses a different bindgen format than this binary:
      this binary schema version: {my_version}
 
 Currently the bindgen format is unstable enough that these two schema versions
-must exactly match. You can accomplish this by either updating this binary or 
+must exactly match. You can accomplish this by either updating this binary or
 the wasm-bindgen dependency in the Rust project.
 
 You should be able to update the wasm-bindgen dependency with:
 
     cargo update -p wasm-bindgen --precise {my_version}
 
-don't forget to recompile your wasm file! Alternatively, you can update the 
+don't forget to recompile your wasm file! Alternatively, you can update the
 binary with:
 
     cargo install -f wasm-bindgen-cli --version {their_version}

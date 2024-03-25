@@ -1,4 +1,4 @@
-use std::str;
+use std::{ops::Deref, str};
 
 pub trait Decode<'src>: Sized {
     fn decode(data: &mut &'src [u8]) -> Self;
@@ -10,10 +10,28 @@ pub trait Decode<'src>: Sized {
     }
 }
 
+pub struct CustomSection<'src> {
+    str: &'src str,
+}
+
 fn get(b: &mut &[u8]) -> u8 {
     let r = b[0];
     *b = &b[1..];
     r
+}
+
+impl<'src> Deref for CustomSection<'src> {
+    type Target = str;
+    fn deref(&self) -> &Self::Target {
+        self.str
+    }
+}
+
+impl<'src> Decode<'src> for CustomSection<'src> {
+    fn decode(data: &mut &'src [u8]) -> Self {
+        let str = <&'src str>::decode(data);
+        Self { str }
+    }
 }
 
 impl<'src> Decode<'src> for bool {
