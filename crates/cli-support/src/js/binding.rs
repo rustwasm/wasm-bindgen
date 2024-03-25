@@ -8,6 +8,7 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
+use std::collections::HashSet;
 use std::fmt::Write;
 use walrus::{Module, ValType};
 
@@ -171,6 +172,7 @@ impl<'a, 'b> Builder<'a, 'b> {
                 &instr.instr,
                 &mut self.log_error,
                 &self.constructor,
+                asyncness,
             )?;
         }
 
@@ -575,6 +577,7 @@ fn instruction(
     instr: &Instruction,
     log_error: &mut bool,
     constructor: &Option<String>,
+    asyncness: bool,
 ) -> Result<(), Error> {
     match instr {
         Instruction::ArgGet(n) => {
@@ -619,7 +622,7 @@ fn instruction(
             }
 
             // Call the function through an export of the underlying module.
-            let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error)?;
+            let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error, asyncness)?;
 
             // And then figure out how to actually handle where the call
             // happens. This is pretty conditional depending on the number of
@@ -1040,7 +1043,13 @@ fn instruction(
             match constructor {
                 Some(name) if name == class => {
                     js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
-                    js.push(String::from("this"));
+                    if js.cx.config.weak_refs {
+                        js.prelude(&format!(
+                            "{}Finalization.register(this, this.__wbg_ptr, this);",
+                            class
+                        ));
+                    }
+                    js.push("this".into());
                 }
                 Some(_) | None => {
                     js.cx.require_class_wrap(class);
@@ -1315,17 +1324,62 @@ impl Invocation {
         }
     }
 
+    fn transform_this_to_that_args(&self, args: &[String]) -> Vec<String> {
+        args.iter()
+            .map(|arg| arg.replace("this.", "that."))
+            .collect()
+    }
+    fn is_non_function_call(&self, obj: &str) -> bool {
+        !obj.contains('(')
+    }
+    fn find_root_objects(&self, args: &[String]) -> Vec<String> {
+        args.into_iter()
+            .map(|arg| arg.split('.').next().unwrap().to_string())
+            .filter(|val| self.is_non_function_call(val))
+            .collect()
+    }
     fn invoke(
         &self,
         cx: &mut Context,
         args: &[String],
         prelude: &mut String,
         log_error: &mut bool,
+        asyncness: bool,
     ) -> Result<String, Error> {
         match self {
             Invocation::Core { id, .. } => {
                 let name = cx.export_name_of(*id);
-                Ok(format!("wasm.{}({})", name, args.join(", ")))
+                if asyncness && !args.is_empty() && cx.config.weak_refs {
+                    let transformed_args = self.transform_this_to_that_args(args);
+                    let roots_objects = self.find_root_objects(&transformed_args);
+
+                    let unique_roots: Vec<String> = roots_objects
+                        .into_iter()
+                        .collect::<HashSet<String>>()
+                        .into_iter()
+                        .collect();
+                    prelude.push_str("let that = this;\n");
+                    let wrapper = format!(
+                        r#"
+                        (function () {{
+                            return new Promise((resolve, reject) => {{
+                                let uniqueRoots = [{}];
+                                if(uniqueRoots.length) {{
+                                    that.__paramRefs = that.__paramRefs || {{}};
+                                    that.__paramRefs[that.__wbg_ptr] = unique_roots;
+                                }}
+                                wasm.{}({}).then(resolve).catch(reject).finally(() => {{
+                                    delete that.__paramRefs[that.__wbg_ptr];
+                                }});
+                            }})}})()"#,
+                        unique_roots.join(","),
+                        name,
+                        transformed_args.join(", ")
+                    );
+                    Ok(wrapper)
+                } else {
+                    Ok(format!("wasm.{}({})", name, args.join(", ")))
+                }
             }
             Invocation::Adapter(id) => {
                 let adapter = &cx.wit.adapters[id];
