@@ -1118,6 +1118,7 @@ externs! {
         fn __wbindgen_exports() -> u32;
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
+        fn __wbindgen_shim_url() -> u32;
         fn __wbindgen_function_table() -> u32;
     }
 }
@@ -1417,6 +1418,15 @@ pub fn exports() -> JsValue {
 /// Returns a handle to this wasm instance's `WebAssembly.Memory`
 pub fn memory() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_memory()) }
+}
+
+/// Returns the URL of the generated JS shim.
+///
+/// This will currently return `None` on every target except `web` and `no-modules`.
+/// Additionally it will return `None` when used with the `no-modules` target but
+/// not executed in a document.
+pub fn shim_url() -> Option<String> {
+    unsafe { JsValue::_new(__wbindgen_shim_url()) }.as_string()
 }
 
 /// Returns a handle to this wasm instance's `WebAssembly.Table` which is the
