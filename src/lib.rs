@@ -1867,7 +1867,7 @@ pub mod __rt {
             }
         }
     }
-  
+
     if_std! {
         use core::mem;
         use std::boxed::Box;
