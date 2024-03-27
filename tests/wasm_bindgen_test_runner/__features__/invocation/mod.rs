@@ -1,2 +1,2 @@
-mod with_an_empty_assembly;
+mod with_an_assembly;
 mod without_arguments;
