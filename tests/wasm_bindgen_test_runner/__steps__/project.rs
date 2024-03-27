@@ -68,7 +68,7 @@ impl Project {
                         name = \"{}\"
                         authors = []
                         version = \"1.0.0\"
-                        edition = '2018'
+                        edition = '2021'
 
                         [dependencies]
                         wasm-bindgen = {{ path = '{}' }}
