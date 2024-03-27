@@ -1,5 +1,6 @@
 use assert_cmd::prelude::*;
 use predicates::str;
+use rand::Rng;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -21,14 +22,17 @@ fn repo_root() -> PathBuf {
 
 pub struct Project {
     root: PathBuf,
-    name: &'static str,
+    name: String,
 }
 
 impl Project {
     pub fn new(name: &'static str) -> Project {
+        let mut rng = rand::thread_rng();
+        let name = format!("{}_{}", name, rng.gen_range(1000..9999));
         let root = target_dir()
             .join("wasm-bindgen-test-runner-tests")
-            .join(name);
+            .join(&name);
+        println!("root: {:?}", root);
         drop(fs::remove_dir_all(&root));
         fs::create_dir_all(&root).unwrap();
         Project { root, name }
@@ -93,7 +97,7 @@ impl Project {
         target_dir
             .join("wasm32-unknown-unknown")
             .join("debug")
-            .join(self.name)
+            .join(&self.name)
             .with_extension("wasm")
     }
 }

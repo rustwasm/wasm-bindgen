@@ -10,5 +10,5 @@ pub fn given_there_is_an_empty_assembly(context: &mut Context) {
         )
         .build();
 
-    context.assembly_set(path)
+    context.assembly_set(path);
 }

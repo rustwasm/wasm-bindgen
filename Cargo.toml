@@ -57,7 +57,9 @@ wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
 
 [dev-dependencies]
 assert_cmd = "1.0"
+lazy_static = "1.4.0"
 predicates = "1.0.0"
+rand = "0.8.5"
 
 [workspace]
 members = [
