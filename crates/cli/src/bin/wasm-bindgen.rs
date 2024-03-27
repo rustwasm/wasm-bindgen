@@ -28,7 +28,7 @@ Options:
     --debug                      Include otherwise-extraneous debug checks in output
     --no-demangle                Don't demangle Rust symbol names
     --keep-lld-exports           Keep exports synthesized by LLD
-    --keep-debug                 Keep debug sections in wasm files
+    --keep-debug                 Deprecated, use Rustc to control debug information instead
     --remove-name-section        Remove the debugging `name` section of the file
     --remove-producers-section   Remove the telemetry `producers` section
     --omit-default-module-path   Don't add WebAssembly fallback imports in generated JavaScript
@@ -67,6 +67,7 @@ struct Args {
     flag_weak_refs: Option<bool>,
     flag_reference_types: Option<bool>,
     flag_keep_lld_exports: bool,
+    #[allow(dead_code)]
     flag_keep_debug: bool,
     flag_encode_into: Option<String>,
     flag_target: Option<String>,
@@ -120,7 +121,6 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
         .keep_lld_exports(args.flag_keep_lld_exports)
-        .keep_debug(args.flag_keep_debug)
         .remove_name_section(args.flag_remove_name_section)
         .remove_producers_section(args.flag_remove_producers_section)
         .typescript(typescript)
