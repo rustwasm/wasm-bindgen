@@ -108,6 +108,16 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::I32],
                 );
             },
+            Descriptor::ImportEnum { name, .. } => {
+                self.instruction(
+                    &[AdapterType::Enum(name.clone())],
+                    Instruction::IntToWasm {
+                        input: AdapterType::U32,
+                        output: ValType::I32,
+                    },
+                    &[AdapterType::I32],
+                );
+            },
             Descriptor::Ref(d) => self.incoming_ref(false, d)?,
             Descriptor::RefMut(d) => self.incoming_ref(true, d)?,
             Descriptor::Option(d) => self.incoming_option(d)?,
@@ -290,6 +300,13 @@ impl InstructionBuilder<'_, '_> {
                 );
             }
             Descriptor::Enum { name, hole } => {
+                self.instruction(
+                    &[AdapterType::Enum(name.clone()).option()],
+                    Instruction::I32FromOptionEnum { hole: *hole },
+                    &[AdapterType::I32],
+                );
+            }
+            Descriptor::ImportEnum { name, hole, .. } => {
                 self.instruction(
                     &[AdapterType::Enum(name.clone()).option()],
                     Instruction::I32FromOptionEnum { hole: *hole },

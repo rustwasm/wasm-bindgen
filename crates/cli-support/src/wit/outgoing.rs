@@ -74,6 +74,11 @@ impl InstructionBuilder<'_, '_> {
                 self.output.push(AdapterType::F64);
             }
             Descriptor::Enum { name, .. } => self.outgoing_i32(AdapterType::Enum(name.clone())),
+            Descriptor::ImportEnum {
+                name,
+                variant_values,
+                ..
+            } => self.outgoing_import_enum(&name, &variant_values),
 
             Descriptor::Char => {
                 self.instruction(
@@ -287,6 +292,13 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Enum(name.clone()).option()],
                 );
             }
+            Descriptor::ImportEnum {
+                name,
+                hole,
+                variant_values,
+            } => {
+                todo!()
+            }
             Descriptor::RustStruct(name) => {
                 self.instruction(
                     &[AdapterType::I32],
@@ -352,6 +364,7 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::Boolean
             | Descriptor::Char
             | Descriptor::Enum { .. }
+            | Descriptor::ImportEnum { .. }
             | Descriptor::RustStruct(_)
             | Descriptor::Ref(_)
             | Descriptor::RefMut(_)
@@ -518,6 +531,20 @@ impl InstructionBuilder<'_, '_> {
             output: output.clone(),
         };
         self.instruction(&[AdapterType::I32], instr, &[output]);
+    }
+
+    fn outgoing_import_enum(&mut self, name: &str, variant_values: &[String]) {
+        let instr = Instruction::WasmToEnum {
+            variant_values: variant_values.to_vec(),
+        };
+        self.instruction(
+            &[AdapterType::I32],
+            instr,
+            &[AdapterType::JsEnum {
+                name: String::from(name),
+                variant_values: variant_values.to_vec(),
+            }],
+        );
     }
 
     fn outgoing_i64(&mut self, output: AdapterType) {
