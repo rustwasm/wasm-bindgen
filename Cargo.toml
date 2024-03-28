@@ -60,6 +60,7 @@ assert_cmd = "1.0"
 lazy_static = "1.4.0"
 predicates = "1.0.0"
 rand = "0.8.5"
+regex = "1.10.4"
 
 [workspace]
 members = [
