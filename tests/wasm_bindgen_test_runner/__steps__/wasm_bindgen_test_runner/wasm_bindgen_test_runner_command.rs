@@ -12,8 +12,6 @@ fn wasm_bindgen_test_runner_command_get() -> Result<Command, CargoError> {
         return result;
     }
 
-    println!("YO");
-
     Command::new("cargo")
         .args(&["build", "--package", "wasm-bindgen-cli"])
         .output()
