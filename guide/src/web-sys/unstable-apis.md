@@ -37,5 +37,6 @@ to set its [rustflags](https://doc.rust-lang.org/cargo/reference/config.html#bui
 
 Within `./.cargo/config.toml`:
 ```toml
-RUSTFLAGS=--cfg=web_sys_unstable_apis cargo run
+[build]
+rustflags = ["--cfg=web_sys_unstable_apis"]
 ```
