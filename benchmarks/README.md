@@ -11,17 +11,10 @@ performance suite for WebAssembly for Rust.
 
 ## Building and Running
 
-First, copy the benchmarks to a temporary directory:
-
 ```
-$ cp ./benchmarks /some/other/directory
-```
-
-Next, `cd` into that directory and execute:
-
-```
+$ cd benchmarks
 $ cargo build --release --target wasm32-unknown-unknown
-$ wasm-bindgen --out-dir pkg --target web ./target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm
+$ cargo run --package wasm-bindgen-cli -- --out-dir pkg --target web ../target/wasm32-unknown-unknown/release/wasm_bindgen_benchmark.wasm
 ```
 
 Next, use your favorite static file server to host the current directory. For

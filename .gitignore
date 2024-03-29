@@ -10,3 +10,4 @@ yarn.lock
 /publish.exe
 .vscode
 webdriver.json
+benchmarks/pkg
