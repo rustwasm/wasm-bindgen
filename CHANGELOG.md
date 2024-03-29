@@ -14,6 +14,9 @@
 * Added support for returning `Vec`s from async functions.
   [#3630](https://github.com/rustwasm/wasm-bindgen/pull/3630)
 
+* Add js import enum benchmark
+  [#3906](https://github.com/rustwasm/wasm-bindgen/pull/3906)
+
 ### Changed
 
 * Stabilize Web Share API.
