@@ -5,7 +5,7 @@ use lazy_static::lazy_static;
 use std::path::PathBuf;
 
 lazy_static! {
-    static ref ASSEMBLY: PathBuf = AssemblyBuilder::new("empty_assembly")
+    static ref ASSEMBLY: PathBuf = AssemblyBuilder::new("assembly_without_anything")
         .file(
             "src/lib.rs",
             r#"
@@ -14,6 +14,6 @@ lazy_static! {
         .build();
 }
 
-pub fn given_there_is_an_empty_assembly(context: &mut Context) {
+pub fn given_there_is_an_assembly_without_anything(context: &mut Context) {
     context.sandbox_set(Sandbox::new(ASSEMBLY.clone()));
 }
