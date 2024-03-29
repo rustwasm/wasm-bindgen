@@ -1,8 +1,9 @@
 use crate::__steps__::Context;
 use crate::__steps__::Project;
+use crate::__steps__::wasm_bindgen_test_runner::Sandbox;
 
 pub fn given_there_is_an_assembly_with_one_successful_test(context: &mut Context) {
-    let path = Project::new("assembly_with_one_successful_test")
+    let assembly = Project::new("assembly_with_one_successful_test")
     .file(
         "src/lib.rs",
         r#"#[cfg(test)]
@@ -16,5 +17,5 @@ fn pass() {
             "#,
     ).build();
 
-    context.assembly_set(path);
+    context.sandbox_set(Sandbox::new(assembly));
 }

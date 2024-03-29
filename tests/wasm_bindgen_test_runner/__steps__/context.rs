@@ -1,32 +1,32 @@
-use std::path::PathBuf;
-use std::process::Command;
+use super::wasm_bindgen_test_runner::Sandbox;
+use std::process::Output;
 
 pub struct Context {
-    assembly: Option<PathBuf>,
-    command: Option<Command>,
+    output: Option<Result<Output, std::io::Error>>,
+    sandbox: Option<Sandbox>,
 }
 
 impl Context {
     pub fn new() -> Self {
         Context {
-            assembly: None,
-            command: None,
+            output: None,
+            sandbox: None,
         }
     }
 
-    pub fn assembly(&self) -> Option<&PathBuf> {
-        self.assembly.as_ref()
+    pub fn into_output(self) -> Result<Output, std::io::Error> {
+        self.output.unwrap()
     }
 
-    pub fn assembly_set(&mut self, assembly: PathBuf) {
-        self.assembly = Some(assembly);
+    pub fn output_set(&mut self, output: Result<Output, std::io::Error>) {
+        self.output = Some(output);
     }
 
-    pub fn command_set(&mut self, command: Command) {
-        self.command = Some(command);
+    pub fn sandbox(&self) -> &Sandbox {
+        self.sandbox.as_ref().unwrap()
     }
 
-    pub fn into_command(self) -> Command {
-        self.command.unwrap()
+    pub fn sandbox_set(&mut self, sandbox: Sandbox) {
+        self.sandbox = Some(sandbox);
     }
 }
