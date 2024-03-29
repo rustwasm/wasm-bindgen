@@ -242,10 +242,10 @@ pub struct Operation {
 pub enum OperationKind {
     /// A standard method, nothing special
     Regular,
-    /// A method for getting the value of the provided Ident
-    Getter(Option<Ident>),
-    /// A method for setting the value of the provided Ident
-    Setter(Option<Ident>),
+    /// A method for getting the value of the provided Ident or String
+    Getter(Option<String>),
+    /// A method for setting the value of the provided Ident or String
+    Setter(Option<String>),
     /// A dynamically intercepted getter
     IndexingGetter,
     /// A dynamically intercepted setter

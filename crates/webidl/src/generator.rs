@@ -642,8 +642,7 @@ impl DictionaryField {
     ) -> TokenStream {
         let ty = &self.ty;
         let shim_name = self.shim_name();
-        let js_name_ts = TokenStream::from_str(&self.js_name)
-            .expect("The JS attribute name should be convertible to a tokenstream");
+        let js_name = &self.js_name;
 
         let js_value_ref_type = shared_ref(
             leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]),
@@ -659,7 +658,7 @@ impl DictionaryField {
 
         quote! {
             #cfg_features
-            #[wasm_bindgen(method, setter = #js_name_ts)]
+            #[wasm_bindgen(method, setter = #js_name)]
             fn #shim_name(this: &#parent_ident, val: #ty);
         }
     }

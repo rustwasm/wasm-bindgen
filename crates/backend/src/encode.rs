@@ -531,12 +531,12 @@ fn from_ast_method_kind<'a>(
             let is_static = *is_static;
             let kind = match kind {
                 ast::OperationKind::Getter(g) => {
-                    let g = g.as_ref().map(|g| intern.intern(g));
+                    let g = g.as_ref().map(|g| intern.intern_str(g));
                     OperationKind::Getter(g.unwrap_or_else(|| function.infer_getter_property()))
                 }
                 ast::OperationKind::Regular => OperationKind::Regular,
                 ast::OperationKind::Setter(s) => {
-                    let s = s.as_ref().map(|s| intern.intern(s));
+                    let s = s.as_ref().map(|s| intern.intern_str(s));
                     OperationKind::Setter(match s {
                         Some(s) => s,
                         None => intern.intern_str(&function.infer_setter_property()?),
