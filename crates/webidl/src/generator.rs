@@ -3,7 +3,6 @@ use proc_macro2::TokenStream;
 use quote::format_ident;
 use quote::quote;
 use std::collections::BTreeSet;
-use std::str::FromStr;
 use syn::{Ident, Type};
 use wasm_bindgen_backend::util::leading_colon_path_ty;
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
@@ -682,7 +681,7 @@ impl DictionaryField {
 
         let doc_comment = comment(
             format!("Change the `{}` field of this object.", js_name),
-            &required_doc_string(options, &features),
+            &required_doc_string(options, features),
         );
 
         let shim_name = self.shim_name();
