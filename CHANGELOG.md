@@ -19,6 +19,9 @@
 * Stabilize Web Share API.
   [#3882](https://github.com/rustwasm/wasm-bindgen/pull/3882)
 
+* Don't use reflect in webidl dictionary setters
+  [#3898](https://github.com/rustwasm/wasm-bindgen/pull/3898)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
