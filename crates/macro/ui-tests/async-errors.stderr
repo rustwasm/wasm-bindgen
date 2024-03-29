@@ -1,52 +1,48 @@
 error[E0277]: the trait bound `Result<(), ()>: IntoJsResult` is not satisfied
-  --> ui-tests/async-errors.rs:30:1
+  --> ui-tests/async-errors.rs:31:24
    |
-30 | #[wasm_bindgen]
-   | ^^^^^^^^^^^^^^^ the trait `IntoJsResult` is not implemented for `Result<(), ()>`
+31 | pub async fn bad1() -> Result<(), ()> { loop {} }
+   |                        ^^^^^^^^^^^^^^ the trait `IntoJsResult` is not implemented for `Result<(), ()>`
    |
    = help: the following other types implement trait `IntoJsResult`:
              Result<(), E>
              Result<T, E>
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Result<(), BadType>: IntoJsResult` is not satisfied
-  --> ui-tests/async-errors.rs:32:1
+  --> ui-tests/async-errors.rs:33:24
    |
-32 | #[wasm_bindgen]
-   | ^^^^^^^^^^^^^^^ the trait `IntoJsResult` is not implemented for `Result<(), BadType>`
+33 | pub async fn bad2() -> Result<(), BadType> { loop {} }
+   |                        ^^^^^^^^^^^^^^^^^^^ the trait `IntoJsResult` is not implemented for `Result<(), BadType>`
    |
    = help: the following other types implement trait `IntoJsResult`:
              Result<(), E>
              Result<T, E>
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `wasm_bindgen::JsValue: From<BadType>` is not satisfied
-  --> ui-tests/async-errors.rs:34:1
+  --> ui-tests/async-errors.rs:35:24
    |
-34 | #[wasm_bindgen]
-   | ^^^^^^^^^^^^^^^ the trait `From<BadType>` is not implemented for `wasm_bindgen::JsValue`
+35 | pub async fn bad3() -> BadType { loop {} }
+   |                        ^^^^^^^ the trait `From<BadType>` is not implemented for `wasm_bindgen::JsValue`
    |
    = help: the following other types implement trait `From<T>`:
-             <wasm_bindgen::JsValue as From<&'a String>>
-             <wasm_bindgen::JsValue as From<&'a T>>
-             <wasm_bindgen::JsValue as From<&'a str>>
-             <wasm_bindgen::JsValue as From<*const T>>
-             <wasm_bindgen::JsValue as From<*mut T>>
-             <wasm_bindgen::JsValue as From<Array>>
-             <wasm_bindgen::JsValue as From<ArrayBuffer>>
-             <wasm_bindgen::JsValue as From<BigInt64Array>>
+             <wasm_bindgen::JsValue as From<bool>>
+             <wasm_bindgen::JsValue as From<isize>>
+             <wasm_bindgen::JsValue as From<i8>>
+             <wasm_bindgen::JsValue as From<i16>>
+             <wasm_bindgen::JsValue as From<i32>>
+             <wasm_bindgen::JsValue as From<i64>>
+             <wasm_bindgen::JsValue as From<i128>>
+             <wasm_bindgen::JsValue as From<usize>>
            and $N others
    = note: required for `BadType` to implement `Into<wasm_bindgen::JsValue>`
    = note: required for `BadType` to implement `IntoJsResult`
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Result<BadType, wasm_bindgen::JsValue>: IntoJsResult` is not satisfied
-  --> ui-tests/async-errors.rs:36:1
+  --> ui-tests/async-errors.rs:37:24
    |
-36 | #[wasm_bindgen]
-   | ^^^^^^^^^^^^^^^ the trait `IntoJsResult` is not implemented for `Result<BadType, wasm_bindgen::JsValue>`
+37 | pub async fn bad4() -> Result<BadType, JsValue> { loop {} }
+   |                        ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoJsResult` is not implemented for `Result<BadType, wasm_bindgen::JsValue>`
    |
    = help: the following other types implement trait `IntoJsResult`:
              Result<(), E>
              Result<T, E>
-   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)

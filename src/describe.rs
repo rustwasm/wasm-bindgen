@@ -3,6 +3,8 @@
 
 #![doc(hidden)]
 
+use core::ptr::NonNull;
+
 use crate::{Clamped, JsError, JsObject, JsValue};
 use cfg_if::cfg_if;
 
@@ -46,6 +48,7 @@ tys! {
     RESULT
     UNIT
     CLAMPED
+    NONNULL
 }
 
 #[inline(always)] // see the wasm-interpreter crate
@@ -111,6 +114,12 @@ impl<T> WasmDescribe for *const T {
 impl<T> WasmDescribe for *mut T {
     fn describe() {
         inform(U32)
+    }
+}
+
+impl<T> WasmDescribe for NonNull<T> {
+    fn describe() {
+        inform(NONNULL)
     }
 }
 

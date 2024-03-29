@@ -131,6 +131,7 @@ interface mixin CanvasState {
   // state
   undefined save(); // push state on state stack
   undefined restore(); // pop state stack and restore state
+  undefined reset(); // clears the backing buffer, drawing state stack, any defined paths, and styles
 };
 
 interface mixin CanvasTransform {

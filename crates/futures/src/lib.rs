@@ -30,7 +30,7 @@
 //! systems and make sure that Rust/JavaScript can work together with
 //! asynchronous and I/O work.
 
-#![cfg_attr(target_feature = "atomics", feature(stdsimd))]
+#![cfg_attr(target_feature = "atomics", feature(stdarch_wasm_atomic_wait))]
 #![deny(missing_docs)]
 
 use js_sys::Promise;

@@ -63,12 +63,6 @@ return but the JavaScript closure still needs to be valid!
 For this scenario, you need the `Closure` type, which is defined in the
 `wasm_bindgen` crate, exported in `wasm_bindgen::prelude`, and represents a
 "long lived" closure.
-The `Closure` type is currently behind a feature which needs to be enabled:
-
-```toml
-[dependencies]
-wasm-bindgen = {version = "^0.2", features = ["nightly"]}
-```
 
 The validity of the JavaScript closure is tied to the lifetime of the `Closure`
 in Rust. **Once a `Closure` is dropped, it will deallocate its internal memory
@@ -82,7 +76,7 @@ as arguments and returns.
 #[wasm_bindgen]
 extern "C" {
     fn setInterval(closure: &Closure<dyn FnMut()>, millis: u32) -> f64;
-    fn cancelInterval(token: f64);
+    fn clearInterval(token: f64);
 
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
@@ -109,10 +103,10 @@ impl Interval {
     }
 }
 
-// When the Interval is destroyed, cancel its `setInterval` timer.
+// When the Interval is destroyed, clear its `setInterval` timer.
 impl Drop for Interval {
     fn drop(&mut self) {
-        cancelInterval(self.token);
+        clearInterval(self.token);
     }
 }
 

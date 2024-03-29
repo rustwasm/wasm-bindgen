@@ -515,18 +515,6 @@ extern "C" {
         destination_offset: f64,
     );
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "GpuQuerySet")]
-    # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = writeTimestamp)]
-    #[doc = "The `writeTimestamp()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/writeTimestamp)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoder`, `GpuQuerySet`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn write_timestamp(this: &GpuCommandEncoder, query_set: &GpuQuerySet, query_index: u32);
-    #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "GPUCommandEncoder" , js_name = insertDebugMarker)]
     #[doc = "The `insertDebugMarker()` method."]
     #[doc = ""]

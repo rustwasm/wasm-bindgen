@@ -1,3 +1,5 @@
+use std::ptr::{self, NonNull};
+
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::{intern, unintern};
 use wasm_bindgen_test::*;
@@ -29,6 +31,9 @@ extern "C" {
     fn new_renamed() -> Renamed;
 
     fn test_string_roundtrip();
+
+    fn test_raw_pointers();
+    fn test_non_null();
 }
 
 #[wasm_bindgen_test]
@@ -57,9 +62,70 @@ pub fn simple_return_and_take_bool(a: bool, b: bool) -> bool {
 }
 
 #[wasm_bindgen]
+pub fn simple_return_raw_pointer_u32(value: u32) -> *mut u32 {
+    Box::into_raw(Box::new(value))
+}
+
+#[wasm_bindgen]
+pub fn simple_return_raw_pointer_u8(value: u8) -> *const u8 {
+    Box::into_raw(Box::new(value))
+}
+
+#[wasm_bindgen]
 pub unsafe fn simple_raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
     (*a) = (*b) as u32;
     a
+}
+
+#[wasm_bindgen]
+pub fn simple_return_option_null_pointer() -> Option<*const u32> {
+    Some(ptr::null())
+}
+
+#[wasm_bindgen]
+pub unsafe fn simple_option_raw_pointers_work(
+    a: Option<*mut u32>,
+    b: Option<*const u8>,
+) -> Option<*const u32> {
+    let a = a.and_then(|ptr| ptr.as_mut());
+    let b = b.and_then(|ptr| ptr.as_ref());
+
+    if let (Some(a), Some(b)) = (a, b) {
+        *a = *b as u32;
+        Some(a)
+    } else {
+        None
+    }
+}
+
+#[wasm_bindgen_test]
+fn raw_pointers() {
+    test_raw_pointers();
+}
+
+#[wasm_bindgen]
+pub fn simple_return_non_null() -> NonNull<u32> {
+    NonNull::from(Box::leak(Box::new(42)))
+}
+
+#[wasm_bindgen]
+pub fn simple_return_option_non_null(value: u32) -> Option<NonNull<u32>> {
+    Some(NonNull::from(Box::leak(Box::new(value))))
+}
+
+#[wasm_bindgen]
+pub unsafe fn simple_nonnull_work(a: NonNull<u32>) -> u32 {
+    *Box::from_raw(a.as_ptr())
+}
+
+#[wasm_bindgen]
+pub unsafe fn simple_option_nonnull_work(a: Option<NonNull<u32>>) -> Option<u32> {
+    a.map(|ptr| *Box::from_raw(ptr.as_ptr()))
+}
+
+#[wasm_bindgen_test]
+fn non_null() {
+    test_non_null();
 }
 
 #[wasm_bindgen_test]
@@ -100,6 +166,9 @@ fn wrong_types() {
 
 #[wasm_bindgen]
 pub fn simple_int(_a: u32) {}
+
+#[wasm_bindgen]
+pub fn simple_bool(_a: bool) {}
 
 #[wasm_bindgen]
 pub fn simple_str(_a: &str) {}

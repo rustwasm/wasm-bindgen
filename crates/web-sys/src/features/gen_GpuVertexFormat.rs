@@ -41,4 +41,5 @@ pub enum GpuVertexFormat {
     Sint32x2 = "sint32x2",
     Sint32x3 = "sint32x3",
     Sint32x4 = "sint32x4",
+    Unorm1010102 = "unorm10-10-10-2",
 }

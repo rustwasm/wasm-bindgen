@@ -921,18 +921,12 @@ impl<'a> Context<'a> {
                 "
                 static __wrap(ptr) {{
                     ptr = ptr >>> 0;
-                    const obj = Object.create({}.prototype);
+                    const obj = Object.create({name}.prototype);
                     obj.__wbg_ptr = ptr;
-                    {}
+                    {name}Finalization.register(obj, obj.__wbg_ptr, obj);
                     return obj;
                 }}
-                ",
-                name,
-                if self.config.weak_refs {
-                    format!("{}Finalization.register(obj, obj.__wbg_ptr, obj);", name)
-                } else {
-                    String::new()
-                },
+                "
             ));
         }
 
@@ -950,13 +944,13 @@ impl<'a> Context<'a> {
             ));
         }
 
-        if self.config.weak_refs {
-            self.global(&format!(
-                "const {}Finalization = new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));",
-                name,
-                wasm_bindgen_shared::free_function(name),
-            ));
-        }
+        self.global(&format!(
+            "
+            const {name}Finalization = (typeof FinalizationRegistry === 'undefined')
+                ? {{ register: () => {{}}, unregister: () => {{}} }}
+                : new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));",
+            wasm_bindgen_shared::free_function(name),
+        ));
 
         // If the class is inspectable, generate `toJSON` and `toString`
         // to expose all readable properties of the class. Otherwise,
@@ -1021,7 +1015,7 @@ impl<'a> Context<'a> {
             __destroy_into_raw() {{
                 const ptr = this.__wbg_ptr;
                 this.__wbg_ptr = 0;
-                {}
+                {name}Finalization.unregister(this);
                 return ptr;
             }}
 
@@ -1030,11 +1024,6 @@ impl<'a> Context<'a> {
                 wasm.{}(ptr);
             }}
             ",
-            if self.config.weak_refs {
-                format!("{}Finalization.unregister(this);", name)
-            } else {
-                String::new()
-            },
             wasm_bindgen_shared::free_function(name),
         ));
         ts_dst.push_str("  free(): void;\n");
@@ -1147,7 +1136,7 @@ impl<'a> Context<'a> {
         self.global(
             "
             function _assertNum(n) {
-                if (typeof(n) !== 'number') throw new Error('expected a number argument');
+                if (typeof(n) !== 'number') throw new Error(`expected a number argument, found ${typeof(n)}`);
             }
             ",
         );
@@ -1160,7 +1149,7 @@ impl<'a> Context<'a> {
         self.global(
             "
             function _assertBigInt(n) {
-                if (typeof(n) !== 'bigint') throw new Error('expected a bigint argument');
+                if (typeof(n) !== 'bigint') throw new Error(`expected a bigint argument, found ${typeof(n)}`);
             }
             ",
         );
@@ -1174,7 +1163,7 @@ impl<'a> Context<'a> {
             "
             function _assertBoolean(n) {
                 if (typeof(n) !== 'boolean') {
-                    throw new Error('expected a boolean argument');
+                    throw new Error(`expected a boolean argument, found ${typeof(n)}`);
                 }
             }
             ",
@@ -1193,7 +1182,7 @@ impl<'a> Context<'a> {
 
         let debug = if self.config.debug {
             "
-                if (typeof(arg) !== 'string') throw new Error('expected a string argument');
+                if (typeof(arg) !== 'string') throw new Error(`expected a string argument, found ${typeof(arg)}`);
             "
         } else {
             ""
@@ -1296,11 +1285,6 @@ impl<'a> Context<'a> {
             mem = mem,
         );
 
-        // TODO:
-        // When converting a JS string to UTF-8, the maximum size is `arg.length * 3`,
-        // so we just allocate that. This wastes memory, so we should investigate
-        // looping over the string to calculate the precise size, or perhaps using
-        // `shrink_to_fit` on the Rust side.
         self.global(&format!(
             "function {name}(arg, malloc, realloc) {{
                 {debug}
@@ -1314,6 +1298,7 @@ impl<'a> Context<'a> {
                     const ret = encodeString(arg, view);
                     {debug_end}
                     offset += ret.written;
+                    ptr = realloc(ptr, len, offset, 1) >>> 0;
                 }}
 
                 WASM_VECTOR_LEN = offset;
@@ -1783,25 +1768,6 @@ impl<'a> Context<'a> {
         self.memview("Float64", memory)
     }
 
-    fn memview_function(&mut self, t: VectorKind, memory: MemoryId) -> MemView {
-        match t {
-            VectorKind::String => self.expose_uint8_memory(memory),
-            VectorKind::I8 => self.expose_int8_memory(memory),
-            VectorKind::U8 => self.expose_uint8_memory(memory),
-            VectorKind::ClampedU8 => self.expose_clamped_uint8_memory(memory),
-            VectorKind::I16 => self.expose_int16_memory(memory),
-            VectorKind::U16 => self.expose_uint16_memory(memory),
-            VectorKind::I32 => self.expose_int32_memory(memory),
-            VectorKind::U32 => self.expose_uint32_memory(memory),
-            VectorKind::I64 => self.expose_int64_memory(memory),
-            VectorKind::U64 => self.expose_uint64_memory(memory),
-            VectorKind::F32 => self.expose_f32_memory(memory),
-            VectorKind::F64 => self.expose_f64_memory(memory),
-            VectorKind::Externref => self.expose_uint32_memory(memory),
-            VectorKind::NamedExternref(_) => self.expose_uint32_memory(memory),
-        }
-    }
-
     fn memview(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
         let view = self.memview_memory(kind, memory);
         if !self.should_write_global(view.name.clone()) {
@@ -2118,6 +2084,32 @@ impl<'a> Context<'a> {
         );
     }
 
+    fn expose_assert_non_null(&mut self) {
+        if !self.should_write_global("assert_non_null") {
+            return;
+        }
+        self.global(
+            "
+            function _assertNonNull(n) {
+                if (typeof(n) !== 'number' || n === 0) throw new Error(`expected a number argument that is not 0, found ${n}`);
+            }
+            ",
+        );
+    }
+
+    fn expose_assert_char(&mut self) {
+        if !self.should_write_global("assert_char") {
+            return;
+        }
+        self.global(
+            "
+            function _assertChar(c) {
+                if (typeof(c) === 'number' && (c >= 0x110000 || (c >= 0xD800 && c < 0xE000))) throw new Error(`expected a valid Unicode scalar value, found ${c}`);
+            }
+            ",
+        );
+    }
+
     fn expose_make_mut_closure(&mut self) -> Result<(), Error> {
         if !self.should_write_global("make_mut_closure") {
             return Ok(());
@@ -2125,15 +2117,7 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
-        let (register, unregister) = if self.config.weak_refs {
-            self.expose_closure_finalization()?;
-            (
-                "CLOSURE_DTORS.register(real, state, state);",
-                "CLOSURE_DTORS.unregister(state)",
-            )
-        } else {
-            ("", "")
-        };
+        self.expose_closure_finalization()?;
 
         // For mutable closures they can't be invoked recursively.
         // To handle that we swap out the `this.a` pointer with zero
@@ -2156,20 +2140,17 @@ impl<'a> Context<'a> {
                     }} finally {{
                         if (--state.cnt === 0) {{
                             wasm.{table}.get(state.dtor)(a, state.b);
-                            {unregister}
+                            CLOSURE_DTORS.unregister(state);
                         }} else {{
                             state.a = a;
                         }}
                     }}
                 }};
                 real.original = state;
-                {register}
+                CLOSURE_DTORS.register(real, state, state);
                 return real;
             }}
             ",
-            table = table,
-            register = register,
-            unregister = unregister,
         ));
 
         Ok(())
@@ -2182,15 +2163,7 @@ impl<'a> Context<'a> {
 
         let table = self.export_function_table()?;
 
-        let (register, unregister) = if self.config.weak_refs {
-            self.expose_closure_finalization()?;
-            (
-                "CLOSURE_DTORS.register(real, state, state);",
-                "CLOSURE_DTORS.unregister(state)",
-            )
-        } else {
-            ("", "")
-        };
+        self.expose_closure_finalization()?;
 
         // For shared closures they can be invoked recursively so we
         // just immediately pass through `this.a`. If we end up
@@ -2212,18 +2185,15 @@ impl<'a> Context<'a> {
                         if (--state.cnt === 0) {{
                             wasm.{table}.get(state.dtor)(state.a, state.b);
                             state.a = 0;
-                            {unregister}
+                            CLOSURE_DTORS.unregister(state);
                         }}
                     }}
                 }};
                 real.original = state;
-                {register}
+                CLOSURE_DTORS.register(real, state, state);
                 return real;
             }}
             ",
-            table = table,
-            register = register,
-            unregister = unregister,
         ));
 
         Ok(())
@@ -2233,15 +2203,15 @@ impl<'a> Context<'a> {
         if !self.should_write_global("closure_finalization") {
             return Ok(());
         }
-        assert!(self.config.weak_refs);
         let table = self.export_function_table()?;
         self.global(&format!(
             "
-            const CLOSURE_DTORS = new FinalizationRegistry(state => {{
-                wasm.{}.get(state.dtor)(state.a, state.b)
-            }});
-            ",
-            table
+            const CLOSURE_DTORS = (typeof FinalizationRegistry === 'undefined')
+                ? {{ register: () => {{}}, unregister: () => {{}} }}
+                : new FinalizationRegistry(state => {{
+                    wasm.{table}.get(state.dtor)(state.a, state.b)
+                }});
+            "
         ));
 
         Ok(())
@@ -3605,6 +3575,31 @@ impl<'a> Context<'a> {
                     src = args[0],
                     dst = args[1]
                 )
+            }
+
+            Intrinsic::Uint8ArrayNew
+            | Intrinsic::Uint8ClampedArrayNew
+            | Intrinsic::Uint16ArrayNew
+            | Intrinsic::Uint32ArrayNew
+            | Intrinsic::BigUint64ArrayNew
+            | Intrinsic::Int8ArrayNew
+            | Intrinsic::Int16ArrayNew
+            | Intrinsic::Int32ArrayNew
+            | Intrinsic::BigInt64ArrayNew
+            | Intrinsic::Float32ArrayNew
+            | Intrinsic::Float64ArrayNew => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
+            Intrinsic::ArrayNew => {
+                assert_eq!(args.len(), 0);
+                "[]".to_string()
+            }
+
+            Intrinsic::ArrayPush => {
+                assert_eq!(args.len(), 2);
+                format!("{}.push({})", args[0], args[1])
             }
 
             Intrinsic::ExternrefHeapLiveCount => {

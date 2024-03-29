@@ -497,6 +497,16 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         self.prelude("}");
     }
 
+    fn assert_non_null(&mut self, arg: &str) {
+        self.cx.expose_assert_non_null();
+        self.prelude(&format!("_assertNonNull({});", arg));
+    }
+
+    fn assert_char(&mut self, arg: &str) {
+        self.cx.expose_assert_char();
+        self.prelude(&format!("_assertChar({});", arg));
+    }
+
     fn assert_optional_bigint(&mut self, arg: &str) {
         if !self.cx.config.debug {
             return;
@@ -652,7 +662,7 @@ fn instruction(
         Instruction::WasmToInt { output, .. } => {
             let val = js.pop();
             match output {
-                AdapterType::U32 => js.push(format!("{} >>> 0", val)),
+                AdapterType::U32 | AdapterType::NonNull => js.push(format!("{} >>> 0", val)),
                 AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
                 _ => js.push(val),
             }
@@ -734,7 +744,11 @@ fn instruction(
 
         Instruction::I32FromStringFirstChar => {
             let val = js.pop();
-            js.push(format!("{}.codePointAt(0)", val));
+            let i = js.tmp();
+            js.prelude(&format!("const char{i} = {val}.codePointAt(0);"));
+            let val = format!("char{i}");
+            js.assert_char(&val);
+            js.push(val);
         }
 
         Instruction::I32FromExternrefOwned => {
@@ -811,11 +825,18 @@ fn instruction(
 
         Instruction::I32FromOptionChar => {
             let val = js.pop();
+            let i = js.tmp();
             js.cx.expose_is_like_none();
-            js.push(format!(
-                "isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0)",
+            js.prelude(&format!(
+                "const char{i} = isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0);",
                 val
             ));
+            let val = format!("char{i}");
+            js.cx.expose_assert_char();
+            js.prelude(&format!(
+                "if ({val} !== 0xFFFFFF) {{ _assertChar({val}); }}"
+            ));
+            js.push(val);
         }
 
         Instruction::I32FromOptionEnum { hole } => {
@@ -1217,6 +1238,24 @@ fn instruction(
             let val = js.pop();
             js.push(format!("{0} === {1} ? undefined : {0}", val, hole));
         }
+
+        Instruction::I32FromNonNull => {
+            let val = js.pop();
+            js.assert_non_null(&val);
+            js.push(val);
+        }
+
+        Instruction::I32FromOptionNonNull => {
+            let val = js.pop();
+            js.cx.expose_is_like_none();
+            js.assert_optional_number(&val);
+            js.push(format!("isLikeNone({0}) ? 0 : {0}", val));
+        }
+
+        Instruction::OptionNonNullFromI32 => {
+            let val = js.pop();
+            js.push(format!("{0} === 0 ? undefined : {0} >>> 0", val));
+        }
     }
     Ok(())
 }
@@ -1324,7 +1363,8 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         | AdapterType::U16
         | AdapterType::U32
         | AdapterType::F32
-        | AdapterType::F64 => dst.push_str("number"),
+        | AdapterType::F64
+        | AdapterType::NonNull => dst.push_str("number"),
         AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("bigint"),
         AdapterType::String => dst.push_str("string"),
         AdapterType::Externref => dst.push_str("any"),

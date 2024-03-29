@@ -42,7 +42,7 @@ when the worker returns a message.
 Includes the input element `#inputNumber` to type a number into and a HTML
 element `#resultField` were the result of the evaluation even/odd is written to.
 Since we require to build with `--target no-modules` to be able to load Wasm
-code in in the worker across browsers, the `index.html` also includes loading
+code in the worker across browsers, the `index.html` also includes loading
 both `wasm_in_web_worker.js` and `index.js`.
 
 ```html

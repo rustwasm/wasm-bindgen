@@ -7,19 +7,21 @@ use std::path::Path;
 use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
 
-pub fn spawn(
+use crate::TestMode;
+
+pub(crate) fn spawn(
     addr: &SocketAddr,
     headless: bool,
     module: &'static str,
     tmpdir: &Path,
     args: &[OsString],
     tests: &[String],
-    no_module: bool,
-    worker: bool,
+    test_mode: TestMode,
+    isolate_origin: bool,
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = String::new();
 
-    let wbg_import_script = if no_module {
+    let wbg_import_script = if test_mode.no_modules() {
         String::from(
             r#"
             let Context = wasm_bindgen.WasmBindgenTestContext;
@@ -48,14 +50,33 @@ pub fn spawn(
         )
     };
 
-    if worker {
-        let mut worker_script = if no_module {
+    if test_mode.is_worker() {
+        let mut worker_script = if test_mode.no_modules() {
             format!(r#"importScripts("{0}.js");"#, module)
         } else {
             String::new()
         };
 
         worker_script.push_str(&wbg_import_script);
+
+        match test_mode {
+            TestMode::DedicatedWorker { .. } => worker_script.push_str("const port = self\n"),
+            TestMode::SharedWorker { .. } => worker_script.push_str(
+                r#"
+                addEventListener('connect', (e) => {
+                    const port = e.ports[0]
+                "#,
+            ),
+            TestMode::ServiceWorker { .. } => worker_script.push_str(
+                r#"
+                addEventListener('install', (e) => skipWaiting());
+                addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+                addEventListener('message', (e) => {
+                    const port = e.ports[0]
+                "#,
+            ),
+            _ => unreachable!(),
+        }
 
         worker_script.push_str(&format!(
             r#"
@@ -65,7 +86,7 @@ pub fn spawn(
                     if (self[on_method]) {{
                         self[on_method](args);
                     }}
-                    postMessage(["__wbgtest_" + method, args]);
+                    port.postMessage(["__wbgtest_" + method, args]);
                 }};
             }};
 
@@ -73,7 +94,7 @@ pub fn spawn(
             self.__wbg_test_output = "";
             self.__wbg_test_output_writeln = function (line) {{
                 self.__wbg_test_output += line + "\n";
-                postMessage(["__wbgtest_output", self.__wbg_test_output]);
+                port.postMessage(["__wbgtest_output", self.__wbg_test_output]);
             }}
 
             wrap("debug");
@@ -97,7 +118,7 @@ pub fn spawn(
                 await cx.run(tests.map(s => wasm[s]));
             }}
 
-            onmessage = function(e) {{
+            port.onmessage = function(e) {{
                 let tests = e.data;
                 run_in_worker(tests);
             }}
@@ -105,7 +126,19 @@ pub fn spawn(
             module, args,
         ));
 
-        let worker_js_path = tmpdir.join("worker.js");
+        if matches!(
+            test_mode,
+            TestMode::SharedWorker { .. } | TestMode::ServiceWorker { .. }
+        ) {
+            worker_script.push_str("})");
+        }
+
+        let name = if matches!(test_mode, TestMode::ServiceWorker { .. }) {
+            "service.js"
+        } else {
+            "worker.js"
+        };
+        let worker_js_path = tmpdir.join(name);
         fs::write(worker_js_path, worker_script).context("failed to write JS file")?;
 
         js_to_execute.push_str(&format!(
@@ -114,9 +147,9 @@ pub fn spawn(
             // status text as at this point we should be asynchronously fetching the
             // wasm module.
             document.getElementById('output').textContent = "Loading wasm module...";
-            const worker = new Worker("worker.js", {{type: "{}"}});
+            {}
 
-            worker.addEventListener("message", function(e) {{
+            port.addEventListener("message", function(e) {{
                 // Checking the whether the message is from wasm_bindgen_test
                 if(
                     e.data &&
@@ -141,12 +174,54 @@ pub fn spawn(
             }});
 
             async function main(test) {{
-                worker.postMessage(test)
+                port.postMessage(test)
             }}
 
             const tests = [];
             "#,
-            if no_module { "classic" } else { "module" }
+            {
+                let module = if test_mode.no_modules() {
+                    "classic"
+                } else {
+                    "module"
+                };
+
+                match test_mode {
+                    TestMode::DedicatedWorker { .. } => {
+                        format!("const port = new Worker('worker.js', {{type: '{module}'}});\n")
+                    }
+                    TestMode::SharedWorker { .. } => {
+                        format!(
+                            r#"
+                            const worker = new SharedWorker("worker.js?random=" + crypto.randomUUID(), {{type: "{module}"}});
+                            const port = worker.port;
+                            port.start();
+                            "#
+                        )
+                    }
+                    TestMode::ServiceWorker { .. } => {
+                        format!(
+                            r#"
+                            const url = "service.js?random=" + crypto.randomUUID();
+                            await navigator.serviceWorker.register(url, {{type: "{module}"}});
+                            await new Promise((resolve) => {{
+                                navigator.serviceWorker.addEventListener('controllerchange', () => {{
+                                    if (navigator.serviceWorker.controller.scriptURL != location.href + url) {{
+                                        throw "`wasm-bindgen-test-runner` does not support running multiple service worker tests at the same time"
+                                    }}
+                                    resolve();
+                                }});
+                            }});
+                            const channel = new MessageChannel();
+                            navigator.serviceWorker.controller.postMessage(undefined, [channel.port2]);
+                            const port = channel.port1;
+                            port.start();
+                            "#
+                        )
+                    }
+                    _ => unreachable!(),
+                }
+            }
         ));
     } else {
         js_to_execute.push_str(&wbg_import_script);
@@ -203,7 +278,7 @@ pub fn spawn(
             } else {
                 include_str!("index.html")
             };
-            let s = if no_module {
+            let s = if !test_mode.is_worker() && test_mode.no_modules() {
                 s.replace(
                     "<!-- {IMPORT_SCRIPTS} -->",
                     &format!(
@@ -217,7 +292,14 @@ pub fn spawn(
                     "<script src='run.js' type=module></script>",
                 )
             };
-            return set_isolate_origin_headers(Response::from_data("text/html", s));
+
+            let mut response = Response::from_data("text/html", s);
+
+            if isolate_origin {
+                set_isolate_origin_headers(&mut response)
+            }
+
+            return response;
         }
 
         // Otherwise we need to find the asset here. It may either be in our
@@ -230,7 +312,10 @@ pub fn spawn(
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
-        set_isolate_origin_headers(response)
+        if isolate_origin {
+            set_isolate_origin_headers(&mut response)
+        }
+        response
     })
     .map_err(|e| anyhow!("{}", e))?;
     return Ok(srv);
@@ -272,7 +357,7 @@ pub fn spawn(
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy#certain_features_depend_on_cross-origin_isolation
  * https://security.googleblog.com/2018/07/mitigating-spectre-with-site-isolation.html
  */
-fn set_isolate_origin_headers(mut response: Response) -> Response {
+fn set_isolate_origin_headers(response: &mut Response) {
     response.headers.push((
         Cow::Borrowed("Cross-Origin-Opener-Policy"),
         Cow::Borrowed("same-origin"),
@@ -281,6 +366,4 @@ fn set_isolate_origin_headers(mut response: Response) -> Response {
         Cow::Borrowed("Cross-Origin-Embedder-Policy"),
         Cow::Borrowed("require-corp"),
     ));
-
-    response
 }

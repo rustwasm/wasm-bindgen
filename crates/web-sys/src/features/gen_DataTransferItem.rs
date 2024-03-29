@@ -34,6 +34,17 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItem`, `File`*"]
     pub fn get_as_file(this: &DataTransferItem) -> Result<Option<File>, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "DataTransferItem" , js_name = getAsFileSystemHandle)]
+    #[doc = "The `getAsFileSystemHandle()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/getAsFileSystemHandle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DataTransferItem`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_as_file_system_handle(this: &DataTransferItem) -> ::js_sys::Promise;
     # [wasm_bindgen (catch , method , structural , js_class = "DataTransferItem" , js_name = getAsString)]
     #[doc = "The `getAsString()` method."]
     #[doc = ""]

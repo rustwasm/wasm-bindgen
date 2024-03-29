@@ -216,6 +216,6 @@ fn publish(krate: &Crate) {
         .status()
         .expect("failed to run cargo");
     if !status.success() {
-        println!("FAIL: failed to publish `{}`: {}", krate.name, status);
+        panic!("FAIL: failed to publish `{}`: {}", krate.name, status);
     }
 }

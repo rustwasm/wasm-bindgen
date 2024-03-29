@@ -16,6 +16,7 @@ use core::mem;
 use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
 };
+use core::ptr::NonNull;
 use core::u32;
 
 use crate::convert::{FromWasmAbi, TryFromJsValue, WasmRet, WasmSlice};
@@ -790,6 +791,13 @@ impl<T> From<*const T> for JsValue {
     }
 }
 
+impl<T> From<NonNull<T>> for JsValue {
+    #[inline]
+    fn from(s: NonNull<T>) -> JsValue {
+        JsValue::from(s.as_ptr() as usize)
+    }
+}
+
 if_std! {
     impl<'a> From<&'a String> for JsValue {
         #[inline]
@@ -1089,6 +1097,21 @@ externs! {
         fn __wbindgen_jsval_loose_eq(a: u32, b: u32) -> u32;
 
         fn __wbindgen_copy_to_typed_array(ptr: *const u8, len: usize, idx: u32) -> ();
+
+        fn __wbindgen_uint8_array_new(ptr: *mut u8, len: usize) -> u32;
+        fn __wbindgen_uint8_clamped_array_new(ptr: *mut u8, len: usize) -> u32;
+        fn __wbindgen_uint16_array_new(ptr: *mut u16, len: usize) -> u32;
+        fn __wbindgen_uint32_array_new(ptr: *mut u32, len: usize) -> u32;
+        fn __wbindgen_biguint64_array_new(ptr: *mut u64, len: usize) -> u32;
+        fn __wbindgen_int8_array_new(ptr: *mut i8, len: usize) -> u32;
+        fn __wbindgen_int16_array_new(ptr: *mut i16, len: usize) -> u32;
+        fn __wbindgen_int32_array_new(ptr: *mut i32, len: usize) -> u32;
+        fn __wbindgen_bigint64_array_new(ptr: *mut i64, len: usize) -> u32;
+        fn __wbindgen_float32_array_new(ptr: *mut f32, len: usize) -> u32;
+        fn __wbindgen_float64_array_new(ptr: *mut f64, len: usize) -> u32;
+
+        fn __wbindgen_array_new() -> u32;
+        fn __wbindgen_array_push(array: u32, value: u32) -> ();
 
         fn __wbindgen_not(idx: u32) -> u32;
 
@@ -1679,26 +1702,28 @@ pub mod __rt {
         crate::externref::link_intrinsics();
     }
 
-    static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];
+    std::thread_local! {
+        static GLOBAL_EXNDATA: Cell<[u32; 2]> = Cell::new([0; 2]);
+    }
 
     #[no_mangle]
     pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
-        debug_assert_eq!(GLOBAL_EXNDATA[0], 0);
-        GLOBAL_EXNDATA[0] = 1;
-        GLOBAL_EXNDATA[1] = idx;
+        GLOBAL_EXNDATA.with(|data| {
+            debug_assert_eq!(data.get()[0], 0);
+            data.set([1, idx]);
+        });
     }
 
     pub fn take_last_exception() -> Result<(), super::JsValue> {
-        unsafe {
-            let ret = if GLOBAL_EXNDATA[0] == 1 {
-                Err(super::JsValue::_new(GLOBAL_EXNDATA[1]))
+        GLOBAL_EXNDATA.with(|data| {
+            let ret = if data.get()[0] == 1 {
+                Err(super::JsValue::_new(data.get()[1]))
             } else {
                 Ok(())
             };
-            GLOBAL_EXNDATA[0] = 0;
-            GLOBAL_EXNDATA[1] = 0;
+            data.set([0, 0]);
             ret
-        }
+        })
     }
 
     /// An internal helper trait for usage in `#[wasm_bindgen]` on `async`
@@ -1792,6 +1817,35 @@ pub mod __rt {
             if let Err(e) = self.0.take().unwrap() {
                 crate::throw_str(&std::format!("{:?}", e));
             }
+        }
+    }
+
+    if_std! {
+        use core::mem;
+        use std::boxed::Box;
+
+        /// Trait for element types to implement `Into<JsValue>` for vectors of
+        /// themselves, which isn't possible directly thanks to the orphan rule.
+        pub trait VectorIntoJsValue: Sized {
+            fn vector_into_jsvalue(vector: Box<[Self]>) -> JsValue;
+        }
+
+        impl<T: VectorIntoJsValue> From<Box<[T]>> for JsValue {
+            fn from(vector: Box<[T]>) -> Self {
+                T::vector_into_jsvalue(vector)
+            }
+        }
+
+        pub fn js_value_vector_into_jsvalue<T: Into<JsValue>>(vector: Box<[T]>) -> JsValue {
+            let result = unsafe { JsValue::_new(super::__wbindgen_array_new()) };
+            for value in vector.into_vec() {
+                let js: JsValue = value.into();
+                unsafe { super::__wbindgen_array_push(result.idx, js.idx) }
+                // `__wbindgen_array_push` takes ownership over `js` and has already dropped it,
+                // so don't drop it again.
+                mem::forget(js);
+            }
+            result
         }
     }
 }
@@ -1910,5 +1964,78 @@ if_std! {
 impl From<JsError> for JsValue {
     fn from(error: JsError) -> Self {
         error.value
+    }
+}
+
+macro_rules! typed_arrays {
+    ($($ty:ident $ctor:ident $clamped_ctor:ident,)*) => {
+        $(
+            impl From<Box<[$ty]>> for JsValue {
+                fn from(mut vector: Box<[$ty]>) -> Self {
+                    let result = unsafe { JsValue::_new($ctor(vector.as_mut_ptr(), vector.len())) };
+                    mem::forget(vector);
+                    result
+                }
+            }
+
+            impl From<Clamped<Box<[$ty]>>> for JsValue {
+                fn from(mut vector: Clamped<Box<[$ty]>>) -> Self {
+                    let result = unsafe { JsValue::_new($clamped_ctor(vector.as_mut_ptr(), vector.len())) };
+                    mem::forget(vector);
+                    result
+                }
+            }
+        )*
+    };
+}
+
+if_std! {
+    typed_arrays! {
+        u8 __wbindgen_uint8_array_new __wbindgen_uint8_clamped_array_new,
+        u16 __wbindgen_uint16_array_new __wbindgen_uint16_array_new,
+        u32 __wbindgen_uint32_array_new __wbindgen_uint32_array_new,
+        u64 __wbindgen_biguint64_array_new __wbindgen_biguint64_array_new,
+        i8 __wbindgen_int8_array_new __wbindgen_int8_array_new,
+        i16 __wbindgen_int16_array_new __wbindgen_int16_array_new,
+        i32 __wbindgen_int32_array_new __wbindgen_int32_array_new,
+        i64 __wbindgen_bigint64_array_new __wbindgen_bigint64_array_new,
+        f32 __wbindgen_float32_array_new __wbindgen_float32_array_new,
+        f64 __wbindgen_float64_array_new __wbindgen_float64_array_new,
+    }
+
+    impl __rt::VectorIntoJsValue for JsValue {
+        fn vector_into_jsvalue(vector: Box<[JsValue]>) -> JsValue {
+            __rt::js_value_vector_into_jsvalue::<JsValue>(vector)
+        }
+    }
+
+    impl<T: JsObject> __rt::VectorIntoJsValue for T {
+        fn vector_into_jsvalue(vector: Box<[T]>) -> JsValue {
+            __rt::js_value_vector_into_jsvalue::<T>(vector)
+        }
+    }
+
+    impl __rt::VectorIntoJsValue for String {
+        fn vector_into_jsvalue(vector: Box<[String]>) -> JsValue {
+            __rt::js_value_vector_into_jsvalue::<String>(vector)
+        }
+    }
+
+    impl<T> From<Vec<T>> for JsValue
+    where
+        JsValue: From<Box<[T]>>,
+    {
+        fn from(vector: Vec<T>) -> Self {
+            JsValue::from(vector.into_boxed_slice())
+        }
+    }
+
+    impl<T> From<Clamped<Vec<T>>> for JsValue
+    where
+        JsValue: From<Clamped<Box<[T]>>>,
+    {
+        fn from(vector: Clamped<Vec<T>>) -> Self {
+            JsValue::from(Clamped(vector.0.into_boxed_slice()))
+        }
     }
 }

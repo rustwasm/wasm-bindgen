@@ -6,16 +6,6 @@
  * https://www.w3.org/TR/2021/WD-clipboard-apis-20210604/
  */
 
-dictionary ClipboardEventInit : EventInit {
-  DataTransfer? clipboardData = null;
-};
-
-[Exposed=Window]
-interface ClipboardEvent : Event {
-  constructor(DOMString type, optional ClipboardEventInit eventInitDict = {});
-  readonly attribute DataTransfer? clipboardData;
-};
-
 partial interface Navigator {
   [SecureContext, SameObject] readonly attribute Clipboard? clipboard;
 };

@@ -9,3 +9,4 @@ yarn.lock
 /publish
 /publish.exe
 .vscode
+webdriver.json

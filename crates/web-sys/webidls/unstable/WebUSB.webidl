@@ -62,6 +62,7 @@ interface USBDevice {
   readonly attribute FrozenArray<USBConfiguration> configurations;
   readonly attribute boolean opened;
   Promise<undefined> open();
+  Promise<undefined> forget();
   Promise<undefined> close();
   Promise<undefined> selectConfiguration(octet configurationValue);
   Promise<undefined> claimInterface(octet interfaceNumber);

@@ -510,6 +510,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             false,
             None,
             false,
+            Some(&["default"]),
         )?
         .0;
         let catch = opts.catch().is_some();
@@ -798,14 +799,18 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             false,
             None,
             false,
+            None,
         )?;
         attrs.check_used();
         Ok(ret.0)
     }
 }
 
-pub(crate) fn is_js_keyword(keyword: &str) -> bool {
-    JS_KEYWORDS.contains(&keyword)
+pub(crate) fn is_js_keyword(keyword: &str, skip: Option<&[&str]>) -> bool {
+    JS_KEYWORDS
+        .iter()
+        .filter(|keyword| skip.filter(|skip| skip.contains(keyword)).is_none())
+        .any(|this| *this == keyword)
 }
 
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
@@ -819,6 +824,7 @@ fn function_from_decl(
     allow_self: bool,
     self_ty: Option<&Ident>,
     is_from_impl: bool,
+    skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -857,7 +863,7 @@ fn function_from_decl(
     let replace_colliding_arg = |i: &mut syn::PatType| {
         if let syn::Pat::Ident(ref mut i) = *i.pat {
             let ident = i.ident.to_string();
-            if is_js_keyword(ident.as_str()) {
+            if is_js_keyword(ident.as_str(), skip_keywords) {
                 i.ident = Ident::new(format!("_{}", ident).as_str(), i.ident.span());
             }
         }
@@ -894,29 +900,33 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
-    let (name, name_span, renamed_via_js_name) = if let Some((js_name, js_name_span)) =
-        opts.js_name()
-    {
-        let kind = operation_kind(opts);
-        let prefix = match kind {
-            OperationKind::Setter(_) => "set_",
-            _ => "",
-        };
-        let name = if prefix.is_empty() && opts.method().is_none() && is_js_keyword(js_name) {
-            format!("_{}", js_name)
+    let (name, name_span, renamed_via_js_name) =
+        if let Some((js_name, js_name_span)) = opts.js_name() {
+            let kind = operation_kind(opts);
+            let prefix = match kind {
+                OperationKind::Setter(_) => "set_",
+                _ => "",
+            };
+            let name = if prefix.is_empty()
+                && opts.method().is_none()
+                && is_js_keyword(js_name, skip_keywords)
+            {
+                format!("_{}", js_name)
+            } else {
+                format!("{}{}", prefix, js_name)
+            };
+            (name, js_name_span, true)
         } else {
-            format!("{}{}", prefix, js_name)
-        };
-        (name, js_name_span, true)
-    } else {
-        let name =
-            if !is_from_impl && opts.method().is_none() && is_js_keyword(&decl_name.to_string()) {
+            let name = if !is_from_impl
+                && opts.method().is_none()
+                && is_js_keyword(&decl_name.to_string(), skip_keywords)
+            {
                 format!("_{}", decl_name)
             } else {
                 decl_name.to_string()
             };
-        (name, decl_name.span(), false)
-    };
+            (name, decl_name.span(), false)
+        };
     Ok((
         ast::Function {
             arguments,
@@ -1193,6 +1203,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
             true,
             Some(class),
             true,
+            None,
         )?;
         let method_kind = if opts.constructor().is_some() {
             ast::MethodKind::Constructor

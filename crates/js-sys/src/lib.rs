@@ -381,6 +381,28 @@ extern "C" {
     #[wasm_bindgen(method, js_name = findIndex)]
     pub fn find_index(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> i32;
 
+    /// The `findLast()` method of Array instances iterates the array in reverse order
+    /// and returns the value of the first element that satisfies the provided testing function.
+    /// If no elements satisfy the testing function, undefined is returned.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+    #[wasm_bindgen(method, js_name = findLast)]
+    pub fn find_last(
+        this: &Array,
+        predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool,
+    ) -> JsValue;
+
+    /// The `findLastIndex()` method of Array instances iterates the array in reverse order
+    /// and returns the index of the first element that satisfies the provided testing function.
+    /// If no elements satisfy the testing function, -1 is returned.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
+    #[wasm_bindgen(method, js_name = findLastIndex)]
+    pub fn find_last_index(
+        this: &Array,
+        predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool,
+    ) -> i32;
+
     /// The `flat()` method creates a new array with all sub-array elements concatenated into it
     /// recursively up to the specified depth.
     ///
@@ -2792,6 +2814,37 @@ macro_rules! number_from {
     )*)
 }
 number_from!(i8 u8 i16 u16 i32 u32 f32 f64);
+
+/// The error type returned when a checked integral type conversion fails.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct TryFromIntError(());
+
+impl fmt::Display for TryFromIntError {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt.write_str("out of range integral type conversion attempted")
+    }
+}
+
+impl std::error::Error for TryFromIntError {}
+
+macro_rules! number_try_from {
+    ($($x:ident)*) => ($(
+        impl TryFrom<$x> for Number {
+            type Error = TryFromIntError;
+
+            #[inline]
+            fn try_from(x: $x) -> Result<Number, Self::Error> {
+                let x_f64 = x as f64;
+                if x_f64 >= Number::MIN_SAFE_INTEGER && x_f64 <= Number::MAX_SAFE_INTEGER {
+                    Ok(Number::from(x_f64))
+                } else {
+                    Err(TryFromIntError(()))
+                }
+            }
+        }
+    )*)
+}
+number_try_from!(i64 u64 i128 u128);
 
 // TODO: add this on the next major version, when blanket impl is removed
 /*
@@ -6142,6 +6195,13 @@ macro_rules! arrays {
             /// Gets the value at `idx`, counting from the end if negative.
             #[wasm_bindgen(method)]
             pub fn at(this: &$name, idx: i32) -> Option<$ty>;
+
+            /// The `copyWithin()` method shallow copies part of a typed array to another
+            /// location in the same typed array and returns it, without modifying its size.
+            ///
+            /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin)
+            #[wasm_bindgen(method, js_name = copyWithin)]
+            pub fn copy_within(this: &$name, target: i32, start: i32, end: i32) -> $name;
 
             /// Gets the value at `idx`, equivalent to the javascript `my_var = arr[idx]`.
             #[wasm_bindgen(method, structural, indexing_getter)]

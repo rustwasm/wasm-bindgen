@@ -1804,6 +1804,13 @@ mod gen_Directory;
 #[allow(unused_imports)]
 pub use gen_Directory::*;
 
+#[cfg(feature = "DirectoryPickerOptions")]
+#[allow(non_snake_case)]
+mod gen_DirectoryPickerOptions;
+#[cfg(feature = "DirectoryPickerOptions")]
+#[allow(unused_imports)]
+pub use gen_DirectoryPickerOptions::*;
+
 #[cfg(feature = "DisplayMediaStreamConstraints")]
 #[allow(non_snake_case)]
 mod gen_DisplayMediaStreamConstraints;
@@ -2469,6 +2476,20 @@ mod gen_FileList;
 #[allow(unused_imports)]
 pub use gen_FileList::*;
 
+#[cfg(feature = "FilePickerAcceptType")]
+#[allow(non_snake_case)]
+mod gen_FilePickerAcceptType;
+#[cfg(feature = "FilePickerAcceptType")]
+#[allow(unused_imports)]
+pub use gen_FilePickerAcceptType::*;
+
+#[cfg(feature = "FilePickerOptions")]
+#[allow(non_snake_case)]
+mod gen_FilePickerOptions;
+#[cfg(feature = "FilePickerOptions")]
+#[allow(unused_imports)]
+pub use gen_FilePickerOptions::*;
+
 #[cfg(feature = "FilePropertyBag")]
 #[allow(non_snake_case)]
 mod gen_FilePropertyBag;
@@ -2594,6 +2615,27 @@ mod gen_FileSystemHandleKind;
 #[cfg(feature = "FileSystemHandleKind")]
 #[allow(unused_imports)]
 pub use gen_FileSystemHandleKind::*;
+
+#[cfg(feature = "FileSystemHandlePermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_FileSystemHandlePermissionDescriptor;
+#[cfg(feature = "FileSystemHandlePermissionDescriptor")]
+#[allow(unused_imports)]
+pub use gen_FileSystemHandlePermissionDescriptor::*;
+
+#[cfg(feature = "FileSystemPermissionDescriptor")]
+#[allow(non_snake_case)]
+mod gen_FileSystemPermissionDescriptor;
+#[cfg(feature = "FileSystemPermissionDescriptor")]
+#[allow(unused_imports)]
+pub use gen_FileSystemPermissionDescriptor::*;
+
+#[cfg(feature = "FileSystemPermissionMode")]
+#[allow(non_snake_case)]
+mod gen_FileSystemPermissionMode;
+#[cfg(feature = "FileSystemPermissionMode")]
+#[allow(unused_imports)]
+pub use gen_FileSystemPermissionMode::*;
 
 #[cfg(feature = "FileSystemReadWriteOptions")]
 #[allow(non_snake_case)]
@@ -6046,6 +6088,13 @@ mod gen_OffscreenCanvasRenderingContext2d;
 #[allow(unused_imports)]
 pub use gen_OffscreenCanvasRenderingContext2d::*;
 
+#[cfg(feature = "OpenFilePickerOptions")]
+#[allow(non_snake_case)]
+mod gen_OpenFilePickerOptions;
+#[cfg(feature = "OpenFilePickerOptions")]
+#[allow(unused_imports)]
+pub use gen_OpenFilePickerOptions::*;
+
 #[cfg(feature = "OpenWindowEventDetail")]
 #[allow(non_snake_case)]
 mod gen_OpenWindowEventDetail;
@@ -7446,6 +7495,13 @@ mod gen_RtcPeerConnection;
 #[allow(unused_imports)]
 pub use gen_RtcPeerConnection::*;
 
+#[cfg(feature = "RtcPeerConnectionIceErrorEvent")]
+#[allow(non_snake_case)]
+mod gen_RtcPeerConnectionIceErrorEvent;
+#[cfg(feature = "RtcPeerConnectionIceErrorEvent")]
+#[allow(unused_imports)]
+pub use gen_RtcPeerConnectionIceErrorEvent::*;
+
 #[cfg(feature = "RtcPeerConnectionIceEvent")]
 #[allow(non_snake_case)]
 mod gen_RtcPeerConnectionIceEvent;
@@ -7725,6 +7781,13 @@ mod gen_RtcrtpStreamStats;
 #[cfg(feature = "RtcrtpStreamStats")]
 #[allow(unused_imports)]
 pub use gen_RtcrtpStreamStats::*;
+
+#[cfg(feature = "SaveFilePickerOptions")]
+#[allow(non_snake_case)]
+mod gen_SaveFilePickerOptions;
+#[cfg(feature = "SaveFilePickerOptions")]
+#[allow(unused_imports)]
+pub use gen_SaveFilePickerOptions::*;
 
 #[cfg(feature = "Scheduler")]
 #[allow(non_snake_case)]
@@ -10567,6 +10630,13 @@ mod gen_WebglMultiDraw;
 #[cfg(feature = "WebglMultiDraw")]
 #[allow(unused_imports)]
 pub use gen_WebglMultiDraw::*;
+
+#[cfg(feature = "WellKnownDirectory")]
+#[allow(non_snake_case)]
+mod gen_WellKnownDirectory;
+#[cfg(feature = "WellKnownDirectory")]
+#[allow(unused_imports)]
+pub use gen_WellKnownDirectory::*;
 
 #[cfg(feature = "WgslLanguageFeatures")]
 #[allow(non_snake_case)]

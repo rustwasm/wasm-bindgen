@@ -34,4 +34,56 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemHandle`*"]
     pub fn is_same_entry(this: &FileSystemHandle, other: &FileSystemHandle) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemHandle" , js_name = queryPermission)]
+    #[doc = "The `queryPermission()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle/queryPermission)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemHandle`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn query_permission(this: &FileSystemHandle) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "FileSystemHandlePermissionDescriptor")]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemHandle" , js_name = queryPermission)]
+    #[doc = "The `queryPermission()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle/queryPermission)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemHandle`, `FileSystemHandlePermissionDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn query_permission_with_descriptor(
+        this: &FileSystemHandle,
+        descriptor: &FileSystemHandlePermissionDescriptor,
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemHandle" , js_name = requestPermission)]
+    #[doc = "The `requestPermission()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle/requestPermission)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemHandle`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn request_permission(this: &FileSystemHandle) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "FileSystemHandlePermissionDescriptor")]
+    # [wasm_bindgen (method , structural , js_class = "FileSystemHandle" , js_name = requestPermission)]
+    #[doc = "The `requestPermission()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle/requestPermission)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemHandle`, `FileSystemHandlePermissionDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn request_permission_with_descriptor(
+        this: &FileSystemHandle,
+        descriptor: &FileSystemHandlePermissionDescriptor,
+    ) -> ::js_sys::Promise;
 }

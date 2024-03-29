@@ -23,6 +23,10 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
+
+const ClassConstructorFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_classconstructor_free(ptr >>> 0));
 /**
 */
 export class ClassConstructor {
@@ -30,7 +34,7 @@ export class ClassConstructor {
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
         this.__wbg_ptr = 0;
-
+        ClassConstructorFinalization.unregister(this);
         return ptr;
     }
 
