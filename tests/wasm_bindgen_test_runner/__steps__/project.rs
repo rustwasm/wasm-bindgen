@@ -83,6 +83,7 @@ wasm-bindgen = {{ path = '{}' }}
             .arg("--target")
             .arg("wasm32-unknown-unknown")
             .arg("--no-run")
+            .env("CARGO_TARGET_DIR", target_dir())
             .output()
             .expect("Failed to build test assembly");
 
