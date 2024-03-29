@@ -1,5 +1,4 @@
 use predicates::str;
-use rand::Rng;
 use regex::Regex;
 use std::env;
 use std::fs;
@@ -28,10 +27,9 @@ pub struct Project {
 
 impl Project {
     pub fn new(name: &'static str) -> Project {
-        let mut rng = rand::thread_rng();
         let root = target_dir()
             .join("wasm-bindgen-test-runner-tests")
-            .join(format!("{}_{}", name, rng.gen_range(1000..9999)));
+            .join(name);
         drop(fs::remove_dir_all(&root));
         fs::create_dir_all(&root).unwrap();
         Project {
