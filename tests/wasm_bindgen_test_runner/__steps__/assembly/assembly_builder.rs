@@ -20,19 +20,19 @@ fn repo_root() -> PathBuf {
     env::current_dir().unwrap()
 }
 
-pub struct Project {
+pub struct AssemblyBuilder {
     root: PathBuf,
     name: String,
 }
 
-impl Project {
-    pub fn new(name: &'static str) -> Project {
+impl AssemblyBuilder {
+    pub fn new(name: &'static str) -> AssemblyBuilder {
         let root = target_dir()
             .join("wasm-bindgen-test-runner-tests")
             .join(name);
         drop(fs::remove_dir_all(&root));
         fs::create_dir_all(&root).unwrap();
-        Project {
+        AssemblyBuilder {
             root,
             name: name.to_string(),
         }
@@ -42,7 +42,7 @@ impl Project {
         drop(fs::remove_dir_all(&self.root));
     }
 
-    pub fn file(&mut self, name: &str, contents: &str) -> &mut Project {
+    pub fn file(&mut self, name: &str, contents: &str) -> &mut Self {
         let dst = self.root.join(name);
         fs::create_dir_all(dst.parent().unwrap()).unwrap();
         fs::write(&dst, contents).unwrap();
