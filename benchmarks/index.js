@@ -81,7 +81,7 @@ function makeBenchmarks() {
   const foo = new globals.Foo();
   benchmarks.wbindgen_call_foo_bar_final_n_times = () => wbindgen_call_foo_bar_final_n_times(10000, foo);
   benchmarks.wbindgen_call_foo_bar_structural_n_times = () => wbindgen_call_foo_bar_structural_n_times(10000, foo);
-  benchmarks.wbindgen_call_use_baz_n_times = () => wbindgen_call_use_baz_n_times(10000, globals.Baz['variant-2']);
+  benchmarks.wbindgen_call_use_baz_n_times = () => wbindgen_call_use_baz_n_times(10000);
 
 
   const strings = {

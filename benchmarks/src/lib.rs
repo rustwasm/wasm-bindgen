@@ -93,9 +93,9 @@ pub fn call_foo_bar_structural_n_times(n: usize, js_foo: &Foo) {
 }
 
 #[wasm_bindgen]
-pub fn call_use_baz_n_times(n: usize, baz: Baz) {
+pub fn call_use_baz_n_times(n: usize) {
     for _ in 0..n {
-        js_use_baz(baz);
+        js_use_baz(Baz::Variant2);
     }
 }
 
