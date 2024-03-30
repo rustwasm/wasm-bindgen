@@ -1,2 +1,3 @@
 mod outputs_the_failed_test_execution_feature;
+mod outputs_the_successful_test_execution_feature;
 mod returns_failure_feature;
