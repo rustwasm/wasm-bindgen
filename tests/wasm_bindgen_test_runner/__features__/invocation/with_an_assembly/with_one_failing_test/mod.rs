@@ -1,3 +1,3 @@
 mod outputs_the_failed_test_assertion_error_feature;
-mod outputs_failed_test_execution_feature;
+mod outputs_the_failed_test_summary_feature;
 mod returns_failure_feature;
