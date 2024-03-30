@@ -1,3 +1,4 @@
+mod outputs_its_running_1_test_feature;
 mod outputs_the_failed_test_assertion_error_feature;
 mod outputs_the_failed_test_summary_feature;
 mod returns_failure_feature;
