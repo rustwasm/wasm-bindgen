@@ -1,1 +1,2 @@
+mod outputs_assertion_error_feature;
 mod returns_success_feature;
