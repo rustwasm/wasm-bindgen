@@ -8,5 +8,8 @@ fn outputs_failed_test_execution_feature() {
     let mut context = Context::new();
     given_there_is_an_assembly_with_one_successful_and_one_failing_test(&mut context);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly(&mut context);
-    then_the_standard_output_should_have(context, "test assembly_with_one_successful_and_one_failing_test::pass ... ok");
+    then_the_standard_output_should_have(
+        context,
+        "test assembly_with_one_successful_and_one_failing_test::pass ... ok",
+    );
 }
