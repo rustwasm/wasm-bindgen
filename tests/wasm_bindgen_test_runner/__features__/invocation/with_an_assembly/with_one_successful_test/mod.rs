@@ -1,1 +1,2 @@
+mod outputs_successful_test_execution_feature;
 mod returns_success_feature;
