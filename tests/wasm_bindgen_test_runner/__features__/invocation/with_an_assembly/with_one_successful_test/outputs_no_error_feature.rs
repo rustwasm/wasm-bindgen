@@ -4,7 +4,7 @@ use crate::__steps__::wasm_bindgen_test_runner::when_wasm_bindgen_test_runner_is
 use crate::__steps__::Context;
 
 #[test]
-fn outputs_no_tests_to_run_warning_feature() {
+fn outputs_no_error_feature() {
     let mut context = Context::new();
     given_there_is_an_assembly_with_one_successful_test(&mut context);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly(&mut context);
