@@ -23,9 +23,20 @@ APIs. Specifically, these APIs do not follow semver and may break whenever the
 WebIDL changes.
 
 Crates can opt-in to unstable APIs at compile-time by passing the `cfg` flag
-`web_sys_unstable_apis`. Typically the `RUSTFLAGS` environment variable is used
+`web_sys_unstable_apis`.
+
+Typically the `RUSTFLAGS` environment variable is used
 to do this. For example:
 
 ```bash
 RUSTFLAGS=--cfg=web_sys_unstable_apis cargo run
+```
+
+Alternatively, you can create a [cargo config file](https://doc.rust-lang.org/cargo/reference/config.html)
+to set its [rustflags](https://doc.rust-lang.org/cargo/reference/config.html#buildrustflags):
+
+Within `./.cargo/config.toml`:
+```toml
+[build]
+rustflags = ["--cfg=web_sys_unstable_apis"]
 ```
