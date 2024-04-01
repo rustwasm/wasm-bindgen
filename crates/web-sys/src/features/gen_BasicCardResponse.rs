@@ -10,6 +10,19 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     pub type BasicCardResponse;
+    #[cfg(feature = "PaymentAddress")]
+    #[wasm_bindgen(method, setter = "billingAddress")]
+    fn billing_address_shim(this: &BasicCardResponse, val: Option<&PaymentAddress>);
+    #[wasm_bindgen(method, setter = "cardNumber")]
+    fn card_number_shim(this: &BasicCardResponse, val: &str);
+    #[wasm_bindgen(method, setter = "cardSecurityCode")]
+    fn card_security_code_shim(this: &BasicCardResponse, val: &str);
+    #[wasm_bindgen(method, setter = "cardholderName")]
+    fn cardholder_name_shim(this: &BasicCardResponse, val: &str);
+    #[wasm_bindgen(method, setter = "expiryMonth")]
+    fn expiry_month_shim(this: &BasicCardResponse, val: &str);
+    #[wasm_bindgen(method, setter = "expiryYear")]
+    fn expiry_year_shim(this: &BasicCardResponse, val: &str);
 }
 impl BasicCardResponse {
     #[doc = "Construct a new `BasicCardResponse`."]
@@ -26,102 +39,42 @@ impl BasicCardResponse {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`, `PaymentAddress`*"]
     pub fn billing_address(&mut self, val: Option<&PaymentAddress>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("billingAddress"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.billing_address_shim(val);
         self
     }
     #[doc = "Change the `cardNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     pub fn card_number(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cardNumber"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.card_number_shim(val);
         self
     }
     #[doc = "Change the `cardSecurityCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     pub fn card_security_code(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cardSecurityCode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.card_security_code_shim(val);
         self
     }
     #[doc = "Change the `cardholderName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     pub fn cardholder_name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cardholderName"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cardholder_name_shim(val);
         self
     }
     #[doc = "Change the `expiryMonth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     pub fn expiry_month(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("expiryMonth"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.expiry_month_shim(val);
         self
     }
     #[doc = "Change the `expiryYear` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     pub fn expiry_year(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("expiryYear"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.expiry_year_shim(val);
         self
     }
 }

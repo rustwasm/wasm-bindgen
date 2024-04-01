@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
     pub type ClientQueryOptions;
+    #[wasm_bindgen(method, setter = "includeUncontrolled")]
+    fn include_uncontrolled_shim(this: &ClientQueryOptions, val: bool);
+    #[cfg(feature = "ClientType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &ClientQueryOptions, val: ClientType);
 }
 impl ClientQueryOptions {
     #[doc = "Construct a new `ClientQueryOptions`."]
@@ -24,17 +29,7 @@ impl ClientQueryOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
     pub fn include_uncontrolled(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("includeUncontrolled"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.include_uncontrolled_shim(val);
         self
     }
     #[cfg(feature = "ClientType")]
@@ -42,13 +37,7 @@ impl ClientQueryOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`, `ClientType`*"]
     pub fn type_(&mut self, val: ClientType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

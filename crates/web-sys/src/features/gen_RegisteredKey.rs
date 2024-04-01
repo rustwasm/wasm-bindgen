@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub type RegisteredKey;
+    #[wasm_bindgen(method, setter = "appId")]
+    fn app_id_shim(this: &RegisteredKey, val: Option<&str>);
+    #[wasm_bindgen(method, setter = "keyHandle")]
+    fn key_handle_shim(this: &RegisteredKey, val: &str);
+    #[wasm_bindgen(method, setter = "transports")]
+    fn transports_shim(this: &RegisteredKey, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "version")]
+    fn version_shim(this: &RegisteredKey, val: &str);
 }
 impl RegisteredKey {
     #[doc = "Construct a new `RegisteredKey`."]
@@ -24,64 +32,28 @@ impl RegisteredKey {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn app_id(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("appId"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.app_id_shim(val);
         self
     }
     #[doc = "Change the `keyHandle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn key_handle(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("keyHandle"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.key_handle_shim(val);
         self
     }
     #[doc = "Change the `transports` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn transports(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("transports"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.transports_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn version(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("version"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.version_shim(val);
         self
     }
 }

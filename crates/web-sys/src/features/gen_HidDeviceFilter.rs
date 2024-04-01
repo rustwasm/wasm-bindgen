@@ -14,6 +14,14 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type HidDeviceFilter;
+    #[wasm_bindgen(method, setter = "productId")]
+    fn product_id_shim(this: &HidDeviceFilter, val: u16);
+    #[wasm_bindgen(method, setter = "usage")]
+    fn usage_shim(this: &HidDeviceFilter, val: u16);
+    #[wasm_bindgen(method, setter = "usagePage")]
+    fn usage_page_shim(this: &HidDeviceFilter, val: u16);
+    #[wasm_bindgen(method, setter = "vendorId")]
+    fn vendor_id_shim(this: &HidDeviceFilter, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl HidDeviceFilter {
@@ -36,17 +44,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn product_id(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("productId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.product_id_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,13 +55,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("usage"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usage_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -74,17 +66,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage_page(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("usagePage"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usage_page_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -95,17 +77,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn vendor_id(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("vendorId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.vendor_id_shim(val);
         self
     }
 }

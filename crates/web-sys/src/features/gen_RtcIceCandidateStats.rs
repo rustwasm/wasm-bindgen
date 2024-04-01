@@ -10,6 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub type RtcIceCandidateStats;
+    #[wasm_bindgen(method, setter = "id")]
+    fn id_shim(this: &RtcIceCandidateStats, val: &str);
+    #[wasm_bindgen(method, setter = "timestamp")]
+    fn timestamp_shim(this: &RtcIceCandidateStats, val: f64);
+    #[cfg(feature = "RtcStatsType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &RtcIceCandidateStats, val: RtcStatsType);
+    #[wasm_bindgen(method, setter = "candidateId")]
+    fn candidate_id_shim(this: &RtcIceCandidateStats, val: &str);
+    #[cfg(feature = "RtcStatsIceCandidateType")]
+    #[wasm_bindgen(method, setter = "candidateType")]
+    fn candidate_type_shim(this: &RtcIceCandidateStats, val: RtcStatsIceCandidateType);
+    #[wasm_bindgen(method, setter = "componentId")]
+    fn component_id_shim(this: &RtcIceCandidateStats, val: &str);
+    #[wasm_bindgen(method, setter = "ipAddress")]
+    fn ip_address_shim(this: &RtcIceCandidateStats, val: &str);
+    #[wasm_bindgen(method, setter = "portNumber")]
+    fn port_number_shim(this: &RtcIceCandidateStats, val: i32);
+    #[wasm_bindgen(method, setter = "transport")]
+    fn transport_shim(this: &RtcIceCandidateStats, val: &str);
 }
 impl RtcIceCandidateStats {
     #[doc = "Construct a new `RtcIceCandidateStats`."]
@@ -24,30 +44,14 @@ impl RtcIceCandidateStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("id"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.id_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timestamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timestamp_shim(val);
         self
     }
     #[cfg(feature = "RtcStatsType")]
@@ -55,30 +59,14 @@ impl RtcIceCandidateStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`, `RtcStatsType`*"]
     pub fn type_(&mut self, val: RtcStatsType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
     #[doc = "Change the `candidateId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub fn candidate_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("candidateId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.candidate_id_shim(val);
         self
     }
     #[cfg(feature = "RtcStatsIceCandidateType")]
@@ -86,85 +74,35 @@ impl RtcIceCandidateStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`, `RtcStatsIceCandidateType`*"]
     pub fn candidate_type(&mut self, val: RtcStatsIceCandidateType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("candidateType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.candidate_type_shim(val);
         self
     }
     #[doc = "Change the `componentId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub fn component_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("componentId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.component_id_shim(val);
         self
     }
     #[doc = "Change the `ipAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub fn ip_address(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("ipAddress"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ip_address_shim(val);
         self
     }
     #[doc = "Change the `portNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub fn port_number(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("portNumber"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.port_number_shim(val);
         self
     }
     #[doc = "Change the `transport` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub fn transport(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("transport"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.transport_shim(val);
         self
     }
 }

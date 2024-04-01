@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     pub type AttributeNameValue;
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &AttributeNameValue, val: &str);
+    #[wasm_bindgen(method, setter = "value")]
+    fn value_shim(this: &AttributeNameValue, val: &str);
 }
 impl AttributeNameValue {
     #[doc = "Construct a new `AttributeNameValue`."]
@@ -26,26 +30,14 @@ impl AttributeNameValue {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     pub fn value(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("value"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.value_shim(val);
         self
     }
 }

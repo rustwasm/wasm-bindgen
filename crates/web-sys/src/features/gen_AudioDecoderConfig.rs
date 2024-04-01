@@ -14,6 +14,14 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AudioDecoderConfig;
+    #[wasm_bindgen(method, setter = "codec")]
+    fn codec_shim(this: &AudioDecoderConfig, val: &str);
+    #[wasm_bindgen(method, setter = "description")]
+    fn description_shim(this: &AudioDecoderConfig, val: &::js_sys::Object);
+    #[wasm_bindgen(method, setter = "numberOfChannels")]
+    fn number_of_channels_shim(this: &AudioDecoderConfig, val: u32);
+    #[wasm_bindgen(method, setter = "sampleRate")]
+    fn sample_rate_shim(this: &AudioDecoderConfig, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AudioDecoderConfig {
@@ -39,13 +47,7 @@ impl AudioDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn codec(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("codec"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.codec_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -56,17 +58,7 @@ impl AudioDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn description(&mut self, val: &::js_sys::Object) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("description"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.description_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -77,17 +69,7 @@ impl AudioDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn number_of_channels(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("numberOfChannels"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.number_of_channels_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -98,17 +80,7 @@ impl AudioDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn sample_rate(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sampleRate"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sample_rate_shim(val);
         self
     }
 }

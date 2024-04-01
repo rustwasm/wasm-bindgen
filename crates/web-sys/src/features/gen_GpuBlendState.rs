@@ -14,6 +14,12 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuBlendState;
+    #[cfg(feature = "GpuBlendComponent")]
+    #[wasm_bindgen(method, setter = "alpha")]
+    fn alpha_shim(this: &GpuBlendState, val: &GpuBlendComponent);
+    #[cfg(feature = "GpuBlendComponent")]
+    #[wasm_bindgen(method, setter = "color")]
+    fn color_shim(this: &GpuBlendState, val: &GpuBlendComponent);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBlendState {
@@ -40,13 +46,7 @@ impl GpuBlendState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn alpha(&mut self, val: &GpuBlendComponent) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("alpha"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.alpha_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,13 +58,7 @@ impl GpuBlendState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn color(&mut self, val: &GpuBlendComponent) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("color"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.color_shim(val);
         self
     }
 }

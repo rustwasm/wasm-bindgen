@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
     pub type ReadableStreamReadResult;
+    #[wasm_bindgen(method, setter = "done")]
+    fn done_shim(this: &ReadableStreamReadResult, val: bool);
+    #[wasm_bindgen(method, setter = "value")]
+    fn value_shim(this: &ReadableStreamReadResult, val: &::wasm_bindgen::JsValue);
 }
 impl ReadableStreamReadResult {
     #[doc = "Construct a new `ReadableStreamReadResult`."]
@@ -24,26 +28,14 @@ impl ReadableStreamReadResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
     pub fn done(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("done"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.done_shim(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
     pub fn value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("value"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.value_shim(val);
         self
     }
 }

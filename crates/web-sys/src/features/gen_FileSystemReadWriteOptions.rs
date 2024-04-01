@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
     pub type FileSystemReadWriteOptions;
+    #[wasm_bindgen(method, setter = "at")]
+    fn at_shim(this: &FileSystemReadWriteOptions, val: f64);
 }
 impl FileSystemReadWriteOptions {
     #[doc = "Construct a new `FileSystemReadWriteOptions`."]
@@ -24,13 +26,7 @@ impl FileSystemReadWriteOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
     pub fn at(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("at"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.at_shim(val);
         self
     }
 }

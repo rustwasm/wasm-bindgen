@@ -10,6 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub type DeviceOrientationEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &DeviceOrientationEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &DeviceOrientationEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &DeviceOrientationEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "absolute")]
+    fn absolute_shim(this: &DeviceOrientationEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "alpha")]
+    fn alpha_shim(this: &DeviceOrientationEventInit, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "beta")]
+    fn beta_shim(this: &DeviceOrientationEventInit, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "gamma")]
+    fn gamma_shim(this: &DeviceOrientationEventInit, val: Option<f64>);
 }
 impl DeviceOrientationEventInit {
     #[doc = "Construct a new `DeviceOrientationEventInit`."]
@@ -24,107 +38,49 @@ impl DeviceOrientationEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[doc = "Change the `absolute` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub fn absolute(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("absolute"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.absolute_shim(val);
         self
     }
     #[doc = "Change the `alpha` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub fn alpha(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("alpha"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.alpha_shim(val);
         self
     }
     #[doc = "Change the `beta` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub fn beta(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("beta"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.beta_shim(val);
         self
     }
     #[doc = "Change the `gamma` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceOrientationEventInit`*"]
     pub fn gamma(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("gamma"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.gamma_shim(val);
         self
     }
 }

@@ -10,6 +10,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PermissionDescriptor`*"]
     pub type PermissionDescriptor;
+    #[cfg(feature = "PermissionName")]
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &PermissionDescriptor, val: PermissionName);
 }
 impl PermissionDescriptor {
     #[cfg(feature = "PermissionName")]
@@ -27,13 +30,7 @@ impl PermissionDescriptor {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PermissionDescriptor`, `PermissionName`*"]
     pub fn name(&mut self, val: PermissionName) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
 }

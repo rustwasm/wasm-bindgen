@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`*"]
     pub type MediaEncodingConfiguration;
+    #[cfg(feature = "AudioConfiguration")]
+    #[wasm_bindgen(method, setter = "audio")]
+    fn audio_shim(this: &MediaEncodingConfiguration, val: &AudioConfiguration);
+    #[cfg(feature = "VideoConfiguration")]
+    #[wasm_bindgen(method, setter = "video")]
+    fn video_shim(this: &MediaEncodingConfiguration, val: &VideoConfiguration);
+    #[cfg(feature = "MediaEncodingType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &MediaEncodingConfiguration, val: MediaEncodingType);
 }
 impl MediaEncodingConfiguration {
     #[cfg(feature = "MediaEncodingType")]
@@ -27,13 +36,7 @@ impl MediaEncodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaEncodingConfiguration`*"]
     pub fn audio(&mut self, val: &AudioConfiguration) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("audio"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.audio_shim(val);
         self
     }
     #[cfg(feature = "VideoConfiguration")]
@@ -41,13 +44,7 @@ impl MediaEncodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`, `VideoConfiguration`*"]
     pub fn video(&mut self, val: &VideoConfiguration) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("video"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.video_shim(val);
         self
     }
     #[cfg(feature = "MediaEncodingType")]
@@ -55,13 +52,7 @@ impl MediaEncodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`, `MediaEncodingType`*"]
     pub fn type_(&mut self, val: MediaEncodingType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

@@ -10,6 +10,25 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub type WebGlContextAttributes;
+    #[wasm_bindgen(method, setter = "alpha")]
+    fn alpha_shim(this: &WebGlContextAttributes, val: bool);
+    #[wasm_bindgen(method, setter = "antialias")]
+    fn antialias_shim(this: &WebGlContextAttributes, val: bool);
+    #[wasm_bindgen(method, setter = "depth")]
+    fn depth_shim(this: &WebGlContextAttributes, val: bool);
+    #[wasm_bindgen(method, setter = "failIfMajorPerformanceCaveat")]
+    fn fail_if_major_performance_caveat_shim(this: &WebGlContextAttributes, val: bool);
+    #[cfg(feature = "WebGlPowerPreference")]
+    #[wasm_bindgen(method, setter = "powerPreference")]
+    fn power_preference_shim(this: &WebGlContextAttributes, val: WebGlPowerPreference);
+    #[wasm_bindgen(method, setter = "premultipliedAlpha")]
+    fn premultiplied_alpha_shim(this: &WebGlContextAttributes, val: bool);
+    #[wasm_bindgen(method, setter = "preserveDrawingBuffer")]
+    fn preserve_drawing_buffer_shim(this: &WebGlContextAttributes, val: bool);
+    #[wasm_bindgen(method, setter = "stencil")]
+    fn stencil_shim(this: &WebGlContextAttributes, val: bool);
+    #[wasm_bindgen(method, setter = "xrCompatible")]
+    fn xr_compatible_shim(this: &WebGlContextAttributes, val: bool);
 }
 impl WebGlContextAttributes {
     #[doc = "Construct a new `WebGlContextAttributes`."]
@@ -24,60 +43,28 @@ impl WebGlContextAttributes {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub fn alpha(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("alpha"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.alpha_shim(val);
         self
     }
     #[doc = "Change the `antialias` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub fn antialias(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("antialias"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.antialias_shim(val);
         self
     }
     #[doc = "Change the `depth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub fn depth(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("depth"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_shim(val);
         self
     }
     #[doc = "Change the `failIfMajorPerformanceCaveat` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub fn fail_if_major_performance_caveat(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("failIfMajorPerformanceCaveat"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.fail_if_major_performance_caveat_shim(val);
         self
     }
     #[cfg(feature = "WebGlPowerPreference")]
@@ -85,68 +72,28 @@ impl WebGlContextAttributes {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`, `WebGlPowerPreference`*"]
     pub fn power_preference(&mut self, val: WebGlPowerPreference) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("powerPreference"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.power_preference_shim(val);
         self
     }
     #[doc = "Change the `premultipliedAlpha` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub fn premultiplied_alpha(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("premultipliedAlpha"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.premultiplied_alpha_shim(val);
         self
     }
     #[doc = "Change the `preserveDrawingBuffer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub fn preserve_drawing_buffer(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("preserveDrawingBuffer"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.preserve_drawing_buffer_shim(val);
         self
     }
     #[doc = "Change the `stencil` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub fn stencil(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stencil"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stencil_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -157,17 +104,7 @@ impl WebGlContextAttributes {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn xr_compatible(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("xrCompatible"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.xr_compatible_shim(val);
         self
     }
 }

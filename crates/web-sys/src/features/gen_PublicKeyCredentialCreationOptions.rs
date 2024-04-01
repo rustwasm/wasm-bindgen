@@ -10,6 +10,44 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
     pub type PublicKeyCredentialCreationOptions;
+    #[cfg(feature = "AttestationConveyancePreference")]
+    #[wasm_bindgen(method, setter = "attestation")]
+    fn attestation_shim(
+        this: &PublicKeyCredentialCreationOptions,
+        val: AttestationConveyancePreference,
+    );
+    #[cfg(feature = "AuthenticatorSelectionCriteria")]
+    #[wasm_bindgen(method, setter = "authenticatorSelection")]
+    fn authenticator_selection_shim(
+        this: &PublicKeyCredentialCreationOptions,
+        val: &AuthenticatorSelectionCriteria,
+    );
+    #[wasm_bindgen(method, setter = "challenge")]
+    fn challenge_shim(this: &PublicKeyCredentialCreationOptions, val: &::js_sys::Object);
+    #[wasm_bindgen(method, setter = "excludeCredentials")]
+    fn exclude_credentials_shim(
+        this: &PublicKeyCredentialCreationOptions,
+        val: &::wasm_bindgen::JsValue,
+    );
+    #[cfg(feature = "AuthenticationExtensionsClientInputs")]
+    #[wasm_bindgen(method, setter = "extensions")]
+    fn extensions_shim(
+        this: &PublicKeyCredentialCreationOptions,
+        val: &AuthenticationExtensionsClientInputs,
+    );
+    #[wasm_bindgen(method, setter = "pubKeyCredParams")]
+    fn pub_key_cred_params_shim(
+        this: &PublicKeyCredentialCreationOptions,
+        val: &::wasm_bindgen::JsValue,
+    );
+    #[cfg(feature = "PublicKeyCredentialRpEntity")]
+    #[wasm_bindgen(method, setter = "rp")]
+    fn rp_shim(this: &PublicKeyCredentialCreationOptions, val: &PublicKeyCredentialRpEntity);
+    #[wasm_bindgen(method, setter = "timeout")]
+    fn timeout_shim(this: &PublicKeyCredentialCreationOptions, val: u32);
+    #[cfg(feature = "PublicKeyCredentialUserEntity")]
+    #[wasm_bindgen(method, setter = "user")]
+    fn user_shim(this: &PublicKeyCredentialCreationOptions, val: &PublicKeyCredentialUserEntity);
 }
 impl PublicKeyCredentialCreationOptions {
     #[cfg(all(
@@ -38,17 +76,7 @@ impl PublicKeyCredentialCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttestationConveyancePreference`, `PublicKeyCredentialCreationOptions`*"]
     pub fn attestation(&mut self, val: AttestationConveyancePreference) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("attestation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.attestation_shim(val);
         self
     }
     #[cfg(feature = "AuthenticatorSelectionCriteria")]
@@ -56,51 +84,21 @@ impl PublicKeyCredentialCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`, `PublicKeyCredentialCreationOptions`*"]
     pub fn authenticator_selection(&mut self, val: &AuthenticatorSelectionCriteria) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("authenticatorSelection"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.authenticator_selection_shim(val);
         self
     }
     #[doc = "Change the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
     pub fn challenge(&mut self, val: &::js_sys::Object) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("challenge"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.challenge_shim(val);
         self
     }
     #[doc = "Change the `excludeCredentials` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
     pub fn exclude_credentials(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("excludeCredentials"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.exclude_credentials_shim(val);
         self
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
@@ -108,34 +106,14 @@ impl PublicKeyCredentialCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `PublicKeyCredentialCreationOptions`*"]
     pub fn extensions(&mut self, val: &AuthenticationExtensionsClientInputs) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("extensions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.extensions_shim(val);
         self
     }
     #[doc = "Change the `pubKeyCredParams` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
     pub fn pub_key_cred_params(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("pubKeyCredParams"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.pub_key_cred_params_shim(val);
         self
     }
     #[cfg(feature = "PublicKeyCredentialRpEntity")]
@@ -143,30 +121,14 @@ impl PublicKeyCredentialCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`, `PublicKeyCredentialRpEntity`*"]
     pub fn rp(&mut self, val: &PublicKeyCredentialRpEntity) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rp"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rp_shim(val);
         self
     }
     #[doc = "Change the `timeout` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
     pub fn timeout(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timeout"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timeout_shim(val);
         self
     }
     #[cfg(feature = "PublicKeyCredentialUserEntity")]
@@ -174,13 +136,7 @@ impl PublicKeyCredentialCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`, `PublicKeyCredentialUserEntity`*"]
     pub fn user(&mut self, val: &PublicKeyCredentialUserEntity) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("user"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.user_shim(val);
         self
     }
 }

@@ -10,6 +10,19 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
     pub type CompositionEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &CompositionEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &CompositionEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &CompositionEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "detail")]
+    fn detail_shim(this: &CompositionEventInit, val: i32);
+    #[cfg(feature = "Window")]
+    #[wasm_bindgen(method, setter = "view")]
+    fn view_shim(this: &CompositionEventInit, val: Option<&Window>);
+    #[wasm_bindgen(method, setter = "data")]
+    fn data_shim(this: &CompositionEventInit, val: &str);
 }
 impl CompositionEventInit {
     #[doc = "Construct a new `CompositionEventInit`."]
@@ -24,65 +37,28 @@ impl CompositionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[doc = "Change the `detail` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
     pub fn detail(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("detail"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.detail_shim(val);
         self
     }
     #[cfg(feature = "Window")]
@@ -90,26 +66,14 @@ impl CompositionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`, `Window`*"]
     pub fn view(&mut self, val: Option<&Window>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("view"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.view_shim(val);
         self
     }
     #[doc = "Change the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
     pub fn data(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("data"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_shim(val);
         self
     }
 }

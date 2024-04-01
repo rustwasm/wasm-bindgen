@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     pub type RtcIdentityProviderOptions;
+    #[wasm_bindgen(method, setter = "peerIdentity")]
+    fn peer_identity_shim(this: &RtcIdentityProviderOptions, val: &str);
+    #[wasm_bindgen(method, setter = "protocol")]
+    fn protocol_shim(this: &RtcIdentityProviderOptions, val: &str);
+    #[wasm_bindgen(method, setter = "usernameHint")]
+    fn username_hint_shim(this: &RtcIdentityProviderOptions, val: &str);
 }
 impl RtcIdentityProviderOptions {
     #[doc = "Construct a new `RtcIdentityProviderOptions`."]
@@ -24,51 +30,21 @@ impl RtcIdentityProviderOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     pub fn peer_identity(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("peerIdentity"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.peer_identity_shim(val);
         self
     }
     #[doc = "Change the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     pub fn protocol(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("protocol"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.protocol_shim(val);
         self
     }
     #[doc = "Change the `usernameHint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     pub fn username_hint(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("usernameHint"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.username_hint_shim(val);
         self
     }
 }

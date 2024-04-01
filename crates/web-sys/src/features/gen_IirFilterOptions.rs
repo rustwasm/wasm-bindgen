@@ -10,6 +10,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub type IirFilterOptions;
+    #[wasm_bindgen(method, setter = "channelCount")]
+    fn channel_count_shim(this: &IirFilterOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[wasm_bindgen(method, setter = "channelCountMode")]
+    fn channel_count_mode_shim(this: &IirFilterOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[wasm_bindgen(method, setter = "channelInterpretation")]
+    fn channel_interpretation_shim(this: &IirFilterOptions, val: ChannelInterpretation);
+    #[wasm_bindgen(method, setter = "feedback")]
+    fn feedback_shim(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "feedforward")]
+    fn feedforward_shim(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
 }
 impl IirFilterOptions {
     #[doc = "Construct a new `IirFilterOptions`."]
@@ -26,17 +38,7 @@ impl IirFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_shim(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -44,17 +46,7 @@ impl IirFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `IirFilterOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCountMode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_mode_shim(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -62,51 +54,21 @@ impl IirFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `IirFilterOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelInterpretation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_interpretation_shim(val);
         self
     }
     #[doc = "Change the `feedback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn feedback(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("feedback"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.feedback_shim(val);
         self
     }
     #[doc = "Change the `feedforward` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn feedforward(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("feedforward"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.feedforward_shim(val);
         self
     }
 }

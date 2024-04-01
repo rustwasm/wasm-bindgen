@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub type PerformanceEntryFilterOptions;
+    #[wasm_bindgen(method, setter = "entryType")]
+    fn entry_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
+    #[wasm_bindgen(method, setter = "initiatorType")]
+    fn initiator_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &PerformanceEntryFilterOptions, val: &str);
 }
 impl PerformanceEntryFilterOptions {
     #[doc = "Construct a new `PerformanceEntryFilterOptions`."]
@@ -24,47 +30,21 @@ impl PerformanceEntryFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub fn entry_type(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("entryType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.entry_type_shim(val);
         self
     }
     #[doc = "Change the `initiatorType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub fn initiator_type(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("initiatorType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.initiator_type_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
 }

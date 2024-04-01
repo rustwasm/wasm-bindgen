@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerStart`*"]
     pub type ConsoleTimerStart;
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &ConsoleTimerStart, val: &str);
 }
 impl ConsoleTimerStart {
     #[doc = "Construct a new `ConsoleTimerStart`."]
@@ -24,13 +26,7 @@ impl ConsoleTimerStart {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerStart`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
 }

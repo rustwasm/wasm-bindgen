@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`*"]
     pub type ScrollIntoViewOptions;
+    #[cfg(feature = "ScrollBehavior")]
+    #[wasm_bindgen(method, setter = "behavior")]
+    fn behavior_shim(this: &ScrollIntoViewOptions, val: ScrollBehavior);
+    #[cfg(feature = "ScrollLogicalPosition")]
+    #[wasm_bindgen(method, setter = "block")]
+    fn block_shim(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
+    #[cfg(feature = "ScrollLogicalPosition")]
+    #[wasm_bindgen(method, setter = "inline")]
+    fn inline_shim(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
 }
 impl ScrollIntoViewOptions {
     #[doc = "Construct a new `ScrollIntoViewOptions`."]
@@ -25,17 +34,7 @@ impl ScrollIntoViewOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("behavior"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.behavior_shim(val);
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
@@ -43,13 +42,7 @@ impl ScrollIntoViewOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     pub fn block(&mut self, val: ScrollLogicalPosition) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("block"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.block_shim(val);
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
@@ -57,14 +50,7 @@ impl ScrollIntoViewOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     pub fn inline(&mut self, val: ScrollLogicalPosition) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("inline"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.inline_shim(val);
         self
     }
 }

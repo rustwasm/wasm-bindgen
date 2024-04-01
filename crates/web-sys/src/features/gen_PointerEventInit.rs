@@ -10,6 +10,84 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub type PointerEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "detail")]
+    fn detail_shim(this: &PointerEventInit, val: i32);
+    #[cfg(feature = "Window")]
+    #[wasm_bindgen(method, setter = "view")]
+    fn view_shim(this: &PointerEventInit, val: Option<&Window>);
+    #[wasm_bindgen(method, setter = "altKey")]
+    fn alt_key_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "ctrlKey")]
+    fn ctrl_key_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "metaKey")]
+    fn meta_key_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierAltGraph")]
+    fn modifier_alt_graph_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierCapsLock")]
+    fn modifier_caps_lock_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierFn")]
+    fn modifier_fn_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierFnLock")]
+    fn modifier_fn_lock_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierNumLock")]
+    fn modifier_num_lock_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierOS")]
+    fn modifier_os_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierScrollLock")]
+    fn modifier_scroll_lock_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierSymbol")]
+    fn modifier_symbol_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "modifierSymbolLock")]
+    fn modifier_symbol_lock_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "shiftKey")]
+    fn shift_key_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "button")]
+    fn button_shim(this: &PointerEventInit, val: i16);
+    #[wasm_bindgen(method, setter = "buttons")]
+    fn buttons_shim(this: &PointerEventInit, val: u16);
+    #[wasm_bindgen(method, setter = "clientX")]
+    fn client_x_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "clientY")]
+    fn client_y_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "movementX")]
+    fn movement_x_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "movementY")]
+    fn movement_y_shim(this: &PointerEventInit, val: i32);
+    #[cfg(feature = "EventTarget")]
+    #[wasm_bindgen(method, setter = "relatedTarget")]
+    fn related_target_shim(this: &PointerEventInit, val: Option<&EventTarget>);
+    #[wasm_bindgen(method, setter = "screenX")]
+    fn screen_x_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "screenY")]
+    fn screen_y_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "coalescedEvents")]
+    fn coalesced_events_shim(this: &PointerEventInit, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "height")]
+    fn height_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "isPrimary")]
+    fn is_primary_shim(this: &PointerEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "pointerId")]
+    fn pointer_id_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "pointerType")]
+    fn pointer_type_shim(this: &PointerEventInit, val: &str);
+    #[wasm_bindgen(method, setter = "pressure")]
+    fn pressure_shim(this: &PointerEventInit, val: f32);
+    #[wasm_bindgen(method, setter = "tangentialPressure")]
+    fn tangential_pressure_shim(this: &PointerEventInit, val: f32);
+    #[wasm_bindgen(method, setter = "tiltX")]
+    fn tilt_x_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "tiltY")]
+    fn tilt_y_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "twist")]
+    fn twist_shim(this: &PointerEventInit, val: i32);
+    #[wasm_bindgen(method, setter = "width")]
+    fn width_shim(this: &PointerEventInit, val: i32);
 }
 impl PointerEventInit {
     #[doc = "Construct a new `PointerEventInit`."]
@@ -24,65 +102,28 @@ impl PointerEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[doc = "Change the `detail` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn detail(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("detail"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.detail_shim(val);
         self
     }
     #[cfg(feature = "Window")]
@@ -90,330 +131,140 @@ impl PointerEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`, `Window`*"]
     pub fn view(&mut self, val: Option<&Window>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("view"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.view_shim(val);
         self
     }
     #[doc = "Change the `altKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn alt_key(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("altKey"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.alt_key_shim(val);
         self
     }
     #[doc = "Change the `ctrlKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn ctrl_key(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("ctrlKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ctrl_key_shim(val);
         self
     }
     #[doc = "Change the `metaKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn meta_key(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("metaKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.meta_key_shim(val);
         self
     }
     #[doc = "Change the `modifierAltGraph` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_alt_graph(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierAltGraph"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_alt_graph_shim(val);
         self
     }
     #[doc = "Change the `modifierCapsLock` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_caps_lock(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierCapsLock"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_caps_lock_shim(val);
         self
     }
     #[doc = "Change the `modifierFn` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_fn(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierFn"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_fn_shim(val);
         self
     }
     #[doc = "Change the `modifierFnLock` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_fn_lock(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierFnLock"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_fn_lock_shim(val);
         self
     }
     #[doc = "Change the `modifierNumLock` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_num_lock(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierNumLock"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_num_lock_shim(val);
         self
     }
     #[doc = "Change the `modifierOS` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_os(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierOS"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_os_shim(val);
         self
     }
     #[doc = "Change the `modifierScrollLock` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_scroll_lock(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierScrollLock"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_scroll_lock_shim(val);
         self
     }
     #[doc = "Change the `modifierSymbol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_symbol(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierSymbol"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_symbol_shim(val);
         self
     }
     #[doc = "Change the `modifierSymbolLock` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn modifier_symbol_lock(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("modifierSymbolLock"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.modifier_symbol_lock_shim(val);
         self
     }
     #[doc = "Change the `shiftKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn shift_key(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("shiftKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.shift_key_shim(val);
         self
     }
     #[doc = "Change the `button` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn button(&mut self, val: i16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("button"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.button_shim(val);
         self
     }
     #[doc = "Change the `buttons` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn buttons(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("buttons"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.buttons_shim(val);
         self
     }
     #[doc = "Change the `clientX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn client_x(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clientX"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.client_x_shim(val);
         self
     }
     #[doc = "Change the `clientY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn client_y(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clientY"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.client_y_shim(val);
         self
     }
     #[doc = "Change the `movementX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn movement_x(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("movementX"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.movement_x_shim(val);
         self
     }
     #[doc = "Change the `movementY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn movement_y(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("movementY"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.movement_y_shim(val);
         self
     }
     #[cfg(feature = "EventTarget")]
@@ -421,219 +272,98 @@ impl PointerEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`, `PointerEventInit`*"]
     pub fn related_target(&mut self, val: Option<&EventTarget>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("relatedTarget"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.related_target_shim(val);
         self
     }
     #[doc = "Change the `screenX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn screen_x(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("screenX"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.screen_x_shim(val);
         self
     }
     #[doc = "Change the `screenY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn screen_y(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("screenY"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.screen_y_shim(val);
         self
     }
     #[doc = "Change the `coalescedEvents` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn coalesced_events(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("coalescedEvents"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.coalesced_events_shim(val);
         self
     }
     #[doc = "Change the `height` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn height(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("height"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.height_shim(val);
         self
     }
     #[doc = "Change the `isPrimary` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn is_primary(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isPrimary"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_primary_shim(val);
         self
     }
     #[doc = "Change the `pointerId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn pointer_id(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("pointerId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.pointer_id_shim(val);
         self
     }
     #[doc = "Change the `pointerType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn pointer_type(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("pointerType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.pointer_type_shim(val);
         self
     }
     #[doc = "Change the `pressure` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn pressure(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("pressure"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.pressure_shim(val);
         self
     }
     #[doc = "Change the `tangentialPressure` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn tangential_pressure(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("tangentialPressure"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.tangential_pressure_shim(val);
         self
     }
     #[doc = "Change the `tiltX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn tilt_x(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("tiltX"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.tilt_x_shim(val);
         self
     }
     #[doc = "Change the `tiltY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn tilt_y(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("tiltY"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.tilt_y_shim(val);
         self
     }
     #[doc = "Change the `twist` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn twist(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("twist"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.twist_shim(val);
         self
     }
     #[doc = "Change the `width` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     pub fn width(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("width"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.width_shim(val);
         self
     }
 }

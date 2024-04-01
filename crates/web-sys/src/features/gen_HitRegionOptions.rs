@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HitRegionOptions`*"]
     pub type HitRegionOptions;
+    #[cfg(feature = "Element")]
+    #[wasm_bindgen(method, setter = "control")]
+    fn control_shim(this: &HitRegionOptions, val: Option<&Element>);
+    #[wasm_bindgen(method, setter = "id")]
+    fn id_shim(this: &HitRegionOptions, val: &str);
+    #[cfg(feature = "Path2d")]
+    #[wasm_bindgen(method, setter = "path")]
+    fn path_shim(this: &HitRegionOptions, val: Option<&Path2d>);
 }
 impl HitRegionOptions {
     #[doc = "Construct a new `HitRegionOptions`."]
@@ -25,30 +33,14 @@ impl HitRegionOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `HitRegionOptions`*"]
     pub fn control(&mut self, val: Option<&Element>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("control"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.control_shim(val);
         self
     }
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HitRegionOptions`*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("id"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.id_shim(val);
         self
     }
     #[cfg(feature = "Path2d")]
@@ -56,13 +48,7 @@ impl HitRegionOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HitRegionOptions`, `Path2d`*"]
     pub fn path(&mut self, val: Option<&Path2d>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("path"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.path_shim(val);
         self
     }
 }

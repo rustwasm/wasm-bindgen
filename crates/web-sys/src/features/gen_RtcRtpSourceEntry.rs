@@ -10,6 +10,17 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub type RtcRtpSourceEntry;
+    #[wasm_bindgen(method, setter = "audioLevel")]
+    fn audio_level_shim(this: &RtcRtpSourceEntry, val: f64);
+    #[wasm_bindgen(method, setter = "source")]
+    fn source_shim(this: &RtcRtpSourceEntry, val: u32);
+    #[wasm_bindgen(method, setter = "timestamp")]
+    fn timestamp_shim(this: &RtcRtpSourceEntry, val: f64);
+    #[wasm_bindgen(method, setter = "voiceActivityFlag")]
+    fn voice_activity_flag_shim(this: &RtcRtpSourceEntry, val: Option<bool>);
+    #[cfg(feature = "RtcRtpSourceEntryType")]
+    #[wasm_bindgen(method, setter = "sourceType")]
+    fn source_type_shim(this: &RtcRtpSourceEntry, val: RtcRtpSourceEntryType);
 }
 impl RtcRtpSourceEntry {
     #[cfg(feature = "RtcRtpSourceEntryType")]
@@ -28,65 +39,28 @@ impl RtcRtpSourceEntry {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn audio_level(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("audioLevel"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.audio_level_shim(val);
         self
     }
     #[doc = "Change the `source` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn source(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("source"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.source_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timestamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timestamp_shim(val);
         self
     }
     #[doc = "Change the `voiceActivityFlag` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`*"]
     pub fn voice_activity_flag(&mut self, val: Option<bool>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("voiceActivityFlag"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.voice_activity_flag_shim(val);
         self
     }
     #[cfg(feature = "RtcRtpSourceEntryType")]
@@ -94,17 +68,7 @@ impl RtcRtpSourceEntry {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpSourceEntry`, `RtcRtpSourceEntryType`*"]
     pub fn source_type(&mut self, val: RtcRtpSourceEntryType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sourceType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.source_type_shim(val);
         self
     }
 }

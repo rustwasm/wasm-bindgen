@@ -10,6 +10,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamAudioSourceOptions`*"]
     pub type MediaStreamAudioSourceOptions;
+    #[cfg(feature = "MediaStream")]
+    #[wasm_bindgen(method, setter = "mediaStream")]
+    fn media_stream_shim(this: &MediaStreamAudioSourceOptions, val: &MediaStream);
 }
 impl MediaStreamAudioSourceOptions {
     #[cfg(feature = "MediaStream")]
@@ -27,17 +30,7 @@ impl MediaStreamAudioSourceOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
     pub fn media_stream(&mut self, val: &MediaStream) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mediaStream"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.media_stream_shim(val);
         self
     }
 }

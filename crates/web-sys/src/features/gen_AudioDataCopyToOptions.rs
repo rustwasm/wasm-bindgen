@@ -14,6 +14,15 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AudioDataCopyToOptions;
+    #[cfg(feature = "AudioSampleFormat")]
+    #[wasm_bindgen(method, setter = "format")]
+    fn format_shim(this: &AudioDataCopyToOptions, val: AudioSampleFormat);
+    #[wasm_bindgen(method, setter = "frameCount")]
+    fn frame_count_shim(this: &AudioDataCopyToOptions, val: u32);
+    #[wasm_bindgen(method, setter = "frameOffset")]
+    fn frame_offset_shim(this: &AudioDataCopyToOptions, val: u32);
+    #[wasm_bindgen(method, setter = "planeIndex")]
+    fn plane_index_shim(this: &AudioDataCopyToOptions, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AudioDataCopyToOptions {
@@ -38,14 +47,7 @@ impl AudioDataCopyToOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn format(&mut self, val: AudioSampleFormat) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("format"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.format_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -56,17 +58,7 @@ impl AudioDataCopyToOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn frame_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("frameCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.frame_count_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -77,17 +69,7 @@ impl AudioDataCopyToOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn frame_offset(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("frameOffset"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.frame_offset_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -98,17 +80,7 @@ impl AudioDataCopyToOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn plane_index(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("planeIndex"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.plane_index_shim(val);
         self
     }
 }

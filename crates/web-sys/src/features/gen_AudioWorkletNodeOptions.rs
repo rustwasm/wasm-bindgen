@@ -10,6 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
     pub type AudioWorkletNodeOptions;
+    #[wasm_bindgen(method, setter = "channelCount")]
+    fn channel_count_shim(this: &AudioWorkletNodeOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[wasm_bindgen(method, setter = "channelCountMode")]
+    fn channel_count_mode_shim(this: &AudioWorkletNodeOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[wasm_bindgen(method, setter = "channelInterpretation")]
+    fn channel_interpretation_shim(this: &AudioWorkletNodeOptions, val: ChannelInterpretation);
+    #[wasm_bindgen(method, setter = "numberOfInputs")]
+    fn number_of_inputs_shim(this: &AudioWorkletNodeOptions, val: u32);
+    #[wasm_bindgen(method, setter = "numberOfOutputs")]
+    fn number_of_outputs_shim(this: &AudioWorkletNodeOptions, val: u32);
+    #[wasm_bindgen(method, setter = "outputChannelCount")]
+    fn output_channel_count_shim(this: &AudioWorkletNodeOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "processorOptions")]
+    fn processor_options_shim(this: &AudioWorkletNodeOptions, val: Option<&::js_sys::Object>);
 }
 impl AudioWorkletNodeOptions {
     #[doc = "Construct a new `AudioWorkletNodeOptions`."]
@@ -24,17 +40,7 @@ impl AudioWorkletNodeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_shim(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -42,17 +48,7 @@ impl AudioWorkletNodeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`, `ChannelCountMode`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCountMode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_mode_shim(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -60,85 +56,35 @@ impl AudioWorkletNodeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`, `ChannelInterpretation`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelInterpretation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_interpretation_shim(val);
         self
     }
     #[doc = "Change the `numberOfInputs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
     pub fn number_of_inputs(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("numberOfInputs"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.number_of_inputs_shim(val);
         self
     }
     #[doc = "Change the `numberOfOutputs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
     pub fn number_of_outputs(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("numberOfOutputs"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.number_of_outputs_shim(val);
         self
     }
     #[doc = "Change the `outputChannelCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
     pub fn output_channel_count(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("outputChannelCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.output_channel_count_shim(val);
         self
     }
     #[doc = "Change the `processorOptions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
     pub fn processor_options(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("processorOptions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.processor_options_shim(val);
         self
     }
 }

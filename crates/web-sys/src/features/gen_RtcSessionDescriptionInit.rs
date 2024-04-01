@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     pub type RtcSessionDescriptionInit;
+    #[wasm_bindgen(method, setter = "sdp")]
+    fn sdp_shim(this: &RtcSessionDescriptionInit, val: &str);
+    #[cfg(feature = "RtcSdpType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &RtcSessionDescriptionInit, val: RtcSdpType);
 }
 impl RtcSessionDescriptionInit {
     #[cfg(feature = "RtcSdpType")]
@@ -26,13 +31,7 @@ impl RtcSessionDescriptionInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     pub fn sdp(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("sdp"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sdp_shim(val);
         self
     }
     #[cfg(feature = "RtcSdpType")]
@@ -40,13 +39,7 @@ impl RtcSessionDescriptionInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSdpType`, `RtcSessionDescriptionInit`*"]
     pub fn type_(&mut self, val: RtcSdpType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

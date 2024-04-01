@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerLogOrEnd`*"]
     pub type ConsoleTimerLogOrEnd;
+    #[wasm_bindgen(method, setter = "duration")]
+    fn duration_shim(this: &ConsoleTimerLogOrEnd, val: f64);
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &ConsoleTimerLogOrEnd, val: &str);
 }
 impl ConsoleTimerLogOrEnd {
     #[doc = "Construct a new `ConsoleTimerLogOrEnd`."]
@@ -24,30 +28,14 @@ impl ConsoleTimerLogOrEnd {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerLogOrEnd`*"]
     pub fn duration(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("duration"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.duration_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerLogOrEnd`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
 }

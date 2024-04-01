@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     pub type BrowserElementExecuteScriptOptions;
+    #[wasm_bindgen(method, setter = "origin")]
+    fn origin_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
+    #[wasm_bindgen(method, setter = "url")]
+    fn url_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
 }
 impl BrowserElementExecuteScriptOptions {
     #[doc = "Construct a new `BrowserElementExecuteScriptOptions`."]
@@ -24,27 +28,14 @@ impl BrowserElementExecuteScriptOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     pub fn origin(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("origin"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.origin_shim(val);
         self
     }
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     pub fn url(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("url"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.url_shim(val);
         self
     }
 }

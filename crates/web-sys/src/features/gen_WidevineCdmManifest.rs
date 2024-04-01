@@ -10,6 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub type WidevineCdmManifest;
+    #[wasm_bindgen(method, setter = "description")]
+    fn description_shim(this: &WidevineCdmManifest, val: &str);
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &WidevineCdmManifest, val: &str);
+    #[wasm_bindgen(method, setter = "version")]
+    fn version_shim(this: &WidevineCdmManifest, val: &str);
+    #[wasm_bindgen(method, setter = "x-cdm-codecs")]
+    fn x_cdm_codecs_shim(this: &WidevineCdmManifest, val: &str);
+    #[wasm_bindgen(method, setter = "x-cdm-host-versions")]
+    fn x_cdm_host_versions_shim(this: &WidevineCdmManifest, val: &str);
+    #[wasm_bindgen(method, setter = "x-cdm-interface-versions")]
+    fn x_cdm_interface_versions_shim(this: &WidevineCdmManifest, val: &str);
+    #[wasm_bindgen(method, setter = "x-cdm-module-versions")]
+    fn x_cdm_module_versions_shim(this: &WidevineCdmManifest, val: &str);
 }
 impl WidevineCdmManifest {
     #[doc = "Construct a new `WidevineCdmManifest`."]
@@ -39,115 +53,49 @@ impl WidevineCdmManifest {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn description(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("description"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.description_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn version(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("version"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.version_shim(val);
         self
     }
     #[doc = "Change the `x-cdm-codecs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_codecs(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("x-cdm-codecs"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.x_cdm_codecs_shim(val);
         self
     }
     #[doc = "Change the `x-cdm-host-versions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_host_versions(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("x-cdm-host-versions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.x_cdm_host_versions_shim(val);
         self
     }
     #[doc = "Change the `x-cdm-interface-versions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_interface_versions(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("x-cdm-interface-versions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.x_cdm_interface_versions_shim(val);
         self
     }
     #[doc = "Change the `x-cdm-module-versions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub fn x_cdm_module_versions(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("x-cdm-module-versions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.x_cdm_module_versions_shim(val);
         self
     }
 }

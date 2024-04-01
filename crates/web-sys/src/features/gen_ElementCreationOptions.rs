@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub type ElementCreationOptions;
+    #[wasm_bindgen(method, setter = "is")]
+    fn is_shim(this: &ElementCreationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "pseudo")]
+    fn pseudo_shim(this: &ElementCreationOptions, val: &str);
 }
 impl ElementCreationOptions {
     #[doc = "Construct a new `ElementCreationOptions`."]
@@ -24,27 +28,14 @@ impl ElementCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub fn is(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("is"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_shim(val);
         self
     }
     #[doc = "Change the `pseudo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub fn pseudo(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("pseudo"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.pseudo_shim(val);
         self
     }
 }

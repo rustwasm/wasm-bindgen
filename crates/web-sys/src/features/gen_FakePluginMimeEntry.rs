@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     pub type FakePluginMimeEntry;
+    #[wasm_bindgen(method, setter = "description")]
+    fn description_shim(this: &FakePluginMimeEntry, val: &str);
+    #[wasm_bindgen(method, setter = "extension")]
+    fn extension_shim(this: &FakePluginMimeEntry, val: &str);
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &FakePluginMimeEntry, val: &str);
 }
 impl FakePluginMimeEntry {
     #[doc = "Construct a new `FakePluginMimeEntry`."]
@@ -25,47 +31,21 @@ impl FakePluginMimeEntry {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     pub fn description(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("description"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.description_shim(val);
         self
     }
     #[doc = "Change the `extension` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     pub fn extension(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("extension"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.extension_shim(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

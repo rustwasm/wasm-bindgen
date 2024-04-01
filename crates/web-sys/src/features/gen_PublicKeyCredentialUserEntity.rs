@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub type PublicKeyCredentialUserEntity;
+    #[wasm_bindgen(method, setter = "icon")]
+    fn icon_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    #[wasm_bindgen(method, setter = "displayName")]
+    fn display_name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    #[wasm_bindgen(method, setter = "id")]
+    fn id_shim(this: &PublicKeyCredentialUserEntity, val: &::js_sys::Object);
 }
 impl PublicKeyCredentialUserEntity {
     #[doc = "Construct a new `PublicKeyCredentialUserEntity`."]
@@ -27,56 +35,28 @@ impl PublicKeyCredentialUserEntity {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn icon(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("icon"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.icon_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[doc = "Change the `displayName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn display_name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("displayName"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.display_name_shim(val);
         self
     }
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn id(&mut self, val: &::js_sys::Object) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("id"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.id_shim(val);
         self
     }
 }

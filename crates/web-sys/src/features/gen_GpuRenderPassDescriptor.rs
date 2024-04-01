@@ -14,6 +14,24 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPassDescriptor;
+    #[wasm_bindgen(method, setter = "label")]
+    fn label_shim(this: &GpuRenderPassDescriptor, val: &str);
+    #[wasm_bindgen(method, setter = "colorAttachments")]
+    fn color_attachments_shim(this: &GpuRenderPassDescriptor, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
+    #[wasm_bindgen(method, setter = "depthStencilAttachment")]
+    fn depth_stencil_attachment_shim(
+        this: &GpuRenderPassDescriptor,
+        val: &GpuRenderPassDepthStencilAttachment,
+    );
+    #[wasm_bindgen(method, setter = "maxDrawCount")]
+    fn max_draw_count_shim(this: &GpuRenderPassDescriptor, val: f64);
+    #[cfg(feature = "GpuQuerySet")]
+    #[wasm_bindgen(method, setter = "occlusionQuerySet")]
+    fn occlusion_query_set_shim(this: &GpuRenderPassDescriptor, val: &GpuQuerySet);
+    #[cfg(feature = "GpuRenderPassTimestampWrites")]
+    #[wasm_bindgen(method, setter = "timestampWrites")]
+    fn timestamp_writes_shim(this: &GpuRenderPassDescriptor, val: &GpuRenderPassTimestampWrites);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassDescriptor {
@@ -37,13 +55,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.label_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -54,17 +66,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn color_attachments(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("colorAttachments"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.color_attachments_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -79,17 +81,7 @@ impl GpuRenderPassDescriptor {
         &mut self,
         val: &GpuRenderPassDepthStencilAttachment,
     ) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthStencilAttachment"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_stencil_attachment_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -100,17 +92,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn max_draw_count(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maxDrawCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.max_draw_count_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -122,17 +104,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn occlusion_query_set(&mut self, val: &GpuQuerySet) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("occlusionQuerySet"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.occlusion_query_set_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -144,17 +116,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp_writes(&mut self, val: &GpuRenderPassTimestampWrites) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timestampWrites"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timestamp_writes_shim(val);
         self
     }
 }

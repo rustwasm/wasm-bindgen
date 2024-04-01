@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub type NativeOsFileReadOptions;
+    #[wasm_bindgen(method, setter = "bytes")]
+    fn bytes_shim(this: &NativeOsFileReadOptions, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "encoding")]
+    fn encoding_shim(this: &NativeOsFileReadOptions, val: Option<&str>);
 }
 impl NativeOsFileReadOptions {
     #[doc = "Construct a new `NativeOsFileReadOptions`."]
@@ -24,30 +28,14 @@ impl NativeOsFileReadOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub fn bytes(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("bytes"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bytes_shim(val);
         self
     }
     #[doc = "Change the `encoding` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub fn encoding(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("encoding"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.encoding_shim(val);
         self
     }
 }

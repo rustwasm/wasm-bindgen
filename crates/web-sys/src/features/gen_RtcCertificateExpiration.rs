@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCertificateExpiration`*"]
     pub type RtcCertificateExpiration;
+    #[wasm_bindgen(method, setter = "expires")]
+    fn expires_shim(this: &RtcCertificateExpiration, val: f64);
 }
 impl RtcCertificateExpiration {
     #[doc = "Construct a new `RtcCertificateExpiration`."]
@@ -24,17 +26,7 @@ impl RtcCertificateExpiration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCertificateExpiration`*"]
     pub fn expires(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("expires"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.expires_shim(val);
         self
     }
 }

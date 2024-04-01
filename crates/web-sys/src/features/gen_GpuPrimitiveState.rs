@@ -14,6 +14,20 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuPrimitiveState;
+    #[cfg(feature = "GpuCullMode")]
+    #[wasm_bindgen(method, setter = "cullMode")]
+    fn cull_mode_shim(this: &GpuPrimitiveState, val: GpuCullMode);
+    #[cfg(feature = "GpuFrontFace")]
+    #[wasm_bindgen(method, setter = "frontFace")]
+    fn front_face_shim(this: &GpuPrimitiveState, val: GpuFrontFace);
+    #[cfg(feature = "GpuIndexFormat")]
+    #[wasm_bindgen(method, setter = "stripIndexFormat")]
+    fn strip_index_format_shim(this: &GpuPrimitiveState, val: GpuIndexFormat);
+    #[cfg(feature = "GpuPrimitiveTopology")]
+    #[wasm_bindgen(method, setter = "topology")]
+    fn topology_shim(this: &GpuPrimitiveState, val: GpuPrimitiveTopology);
+    #[wasm_bindgen(method, setter = "unclippedDepth")]
+    fn unclipped_depth_shim(this: &GpuPrimitiveState, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuPrimitiveState {
@@ -37,17 +51,7 @@ impl GpuPrimitiveState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn cull_mode(&mut self, val: GpuCullMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cullMode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cull_mode_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,17 +63,7 @@ impl GpuPrimitiveState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn front_face(&mut self, val: GpuFrontFace) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("frontFace"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.front_face_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,17 +75,7 @@ impl GpuPrimitiveState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn strip_index_format(&mut self, val: GpuIndexFormat) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stripIndexFormat"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.strip_index_format_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -103,17 +87,7 @@ impl GpuPrimitiveState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn topology(&mut self, val: GpuPrimitiveTopology) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("topology"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.topology_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -124,17 +98,7 @@ impl GpuPrimitiveState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unclipped_depth(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unclippedDepth"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unclipped_depth_shim(val);
         self
     }
 }

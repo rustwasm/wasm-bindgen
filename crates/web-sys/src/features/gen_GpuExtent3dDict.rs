@@ -14,6 +14,12 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuExtent3dDict;
+    #[wasm_bindgen(method, setter = "depthOrArrayLayers")]
+    fn depth_or_array_layers_shim(this: &GpuExtent3dDict, val: u32);
+    #[wasm_bindgen(method, setter = "height")]
+    fn height_shim(this: &GpuExtent3dDict, val: u32);
+    #[wasm_bindgen(method, setter = "width")]
+    fn width_shim(this: &GpuExtent3dDict, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuExtent3dDict {
@@ -37,17 +43,7 @@ impl GpuExtent3dDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_or_array_layers(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthOrArrayLayers"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_or_array_layers_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,14 +54,7 @@ impl GpuExtent3dDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn height(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("height"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.height_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -76,13 +65,7 @@ impl GpuExtent3dDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn width(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("width"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.width_shim(val);
         self
     }
 }

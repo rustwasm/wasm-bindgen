@@ -14,6 +14,20 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type SerialOptions;
+    #[wasm_bindgen(method, setter = "baudRate")]
+    fn baud_rate_shim(this: &SerialOptions, val: u32);
+    #[wasm_bindgen(method, setter = "bufferSize")]
+    fn buffer_size_shim(this: &SerialOptions, val: u32);
+    #[wasm_bindgen(method, setter = "dataBits")]
+    fn data_bits_shim(this: &SerialOptions, val: u8);
+    #[cfg(feature = "FlowControlType")]
+    #[wasm_bindgen(method, setter = "flowControl")]
+    fn flow_control_shim(this: &SerialOptions, val: FlowControlType);
+    #[cfg(feature = "ParityType")]
+    #[wasm_bindgen(method, setter = "parity")]
+    fn parity_shim(this: &SerialOptions, val: ParityType);
+    #[wasm_bindgen(method, setter = "stopBits")]
+    fn stop_bits_shim(this: &SerialOptions, val: u8);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SerialOptions {
@@ -37,17 +51,7 @@ impl SerialOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn baud_rate(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("baudRate"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.baud_rate_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,17 +62,7 @@ impl SerialOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn buffer_size(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bufferSize"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.buffer_size_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -79,17 +73,7 @@ impl SerialOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data_bits(&mut self, val: u8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("dataBits"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_bits_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -101,17 +85,7 @@ impl SerialOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn flow_control(&mut self, val: FlowControlType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("flowControl"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.flow_control_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -123,14 +97,7 @@ impl SerialOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn parity(&mut self, val: ParityType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("parity"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.parity_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -141,17 +108,7 @@ impl SerialOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stop_bits(&mut self, val: u8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stopBits"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stop_bits_shim(val);
         self
     }
 }

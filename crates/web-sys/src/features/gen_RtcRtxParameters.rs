@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     pub type RtcRtxParameters;
+    #[wasm_bindgen(method, setter = "ssrc")]
+    fn ssrc_shim(this: &RtcRtxParameters, val: u32);
 }
 impl RtcRtxParameters {
     #[doc = "Construct a new `RtcRtxParameters`."]
@@ -24,13 +26,7 @@ impl RtcRtxParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     pub fn ssrc(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ssrc"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ssrc_shim(val);
         self
     }
 }

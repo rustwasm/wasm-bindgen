@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
     pub type DisplayMediaStreamConstraints;
+    #[wasm_bindgen(method, setter = "audio")]
+    fn audio_shim(this: &DisplayMediaStreamConstraints, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "video")]
+    fn video_shim(this: &DisplayMediaStreamConstraints, val: &::wasm_bindgen::JsValue);
 }
 impl DisplayMediaStreamConstraints {
     #[doc = "Construct a new `DisplayMediaStreamConstraints`."]
@@ -24,26 +28,14 @@ impl DisplayMediaStreamConstraints {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
     pub fn audio(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("audio"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.audio_shim(val);
         self
     }
     #[doc = "Change the `video` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
     pub fn video(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("video"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.video_shim(val);
         self
     }
 }

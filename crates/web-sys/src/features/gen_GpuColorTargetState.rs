@@ -14,6 +14,14 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuColorTargetState;
+    #[cfg(feature = "GpuBlendState")]
+    #[wasm_bindgen(method, setter = "blend")]
+    fn blend_shim(this: &GpuColorTargetState, val: &GpuBlendState);
+    #[cfg(feature = "GpuTextureFormat")]
+    #[wasm_bindgen(method, setter = "format")]
+    fn format_shim(this: &GpuColorTargetState, val: GpuTextureFormat);
+    #[wasm_bindgen(method, setter = "writeMask")]
+    fn write_mask_shim(this: &GpuColorTargetState, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuColorTargetState {
@@ -39,13 +47,7 @@ impl GpuColorTargetState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn blend(&mut self, val: &GpuBlendState) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("blend"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.blend_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,14 +59,7 @@ impl GpuColorTargetState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn format(&mut self, val: GpuTextureFormat) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("format"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.format_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,17 +70,7 @@ impl GpuColorTargetState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_mask(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("writeMask"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.write_mask_shim(val);
         self
     }
 }

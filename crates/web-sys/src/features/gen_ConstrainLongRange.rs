@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainLongRange`*"]
     pub type ConstrainLongRange;
+    #[wasm_bindgen(method, setter = "exact")]
+    fn exact_shim(this: &ConstrainLongRange, val: i32);
+    #[wasm_bindgen(method, setter = "ideal")]
+    fn ideal_shim(this: &ConstrainLongRange, val: i32);
+    #[wasm_bindgen(method, setter = "max")]
+    fn max_shim(this: &ConstrainLongRange, val: i32);
+    #[wasm_bindgen(method, setter = "min")]
+    fn min_shim(this: &ConstrainLongRange, val: i32);
 }
 impl ConstrainLongRange {
     #[doc = "Construct a new `ConstrainLongRange`."]
@@ -24,52 +32,28 @@ impl ConstrainLongRange {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainLongRange`*"]
     pub fn exact(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("exact"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.exact_shim(val);
         self
     }
     #[doc = "Change the `ideal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainLongRange`*"]
     pub fn ideal(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ideal"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ideal_shim(val);
         self
     }
     #[doc = "Change the `max` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainLongRange`*"]
     pub fn max(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("max"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.max_shim(val);
         self
     }
     #[doc = "Change the `min` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainLongRange`*"]
     pub fn min(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("min"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.min_shim(val);
         self
     }
 }

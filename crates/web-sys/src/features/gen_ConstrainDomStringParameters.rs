@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
     pub type ConstrainDomStringParameters;
+    #[wasm_bindgen(method, setter = "exact")]
+    fn exact_shim(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "ideal")]
+    fn ideal_shim(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
 }
 impl ConstrainDomStringParameters {
     #[doc = "Construct a new `ConstrainDomStringParameters`."]
@@ -24,26 +28,14 @@ impl ConstrainDomStringParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
     pub fn exact(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("exact"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.exact_shim(val);
         self
     }
     #[doc = "Change the `ideal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
     pub fn ideal(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ideal"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ideal_shim(val);
         self
     }
 }

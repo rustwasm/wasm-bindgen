@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
     pub type RegisterRequest;
+    #[wasm_bindgen(method, setter = "challenge")]
+    fn challenge_shim(this: &RegisterRequest, val: &str);
+    #[wasm_bindgen(method, setter = "version")]
+    fn version_shim(this: &RegisterRequest, val: &str);
 }
 impl RegisterRequest {
     #[doc = "Construct a new `RegisterRequest`."]
@@ -24,34 +28,14 @@ impl RegisterRequest {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
     pub fn challenge(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("challenge"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.challenge_shim(val);
         self
     }
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
     pub fn version(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("version"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.version_shim(val);
         self
     }
 }

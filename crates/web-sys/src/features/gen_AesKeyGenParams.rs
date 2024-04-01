@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
     pub type AesKeyGenParams;
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &AesKeyGenParams, val: &str);
+    #[wasm_bindgen(method, setter = "length")]
+    fn length_shim(this: &AesKeyGenParams, val: u16);
 }
 impl AesKeyGenParams {
     #[doc = "Construct a new `AesKeyGenParams`."]
@@ -26,27 +30,14 @@ impl AesKeyGenParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[doc = "Change the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
     pub fn length(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("length"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.length_shim(val);
         self
     }
 }

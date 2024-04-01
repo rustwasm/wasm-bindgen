@@ -10,6 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorOptions`*"]
     pub type OscillatorOptions;
+    #[wasm_bindgen(method, setter = "channelCount")]
+    fn channel_count_shim(this: &OscillatorOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[wasm_bindgen(method, setter = "channelCountMode")]
+    fn channel_count_mode_shim(this: &OscillatorOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[wasm_bindgen(method, setter = "channelInterpretation")]
+    fn channel_interpretation_shim(this: &OscillatorOptions, val: ChannelInterpretation);
+    #[wasm_bindgen(method, setter = "detune")]
+    fn detune_shim(this: &OscillatorOptions, val: f32);
+    #[wasm_bindgen(method, setter = "frequency")]
+    fn frequency_shim(this: &OscillatorOptions, val: f32);
+    #[cfg(feature = "PeriodicWave")]
+    #[wasm_bindgen(method, setter = "periodicWave")]
+    fn periodic_wave_shim(this: &OscillatorOptions, val: &PeriodicWave);
+    #[cfg(feature = "OscillatorType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &OscillatorOptions, val: OscillatorType);
 }
 impl OscillatorOptions {
     #[doc = "Construct a new `OscillatorOptions`."]
@@ -24,17 +42,7 @@ impl OscillatorOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_shim(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -42,17 +50,7 @@ impl OscillatorOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `OscillatorOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCountMode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_mode_shim(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -60,48 +58,21 @@ impl OscillatorOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `OscillatorOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelInterpretation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_interpretation_shim(val);
         self
     }
     #[doc = "Change the `detune` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorOptions`*"]
     pub fn detune(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("detune"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.detune_shim(val);
         self
     }
     #[doc = "Change the `frequency` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorOptions`*"]
     pub fn frequency(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("frequency"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.frequency_shim(val);
         self
     }
     #[cfg(feature = "PeriodicWave")]
@@ -109,17 +80,7 @@ impl OscillatorOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorOptions`, `PeriodicWave`*"]
     pub fn periodic_wave(&mut self, val: &PeriodicWave) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("periodicWave"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.periodic_wave_shim(val);
         self
     }
     #[cfg(feature = "OscillatorType")]
@@ -127,13 +88,7 @@ impl OscillatorOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorOptions`, `OscillatorType`*"]
     pub fn type_(&mut self, val: OscillatorType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

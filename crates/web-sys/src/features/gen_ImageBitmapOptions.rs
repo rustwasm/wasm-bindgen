@@ -10,6 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     pub type ImageBitmapOptions;
+    #[cfg(feature = "ColorSpaceConversion")]
+    #[wasm_bindgen(method, setter = "colorSpaceConversion")]
+    fn color_space_conversion_shim(this: &ImageBitmapOptions, val: ColorSpaceConversion);
+    #[cfg(feature = "ImageOrientation")]
+    #[wasm_bindgen(method, setter = "imageOrientation")]
+    fn image_orientation_shim(this: &ImageBitmapOptions, val: ImageOrientation);
+    #[cfg(feature = "PremultiplyAlpha")]
+    #[wasm_bindgen(method, setter = "premultiplyAlpha")]
+    fn premultiply_alpha_shim(this: &ImageBitmapOptions, val: PremultiplyAlpha);
+    #[wasm_bindgen(method, setter = "resizeHeight")]
+    fn resize_height_shim(this: &ImageBitmapOptions, val: u32);
+    #[cfg(feature = "ResizeQuality")]
+    #[wasm_bindgen(method, setter = "resizeQuality")]
+    fn resize_quality_shim(this: &ImageBitmapOptions, val: ResizeQuality);
+    #[wasm_bindgen(method, setter = "resizeWidth")]
+    fn resize_width_shim(this: &ImageBitmapOptions, val: u32);
 }
 impl ImageBitmapOptions {
     #[doc = "Construct a new `ImageBitmapOptions`."]
@@ -25,17 +41,7 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ColorSpaceConversion`, `ImageBitmapOptions`*"]
     pub fn color_space_conversion(&mut self, val: ColorSpaceConversion) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("colorSpaceConversion"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.color_space_conversion_shim(val);
         self
     }
     #[cfg(feature = "ImageOrientation")]
@@ -43,17 +49,7 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ImageOrientation`*"]
     pub fn image_orientation(&mut self, val: ImageOrientation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("imageOrientation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.image_orientation_shim(val);
         self
     }
     #[cfg(feature = "PremultiplyAlpha")]
@@ -61,34 +57,14 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `PremultiplyAlpha`*"]
     pub fn premultiply_alpha(&mut self, val: PremultiplyAlpha) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("premultiplyAlpha"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.premultiply_alpha_shim(val);
         self
     }
     #[doc = "Change the `resizeHeight` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     pub fn resize_height(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("resizeHeight"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.resize_height_shim(val);
         self
     }
     #[cfg(feature = "ResizeQuality")]
@@ -96,34 +72,14 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ResizeQuality`*"]
     pub fn resize_quality(&mut self, val: ResizeQuality) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("resizeQuality"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.resize_quality_shim(val);
         self
     }
     #[doc = "Change the `resizeWidth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     pub fn resize_width(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("resizeWidth"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.resize_width_shim(val);
         self
     }
 }

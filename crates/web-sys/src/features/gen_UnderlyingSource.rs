@@ -10,6 +10,17 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
     pub type UnderlyingSource;
+    #[wasm_bindgen(method, setter = "autoAllocateChunkSize")]
+    fn auto_allocate_chunk_size_shim(this: &UnderlyingSource, val: f64);
+    #[wasm_bindgen(method, setter = "cancel")]
+    fn cancel_shim(this: &UnderlyingSource, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "pull")]
+    fn pull_shim(this: &UnderlyingSource, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "start")]
+    fn start_shim(this: &UnderlyingSource, val: &::js_sys::Function);
+    #[cfg(feature = "ReadableStreamType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &UnderlyingSource, val: ReadableStreamType);
 }
 impl UnderlyingSource {
     #[doc = "Construct a new `UnderlyingSource`."]
@@ -24,57 +35,28 @@ impl UnderlyingSource {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
     pub fn auto_allocate_chunk_size(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("autoAllocateChunkSize"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.auto_allocate_chunk_size_shim(val);
         self
     }
     #[doc = "Change the `cancel` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
     pub fn cancel(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("cancel"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancel_shim(val);
         self
     }
     #[doc = "Change the `pull` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
     pub fn pull(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("pull"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.pull_shim(val);
         self
     }
     #[doc = "Change the `start` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
     pub fn start(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("start"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.start_shim(val);
         self
     }
     #[cfg(feature = "ReadableStreamType")]
@@ -82,13 +64,7 @@ impl UnderlyingSource {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamType`, `UnderlyingSource`*"]
     pub fn type_(&mut self, val: ReadableStreamType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     pub type PublicKeyCredentialParameters;
+    #[wasm_bindgen(method, setter = "alg")]
+    fn alg_shim(this: &PublicKeyCredentialParameters, val: i32);
+    #[cfg(feature = "PublicKeyCredentialType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &PublicKeyCredentialParameters, val: PublicKeyCredentialType);
 }
 impl PublicKeyCredentialParameters {
     #[cfg(feature = "PublicKeyCredentialType")]
@@ -27,13 +32,7 @@ impl PublicKeyCredentialParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     pub fn alg(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("alg"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.alg_shim(val);
         self
     }
     #[cfg(feature = "PublicKeyCredentialType")]
@@ -41,13 +40,7 @@ impl PublicKeyCredentialParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`, `PublicKeyCredentialType`*"]
     pub fn type_(&mut self, val: PublicKeyCredentialType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

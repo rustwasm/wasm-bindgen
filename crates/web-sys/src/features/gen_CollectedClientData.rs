@@ -10,6 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub type CollectedClientData;
+    #[wasm_bindgen(method, setter = "challenge")]
+    fn challenge_shim(this: &CollectedClientData, val: &str);
+    #[cfg(feature = "AuthenticationExtensionsClientInputs")]
+    #[wasm_bindgen(method, setter = "clientExtensions")]
+    fn client_extensions_shim(
+        this: &CollectedClientData,
+        val: &AuthenticationExtensionsClientInputs,
+    );
+    #[wasm_bindgen(method, setter = "hashAlgorithm")]
+    fn hash_algorithm_shim(this: &CollectedClientData, val: &str);
+    #[wasm_bindgen(method, setter = "origin")]
+    fn origin_shim(this: &CollectedClientData, val: &str);
+    #[wasm_bindgen(method, setter = "tokenBindingId")]
+    fn token_binding_id_shim(this: &CollectedClientData, val: &str);
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &CollectedClientData, val: &str);
 }
 impl CollectedClientData {
     #[doc = "Construct a new `CollectedClientData`."]
@@ -28,17 +44,7 @@ impl CollectedClientData {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn challenge(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("challenge"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.challenge_shim(val);
         self
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
@@ -46,78 +52,35 @@ impl CollectedClientData {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `CollectedClientData`*"]
     pub fn client_extensions(&mut self, val: &AuthenticationExtensionsClientInputs) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clientExtensions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.client_extensions_shim(val);
         self
     }
     #[doc = "Change the `hashAlgorithm` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn hash_algorithm(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("hashAlgorithm"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.hash_algorithm_shim(val);
         self
     }
     #[doc = "Change the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn origin(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("origin"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.origin_shim(val);
         self
     }
     #[doc = "Change the `tokenBindingId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn token_binding_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("tokenBindingId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.token_binding_id_shim(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

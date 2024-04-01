@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StreamPipeOptions`*"]
     pub type StreamPipeOptions;
+    #[wasm_bindgen(method, setter = "preventAbort")]
+    fn prevent_abort_shim(this: &StreamPipeOptions, val: bool);
+    #[wasm_bindgen(method, setter = "preventCancel")]
+    fn prevent_cancel_shim(this: &StreamPipeOptions, val: bool);
+    #[wasm_bindgen(method, setter = "preventClose")]
+    fn prevent_close_shim(this: &StreamPipeOptions, val: bool);
+    #[cfg(feature = "AbortSignal")]
+    #[wasm_bindgen(method, setter = "signal")]
+    fn signal_shim(this: &StreamPipeOptions, val: &AbortSignal);
 }
 impl StreamPipeOptions {
     #[doc = "Construct a new `StreamPipeOptions`."]
@@ -24,51 +33,21 @@ impl StreamPipeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StreamPipeOptions`*"]
     pub fn prevent_abort(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("preventAbort"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.prevent_abort_shim(val);
         self
     }
     #[doc = "Change the `preventCancel` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StreamPipeOptions`*"]
     pub fn prevent_cancel(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("preventCancel"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.prevent_cancel_shim(val);
         self
     }
     #[doc = "Change the `preventClose` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StreamPipeOptions`*"]
     pub fn prevent_close(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("preventClose"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.prevent_close_shim(val);
         self
     }
     #[cfg(feature = "AbortSignal")]
@@ -76,14 +55,7 @@ impl StreamPipeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `StreamPipeOptions`*"]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("signal"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.signal_shim(val);
         self
     }
 }

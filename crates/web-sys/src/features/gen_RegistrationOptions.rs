@@ -10,6 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     pub type RegistrationOptions;
+    #[wasm_bindgen(method, setter = "scope")]
+    fn scope_shim(this: &RegistrationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &RegistrationOptions, val: &str);
+    #[cfg(feature = "ServiceWorkerUpdateViaCache")]
+    #[wasm_bindgen(method, setter = "updateViaCache")]
+    fn update_via_cache_shim(this: &RegistrationOptions, val: ServiceWorkerUpdateViaCache);
 }
 impl RegistrationOptions {
     #[doc = "Construct a new `RegistrationOptions`."]
@@ -24,26 +31,14 @@ impl RegistrationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     pub fn scope(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("scope"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.scope_shim(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
@@ -51,17 +46,7 @@ impl RegistrationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`, `ServiceWorkerUpdateViaCache`*"]
     pub fn update_via_cache(&mut self, val: ServiceWorkerUpdateViaCache) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("updateViaCache"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.update_via_cache_shim(val);
         self
     }
 }

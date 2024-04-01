@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     pub type LifecycleCallbacks;
+    #[wasm_bindgen(method, setter = "adoptedCallback")]
+    fn adopted_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "attributeChangedCallback")]
+    fn attribute_changed_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "connectedCallback")]
+    fn connected_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "disconnectedCallback")]
+    fn disconnected_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
 }
 impl LifecycleCallbacks {
     #[doc = "Construct a new `LifecycleCallbacks`."]
@@ -24,68 +32,28 @@ impl LifecycleCallbacks {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     pub fn adopted_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("adoptedCallback"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.adopted_callback_shim(val);
         self
     }
     #[doc = "Change the `attributeChangedCallback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     pub fn attribute_changed_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("attributeChangedCallback"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.attribute_changed_callback_shim(val);
         self
     }
     #[doc = "Change the `connectedCallback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     pub fn connected_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("connectedCallback"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.connected_callback_shim(val);
         self
     }
     #[doc = "Change the `disconnectedCallback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     pub fn disconnected_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("disconnectedCallback"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.disconnected_callback_shim(val);
         self
     }
 }

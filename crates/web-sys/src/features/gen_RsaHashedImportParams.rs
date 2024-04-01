@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaHashedImportParams`*"]
     pub type RsaHashedImportParams;
+    #[wasm_bindgen(method, setter = "hash")]
+    fn hash_shim(this: &RsaHashedImportParams, val: &::wasm_bindgen::JsValue);
 }
 impl RsaHashedImportParams {
     #[doc = "Construct a new `RsaHashedImportParams`."]
@@ -25,13 +27,7 @@ impl RsaHashedImportParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaHashedImportParams`*"]
     pub fn hash(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("hash"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.hash_shim(val);
         self
     }
 }

@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub type FileSystemFlags;
+    #[wasm_bindgen(method, setter = "create")]
+    fn create_shim(this: &FileSystemFlags, val: bool);
+    #[wasm_bindgen(method, setter = "exclusive")]
+    fn exclusive_shim(this: &FileSystemFlags, val: bool);
 }
 impl FileSystemFlags {
     #[doc = "Construct a new `FileSystemFlags`."]
@@ -24,31 +28,14 @@ impl FileSystemFlags {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub fn create(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("create"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.create_shim(val);
         self
     }
     #[doc = "Change the `exclusive` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub fn exclusive(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("exclusive"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.exclusive_shim(val);
         self
     }
 }

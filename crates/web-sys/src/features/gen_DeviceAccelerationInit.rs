@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub type DeviceAccelerationInit;
+    #[wasm_bindgen(method, setter = "x")]
+    fn x_shim(this: &DeviceAccelerationInit, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "y")]
+    fn y_shim(this: &DeviceAccelerationInit, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "z")]
+    fn z_shim(this: &DeviceAccelerationInit, val: Option<f64>);
 }
 impl DeviceAccelerationInit {
     #[doc = "Construct a new `DeviceAccelerationInit`."]
@@ -24,39 +30,21 @@ impl DeviceAccelerationInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub fn x(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("x"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.x_shim(val);
         self
     }
     #[doc = "Change the `y` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub fn y(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("y"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.y_shim(val);
         self
     }
     #[doc = "Change the `z` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub fn z(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("z"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.z_shim(val);
         self
     }
 }

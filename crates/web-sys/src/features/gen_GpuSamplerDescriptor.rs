@@ -14,6 +14,35 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuSamplerDescriptor;
+    #[wasm_bindgen(method, setter = "label")]
+    fn label_shim(this: &GpuSamplerDescriptor, val: &str);
+    #[cfg(feature = "GpuAddressMode")]
+    #[wasm_bindgen(method, setter = "addressModeU")]
+    fn address_mode_u_shim(this: &GpuSamplerDescriptor, val: GpuAddressMode);
+    #[cfg(feature = "GpuAddressMode")]
+    #[wasm_bindgen(method, setter = "addressModeV")]
+    fn address_mode_v_shim(this: &GpuSamplerDescriptor, val: GpuAddressMode);
+    #[cfg(feature = "GpuAddressMode")]
+    #[wasm_bindgen(method, setter = "addressModeW")]
+    fn address_mode_w_shim(this: &GpuSamplerDescriptor, val: GpuAddressMode);
+    #[cfg(feature = "GpuCompareFunction")]
+    #[wasm_bindgen(method, setter = "compare")]
+    fn compare_shim(this: &GpuSamplerDescriptor, val: GpuCompareFunction);
+    #[wasm_bindgen(method, setter = "lodMaxClamp")]
+    fn lod_max_clamp_shim(this: &GpuSamplerDescriptor, val: f32);
+    #[wasm_bindgen(method, setter = "lodMinClamp")]
+    fn lod_min_clamp_shim(this: &GpuSamplerDescriptor, val: f32);
+    #[cfg(feature = "GpuFilterMode")]
+    #[wasm_bindgen(method, setter = "magFilter")]
+    fn mag_filter_shim(this: &GpuSamplerDescriptor, val: GpuFilterMode);
+    #[wasm_bindgen(method, setter = "maxAnisotropy")]
+    fn max_anisotropy_shim(this: &GpuSamplerDescriptor, val: u16);
+    #[cfg(feature = "GpuFilterMode")]
+    #[wasm_bindgen(method, setter = "minFilter")]
+    fn min_filter_shim(this: &GpuSamplerDescriptor, val: GpuFilterMode);
+    #[cfg(feature = "GpuMipmapFilterMode")]
+    #[wasm_bindgen(method, setter = "mipmapFilter")]
+    fn mipmap_filter_shim(this: &GpuSamplerDescriptor, val: GpuMipmapFilterMode);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuSamplerDescriptor {
@@ -36,13 +65,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.label_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -54,17 +77,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn address_mode_u(&mut self, val: GpuAddressMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("addressModeU"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.address_mode_u_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -76,17 +89,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn address_mode_v(&mut self, val: GpuAddressMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("addressModeV"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.address_mode_v_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -98,17 +101,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn address_mode_w(&mut self, val: GpuAddressMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("addressModeW"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.address_mode_w_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -120,17 +113,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn compare(&mut self, val: GpuCompareFunction) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("compare"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.compare_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -141,17 +124,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn lod_max_clamp(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("lodMaxClamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.lod_max_clamp_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -162,17 +135,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn lod_min_clamp(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("lodMinClamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.lod_min_clamp_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -184,17 +147,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mag_filter(&mut self, val: GpuFilterMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("magFilter"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mag_filter_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -205,17 +158,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn max_anisotropy(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maxAnisotropy"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.max_anisotropy_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -227,17 +170,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn min_filter(&mut self, val: GpuFilterMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("minFilter"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.min_filter_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -249,17 +182,7 @@ impl GpuSamplerDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mipmap_filter(&mut self, val: GpuMipmapFilterMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mipmapFilter"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mipmap_filter_shim(val);
         self
     }
 }

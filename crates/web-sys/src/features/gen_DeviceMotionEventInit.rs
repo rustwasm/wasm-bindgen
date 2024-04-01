@@ -10,6 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`*"]
     pub type DeviceMotionEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &DeviceMotionEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &DeviceMotionEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &DeviceMotionEventInit, val: bool);
+    #[cfg(feature = "DeviceAccelerationInit")]
+    #[wasm_bindgen(method, setter = "acceleration")]
+    fn acceleration_shim(this: &DeviceMotionEventInit, val: &DeviceAccelerationInit);
+    #[cfg(feature = "DeviceAccelerationInit")]
+    #[wasm_bindgen(method, setter = "accelerationIncludingGravity")]
+    fn acceleration_including_gravity_shim(
+        this: &DeviceMotionEventInit,
+        val: &DeviceAccelerationInit,
+    );
+    #[wasm_bindgen(method, setter = "interval")]
+    fn interval_shim(this: &DeviceMotionEventInit, val: Option<f64>);
+    #[cfg(feature = "DeviceRotationRateInit")]
+    #[wasm_bindgen(method, setter = "rotationRate")]
+    fn rotation_rate_shim(this: &DeviceMotionEventInit, val: &DeviceRotationRateInit);
 }
 impl DeviceMotionEventInit {
     #[doc = "Construct a new `DeviceMotionEventInit`."]
@@ -24,51 +44,21 @@ impl DeviceMotionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[cfg(feature = "DeviceAccelerationInit")]
@@ -76,17 +66,7 @@ impl DeviceMotionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`, `DeviceMotionEventInit`*"]
     pub fn acceleration(&mut self, val: &DeviceAccelerationInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("acceleration"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.acceleration_shim(val);
         self
     }
     #[cfg(feature = "DeviceAccelerationInit")]
@@ -94,34 +74,14 @@ impl DeviceMotionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`, `DeviceMotionEventInit`*"]
     pub fn acceleration_including_gravity(&mut self, val: &DeviceAccelerationInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("accelerationIncludingGravity"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.acceleration_including_gravity_shim(val);
         self
     }
     #[doc = "Change the `interval` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`*"]
     pub fn interval(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("interval"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.interval_shim(val);
         self
     }
     #[cfg(feature = "DeviceRotationRateInit")]
@@ -129,17 +89,7 @@ impl DeviceMotionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`, `DeviceRotationRateInit`*"]
     pub fn rotation_rate(&mut self, val: &DeviceRotationRateInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rotationRate"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rotation_rate_shim(val);
         self
     }
 }

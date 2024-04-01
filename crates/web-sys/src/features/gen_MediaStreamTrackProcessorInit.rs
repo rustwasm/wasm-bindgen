@@ -14,6 +14,11 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MediaStreamTrackProcessorInit;
+    #[wasm_bindgen(method, setter = "maxBufferSize")]
+    fn max_buffer_size_shim(this: &MediaStreamTrackProcessorInit, val: u16);
+    #[cfg(feature = "MediaStreamTrack")]
+    #[wasm_bindgen(method, setter = "track")]
+    fn track_shim(this: &MediaStreamTrackProcessorInit, val: &MediaStreamTrack);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaStreamTrackProcessorInit {
@@ -38,17 +43,7 @@ impl MediaStreamTrackProcessorInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn max_buffer_size(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maxBufferSize"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.max_buffer_size_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -60,13 +55,7 @@ impl MediaStreamTrackProcessorInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn track(&mut self, val: &MediaStreamTrack) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("track"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.track_shim(val);
         self
     }
 }

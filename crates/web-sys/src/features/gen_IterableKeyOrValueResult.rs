@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
     pub type IterableKeyOrValueResult;
+    #[wasm_bindgen(method, setter = "done")]
+    fn done_shim(this: &IterableKeyOrValueResult, val: bool);
+    #[wasm_bindgen(method, setter = "value")]
+    fn value_shim(this: &IterableKeyOrValueResult, val: &::wasm_bindgen::JsValue);
 }
 impl IterableKeyOrValueResult {
     #[doc = "Construct a new `IterableKeyOrValueResult`."]
@@ -24,26 +28,14 @@ impl IterableKeyOrValueResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
     pub fn done(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("done"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.done_shim(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
     pub fn value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("value"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.value_shim(val);
         self
     }
 }

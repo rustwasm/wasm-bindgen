@@ -14,6 +14,8 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbPermissionStorage;
+    #[wasm_bindgen(method, setter = "allowedDevices")]
+    fn allowed_devices_shim(this: &UsbPermissionStorage, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl UsbPermissionStorage {
@@ -36,17 +38,7 @@ impl UsbPermissionStorage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn allowed_devices(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("allowedDevices"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.allowed_devices_shim(val);
         self
     }
 }

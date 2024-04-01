@@ -10,6 +10,31 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub type TouchInit;
+    #[wasm_bindgen(method, setter = "clientX")]
+    fn client_x_shim(this: &TouchInit, val: i32);
+    #[wasm_bindgen(method, setter = "clientY")]
+    fn client_y_shim(this: &TouchInit, val: i32);
+    #[wasm_bindgen(method, setter = "force")]
+    fn force_shim(this: &TouchInit, val: f32);
+    #[wasm_bindgen(method, setter = "identifier")]
+    fn identifier_shim(this: &TouchInit, val: i32);
+    #[wasm_bindgen(method, setter = "pageX")]
+    fn page_x_shim(this: &TouchInit, val: i32);
+    #[wasm_bindgen(method, setter = "pageY")]
+    fn page_y_shim(this: &TouchInit, val: i32);
+    #[wasm_bindgen(method, setter = "radiusX")]
+    fn radius_x_shim(this: &TouchInit, val: f32);
+    #[wasm_bindgen(method, setter = "radiusY")]
+    fn radius_y_shim(this: &TouchInit, val: f32);
+    #[wasm_bindgen(method, setter = "rotationAngle")]
+    fn rotation_angle_shim(this: &TouchInit, val: f32);
+    #[wasm_bindgen(method, setter = "screenX")]
+    fn screen_x_shim(this: &TouchInit, val: i32);
+    #[wasm_bindgen(method, setter = "screenY")]
+    fn screen_y_shim(this: &TouchInit, val: i32);
+    #[cfg(feature = "EventTarget")]
+    #[wasm_bindgen(method, setter = "target")]
+    fn target_shim(this: &TouchInit, val: &EventTarget);
 }
 impl TouchInit {
     #[cfg(feature = "EventTarget")]
@@ -27,175 +52,77 @@ impl TouchInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn client_x(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clientX"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.client_x_shim(val);
         self
     }
     #[doc = "Change the `clientY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn client_y(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clientY"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.client_y_shim(val);
         self
     }
     #[doc = "Change the `force` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn force(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("force"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.force_shim(val);
         self
     }
     #[doc = "Change the `identifier` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn identifier(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("identifier"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.identifier_shim(val);
         self
     }
     #[doc = "Change the `pageX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn page_x(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("pageX"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.page_x_shim(val);
         self
     }
     #[doc = "Change the `pageY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn page_y(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("pageY"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.page_y_shim(val);
         self
     }
     #[doc = "Change the `radiusX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn radius_x(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("radiusX"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.radius_x_shim(val);
         self
     }
     #[doc = "Change the `radiusY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn radius_y(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("radiusY"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.radius_y_shim(val);
         self
     }
     #[doc = "Change the `rotationAngle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn rotation_angle(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rotationAngle"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rotation_angle_shim(val);
         self
     }
     #[doc = "Change the `screenX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn screen_x(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("screenX"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.screen_x_shim(val);
         self
     }
     #[doc = "Change the `screenY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchInit`*"]
     pub fn screen_y(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("screenY"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.screen_y_shim(val);
         self
     }
     #[cfg(feature = "EventTarget")]
@@ -203,14 +130,7 @@ impl TouchInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`, `TouchInit`*"]
     pub fn target(&mut self, val: &EventTarget) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("target"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.target_shim(val);
         self
     }
 }

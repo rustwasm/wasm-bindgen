@@ -14,6 +14,12 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AllowedBluetoothDevice;
+    #[wasm_bindgen(method, setter = "allowedServices")]
+    fn allowed_services_shim(this: &AllowedBluetoothDevice, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "deviceId")]
+    fn device_id_shim(this: &AllowedBluetoothDevice, val: &str);
+    #[wasm_bindgen(method, setter = "mayUseGATT")]
+    fn may_use_gatt_shim(this: &AllowedBluetoothDevice, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AllowedBluetoothDevice {
@@ -43,17 +49,7 @@ impl AllowedBluetoothDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn allowed_services(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("allowedServices"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.allowed_services_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -64,17 +60,7 @@ impl AllowedBluetoothDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn device_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("deviceId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.device_id_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -85,17 +71,7 @@ impl AllowedBluetoothDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn may_use_gatt(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mayUseGATT"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.may_use_gatt_shim(val);
         self
     }
 }

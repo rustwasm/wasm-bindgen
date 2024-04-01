@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyAlgorithm`*"]
     pub type KeyAlgorithm;
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &KeyAlgorithm, val: &str);
 }
 impl KeyAlgorithm {
     #[doc = "Construct a new `KeyAlgorithm`."]
@@ -25,13 +27,7 @@ impl KeyAlgorithm {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyAlgorithm`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
 }

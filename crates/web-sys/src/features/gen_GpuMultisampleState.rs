@@ -14,6 +14,12 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuMultisampleState;
+    #[wasm_bindgen(method, setter = "alphaToCoverageEnabled")]
+    fn alpha_to_coverage_enabled_shim(this: &GpuMultisampleState, val: bool);
+    #[wasm_bindgen(method, setter = "count")]
+    fn count_shim(this: &GpuMultisampleState, val: u32);
+    #[wasm_bindgen(method, setter = "mask")]
+    fn mask_shim(this: &GpuMultisampleState, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuMultisampleState {
@@ -36,17 +42,7 @@ impl GpuMultisampleState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn alpha_to_coverage_enabled(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("alphaToCoverageEnabled"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.alpha_to_coverage_enabled_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,13 +53,7 @@ impl GpuMultisampleState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("count"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.count_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -74,13 +64,7 @@ impl GpuMultisampleState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mask(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("mask"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mask_shim(val);
         self
     }
 }

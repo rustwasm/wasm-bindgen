@@ -14,6 +14,15 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuUncapturedErrorEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &GpuUncapturedErrorEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &GpuUncapturedErrorEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &GpuUncapturedErrorEventInit, val: bool);
+    #[cfg(feature = "GpuError")]
+    #[wasm_bindgen(method, setter = "error")]
+    fn error_shim(this: &GpuUncapturedErrorEventInit, val: &GpuError);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuUncapturedErrorEventInit {
@@ -38,17 +47,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,17 +58,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -80,17 +69,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -102,13 +81,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn error(&mut self, val: &GpuError) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("error"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.error_shim(val);
         self
     }
 }

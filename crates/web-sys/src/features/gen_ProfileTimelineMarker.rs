@@ -10,6 +10,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub type ProfileTimelineMarker;
+    #[wasm_bindgen(method, setter = "causeName")]
+    fn cause_name_shim(this: &ProfileTimelineMarker, val: &str);
+    #[wasm_bindgen(method, setter = "end")]
+    fn end_shim(this: &ProfileTimelineMarker, val: f64);
+    #[wasm_bindgen(method, setter = "endStack")]
+    fn end_stack_shim(this: &ProfileTimelineMarker, val: Option<&::js_sys::Object>);
+    #[wasm_bindgen(method, setter = "eventPhase")]
+    fn event_phase_shim(this: &ProfileTimelineMarker, val: u16);
+    #[wasm_bindgen(method, setter = "isAnimationOnly")]
+    fn is_animation_only_shim(this: &ProfileTimelineMarker, val: bool);
+    #[wasm_bindgen(method, setter = "isOffMainThread")]
+    fn is_off_main_thread_shim(this: &ProfileTimelineMarker, val: bool);
+    #[cfg(feature = "ProfileTimelineMessagePortOperationType")]
+    #[wasm_bindgen(method, setter = "messagePortOperation")]
+    fn message_port_operation_shim(
+        this: &ProfileTimelineMarker,
+        val: ProfileTimelineMessagePortOperationType,
+    );
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &ProfileTimelineMarker, val: &str);
+    #[wasm_bindgen(method, setter = "processType")]
+    fn process_type_shim(this: &ProfileTimelineMarker, val: u16);
+    #[wasm_bindgen(method, setter = "rectangles")]
+    fn rectangles_shim(this: &ProfileTimelineMarker, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "stack")]
+    fn stack_shim(this: &ProfileTimelineMarker, val: Option<&::js_sys::Object>);
+    #[wasm_bindgen(method, setter = "start")]
+    fn start_shim(this: &ProfileTimelineMarker, val: f64);
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &ProfileTimelineMarker, val: &str);
+    #[wasm_bindgen(method, setter = "unixTime")]
+    fn unix_time_shim(this: &ProfileTimelineMarker, val: f64);
+    #[cfg(feature = "ProfileTimelineWorkerOperationType")]
+    #[wasm_bindgen(method, setter = "workerOperation")]
+    fn worker_operation_shim(this: &ProfileTimelineMarker, val: ProfileTimelineWorkerOperationType);
 }
 impl ProfileTimelineMarker {
     #[doc = "Construct a new `ProfileTimelineMarker`."]
@@ -24,98 +59,42 @@ impl ProfileTimelineMarker {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn cause_name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("causeName"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cause_name_shim(val);
         self
     }
     #[doc = "Change the `end` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn end(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("end"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.end_shim(val);
         self
     }
     #[doc = "Change the `endStack` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn end_stack(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("endStack"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.end_stack_shim(val);
         self
     }
     #[doc = "Change the `eventPhase` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn event_phase(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("eventPhase"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.event_phase_shim(val);
         self
     }
     #[doc = "Change the `isAnimationOnly` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn is_animation_only(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isAnimationOnly"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_animation_only_shim(val);
         self
     }
     #[doc = "Change the `isOffMainThread` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn is_off_main_thread(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isOffMainThread"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_off_main_thread_shim(val);
         self
     }
     #[cfg(feature = "ProfileTimelineMessagePortOperationType")]
@@ -126,120 +105,56 @@ impl ProfileTimelineMarker {
         &mut self,
         val: ProfileTimelineMessagePortOperationType,
     ) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("messagePortOperation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.message_port_operation_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[doc = "Change the `processType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn process_type(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("processType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.process_type_shim(val);
         self
     }
     #[doc = "Change the `rectangles` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn rectangles(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rectangles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rectangles_shim(val);
         self
     }
     #[doc = "Change the `stack` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn stack(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("stack"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stack_shim(val);
         self
     }
     #[doc = "Change the `start` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn start(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("start"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.start_shim(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
     #[doc = "Change the `unixTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub fn unix_time(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unixTime"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unix_time_shim(val);
         self
     }
     #[cfg(feature = "ProfileTimelineWorkerOperationType")]
@@ -247,17 +162,7 @@ impl ProfileTimelineMarker {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`, `ProfileTimelineWorkerOperationType`*"]
     pub fn worker_operation(&mut self, val: ProfileTimelineWorkerOperationType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("workerOperation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.worker_operation_shim(val);
         self
     }
 }

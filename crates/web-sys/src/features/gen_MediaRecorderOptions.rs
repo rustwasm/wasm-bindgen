@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
     pub type MediaRecorderOptions;
+    #[wasm_bindgen(method, setter = "audioBitsPerSecond")]
+    fn audio_bits_per_second_shim(this: &MediaRecorderOptions, val: u32);
+    #[wasm_bindgen(method, setter = "bitsPerSecond")]
+    fn bits_per_second_shim(this: &MediaRecorderOptions, val: u32);
+    #[wasm_bindgen(method, setter = "mimeType")]
+    fn mime_type_shim(this: &MediaRecorderOptions, val: &str);
+    #[wasm_bindgen(method, setter = "videoBitsPerSecond")]
+    fn video_bits_per_second_shim(this: &MediaRecorderOptions, val: u32);
 }
 impl MediaRecorderOptions {
     #[doc = "Construct a new `MediaRecorderOptions`."]
@@ -24,68 +32,28 @@ impl MediaRecorderOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
     pub fn audio_bits_per_second(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("audioBitsPerSecond"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.audio_bits_per_second_shim(val);
         self
     }
     #[doc = "Change the `bitsPerSecond` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
     pub fn bits_per_second(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bitsPerSecond"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bits_per_second_shim(val);
         self
     }
     #[doc = "Change the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
     pub fn mime_type(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mimeType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mime_type_shim(val);
         self
     }
     #[doc = "Change the `videoBitsPerSecond` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
     pub fn video_bits_per_second(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("videoBitsPerSecond"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.video_bits_per_second_shim(val);
         self
     }
 }

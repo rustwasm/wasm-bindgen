@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
     pub type IdbObjectStoreParameters;
+    #[wasm_bindgen(method, setter = "autoIncrement")]
+    fn auto_increment_shim(this: &IdbObjectStoreParameters, val: bool);
+    #[wasm_bindgen(method, setter = "keyPath")]
+    fn key_path_shim(this: &IdbObjectStoreParameters, val: &::wasm_bindgen::JsValue);
 }
 impl IdbObjectStoreParameters {
     #[doc = "Construct a new `IdbObjectStoreParameters`."]
@@ -24,34 +28,14 @@ impl IdbObjectStoreParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
     pub fn auto_increment(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("autoIncrement"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.auto_increment_shim(val);
         self
     }
     #[doc = "Change the `keyPath` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
     pub fn key_path(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("keyPath"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.key_path_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
 }

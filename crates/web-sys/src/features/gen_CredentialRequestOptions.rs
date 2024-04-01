@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`*"]
     pub type CredentialRequestOptions;
+    #[cfg(feature = "PublicKeyCredentialRequestOptions")]
+    #[wasm_bindgen(method, setter = "publicKey")]
+    fn public_key_shim(this: &CredentialRequestOptions, val: &PublicKeyCredentialRequestOptions);
+    #[cfg(feature = "AbortSignal")]
+    #[wasm_bindgen(method, setter = "signal")]
+    fn signal_shim(this: &CredentialRequestOptions, val: &AbortSignal);
 }
 impl CredentialRequestOptions {
     #[doc = "Construct a new `CredentialRequestOptions`."]
@@ -25,17 +31,7 @@ impl CredentialRequestOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`, `PublicKeyCredentialRequestOptions`*"]
     pub fn public_key(&mut self, val: &PublicKeyCredentialRequestOptions) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("publicKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.public_key_shim(val);
         self
     }
     #[cfg(feature = "AbortSignal")]
@@ -43,14 +39,7 @@ impl CredentialRequestOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialRequestOptions`*"]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("signal"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.signal_shim(val);
         self
     }
 }

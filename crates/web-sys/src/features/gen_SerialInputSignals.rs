@@ -14,6 +14,14 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type SerialInputSignals;
+    #[wasm_bindgen(method, setter = "clearToSend")]
+    fn clear_to_send_shim(this: &SerialInputSignals, val: bool);
+    #[wasm_bindgen(method, setter = "dataCarrierDetect")]
+    fn data_carrier_detect_shim(this: &SerialInputSignals, val: bool);
+    #[wasm_bindgen(method, setter = "dataSetReady")]
+    fn data_set_ready_shim(this: &SerialInputSignals, val: bool);
+    #[wasm_bindgen(method, setter = "ringIndicator")]
+    fn ring_indicator_shim(this: &SerialInputSignals, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SerialInputSignals {
@@ -45,17 +53,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn clear_to_send(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clearToSend"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.clear_to_send_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -66,17 +64,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data_carrier_detect(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("dataCarrierDetect"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_carrier_detect_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -87,17 +75,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data_set_ready(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("dataSetReady"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_set_ready_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -108,17 +86,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn ring_indicator(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("ringIndicator"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ring_indicator_shim(val);
         self
     }
 }

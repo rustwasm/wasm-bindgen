@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
     pub type DnsCacheDict;
+    #[wasm_bindgen(method, setter = "entries")]
+    fn entries_shim(this: &DnsCacheDict, val: &::wasm_bindgen::JsValue);
 }
 impl DnsCacheDict {
     #[doc = "Construct a new `DnsCacheDict`."]
@@ -24,17 +26,7 @@ impl DnsCacheDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
     pub fn entries(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("entries"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.entries_shim(val);
         self
     }
 }

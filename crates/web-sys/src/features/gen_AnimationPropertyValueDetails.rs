@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub type AnimationPropertyValueDetails;
+    #[cfg(feature = "CompositeOperation")]
+    #[wasm_bindgen(method, setter = "composite")]
+    fn composite_shim(this: &AnimationPropertyValueDetails, val: CompositeOperation);
+    #[wasm_bindgen(method, setter = "easing")]
+    fn easing_shim(this: &AnimationPropertyValueDetails, val: &str);
+    #[wasm_bindgen(method, setter = "offset")]
+    fn offset_shim(this: &AnimationPropertyValueDetails, val: f64);
+    #[wasm_bindgen(method, setter = "value")]
+    fn value_shim(this: &AnimationPropertyValueDetails, val: &str);
 }
 impl AnimationPropertyValueDetails {
     #[cfg(feature = "CompositeOperation")]
@@ -28,58 +37,28 @@ impl AnimationPropertyValueDetails {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`, `CompositeOperation`*"]
     pub fn composite(&mut self, val: CompositeOperation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composite"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composite_shim(val);
         self
     }
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn easing(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("easing"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.easing_shim(val);
         self
     }
     #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn offset(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("offset"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.offset_shim(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn value(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("value"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.value_shim(val);
         self
     }
 }

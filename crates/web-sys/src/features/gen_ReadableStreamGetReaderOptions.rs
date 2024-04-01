@@ -10,6 +10,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`*"]
     pub type ReadableStreamGetReaderOptions;
+    #[cfg(feature = "ReadableStreamReaderMode")]
+    #[wasm_bindgen(method, setter = "mode")]
+    fn mode_shim(this: &ReadableStreamGetReaderOptions, val: ReadableStreamReaderMode);
 }
 impl ReadableStreamGetReaderOptions {
     #[doc = "Construct a new `ReadableStreamGetReaderOptions`."]
@@ -25,13 +28,7 @@ impl ReadableStreamGetReaderOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`, `ReadableStreamReaderMode`*"]
     pub fn mode(&mut self, val: ReadableStreamReaderMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("mode"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mode_shim(val);
         self
     }
 }

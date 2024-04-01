@@ -14,6 +14,17 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoColorSpaceInit;
+    #[wasm_bindgen(method, setter = "fullRange")]
+    fn full_range_shim(this: &VideoColorSpaceInit, val: bool);
+    #[cfg(feature = "VideoMatrixCoefficients")]
+    #[wasm_bindgen(method, setter = "matrix")]
+    fn matrix_shim(this: &VideoColorSpaceInit, val: VideoMatrixCoefficients);
+    #[cfg(feature = "VideoColorPrimaries")]
+    #[wasm_bindgen(method, setter = "primaries")]
+    fn primaries_shim(this: &VideoColorSpaceInit, val: VideoColorPrimaries);
+    #[cfg(feature = "VideoTransferCharacteristics")]
+    #[wasm_bindgen(method, setter = "transfer")]
+    fn transfer_shim(this: &VideoColorSpaceInit, val: VideoTransferCharacteristics);
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoColorSpaceInit {
@@ -36,17 +47,7 @@ impl VideoColorSpaceInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn full_range(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("fullRange"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.full_range_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,14 +59,7 @@ impl VideoColorSpaceInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn matrix(&mut self, val: VideoMatrixCoefficients) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("matrix"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.matrix_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -77,17 +71,7 @@ impl VideoColorSpaceInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn primaries(&mut self, val: VideoColorPrimaries) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("primaries"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.primaries_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -99,17 +83,7 @@ impl VideoColorSpaceInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn transfer(&mut self, val: VideoTransferCharacteristics) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("transfer"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.transfer_shim(val);
         self
     }
 }

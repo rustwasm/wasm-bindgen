@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub type WriteParams;
+    #[wasm_bindgen(method, setter = "data")]
+    fn data_shim(this: &WriteParams, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "position")]
+    fn position_shim(this: &WriteParams, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "size")]
+    fn size_shim(this: &WriteParams, val: Option<f64>);
+    #[cfg(feature = "WriteCommandType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &WriteParams, val: WriteCommandType);
 }
 impl WriteParams {
     #[cfg(feature = "WriteCommandType")]
@@ -26,43 +35,21 @@ impl WriteParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub fn data(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("data"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
     #[doc = "Change the `position` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub fn position(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("position"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.position_shim(val);
         self
     }
     #[doc = "Change the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub fn size(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("size"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.size_shim(val);
         self
     }
     #[cfg(feature = "WriteCommandType")]
@@ -70,13 +57,7 @@ impl WriteParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteCommandType`, `WriteParams`*"]
     pub fn type_(&mut self, val: WriteCommandType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

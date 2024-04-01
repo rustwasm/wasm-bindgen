@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PositionOptions`*"]
     pub type PositionOptions;
+    #[wasm_bindgen(method, setter = "enableHighAccuracy")]
+    fn enable_high_accuracy_shim(this: &PositionOptions, val: bool);
+    #[wasm_bindgen(method, setter = "maximumAge")]
+    fn maximum_age_shim(this: &PositionOptions, val: u32);
+    #[wasm_bindgen(method, setter = "timeout")]
+    fn timeout_shim(this: &PositionOptions, val: u32);
 }
 impl PositionOptions {
     #[doc = "Construct a new `PositionOptions`."]
@@ -24,51 +30,21 @@ impl PositionOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PositionOptions`*"]
     pub fn enable_high_accuracy(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("enableHighAccuracy"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.enable_high_accuracy_shim(val);
         self
     }
     #[doc = "Change the `maximumAge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PositionOptions`*"]
     pub fn maximum_age(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maximumAge"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.maximum_age_shim(val);
         self
     }
     #[doc = "Change the `timeout` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PositionOptions`*"]
     pub fn timeout(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timeout"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timeout_shim(val);
         self
     }
 }

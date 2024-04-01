@@ -10,6 +10,29 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
     pub type PublicKeyCredentialRequestOptions;
+    #[wasm_bindgen(method, setter = "allowCredentials")]
+    fn allow_credentials_shim(
+        this: &PublicKeyCredentialRequestOptions,
+        val: &::wasm_bindgen::JsValue,
+    );
+    #[wasm_bindgen(method, setter = "challenge")]
+    fn challenge_shim(this: &PublicKeyCredentialRequestOptions, val: &::js_sys::Object);
+    #[cfg(feature = "AuthenticationExtensionsClientInputs")]
+    #[wasm_bindgen(method, setter = "extensions")]
+    fn extensions_shim(
+        this: &PublicKeyCredentialRequestOptions,
+        val: &AuthenticationExtensionsClientInputs,
+    );
+    #[wasm_bindgen(method, setter = "rpId")]
+    fn rp_id_shim(this: &PublicKeyCredentialRequestOptions, val: &str);
+    #[wasm_bindgen(method, setter = "timeout")]
+    fn timeout_shim(this: &PublicKeyCredentialRequestOptions, val: u32);
+    #[cfg(feature = "UserVerificationRequirement")]
+    #[wasm_bindgen(method, setter = "userVerification")]
+    fn user_verification_shim(
+        this: &PublicKeyCredentialRequestOptions,
+        val: UserVerificationRequirement,
+    );
 }
 impl PublicKeyCredentialRequestOptions {
     #[doc = "Construct a new `PublicKeyCredentialRequestOptions`."]
@@ -25,34 +48,14 @@ impl PublicKeyCredentialRequestOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
     pub fn allow_credentials(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("allowCredentials"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.allow_credentials_shim(val);
         self
     }
     #[doc = "Change the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
     pub fn challenge(&mut self, val: &::js_sys::Object) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("challenge"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.challenge_shim(val);
         self
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
@@ -60,47 +63,21 @@ impl PublicKeyCredentialRequestOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `PublicKeyCredentialRequestOptions`*"]
     pub fn extensions(&mut self, val: &AuthenticationExtensionsClientInputs) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("extensions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.extensions_shim(val);
         self
     }
     #[doc = "Change the `rpId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
     pub fn rp_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rpId"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rp_id_shim(val);
         self
     }
     #[doc = "Change the `timeout` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
     pub fn timeout(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timeout"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timeout_shim(val);
         self
     }
     #[cfg(feature = "UserVerificationRequirement")]
@@ -108,17 +85,7 @@ impl PublicKeyCredentialRequestOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`, `UserVerificationRequirement`*"]
     pub fn user_verification(&mut self, val: UserVerificationRequirement) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("userVerification"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.user_verification_shim(val);
         self
     }
 }

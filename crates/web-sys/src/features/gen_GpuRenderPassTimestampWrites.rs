@@ -14,6 +14,13 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPassTimestampWrites;
+    #[wasm_bindgen(method, setter = "beginningOfPassWriteIndex")]
+    fn beginning_of_pass_write_index_shim(this: &GpuRenderPassTimestampWrites, val: u32);
+    #[wasm_bindgen(method, setter = "endOfPassWriteIndex")]
+    fn end_of_pass_write_index_shim(this: &GpuRenderPassTimestampWrites, val: u32);
+    #[cfg(feature = "GpuQuerySet")]
+    #[wasm_bindgen(method, setter = "querySet")]
+    fn query_set_shim(this: &GpuRenderPassTimestampWrites, val: &GpuQuerySet);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassTimestampWrites {
@@ -38,17 +45,7 @@ impl GpuRenderPassTimestampWrites {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn beginning_of_pass_write_index(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("beginningOfPassWriteIndex"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.beginning_of_pass_write_index_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,17 +56,7 @@ impl GpuRenderPassTimestampWrites {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn end_of_pass_write_index(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("endOfPassWriteIndex"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.end_of_pass_write_index_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,17 +68,7 @@ impl GpuRenderPassTimestampWrites {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn query_set(&mut self, val: &GpuQuerySet) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("querySet"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.query_set_shim(val);
         self
     }
 }

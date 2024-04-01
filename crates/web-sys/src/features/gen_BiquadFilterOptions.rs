@@ -10,6 +10,25 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     pub type BiquadFilterOptions;
+    #[wasm_bindgen(method, setter = "channelCount")]
+    fn channel_count_shim(this: &BiquadFilterOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[wasm_bindgen(method, setter = "channelCountMode")]
+    fn channel_count_mode_shim(this: &BiquadFilterOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[wasm_bindgen(method, setter = "channelInterpretation")]
+    fn channel_interpretation_shim(this: &BiquadFilterOptions, val: ChannelInterpretation);
+    #[wasm_bindgen(method, setter = "Q")]
+    fn q_shim(this: &BiquadFilterOptions, val: f32);
+    #[wasm_bindgen(method, setter = "detune")]
+    fn detune_shim(this: &BiquadFilterOptions, val: f32);
+    #[wasm_bindgen(method, setter = "frequency")]
+    fn frequency_shim(this: &BiquadFilterOptions, val: f32);
+    #[wasm_bindgen(method, setter = "gain")]
+    fn gain_shim(this: &BiquadFilterOptions, val: f32);
+    #[cfg(feature = "BiquadFilterType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &BiquadFilterOptions, val: BiquadFilterType);
 }
 impl BiquadFilterOptions {
     #[doc = "Construct a new `BiquadFilterOptions`."]
@@ -24,17 +43,7 @@ impl BiquadFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_shim(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -42,17 +51,7 @@ impl BiquadFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelCountMode`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCountMode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_mode_shim(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -60,74 +59,35 @@ impl BiquadFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelInterpretation`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelInterpretation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_interpretation_shim(val);
         self
     }
     #[doc = "Change the `Q` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     pub fn q(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("Q"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.q_shim(val);
         self
     }
     #[doc = "Change the `detune` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     pub fn detune(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("detune"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.detune_shim(val);
         self
     }
     #[doc = "Change the `frequency` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     pub fn frequency(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("frequency"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.frequency_shim(val);
         self
     }
     #[doc = "Change the `gain` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     pub fn gain(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("gain"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.gain_shim(val);
         self
     }
     #[cfg(feature = "BiquadFilterType")]
@@ -135,13 +95,7 @@ impl BiquadFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `BiquadFilterType`*"]
     pub fn type_(&mut self, val: BiquadFilterType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

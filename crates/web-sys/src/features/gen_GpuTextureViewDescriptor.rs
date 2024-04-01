@@ -14,6 +14,25 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuTextureViewDescriptor;
+    #[wasm_bindgen(method, setter = "label")]
+    fn label_shim(this: &GpuTextureViewDescriptor, val: &str);
+    #[wasm_bindgen(method, setter = "arrayLayerCount")]
+    fn array_layer_count_shim(this: &GpuTextureViewDescriptor, val: u32);
+    #[cfg(feature = "GpuTextureAspect")]
+    #[wasm_bindgen(method, setter = "aspect")]
+    fn aspect_shim(this: &GpuTextureViewDescriptor, val: GpuTextureAspect);
+    #[wasm_bindgen(method, setter = "baseArrayLayer")]
+    fn base_array_layer_shim(this: &GpuTextureViewDescriptor, val: u32);
+    #[wasm_bindgen(method, setter = "baseMipLevel")]
+    fn base_mip_level_shim(this: &GpuTextureViewDescriptor, val: u32);
+    #[cfg(feature = "GpuTextureViewDimension")]
+    #[wasm_bindgen(method, setter = "dimension")]
+    fn dimension_shim(this: &GpuTextureViewDescriptor, val: GpuTextureViewDimension);
+    #[cfg(feature = "GpuTextureFormat")]
+    #[wasm_bindgen(method, setter = "format")]
+    fn format_shim(this: &GpuTextureViewDescriptor, val: GpuTextureFormat);
+    #[wasm_bindgen(method, setter = "mipLevelCount")]
+    fn mip_level_count_shim(this: &GpuTextureViewDescriptor, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuTextureViewDescriptor {
@@ -36,13 +55,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.label_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -53,17 +66,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn array_layer_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("arrayLayerCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.array_layer_count_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,14 +78,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn aspect(&mut self, val: GpuTextureAspect) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("aspect"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.aspect_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -93,17 +89,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn base_array_layer(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("baseArrayLayer"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.base_array_layer_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -114,17 +100,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn base_mip_level(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("baseMipLevel"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.base_mip_level_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -136,17 +112,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn dimension(&mut self, val: GpuTextureViewDimension) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("dimension"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.dimension_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -158,14 +124,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn format(&mut self, val: GpuTextureFormat) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("format"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.format_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -176,17 +135,7 @@ impl GpuTextureViewDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mip_level_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mipLevelCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mip_level_count_shim(val);
         self
     }
 }

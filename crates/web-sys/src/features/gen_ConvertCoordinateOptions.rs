@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
     pub type ConvertCoordinateOptions;
+    #[cfg(feature = "CssBoxType")]
+    #[wasm_bindgen(method, setter = "fromBox")]
+    fn from_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
+    #[cfg(feature = "CssBoxType")]
+    #[wasm_bindgen(method, setter = "toBox")]
+    fn to_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
 }
 impl ConvertCoordinateOptions {
     #[doc = "Construct a new `ConvertCoordinateOptions`."]
@@ -25,17 +31,7 @@ impl ConvertCoordinateOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn from_box(&mut self, val: CssBoxType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("fromBox"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.from_box_shim(val);
         self
     }
     #[cfg(feature = "CssBoxType")]
@@ -43,13 +39,7 @@ impl ConvertCoordinateOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn to_box(&mut self, val: CssBoxType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("toBox"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.to_box_shim(val);
         self
     }
 }

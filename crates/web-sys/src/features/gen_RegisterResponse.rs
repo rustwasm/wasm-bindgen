@@ -10,6 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub type RegisterResponse;
+    #[wasm_bindgen(method, setter = "clientData")]
+    fn client_data_shim(this: &RegisterResponse, val: &str);
+    #[wasm_bindgen(method, setter = "errorCode")]
+    fn error_code_shim(this: &RegisterResponse, val: Option<u16>);
+    #[wasm_bindgen(method, setter = "errorMessage")]
+    fn error_message_shim(this: &RegisterResponse, val: Option<&str>);
+    #[wasm_bindgen(method, setter = "registrationData")]
+    fn registration_data_shim(this: &RegisterResponse, val: &str);
+    #[wasm_bindgen(method, setter = "version")]
+    fn version_shim(this: &RegisterResponse, val: &str);
 }
 impl RegisterResponse {
     #[doc = "Construct a new `RegisterResponse`."]
@@ -24,85 +34,35 @@ impl RegisterResponse {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn client_data(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clientData"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.client_data_shim(val);
         self
     }
     #[doc = "Change the `errorCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn error_code(&mut self, val: Option<u16>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("errorCode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.error_code_shim(val);
         self
     }
     #[doc = "Change the `errorMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn error_message(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("errorMessage"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.error_message_shim(val);
         self
     }
     #[doc = "Change the `registrationData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn registration_data(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("registrationData"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.registration_data_shim(val);
         self
     }
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub fn version(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("version"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.version_shim(val);
         self
     }
 }

@@ -10,6 +10,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomQuadInit`*"]
     pub type DomQuadInit;
+    #[cfg(feature = "DomPointInit")]
+    #[wasm_bindgen(method, setter = "p1")]
+    fn p1_shim(this: &DomQuadInit, val: &DomPointInit);
+    #[cfg(feature = "DomPointInit")]
+    #[wasm_bindgen(method, setter = "p2")]
+    fn p2_shim(this: &DomQuadInit, val: &DomPointInit);
+    #[cfg(feature = "DomPointInit")]
+    #[wasm_bindgen(method, setter = "p3")]
+    fn p3_shim(this: &DomQuadInit, val: &DomPointInit);
+    #[cfg(feature = "DomPointInit")]
+    #[wasm_bindgen(method, setter = "p4")]
+    fn p4_shim(this: &DomQuadInit, val: &DomPointInit);
 }
 impl DomQuadInit {
     #[doc = "Construct a new `DomQuadInit`."]
@@ -25,13 +37,7 @@ impl DomQuadInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     pub fn p1(&mut self, val: &DomPointInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("p1"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.p1_shim(val);
         self
     }
     #[cfg(feature = "DomPointInit")]
@@ -39,13 +45,7 @@ impl DomQuadInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     pub fn p2(&mut self, val: &DomPointInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("p2"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.p2_shim(val);
         self
     }
     #[cfg(feature = "DomPointInit")]
@@ -53,13 +53,7 @@ impl DomQuadInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     pub fn p3(&mut self, val: &DomPointInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("p3"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.p3_shim(val);
         self
     }
     #[cfg(feature = "DomPointInit")]
@@ -67,13 +61,7 @@ impl DomQuadInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     pub fn p4(&mut self, val: &DomPointInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("p4"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.p4_shim(val);
         self
     }
 }

@@ -14,6 +14,10 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AudioEncoderInit;
+    #[wasm_bindgen(method, setter = "error")]
+    fn error_shim(this: &AudioEncoderInit, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "output")]
+    fn output_shim(this: &AudioEncoderInit, val: &::js_sys::Function);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AudioEncoderInit {
@@ -38,13 +42,7 @@ impl AudioEncoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn error(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("error"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.error_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -55,14 +53,7 @@ impl AudioEncoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn output(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("output"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.output_shim(val);
         self
     }
 }

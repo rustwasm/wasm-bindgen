@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
     pub type RequestMediaKeySystemAccessNotification;
+    #[wasm_bindgen(method, setter = "keySystem")]
+    fn key_system_shim(this: &RequestMediaKeySystemAccessNotification, val: &str);
+    #[cfg(feature = "MediaKeySystemStatus")]
+    #[wasm_bindgen(method, setter = "status")]
+    fn status_shim(this: &RequestMediaKeySystemAccessNotification, val: MediaKeySystemStatus);
 }
 impl RequestMediaKeySystemAccessNotification {
     #[cfg(feature = "MediaKeySystemStatus")]
@@ -27,17 +32,7 @@ impl RequestMediaKeySystemAccessNotification {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
     pub fn key_system(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("keySystem"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.key_system_shim(val);
         self
     }
     #[cfg(feature = "MediaKeySystemStatus")]
@@ -45,14 +40,7 @@ impl RequestMediaKeySystemAccessNotification {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemStatus`, `RequestMediaKeySystemAccessNotification`*"]
     pub fn status(&mut self, val: MediaKeySystemStatus) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("status"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.status_shim(val);
         self
     }
 }

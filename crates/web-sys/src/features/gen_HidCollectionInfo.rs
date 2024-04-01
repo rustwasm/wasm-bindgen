@@ -14,6 +14,20 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type HidCollectionInfo;
+    #[wasm_bindgen(method, setter = "children")]
+    fn children_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "featureReports")]
+    fn feature_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "inputReports")]
+    fn input_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "outputReports")]
+    fn output_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &HidCollectionInfo, val: u8);
+    #[wasm_bindgen(method, setter = "usage")]
+    fn usage_shim(this: &HidCollectionInfo, val: u16);
+    #[wasm_bindgen(method, setter = "usagePage")]
+    fn usage_page_shim(this: &HidCollectionInfo, val: u16);
 }
 #[cfg(web_sys_unstable_apis)]
 impl HidCollectionInfo {
@@ -36,17 +50,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn children(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("children"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.children_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,17 +61,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn feature_reports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("featureReports"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.feature_reports_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -78,17 +72,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn input_reports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("inputReports"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.input_reports_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -99,17 +83,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn output_reports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("outputReports"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.output_reports_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -120,13 +94,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: u8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -137,13 +105,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("usage"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usage_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -154,17 +116,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage_page(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("usagePage"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usage_page_shim(val);
         self
     }
 }

@@ -14,6 +14,22 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type ImageDecoderInit;
+    #[cfg(feature = "ColorSpaceConversion")]
+    #[wasm_bindgen(method, setter = "colorSpaceConversion")]
+    fn color_space_conversion_shim(this: &ImageDecoderInit, val: ColorSpaceConversion);
+    #[wasm_bindgen(method, setter = "data")]
+    fn data_shim(this: &ImageDecoderInit, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "desiredHeight")]
+    fn desired_height_shim(this: &ImageDecoderInit, val: u32);
+    #[wasm_bindgen(method, setter = "desiredWidth")]
+    fn desired_width_shim(this: &ImageDecoderInit, val: u32);
+    #[wasm_bindgen(method, setter = "preferAnimation")]
+    fn prefer_animation_shim(this: &ImageDecoderInit, val: bool);
+    #[cfg(feature = "PremultiplyAlpha")]
+    #[wasm_bindgen(method, setter = "premultiplyAlpha")]
+    fn premultiply_alpha_shim(this: &ImageDecoderInit, val: PremultiplyAlpha);
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &ImageDecoderInit, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl ImageDecoderInit {
@@ -39,17 +55,7 @@ impl ImageDecoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn color_space_conversion(&mut self, val: ColorSpaceConversion) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("colorSpaceConversion"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.color_space_conversion_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -60,13 +66,7 @@ impl ImageDecoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("data"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -77,17 +77,7 @@ impl ImageDecoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn desired_height(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("desiredHeight"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.desired_height_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -98,17 +88,7 @@ impl ImageDecoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn desired_width(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("desiredWidth"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.desired_width_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -119,17 +99,7 @@ impl ImageDecoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn prefer_animation(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("preferAnimation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.prefer_animation_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -141,17 +111,7 @@ impl ImageDecoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn premultiply_alpha(&mut self, val: PremultiplyAlpha) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("premultiplyAlpha"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.premultiply_alpha_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -162,13 +122,7 @@ impl ImageDecoderInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

@@ -10,6 +10,55 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub type RtcInboundRtpStreamStats;
+    #[wasm_bindgen(method, setter = "id")]
+    fn id_shim(this: &RtcInboundRtpStreamStats, val: &str);
+    #[wasm_bindgen(method, setter = "timestamp")]
+    fn timestamp_shim(this: &RtcInboundRtpStreamStats, val: f64);
+    #[cfg(feature = "RtcStatsType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &RtcInboundRtpStreamStats, val: RtcStatsType);
+    #[wasm_bindgen(method, setter = "bitrateMean")]
+    fn bitrate_mean_shim(this: &RtcInboundRtpStreamStats, val: f64);
+    #[wasm_bindgen(method, setter = "bitrateStdDev")]
+    fn bitrate_std_dev_shim(this: &RtcInboundRtpStreamStats, val: f64);
+    #[wasm_bindgen(method, setter = "codecId")]
+    fn codec_id_shim(this: &RtcInboundRtpStreamStats, val: &str);
+    #[wasm_bindgen(method, setter = "firCount")]
+    fn fir_count_shim(this: &RtcInboundRtpStreamStats, val: u32);
+    #[wasm_bindgen(method, setter = "framerateMean")]
+    fn framerate_mean_shim(this: &RtcInboundRtpStreamStats, val: f64);
+    #[wasm_bindgen(method, setter = "framerateStdDev")]
+    fn framerate_std_dev_shim(this: &RtcInboundRtpStreamStats, val: f64);
+    #[wasm_bindgen(method, setter = "isRemote")]
+    fn is_remote_shim(this: &RtcInboundRtpStreamStats, val: bool);
+    #[wasm_bindgen(method, setter = "mediaTrackId")]
+    fn media_track_id_shim(this: &RtcInboundRtpStreamStats, val: &str);
+    #[wasm_bindgen(method, setter = "mediaType")]
+    fn media_type_shim(this: &RtcInboundRtpStreamStats, val: &str);
+    #[wasm_bindgen(method, setter = "nackCount")]
+    fn nack_count_shim(this: &RtcInboundRtpStreamStats, val: u32);
+    #[wasm_bindgen(method, setter = "pliCount")]
+    fn pli_count_shim(this: &RtcInboundRtpStreamStats, val: u32);
+    #[wasm_bindgen(method, setter = "remoteId")]
+    fn remote_id_shim(this: &RtcInboundRtpStreamStats, val: &str);
+    #[wasm_bindgen(method, setter = "ssrc")]
+    fn ssrc_shim(this: &RtcInboundRtpStreamStats, val: &str);
+    #[wasm_bindgen(method, setter = "transportId")]
+    fn transport_id_shim(this: &RtcInboundRtpStreamStats, val: &str);
+    #[wasm_bindgen(method, setter = "bytesReceived")]
+    fn bytes_received_shim(this: &RtcInboundRtpStreamStats, val: f64);
+    #[wasm_bindgen(method, setter = "discardedPackets")]
+    fn discarded_packets_shim(this: &RtcInboundRtpStreamStats, val: u32);
+    #[wasm_bindgen(method, setter = "framesDecoded")]
+    fn frames_decoded_shim(this: &RtcInboundRtpStreamStats, val: u32);
+    #[wasm_bindgen(method, setter = "jitter")]
+    fn jitter_shim(this: &RtcInboundRtpStreamStats, val: f64);
+    #[wasm_bindgen(method, setter = "packetsLost")]
+    fn packets_lost_shim(this: &RtcInboundRtpStreamStats, val: u32);
+    #[wasm_bindgen(method, setter = "packetsReceived")]
+    fn packets_received_shim(this: &RtcInboundRtpStreamStats, val: u32);
+    #[wasm_bindgen(method, setter = "roundTripTime")]
+    fn round_trip_time_shim(this: &RtcInboundRtpStreamStats, val: i32);
 }
 impl RtcInboundRtpStreamStats {
     #[doc = "Construct a new `RtcInboundRtpStreamStats`."]
@@ -24,30 +73,14 @@ impl RtcInboundRtpStreamStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("id"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.id_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timestamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timestamp_shim(val);
         self
     }
     #[cfg(feature = "RtcStatsType")]
@@ -55,363 +88,154 @@ impl RtcInboundRtpStreamStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`, `RtcStatsType`*"]
     pub fn type_(&mut self, val: RtcStatsType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
     #[doc = "Change the `bitrateMean` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn bitrate_mean(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bitrateMean"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bitrate_mean_shim(val);
         self
     }
     #[doc = "Change the `bitrateStdDev` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn bitrate_std_dev(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bitrateStdDev"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bitrate_std_dev_shim(val);
         self
     }
     #[doc = "Change the `codecId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn codec_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("codecId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.codec_id_shim(val);
         self
     }
     #[doc = "Change the `firCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn fir_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("firCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.fir_count_shim(val);
         self
     }
     #[doc = "Change the `framerateMean` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn framerate_mean(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("framerateMean"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.framerate_mean_shim(val);
         self
     }
     #[doc = "Change the `framerateStdDev` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn framerate_std_dev(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("framerateStdDev"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.framerate_std_dev_shim(val);
         self
     }
     #[doc = "Change the `isRemote` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn is_remote(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isRemote"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_remote_shim(val);
         self
     }
     #[doc = "Change the `mediaTrackId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn media_track_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mediaTrackId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.media_track_id_shim(val);
         self
     }
     #[doc = "Change the `mediaType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn media_type(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mediaType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.media_type_shim(val);
         self
     }
     #[doc = "Change the `nackCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn nack_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("nackCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.nack_count_shim(val);
         self
     }
     #[doc = "Change the `pliCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn pli_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("pliCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.pli_count_shim(val);
         self
     }
     #[doc = "Change the `remoteId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn remote_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("remoteId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.remote_id_shim(val);
         self
     }
     #[doc = "Change the `ssrc` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn ssrc(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ssrc"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ssrc_shim(val);
         self
     }
     #[doc = "Change the `transportId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn transport_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("transportId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.transport_id_shim(val);
         self
     }
     #[doc = "Change the `bytesReceived` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn bytes_received(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bytesReceived"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bytes_received_shim(val);
         self
     }
     #[doc = "Change the `discardedPackets` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn discarded_packets(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("discardedPackets"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.discarded_packets_shim(val);
         self
     }
     #[doc = "Change the `framesDecoded` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn frames_decoded(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("framesDecoded"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.frames_decoded_shim(val);
         self
     }
     #[doc = "Change the `jitter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn jitter(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("jitter"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.jitter_shim(val);
         self
     }
     #[doc = "Change the `packetsLost` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn packets_lost(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("packetsLost"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.packets_lost_shim(val);
         self
     }
     #[doc = "Change the `packetsReceived` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn packets_received(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("packetsReceived"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.packets_received_shim(val);
         self
     }
     #[doc = "Change the `roundTripTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     pub fn round_trip_time(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("roundTripTime"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.round_trip_time_shim(val);
         self
     }
 }

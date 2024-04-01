@@ -14,6 +14,15 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuBlendComponent;
+    #[cfg(feature = "GpuBlendFactor")]
+    #[wasm_bindgen(method, setter = "dstFactor")]
+    fn dst_factor_shim(this: &GpuBlendComponent, val: GpuBlendFactor);
+    #[cfg(feature = "GpuBlendOperation")]
+    #[wasm_bindgen(method, setter = "operation")]
+    fn operation_shim(this: &GpuBlendComponent, val: GpuBlendOperation);
+    #[cfg(feature = "GpuBlendFactor")]
+    #[wasm_bindgen(method, setter = "srcFactor")]
+    fn src_factor_shim(this: &GpuBlendComponent, val: GpuBlendFactor);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBlendComponent {
@@ -37,17 +46,7 @@ impl GpuBlendComponent {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn dst_factor(&mut self, val: GpuBlendFactor) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("dstFactor"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.dst_factor_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,17 +58,7 @@ impl GpuBlendComponent {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn operation(&mut self, val: GpuBlendOperation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("operation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.operation_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,17 +70,7 @@ impl GpuBlendComponent {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn src_factor(&mut self, val: GpuBlendFactor) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("srcFactor"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.src_factor_shim(val);
         self
     }
 }

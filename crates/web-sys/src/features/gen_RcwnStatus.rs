@@ -10,6 +10,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub type RcwnStatus;
+    #[wasm_bindgen(method, setter = "cacheNotSlowCount")]
+    fn cache_not_slow_count_shim(this: &RcwnStatus, val: u32);
+    #[wasm_bindgen(method, setter = "cacheSlowCount")]
+    fn cache_slow_count_shim(this: &RcwnStatus, val: u32);
+    #[wasm_bindgen(method, setter = "perfStats")]
+    fn perf_stats_shim(this: &RcwnStatus, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "rcwnCacheWonCount")]
+    fn rcwn_cache_won_count_shim(this: &RcwnStatus, val: u32);
+    #[wasm_bindgen(method, setter = "rcwnNetWonCount")]
+    fn rcwn_net_won_count_shim(this: &RcwnStatus, val: u32);
+    #[wasm_bindgen(method, setter = "totalNetworkRequests")]
+    fn total_network_requests_shim(this: &RcwnStatus, val: u32);
 }
 impl RcwnStatus {
     #[doc = "Construct a new `RcwnStatus`."]
@@ -24,102 +36,42 @@ impl RcwnStatus {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn cache_not_slow_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cacheNotSlowCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cache_not_slow_count_shim(val);
         self
     }
     #[doc = "Change the `cacheSlowCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn cache_slow_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cacheSlowCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cache_slow_count_shim(val);
         self
     }
     #[doc = "Change the `perfStats` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn perf_stats(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("perfStats"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.perf_stats_shim(val);
         self
     }
     #[doc = "Change the `rcwnCacheWonCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn rcwn_cache_won_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rcwnCacheWonCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rcwn_cache_won_count_shim(val);
         self
     }
     #[doc = "Change the `rcwnNetWonCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn rcwn_net_won_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rcwnNetWonCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rcwn_net_won_count_shim(val);
         self
     }
     #[doc = "Change the `totalNetworkRequests` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
     pub fn total_network_requests(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("totalNetworkRequests"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.total_network_requests_shim(val);
         self
     }
 }

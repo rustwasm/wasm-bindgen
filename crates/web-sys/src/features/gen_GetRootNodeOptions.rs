@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetRootNodeOptions`*"]
     pub type GetRootNodeOptions;
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &GetRootNodeOptions, val: bool);
 }
 impl GetRootNodeOptions {
     #[doc = "Construct a new `GetRootNodeOptions`."]
@@ -24,17 +26,7 @@ impl GetRootNodeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetRootNodeOptions`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
 }

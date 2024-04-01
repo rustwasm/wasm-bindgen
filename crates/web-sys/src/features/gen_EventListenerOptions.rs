@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
     pub type EventListenerOptions;
+    #[wasm_bindgen(method, setter = "capture")]
+    fn capture_shim(this: &EventListenerOptions, val: bool);
 }
 impl EventListenerOptions {
     #[doc = "Construct a new `EventListenerOptions`."]
@@ -24,17 +26,7 @@ impl EventListenerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
     pub fn capture(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("capture"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.capture_shim(val);
         self
     }
 }

@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     pub type OfflineAudioContextOptions;
+    #[wasm_bindgen(method, setter = "length")]
+    fn length_shim(this: &OfflineAudioContextOptions, val: u32);
+    #[wasm_bindgen(method, setter = "numberOfChannels")]
+    fn number_of_channels_shim(this: &OfflineAudioContextOptions, val: u32);
+    #[wasm_bindgen(method, setter = "sampleRate")]
+    fn sample_rate_shim(this: &OfflineAudioContextOptions, val: f32);
 }
 impl OfflineAudioContextOptions {
     #[doc = "Construct a new `OfflineAudioContextOptions`."]
@@ -26,48 +32,21 @@ impl OfflineAudioContextOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     pub fn length(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("length"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.length_shim(val);
         self
     }
     #[doc = "Change the `numberOfChannels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     pub fn number_of_channels(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("numberOfChannels"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.number_of_channels_shim(val);
         self
     }
     #[doc = "Change the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     pub fn sample_rate(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sampleRate"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sample_rate_shim(val);
         self
     }
 }

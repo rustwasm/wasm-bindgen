@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
     pub type PerformanceObserverInit;
+    #[wasm_bindgen(method, setter = "buffered")]
+    fn buffered_shim(this: &PerformanceObserverInit, val: bool);
+    #[wasm_bindgen(method, setter = "entryTypes")]
+    fn entry_types_shim(this: &PerformanceObserverInit, val: &::wasm_bindgen::JsValue);
 }
 impl PerformanceObserverInit {
     #[doc = "Construct a new `PerformanceObserverInit`."]
@@ -25,34 +29,14 @@ impl PerformanceObserverInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
     pub fn buffered(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("buffered"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.buffered_shim(val);
         self
     }
     #[doc = "Change the `entryTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
     pub fn entry_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("entryTypes"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.entry_types_shim(val);
         self
     }
 }

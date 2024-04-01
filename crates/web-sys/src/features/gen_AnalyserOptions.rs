@@ -10,6 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`*"]
     pub type AnalyserOptions;
+    #[wasm_bindgen(method, setter = "channelCount")]
+    fn channel_count_shim(this: &AnalyserOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[wasm_bindgen(method, setter = "channelCountMode")]
+    fn channel_count_mode_shim(this: &AnalyserOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[wasm_bindgen(method, setter = "channelInterpretation")]
+    fn channel_interpretation_shim(this: &AnalyserOptions, val: ChannelInterpretation);
+    #[wasm_bindgen(method, setter = "fftSize")]
+    fn fft_size_shim(this: &AnalyserOptions, val: u32);
+    #[wasm_bindgen(method, setter = "maxDecibels")]
+    fn max_decibels_shim(this: &AnalyserOptions, val: f64);
+    #[wasm_bindgen(method, setter = "minDecibels")]
+    fn min_decibels_shim(this: &AnalyserOptions, val: f64);
+    #[wasm_bindgen(method, setter = "smoothingTimeConstant")]
+    fn smoothing_time_constant_shim(this: &AnalyserOptions, val: f64);
 }
 impl AnalyserOptions {
     #[doc = "Construct a new `AnalyserOptions`."]
@@ -24,17 +40,7 @@ impl AnalyserOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_shim(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -42,17 +48,7 @@ impl AnalyserOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`, `ChannelCountMode`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelCountMode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_count_mode_shim(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -60,85 +56,35 @@ impl AnalyserOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`, `ChannelInterpretation`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channelInterpretation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channel_interpretation_shim(val);
         self
     }
     #[doc = "Change the `fftSize` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`*"]
     pub fn fft_size(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("fftSize"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.fft_size_shim(val);
         self
     }
     #[doc = "Change the `maxDecibels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`*"]
     pub fn max_decibels(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maxDecibels"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.max_decibels_shim(val);
         self
     }
     #[doc = "Change the `minDecibels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`*"]
     pub fn min_decibels(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("minDecibels"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.min_decibels_shim(val);
         self
     }
     #[doc = "Change the `smoothingTimeConstant` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserOptions`*"]
     pub fn smoothing_time_constant(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("smoothingTimeConstant"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.smoothing_time_constant_shim(val);
         self
     }
 }

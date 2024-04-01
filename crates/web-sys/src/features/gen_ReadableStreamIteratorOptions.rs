@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
     pub type ReadableStreamIteratorOptions;
+    #[wasm_bindgen(method, setter = "preventCancel")]
+    fn prevent_cancel_shim(this: &ReadableStreamIteratorOptions, val: bool);
 }
 impl ReadableStreamIteratorOptions {
     #[doc = "Construct a new `ReadableStreamIteratorOptions`."]
@@ -24,17 +26,7 @@ impl ReadableStreamIteratorOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
     pub fn prevent_cancel(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("preventCancel"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.prevent_cancel_shim(val);
         self
     }
 }

@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
     pub type EcdhKeyDeriveParams;
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &EcdhKeyDeriveParams, val: &str);
+    #[cfg(feature = "CryptoKey")]
+    #[wasm_bindgen(method, setter = "public")]
+    fn public_shim(this: &EcdhKeyDeriveParams, val: &CryptoKey);
 }
 impl EcdhKeyDeriveParams {
     #[cfg(feature = "CryptoKey")]
@@ -27,13 +32,7 @@ impl EcdhKeyDeriveParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[cfg(feature = "CryptoKey")]
@@ -41,14 +40,7 @@ impl EcdhKeyDeriveParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
     pub fn public(&mut self, val: &CryptoKey) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("public"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.public_shim(val);
         self
     }
 }

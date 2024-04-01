@@ -14,6 +14,34 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type BluetoothAdvertisingEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &BluetoothAdvertisingEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &BluetoothAdvertisingEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &BluetoothAdvertisingEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "appearance")]
+    fn appearance_shim(this: &BluetoothAdvertisingEventInit, val: u16);
+    #[cfg(feature = "BluetoothDevice")]
+    #[wasm_bindgen(method, setter = "device")]
+    fn device_shim(this: &BluetoothAdvertisingEventInit, val: &BluetoothDevice);
+    #[cfg(feature = "BluetoothManufacturerDataMap")]
+    #[wasm_bindgen(method, setter = "manufacturerData")]
+    fn manufacturer_data_shim(
+        this: &BluetoothAdvertisingEventInit,
+        val: &BluetoothManufacturerDataMap,
+    );
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &BluetoothAdvertisingEventInit, val: &str);
+    #[wasm_bindgen(method, setter = "rssi")]
+    fn rssi_shim(this: &BluetoothAdvertisingEventInit, val: i8);
+    #[cfg(feature = "BluetoothServiceDataMap")]
+    #[wasm_bindgen(method, setter = "serviceData")]
+    fn service_data_shim(this: &BluetoothAdvertisingEventInit, val: &BluetoothServiceDataMap);
+    #[wasm_bindgen(method, setter = "txPower")]
+    fn tx_power_shim(this: &BluetoothAdvertisingEventInit, val: i8);
+    #[wasm_bindgen(method, setter = "uuids")]
+    fn uuids_shim(this: &BluetoothAdvertisingEventInit, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothAdvertisingEventInit {
@@ -38,17 +66,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,17 +77,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -80,17 +88,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -101,17 +99,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn appearance(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("appearance"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.appearance_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -123,14 +111,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn device(&mut self, val: &BluetoothDevice) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("device"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.device_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -142,17 +123,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn manufacturer_data(&mut self, val: &BluetoothManufacturerDataMap) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("manufacturerData"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.manufacturer_data_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -163,13 +134,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -180,13 +145,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn rssi(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rssi"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rssi_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -198,17 +157,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn service_data(&mut self, val: &BluetoothServiceDataMap) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("serviceData"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.service_data_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -219,17 +168,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn tx_power(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("txPower"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.tx_power_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -240,13 +179,7 @@ impl BluetoothAdvertisingEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn uuids(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("uuids"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.uuids_shim(val);
         self
     }
 }
