@@ -9,7 +9,6 @@ use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
 use crate::traverse::TraverseType;
-use crate::util::option_ty;
 use crate::util::shared_ref;
 use crate::util::{get_cfg_features, mdn_doc, required_doc_string, snake_case_ident};
 use crate::Options;
@@ -629,6 +628,7 @@ pub struct DictionaryField {
     pub name: Ident,
     pub js_name: String,
     pub ty: Type,
+    pub is_js_value_ref_option_type: bool,
     pub required: bool,
     pub unstable: bool,
 }
@@ -647,9 +647,8 @@ impl DictionaryField {
             leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]),
             false,
         );
-        let js_value_ref_option_type = option_ty(js_value_ref_type.clone());
 
-        let ty = if ty == &js_value_ref_option_type {
+        let ty = if self.is_js_value_ref_option_type {
             js_value_ref_type
         } else {
             ty.clone()
@@ -672,6 +671,7 @@ impl DictionaryField {
             name,
             js_name,
             ty,
+            is_js_value_ref_option_type: _,
             required: _,
             unstable,
         } = self;
@@ -690,9 +690,8 @@ impl DictionaryField {
             leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]),
             false,
         );
-        let js_value_ref_option_type = option_ty(js_value_ref_type.clone());
 
-        let shim_args = if ty == &js_value_ref_option_type {
+        let shim_args = if self.is_js_value_ref_option_type {
             quote! { val.unwrap_or(#js_value_ref_type::NULL) }
         } else {
             quote! { val }

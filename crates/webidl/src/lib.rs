@@ -30,6 +30,7 @@ use crate::util::{
 };
 use anyhow::Context;
 use anyhow::Result;
+use idl_type::IdlType;
 use proc_macro2::{Ident, TokenStream};
 use quote::ToTokens;
 use sourcefile::SourceFile;
@@ -376,10 +377,22 @@ impl<'src> FirstPassRecord<'src> {
             false => is_type_unstable(&field.type_, unstable_types),
         };
 
+        let idl_type = field.type_.to_idl_type(self);
+
+        let is_js_value_ref_option_type = match &idl_type {
+            idl_type::IdlType::Nullable(ty) => match **ty {
+                idl_type::IdlType::Any => true,
+                IdlType::FrozenArray(ref _idl_type) | IdlType::Sequence(ref _idl_type) => true,
+                idl_type::IdlType::Union(ref types) => !types
+                    .iter()
+                    .all(|idl_type| matches!(idl_type, IdlType::Interface(..))),
+                _ => false,
+            },
+            _ => false,
+        };
+
         // use argument position now as we're just binding setters
-        let ty = field
-            .type_
-            .to_idl_type(self)
+        let ty = idl_type
             .to_syn_type(TypePosition::Argument)
             .unwrap_or(None)?;
 
@@ -424,6 +437,7 @@ impl<'src> FirstPassRecord<'src> {
             name: rust_ident(&snake_case_ident(field.identifier.0)),
             js_name: field.identifier.0.to_string(),
             ty,
+            is_js_value_ref_option_type,
             unstable: unstable_override,
         })
     }
@@ -767,6 +781,7 @@ impl<'src> FirstPassRecord<'src> {
                             .to_syn_type(pos)
                             .unwrap()
                             .unwrap(),
+                        is_js_value_ref_option_type: false,
                         unstable: false,
                     })
                 }
