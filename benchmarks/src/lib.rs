@@ -11,6 +11,9 @@ extern "C" {
     #[wasm_bindgen(js_name = add)]
     fn js_add(a: i32, b: i32) -> i32;
 
+    #[wasm_bindgen(js_name = use_baz)]
+    fn js_use_baz(val: Baz);
+
     pub type Foo;
     #[wasm_bindgen(method, final, js_name = bar)]
     fn bar_final(this: &Foo);
@@ -21,6 +24,14 @@ extern "C" {
     fn doesnt_throw();
     #[wasm_bindgen(catch, js_name = jsthunk)]
     fn doesnt_throw_catch() -> Result<(), JsValue>;
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone)]
+pub enum Baz {
+    Variant1 = "variant-1",
+    Variant2 = "variant-2",
+    Variant3 = "variant-3",
 }
 
 #[wasm_bindgen]
@@ -78,6 +89,13 @@ pub fn call_foo_bar_final_n_times(n: usize, js_foo: &Foo) {
 pub fn call_foo_bar_structural_n_times(n: usize, js_foo: &Foo) {
     for _ in 0..n {
         js_foo.bar_structural();
+    }
+}
+
+#[wasm_bindgen]
+pub fn call_use_baz_n_times(n: usize) {
+    for _ in 0..n {
+        js_use_baz(Baz::Variant2);
     }
 }
 

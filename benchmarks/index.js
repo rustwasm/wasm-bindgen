@@ -16,6 +16,7 @@ import wbindgen_init, {
   call_first_child_final_n_times as wbindgen_call_first_child_final_n_times,
   call_first_child_structural_n_times as wbindgen_call_first_child_structural_n_times,
   call_foo_bar_final_n_times as wbindgen_call_foo_bar_final_n_times,
+  call_use_baz_n_times as wbindgen_call_use_baz_n_times,
   call_foo_bar_structural_n_times as wbindgen_call_foo_bar_structural_n_times,
   str_roundtrip as wbindgen_str_roundtrip,
 } from './pkg/wasm_bindgen_benchmark.js';
@@ -80,6 +81,7 @@ function makeBenchmarks() {
   const foo = new globals.Foo();
   benchmarks.wbindgen_call_foo_bar_final_n_times = () => wbindgen_call_foo_bar_final_n_times(10000, foo);
   benchmarks.wbindgen_call_foo_bar_structural_n_times = () => wbindgen_call_foo_bar_structural_n_times(10000, foo);
+  benchmarks.wbindgen_call_use_baz_n_times = () => wbindgen_call_use_baz_n_times(10000);
 
 
   const strings = {
