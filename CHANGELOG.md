@@ -19,7 +19,7 @@
 * Stabilize Web Share API.
   [#3882](https://github.com/rustwasm/wasm-bindgen/pull/3882)
 
-* Don't use reflect in WebIDL dictionary setters. Also, importing getters/setters from JS now supports names containing hyphens by optionally surrounding the name with quotes, e.g. `#[wasm_bindgen(method, setter = "x-cdm-codecs")]`.
+* Stop using reflect in WebIDL dictionary setters, instead create a shim to allow the wasm_bindgen macro to implement the function in javascript which avoids passing the attribute name string over the WASM/JS boundary. Also, importing getters/setters from JS now supports specifying the JS attribute name as a string, e.g. `#[wasm_bindgen(method, setter = "x-cdm-codecs")]`.
   [#3898](https://github.com/rustwasm/wasm-bindgen/pull/3898)
 
 ### Fixed
