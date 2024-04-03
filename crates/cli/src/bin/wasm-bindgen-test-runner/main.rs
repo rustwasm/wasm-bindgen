@@ -220,7 +220,6 @@ fn main() -> anyhow::Result<()> {
 
     b.debug(debug)
         .input_module(module, wasm)
-        .keep_debug(false)
         .emit_start(false)
         .generate(&tmpdir)
         .context("executing `wasm-bindgen` over the wasm file")?;

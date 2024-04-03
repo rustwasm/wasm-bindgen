@@ -30,7 +30,6 @@ pub struct Bindgen {
     omit_imports: bool,
     demangle: bool,
     keep_lld_exports: bool,
-    keep_debug: bool,
     remove_name_section: bool,
     remove_producers_section: bool,
     omit_default_module_path: bool,
@@ -99,7 +98,6 @@ impl Bindgen {
             omit_imports: false,
             demangle: true,
             keep_lld_exports: false,
-            keep_debug: false,
             remove_name_section: false,
             remove_producers_section: false,
             emit_start: true,
@@ -255,11 +253,6 @@ impl Bindgen {
 
     pub fn keep_lld_exports(&mut self, keep_lld_exports: bool) -> &mut Bindgen {
         self.keep_lld_exports = keep_lld_exports;
-        self
-    }
-
-    pub fn keep_debug(&mut self, keep_debug: bool) -> &mut Bindgen {
-        self.keep_debug = keep_debug;
         self
     }
 
@@ -457,7 +450,7 @@ impl Bindgen {
             // include shared memory, so it fails that part of
             // validation!
             .strict_validate(false)
-            .generate_dwarf(self.keep_debug)
+            .generate_dwarf(true)
             .generate_name_section(!self.remove_name_section)
             .generate_producers_section(!self.remove_producers_section)
             .parse(bytes)

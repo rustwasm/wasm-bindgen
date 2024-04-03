@@ -73,11 +73,6 @@ When post-processing the `.wasm` binary, do not demangle Rust symbols in the
 When post-processing the `.wasm` binary, do not remove exports that are
 synthesized by Rust's linker, LLD.
 
-### `--keep-debug`
-
-When post-processing the `.wasm` binary, do not strip DWARF debug info custom
-sections.
-
 ### `--browser`
 
 When generating bundler-compatible code (see the section on [deployment]) this
