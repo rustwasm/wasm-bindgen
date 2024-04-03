@@ -10,6 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub type DateTimeValue;
+    #[wasm_bindgen(method, setter = "day")]
+    fn day_shim(this: &DateTimeValue, val: i32);
+    #[wasm_bindgen(method, setter = "hour")]
+    fn hour_shim(this: &DateTimeValue, val: i32);
+    #[wasm_bindgen(method, setter = "minute")]
+    fn minute_shim(this: &DateTimeValue, val: i32);
+    #[wasm_bindgen(method, setter = "month")]
+    fn month_shim(this: &DateTimeValue, val: i32);
+    #[wasm_bindgen(method, setter = "year")]
+    fn year_shim(this: &DateTimeValue, val: i32);
 }
 impl DateTimeValue {
     #[doc = "Construct a new `DateTimeValue`."]
@@ -24,66 +34,35 @@ impl DateTimeValue {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn day(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("day"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.day_shim(val);
         self
     }
     #[doc = "Change the `hour` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn hour(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("hour"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.hour_shim(val);
         self
     }
     #[doc = "Change the `minute` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn minute(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("minute"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.minute_shim(val);
         self
     }
     #[doc = "Change the `month` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn month(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("month"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.month_shim(val);
         self
     }
     #[doc = "Change the `year` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn year(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("year"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.year_shim(val);
         self
     }
 }

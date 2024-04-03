@@ -14,6 +14,12 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type SerialOutputSignals;
+    #[wasm_bindgen(method, setter = "break")]
+    fn break__shim(this: &SerialOutputSignals, val: bool);
+    #[wasm_bindgen(method, setter = "dataTerminalReady")]
+    fn data_terminal_ready_shim(this: &SerialOutputSignals, val: bool);
+    #[wasm_bindgen(method, setter = "requestToSend")]
+    fn request_to_send_shim(this: &SerialOutputSignals, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SerialOutputSignals {
@@ -36,13 +42,7 @@ impl SerialOutputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn break_(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("break"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.break__shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -53,17 +53,7 @@ impl SerialOutputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data_terminal_ready(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("dataTerminalReady"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_terminal_ready_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -74,17 +64,7 @@ impl SerialOutputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn request_to_send(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("requestToSend"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.request_to_send_shim(val);
         self
     }
 }

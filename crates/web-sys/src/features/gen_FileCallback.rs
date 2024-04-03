@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
     pub type FileCallback;
+    #[wasm_bindgen(method, setter = "handleEvent")]
+    fn handle_event_shim(this: &FileCallback, val: &::js_sys::Function);
 }
 impl FileCallback {
     #[doc = "Construct a new `FileCallback`."]
@@ -24,17 +26,7 @@ impl FileCallback {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("handleEvent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.handle_event_shim(val);
         self
     }
 }

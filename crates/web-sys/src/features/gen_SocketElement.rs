@@ -10,6 +10,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
     pub type SocketElement;
+    #[wasm_bindgen(method, setter = "active")]
+    fn active_shim(this: &SocketElement, val: bool);
+    #[wasm_bindgen(method, setter = "host")]
+    fn host_shim(this: &SocketElement, val: &str);
+    #[wasm_bindgen(method, setter = "port")]
+    fn port_shim(this: &SocketElement, val: u32);
+    #[wasm_bindgen(method, setter = "received")]
+    fn received_shim(this: &SocketElement, val: f64);
+    #[wasm_bindgen(method, setter = "sent")]
+    fn sent_shim(this: &SocketElement, val: f64);
+    #[wasm_bindgen(method, setter = "tcp")]
+    fn tcp_shim(this: &SocketElement, val: bool);
 }
 impl SocketElement {
     #[doc = "Construct a new `SocketElement`."]
@@ -24,83 +36,42 @@ impl SocketElement {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
     pub fn active(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("active"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.active_shim(val);
         self
     }
     #[doc = "Change the `host` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
     pub fn host(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("host"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.host_shim(val);
         self
     }
     #[doc = "Change the `port` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
     pub fn port(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("port"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.port_shim(val);
         self
     }
     #[doc = "Change the `received` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
     pub fn received(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("received"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.received_shim(val);
         self
     }
     #[doc = "Change the `sent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
     pub fn sent(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("sent"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sent_shim(val);
         self
     }
     #[doc = "Change the `tcp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
     pub fn tcp(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("tcp"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.tcp_shim(val);
         self
     }
 }

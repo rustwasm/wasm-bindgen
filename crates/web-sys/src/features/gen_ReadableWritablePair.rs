@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableWritablePair`*"]
     pub type ReadableWritablePair;
+    #[cfg(feature = "ReadableStream")]
+    #[wasm_bindgen(method, setter = "readable")]
+    fn readable_shim(this: &ReadableWritablePair, val: &ReadableStream);
+    #[cfg(feature = "WritableStream")]
+    #[wasm_bindgen(method, setter = "writable")]
+    fn writable_shim(this: &ReadableWritablePair, val: &WritableStream);
 }
 impl ReadableWritablePair {
     #[cfg(all(feature = "ReadableStream", feature = "WritableStream",))]
@@ -28,17 +34,7 @@ impl ReadableWritablePair {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `ReadableWritablePair`*"]
     pub fn readable(&mut self, val: &ReadableStream) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("readable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.readable_shim(val);
         self
     }
     #[cfg(feature = "WritableStream")]
@@ -46,17 +42,7 @@ impl ReadableWritablePair {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableWritablePair`, `WritableStream`*"]
     pub fn writable(&mut self, val: &WritableStream) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("writable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.writable_shim(val);
         self
     }
 }

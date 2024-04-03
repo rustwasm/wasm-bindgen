@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub type NotificationAction;
+    #[wasm_bindgen(method, setter = "action")]
+    fn action_shim(this: &NotificationAction, val: &str);
+    #[wasm_bindgen(method, setter = "icon")]
+    fn icon_shim(this: &NotificationAction, val: &str);
+    #[wasm_bindgen(method, setter = "title")]
+    fn title_shim(this: &NotificationAction, val: &str);
 }
 impl NotificationAction {
     #[doc = "Construct a new `NotificationAction`."]
@@ -26,40 +32,21 @@ impl NotificationAction {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub fn action(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("action"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.action_shim(val);
         self
     }
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub fn icon(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("icon"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.icon_shim(val);
         self
     }
     #[doc = "Change the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub fn title(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("title"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.title_shim(val);
         self
     }
 }

@@ -14,6 +14,12 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type XrSessionSupportedPermissionDescriptor;
+    #[cfg(feature = "PermissionName")]
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &XrSessionSupportedPermissionDescriptor, val: PermissionName);
+    #[cfg(feature = "XrSessionMode")]
+    #[wasm_bindgen(method, setter = "mode")]
+    fn mode_shim(this: &XrSessionSupportedPermissionDescriptor, val: XrSessionMode);
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrSessionSupportedPermissionDescriptor {
@@ -39,13 +45,7 @@ impl XrSessionSupportedPermissionDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn name(&mut self, val: PermissionName) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,13 +57,7 @@ impl XrSessionSupportedPermissionDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mode(&mut self, val: XrSessionMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("mode"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mode_shim(val);
         self
     }
 }

@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
     pub type IdbFileMetadataParameters;
+    #[wasm_bindgen(method, setter = "lastModified")]
+    fn last_modified_shim(this: &IdbFileMetadataParameters, val: bool);
+    #[wasm_bindgen(method, setter = "size")]
+    fn size_shim(this: &IdbFileMetadataParameters, val: bool);
 }
 impl IdbFileMetadataParameters {
     #[doc = "Construct a new `IdbFileMetadataParameters`."]
@@ -24,30 +28,14 @@ impl IdbFileMetadataParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
     pub fn last_modified(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("lastModified"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.last_modified_shim(val);
         self
     }
     #[doc = "Change the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
     pub fn size(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("size"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.size_shim(val);
         self
     }
 }

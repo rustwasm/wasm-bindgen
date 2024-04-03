@@ -14,6 +14,11 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRequestAdapterOptions;
+    #[wasm_bindgen(method, setter = "forceFallbackAdapter")]
+    fn force_fallback_adapter_shim(this: &GpuRequestAdapterOptions, val: bool);
+    #[cfg(feature = "GpuPowerPreference")]
+    #[wasm_bindgen(method, setter = "powerPreference")]
+    fn power_preference_shim(this: &GpuRequestAdapterOptions, val: GpuPowerPreference);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRequestAdapterOptions {
@@ -36,17 +41,7 @@ impl GpuRequestAdapterOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn force_fallback_adapter(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("forceFallbackAdapter"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.force_fallback_adapter_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,17 +53,7 @@ impl GpuRequestAdapterOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn power_preference(&mut self, val: GpuPowerPreference) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("powerPreference"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.power_preference_shim(val);
         self
     }
 }

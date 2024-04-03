@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`*"]
     pub type ClientRectsAndTexts;
+    #[cfg(feature = "DomRectList")]
+    #[wasm_bindgen(method, setter = "rectList")]
+    fn rect_list_shim(this: &ClientRectsAndTexts, val: &DomRectList);
+    #[wasm_bindgen(method, setter = "textList")]
+    fn text_list_shim(this: &ClientRectsAndTexts, val: &::wasm_bindgen::JsValue);
 }
 impl ClientRectsAndTexts {
     #[cfg(feature = "DomRectList")]
@@ -28,34 +33,14 @@ impl ClientRectsAndTexts {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`, `DomRectList`*"]
     pub fn rect_list(&mut self, val: &DomRectList) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rectList"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rect_list_shim(val);
         self
     }
     #[doc = "Change the `textList` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`*"]
     pub fn text_list(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("textList"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.text_list_shim(val);
         self
     }
 }

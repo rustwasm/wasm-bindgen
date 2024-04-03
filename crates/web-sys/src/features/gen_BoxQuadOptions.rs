@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
     pub type BoxQuadOptions;
+    #[cfg(feature = "CssBoxType")]
+    #[wasm_bindgen(method, setter = "box")]
+    fn box__shim(this: &BoxQuadOptions, val: CssBoxType);
+    #[wasm_bindgen(method, setter = "relativeTo")]
+    fn relative_to_shim(this: &BoxQuadOptions, val: &::js_sys::Object);
 }
 impl BoxQuadOptions {
     #[doc = "Construct a new `BoxQuadOptions`."]
@@ -25,30 +30,14 @@ impl BoxQuadOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `CssBoxType`*"]
     pub fn box_(&mut self, val: CssBoxType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("box"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.box__shim(val);
         self
     }
     #[doc = "Change the `relativeTo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
     pub fn relative_to(&mut self, val: &::js_sys::Object) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("relativeTo"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.relative_to_shim(val);
         self
     }
 }

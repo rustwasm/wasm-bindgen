@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     pub type EcKeyImportParams;
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &EcKeyImportParams, val: &str);
+    #[wasm_bindgen(method, setter = "namedCurve")]
+    fn named_curve_shim(this: &EcKeyImportParams, val: &str);
 }
 impl EcKeyImportParams {
     #[doc = "Construct a new `EcKeyImportParams`."]
@@ -25,30 +29,14 @@ impl EcKeyImportParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[doc = "Change the `namedCurve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     pub fn named_curve(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("namedCurve"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.named_curve_shim(val);
         self
     }
 }

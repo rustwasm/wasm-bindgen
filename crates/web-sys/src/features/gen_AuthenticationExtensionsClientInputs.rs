@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     pub type AuthenticationExtensionsClientInputs;
+    #[wasm_bindgen(method, setter = "appid")]
+    fn appid_shim(this: &AuthenticationExtensionsClientInputs, val: &str);
 }
 impl AuthenticationExtensionsClientInputs {
     #[doc = "Construct a new `AuthenticationExtensionsClientInputs`."]
@@ -24,13 +26,7 @@ impl AuthenticationExtensionsClientInputs {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     pub fn appid(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("appid"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.appid_shim(val);
         self
     }
 }

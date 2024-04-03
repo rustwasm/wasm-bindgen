@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     pub type BaseKeyframe;
+    #[cfg(feature = "CompositeOperation")]
+    #[wasm_bindgen(method, setter = "composite")]
+    fn composite_shim(this: &BaseKeyframe, val: Option<CompositeOperation>);
+    #[wasm_bindgen(method, setter = "easing")]
+    fn easing_shim(this: &BaseKeyframe, val: &str);
+    #[wasm_bindgen(method, setter = "offset")]
+    fn offset_shim(this: &BaseKeyframe, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "simulateComputeValuesFailure")]
+    fn simulate_compute_values_failure_shim(this: &BaseKeyframe, val: bool);
 }
 impl BaseKeyframe {
     #[doc = "Construct a new `BaseKeyframe`."]
@@ -25,62 +34,28 @@ impl BaseKeyframe {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`, `CompositeOperation`*"]
     pub fn composite(&mut self, val: Option<CompositeOperation>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composite"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composite_shim(val);
         self
     }
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     pub fn easing(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("easing"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.easing_shim(val);
         self
     }
     #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     pub fn offset(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("offset"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.offset_shim(val);
         self
     }
     #[doc = "Change the `simulateComputeValuesFailure` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     pub fn simulate_compute_values_failure(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("simulateComputeValuesFailure"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.simulate_compute_values_failure_shim(val);
         self
     }
 }

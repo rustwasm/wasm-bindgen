@@ -10,6 +10,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaElementAudioSourceOptions`*"]
     pub type MediaElementAudioSourceOptions;
+    #[cfg(feature = "HtmlMediaElement")]
+    #[wasm_bindgen(method, setter = "mediaElement")]
+    fn media_element_shim(this: &MediaElementAudioSourceOptions, val: &HtmlMediaElement);
 }
 impl MediaElementAudioSourceOptions {
     #[cfg(feature = "HtmlMediaElement")]
@@ -27,17 +30,7 @@ impl MediaElementAudioSourceOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `MediaElementAudioSourceOptions`*"]
     pub fn media_element(&mut self, val: &HtmlMediaElement) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mediaElement"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.media_element_shim(val);
         self
     }
 }

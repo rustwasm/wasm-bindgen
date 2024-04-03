@@ -10,6 +10,19 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     pub type ConsoleInstanceOptions;
+    #[wasm_bindgen(method, setter = "consoleID")]
+    fn console_id_shim(this: &ConsoleInstanceOptions, val: &str);
+    #[wasm_bindgen(method, setter = "dump")]
+    fn dump_shim(this: &ConsoleInstanceOptions, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "innerID")]
+    fn inner_id_shim(this: &ConsoleInstanceOptions, val: &str);
+    #[cfg(feature = "ConsoleLogLevel")]
+    #[wasm_bindgen(method, setter = "maxLogLevel")]
+    fn max_log_level_shim(this: &ConsoleInstanceOptions, val: ConsoleLogLevel);
+    #[wasm_bindgen(method, setter = "maxLogLevelPref")]
+    fn max_log_level_pref_shim(this: &ConsoleInstanceOptions, val: &str);
+    #[wasm_bindgen(method, setter = "prefix")]
+    fn prefix_shim(this: &ConsoleInstanceOptions, val: &str);
 }
 impl ConsoleInstanceOptions {
     #[doc = "Construct a new `ConsoleInstanceOptions`."]
@@ -24,47 +37,21 @@ impl ConsoleInstanceOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     pub fn console_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("consoleID"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.console_id_shim(val);
         self
     }
     #[doc = "Change the `dump` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     pub fn dump(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("dump"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.dump_shim(val);
         self
     }
     #[doc = "Change the `innerID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     pub fn inner_id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("innerID"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.inner_id_shim(val);
         self
     }
     #[cfg(feature = "ConsoleLogLevel")]
@@ -72,48 +59,21 @@ impl ConsoleInstanceOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`, `ConsoleLogLevel`*"]
     pub fn max_log_level(&mut self, val: ConsoleLogLevel) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maxLogLevel"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.max_log_level_shim(val);
         self
     }
     #[doc = "Change the `maxLogLevelPref` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     pub fn max_log_level_pref(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maxLogLevelPref"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.max_log_level_pref_shim(val);
         self
     }
     #[doc = "Change the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     pub fn prefix(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("prefix"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.prefix_shim(val);
         self
     }
 }

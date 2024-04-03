@@ -14,6 +14,8 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MediaStreamTrackGeneratorInit;
+    #[wasm_bindgen(method, setter = "kind")]
+    fn kind_shim(this: &MediaStreamTrackGeneratorInit, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaStreamTrackGeneratorInit {
@@ -37,13 +39,7 @@ impl MediaStreamTrackGeneratorInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn kind(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("kind"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.kind_shim(val);
         self
     }
 }

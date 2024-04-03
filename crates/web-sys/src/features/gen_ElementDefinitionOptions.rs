@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     pub type ElementDefinitionOptions;
+    #[wasm_bindgen(method, setter = "extends")]
+    fn extends_shim(this: &ElementDefinitionOptions, val: &str);
 }
 impl ElementDefinitionOptions {
     #[doc = "Construct a new `ElementDefinitionOptions`."]
@@ -24,17 +26,7 @@ impl ElementDefinitionOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     pub fn extends(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("extends"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.extends_shim(val);
         self
     }
 }

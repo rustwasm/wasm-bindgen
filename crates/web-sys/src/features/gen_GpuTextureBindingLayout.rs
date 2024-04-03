@@ -14,6 +14,14 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuTextureBindingLayout;
+    #[wasm_bindgen(method, setter = "multisampled")]
+    fn multisampled_shim(this: &GpuTextureBindingLayout, val: bool);
+    #[cfg(feature = "GpuTextureSampleType")]
+    #[wasm_bindgen(method, setter = "sampleType")]
+    fn sample_type_shim(this: &GpuTextureBindingLayout, val: GpuTextureSampleType);
+    #[cfg(feature = "GpuTextureViewDimension")]
+    #[wasm_bindgen(method, setter = "viewDimension")]
+    fn view_dimension_shim(this: &GpuTextureBindingLayout, val: GpuTextureViewDimension);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuTextureBindingLayout {
@@ -36,17 +44,7 @@ impl GpuTextureBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn multisampled(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("multisampled"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.multisampled_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,17 +56,7 @@ impl GpuTextureBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn sample_type(&mut self, val: GpuTextureSampleType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sampleType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sample_type_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -80,17 +68,7 @@ impl GpuTextureBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn view_dimension(&mut self, val: GpuTextureViewDimension) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("viewDimension"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.view_dimension_shim(val);
         self
     }
 }

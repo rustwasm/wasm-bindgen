@@ -14,6 +14,13 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuComputePipelineDescriptor;
+    #[wasm_bindgen(method, setter = "label")]
+    fn label_shim(this: &GpuComputePipelineDescriptor, val: &str);
+    #[wasm_bindgen(method, setter = "layout")]
+    fn layout_shim(this: &GpuComputePipelineDescriptor, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "GpuProgrammableStage")]
+    #[wasm_bindgen(method, setter = "compute")]
+    fn compute_shim(this: &GpuComputePipelineDescriptor, val: &GpuProgrammableStage);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuComputePipelineDescriptor {
@@ -39,13 +46,7 @@ impl GpuComputePipelineDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.label_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -56,14 +57,7 @@ impl GpuComputePipelineDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn layout(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("layout"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.layout_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,17 +69,7 @@ impl GpuComputePipelineDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn compute(&mut self, val: &GpuProgrammableStage) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("compute"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.compute_shim(val);
         self
     }
 }

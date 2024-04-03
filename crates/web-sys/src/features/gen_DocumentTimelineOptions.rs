@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
     pub type DocumentTimelineOptions;
+    #[wasm_bindgen(method, setter = "originTime")]
+    fn origin_time_shim(this: &DocumentTimelineOptions, val: f64);
 }
 impl DocumentTimelineOptions {
     #[doc = "Construct a new `DocumentTimelineOptions`."]
@@ -24,17 +26,7 @@ impl DocumentTimelineOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
     pub fn origin_time(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("originTime"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.origin_time_shim(val);
         self
     }
 }

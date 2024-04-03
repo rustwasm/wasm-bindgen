@@ -14,6 +14,63 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type HidReportItem;
+    #[wasm_bindgen(method, setter = "hasNull")]
+    fn has_null_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "hasPreferredState")]
+    fn has_preferred_state_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "isAbsolute")]
+    fn is_absolute_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "isArray")]
+    fn is_array_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "isBufferedBytes")]
+    fn is_buffered_bytes_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "isConstant")]
+    fn is_constant_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "isLinear")]
+    fn is_linear_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "isRange")]
+    fn is_range_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "isVolatile")]
+    fn is_volatile_shim(this: &HidReportItem, val: bool);
+    #[wasm_bindgen(method, setter = "logicalMaximum")]
+    fn logical_maximum_shim(this: &HidReportItem, val: i32);
+    #[wasm_bindgen(method, setter = "logicalMinimum")]
+    fn logical_minimum_shim(this: &HidReportItem, val: i32);
+    #[wasm_bindgen(method, setter = "physicalMaximum")]
+    fn physical_maximum_shim(this: &HidReportItem, val: i32);
+    #[wasm_bindgen(method, setter = "physicalMinimum")]
+    fn physical_minimum_shim(this: &HidReportItem, val: i32);
+    #[wasm_bindgen(method, setter = "reportCount")]
+    fn report_count_shim(this: &HidReportItem, val: u16);
+    #[wasm_bindgen(method, setter = "reportSize")]
+    fn report_size_shim(this: &HidReportItem, val: u16);
+    #[wasm_bindgen(method, setter = "strings")]
+    fn strings_shim(this: &HidReportItem, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "unitExponent")]
+    fn unit_exponent_shim(this: &HidReportItem, val: i8);
+    #[wasm_bindgen(method, setter = "unitFactorCurrentExponent")]
+    fn unit_factor_current_exponent_shim(this: &HidReportItem, val: i8);
+    #[wasm_bindgen(method, setter = "unitFactorLengthExponent")]
+    fn unit_factor_length_exponent_shim(this: &HidReportItem, val: i8);
+    #[wasm_bindgen(method, setter = "unitFactorLuminousIntensityExponent")]
+    fn unit_factor_luminous_intensity_exponent_shim(this: &HidReportItem, val: i8);
+    #[wasm_bindgen(method, setter = "unitFactorMassExponent")]
+    fn unit_factor_mass_exponent_shim(this: &HidReportItem, val: i8);
+    #[wasm_bindgen(method, setter = "unitFactorTemperatureExponent")]
+    fn unit_factor_temperature_exponent_shim(this: &HidReportItem, val: i8);
+    #[wasm_bindgen(method, setter = "unitFactorTimeExponent")]
+    fn unit_factor_time_exponent_shim(this: &HidReportItem, val: i8);
+    #[cfg(feature = "HidUnitSystem")]
+    #[wasm_bindgen(method, setter = "unitSystem")]
+    fn unit_system_shim(this: &HidReportItem, val: HidUnitSystem);
+    #[wasm_bindgen(method, setter = "usageMaximum")]
+    fn usage_maximum_shim(this: &HidReportItem, val: u32);
+    #[wasm_bindgen(method, setter = "usageMinimum")]
+    fn usage_minimum_shim(this: &HidReportItem, val: u32);
+    #[wasm_bindgen(method, setter = "usages")]
+    fn usages_shim(this: &HidReportItem, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "wrap")]
+    fn wrap_shim(this: &HidReportItem, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl HidReportItem {
@@ -36,17 +93,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn has_null(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("hasNull"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.has_null_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,17 +104,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn has_preferred_state(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("hasPreferredState"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.has_preferred_state_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -78,17 +115,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_absolute(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isAbsolute"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_absolute_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -99,17 +126,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_array(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isArray"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_array_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -120,17 +137,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_buffered_bytes(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isBufferedBytes"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_buffered_bytes_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -141,17 +148,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_constant(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isConstant"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_constant_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -162,17 +159,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_linear(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isLinear"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_linear_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -183,17 +170,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_range(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isRange"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_range_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -204,17 +181,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_volatile(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("isVolatile"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.is_volatile_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -225,17 +192,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn logical_maximum(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("logicalMaximum"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.logical_maximum_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -246,17 +203,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn logical_minimum(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("logicalMinimum"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.logical_minimum_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -267,17 +214,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn physical_maximum(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("physicalMaximum"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.physical_maximum_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -288,17 +225,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn physical_minimum(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("physicalMinimum"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.physical_minimum_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -309,17 +236,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn report_count(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("reportCount"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.report_count_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -330,17 +247,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn report_size(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("reportSize"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.report_size_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -351,17 +258,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn strings(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("strings"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.strings_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -372,17 +269,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_exponent(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitExponent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_exponent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -393,17 +280,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_factor_current_exponent(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitFactorCurrentExponent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_factor_current_exponent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -414,17 +291,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_factor_length_exponent(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitFactorLengthExponent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_factor_length_exponent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -435,17 +302,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_factor_luminous_intensity_exponent(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitFactorLuminousIntensityExponent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_factor_luminous_intensity_exponent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -456,17 +313,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_factor_mass_exponent(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitFactorMassExponent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_factor_mass_exponent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -477,17 +324,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_factor_temperature_exponent(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitFactorTemperatureExponent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_factor_temperature_exponent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -498,17 +335,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_factor_time_exponent(&mut self, val: i8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitFactorTimeExponent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_factor_time_exponent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -520,17 +347,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn unit_system(&mut self, val: HidUnitSystem) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("unitSystem"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unit_system_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -541,17 +358,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage_maximum(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("usageMaximum"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usage_maximum_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -562,17 +369,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage_minimum(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("usageMinimum"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usage_minimum_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -583,14 +380,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usages(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("usages"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usages_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -601,13 +391,7 @@ impl HidReportItem {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn wrap(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("wrap"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.wrap_shim(val);
         self
     }
 }

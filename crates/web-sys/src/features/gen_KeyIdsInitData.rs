@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
     pub type KeyIdsInitData;
+    #[wasm_bindgen(method, setter = "kids")]
+    fn kids_shim(this: &KeyIdsInitData, val: &::wasm_bindgen::JsValue);
 }
 impl KeyIdsInitData {
     #[doc = "Construct a new `KeyIdsInitData`."]
@@ -25,13 +27,7 @@ impl KeyIdsInitData {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
     pub fn kids(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("kids"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.kids_shim(val);
         self
     }
 }

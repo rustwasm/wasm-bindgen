@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
     pub type ConstrainBooleanParameters;
+    #[wasm_bindgen(method, setter = "exact")]
+    fn exact_shim(this: &ConstrainBooleanParameters, val: bool);
+    #[wasm_bindgen(method, setter = "ideal")]
+    fn ideal_shim(this: &ConstrainBooleanParameters, val: bool);
 }
 impl ConstrainBooleanParameters {
     #[doc = "Construct a new `ConstrainBooleanParameters`."]
@@ -24,26 +28,14 @@ impl ConstrainBooleanParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
     pub fn exact(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("exact"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.exact_shim(val);
         self
     }
     #[doc = "Change the `ideal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
     pub fn ideal(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("ideal"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ideal_shim(val);
         self
     }
 }

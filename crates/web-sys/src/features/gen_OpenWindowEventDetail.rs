@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     pub type OpenWindowEventDetail;
+    #[wasm_bindgen(method, setter = "features")]
+    fn features_shim(this: &OpenWindowEventDetail, val: &str);
+    #[cfg(feature = "Node")]
+    #[wasm_bindgen(method, setter = "frameElement")]
+    fn frame_element_shim(this: &OpenWindowEventDetail, val: Option<&Node>);
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &OpenWindowEventDetail, val: &str);
+    #[wasm_bindgen(method, setter = "url")]
+    fn url_shim(this: &OpenWindowEventDetail, val: &str);
 }
 impl OpenWindowEventDetail {
     #[doc = "Construct a new `OpenWindowEventDetail`."]
@@ -24,17 +33,7 @@ impl OpenWindowEventDetail {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     pub fn features(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("features"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.features_shim(val);
         self
     }
     #[cfg(feature = "Node")]
@@ -42,43 +41,21 @@ impl OpenWindowEventDetail {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Node`, `OpenWindowEventDetail`*"]
     pub fn frame_element(&mut self, val: Option<&Node>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("frameElement"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.frame_element_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     pub fn url(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("url"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.url_shim(val);
         self
     }
 }

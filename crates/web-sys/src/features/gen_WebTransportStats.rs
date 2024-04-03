@@ -14,6 +14,31 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type WebTransportStats;
+    #[wasm_bindgen(method, setter = "bytesReceived")]
+    fn bytes_received_shim(this: &WebTransportStats, val: f64);
+    #[wasm_bindgen(method, setter = "bytesSent")]
+    fn bytes_sent_shim(this: &WebTransportStats, val: f64);
+    #[cfg(feature = "WebTransportDatagramStats")]
+    #[wasm_bindgen(method, setter = "datagrams")]
+    fn datagrams_shim(this: &WebTransportStats, val: &WebTransportDatagramStats);
+    #[wasm_bindgen(method, setter = "minRtt")]
+    fn min_rtt_shim(this: &WebTransportStats, val: f64);
+    #[wasm_bindgen(method, setter = "numIncomingStreamsCreated")]
+    fn num_incoming_streams_created_shim(this: &WebTransportStats, val: u32);
+    #[wasm_bindgen(method, setter = "numOutgoingStreamsCreated")]
+    fn num_outgoing_streams_created_shim(this: &WebTransportStats, val: u32);
+    #[wasm_bindgen(method, setter = "packetsLost")]
+    fn packets_lost_shim(this: &WebTransportStats, val: f64);
+    #[wasm_bindgen(method, setter = "packetsReceived")]
+    fn packets_received_shim(this: &WebTransportStats, val: f64);
+    #[wasm_bindgen(method, setter = "packetsSent")]
+    fn packets_sent_shim(this: &WebTransportStats, val: f64);
+    #[wasm_bindgen(method, setter = "rttVariation")]
+    fn rtt_variation_shim(this: &WebTransportStats, val: f64);
+    #[wasm_bindgen(method, setter = "smoothedRtt")]
+    fn smoothed_rtt_shim(this: &WebTransportStats, val: f64);
+    #[wasm_bindgen(method, setter = "timestamp")]
+    fn timestamp_shim(this: &WebTransportStats, val: f64);
 }
 #[cfg(web_sys_unstable_apis)]
 impl WebTransportStats {
@@ -36,17 +61,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bytes_received(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bytesReceived"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bytes_received_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,17 +72,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bytes_sent(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bytesSent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bytes_sent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -79,17 +84,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn datagrams(&mut self, val: &WebTransportDatagramStats) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("datagrams"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.datagrams_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -100,14 +95,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn min_rtt(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("minRtt"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.min_rtt_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -118,17 +106,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn num_incoming_streams_created(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("numIncomingStreamsCreated"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.num_incoming_streams_created_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -139,17 +117,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn num_outgoing_streams_created(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("numOutgoingStreamsCreated"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.num_outgoing_streams_created_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -160,17 +128,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn packets_lost(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("packetsLost"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.packets_lost_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -181,17 +139,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn packets_received(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("packetsReceived"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.packets_received_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -202,17 +150,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn packets_sent(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("packetsSent"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.packets_sent_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -223,17 +161,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn rtt_variation(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rttVariation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rtt_variation_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -244,17 +172,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn smoothed_rtt(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("smoothedRtt"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.smoothed_rtt_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -265,17 +183,7 @@ impl WebTransportStats {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timestamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timestamp_shim(val);
         self
     }
 }

@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemGetFileOptions`*"]
     pub type FileSystemGetFileOptions;
+    #[wasm_bindgen(method, setter = "create")]
+    fn create_shim(this: &FileSystemGetFileOptions, val: bool);
 }
 impl FileSystemGetFileOptions {
     #[doc = "Construct a new `FileSystemGetFileOptions`."]
@@ -24,14 +26,7 @@ impl FileSystemGetFileOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemGetFileOptions`*"]
     pub fn create(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("create"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.create_shim(val);
         self
     }
 }

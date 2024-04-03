@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub type RtcIdentityProvider;
+    #[wasm_bindgen(method, setter = "generateAssertion")]
+    fn generate_assertion_shim(this: &RtcIdentityProvider, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "validateAssertion")]
+    fn validate_assertion_shim(this: &RtcIdentityProvider, val: &::js_sys::Function);
 }
 impl RtcIdentityProvider {
     #[doc = "Construct a new `RtcIdentityProvider`."]
@@ -29,34 +33,14 @@ impl RtcIdentityProvider {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub fn generate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("generateAssertion"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.generate_assertion_shim(val);
         self
     }
     #[doc = "Change the `validateAssertion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub fn validate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("validateAssertion"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.validate_assertion_shim(val);
         self
     }
 }

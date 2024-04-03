@@ -10,6 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub type VrLayer;
+    #[wasm_bindgen(method, setter = "leftBounds")]
+    fn left_bounds_shim(this: &VrLayer, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "rightBounds")]
+    fn right_bounds_shim(this: &VrLayer, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "HtmlCanvasElement")]
+    #[wasm_bindgen(method, setter = "source")]
+    fn source_shim(this: &VrLayer, val: Option<&HtmlCanvasElement>);
 }
 impl VrLayer {
     #[doc = "Construct a new `VrLayer`."]
@@ -24,34 +31,14 @@ impl VrLayer {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub fn left_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("leftBounds"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.left_bounds_shim(val);
         self
     }
     #[doc = "Change the `rightBounds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub fn right_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rightBounds"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.right_bounds_shim(val);
         self
     }
     #[cfg(feature = "HtmlCanvasElement")]
@@ -59,14 +46,7 @@ impl VrLayer {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VrLayer`*"]
     pub fn source(&mut self, val: Option<&HtmlCanvasElement>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("source"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.source_shim(val);
         self
     }
 }

@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     pub type ConsoleProfileEvent;
+    #[wasm_bindgen(method, setter = "action")]
+    fn action_shim(this: &ConsoleProfileEvent, val: &str);
+    #[wasm_bindgen(method, setter = "arguments")]
+    fn arguments_shim(this: &ConsoleProfileEvent, val: &::wasm_bindgen::JsValue);
 }
 impl ConsoleProfileEvent {
     #[doc = "Construct a new `ConsoleProfileEvent`."]
@@ -24,31 +28,14 @@ impl ConsoleProfileEvent {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     pub fn action(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("action"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.action_shim(val);
         self
     }
     #[doc = "Change the `arguments` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     pub fn arguments(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("arguments"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.arguments_shim(val);
         self
     }
 }

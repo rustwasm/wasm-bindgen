@@ -10,6 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub type ScrollToOptions;
+    #[cfg(feature = "ScrollBehavior")]
+    #[wasm_bindgen(method, setter = "behavior")]
+    fn behavior_shim(this: &ScrollToOptions, val: ScrollBehavior);
+    #[wasm_bindgen(method, setter = "left")]
+    fn left_shim(this: &ScrollToOptions, val: f64);
+    #[wasm_bindgen(method, setter = "top")]
+    fn top_shim(this: &ScrollToOptions, val: f64);
 }
 impl ScrollToOptions {
     #[doc = "Construct a new `ScrollToOptions`."]
@@ -25,43 +32,21 @@ impl ScrollToOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollToOptions`*"]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("behavior"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.behavior_shim(val);
         self
     }
     #[doc = "Change the `left` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub fn left(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("left"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.left_shim(val);
         self
     }
     #[doc = "Change the `top` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub fn top(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("top"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.top_shim(val);
         self
     }
 }

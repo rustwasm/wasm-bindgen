@@ -14,6 +14,18 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbControlTransferParameters;
+    #[wasm_bindgen(method, setter = "index")]
+    fn index_shim(this: &UsbControlTransferParameters, val: u16);
+    #[cfg(feature = "UsbRecipient")]
+    #[wasm_bindgen(method, setter = "recipient")]
+    fn recipient_shim(this: &UsbControlTransferParameters, val: UsbRecipient);
+    #[wasm_bindgen(method, setter = "request")]
+    fn request_shim(this: &UsbControlTransferParameters, val: u8);
+    #[cfg(feature = "UsbRequestType")]
+    #[wasm_bindgen(method, setter = "requestType")]
+    fn request_type_shim(this: &UsbControlTransferParameters, val: UsbRequestType);
+    #[wasm_bindgen(method, setter = "value")]
+    fn value_shim(this: &UsbControlTransferParameters, val: u16);
 }
 #[cfg(web_sys_unstable_apis)]
 impl UsbControlTransferParameters {
@@ -48,13 +60,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn index(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("index"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.index_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -66,17 +72,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn recipient(&mut self, val: UsbRecipient) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("recipient"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.recipient_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -87,17 +83,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn request(&mut self, val: u8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("request"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.request_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -109,17 +95,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn request_type(&mut self, val: UsbRequestType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("requestType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.request_type_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -130,13 +106,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn value(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("value"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.value_shim(val);
         self
     }
 }

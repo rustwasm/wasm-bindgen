@@ -14,6 +14,15 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuImageCopyBuffer;
+    #[wasm_bindgen(method, setter = "bytesPerRow")]
+    fn bytes_per_row_shim(this: &GpuImageCopyBuffer, val: u32);
+    #[wasm_bindgen(method, setter = "offset")]
+    fn offset_shim(this: &GpuImageCopyBuffer, val: f64);
+    #[wasm_bindgen(method, setter = "rowsPerImage")]
+    fn rows_per_image_shim(this: &GpuImageCopyBuffer, val: u32);
+    #[cfg(feature = "GpuBuffer")]
+    #[wasm_bindgen(method, setter = "buffer")]
+    fn buffer_shim(this: &GpuImageCopyBuffer, val: &GpuBuffer);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuImageCopyBuffer {
@@ -38,17 +47,7 @@ impl GpuImageCopyBuffer {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bytes_per_row(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bytesPerRow"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bytes_per_row_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,14 +58,7 @@ impl GpuImageCopyBuffer {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn offset(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("offset"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.offset_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -77,17 +69,7 @@ impl GpuImageCopyBuffer {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn rows_per_image(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rowsPerImage"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rows_per_image_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -99,14 +81,7 @@ impl GpuImageCopyBuffer {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn buffer(&mut self, val: &GpuBuffer) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("buffer"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.buffer_shim(val);
         self
     }
 }

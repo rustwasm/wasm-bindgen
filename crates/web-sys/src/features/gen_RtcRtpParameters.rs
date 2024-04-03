@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub type RtcRtpParameters;
+    #[wasm_bindgen(method, setter = "codecs")]
+    fn codecs_shim(this: &RtcRtpParameters, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "encodings")]
+    fn encodings_shim(this: &RtcRtpParameters, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "headerExtensions")]
+    fn header_extensions_shim(this: &RtcRtpParameters, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "RtcRtcpParameters")]
+    #[wasm_bindgen(method, setter = "rtcp")]
+    fn rtcp_shim(this: &RtcRtpParameters, val: &RtcRtcpParameters);
 }
 impl RtcRtpParameters {
     #[doc = "Construct a new `RtcRtpParameters`."]
@@ -24,48 +33,21 @@ impl RtcRtpParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub fn codecs(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("codecs"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.codecs_shim(val);
         self
     }
     #[doc = "Change the `encodings` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub fn encodings(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("encodings"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.encodings_shim(val);
         self
     }
     #[doc = "Change the `headerExtensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub fn header_extensions(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("headerExtensions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.header_extensions_shim(val);
         self
     }
     #[cfg(feature = "RtcRtcpParameters")]
@@ -73,13 +55,7 @@ impl RtcRtpParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`, `RtcRtpParameters`*"]
     pub fn rtcp(&mut self, val: &RtcRtcpParameters) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rtcp"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rtcp_shim(val);
         self
     }
 }

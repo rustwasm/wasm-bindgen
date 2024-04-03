@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEstimate`*"]
     pub type StorageEstimate;
+    #[wasm_bindgen(method, setter = "quota")]
+    fn quota_shim(this: &StorageEstimate, val: f64);
+    #[wasm_bindgen(method, setter = "usage")]
+    fn usage_shim(this: &StorageEstimate, val: f64);
 }
 impl StorageEstimate {
     #[doc = "Construct a new `StorageEstimate`."]
@@ -24,26 +28,14 @@ impl StorageEstimate {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEstimate`*"]
     pub fn quota(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("quota"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.quota_shim(val);
         self
     }
     #[doc = "Change the `usage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEstimate`*"]
     pub fn usage(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("usage"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.usage_shim(val);
         self
     }
 }

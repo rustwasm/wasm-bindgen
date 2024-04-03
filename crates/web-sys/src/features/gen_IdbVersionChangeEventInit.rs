@@ -10,6 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub type IdbVersionChangeEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &IdbVersionChangeEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &IdbVersionChangeEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &IdbVersionChangeEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "newVersion")]
+    fn new_version_shim(this: &IdbVersionChangeEventInit, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "oldVersion")]
+    fn old_version_shim(this: &IdbVersionChangeEventInit, val: f64);
 }
 impl IdbVersionChangeEventInit {
     #[doc = "Construct a new `IdbVersionChangeEventInit`."]
@@ -24,85 +34,35 @@ impl IdbVersionChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[doc = "Change the `newVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn new_version(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("newVersion"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.new_version_shim(val);
         self
     }
     #[doc = "Change the `oldVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn old_version(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("oldVersion"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.old_version_shim(val);
         self
     }
 }

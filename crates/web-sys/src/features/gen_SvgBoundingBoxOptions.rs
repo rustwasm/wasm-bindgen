@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub type SvgBoundingBoxOptions;
+    #[wasm_bindgen(method, setter = "clipped")]
+    fn clipped_shim(this: &SvgBoundingBoxOptions, val: bool);
+    #[wasm_bindgen(method, setter = "fill")]
+    fn fill_shim(this: &SvgBoundingBoxOptions, val: bool);
+    #[wasm_bindgen(method, setter = "markers")]
+    fn markers_shim(this: &SvgBoundingBoxOptions, val: bool);
+    #[wasm_bindgen(method, setter = "stroke")]
+    fn stroke_shim(this: &SvgBoundingBoxOptions, val: bool);
 }
 impl SvgBoundingBoxOptions {
     #[doc = "Construct a new `SvgBoundingBoxOptions`."]
@@ -24,61 +32,28 @@ impl SvgBoundingBoxOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn clipped(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clipped"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.clipped_shim(val);
         self
     }
     #[doc = "Change the `fill` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn fill(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("fill"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.fill_shim(val);
         self
     }
     #[doc = "Change the `markers` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn markers(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("markers"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.markers_shim(val);
         self
     }
     #[doc = "Change the `stroke` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn stroke(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("stroke"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stroke_shim(val);
         self
     }
 }

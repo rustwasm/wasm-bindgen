@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     pub type BrowserElementDownloadOptions;
+    #[wasm_bindgen(method, setter = "filename")]
+    fn filename_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
+    #[wasm_bindgen(method, setter = "referrer")]
+    fn referrer_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
 }
 impl BrowserElementDownloadOptions {
     #[doc = "Construct a new `BrowserElementDownloadOptions`."]
@@ -24,34 +28,14 @@ impl BrowserElementDownloadOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     pub fn filename(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("filename"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.filename_shim(val);
         self
     }
     #[doc = "Change the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     pub fn referrer(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("referrer"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.referrer_shim(val);
         self
     }
 }

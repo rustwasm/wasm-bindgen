@@ -10,6 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     pub type IntersectionObserverInit;
+    #[cfg(feature = "Element")]
+    #[wasm_bindgen(method, setter = "root")]
+    fn root_shim(this: &IntersectionObserverInit, val: Option<&Element>);
+    #[wasm_bindgen(method, setter = "rootMargin")]
+    fn root_margin_shim(this: &IntersectionObserverInit, val: &str);
+    #[wasm_bindgen(method, setter = "threshold")]
+    fn threshold_shim(this: &IntersectionObserverInit, val: &::wasm_bindgen::JsValue);
 }
 impl IntersectionObserverInit {
     #[doc = "Construct a new `IntersectionObserverInit`."]
@@ -25,47 +32,21 @@ impl IntersectionObserverInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `IntersectionObserverInit`*"]
     pub fn root(&mut self, val: Option<&Element>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("root"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.root_shim(val);
         self
     }
     #[doc = "Change the `rootMargin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     pub fn root_margin(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("rootMargin"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.root_margin_shim(val);
         self
     }
     #[doc = "Change the `threshold` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     pub fn threshold(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("threshold"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.threshold_shim(val);
         self
     }
 }

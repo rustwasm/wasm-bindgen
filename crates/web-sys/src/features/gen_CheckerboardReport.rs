@@ -10,6 +10,15 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub type CheckerboardReport;
+    #[wasm_bindgen(method, setter = "log")]
+    fn log_shim(this: &CheckerboardReport, val: &str);
+    #[cfg(feature = "CheckerboardReason")]
+    #[wasm_bindgen(method, setter = "reason")]
+    fn reason_shim(this: &CheckerboardReport, val: CheckerboardReason);
+    #[wasm_bindgen(method, setter = "severity")]
+    fn severity_shim(this: &CheckerboardReport, val: u32);
+    #[wasm_bindgen(method, setter = "timestamp")]
+    fn timestamp_shim(this: &CheckerboardReport, val: f64);
 }
 impl CheckerboardReport {
     #[doc = "Construct a new `CheckerboardReport`."]
@@ -24,13 +33,7 @@ impl CheckerboardReport {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub fn log(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("log"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.log_shim(val);
         self
     }
     #[cfg(feature = "CheckerboardReason")]
@@ -38,48 +41,21 @@ impl CheckerboardReport {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReason`, `CheckerboardReport`*"]
     pub fn reason(&mut self, val: CheckerboardReason) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("reason"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.reason_shim(val);
         self
     }
     #[doc = "Change the `severity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub fn severity(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("severity"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.severity_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timestamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timestamp_shim(val);
         self
     }
 }

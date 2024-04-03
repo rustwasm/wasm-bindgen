@@ -14,6 +14,10 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type WebTransportCloseInfo;
+    #[wasm_bindgen(method, setter = "closeCode")]
+    fn close_code_shim(this: &WebTransportCloseInfo, val: u32);
+    #[wasm_bindgen(method, setter = "reason")]
+    fn reason_shim(this: &WebTransportCloseInfo, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl WebTransportCloseInfo {
@@ -36,17 +40,7 @@ impl WebTransportCloseInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn close_code(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("closeCode"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.close_code_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,14 +51,7 @@ impl WebTransportCloseInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn reason(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("reason"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.reason_shim(val);
         self
     }
 }

@@ -10,6 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     pub type MediaKeySystemConfiguration;
+    #[wasm_bindgen(method, setter = "audioCapabilities")]
+    fn audio_capabilities_shim(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "MediaKeysRequirement")]
+    #[wasm_bindgen(method, setter = "distinctiveIdentifier")]
+    fn distinctive_identifier_shim(this: &MediaKeySystemConfiguration, val: MediaKeysRequirement);
+    #[wasm_bindgen(method, setter = "initDataTypes")]
+    fn init_data_types_shim(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "label")]
+    fn label_shim(this: &MediaKeySystemConfiguration, val: &str);
+    #[cfg(feature = "MediaKeysRequirement")]
+    #[wasm_bindgen(method, setter = "persistentState")]
+    fn persistent_state_shim(this: &MediaKeySystemConfiguration, val: MediaKeysRequirement);
+    #[wasm_bindgen(method, setter = "sessionTypes")]
+    fn session_types_shim(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "videoCapabilities")]
+    fn video_capabilities_shim(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
 }
 impl MediaKeySystemConfiguration {
     #[doc = "Construct a new `MediaKeySystemConfiguration`."]
@@ -24,17 +40,7 @@ impl MediaKeySystemConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     pub fn audio_capabilities(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("audioCapabilities"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.audio_capabilities_shim(val);
         self
     }
     #[cfg(feature = "MediaKeysRequirement")]
@@ -42,47 +48,21 @@ impl MediaKeySystemConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`, `MediaKeysRequirement`*"]
     pub fn distinctive_identifier(&mut self, val: MediaKeysRequirement) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("distinctiveIdentifier"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.distinctive_identifier_shim(val);
         self
     }
     #[doc = "Change the `initDataTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     pub fn init_data_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("initDataTypes"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.init_data_types_shim(val);
         self
     }
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.label_shim(val);
         self
     }
     #[cfg(feature = "MediaKeysRequirement")]
@@ -90,51 +70,21 @@ impl MediaKeySystemConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`, `MediaKeysRequirement`*"]
     pub fn persistent_state(&mut self, val: MediaKeysRequirement) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("persistentState"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.persistent_state_shim(val);
         self
     }
     #[doc = "Change the `sessionTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     pub fn session_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sessionTypes"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.session_types_shim(val);
         self
     }
     #[doc = "Change the `videoCapabilities` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     pub fn video_capabilities(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("videoCapabilities"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.video_capabilities_shim(val);
         self
     }
 }

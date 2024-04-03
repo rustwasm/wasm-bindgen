@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     pub type L10nValue;
+    #[wasm_bindgen(method, setter = "attributes")]
+    fn attributes_shim(this: &L10nValue, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "value")]
+    fn value_shim(this: &L10nValue, val: Option<&str>);
 }
 impl L10nValue {
     #[doc = "Construct a new `L10nValue`."]
@@ -24,30 +28,14 @@ impl L10nValue {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     pub fn attributes(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("attributes"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.attributes_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     pub fn value(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("value"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.value_shim(val);
         self
     }
 }

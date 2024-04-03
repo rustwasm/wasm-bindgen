@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub type SocketsDict;
+    #[wasm_bindgen(method, setter = "received")]
+    fn received_shim(this: &SocketsDict, val: f64);
+    #[wasm_bindgen(method, setter = "sent")]
+    fn sent_shim(this: &SocketsDict, val: f64);
+    #[wasm_bindgen(method, setter = "sockets")]
+    fn sockets_shim(this: &SocketsDict, val: &::wasm_bindgen::JsValue);
 }
 impl SocketsDict {
     #[doc = "Construct a new `SocketsDict`."]
@@ -24,47 +30,21 @@ impl SocketsDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub fn received(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("received"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.received_shim(val);
         self
     }
     #[doc = "Change the `sent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub fn sent(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("sent"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sent_shim(val);
         self
     }
     #[doc = "Change the `sockets` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub fn sockets(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sockets"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sockets_shim(val);
         self
     }
 }

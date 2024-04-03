@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`*"]
     pub type RtcOfferOptions;
+    #[wasm_bindgen(method, setter = "iceRestart")]
+    fn ice_restart_shim(this: &RtcOfferOptions, val: bool);
+    #[wasm_bindgen(method, setter = "offerToReceiveAudio")]
+    fn offer_to_receive_audio_shim(this: &RtcOfferOptions, val: bool);
+    #[wasm_bindgen(method, setter = "offerToReceiveVideo")]
+    fn offer_to_receive_video_shim(this: &RtcOfferOptions, val: bool);
 }
 impl RtcOfferOptions {
     #[doc = "Construct a new `RtcOfferOptions`."]
@@ -24,51 +30,21 @@ impl RtcOfferOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`*"]
     pub fn ice_restart(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("iceRestart"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ice_restart_shim(val);
         self
     }
     #[doc = "Change the `offerToReceiveAudio` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`*"]
     pub fn offer_to_receive_audio(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("offerToReceiveAudio"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.offer_to_receive_audio_shim(val);
         self
     }
     #[doc = "Change the `offerToReceiveVideo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcOfferOptions`*"]
     pub fn offer_to_receive_video(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("offerToReceiveVideo"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.offer_to_receive_video_shim(val);
         self
     }
 }

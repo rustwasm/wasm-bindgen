@@ -10,6 +10,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub type StyleRuleChangeEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &StyleRuleChangeEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &StyleRuleChangeEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &StyleRuleChangeEventInit, val: bool);
+    #[cfg(feature = "CssRule")]
+    #[wasm_bindgen(method, setter = "rule")]
+    fn rule_shim(this: &StyleRuleChangeEventInit, val: Option<&CssRule>);
+    #[cfg(feature = "CssStyleSheet")]
+    #[wasm_bindgen(method, setter = "stylesheet")]
+    fn stylesheet_shim(this: &StyleRuleChangeEventInit, val: Option<&CssStyleSheet>);
 }
 impl StyleRuleChangeEventInit {
     #[doc = "Construct a new `StyleRuleChangeEventInit`."]
@@ -24,51 +36,21 @@ impl StyleRuleChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StyleRuleChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[cfg(feature = "CssRule")]
@@ -76,13 +58,7 @@ impl StyleRuleChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssRule`, `StyleRuleChangeEventInit`*"]
     pub fn rule(&mut self, val: Option<&CssRule>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("rule"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.rule_shim(val);
         self
     }
     #[cfg(feature = "CssStyleSheet")]
@@ -90,17 +66,7 @@ impl StyleRuleChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`, `StyleRuleChangeEventInit`*"]
     pub fn stylesheet(&mut self, val: Option<&CssStyleSheet>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stylesheet"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stylesheet_shim(val);
         self
     }
 }

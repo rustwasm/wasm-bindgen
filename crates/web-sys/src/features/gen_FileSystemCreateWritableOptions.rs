@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
     pub type FileSystemCreateWritableOptions;
+    #[wasm_bindgen(method, setter = "keepExistingData")]
+    fn keep_existing_data_shim(this: &FileSystemCreateWritableOptions, val: bool);
 }
 impl FileSystemCreateWritableOptions {
     #[doc = "Construct a new `FileSystemCreateWritableOptions`."]
@@ -24,17 +26,7 @@ impl FileSystemCreateWritableOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
     pub fn keep_existing_data(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("keepExistingData"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.keep_existing_data_shim(val);
         self
     }
 }

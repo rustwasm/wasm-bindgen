@@ -10,6 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
     pub type AuthenticatorSelectionCriteria;
+    #[cfg(feature = "AuthenticatorAttachment")]
+    #[wasm_bindgen(method, setter = "authenticatorAttachment")]
+    fn authenticator_attachment_shim(
+        this: &AuthenticatorSelectionCriteria,
+        val: AuthenticatorAttachment,
+    );
+    #[wasm_bindgen(method, setter = "requireResidentKey")]
+    fn require_resident_key_shim(this: &AuthenticatorSelectionCriteria, val: bool);
+    #[cfg(feature = "UserVerificationRequirement")]
+    #[wasm_bindgen(method, setter = "userVerification")]
+    fn user_verification_shim(
+        this: &AuthenticatorSelectionCriteria,
+        val: UserVerificationRequirement,
+    );
 }
 impl AuthenticatorSelectionCriteria {
     #[doc = "Construct a new `AuthenticatorSelectionCriteria`."]
@@ -25,34 +39,14 @@ impl AuthenticatorSelectionCriteria {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorAttachment`, `AuthenticatorSelectionCriteria`*"]
     pub fn authenticator_attachment(&mut self, val: AuthenticatorAttachment) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("authenticatorAttachment"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.authenticator_attachment_shim(val);
         self
     }
     #[doc = "Change the `requireResidentKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
     pub fn require_resident_key(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("requireResidentKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.require_resident_key_shim(val);
         self
     }
     #[cfg(feature = "UserVerificationRequirement")]
@@ -60,17 +54,7 @@ impl AuthenticatorSelectionCriteria {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`, `UserVerificationRequirement`*"]
     pub fn user_verification(&mut self, val: UserVerificationRequirement) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("userVerification"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.user_verification_shim(val);
         self
     }
 }

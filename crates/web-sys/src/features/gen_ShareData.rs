@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub type ShareData;
+    #[wasm_bindgen(method, setter = "files")]
+    fn files_shim(this: &ShareData, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "text")]
+    fn text_shim(this: &ShareData, val: &str);
+    #[wasm_bindgen(method, setter = "title")]
+    fn title_shim(this: &ShareData, val: &str);
+    #[wasm_bindgen(method, setter = "url")]
+    fn url_shim(this: &ShareData, val: &str);
 }
 impl ShareData {
     #[doc = "Construct a new `ShareData`."]
@@ -24,52 +32,28 @@ impl ShareData {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn files(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("files"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.files_shim(val);
         self
     }
     #[doc = "Change the `text` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn text(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("text"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.text_shim(val);
         self
     }
     #[doc = "Change the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn title(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("title"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.title_shim(val);
         self
     }
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn url(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("url"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.url_shim(val);
         self
     }
 }

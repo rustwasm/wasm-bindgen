@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     pub type TreeCellInfo;
+    #[wasm_bindgen(method, setter = "childElt")]
+    fn child_elt_shim(this: &TreeCellInfo, val: &str);
+    #[wasm_bindgen(method, setter = "row")]
+    fn row_shim(this: &TreeCellInfo, val: i32);
 }
 impl TreeCellInfo {
     #[doc = "Construct a new `TreeCellInfo`."]
@@ -24,30 +28,14 @@ impl TreeCellInfo {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     pub fn child_elt(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("childElt"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.child_elt_shim(val);
         self
     }
     #[doc = "Change the `row` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     pub fn row(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("row"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.row_shim(val);
         self
     }
 }

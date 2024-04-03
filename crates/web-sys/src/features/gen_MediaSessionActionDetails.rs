@@ -14,6 +14,15 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MediaSessionActionDetails;
+    #[cfg(feature = "MediaSessionAction")]
+    #[wasm_bindgen(method, setter = "action")]
+    fn action_shim(this: &MediaSessionActionDetails, val: MediaSessionAction);
+    #[wasm_bindgen(method, setter = "fastSeek")]
+    fn fast_seek_shim(this: &MediaSessionActionDetails, val: Option<bool>);
+    #[wasm_bindgen(method, setter = "seekOffset")]
+    fn seek_offset_shim(this: &MediaSessionActionDetails, val: Option<f64>);
+    #[wasm_bindgen(method, setter = "seekTime")]
+    fn seek_time_shim(this: &MediaSessionActionDetails, val: Option<f64>);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaSessionActionDetails {
@@ -39,14 +48,7 @@ impl MediaSessionActionDetails {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn action(&mut self, val: MediaSessionAction) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("action"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.action_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,17 +59,7 @@ impl MediaSessionActionDetails {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn fast_seek(&mut self, val: Option<bool>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("fastSeek"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.fast_seek_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -78,17 +70,7 @@ impl MediaSessionActionDetails {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn seek_offset(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("seekOffset"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.seek_offset_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -99,17 +81,7 @@ impl MediaSessionActionDetails {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn seek_time(&mut self, val: Option<f64>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("seekTime"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.seek_time_shim(val);
         self
     }
 }

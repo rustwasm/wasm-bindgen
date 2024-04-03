@@ -14,6 +14,11 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuProgrammableStage;
+    #[wasm_bindgen(method, setter = "entryPoint")]
+    fn entry_point_shim(this: &GpuProgrammableStage, val: &str);
+    #[cfg(feature = "GpuShaderModule")]
+    #[wasm_bindgen(method, setter = "module")]
+    fn module_shim(this: &GpuProgrammableStage, val: &GpuShaderModule);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuProgrammableStage {
@@ -38,17 +43,7 @@ impl GpuProgrammableStage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn entry_point(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("entryPoint"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.entry_point_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -60,14 +55,7 @@ impl GpuProgrammableStage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn module(&mut self, val: &GpuShaderModule) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("module"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.module_shim(val);
         self
     }
 }

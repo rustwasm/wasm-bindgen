@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub type DnsLookupDict;
+    #[wasm_bindgen(method, setter = "address")]
+    fn address_shim(this: &DnsLookupDict, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "answer")]
+    fn answer_shim(this: &DnsLookupDict, val: bool);
+    #[wasm_bindgen(method, setter = "error")]
+    fn error_shim(this: &DnsLookupDict, val: &str);
 }
 impl DnsLookupDict {
     #[doc = "Construct a new `DnsLookupDict`."]
@@ -24,44 +30,21 @@ impl DnsLookupDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub fn address(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("address"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.address_shim(val);
         self
     }
     #[doc = "Change the `answer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub fn answer(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("answer"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.answer_shim(val);
         self
     }
     #[doc = "Change the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub fn error(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("error"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.error_shim(val);
         self
     }
 }

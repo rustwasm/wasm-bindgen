@@ -10,6 +10,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketOptions`*"]
     pub type SocketOptions;
+    #[cfg(feature = "TcpSocketBinaryType")]
+    #[wasm_bindgen(method, setter = "binaryType")]
+    fn binary_type_shim(this: &SocketOptions, val: TcpSocketBinaryType);
+    #[wasm_bindgen(method, setter = "useSecureTransport")]
+    fn use_secure_transport_shim(this: &SocketOptions, val: bool);
 }
 impl SocketOptions {
     #[doc = "Construct a new `SocketOptions`."]
@@ -25,34 +30,14 @@ impl SocketOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketOptions`, `TcpSocketBinaryType`*"]
     pub fn binary_type(&mut self, val: TcpSocketBinaryType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("binaryType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.binary_type_shim(val);
         self
     }
     #[doc = "Change the `useSecureTransport` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketOptions`*"]
     pub fn use_secure_transport(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("useSecureTransport"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.use_secure_transport_shim(val);
         self
     }
 }

@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
     pub type HttpConnDict;
+    #[wasm_bindgen(method, setter = "connections")]
+    fn connections_shim(this: &HttpConnDict, val: &::wasm_bindgen::JsValue);
 }
 impl HttpConnDict {
     #[doc = "Construct a new `HttpConnDict`."]
@@ -24,17 +26,7 @@ impl HttpConnDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
     pub fn connections(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("connections"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.connections_shim(val);
         self
     }
 }

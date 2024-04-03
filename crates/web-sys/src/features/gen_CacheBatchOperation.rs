@@ -10,6 +10,17 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`*"]
     pub type CacheBatchOperation;
+    #[cfg(feature = "CacheQueryOptions")]
+    #[wasm_bindgen(method, setter = "options")]
+    fn options_shim(this: &CacheBatchOperation, val: &CacheQueryOptions);
+    #[cfg(feature = "Request")]
+    #[wasm_bindgen(method, setter = "request")]
+    fn request_shim(this: &CacheBatchOperation, val: &Request);
+    #[cfg(feature = "Response")]
+    #[wasm_bindgen(method, setter = "response")]
+    fn response_shim(this: &CacheBatchOperation, val: &Response);
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &CacheBatchOperation, val: &str);
 }
 impl CacheBatchOperation {
     #[doc = "Construct a new `CacheBatchOperation`."]
@@ -25,17 +36,7 @@ impl CacheBatchOperation {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `CacheQueryOptions`*"]
     pub fn options(&mut self, val: &CacheQueryOptions) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("options"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.options_shim(val);
         self
     }
     #[cfg(feature = "Request")]
@@ -43,17 +44,7 @@ impl CacheBatchOperation {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `Request`*"]
     pub fn request(&mut self, val: &Request) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("request"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.request_shim(val);
         self
     }
     #[cfg(feature = "Response")]
@@ -61,30 +52,14 @@ impl CacheBatchOperation {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `Response`*"]
     pub fn response(&mut self, val: &Response) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("response"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.response_shim(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

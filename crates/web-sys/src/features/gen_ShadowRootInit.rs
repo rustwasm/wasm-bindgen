@@ -10,6 +10,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`*"]
     pub type ShadowRootInit;
+    #[cfg(feature = "ShadowRootMode")]
+    #[wasm_bindgen(method, setter = "mode")]
+    fn mode_shim(this: &ShadowRootInit, val: ShadowRootMode);
 }
 impl ShadowRootInit {
     #[cfg(feature = "ShadowRootMode")]
@@ -27,13 +30,7 @@ impl ShadowRootInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`, `ShadowRootMode`*"]
     pub fn mode(&mut self, val: ShadowRootMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("mode"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mode_shim(val);
         self
     }
 }

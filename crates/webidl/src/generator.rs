@@ -1,12 +1,15 @@
 use proc_macro2::Literal;
 use proc_macro2::TokenStream;
+use quote::format_ident;
 use quote::quote;
 use std::collections::BTreeSet;
 use syn::{Ident, Type};
+use wasm_bindgen_backend::util::leading_colon_path_ty;
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
 use crate::traverse::TraverseType;
+use crate::util::shared_ref;
 use crate::util::{get_cfg_features, mdn_doc, required_doc_string, snake_case_ident};
 use crate::Options;
 
@@ -625,16 +628,50 @@ pub struct DictionaryField {
     pub name: Ident,
     pub js_name: String,
     pub ty: Type,
+    pub is_js_value_ref_option_type: bool,
     pub required: bool,
     pub unstable: bool,
 }
 
 impl DictionaryField {
-    fn generate_rust(&self, options: &Options, parent_name: String) -> TokenStream {
+    fn generate_rust_shim(
+        &self,
+        parent_ident: &Ident,
+        cfg_features: &Option<syn::Attribute>,
+    ) -> TokenStream {
+        let ty = &self.ty;
+        let shim_name = self.shim_name();
+        let js_name = &self.js_name;
+
+        let js_value_ref_type = shared_ref(
+            leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]),
+            false,
+        );
+
+        let ty = if self.is_js_value_ref_option_type {
+            js_value_ref_type
+        } else {
+            ty.clone()
+        };
+
+        quote! {
+            #cfg_features
+            #[wasm_bindgen(method, setter = #js_name)]
+            fn #shim_name(this: &#parent_ident, val: #ty);
+        }
+    }
+
+    fn generate_rust_setter(
+        &self,
+        options: &Options,
+        features: &BTreeSet<String>,
+        cfg_features: &Option<syn::Attribute>,
+    ) -> TokenStream {
         let DictionaryField {
             name,
             js_name,
             ty,
+            is_js_value_ref_option_type: _,
             required: _,
             unstable,
         } = self;
@@ -642,20 +679,18 @@ impl DictionaryField {
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
 
-        let mut features = BTreeSet::new();
-
-        add_features(&mut features, ty);
-
-        features.remove(&parent_name);
-
-        let cfg_features = get_cfg_features(options, &features);
-
-        features.insert(parent_name);
-
         let doc_comment = comment(
             format!("Change the `{}` field of this object.", js_name),
-            &required_doc_string(options, &features),
+            &required_doc_string(options, features),
         );
+
+        let shim_name = self.shim_name();
+
+        let shim_args = if self.is_js_value_ref_option_type {
+            quote! { val.unwrap_or(&::wasm_bindgen::JsValue::NULL) }
+        } else {
+            quote! { val }
+        };
 
         quote! {
             #unstable_attr
@@ -663,17 +698,32 @@ impl DictionaryField {
             #doc_comment
             #unstable_docs
             pub fn #name(&mut self, val: #ty) -> &mut Self {
-                use wasm_bindgen::JsValue;
-                let r = ::js_sys::Reflect::set(
-                    self.as_ref(),
-                    &JsValue::from(#js_name),
-                    &JsValue::from(val),
-                );
-                debug_assert!(r.is_ok(), "setting properties should never fail on our dictionary objects");
-                let _ = r;
+                self.#shim_name(#shim_args);
                 self
             }
         }
+    }
+
+    fn features(
+        &self,
+        options: &Options,
+        parent_name: String,
+    ) -> (BTreeSet<String>, Option<syn::Attribute>) {
+        let mut features = BTreeSet::new();
+
+        add_features(&mut features, &self.ty);
+
+        features.remove(&parent_name);
+
+        let cfg_features = get_cfg_features(options, &features);
+
+        features.insert(parent_name);
+
+        (features, cfg_features)
+    }
+
+    fn shim_name(&self) -> Ident {
+        format_ident!("{}_shim", self.name)
     }
 }
 
@@ -727,9 +777,24 @@ impl Dictionary {
             &required_doc_string(options, &required_features),
         );
 
+        let (field_features, field_cfg_features): (Vec<_>, Vec<_>) = fields
+            .iter()
+            .map(|field| field.features(options, name.to_string()))
+            .unzip();
+
+        let field_shims = fields
+            .iter()
+            .zip(field_cfg_features.iter())
+            .map(|(field, cfg_features)| field.generate_rust_shim(name, cfg_features))
+            .collect::<Vec<_>>();
+
         let fields = fields
             .iter()
-            .map(|field| field.generate_rust(options, name.to_string()))
+            .zip(field_features.iter())
+            .zip(field_cfg_features.iter())
+            .map(|((field, features), cfg_features)| {
+                field.generate_rust_setter(options, features, cfg_features)
+            })
             .collect::<Vec<_>>();
 
         let mut base_stream = quote! {
@@ -746,6 +811,8 @@ impl Dictionary {
                 #doc_comment
                 #unstable_docs
                 pub type #name;
+
+                #(#field_shims)*
             }
 
             #unstable_attr

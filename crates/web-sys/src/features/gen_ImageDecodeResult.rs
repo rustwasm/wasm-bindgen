@@ -14,6 +14,11 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type ImageDecodeResult;
+    #[wasm_bindgen(method, setter = "complete")]
+    fn complete_shim(this: &ImageDecodeResult, val: bool);
+    #[cfg(feature = "VideoFrame")]
+    #[wasm_bindgen(method, setter = "image")]
+    fn image_shim(this: &ImageDecodeResult, val: &VideoFrame);
 }
 #[cfg(web_sys_unstable_apis)]
 impl ImageDecodeResult {
@@ -39,17 +44,7 @@ impl ImageDecodeResult {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn complete(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("complete"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.complete_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -61,13 +56,7 @@ impl ImageDecodeResult {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn image(&mut self, val: &VideoFrame) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("image"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.image_shim(val);
         self
     }
 }

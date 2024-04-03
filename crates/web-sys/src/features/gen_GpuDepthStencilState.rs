@@ -14,6 +14,30 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuDepthStencilState;
+    #[wasm_bindgen(method, setter = "depthBias")]
+    fn depth_bias_shim(this: &GpuDepthStencilState, val: i32);
+    #[wasm_bindgen(method, setter = "depthBiasClamp")]
+    fn depth_bias_clamp_shim(this: &GpuDepthStencilState, val: f32);
+    #[wasm_bindgen(method, setter = "depthBiasSlopeScale")]
+    fn depth_bias_slope_scale_shim(this: &GpuDepthStencilState, val: f32);
+    #[cfg(feature = "GpuCompareFunction")]
+    #[wasm_bindgen(method, setter = "depthCompare")]
+    fn depth_compare_shim(this: &GpuDepthStencilState, val: GpuCompareFunction);
+    #[wasm_bindgen(method, setter = "depthWriteEnabled")]
+    fn depth_write_enabled_shim(this: &GpuDepthStencilState, val: bool);
+    #[cfg(feature = "GpuTextureFormat")]
+    #[wasm_bindgen(method, setter = "format")]
+    fn format_shim(this: &GpuDepthStencilState, val: GpuTextureFormat);
+    #[cfg(feature = "GpuStencilFaceState")]
+    #[wasm_bindgen(method, setter = "stencilBack")]
+    fn stencil_back_shim(this: &GpuDepthStencilState, val: &GpuStencilFaceState);
+    #[cfg(feature = "GpuStencilFaceState")]
+    #[wasm_bindgen(method, setter = "stencilFront")]
+    fn stencil_front_shim(this: &GpuDepthStencilState, val: &GpuStencilFaceState);
+    #[wasm_bindgen(method, setter = "stencilReadMask")]
+    fn stencil_read_mask_shim(this: &GpuDepthStencilState, val: u32);
+    #[wasm_bindgen(method, setter = "stencilWriteMask")]
+    fn stencil_write_mask_shim(this: &GpuDepthStencilState, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuDepthStencilState {
@@ -38,17 +62,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_bias(&mut self, val: i32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthBias"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_bias_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,17 +73,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_bias_clamp(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthBiasClamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_bias_clamp_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -80,17 +84,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_bias_slope_scale(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthBiasSlopeScale"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_bias_slope_scale_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -102,17 +96,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_compare(&mut self, val: GpuCompareFunction) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthCompare"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_compare_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -123,17 +107,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_write_enabled(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthWriteEnabled"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_write_enabled_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -145,14 +119,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn format(&mut self, val: GpuTextureFormat) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("format"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.format_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -164,17 +131,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_back(&mut self, val: &GpuStencilFaceState) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stencilBack"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stencil_back_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -186,17 +143,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_front(&mut self, val: &GpuStencilFaceState) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stencilFront"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stencil_front_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -207,17 +154,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_read_mask(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stencilReadMask"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stencil_read_mask_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -228,17 +165,7 @@ impl GpuDepthStencilState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_write_mask(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stencilWriteMask"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stencil_write_mask_shim(val);
         self
     }
 }

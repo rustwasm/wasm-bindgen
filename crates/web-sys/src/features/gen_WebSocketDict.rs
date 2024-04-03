@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocketDict`*"]
     pub type WebSocketDict;
+    #[wasm_bindgen(method, setter = "websockets")]
+    fn websockets_shim(this: &WebSocketDict, val: &::wasm_bindgen::JsValue);
 }
 impl WebSocketDict {
     #[doc = "Construct a new `WebSocketDict`."]
@@ -24,17 +26,7 @@ impl WebSocketDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocketDict`*"]
     pub fn websockets(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("websockets"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.websockets_shim(val);
         self
     }
 }

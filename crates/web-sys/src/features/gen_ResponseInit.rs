@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub type ResponseInit;
+    #[wasm_bindgen(method, setter = "headers")]
+    fn headers_shim(this: &ResponseInit, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "status")]
+    fn status_shim(this: &ResponseInit, val: u16);
+    #[wasm_bindgen(method, setter = "statusText")]
+    fn status_text_shim(this: &ResponseInit, val: &str);
 }
 impl ResponseInit {
     #[doc = "Construct a new `ResponseInit`."]
@@ -24,48 +30,21 @@ impl ResponseInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub fn headers(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("headers"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.headers_shim(val);
         self
     }
     #[doc = "Change the `status` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub fn status(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("status"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.status_shim(val);
         self
     }
     #[doc = "Change the `statusText` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub fn status_text(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("statusText"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.status_text_shim(val);
         self
     }
 }

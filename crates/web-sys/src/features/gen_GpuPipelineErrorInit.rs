@@ -14,6 +14,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuPipelineErrorInit;
+    #[cfg(feature = "GpuPipelineErrorReason")]
+    #[wasm_bindgen(method, setter = "reason")]
+    fn reason_shim(this: &GpuPipelineErrorInit, val: GpuPipelineErrorReason);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuPipelineErrorInit {
@@ -39,14 +42,7 @@ impl GpuPipelineErrorInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn reason(&mut self, val: GpuPipelineErrorReason) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("reason"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.reason_shim(val);
         self
     }
 }

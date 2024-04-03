@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub type RcwnPerfStats;
+    #[wasm_bindgen(method, setter = "avgLong")]
+    fn avg_long_shim(this: &RcwnPerfStats, val: u32);
+    #[wasm_bindgen(method, setter = "avgShort")]
+    fn avg_short_shim(this: &RcwnPerfStats, val: u32);
+    #[wasm_bindgen(method, setter = "stddevLong")]
+    fn stddev_long_shim(this: &RcwnPerfStats, val: u32);
 }
 impl RcwnPerfStats {
     #[doc = "Construct a new `RcwnPerfStats`."]
@@ -24,51 +30,21 @@ impl RcwnPerfStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub fn avg_long(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("avgLong"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.avg_long_shim(val);
         self
     }
     #[doc = "Change the `avgShort` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub fn avg_short(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("avgShort"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.avg_short_shim(val);
         self
     }
     #[doc = "Change the `stddevLong` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub fn stddev_long(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("stddevLong"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.stddev_long_shim(val);
         self
     }
 }

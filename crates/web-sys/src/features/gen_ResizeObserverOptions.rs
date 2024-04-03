@@ -10,6 +10,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResizeObserverOptions`*"]
     pub type ResizeObserverOptions;
+    #[cfg(feature = "ResizeObserverBoxOptions")]
+    #[wasm_bindgen(method, setter = "box")]
+    fn box__shim(this: &ResizeObserverOptions, val: ResizeObserverBoxOptions);
 }
 impl ResizeObserverOptions {
     #[doc = "Construct a new `ResizeObserverOptions`."]
@@ -25,13 +28,7 @@ impl ResizeObserverOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResizeObserverBoxOptions`, `ResizeObserverOptions`*"]
     pub fn box_(&mut self, val: ResizeObserverBoxOptions) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("box"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.box__shim(val);
         self
     }
 }

@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub type IdbIndexParameters;
+    #[wasm_bindgen(method, setter = "locale")]
+    fn locale_shim(this: &IdbIndexParameters, val: Option<&str>);
+    #[wasm_bindgen(method, setter = "multiEntry")]
+    fn multi_entry_shim(this: &IdbIndexParameters, val: bool);
+    #[wasm_bindgen(method, setter = "unique")]
+    fn unique_shim(this: &IdbIndexParameters, val: bool);
 }
 impl IdbIndexParameters {
     #[doc = "Construct a new `IdbIndexParameters`."]
@@ -24,45 +30,21 @@ impl IdbIndexParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub fn locale(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("locale"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.locale_shim(val);
         self
     }
     #[doc = "Change the `multiEntry` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub fn multi_entry(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("multiEntry"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.multi_entry_shim(val);
         self
     }
     #[doc = "Change the `unique` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub fn unique(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("unique"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.unique_shim(val);
         self
     }
 }

@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
     pub type WorkerOptions;
+    #[cfg(feature = "RequestCredentials")]
+    #[wasm_bindgen(method, setter = "credentials")]
+    fn credentials_shim(this: &WorkerOptions, val: RequestCredentials);
+    #[wasm_bindgen(method, setter = "name")]
+    fn name_shim(this: &WorkerOptions, val: &str);
+    #[cfg(feature = "WorkerType")]
+    #[wasm_bindgen(method, setter = "type")]
+    fn type__shim(this: &WorkerOptions, val: WorkerType);
 }
 impl WorkerOptions {
     #[doc = "Construct a new `WorkerOptions`."]
@@ -25,30 +33,14 @@ impl WorkerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestCredentials`, `WorkerOptions`*"]
     pub fn credentials(&mut self, val: RequestCredentials) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("credentials"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.credentials_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("name"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.name_shim(val);
         self
     }
     #[cfg(feature = "WorkerType")]
@@ -56,13 +48,7 @@ impl WorkerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`, `WorkerType`*"]
     pub fn type_(&mut self, val: WorkerType) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("type"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.type__shim(val);
         self
     }
 }

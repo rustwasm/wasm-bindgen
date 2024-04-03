@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
     pub type DisplayNameOptions;
+    #[wasm_bindgen(method, setter = "keys")]
+    fn keys_shim(this: &DisplayNameOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "style")]
+    fn style_shim(this: &DisplayNameOptions, val: &str);
 }
 impl DisplayNameOptions {
     #[doc = "Construct a new `DisplayNameOptions`."]
@@ -24,26 +28,14 @@ impl DisplayNameOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
     pub fn keys(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("keys"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.keys_shim(val);
         self
     }
     #[doc = "Change the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
     pub fn style(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("style"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.style_shim(val);
         self
     }
 }

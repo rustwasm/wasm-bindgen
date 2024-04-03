@@ -14,6 +14,16 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type SaveFilePickerOptions;
+    #[wasm_bindgen(method, setter = "excludeAcceptAllOption")]
+    fn exclude_accept_all_option_shim(this: &SaveFilePickerOptions, val: bool);
+    #[wasm_bindgen(method, setter = "id")]
+    fn id_shim(this: &SaveFilePickerOptions, val: &str);
+    #[wasm_bindgen(method, setter = "startIn")]
+    fn start_in_shim(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "types")]
+    fn types_shim(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "suggestedName")]
+    fn suggested_name_shim(this: &SaveFilePickerOptions, val: Option<&str>);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SaveFilePickerOptions {
@@ -36,17 +46,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn exclude_accept_all_option(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("excludeAcceptAllOption"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.exclude_accept_all_option_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,13 +57,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("id"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.id_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -74,17 +68,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn start_in(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("startIn"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.start_in_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -95,13 +79,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("types"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.types_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -112,17 +90,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn suggested_name(&mut self, val: Option<&str>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("suggestedName"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.suggested_name_shim(val);
         self
     }
 }

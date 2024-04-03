@@ -10,6 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
     pub type RtcRtpCodecParameters;
+    #[wasm_bindgen(method, setter = "channels")]
+    fn channels_shim(this: &RtcRtpCodecParameters, val: u16);
+    #[wasm_bindgen(method, setter = "clockRate")]
+    fn clock_rate_shim(this: &RtcRtpCodecParameters, val: u32);
+    #[wasm_bindgen(method, setter = "mimeType")]
+    fn mime_type_shim(this: &RtcRtpCodecParameters, val: &str);
+    #[wasm_bindgen(method, setter = "payloadType")]
+    fn payload_type_shim(this: &RtcRtpCodecParameters, val: u16);
+    #[wasm_bindgen(method, setter = "sdpFmtpLine")]
+    fn sdp_fmtp_line_shim(this: &RtcRtpCodecParameters, val: &str);
 }
 impl RtcRtpCodecParameters {
     #[doc = "Construct a new `RtcRtpCodecParameters`."]
@@ -24,85 +34,35 @@ impl RtcRtpCodecParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
     pub fn channels(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("channels"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.channels_shim(val);
         self
     }
     #[doc = "Change the `clockRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
     pub fn clock_rate(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("clockRate"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.clock_rate_shim(val);
         self
     }
     #[doc = "Change the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
     pub fn mime_type(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("mimeType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.mime_type_shim(val);
         self
     }
     #[doc = "Change the `payloadType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
     pub fn payload_type(&mut self, val: u16) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("payloadType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.payload_type_shim(val);
         self
     }
     #[doc = "Change the `sdpFmtpLine` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
     pub fn sdp_fmtp_line(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sdpFmtpLine"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sdp_fmtp_line_shim(val);
         self
     }
 }

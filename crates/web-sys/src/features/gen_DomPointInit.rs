@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`*"]
     pub type DomPointInit;
+    #[wasm_bindgen(method, setter = "w")]
+    fn w_shim(this: &DomPointInit, val: f64);
+    #[wasm_bindgen(method, setter = "x")]
+    fn x_shim(this: &DomPointInit, val: f64);
+    #[wasm_bindgen(method, setter = "y")]
+    fn y_shim(this: &DomPointInit, val: f64);
+    #[wasm_bindgen(method, setter = "z")]
+    fn z_shim(this: &DomPointInit, val: f64);
 }
 impl DomPointInit {
     #[doc = "Construct a new `DomPointInit`."]
@@ -24,52 +32,28 @@ impl DomPointInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`*"]
     pub fn w(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("w"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.w_shim(val);
         self
     }
     #[doc = "Change the `x` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`*"]
     pub fn x(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("x"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.x_shim(val);
         self
     }
     #[doc = "Change the `y` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`*"]
     pub fn y(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("y"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.y_shim(val);
         self
     }
     #[doc = "Change the `z` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomPointInit`*"]
     pub fn z(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("z"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.z_shim(val);
         self
     }
 }

@@ -14,6 +14,13 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MemoryAttribution;
+    #[cfg(feature = "MemoryAttributionContainer")]
+    #[wasm_bindgen(method, setter = "container")]
+    fn container_shim(this: &MemoryAttribution, val: &MemoryAttributionContainer);
+    #[wasm_bindgen(method, setter = "scope")]
+    fn scope_shim(this: &MemoryAttribution, val: &str);
+    #[wasm_bindgen(method, setter = "url")]
+    fn url_shim(this: &MemoryAttribution, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MemoryAttribution {
@@ -37,17 +44,7 @@ impl MemoryAttribution {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn container(&mut self, val: &MemoryAttributionContainer) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("container"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.container_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,13 +55,7 @@ impl MemoryAttribution {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn scope(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("scope"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.scope_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,13 +66,7 @@ impl MemoryAttribution {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn url(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("url"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.url_shim(val);
         self
     }
 }

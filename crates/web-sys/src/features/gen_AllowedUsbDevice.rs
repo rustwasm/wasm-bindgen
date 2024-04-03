@@ -14,6 +14,12 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AllowedUsbDevice;
+    #[wasm_bindgen(method, setter = "productId")]
+    fn product_id_shim(this: &AllowedUsbDevice, val: u8);
+    #[wasm_bindgen(method, setter = "serialNumber")]
+    fn serial_number_shim(this: &AllowedUsbDevice, val: &str);
+    #[wasm_bindgen(method, setter = "vendorId")]
+    fn vendor_id_shim(this: &AllowedUsbDevice, val: u8);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AllowedUsbDevice {
@@ -38,17 +44,7 @@ impl AllowedUsbDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn product_id(&mut self, val: u8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("productId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.product_id_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,17 +55,7 @@ impl AllowedUsbDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn serial_number(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("serialNumber"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.serial_number_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -80,17 +66,7 @@ impl AllowedUsbDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn vendor_id(&mut self, val: u8) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("vendorId"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.vendor_id_shim(val);
         self
     }
 }

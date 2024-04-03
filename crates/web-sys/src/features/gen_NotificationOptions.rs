@@ -10,6 +10,33 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub type NotificationOptions;
+    #[wasm_bindgen(method, setter = "actions")]
+    fn actions_shim(this: &NotificationOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "badge")]
+    fn badge_shim(this: &NotificationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "body")]
+    fn body_shim(this: &NotificationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "data")]
+    fn data_shim(this: &NotificationOptions, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "NotificationDirection")]
+    #[wasm_bindgen(method, setter = "dir")]
+    fn dir_shim(this: &NotificationOptions, val: NotificationDirection);
+    #[wasm_bindgen(method, setter = "icon")]
+    fn icon_shim(this: &NotificationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "image")]
+    fn image_shim(this: &NotificationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "lang")]
+    fn lang_shim(this: &NotificationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "renotify")]
+    fn renotify_shim(this: &NotificationOptions, val: bool);
+    #[wasm_bindgen(method, setter = "requireInteraction")]
+    fn require_interaction_shim(this: &NotificationOptions, val: bool);
+    #[wasm_bindgen(method, setter = "silent")]
+    fn silent_shim(this: &NotificationOptions, val: Option<bool>);
+    #[wasm_bindgen(method, setter = "tag")]
+    fn tag_shim(this: &NotificationOptions, val: &str);
+    #[wasm_bindgen(method, setter = "timestamp")]
+    fn timestamp_shim(this: &NotificationOptions, val: f64);
 }
 impl NotificationOptions {
     #[doc = "Construct a new `NotificationOptions`."]
@@ -24,56 +51,28 @@ impl NotificationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn actions(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("actions"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.actions_shim(val);
         self
     }
     #[doc = "Change the `badge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn badge(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("badge"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.badge_shim(val);
         self
     }
     #[doc = "Change the `body` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn body(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("body"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.body_shim(val);
         self
     }
     #[doc = "Change the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn data(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("data"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.data_shim(val);
         self
     }
     #[cfg(feature = "NotificationDirection")]
@@ -81,130 +80,63 @@ impl NotificationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationDirection`, `NotificationOptions`*"]
     pub fn dir(&mut self, val: NotificationDirection) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("dir"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.dir_shim(val);
         self
     }
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn icon(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("icon"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.icon_shim(val);
         self
     }
     #[doc = "Change the `image` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn image(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("image"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.image_shim(val);
         self
     }
     #[doc = "Change the `lang` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn lang(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("lang"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.lang_shim(val);
         self
     }
     #[doc = "Change the `renotify` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn renotify(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("renotify"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.renotify_shim(val);
         self
     }
     #[doc = "Change the `requireInteraction` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn require_interaction(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("requireInteraction"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.require_interaction_shim(val);
         self
     }
     #[doc = "Change the `silent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn silent(&mut self, val: Option<bool>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("silent"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.silent_shim(val);
         self
     }
     #[doc = "Change the `tag` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn tag(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("tag"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.tag_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("timestamp"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.timestamp_shim(val);
         self
     }
 }

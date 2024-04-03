@@ -14,6 +14,17 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type XrRenderStateInit;
+    #[cfg(feature = "XrWebGlLayer")]
+    #[wasm_bindgen(method, setter = "baseLayer")]
+    fn base_layer_shim(this: &XrRenderStateInit, val: Option<&XrWebGlLayer>);
+    #[wasm_bindgen(method, setter = "depthFar")]
+    fn depth_far_shim(this: &XrRenderStateInit, val: f64);
+    #[wasm_bindgen(method, setter = "depthNear")]
+    fn depth_near_shim(this: &XrRenderStateInit, val: f64);
+    #[wasm_bindgen(method, setter = "inlineVerticalFieldOfView")]
+    fn inline_vertical_field_of_view_shim(this: &XrRenderStateInit, val: f64);
+    #[wasm_bindgen(method, setter = "layers")]
+    fn layers_shim(this: &XrRenderStateInit, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrRenderStateInit {
@@ -37,17 +48,7 @@ impl XrRenderStateInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn base_layer(&mut self, val: Option<&XrWebGlLayer>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("baseLayer"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.base_layer_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,17 +59,7 @@ impl XrRenderStateInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_far(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthFar"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_far_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -79,17 +70,7 @@ impl XrRenderStateInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_near(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("depthNear"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.depth_near_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -100,17 +81,7 @@ impl XrRenderStateInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn inline_vertical_field_of_view(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("inlineVerticalFieldOfView"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.inline_vertical_field_of_view_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -121,14 +92,7 @@ impl XrRenderStateInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn layers(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("layers"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.layers_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
 }

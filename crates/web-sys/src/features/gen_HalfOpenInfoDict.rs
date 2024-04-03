@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
     pub type HalfOpenInfoDict;
+    #[wasm_bindgen(method, setter = "speculative")]
+    fn speculative_shim(this: &HalfOpenInfoDict, val: bool);
 }
 impl HalfOpenInfoDict {
     #[doc = "Construct a new `HalfOpenInfoDict`."]
@@ -24,17 +26,7 @@ impl HalfOpenInfoDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
     pub fn speculative(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("speculative"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.speculative_shim(val);
         self
     }
 }

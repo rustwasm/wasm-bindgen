@@ -10,6 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Transformer`*"]
     pub type Transformer;
+    #[wasm_bindgen(method, setter = "flush")]
+    fn flush_shim(this: &Transformer, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "readableType")]
+    fn readable_type_shim(this: &Transformer, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "start")]
+    fn start_shim(this: &Transformer, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "transform")]
+    fn transform_shim(this: &Transformer, val: &::js_sys::Function);
+    #[wasm_bindgen(method, setter = "writableType")]
+    fn writable_type_shim(this: &Transformer, val: &::wasm_bindgen::JsValue);
 }
 impl Transformer {
     #[doc = "Construct a new `Transformer`."]
@@ -24,77 +34,35 @@ impl Transformer {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Transformer`*"]
     pub fn flush(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("flush"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.flush_shim(val);
         self
     }
     #[doc = "Change the `readableType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Transformer`*"]
     pub fn readable_type(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("readableType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.readable_type_shim(val);
         self
     }
     #[doc = "Change the `start` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Transformer`*"]
     pub fn start(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("start"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.start_shim(val);
         self
     }
     #[doc = "Change the `transform` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Transformer`*"]
     pub fn transform(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("transform"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.transform_shim(val);
         self
     }
     #[doc = "Change the `writableType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Transformer`*"]
     pub fn writable_type(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("writableType"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.writable_type_shim(val);
         self
     }
 }

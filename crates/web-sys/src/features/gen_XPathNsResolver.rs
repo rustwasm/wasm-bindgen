@@ -10,6 +10,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XPathNsResolver`*"]
     pub type XPathNsResolver;
+    #[wasm_bindgen(method, setter = "lookupNamespaceURI")]
+    fn lookup_namespace_uri_shim(this: &XPathNsResolver, val: &::js_sys::Function);
 }
 impl XPathNsResolver {
     #[doc = "Construct a new `XPathNsResolver`."]
@@ -24,17 +26,7 @@ impl XPathNsResolver {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XPathNsResolver`*"]
     pub fn lookup_namespace_uri(&mut self, val: &::js_sys::Function) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("lookupNamespaceURI"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.lookup_namespace_uri_shim(val);
         self
     }
 }

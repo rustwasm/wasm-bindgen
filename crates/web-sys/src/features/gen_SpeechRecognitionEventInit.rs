@@ -10,6 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub type SpeechRecognitionEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &SpeechRecognitionEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &SpeechRecognitionEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &SpeechRecognitionEventInit, val: bool);
+    #[cfg(feature = "Document")]
+    #[wasm_bindgen(method, setter = "emma")]
+    fn emma_shim(this: &SpeechRecognitionEventInit, val: Option<&Document>);
+    #[wasm_bindgen(method, setter = "interpretation")]
+    fn interpretation_shim(this: &SpeechRecognitionEventInit, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "resultIndex")]
+    fn result_index_shim(this: &SpeechRecognitionEventInit, val: u32);
+    #[cfg(feature = "SpeechRecognitionResultList")]
+    #[wasm_bindgen(method, setter = "results")]
+    fn results_shim(this: &SpeechRecognitionEventInit, val: Option<&SpeechRecognitionResultList>);
 }
 impl SpeechRecognitionEventInit {
     #[doc = "Construct a new `SpeechRecognitionEventInit`."]
@@ -24,51 +40,21 @@ impl SpeechRecognitionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[cfg(feature = "Document")]
@@ -76,47 +62,21 @@ impl SpeechRecognitionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `SpeechRecognitionEventInit`*"]
     pub fn emma(&mut self, val: Option<&Document>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("emma"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.emma_shim(val);
         self
     }
     #[doc = "Change the `interpretation` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn interpretation(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("interpretation"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.interpretation_shim(val);
         self
     }
     #[doc = "Change the `resultIndex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn result_index(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("resultIndex"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.result_index_shim(val);
         self
     }
     #[cfg(feature = "SpeechRecognitionResultList")]
@@ -124,17 +84,7 @@ impl SpeechRecognitionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`, `SpeechRecognitionResultList`*"]
     pub fn results(&mut self, val: Option<&SpeechRecognitionResultList>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("results"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.results_shim(val);
         self
     }
 }

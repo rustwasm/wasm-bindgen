@@ -10,6 +10,23 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub type RtcTrackEventInit;
+    #[wasm_bindgen(method, setter = "bubbles")]
+    fn bubbles_shim(this: &RtcTrackEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "cancelable")]
+    fn cancelable_shim(this: &RtcTrackEventInit, val: bool);
+    #[wasm_bindgen(method, setter = "composed")]
+    fn composed_shim(this: &RtcTrackEventInit, val: bool);
+    #[cfg(feature = "RtcRtpReceiver")]
+    #[wasm_bindgen(method, setter = "receiver")]
+    fn receiver_shim(this: &RtcTrackEventInit, val: &RtcRtpReceiver);
+    #[wasm_bindgen(method, setter = "streams")]
+    fn streams_shim(this: &RtcTrackEventInit, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "MediaStreamTrack")]
+    #[wasm_bindgen(method, setter = "track")]
+    fn track_shim(this: &RtcTrackEventInit, val: &MediaStreamTrack);
+    #[cfg(feature = "RtcRtpTransceiver")]
+    #[wasm_bindgen(method, setter = "transceiver")]
+    fn transceiver_shim(this: &RtcTrackEventInit, val: &RtcRtpTransceiver);
 }
 impl RtcTrackEventInit {
     #[cfg(all(
@@ -36,51 +53,21 @@ impl RtcTrackEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("bubbles"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cancelable"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("composed"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.composed_shim(val);
         self
     }
     #[cfg(feature = "RtcRtpReceiver")]
@@ -88,34 +75,14 @@ impl RtcTrackEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`, `RtcTrackEventInit`*"]
     pub fn receiver(&mut self, val: &RtcRtpReceiver) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("receiver"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.receiver_shim(val);
         self
     }
     #[doc = "Change the `streams` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
     pub fn streams(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("streams"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.streams_shim(val);
         self
     }
     #[cfg(feature = "MediaStreamTrack")]
@@ -123,13 +90,7 @@ impl RtcTrackEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcTrackEventInit`*"]
     pub fn track(&mut self, val: &MediaStreamTrack) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("track"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.track_shim(val);
         self
     }
     #[cfg(feature = "RtcRtpTransceiver")]
@@ -137,17 +98,7 @@ impl RtcTrackEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
     pub fn transceiver(&mut self, val: &RtcRtpTransceiver) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("transceiver"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.transceiver_shim(val);
         self
     }
 }

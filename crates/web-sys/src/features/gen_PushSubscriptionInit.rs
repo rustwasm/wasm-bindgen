@@ -10,6 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub type PushSubscriptionInit;
+    #[wasm_bindgen(method, setter = "appServerKey")]
+    fn app_server_key_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::Object>);
+    #[wasm_bindgen(method, setter = "authSecret")]
+    fn auth_secret_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::ArrayBuffer>);
+    #[wasm_bindgen(method, setter = "endpoint")]
+    fn endpoint_shim(this: &PushSubscriptionInit, val: &str);
+    #[wasm_bindgen(method, setter = "p256dhKey")]
+    fn p256dh_key_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::ArrayBuffer>);
+    #[wasm_bindgen(method, setter = "scope")]
+    fn scope_shim(this: &PushSubscriptionInit, val: &str);
 }
 impl PushSubscriptionInit {
     #[doc = "Construct a new `PushSubscriptionInit`."]
@@ -26,81 +36,35 @@ impl PushSubscriptionInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn app_server_key(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("appServerKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.app_server_key_shim(val);
         self
     }
     #[doc = "Change the `authSecret` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn auth_secret(&mut self, val: Option<&::js_sys::ArrayBuffer>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("authSecret"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.auth_secret_shim(val);
         self
     }
     #[doc = "Change the `endpoint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn endpoint(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("endpoint"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.endpoint_shim(val);
         self
     }
     #[doc = "Change the `p256dhKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn p256dh_key(&mut self, val: Option<&::js_sys::ArrayBuffer>) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("p256dhKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.p256dh_key_shim(val);
         self
     }
     #[doc = "Change the `scope` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn scope(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("scope"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.scope_shim(val);
         self
     }
 }

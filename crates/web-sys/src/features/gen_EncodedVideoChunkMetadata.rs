@@ -14,6 +14,14 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type EncodedVideoChunkMetadata;
+    #[wasm_bindgen(method, setter = "alphaSideData")]
+    fn alpha_side_data_shim(this: &EncodedVideoChunkMetadata, val: &::js_sys::Object);
+    #[cfg(feature = "VideoDecoderConfig")]
+    #[wasm_bindgen(method, setter = "decoderConfig")]
+    fn decoder_config_shim(this: &EncodedVideoChunkMetadata, val: &VideoDecoderConfig);
+    #[cfg(feature = "SvcOutputMetadata")]
+    #[wasm_bindgen(method, setter = "svc")]
+    fn svc_shim(this: &EncodedVideoChunkMetadata, val: &SvcOutputMetadata);
 }
 #[cfg(web_sys_unstable_apis)]
 impl EncodedVideoChunkMetadata {
@@ -36,17 +44,7 @@ impl EncodedVideoChunkMetadata {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn alpha_side_data(&mut self, val: &::js_sys::Object) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("alphaSideData"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.alpha_side_data_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,17 +56,7 @@ impl EncodedVideoChunkMetadata {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn decoder_config(&mut self, val: &VideoDecoderConfig) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("decoderConfig"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.decoder_config_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -80,13 +68,7 @@ impl EncodedVideoChunkMetadata {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn svc(&mut self, val: &SvcOutputMetadata) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("svc"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.svc_shim(val);
         self
     }
 }

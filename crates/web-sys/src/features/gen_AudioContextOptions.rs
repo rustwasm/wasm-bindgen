@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub type AudioContextOptions;
+    #[wasm_bindgen(method, setter = "latencyHint")]
+    fn latency_hint_shim(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "sampleRate")]
+    fn sample_rate_shim(this: &AudioContextOptions, val: f32);
+    #[wasm_bindgen(method, setter = "sinkId")]
+    fn sink_id_shim(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
 }
 impl AudioContextOptions {
     #[doc = "Construct a new `AudioContextOptions`."]
@@ -24,34 +30,14 @@ impl AudioContextOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub fn latency_hint(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("latencyHint"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.latency_hint_shim(val);
         self
     }
     #[doc = "Change the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub fn sample_rate(&mut self, val: f32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("sampleRate"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sample_rate_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -62,14 +48,7 @@ impl AudioContextOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn sink_id(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("sinkId"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.sink_id_shim(val);
         self
     }
 }

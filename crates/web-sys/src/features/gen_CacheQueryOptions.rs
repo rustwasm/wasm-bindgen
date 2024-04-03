@@ -10,6 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub type CacheQueryOptions;
+    #[wasm_bindgen(method, setter = "cacheName")]
+    fn cache_name_shim(this: &CacheQueryOptions, val: &str);
+    #[wasm_bindgen(method, setter = "ignoreMethod")]
+    fn ignore_method_shim(this: &CacheQueryOptions, val: bool);
+    #[wasm_bindgen(method, setter = "ignoreSearch")]
+    fn ignore_search_shim(this: &CacheQueryOptions, val: bool);
+    #[wasm_bindgen(method, setter = "ignoreVary")]
+    fn ignore_vary_shim(this: &CacheQueryOptions, val: bool);
 }
 impl CacheQueryOptions {
     #[doc = "Construct a new `CacheQueryOptions`."]
@@ -24,68 +32,28 @@ impl CacheQueryOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn cache_name(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("cacheName"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.cache_name_shim(val);
         self
     }
     #[doc = "Change the `ignoreMethod` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn ignore_method(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("ignoreMethod"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ignore_method_shim(val);
         self
     }
     #[doc = "Change the `ignoreSearch` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn ignore_search(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("ignoreSearch"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ignore_search_shim(val);
         self
     }
     #[doc = "Change the `ignoreVary` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn ignore_vary(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("ignoreVary"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.ignore_vary_shim(val);
         self
     }
 }

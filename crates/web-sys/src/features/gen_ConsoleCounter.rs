@@ -10,6 +10,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub type ConsoleCounter;
+    #[wasm_bindgen(method, setter = "count")]
+    fn count_shim(this: &ConsoleCounter, val: u32);
+    #[wasm_bindgen(method, setter = "label")]
+    fn label_shim(this: &ConsoleCounter, val: &str);
 }
 impl ConsoleCounter {
     #[doc = "Construct a new `ConsoleCounter`."]
@@ -24,26 +28,14 @@ impl ConsoleCounter {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub fn count(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("count"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.count_shim(val);
         self
     }
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("label"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.label_shim(val);
         self
     }
 }

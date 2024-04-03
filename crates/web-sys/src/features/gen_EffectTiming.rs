@@ -10,6 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     pub type EffectTiming;
+    #[wasm_bindgen(method, setter = "delay")]
+    fn delay_shim(this: &EffectTiming, val: f64);
+    #[cfg(feature = "PlaybackDirection")]
+    #[wasm_bindgen(method, setter = "direction")]
+    fn direction_shim(this: &EffectTiming, val: PlaybackDirection);
+    #[wasm_bindgen(method, setter = "duration")]
+    fn duration_shim(this: &EffectTiming, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, setter = "easing")]
+    fn easing_shim(this: &EffectTiming, val: &str);
+    #[wasm_bindgen(method, setter = "endDelay")]
+    fn end_delay_shim(this: &EffectTiming, val: f64);
+    #[cfg(feature = "FillMode")]
+    #[wasm_bindgen(method, setter = "fill")]
+    fn fill_shim(this: &EffectTiming, val: FillMode);
+    #[wasm_bindgen(method, setter = "iterationStart")]
+    fn iteration_start_shim(this: &EffectTiming, val: f64);
+    #[wasm_bindgen(method, setter = "iterations")]
+    fn iterations_shim(this: &EffectTiming, val: f64);
 }
 impl EffectTiming {
     #[doc = "Construct a new `EffectTiming`."]
@@ -24,13 +42,7 @@ impl EffectTiming {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     pub fn delay(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("delay"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.delay_shim(val);
         self
     }
     #[cfg(feature = "PlaybackDirection")]
@@ -38,65 +50,28 @@ impl EffectTiming {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`, `PlaybackDirection`*"]
     pub fn direction(&mut self, val: PlaybackDirection) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("direction"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.direction_shim(val);
         self
     }
     #[doc = "Change the `duration` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     pub fn duration(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("duration"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.duration_shim(val);
         self
     }
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     pub fn easing(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r =
-            ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("easing"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.easing_shim(val);
         self
     }
     #[doc = "Change the `endDelay` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     pub fn end_delay(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("endDelay"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.end_delay_shim(val);
         self
     }
     #[cfg(feature = "FillMode")]
@@ -104,47 +79,21 @@ impl EffectTiming {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`, `FillMode`*"]
     pub fn fill(&mut self, val: FillMode) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("fill"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.fill_shim(val);
         self
     }
     #[doc = "Change the `iterationStart` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     pub fn iteration_start(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("iterationStart"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.iteration_start_shim(val);
         self
     }
     #[doc = "Change the `iterations` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     pub fn iterations(&mut self, val: f64) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("iterations"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.iterations_shim(val);
         self
     }
 }

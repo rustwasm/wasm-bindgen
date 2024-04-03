@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     pub type RsaOtherPrimesInfo;
+    #[wasm_bindgen(method, setter = "d")]
+    fn d_shim(this: &RsaOtherPrimesInfo, val: &str);
+    #[wasm_bindgen(method, setter = "r")]
+    fn r_shim(this: &RsaOtherPrimesInfo, val: &str);
+    #[wasm_bindgen(method, setter = "t")]
+    fn t_shim(this: &RsaOtherPrimesInfo, val: &str);
 }
 impl RsaOtherPrimesInfo {
     #[doc = "Construct a new `RsaOtherPrimesInfo`."]
@@ -27,39 +33,21 @@ impl RsaOtherPrimesInfo {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     pub fn d(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("d"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.d_shim(val);
         self
     }
     #[doc = "Change the `r` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     pub fn r(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("r"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.r_shim(val);
         self
     }
     #[doc = "Change the `t` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     pub fn t(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("t"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.t_shim(val);
         self
     }
 }

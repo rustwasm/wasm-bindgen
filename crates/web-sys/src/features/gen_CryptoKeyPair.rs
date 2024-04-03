@@ -10,6 +10,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKeyPair`*"]
     pub type CryptoKeyPair;
+    #[cfg(feature = "CryptoKey")]
+    #[wasm_bindgen(method, setter = "privateKey")]
+    fn private_key_shim(this: &CryptoKeyPair, val: &CryptoKey);
+    #[cfg(feature = "CryptoKey")]
+    #[wasm_bindgen(method, setter = "publicKey")]
+    fn public_key_shim(this: &CryptoKeyPair, val: &CryptoKey);
 }
 impl CryptoKeyPair {
     #[cfg(feature = "CryptoKey")]
@@ -28,17 +34,7 @@ impl CryptoKeyPair {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
     pub fn private_key(&mut self, val: &CryptoKey) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("privateKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.private_key_shim(val);
         self
     }
     #[cfg(feature = "CryptoKey")]
@@ -46,17 +42,7 @@ impl CryptoKeyPair {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
     pub fn public_key(&mut self, val: &CryptoKey) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("publicKey"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.public_key_shim(val);
         self
     }
 }

@@ -14,6 +14,26 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoDecoderConfig;
+    #[wasm_bindgen(method, setter = "codec")]
+    fn codec_shim(this: &VideoDecoderConfig, val: &str);
+    #[wasm_bindgen(method, setter = "codedHeight")]
+    fn coded_height_shim(this: &VideoDecoderConfig, val: u32);
+    #[wasm_bindgen(method, setter = "codedWidth")]
+    fn coded_width_shim(this: &VideoDecoderConfig, val: u32);
+    #[cfg(feature = "VideoColorSpaceInit")]
+    #[wasm_bindgen(method, setter = "colorSpace")]
+    fn color_space_shim(this: &VideoDecoderConfig, val: &VideoColorSpaceInit);
+    #[wasm_bindgen(method, setter = "description")]
+    fn description_shim(this: &VideoDecoderConfig, val: &::js_sys::Object);
+    #[wasm_bindgen(method, setter = "displayAspectHeight")]
+    fn display_aspect_height_shim(this: &VideoDecoderConfig, val: u32);
+    #[wasm_bindgen(method, setter = "displayAspectWidth")]
+    fn display_aspect_width_shim(this: &VideoDecoderConfig, val: u32);
+    #[cfg(feature = "HardwareAcceleration")]
+    #[wasm_bindgen(method, setter = "hardwareAcceleration")]
+    fn hardware_acceleration_shim(this: &VideoDecoderConfig, val: HardwareAcceleration);
+    #[wasm_bindgen(method, setter = "optimizeForLatency")]
+    fn optimize_for_latency_shim(this: &VideoDecoderConfig, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoDecoderConfig {
@@ -37,13 +57,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn codec(&mut self, val: &str) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(self.as_ref(), &JsValue::from("codec"), &JsValue::from(val));
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.codec_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -54,17 +68,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn coded_height(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("codedHeight"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.coded_height_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,17 +79,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn coded_width(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("codedWidth"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.coded_width_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -97,17 +91,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn color_space(&mut self, val: &VideoColorSpaceInit) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("colorSpace"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.color_space_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -118,17 +102,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn description(&mut self, val: &::js_sys::Object) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("description"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.description_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -139,17 +113,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn display_aspect_height(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("displayAspectHeight"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.display_aspect_height_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -160,17 +124,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn display_aspect_width(&mut self, val: u32) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("displayAspectWidth"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.display_aspect_width_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -182,17 +136,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn hardware_acceleration(&mut self, val: HardwareAcceleration) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("hardwareAcceleration"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.hardware_acceleration_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -203,17 +147,7 @@ impl VideoDecoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn optimize_for_latency(&mut self, val: bool) -> &mut Self {
-        use wasm_bindgen::JsValue;
-        let r = ::js_sys::Reflect::set(
-            self.as_ref(),
-            &JsValue::from("optimizeForLatency"),
-            &JsValue::from(val),
-        );
-        debug_assert!(
-            r.is_ok(),
-            "setting properties should never fail on our dictionary objects"
-        );
-        let _ = r;
+        self.optimize_for_latency_shim(val);
         self
     }
 }
