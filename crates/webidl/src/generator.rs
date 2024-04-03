@@ -686,13 +686,8 @@ impl DictionaryField {
 
         let shim_name = self.shim_name();
 
-        let js_value_ref_type = shared_ref(
-            leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]),
-            false,
-        );
-
         let shim_args = if self.is_js_value_ref_option_type {
-            quote! { val.unwrap_or(#js_value_ref_type::NULL) }
+            quote! { val.unwrap_or(&::wasm_bindgen::JsValue::NULL) }
         } else {
             quote! { val }
         };
