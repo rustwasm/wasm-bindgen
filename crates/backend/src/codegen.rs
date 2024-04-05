@@ -2,7 +2,7 @@ use crate::ast;
 use crate::encode;
 use crate::Diagnostic;
 use once_cell::sync::Lazy;
-use proc_macro2::{Ident, Literal, Span, TokenStream};
+use proc_macro2::{Ident, Span, TokenStream};
 use quote::format_ident;
 use quote::quote_spanned;
 use quote::{quote, ToTokens};
@@ -1028,26 +1028,12 @@ impl ToTokens for ast::ImportEnum {
         let name_str = enum_name.to_string();
         let name_len = name_str.len() as u32;
         let name_chars = name_str.chars().map(|c| c as u32);
-        // let expect_string = format!("attempted to convert invalid {} into JSValue", name);
         let variants = &self.variants;
+        let variant_count = self.variant_values.len() as u32;
         let variant_values = &self.variant_values;
-        // let variant_strings = &self.variant_values;
-        let variant_indices = (0..variant_values.len() as u32).collect::<Vec<_>>();
-        let hole = self.variant_values.len() as u32;
+        let variant_indices = (0..variant_count).collect::<Vec<_>>();
+        let hole = variant_count;
         let attrs = &self.rust_attrs;
-
-        // let mut current_idx: usize = 0;
-        // let variant_indexes: Vec<Literal> = variants
-        //     .iter()
-        //     .map(|_| {
-        //         let this_index = current_idx;
-        //         current_idx += 1;
-        //         Literal::usize_unsuffixed(this_index)
-        //     })
-        //     .collect();
-
-        // Borrow variant_indexes because we need to use it multiple times inside the quote! macro
-        // let variant_indexes_ref = &variant_indexes;
 
         // A vector of EnumName::VariantName tokens for this enum
         let variant_paths: Vec<TokenStream> = self
@@ -1069,7 +1055,6 @@ impl ToTokens for ast::ImportEnum {
                 #(inform(#chars);)*
             }
         });
-        let variant_count = self.variant_values.len() as u32;
 
         (quote! {
             #(#attrs)*

@@ -297,7 +297,14 @@ impl InstructionBuilder<'_, '_> {
                 hole,
                 variant_values,
             } => {
-                todo!()
+                self.instruction(
+                    &[AdapterType::I32],
+                    Instruction::OptionWasmToImportEnum {
+                        variant_values: variant_values.to_vec(),
+                        hole: *hole,
+                    },
+                    &[AdapterType::ImportEnum(String::from(name))],
+                );
             }
             Descriptor::RustStruct(name) => {
                 self.instruction(
@@ -534,16 +541,12 @@ impl InstructionBuilder<'_, '_> {
     }
 
     fn outgoing_import_enum(&mut self, name: &str, variant_values: &[String]) {
-        let instr = Instruction::WasmToEnum {
-            variant_values: variant_values.to_vec(),
-        };
         self.instruction(
             &[AdapterType::I32],
-            instr,
-            &[AdapterType::JsEnum {
-                name: String::from(name),
+            Instruction::WasmToImportEnum {
                 variant_values: variant_values.to_vec(),
-            }],
+            },
+            &[AdapterType::ImportEnum(String::from(name))],
         );
     }
 

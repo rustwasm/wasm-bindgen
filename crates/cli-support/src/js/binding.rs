@@ -668,21 +668,82 @@ fn instruction(
             }
         }
 
-        Instruction::WasmToEnum { variant_values } => {
+        Instruction::WasmToImportEnum { variant_values } => {
             let index = js.pop();
 
-            // e.g. ["one","two","three"][someIndex]
-            let mut result = String::new();
-            result.push('[');
+            // e.g. ["a","b","c"][someIndex]
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('[');
             for variant in variant_values {
-                result.push_str(&format!("\"{variant}\","));
+                enum_val_expr.push_str(&format!("\"{variant}\","));
             }
-            result.push(']');
-            result.push('[');
-            result.push_str(&index);
-            result.push(']');
+            enum_val_expr.push(']');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&index);
+            enum_val_expr.push(']');
 
-            js.push(result)
+            js.push(enum_val_expr)
+        }
+
+        Instruction::OptionWasmToImportEnum {
+            variant_values,
+            hole,
+        } => {
+            let index = js.pop();
+
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('[');
+            for variant in variant_values {
+                enum_val_expr.push_str(&format!("\"{variant}\","));
+            }
+            enum_val_expr.push(']');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&index);
+            enum_val_expr.push(']');
+
+            // e.g. someIndex === hole ? undefined : (["a","b","c"][someIndex])
+            js.push(format!(
+                "{index} === {hole} ? undefined : ({enum_val_expr})"
+            ))
+        }
+
+        Instruction::ImportEnumToWasm { variant_values } => {
+            let enum_val = js.pop();
+
+            // e.g. {"a":0,"b":1,"c":2}[someEnumVal]
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('{');
+            for (i, variant) in variant_values.iter().enumerate() {
+                enum_val_expr.push_str(&format!("\"{variant}\":{i},"));
+            }
+            enum_val_expr.push('}');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&enum_val);
+            enum_val_expr.push(']');
+
+            js.push(enum_val_expr)
+        }
+
+        Instruction::OptionImportEnumToWasm {
+            variant_values,
+            hole,
+        } => {
+            let enum_val = js.pop();
+
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('{');
+            for (i, variant) in variant_values.iter().enumerate() {
+                enum_val_expr.push_str(&format!("\"{variant}\":{i},"));
+            }
+            enum_val_expr.push('}');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&enum_val);
+            enum_val_expr.push(']');
+
+            // e.g. someEnumVal === undefined ? hole : ({"a":0,"b":1,"c":2}[someEnumVal])
+            js.push(format!(
+                "{enum_val} === undefined ? {hole} : ({enum_val_expr})"
+            ))
         }
 
         Instruction::MemoryToString(mem) => {
@@ -1394,7 +1455,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Enum(name) => dst.push_str(name),
-        AdapterType::JsEnum { name, .. } => dst.push_str(name),
+        AdapterType::ImportEnum(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
     }
 }
