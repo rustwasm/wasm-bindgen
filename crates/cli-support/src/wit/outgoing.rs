@@ -78,7 +78,7 @@ impl InstructionBuilder<'_, '_> {
                 name,
                 variant_values,
                 ..
-            } => self.outgoing_import_enum(&name, &variant_values),
+            } => self.outgoing_import_enum(name, variant_values),
 
             Descriptor::Char => {
                 self.instruction(
