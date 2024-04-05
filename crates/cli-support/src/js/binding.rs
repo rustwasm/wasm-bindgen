@@ -740,9 +740,10 @@ fn instruction(
             enum_val_expr.push_str(&enum_val);
             enum_val_expr.push(']');
 
-            // e.g. someEnumVal === undefined ? hole : ({"a":0,"b":1,"c":2}[someEnumVal])
+            // e.g. someEnumVal == undefined ? hole : ({"a":0,"b":1,"c":2}[someEnumVal])
+            // double equals is used instead of triple equals to account for null as well as undefined
             js.push(format!(
-                "{enum_val} === undefined ? {hole} : ({enum_val_expr})"
+                "{enum_val} == undefined ? {hole} : ({enum_val_expr})"
             ))
         }
 
