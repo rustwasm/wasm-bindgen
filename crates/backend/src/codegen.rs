@@ -1085,7 +1085,8 @@ impl ToTokens for ast::ImportEnum {
                 unsafe fn from_abi(val: u32) -> Self {
                     match val {
                         #(#variant_indices => #variant_paths_ref,)*
-                        _ => Self::__Invalid
+                        #invalid => #enum_name::__Invalid,
+                        _ => unreachable!("The JS binding should only ever produce a valid value or the specific 'invalid' value")
                     }
                 }
             }
@@ -1124,7 +1125,8 @@ impl ToTokens for ast::ImportEnum {
                     #wasm_bindgen::JsValue::from_str(
                         match val {
                             #(#variant_paths_ref => #variant_values,)*
-                            _ => #wasm_bindgen::throw_str("invalid enum value passed")
+                            #enum_name::__Invalid => #wasm_bindgen::throw_str("Converting an invalid import enum back to a string is currently not supported"),
+                            _ => unreachable!("All possible variants should have been checked")
                         }
                     )
                 }
