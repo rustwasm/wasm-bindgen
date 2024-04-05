@@ -1032,7 +1032,8 @@ impl ToTokens for ast::ImportEnum {
         let variant_count = self.variant_values.len() as u32;
         let variant_values = &self.variant_values;
         let variant_indices = (0..variant_count).collect::<Vec<_>>();
-        let hole = variant_count;
+        let invalid = variant_count;
+        let hole = variant_count + 1;
         let attrs = &self.rust_attrs;
 
         // A vector of EnumName::VariantName tokens for this enum
@@ -1062,6 +1063,9 @@ impl ToTokens for ast::ImportEnum {
             #[repr(u32)]
             #vis enum #enum_name {
                 #(#variants = #variant_indices,)*
+                #[automatically_derived]
+                #[doc(hidden)]
+                __Invalid
             }
 
             #[automatically_derived]
@@ -1079,10 +1083,9 @@ impl ToTokens for ast::ImportEnum {
                 type Abi = u32;
 
                 unsafe fn from_abi(val: u32) -> Self {
-                    let s = <u32 as #wasm_bindgen::convert::FromWasmAbi>::from_abi(val);
-                    match s {
+                    match val {
                         #(#variant_indices => #variant_paths_ref,)*
-                        _ => #wasm_bindgen::throw_str("invalid enum value passed")
+                        _ => Self::__Invalid
                     }
                 }
             }
@@ -1106,6 +1109,7 @@ impl ToTokens for ast::ImportEnum {
                     inform(IMPORT_ENUM);
                     inform(#name_len);
                     #(inform(#name_chars);)*
+                    inform(#invalid);
                     inform(#hole);
                     inform(#variant_count);
                     #(#describe_variants)*
@@ -1116,9 +1120,9 @@ impl ToTokens for ast::ImportEnum {
             impl #wasm_bindgen::__rt::core::convert::From<#enum_name> for
                 #wasm_bindgen::JsValue
             {
-                fn from(value: #enum_name) -> Self {
+                fn from(val: #enum_name) -> Self {
                     #wasm_bindgen::JsValue::from_str(
-                        match value {
+                        match val {
                             #(#variant_paths_ref => #variant_values,)*
                             _ => #wasm_bindgen::throw_str("invalid enum value passed")
                         }

@@ -701,16 +701,23 @@ fn instruction(
             enum_val_expr.push_str(&index);
             enum_val_expr.push(']');
 
-            // e.g. someIndex === hole ? undefined : (["a","b","c"][someIndex])
+            // e.g. someIndex === 4 ? undefined : (["a","b","c"][someIndex])
+            //                    |
+            //      currently, hole = variant_count + 1
             js.push(format!(
                 "{index} === {hole} ? undefined : ({enum_val_expr})"
             ))
         }
 
-        Instruction::ImportEnumToWasm { variant_values } => {
+        Instruction::ImportEnumToWasm {
+            variant_values,
+            invalid,
+        } => {
             let enum_val = js.pop();
 
-            // e.g. {"a":0,"b":1,"c":2}[someEnumVal]
+            // e.g. {"a":0,"b":1,"c":2}[someEnumVal] ?? 3
+            //                                          |
+            //                          currently, invalid = variant_count
             let mut enum_val_expr = String::new();
             enum_val_expr.push('{');
             for (i, variant) in variant_values.iter().enumerate() {
@@ -720,12 +727,14 @@ fn instruction(
             enum_val_expr.push('[');
             enum_val_expr.push_str(&enum_val);
             enum_val_expr.push(']');
+            enum_val_expr.push_str(&format!(" ?? {invalid}"));
 
             js.push(enum_val_expr)
         }
 
         Instruction::OptionImportEnumToWasm {
             variant_values,
+            invalid,
             hole,
         } => {
             let enum_val = js.pop();
@@ -739,9 +748,11 @@ fn instruction(
             enum_val_expr.push('[');
             enum_val_expr.push_str(&enum_val);
             enum_val_expr.push(']');
+            enum_val_expr.push_str(&format!(" ?? {invalid}"));
 
-            // e.g. someEnumVal == undefined ? hole : ({"a":0,"b":1,"c":2}[someEnumVal])
-            // double equals is used instead of triple equals to account for null as well as undefined
+            // e.g. someEnumVal == undefined ? 4 : ({"a":0,"b":1,"c":2}[someEnumVal] ?? 3)
+            //                  |
+            //    double equals here in case it's null
             js.push(format!(
                 "{enum_val} == undefined ? {hole} : ({enum_val_expr})"
             ))

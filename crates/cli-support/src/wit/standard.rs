@@ -141,7 +141,7 @@ pub enum Instruction {
         output: AdapterType,
     },
 
-    /// Pops a wasm `i32` and pushes the corresponding enum variant string from the list
+    /// Pops a wasm `i32` and pushes the enum variant as a string
     WasmToImportEnum {
         variant_values: Vec<String>,
     },
@@ -151,13 +151,15 @@ pub enum Instruction {
         hole: u32,
     },
 
-    /// pops an enum variant string and pushes the corresponding wasm `i32` enum value
+    /// pops a string and pushes the enum variant as an `i32`
     ImportEnumToWasm {
         variant_values: Vec<String>,
+        invalid: u32,
     },
 
     OptionImportEnumToWasm {
         variant_values: Vec<String>,
+        invalid: u32,
         hole: u32,
     },
 

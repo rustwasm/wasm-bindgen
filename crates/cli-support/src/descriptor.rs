@@ -74,6 +74,7 @@ pub enum Descriptor {
     },
     ImportEnum {
         name: String,
+        invalid: u32,
         hole: u32,
         variant_values: Vec<String>,
     },
@@ -167,11 +168,13 @@ impl Descriptor {
             }
             IMPORT_ENUM => {
                 let name = get_string(data);
+                let invalid = get(data);
                 let hole = get(data);
                 let variant_count = get(data);
                 let variant_values = (0..variant_count).map(|_| get_string(data)).collect();
                 Descriptor::ImportEnum {
                     name,
+                    invalid,
                     hole,
                     variant_values,
                 }

@@ -77,7 +77,8 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::ImportEnum {
                 name,
                 variant_values,
-                ..
+                invalid: _,
+                hole: _,
             } => self.outgoing_import_enum(name, variant_values),
 
             Descriptor::Char => {
@@ -294,6 +295,7 @@ impl InstructionBuilder<'_, '_> {
             }
             Descriptor::ImportEnum {
                 name,
+                invalid: _,
                 hole,
                 variant_values,
             } => {
