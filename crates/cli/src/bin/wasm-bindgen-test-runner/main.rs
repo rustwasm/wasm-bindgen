@@ -95,6 +95,14 @@ fn main() -> anyhow::Result<()> {
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
+    if args_.flag_version {
+        println!(
+            "wasm-bindgen-test-runner {}",
+            wasm_bindgen_shared::version()
+        );
+        return Ok(());
+    }
+
     let shell = shell::Shell::new();
 
     let wasm_file_to_test: PathBuf = if let Some(input) = args_.arg_input {
