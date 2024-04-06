@@ -1,2 +1,2 @@
-mod outputs_test_file_missing_error_feature;
+mod outputs_invalid_arguments_error_feature;
 mod returns_failure_feature;

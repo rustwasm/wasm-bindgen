@@ -12,7 +12,9 @@
 //! and source code.
 
 use anyhow::{anyhow, bail, Context};
+use docopt::Docopt;
 use log::error;
+use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -65,16 +67,40 @@ impl Drop for TmpDirDeleteGuard {
     }
 }
 
+const USAGE: &str = "
+Execute all wasm bindgen unit and integration tests and build examples of a local package
+
+Usage:
+    wasm-bindgen-test-runner [options] <input>
+    wasm-bindgen-test-runner -h | --help
+    wasm-bindgen-test-runner -V | --version
+
+Options:
+    -h --help                    Show this screen.
+    -V --version                 Print the version number of wasm-bindgen-test-runner
+
+Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
+";
+
+#[derive(Debug, Deserialize)]
+struct Args {
+    arg_input: Option<PathBuf>,
+    flag_version: bool,
+}
+
 fn main() -> anyhow::Result<()> {
     env_logger::init();
-    let mut args = env::args_os().skip(1);
+    let args = env::args_os().skip(2);
+    let args_: Args = Docopt::new(USAGE)
+        .and_then(|d| d.deserialize())
+        .unwrap_or_else(|e| e.exit());
+
     let shell = shell::Shell::new();
 
-    // Currently no flags are supported, and assume there's only one argument
-    // which is the wasm file to test. This'll want to improve over time!
-    let wasm_file_to_test = match args.next() {
-        Some(file) => PathBuf::from(file),
-        None => bail!("must have a file to test as first argument"),
+    let wasm_file_to_test: PathBuf = if let Some(input) = args_.arg_input {
+        input
+    } else {
+        bail!("must have a file to test as first argument");
     };
 
     let file_name = wasm_file_to_test
