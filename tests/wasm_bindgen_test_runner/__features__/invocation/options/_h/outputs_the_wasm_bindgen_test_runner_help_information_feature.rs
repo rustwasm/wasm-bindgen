@@ -18,8 +18,8 @@ Usage:
     wasm-bindgen-test-runner -V | --version
 
 Options:
-    -h --help                    Show this screen.
-    -V --version                 Print the version number of wasm-bindgen-test-runner
+    -h, --help                    Show this screen.
+    -V, --version                 Print the version number of wasm-bindgen-test-runner
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
 "#,
