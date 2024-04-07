@@ -10,6 +10,9 @@ fn outputs_the_wasm_bindgen_test_runner_usage_information_feature() {
     when_wasm_bindgen_test_runner_is_invoked_without_arguments(&mut context);
     then_the_standard_error_should_have(
         context,
-        "Usage:\n    wasm-bindgen-test-runner [options] <input>\n    wasm-bindgen-test-runner -h | --help\n    wasm-bindgen-test-runner -V | --version",
+        r#"Usage:
+    wasm-bindgen-test-runner [options] <input> [arguments]
+    wasm-bindgen-test-runner -h | --help
+    wasm-bindgen-test-runner -V | --version"#,
     );
 }
