@@ -411,7 +411,7 @@ impl Encoder {
         }
     }
 
-    fn extends_from_slice(&mut self, slice: &[u8]) {
+    fn extend_from_slice(&mut self, slice: &[u8]) {
         if let Some(EncodeChunk::EncodedBuf(buf)) = self.dst.last_mut() {
             buf.extend_from_slice(slice);
         } else {

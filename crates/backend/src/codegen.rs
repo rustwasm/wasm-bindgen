@@ -159,18 +159,18 @@ impl TryToTokens for ast::Program {
             #[cfg(target_arch = "wasm32")]
             #[automatically_derived]
             const _: () = {
-                use wasm_bindgen::__rt::utils::consts::{flat_len,flat_slices};
+                use wasm_bindgen::__rt::utils::consts::{flat_len, flat_slices};
 
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
                 const _ENCODED_BYTES: &[u8] = #encode_bytes;
                 const _PREFIX_JSON_BYTES: &[u8] = #prefix_json_bytes;
                 const _ENCODED_BYTES_LEN: usize  = _ENCODED_BYTES.len();
-                const _PREFIX_JSON_BYTES_LEN:usize =  _PREFIX_JSON_BYTES.len();
+                const _PREFIX_JSON_BYTES_LEN: usize =  _PREFIX_JSON_BYTES.len();
                 const _LEN: usize = _PREFIX_JSON_BYTES_LEN + _ENCODED_BYTES_LEN;
 
                 #[link_section = "__wasm_bindgen_unstable"]
-                static _GENERATED: [u8; _LEN] = flat_slices([_PREFIX_JSON_BYTES,_ENCODED_BYTES]);
+                static _GENERATED: [u8; _LEN] = flat_slices([_PREFIX_JSON_BYTES, _ENCODED_BYTES]);
             };
         })
         .to_tokens(tokens);
