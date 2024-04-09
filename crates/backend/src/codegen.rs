@@ -111,7 +111,7 @@ impl TryToTokens for ast::Program {
                 EncodeChunk::StrExpr(expr) => {
                     // encode expr as str
                     quote!({
-                        use #wasm_bindgen::__rt::utils::consts::{encode_u32_to_fixed_len_bytes};
+                        use #wasm_bindgen::__rt::{encode_u32_to_fixed_len_bytes};
                         const _STR_EXPR: &str = #expr;
                         const _STR_EXPR_BYTES: &[u8] = _STR_EXPR.as_bytes();
                         const _STR_EXPR_BYTES_LEN: usize = _STR_EXPR_BYTES.len() + 5;
@@ -162,7 +162,7 @@ impl TryToTokens for ast::Program {
             #[cfg(target_arch = "wasm32")]
             #[automatically_derived]
             const _: () = {
-                use #wasm_bindgen::__rt::utils::consts::{flat_len, flat_byte_slices};
+                use #wasm_bindgen::__rt::{flat_len, flat_byte_slices};
 
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
