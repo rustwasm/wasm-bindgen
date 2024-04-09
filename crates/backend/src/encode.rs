@@ -448,7 +448,7 @@ impl Encode for usize {
 impl<'a> Encode for &'a [u8] {
     fn encode(&self, dst: &mut Encoder) {
         self.len().encode(dst);
-        dst.extends_from_slice(self);
+        dst.extend_from_slice(self);
     }
 }
 
