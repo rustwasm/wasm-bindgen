@@ -151,7 +151,7 @@ fn shared_program<'a>(
         typescript_custom_sections: prog
             .typescript_custom_sections
             .iter()
-            .map(|x| shared_typescript_custom_section(x, intern))
+            .map(|x| shared_lit_or_expr(x, intern))
             .collect(),
         linked_modules: prog
             .linked_modules
@@ -260,7 +260,7 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
     })
 }
 
-fn shared_typescript_custom_section<'a>(
+fn shared_lit_or_expr<'a>(
     i: &'a ast::LitOrExpr,
     _intern: &'a Interner,
 ) -> LitOrExpr<'a> {
