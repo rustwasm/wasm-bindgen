@@ -10,7 +10,7 @@ pub trait Decode<'src>: Sized {
     }
 }
 
-pub struct CustomSection<'src> {
+pub struct LitOrExpr<'src> {
     str: &'src str,
 }
 
@@ -20,14 +20,14 @@ fn get(b: &mut &[u8]) -> u8 {
     r
 }
 
-impl<'src> Deref for CustomSection<'src> {
+impl<'src> Deref for LitOrExpr<'src> {
     type Target = str;
     fn deref(&self) -> &Self::Target {
         self.str
     }
 }
 
-impl<'src> Decode<'src> for CustomSection<'src> {
+impl<'src> Decode<'src> for LitOrExpr<'src> {
     fn decode(data: &mut &'src [u8]) -> Self {
         let str = <&'src str>::decode(data);
         Self { str }

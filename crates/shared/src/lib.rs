@@ -17,7 +17,7 @@ macro_rules! shared_api {
             enums: Vec<Enum<'a>>,
             imports: Vec<Import<'a>>,
             structs: Vec<Struct<'a>>,
-            typescript_custom_sections: Vec<CustomSection<'a>>,
+            typescript_custom_sections: Vec<LitOrExpr<'a>>,
             local_modules: Vec<LocalModule<'a>>,
             inline_js: Vec<&'a str>,
             unique_crate_identifier: &'a str,

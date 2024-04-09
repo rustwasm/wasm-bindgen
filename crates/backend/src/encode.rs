@@ -263,10 +263,10 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
 fn shared_typescript_custom_section<'a>(
     i: &'a ast::LitOrExpr,
     _intern: &'a Interner,
-) -> CustomSection<'a> {
+) -> LitOrExpr<'a> {
     match i {
-        ast::LitOrExpr::Lit(lit) => CustomSection::Lit(lit),
-        ast::LitOrExpr::Expr(expr) => CustomSection::Expr(expr),
+        ast::LitOrExpr::Lit(lit) => LitOrExpr::Lit(lit),
+        ast::LitOrExpr::Expr(expr) => LitOrExpr::Expr(expr),
     }
 }
 
@@ -378,18 +378,18 @@ struct Encoder {
     dst: Vec<EncodeChunk>,
 }
 
-enum CustomSection<'a> {
+enum LitOrExpr<'a> {
     Expr(&'a syn::Expr),
     Lit(&'a str),
 }
 
-impl<'a> Encode for CustomSection<'a> {
+impl<'a> Encode for LitOrExpr<'a> {
     fn encode(&self, dst: &mut Encoder) {
         match self {
-            CustomSection::Expr(expr) => {
+            LitOrExpr::Expr(expr) => {
                 dst.dst.push(EncodeChunk::StrExpr((*expr).clone()));
             }
-            CustomSection::Lit(s) => s.encode(dst),
+            LitOrExpr::Lit(s) => s.encode(dst),
         }
     }
 }
