@@ -1854,7 +1854,10 @@ pub mod __rt {
                 result
             }
 
-            // encode u32 into var length integer, but fix bytes length to 5
+            // NOTE: This method is used to encode u32 into a variable-length-integer during the compile-time .
+            // Generally speaking, the length of the encoded variable-length-integer depends on the size of the integer
+            // but the maximum capacity can be used here to simplify the amount of code during the compile-time .
+            // TODO: compute the length of (var length integer) in const time
             pub const fn encode_u32_to_fixed_len_bytes(value: u32) -> [u8; 5] {
                 let mut result: [u8; 5] = [0; 5];
                 let mut i = 0;
