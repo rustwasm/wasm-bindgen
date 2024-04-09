@@ -260,10 +260,7 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
     })
 }
 
-fn shared_lit_or_expr<'a>(
-    i: &'a ast::LitOrExpr,
-    _intern: &'a Interner,
-) -> LitOrExpr<'a> {
+fn shared_lit_or_expr<'a>(i: &'a ast::LitOrExpr, _intern: &'a Interner) -> LitOrExpr<'a> {
     match i {
         ast::LitOrExpr::Lit(lit) => LitOrExpr::Lit(lit),
         ast::LitOrExpr::Expr(expr) => LitOrExpr::Expr(expr),
