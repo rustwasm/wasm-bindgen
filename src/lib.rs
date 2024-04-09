@@ -1832,10 +1832,10 @@ pub mod __rt {
                 len
             }
 
-            pub const fn flat_slices<const RESULT_LEN: usize, const SIZE: usize, T: Copy>(
-                slices: [&[T]; SIZE],
-            ) -> [T; RESULT_LEN] {
-                let mut result = [unsafe { ::core::mem::zeroed() }; RESULT_LEN];
+            pub const fn flat_byte_slices<const RESULT_LEN: usize, const SIZE: usize>(
+                slices: [&[u8]; SIZE],
+            ) -> [u8; RESULT_LEN] {
+                let mut result = [0; RESULT_LEN];
 
                 let mut slice_index = 0;
                 let mut result_offset = 0;

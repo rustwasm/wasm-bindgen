@@ -112,7 +112,7 @@ impl TryToTokens for ast::Program {
                         const _STR_EXPR: &str = #expr;
                         const _STR_EXPR_BYTES: &[u8] = _STR_EXPR.as_bytes();
                         const _STR_EXPR_BYTES_LEN: usize = _STR_EXPR_BYTES.len() + 5;
-                        const _ENCODED_BYTES: [u8; _STR_EXPR_BYTES_LEN] = flat_slices([
+                        const _ENCODED_BYTES: [u8; _STR_EXPR_BYTES_LEN] = flat_byte_slices([
                             &encode_u32_to_fixed_len_bytes(_STR_EXPR_BYTES.len() as u32),
                             _STR_EXPR_BYTES,
                         ]);
@@ -130,11 +130,11 @@ impl TryToTokens for ast::Program {
                 #(#encoded_chunks,)*
             ];
             const _CHUNK_LEN: usize = flat_len(_CHUNK_SLICES);
-            const _CHUNKS: [u8; _CHUNK_LEN] = flat_slices(_CHUNK_SLICES);
+            const _CHUNKS: [u8; _CHUNK_LEN] = flat_byte_slices(_CHUNK_SLICES);
 
             const _LEN_BYTES: [u8; 4] = (_CHUNK_LEN as u32).to_le_bytes();
             const _ENCODED_BYTES_LEN: usize = _CHUNK_LEN + 4;
-            const _ENCODED_BYTES: [u8; _ENCODED_BYTES_LEN] = flat_slices([&_LEN_BYTES, &_CHUNKS]);
+            const _ENCODED_BYTES: [u8; _ENCODED_BYTES_LEN] = flat_byte_slices([&_LEN_BYTES, &_CHUNKS]);
             &_ENCODED_BYTES
         });
 
@@ -159,7 +159,7 @@ impl TryToTokens for ast::Program {
             #[cfg(target_arch = "wasm32")]
             #[automatically_derived]
             const _: () = {
-                use wasm_bindgen::__rt::utils::consts::{flat_len, flat_slices};
+                use wasm_bindgen::__rt::utils::consts::{flat_len, flat_byte_slices};
 
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
@@ -170,7 +170,7 @@ impl TryToTokens for ast::Program {
                 const _LEN: usize = _PREFIX_JSON_BYTES_LEN + _ENCODED_BYTES_LEN;
 
                 #[link_section = "__wasm_bindgen_unstable"]
-                static _GENERATED: [u8; _LEN] = flat_slices([_PREFIX_JSON_BYTES, _ENCODED_BYTES]);
+                static _GENERATED: [u8; _LEN] = flat_byte_slices([_PREFIX_JSON_BYTES, _ENCODED_BYTES]);
             };
         })
         .to_tokens(tokens);
