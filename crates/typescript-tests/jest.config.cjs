@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   extensionsToTreatAsEsm: [".ts"],
   verbose: true,
-  testMatch: ['**/src/*.ts'],
+  testMatch: ['**/src/*.ts', '!**/src/*.d.ts'],
   // TODO: migrate all test files and remove this
   testPathIgnorePatterns: [
     ".*/src/custom_section.ts$",
