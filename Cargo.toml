@@ -55,12 +55,14 @@ serde_derive = "1.0"
 wasm-bindgen-test-crate-a = { path = 'tests/crates/a', version = '0.1' }
 wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
 
-[dev-dependencies]
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 assert_cmd = "1.0"
 lazy_static = "1.4.0"
 predicates = "1.0.0"
 rand = "0.8.5"
 regex = "1.10.4"
+
+[dev-dependencies]
 
 [workspace]
 members = [
