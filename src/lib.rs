@@ -1820,6 +1820,52 @@ pub mod __rt {
         }
     }
 
+    pub const fn flat_len<const SIZE: usize, T>(slices: [&[T]; SIZE]) -> usize {
+        let mut len = 0;
+        let mut i = 0;
+        while i < slices.len() {
+            len += slices[i].len();
+            i += 1;
+        }
+        len
+    }
+
+    pub const fn flat_byte_slices<const RESULT_LEN: usize, const SIZE: usize>(
+        slices: [&[u8]; SIZE],
+    ) -> [u8; RESULT_LEN] {
+        let mut result = [0; RESULT_LEN];
+
+        let mut slice_index = 0;
+        let mut result_offset = 0;
+
+        while slice_index < slices.len() {
+            let mut i = 0;
+            let slice = slices[slice_index];
+            while i < slice.len() {
+                result[result_offset] = slice[i];
+                i += 1;
+                result_offset += 1;
+            }
+            slice_index += 1;
+        }
+
+        result
+    }
+
+    // NOTE: This method is used to encode u32 into a variable-length-integer during the compile-time .
+    // Generally speaking, the length of the encoded variable-length-integer depends on the size of the integer
+    // but the maximum capacity can be used here to simplify the amount of code during the compile-time .
+    pub const fn encode_u32_to_fixed_len_bytes(value: u32) -> [u8; 5] {
+        let mut result: [u8; 5] = [0; 5];
+        let mut i = 0;
+        while i < 4 {
+            result[i] = ((value >> (7 * i)) | 0x80) as u8;
+            i += 1;
+        }
+        result[4] = (value >> (7 * 4)) as u8;
+        result
+    }
+
     if_std! {
         use core::mem;
         use std::boxed::Box;

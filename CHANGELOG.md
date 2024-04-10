@@ -5,6 +5,9 @@
 
 ### Added
 
+* Added support for arbitrary expressions when using `#[wasm_bindgen(typescript_custom_section)]`.
+  [#3901](https://github.com/rustwasm/wasm-bindgen/pull/3901)
+
 * Implement `From<NonNull<T>>` for `JsValue`.
   [#3877](https://github.com/rustwasm/wasm-bindgen/pull/3877)
 
