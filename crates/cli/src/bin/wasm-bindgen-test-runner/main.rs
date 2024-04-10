@@ -148,7 +148,7 @@ fn main() -> anyhow::Result<()> {
 
         for test in tests {
             let test = test.trim_start_matches("__wbgt_");
-            let last = test.rfind('_').unwrap_or_else(|| test.len());
+            let last = test.rfind('_').unwrap_or(test.len());
             let test = &test[..last];
             println!("{}: test", test);
         }
