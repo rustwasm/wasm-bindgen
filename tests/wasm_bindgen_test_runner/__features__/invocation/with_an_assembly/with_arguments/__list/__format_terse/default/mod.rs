@@ -1,3 +1,4 @@
+mod with_one_ignored_test;
 mod with_one_successful_and_one_failing_test;
 mod with_one_successfull_and_one_ignored_test;
 mod without_tests;
