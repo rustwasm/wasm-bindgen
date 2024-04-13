@@ -1,4 +1,4 @@
-use super::AssemblyBuilder;
+use super::super::AssemblyBuilder;
 use crate::__steps__::wasm_bindgen_test_runner::Sandbox;
 use crate::__steps__::Context;
 use lazy_static::lazy_static;

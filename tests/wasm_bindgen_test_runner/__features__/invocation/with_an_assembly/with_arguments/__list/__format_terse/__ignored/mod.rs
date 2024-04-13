@@ -1,2 +1,2 @@
-mod with_one_successful_and_one_failing_test;
+mod with_one_successful_and_one_failing_tests;
 mod without_tests;
