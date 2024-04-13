@@ -122,12 +122,37 @@ fn main() -> anyhow::Result<()> {
         .and_then(|s| s.to_str())
         .context("file to test is not a valid file, can't extract file name")?;
 
-    // Collect all tests that the test harness is supposed to run. We assume
-    // that any exported function with the prefix `__wbg_test` is a test we need
-    // to execute.
     let wasm = fs::read(&wasm_file_to_test).context("failed to read wasm file")?;
     let mut wasm =
         walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
+
+    if args_.flag_list {
+        for export in wasm.exports.iter() {
+            if !export.name.starts_with("___wbgt_") {
+                continue;
+            }
+
+            let parts: Vec<&str> = export.name.split('$').collect();
+
+            if args_.flag_ignored {
+                if parts.len() == 3 {
+                    let test = parts[1];
+                    let test = &test[test.find("::").unwrap_or(0) + 2..];
+                    println!("{}: test", test);
+                }
+            } else {
+                let test = parts[1];
+                let test = &test[test.find("::").unwrap_or(0) + 2..];
+                println!("{}: test", test);
+            }
+        }
+
+        return Ok(());
+    }
+
+    // Collect all tests that the test harness is supposed to run. We assume
+    // that any exported function with the prefix `__wbg_test` is a test we need
+    // to execute.
     let mut tests = Vec::new();
 
     for export in wasm.exports.iter() {
@@ -135,25 +160,6 @@ fn main() -> anyhow::Result<()> {
             continue;
         }
         tests.push(export.name.to_string());
-    }
-
-    if args_.flag_list {
-        if tests.is_empty() {
-            return Ok(());
-        }
-
-        if args_.flag_ignored {
-            return Ok(());
-        }
-
-        for test in tests {
-            let test = test.trim_start_matches("__wbgt_");
-            let last = test.rfind('_').unwrap_or(test.len());
-            let test = &test[..last];
-            println!("{}: test", test);
-        }
-
-        return Ok(());
     }
 
     // Right now there's a bug where if no tests are present then the
