@@ -3,18 +3,27 @@ use std::fs;
 use std::path::PathBuf;
 
 pub struct Sandbox {
-    assembly: PathBuf,
+    assembly: Option<PathBuf>,
     original: PathBuf,
-    root: PathBuf,
+    root: Option<PathBuf>,
 }
 
 impl Sandbox {
     pub fn new(original: PathBuf) -> Self {
-        let file_name = original.file_name().and_then(|s| s.to_str()).unwrap();
+        Self {
+            assembly: None,
+            original,
+            root: None,
+        }
+    }
+
+    fn init(&mut self) {
+        let file_name = self.original.file_name().and_then(|s| s.to_str()).unwrap();
 
         let mut rng = rand::thread_rng();
 
-        let root = original
+        let root = self
+            .original
             .parent() // chop off file name
             .and_then(|p| p.parent()) // chop off `deps`
             .and_then(|p| p.parent()) // chop off `debug`
@@ -37,17 +46,17 @@ impl Sandbox {
 
         let assembly = target.join(file_name);
 
-        fs::copy(&original, &assembly).unwrap();
+        fs::copy(&self.original, &assembly).unwrap();
 
-        Self {
-            assembly,
-            original,
-            root,
-        }
+        self.assembly = Some(assembly);
+        self.root = Some(root);
     }
 
-    pub fn assembly(&self) -> &PathBuf {
-        &self.assembly
+    pub fn assembly(&mut self) -> &PathBuf {
+        if self.assembly.is_none() {
+            self.init();
+        }
+        self.assembly.as_ref().unwrap()
     }
 
     pub fn original(&self) -> &PathBuf {
@@ -55,12 +64,14 @@ impl Sandbox {
     }
 
     pub fn root(&self) -> &PathBuf {
-        &self.root
+        self.root.as_ref().unwrap()
     }
 }
 
 impl Drop for Sandbox {
     fn drop(&mut self) {
-        drop(fs::remove_dir_all(&self.root));
+        if let Some(root) = &self.root {
+            drop(fs::remove_dir_all(root));
+        }
     }
 }

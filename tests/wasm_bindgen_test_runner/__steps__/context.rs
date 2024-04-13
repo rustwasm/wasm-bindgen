@@ -26,6 +26,10 @@ impl Context {
         self.sandbox.as_ref().unwrap()
     }
 
+    pub fn sandbox_mut(&mut self) -> &mut Sandbox {
+        self.sandbox.as_mut().unwrap()
+    }
+
     pub fn sandbox_set(&mut self, sandbox: Sandbox) {
         self.sandbox = Some(sandbox);
     }
