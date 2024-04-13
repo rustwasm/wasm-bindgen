@@ -80,6 +80,12 @@ pub fn wasm_bindgen_test(
         None => quote! { ::core::option::Option::None },
     };
 
+    let ignore_str = match ignore.clone() {
+        Some(Some(_ig)) => concat!("$", ::core::stringify!(_ig)),
+        Some(None) => "$",
+        None => "",
+    };
+
     let ignore = match ignore {
         Some(Some(lit)) => {
             quote! { ::core::option::Option::Some(::core::option::Option::Some(#lit)) }
@@ -99,8 +105,14 @@ pub fn wasm_bindgen_test(
     // main test harness. This is the entry point for all tests.
     let name = format_ident!("__wbgt_{}_{}", ident, CNT.fetch_add(1, Ordering::SeqCst));
     let wasm_bindgen_path = attributes.wasm_bindgen_path;
+    let ident_str = ident.to_string();
+    let name_str = name.to_string();
+    let aux = format_ident!("_{}", name_str);
     tokens.extend(
         quote! {
+            #[export_name = concat!("_", #name_str, "$", module_path!(), "::",  #ident_str, #ignore_str)]
+            pub extern "C" fn #aux() {}
+
             #[no_mangle]
             pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
                 let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
