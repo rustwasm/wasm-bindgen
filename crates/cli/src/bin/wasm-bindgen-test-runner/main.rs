@@ -81,7 +81,7 @@ Options:
 
 Arguments:
     --list           List all tests that would be run
-    --format TARGET  Format of the tests listing output, valid values are [terse, json]
+    --format FORMAT  Format of the tests listing output, valid values are [terse, json]
     --ignored        Restricts the listing to only consider the ignored tests
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
@@ -90,9 +90,9 @@ Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-t
 #[derive(Debug, Deserialize)]
 struct Args {
     arg_input: Option<PathBuf>,
+    flag_format: Option<String>,
     flag_ignored: bool,
     flag_list: bool,
-    flag_target: Option<String>,
     flag_version: bool,
 }
 
