@@ -11,8 +11,5 @@ fn outputs_the_ignored_test_in_the_terse_format_feature() {
         &mut context,
         "--list --format terse --ignored",
     );
-    then_the_standard_output_should_have(
-        context,
-        r#"ignored: test"#,
-    );
+    then_the_standard_output_should_have(context, r#"ignored: test"#);
 }
