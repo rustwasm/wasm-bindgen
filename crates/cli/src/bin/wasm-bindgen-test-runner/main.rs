@@ -76,13 +76,14 @@ Usage:
     wasm-bindgen-test-runner -V | --version
 
 Options:
-    -h, --help       Show this screen.
-    -V, --version    Print the version number of wasm-bindgen-test-runner
+    -h, --help         Show this screen.
+    -V, --version      Print the version number of wasm-bindgen-test-runner
 
 Arguments:
-    --list           List all tests that would be run
-    --format FORMAT  Format of the tests listing output, valid values are [terse, json]
-    --ignored        Restricts the listing to only consider the ignored tests
+    --include-ignored  Include ignored tests in the test run
+    --list             List all tests that would be run
+    --format FORMAT    Format of the tests listing output, valid values are [terse, json]
+    --ignored          Restricts the listing to only consider the ignored tests
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
 ";
@@ -91,6 +92,7 @@ Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-t
 struct Args {
     arg_input: Option<PathBuf>,
     flag_format: Option<String>,
+    flag_include_ignored: bool,
     flag_ignored: bool,
     flag_list: bool,
     flag_version: bool,
