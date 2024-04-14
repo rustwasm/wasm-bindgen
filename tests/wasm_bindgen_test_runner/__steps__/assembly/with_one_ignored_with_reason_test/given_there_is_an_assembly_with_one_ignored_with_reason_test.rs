@@ -5,10 +5,11 @@ use lazy_static::lazy_static;
 use std::path::PathBuf;
 
 lazy_static! {
-    static ref ASSEMBLY: PathBuf = AssemblyBuilder::new("assembly_with_one_custom_ignored_test")
-        .file(
-            "src/lib.rs",
-            r#"#[cfg(test)]
+    static ref ASSEMBLY: PathBuf =
+        AssemblyBuilder::new("assembly_with_one_ignored_with_reason_test")
+            .file(
+                "src/lib.rs",
+                r#"#[cfg(test)]
 use wasm_bindgen_test::*;
 
 #[cfg(test)]
@@ -16,10 +17,10 @@ use wasm_bindgen_test::*;
 #[ignore = "test"]
 fn ignored() {}
 "#,
-        )
-        .build();
+            )
+            .build();
 }
 
-pub fn given_there_is_an_assembly_with_one_custom_ignored_test(context: &mut Context) {
+pub fn given_there_is_an_assembly_with_one_ignored_with_reason_test(context: &mut Context) {
     context.sandbox_set(Sandbox::new(ASSEMBLY.clone()));
 }
