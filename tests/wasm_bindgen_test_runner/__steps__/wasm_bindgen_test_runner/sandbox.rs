@@ -10,6 +10,9 @@ pub struct Sandbox {
 
 impl Sandbox {
     pub fn new(original: PathBuf) -> Self {
+        if !&original.exists() {
+            panic!("Couldn't find generated assembly: {}", &original.display());
+        }
         Self {
             assembly: None,
             original,

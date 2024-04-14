@@ -95,10 +95,14 @@ fn extract_assembly_from_output(output: Output) -> String {
     let error_str = std::str::from_utf8(&output.stderr).unwrap();
     let last = error_str.lines().last().unwrap();
 
+    if last.starts_with("error") {
+        panic!("Failed to generate assembly\n{}", error_str);
+    }
+
     let re = Regex::new(r"\((.*?)\)").unwrap();
     let captures = re
         .captures(last)
-        .expect("Failed to find generated assembly");
+        .expect(&format!("Failed to generate assembly\n{}", error_str));
 
     captures.get(1).unwrap().as_str().to_string()
 }
