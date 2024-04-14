@@ -15,7 +15,9 @@ use wasm_bindgen_test::*;
 #[cfg(test)]
 #[wasm_bindgen_test]
 #[ignore = "test"]
-fn ignored() {}
+fn ignored() {
+    assert_eq!(1, 1);
+}
 "#,
             )
             .build();

@@ -22,7 +22,7 @@ fn pass() {
 #[wasm_bindgen_test]
 #[ignore]
 fn ignored() {
-    assert_eq!(1, 2);
+    assert_eq!(1, 1);
 }
             "#,
             )
