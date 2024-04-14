@@ -81,7 +81,7 @@ pub fn wasm_bindgen_test(
     };
 
     let ignore_str = match ignore.clone() {
-        Some(Some(_ig)) => concat!("$", ::core::stringify!(_ig)),
+        Some(Some(_)) => "$",
         Some(None) => "$",
         None => "",
     };
