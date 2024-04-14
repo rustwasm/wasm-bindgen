@@ -1,0 +1,3 @@
+mod given_there_is_an_assembly_with_one_custom_ignored_test;
+
+pub use given_there_is_an_assembly_with_one_custom_ignored_test::*;
