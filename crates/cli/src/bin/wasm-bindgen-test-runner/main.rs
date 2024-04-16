@@ -84,6 +84,7 @@ Arguments:
     --list             List all tests that would be run
     --format FORMAT    Format of the tests listing output, valid values are [terse, json]
     --ignored          Restricts the listing to only consider the ignored tests
+    --skip PATTERN     Skip tests whose names match the given pattern
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
 ";
@@ -95,6 +96,7 @@ struct Args {
     flag_include_ignored: bool,
     flag_ignored: bool,
     flag_list: bool,
+    flag_pattern: Vec<String>,
     flag_version: bool,
 }
 
