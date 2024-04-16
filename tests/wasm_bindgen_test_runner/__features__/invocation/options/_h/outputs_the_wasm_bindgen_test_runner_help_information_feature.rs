@@ -13,7 +13,8 @@ fn outputs_the_wasm_bindgen_test_runner_help_information_feature() {
         r#"Execute all wasm bindgen unit and integration tests and build examples of a local package
 
 Usage:
-    wasm-bindgen-test-runner [options] <input> [arguments]
+    wasm-bindgen-test-runner [options] <input> [--include-ignored] [(--skip PATTERN)...]
+    wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
     wasm-bindgen-test-runner -h | --help
     wasm-bindgen-test-runner -V | --version
 
@@ -23,10 +24,11 @@ Options:
 
 Arguments:
     --include-ignored  Include ignored tests in the test run
+    --skip PATTERN     Skip tests whose names match the given pattern
+
     --list             List all tests that would be run
     --format FORMAT    Format of the tests listing output, valid values are [terse, json]
     --ignored          Restricts the listing to only consider the ignored tests
-    --skip PATTERN     Skip tests whose names match the given pattern
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
 "#,
