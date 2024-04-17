@@ -1,3 +1,4 @@
+mod with_one_partial_match_successful_test;
 mod with_one_prefix_match_successful_test;
 mod with_one_suffix_match_successful_test;
 mod without_match_successful_test;
