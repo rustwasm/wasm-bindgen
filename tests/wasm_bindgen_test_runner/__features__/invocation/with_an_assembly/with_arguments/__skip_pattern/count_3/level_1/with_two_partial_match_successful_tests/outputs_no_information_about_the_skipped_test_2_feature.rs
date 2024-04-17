@@ -9,7 +9,7 @@ fn outputs_no_information_about_the_skipped_test_2_feature() {
     given_there_is_an_assembly_with_two_successful_level_1_tests(&mut context);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_and_the_arguments(
         &mut context,
-        "--skip pass",
+        "--skip fail --skip pass_1 --skip pass_2",
     );
     then_the_standard_output_should_not_have(
         context,
