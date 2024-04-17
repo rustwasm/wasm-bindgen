@@ -1,1 +1,2 @@
+mod with_one_suffix_match_successful_test;
 mod without_match_successful_test;
