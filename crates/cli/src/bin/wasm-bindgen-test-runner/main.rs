@@ -71,7 +71,7 @@ const USAGE: &str = "
 Execute all wasm bindgen unit and integration tests and build examples of a local package
 
 Usage:
-    wasm-bindgen-test-runner [options] <input> [--include-ignored] [(--skip PATTERN)...]
+    wasm-bindgen-test-runner [options] <input> [TESTNAME] [--include-ignored] [(--skip PATTERN)...]
     wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
     wasm-bindgen-test-runner -h | --help
     wasm-bindgen-test-runner -V | --version
@@ -81,6 +81,7 @@ Options:
     -V, --version      Print the version number of wasm-bindgen-test-runner
 
 Arguments:
+    TESTNAME           Run only the tests with the given name
     --include-ignored  Include ignored tests in the test run
     --skip PATTERN     Skip tests whose names match the given pattern
 
