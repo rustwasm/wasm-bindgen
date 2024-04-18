@@ -343,7 +343,7 @@ enum Method<'a> {
 }
 
 // Below here is a bunch of details of the WebDriver protocol implementation.
-// I'm not too too familiar with them myself, but these seem to work! I mostly
+// I'm not too familiar with them myself, but these seem to work! I mostly
 // copied the `webdriver-client` crate when writing the below bindings.
 
 impl Client {

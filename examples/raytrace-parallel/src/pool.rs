@@ -67,7 +67,7 @@ impl WorkerPool {
     /// message is sent to it.
     fn spawn(&self) -> Result<Worker, JsValue> {
         console_log!("spawning new worker");
-        // TODO: what do do about `./worker.js`:
+        // TODO: what to do about `./worker.js`:
         //
         // * the path is only known by the bundler. How can we, as a
         //   library, know what's going on?
