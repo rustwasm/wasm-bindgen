@@ -33,6 +33,9 @@
 * Fix `catch` not being thread-safe.
   [#3879](https://github.com/rustwasm/wasm-bindgen/pull/3879)
 
+* Fix MSRV compilation.
+  [#3927](https://github.com/rustwasm/wasm-bindgen/pull/3927)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)

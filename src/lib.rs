@@ -1820,7 +1820,7 @@ pub mod __rt {
         }
     }
 
-    pub const fn flat_len<const SIZE: usize, T>(slices: [&[T]; SIZE]) -> usize {
+    pub const fn flat_len<T, const SIZE: usize>(slices: [&[T]; SIZE]) -> usize {
         let mut len = 0;
         let mut i = 0;
         while i < slices.len() {
