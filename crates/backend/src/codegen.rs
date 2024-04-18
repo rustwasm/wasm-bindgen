@@ -1716,9 +1716,9 @@ fn splat(
     let mut args = Vec::new();
     let mut names = Vec::new();
 
-    for n in 1..=4 {
-        let arg_name = format_ident!("{name}_{n}");
-        let prim_name = format_ident!("Prim{n}");
+    for n in 1_u32..=4 {
+        let arg_name = format_ident!("{}_{}", name, n);
+        let prim_name = format_ident!("Prim{}", n);
         args.push(quote! {
             #arg_name: <#abi as #wasm_bindgen::convert::WasmAbi>::#prim_name
         });
