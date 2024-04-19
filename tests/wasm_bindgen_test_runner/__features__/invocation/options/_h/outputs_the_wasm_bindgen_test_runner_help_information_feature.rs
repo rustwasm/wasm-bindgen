@@ -13,8 +13,8 @@ fn outputs_the_wasm_bindgen_test_runner_help_information_feature() {
         r#"Execute all wasm bindgen unit and integration tests and build examples of a local package
 
 Usage:
-    wasm-bindgen-test-runner [options] <input> [TESTNAME] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
-    wasm-bindgen-test-runner [options] <input> TESTNAME [--nocapture] --exact
+    wasm-bindgen-test-runner [options] <input> [<testname>] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
+    wasm-bindgen-test-runner [options] <input> <testname> [--nocapture] --exact
     wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
     wasm-bindgen-test-runner -h | --help
     wasm-bindgen-test-runner -V | --version
@@ -23,8 +23,10 @@ Options:
     -h, --help         Show this screen.
     -V, --version      Print the version number of wasm-bindgen-test-runner
 
+    <input>            The wasm file to test
+    <testname>         Run only the tests with the given name
+
 Arguments:
-    TESTNAME           Run only the tests with the given name
     --include-ignored  Include ignored tests in the test run
     --skip PATTERN     Skip tests whose names match the given pattern
     --nocapture        Disables the tests output capture
