@@ -316,6 +316,8 @@ impl Context {
                 );
             } else if let Some(arg) = arg.strip_prefix("--skip=") {
                 skip.push(arg.to_owned())
+            } else if arg == "--nocapture" {
+            } else if arg == "--exact" {
             } else if arg.starts_with('-') {
                 panic!("flag {} not supported", arg);
             } else if filter.is_some() {
