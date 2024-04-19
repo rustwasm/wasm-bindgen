@@ -71,7 +71,8 @@ const USAGE: &str = "
 Execute all wasm bindgen unit and integration tests and build examples of a local package
 
 Usage:
-    wasm-bindgen-test-runner [options] <input> [TESTNAME] [--include-ignored] [(--skip PATTERN)...]
+    wasm-bindgen-test-runner [options] <input> [TESTNAME] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
+    wasm-bindgen-test-runner [options] <input> TESTNAME [--nocapture] --exact
     wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
     wasm-bindgen-test-runner -h | --help
     wasm-bindgen-test-runner -V | --version
@@ -84,6 +85,8 @@ Arguments:
     TESTNAME           Run only the tests with the given name
     --include-ignored  Include ignored tests in the test run
     --skip PATTERN     Skip tests whose names match the given pattern
+    --nocapture        Disables the tests output capture
+    --exact            Run only the test with the exact name
 
     --list             List all tests that would be run
     --format FORMAT    Format of the tests listing output, valid values are [terse, json]
@@ -95,10 +98,12 @@ Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-t
 #[derive(Debug, Deserialize)]
 struct Args {
     arg_input: Option<PathBuf>,
+    flag_exact: bool,
     flag_format: Option<String>,
     flag_include_ignored: bool,
     flag_ignored: bool,
     flag_list: bool,
+    flag_nocapture: bool,
     flag_pattern: Vec<String>,
     flag_version: bool,
 }
