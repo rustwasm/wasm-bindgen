@@ -799,7 +799,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             false,
             None,
             false,
-            None,
+            Some(&["default"]),
         )?;
         attrs.check_used();
         Ok(ret.0)
