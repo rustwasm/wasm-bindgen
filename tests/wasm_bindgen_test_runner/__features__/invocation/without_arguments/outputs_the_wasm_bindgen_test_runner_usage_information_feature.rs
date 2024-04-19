@@ -11,7 +11,8 @@ fn outputs_the_wasm_bindgen_test_runner_usage_information_feature() {
     then_the_standard_error_should_have(
         context,
         r#"Usage:
-    wasm-bindgen-test-runner [options] <input> [TESTNAME] [--include-ignored] [(--skip PATTERN)...]
+    wasm-bindgen-test-runner [options] <input> [TESTNAME] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
+    wasm-bindgen-test-runner [options] <input> TESTNAME [--nocapture] --exact
     wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
     wasm-bindgen-test-runner -h | --help
     wasm-bindgen-test-runner -V | --version"#,
