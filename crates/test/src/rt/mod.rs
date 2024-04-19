@@ -121,6 +121,9 @@ pub struct Context {
 }
 
 struct State {
+    /// Restricts the filter to be strict, that is only allow exact match
+    exact: Cell<bool>,
+
     /// An optional filter used to restrict which tests are actually executed
     /// and which are ignored. This is passed via the `args` function which
     /// comes from the command line of `wasm-bindgen-test-runner`. Currently
@@ -129,6 +132,9 @@ struct State {
 
     /// Include ignored tests.
     include_ignored: Cell<bool>,
+
+    /// Disabled the test output capture
+    nocapture: Cell<bool>,
 
     /// Tests to skip.
     skip: RefCell<Vec<String>>,
@@ -281,8 +287,10 @@ impl Context {
 
         Context {
             state: Rc::new(State {
+                exact: Default::default(),
                 filter: Default::default(),
                 include_ignored: Default::default(),
+                nocapture: Default::default(),
                 skip: Default::default(),
                 failures: Default::default(),
                 filtered: Default::default(),
@@ -317,7 +325,9 @@ impl Context {
             } else if let Some(arg) = arg.strip_prefix("--skip=") {
                 skip.push(arg.to_owned())
             } else if arg == "--nocapture" {
+                self.state.nocapture.set(true);
             } else if arg == "--exact" {
+                self.state.exact.set(true);
             } else if arg.starts_with('-') {
                 panic!("flag {} not supported", arg);
             } else if filter.is_some() {
