@@ -71,8 +71,8 @@ const USAGE: &str = "
 Execute all wasm bindgen unit and integration tests and build examples of a local package
 
 Usage:
-    wasm-bindgen-test-runner [options] <input> [TESTNAME] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
-    wasm-bindgen-test-runner [options] <input> TESTNAME [--nocapture] --exact
+    wasm-bindgen-test-runner [options] <input> [<testname>] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
+    wasm-bindgen-test-runner [options] <input> <testname> [--nocapture] --exact
     wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
     wasm-bindgen-test-runner -h | --help
     wasm-bindgen-test-runner -V | --version
@@ -81,8 +81,10 @@ Options:
     -h, --help         Show this screen.
     -V, --version      Print the version number of wasm-bindgen-test-runner
 
+    <input>            The wasm file to test
+    <testname>         Run only the tests with the given name
+
 Arguments:
-    TESTNAME           Run only the tests with the given name
     --include-ignored  Include ignored tests in the test run
     --skip PATTERN     Skip tests whose names match the given pattern
     --nocapture        Disables the tests output capture
@@ -98,6 +100,7 @@ Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-t
 #[derive(Debug, Deserialize)]
 struct Args {
     arg_input: Option<PathBuf>,
+    arg_testname: Option<String>,
     flag_exact: bool,
     flag_format: Option<String>,
     flag_include_ignored: bool,
@@ -167,11 +170,32 @@ fn main() -> anyhow::Result<()> {
     // to execute.
     let mut tests = Vec::new();
 
-    for export in wasm.exports.iter() {
-        if !export.name.starts_with("__wbgt_") {
-            continue;
+    if args_.flag_exact {
+        let test_name = args_.arg_testname.as_ref().ok_or_else(|| {
+            anyhow!("`--exact` requires a test name to be specified as an argument")
+        })?;
+
+        for export in wasm.exports.iter() {
+            if !export.name.starts_with("___wbgt_") {
+                continue;
+            }
+
+            let parts: Vec<&str> = export.name.split('$').collect();
+
+            let test = parts[1];
+            let test = &test[test.find("::").unwrap_or(0) + 2..];
+            if test == test_name {
+                tests.push(parts[0][1..].to_string());
+                break;
+            }
         }
-        tests.push(export.name.to_string());
+    } else {
+        for export in wasm.exports.iter() {
+            if !export.name.starts_with("__wbgt_") {
+                continue;
+            }
+            tests.push(export.name.to_string());
+        }
     }
 
     // Right now there's a bug where if no tests are present then the
