@@ -165,6 +165,9 @@ struct State {
     /// How to actually format output, either node.js or browser-specific
     /// implementation.
     formatter: Box<dyn Formatter>,
+
+    /// Total tests
+    tests: Cell<usize>,
 }
 
 /// Failure reasons.
@@ -299,6 +302,7 @@ impl Context {
                 running: Default::default(),
                 succeeded: Default::default(),
                 formatter,
+                tests: Default::default(),
             }),
         }
     }
@@ -348,11 +352,11 @@ impl Context {
     /// The promise returned resolves to either `true` if all tests passed or
     /// `false` if at least one test failed.
     pub fn run(&self, tests: Vec<JsValue>) -> Promise {
-        let noun = if tests.len() == 1 { "test" } else { "tests" };
-        self.state
-            .formatter
-            .writeln(&format!("running {} {}", tests.len(), noun));
-        self.state.formatter.writeln("");
+        if !self.state.exact.get() {
+            self.state.print_running_tests(tests.len());
+        } else {
+            self.state.tests.set(tests.len());
+        }
 
         // Execute all our test functions through their wasm shims (unclear how
         // to pass native function pointers around here). Each test will
@@ -495,6 +499,22 @@ impl Context {
         )
     }
 
+    fn filter(&self, name: &str) -> bool {
+        let filter = self.state.filter.borrow();
+        let exact = self.state.exact.get();
+
+        if let Some(filter) = &*filter {
+            if exact {
+                let test_name = &name[name.find("::").unwrap() + 2..];
+                test_name != filter
+            } else {
+                !name.contains(filter)
+            }
+        } else {
+            false
+        }
+    }
+
     fn execute(
         &self,
         name: &str,
@@ -504,13 +524,10 @@ impl Context {
     ) {
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
-        let filter = self.state.filter.borrow();
-        if let Some(filter) = &*filter {
-            if !name.contains(filter) {
-                let filtered = self.state.filtered.get();
-                self.state.filtered.set(filtered + 1);
-                return;
-            }
+        if self.filter(name) {
+            let filtered = self.state.filtered.get();
+            self.state.filtered.set(filtered + 1);
+            return;
         }
 
         for skip in &*self.state.skip.borrow() {
@@ -530,6 +547,10 @@ impl Context {
                 self.state.ignored.set(ignored + 1);
                 return;
             }
+        }
+
+        if self.state.exact.get() {
+            self.state.print_running_tests(1);
         }
 
         // Looks like we've got a test that needs to be executed! Push it onto
@@ -601,6 +622,10 @@ impl Future for ExecuteTests {
         // so we shouldn't have any more remaining tests either.
         assert_eq!(remaining.len(), 0);
 
+        if self.0.exact.get() && self.0.tests.get() == self.0.filtered.get() {
+            self.0.print_running_tests(0);
+        }
+
         self.0.print_results();
         let all_passed = self.0.failures.borrow().len() == 0;
         Poll::Ready(all_passed)
@@ -642,6 +667,13 @@ impl State {
                 _ => (),
             }
         }
+    }
+
+    fn print_running_tests(&self, count: usize) {
+        let noun = if count == 1 { "test" } else { "tests" };
+        self.formatter
+            .writeln(&format!("running {} {}", count, noun));
+        self.formatter.writeln("");
     }
 
     fn print_results(&self) {

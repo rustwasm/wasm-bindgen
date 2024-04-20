@@ -169,33 +169,11 @@ fn main() -> anyhow::Result<()> {
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
     let mut tests = Vec::new();
-
-    if args_.flag_exact {
-        let test_name = args_.arg_testname.as_ref().ok_or_else(|| {
-            anyhow!("`--exact` requires a test name to be specified as an argument")
-        })?;
-
-        for export in wasm.exports.iter() {
-            if !export.name.starts_with("___wbgt_") {
-                continue;
-            }
-
-            let parts: Vec<&str> = export.name.split('$').collect();
-
-            let test = parts[1];
-            let test = &test[test.find("::").unwrap_or(0) + 2..];
-            if test == test_name {
-                tests.push(parts[0][1..].to_string());
-                break;
-            }
+    for export in wasm.exports.iter() {
+        if !export.name.starts_with("__wbgt_") {
+            continue;
         }
-    } else {
-        for export in wasm.exports.iter() {
-            if !export.name.starts_with("__wbgt_") {
-                continue;
-            }
-            tests.push(export.name.to_string());
-        }
+        tests.push(export.name.to_string());
     }
 
     // Right now there's a bug where if no tests are present then the
