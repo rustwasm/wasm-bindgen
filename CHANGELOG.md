@@ -27,6 +27,9 @@
 * Add bindings for `RTCRtpReceiver.getCapabilities(DOMString)` method.
   [#3941](https://github.com/rustwasm/wasm-bindgen/pull/3941)
 
+* Add bindings for `VisualViewport`.
+  [#3931](https://github.com/rustwasm/wasm-bindgen/pull/3931)
+
 ### Changed
 
 * Stabilize Web Share API.

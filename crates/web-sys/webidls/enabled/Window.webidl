@@ -146,6 +146,7 @@ partial interface Window {
   // nsGlobalWindow::Cleanup.  :(
   //[SameObject, Replaceable, Throws] readonly attribute Screen screen;
   [Replaceable, Throws] readonly attribute Screen screen;
+  [SameObject, Replaceable] readonly attribute VisualViewport? visualViewport;
 
   // browsing context
   //[Throws] undefined moveTo(double x, double y);
