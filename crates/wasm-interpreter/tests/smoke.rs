@@ -91,7 +91,7 @@ fn globals() {
         )
     "#;
     // __wbindgen_describe is called with a global - in Frame.eval we assume all access to globals is the stack pointer
-    interpret(wat, "foo", Some(&[1024]));
+    interpret(wat, "foo", Some(&[32768]));
 }
 
 #[test]
