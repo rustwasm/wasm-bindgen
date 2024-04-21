@@ -15,11 +15,13 @@ mod level_1 {
 
     #[wasm_bindgen_test]
     fn pass_1() {
+        console_log!("pass_1 standard output");
         assert_eq!(1, 1);
     }
 
     #[wasm_bindgen_test]
     fn pass_2() {
+        console_log!("pass_2 standard output");
         assert_eq!(1, 1);
     }
 }

@@ -14,12 +14,14 @@ use wasm_bindgen_test::*;
 #[cfg(test)]
 #[wasm_bindgen_test]
 fn pass_1() {
+    console_log!("pass_1 standard output");
     assert_eq!(1, 1);
 }
 
 #[cfg(test)]
 #[wasm_bindgen_test]
 fn pass_2() {
+    console_log!("pass_2 standard output");
     assert_eq!(1, 1);
 }
             "#,
