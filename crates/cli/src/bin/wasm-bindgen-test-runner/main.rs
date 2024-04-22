@@ -11,9 +11,9 @@
 //! For more documentation about this see the `wasm-bindgen-test` crate README
 //! and source code.
 
+use crate::tmp_dir_lock::TmpDirLock;
 use anyhow::{anyhow, bail, Context};
 use docopt::Docopt;
-use log::error;
 use serde::Deserialize;
 use std::env;
 use std::fs;
@@ -26,6 +26,7 @@ mod headless;
 mod node;
 mod server;
 mod shell;
+mod tmp_dir_lock;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 enum TestMode {
@@ -57,13 +58,15 @@ impl TestMode {
     }
 }
 
-struct TmpDirDeleteGuard(PathBuf);
+struct TmpDirDeleteGuard<'a>(PathBuf, &'a TmpDirLock);
 
-impl Drop for TmpDirDeleteGuard {
+impl Drop for TmpDirDeleteGuard<'_> {
     fn drop(&mut self) {
-        if let Err(e) = fs::remove_dir_all(&self.0) {
-            error!("failed to remove temporary directory: {}", e);
-        }
+        /*if self.1.try_upgrade_lock().is_ok() && self.0.exists() {
+            if let Err(e) = fs::remove_dir_all(&self.0) {
+                error!("failed to remove temporary directory: {}", e);
+            }
+        }*/
     }
 }
 
@@ -249,28 +252,7 @@ fn main() -> anyhow::Result<()> {
         println!("Set timeout to {} seconds...", timeout);
     }
 
-    // Make the generated bindings available for the tests to execute against.
-    let shell = shell::Shell::new();
-    shell.status("Executing bindgen...");
-    let mut b = Bindgen::new();
-    match test_mode {
-        TestMode::Node => b.nodejs(true)?,
-        TestMode::Deno => b.deno(true)?,
-        TestMode::Browser { .. }
-        | TestMode::DedicatedWorker { .. }
-        | TestMode::SharedWorker { .. }
-        | TestMode::ServiceWorker { .. } => {
-            if test_mode.no_modules() {
-                b.no_modules(true)?
-            } else {
-                b.web(true)?
-            }
-        }
-    };
-
-    if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
-        b.split_linked_modules(true);
-    }
+    let module = "wasm-bindgen-test";
 
     // wasm_file_to_test may be
     // - a cargo-like directory layout and generate output at
@@ -291,20 +273,52 @@ fn main() -> anyhow::Result<()> {
         .map(|p| p.join(format!("wbg-tmp-{}", file_name)))
         .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
 
-    // Make sure there's no stale state from before
-    drop(fs::remove_dir_all(&tmpdir));
-    fs::create_dir(&tmpdir).context("creating temporary directory")?;
-    let _guard = TmpDirDeleteGuard(tmpdir.clone());
+    let shell = shell::Shell::new();
 
-    let module = "wasm-bindgen-test";
+    let lock = TmpDirLock::new(&tmpdir)?;
+    let _guard = TmpDirDeleteGuard(tmpdir.clone(), &lock);
 
-    b.debug(debug)
-        .input_module(module, wasm)
-        .keep_debug(false)
-        .emit_start(false)
-        .generate(&tmpdir)
-        .context("executing `wasm-bindgen` over the wasm file")?;
-    shell.clear();
+    if lock.try_lock_exclusive().is_ok() {
+        // Make sure there's no stale state from before
+        drop(fs::remove_dir_all(&tmpdir));
+        fs::create_dir(&tmpdir).context("creating temporary directory")?;
+
+        // Make the generated bindings available for the tests to execute against.
+        shell.status("Executing bindgen...");
+        let mut b = Bindgen::new();
+        match test_mode {
+            TestMode::Node => b.nodejs(true)?,
+            TestMode::Deno => b.deno(true)?,
+            TestMode::Browser { .. }
+            | TestMode::DedicatedWorker { .. }
+            | TestMode::SharedWorker { .. }
+            | TestMode::ServiceWorker { .. } => {
+                if test_mode.no_modules() {
+                    b.no_modules(true)?
+                } else {
+                    b.web(true)?
+                }
+            }
+        };
+
+        if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
+            b.split_linked_modules(true);
+        }
+
+        b.debug(debug)
+            .input_module(module, wasm)
+            .keep_debug(false)
+            .emit_start(false)
+            .generate(&tmpdir)
+            .context("executing `wasm-bindgen` over the wasm file")?;
+        shell.clear();
+
+        lock.downgrade_lock()
+            .context("failed to downgrade temporary directory lock")?;
+    } else {
+        lock.lock_shared()
+            .context("failed to aquire temporary directory shared lock")?;
+    }
 
     let args: Vec<_> = args.collect();
 

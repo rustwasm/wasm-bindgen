@@ -23,6 +23,7 @@ bin-dir = "wasm-bindgen-{ version }-{ target }/{ bin }{ binary-ext }"
 docopt = "1.0"
 env_logger = "0.8"
 anyhow = "1.0"
+fs2 = "0.4.3"
 log = "0.4"
 native-tls = { version = "0.2", default-features = false, optional = true }
 rouille = { version = "3.0.0", default-features = false }
