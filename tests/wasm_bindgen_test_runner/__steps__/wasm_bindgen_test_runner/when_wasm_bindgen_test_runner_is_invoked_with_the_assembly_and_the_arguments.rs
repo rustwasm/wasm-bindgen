@@ -6,7 +6,7 @@ pub fn when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_and_the_argume
 ) {
     let mut command = wasm_bindgen_test_runner_command();
 
-    if arguments.starts_with("--list") {
+    if arguments.starts_with("--list") && arguments.contains("--ignored") {
         command.arg(context.sandbox().original());
     } else {
         command.arg(context.sandbox_mut().assembly());
