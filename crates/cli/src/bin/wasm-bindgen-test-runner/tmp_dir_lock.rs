@@ -3,6 +3,7 @@ use std::fs::File;
 //use std::remove_file;
 use std::ffi::OsStr;
 use std::io::Error;
+use std::path::Path;
 use std::path::PathBuf;
 
 pub struct TmpDirLock {
@@ -13,7 +14,7 @@ pub struct TmpDirLock {
 }
 
 impl TmpDirLock {
-    pub fn new(directory: &PathBuf) -> Result<Self, Error> {
+    pub fn new(directory: &Path) -> Result<Self, Error> {
         let base = directory.parent().unwrap();
         let name = directory.file_name().and_then(OsStr::to_str).unwrap();
         let exclusive = &base.join(format!("{}-exclusive.lock", name));
