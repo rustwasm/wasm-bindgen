@@ -5,6 +5,10 @@
 
 ### Added
 
+* Allow exporting functions named `default`. Throw error in wasm-bindgen-cli if --target web and
+  an exported symbol is named `default`.
+  [#3930](https://github.com/rustwasm/wasm-bindgen/pull/3930)
+
 * Added support for arbitrary expressions when using `#[wasm_bindgen(typescript_custom_section)]`.
   [#3901](https://github.com/rustwasm/wasm-bindgen/pull/3901)
 
