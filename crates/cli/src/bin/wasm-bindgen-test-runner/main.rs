@@ -11,9 +11,9 @@
 //! For more documentation about this see the `wasm-bindgen-test` crate README
 //! and source code.
 
-use crate::tmp_dir_lock::TmpDirLock;
 use anyhow::{anyhow, bail, Context};
 use docopt::Docopt;
+use log::error;
 use serde::Deserialize;
 use std::env;
 use std::fs;
@@ -26,7 +26,6 @@ mod headless;
 mod node;
 mod server;
 mod shell;
-mod tmp_dir_lock;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 enum TestMode {
@@ -58,15 +57,13 @@ impl TestMode {
     }
 }
 
-struct TmpDirDeleteGuard<'a>(PathBuf, &'a TmpDirLock);
+struct TmpDirDeleteGuard(PathBuf);
 
-impl Drop for TmpDirDeleteGuard<'_> {
+impl Drop for TmpDirDeleteGuard {
     fn drop(&mut self) {
-        /*if self.1.try_upgrade_lock().is_ok() && self.0.exists() {
-            if let Err(e) = fs::remove_dir_all(&self.0) {
-                error!("failed to remove temporary directory: {}", e);
-            }
-        }*/
+        if let Err(e) = fs::remove_dir_all(&self.0) {
+            error!("failed to remove temporary directory: {}", e);
+        }
     }
 }
 
@@ -145,6 +142,7 @@ fn main() -> anyhow::Result<()> {
         walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
 
     if args_.flag_list {
+        let mut found = false;
         for export in wasm.exports.iter() {
             if !export.name.starts_with("___wbgt_") {
                 continue;
@@ -163,28 +161,33 @@ fn main() -> anyhow::Result<()> {
                 let test = &test[test.find("::").unwrap_or(0) + 2..];
                 println!("{}: test", test);
             }
+            found = true;
         }
 
-        return Ok(());
+        if !found || args_.flag_ignored {
+            return Ok(());
+        }
     }
 
-    // Collect all tests that the test harness is supposed to run. We assume
-    // that any exported function with the prefix `__wbg_test` is a test we need
-    // to execute.
     let mut tests = Vec::new();
-    for export in wasm.exports.iter() {
-        if !export.name.starts_with("__wbgt_") {
-            continue;
+    if !args_.flag_list {
+        // Collect all tests that the test harness is supposed to run. We assume
+        // that any exported function with the prefix `__wbg_test` is a test we need
+        // to execute.
+        for export in wasm.exports.iter() {
+            if !export.name.starts_with("__wbgt_") {
+                continue;
+            }
+            tests.push(export.name.to_string());
         }
-        tests.push(export.name.to_string());
-    }
 
-    // Right now there's a bug where if no tests are present then the
-    // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
-    // early saying everything is ok.
-    if tests.is_empty() {
-        println!("no tests to run!");
-        return Ok(());
+        // Right now there's a bug where if no tests are present then the
+        // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
+        // early saying everything is ok.
+        if tests.is_empty() {
+            println!("no tests to run!");
+            return Ok(());
+        }
     }
 
     // Figure out if this tests is supposed to execute in node.js or a browser.
@@ -240,18 +243,6 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
-        .map(|timeout| {
-            timeout
-                .parse()
-                .expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'")
-        })
-        .unwrap_or(20);
-
-    if debug {
-        println!("Set timeout to {} seconds...", timeout);
-    }
-
     let module = "wasm-bindgen-test";
 
     // wasm_file_to_test may be
@@ -273,18 +264,26 @@ fn main() -> anyhow::Result<()> {
         .map(|p| p.join(format!("wbg-tmp-{}", file_name)))
         .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
 
-    let shell = shell::Shell::new();
+    let shell = if !args_.flag_list {
+        Some(shell::Shell::new())
+    } else {
+        None
+    };
+    let _guard = if args_.flag_list || args_.flag_exact {
+        None
+    } else {
+        Some(TmpDirDeleteGuard(tmpdir.clone()))
+    };
 
-    let lock = TmpDirLock::new(&tmpdir)?;
-    let _guard = TmpDirDeleteGuard(tmpdir.clone(), &lock);
-
-    if lock.try_lock_exclusive().is_ok() {
+    if !args_.flag_exact || !tmpdir.exists() {
         // Make sure there's no stale state from before
         drop(fs::remove_dir_all(&tmpdir));
         fs::create_dir(&tmpdir).context("creating temporary directory")?;
 
         // Make the generated bindings available for the tests to execute against.
-        shell.status("Executing bindgen...");
+        if let Some(ref shell) = shell {
+            shell.status("Executing bindgen...");
+        }
         let mut b = Bindgen::new();
         match test_mode {
             TestMode::Node => b.nodejs(true)?,
@@ -311,13 +310,30 @@ fn main() -> anyhow::Result<()> {
             .emit_start(false)
             .generate(&tmpdir)
             .context("executing `wasm-bindgen` over the wasm file")?;
-        shell.clear();
 
-        lock.downgrade_lock()
-            .context("failed to downgrade temporary directory lock")?;
-    } else {
-        lock.lock_shared()
-            .context("failed to aquire temporary directory shared lock")?;
+        if let Some(ref shell) = shell {
+            shell.clear();
+        }
+    }
+
+    if args_.flag_list {
+        return Ok(());
+    }
+
+    let Some(shell) = shell else {
+        bail!("no shell available");
+    };
+
+    let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
+        .map(|timeout| {
+            timeout
+                .parse()
+                .expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'")
+        })
+        .unwrap_or(20);
+
+    if debug {
+        println!("Set timeout to {} seconds...", timeout);
     }
 
     let args: Vec<_> = args.collect();
